@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -358,14 +359,14 @@ public class WfeWorkflowSection extends SectionPart {
       return statePage + " for " + getSma();
    }
 
-   public Result isXWidgetDirty() {
+   public Result isXWidgetDirty(XResultData rd) {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
             IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
             if (artifactStoredWidget.getArtifact() != null) {
                Result result = artifactStoredWidget.isDirty();
                if (result.isTrue()) {
-                  return result;
+                  rd.errorf("Widget [%s] is dirty\n", widget.toString());
                }
             }
          }

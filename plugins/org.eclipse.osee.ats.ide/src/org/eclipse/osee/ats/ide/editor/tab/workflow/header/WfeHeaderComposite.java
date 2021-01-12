@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -287,17 +288,14 @@ public class WfeHeaderComposite extends Composite {
       }
    }
 
-   public Result isXWidgetDirty() {
+   public XResultData isXWidgetDirty(XResultData rd) {
       if (titleHeader != null) {
-         Result result = titleHeader.isXWidgetDirty();
-         if (result.isTrue()) {
-            return result;
-         }
+         titleHeader.isXWidgetDirty(rd);
       }
       if (customHeader != null) {
-         return customHeader.isXWidgetDirty();
+         customHeader.isXWidgetDirty(rd);
       }
-      return Result.FalseResult;
+      return rd;
    }
 
    public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> artWidgets) {

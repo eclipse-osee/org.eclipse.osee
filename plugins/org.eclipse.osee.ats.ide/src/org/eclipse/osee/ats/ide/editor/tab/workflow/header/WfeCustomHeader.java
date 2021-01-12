@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.ide.workdef.XWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -154,19 +155,19 @@ public class WfeCustomHeader extends Composite {
       return "Header for " + workItem.toStringWithId();
    }
 
-   public Result isXWidgetDirty() {
+   public XResultData isXWidgetDirty(XResultData rd) {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
             IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
             if (artifactStoredWidget.getArtifact() != null) {
                Result result = artifactStoredWidget.isDirty();
                if (result.isTrue()) {
-                  return result;
+                  rd.errorf("Widget [%s] is dirty\n", widget.toString());
                }
             }
          }
       }
-      return Result.FalseResult;
+      return rd;
    }
 
    public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) {

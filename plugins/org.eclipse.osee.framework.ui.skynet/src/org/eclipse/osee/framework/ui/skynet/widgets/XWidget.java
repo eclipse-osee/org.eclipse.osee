@@ -358,7 +358,7 @@ public abstract class XWidget {
 
    @Override
    public String toString() {
-      return String.format("%s: %s\n\n", getLabel(), getReportData());
+      return String.format("%s: %s", getLabel(), getReportData());
    }
 
    public void setDisplayLabel(boolean displayLabel) {

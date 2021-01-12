@@ -70,12 +70,13 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -330,7 +331,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
       WfeArtifactEventManager.remove(this);
       WfeBranchEventManager.remove(this);
-      if (workItem != null && !workItem.isDeleted() && workItem.isWfeDirty().isTrue()) {
+      if (workItem != null && !workItem.isDeleted() && workItem.isWfeDirty(new XResultData()).isErrors()) {
          workItem.revert();
       }
       // Tabs are disposed by editor
@@ -367,41 +368,39 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public boolean isDirty() {
-      return isDirtyResult().isTrue();
+      return isDirtyResult(new XResultData()).isErrors();
    }
 
    @Override
-   public Result isDirtyResult() {
+   public XResultData isDirtyResult(XResultData rd) {
       if (workFlowTab == null || getWfeInput().isReload() || (workItem != null && workItem.isDeleted())) {
-         return Result.FalseResult;
+         return rd;
       }
       try {
-         Result result = workFlowTab.isXWidgetDirty();
-         if (result.isTrue()) {
-            return result;
-         }
-         result = ((AbstractWorkflowArtifact) ((WfeInput) getEditorInput()).getArtifact()).isWfeDirty();
-         if (result.isTrue()) {
-            return result;
-         }
+         rd.log("===> WorkFlowTab.isXWidgetDirty\n");
+         workFlowTab.isXWidgetDirty(rd);
 
-         String rString = null;
+         rd.log("\n===> AWA.isWfeDirty\n");
+         ((AbstractWorkflowArtifact) ((WfeInput) getEditorInput()).getArtifact()).isWfeDirty(rd);
+
+         rd.log("\n===> Attribute.isDirty\n");
          for (Attribute<?> attribute : workItem.internalGetAttributes()) {
             if (attribute.isDirty()) {
-               rString = "Attribute: " + attribute.getNameValueDescription();
-               break;
+               rd.errorf("Attribute [%s] is dirty\n", attribute.getNameValueDescription());
             }
          }
 
-         if (rString == null) {
-            rString = RelationManager.reportHasDirtyLinks(workItem);
+         rd.log("\n===> RelationMgr.isDirty\n");
+         String rString = RelationManager.reportHasDirtyLinks(workItem);
+         if (Strings.isValid(rString)) {
+            rd.error("Relation tab is dirty\n");
          }
 
-         return new Result(rString != null, rString);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Result(true, ex.getLocalizedMessage());
+         rd.errorf("\n===> WorkflowException.Exception\n[%s]\n", Lib.exceptionToString(ex));
       }
+      return rd;
    }
 
    @Override

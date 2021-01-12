@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IDirtyReportable {
 
-   public Result isDirtyResult();
+   public XResultData isDirtyResult(XResultData rd);
 
 }

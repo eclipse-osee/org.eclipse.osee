@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 import org.eclipse.osee.ats.ide.actions.DirtyReportAction;
 import org.eclipse.osee.ats.ide.actions.IDirtyReportable;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Test;
 
@@ -36,8 +36,9 @@ public class DirtyReportActionTest1 extends AbstractAtsActionTest {
    public DirtyReportAction createAction() {
       return new DirtyReportAction(new IDirtyReportable() {
          @Override
-         public Result isDirtyResult() {
-            return new Result("Hello World");
+         public XResultData isDirtyResult(XResultData rd) {
+            rd.log("Hello World");
+            return rd;
          }
       });
    }

@@ -53,10 +53,11 @@ import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -138,7 +139,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     *
     * @return true if any object in SMA tree is dirty
     */
-   public Result isWfeDirty() {
+   public XResultData isWfeDirty(XResultData rd) {
       try {
          Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);
@@ -146,34 +147,33 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                if (awa.getStateMgr() == null) {
-                  throw new OseeStateException("StateManager can not be null for %s", artifact.toStringWithId());
+                  rd.errorf("StateManager can not be null for %s", artifact.toStringWithId());
                }
-               if (awa.getStateMgr().isDirty()) {
-                  return new Result(true, "StateManager is dirty");
-               }
+               awa.getStateMgr().isDirty();
+
                if (awa.getLog().isDirty()) {
-                  return new Result(true, "Log is dirty");
+                  rd.error("Log is dirty");
                }
             }
             if (artifact.isDirty()) {
-               String rString = null;
                for (Attribute<?> attribute : artifact.internalGetAttributes()) {
                   if (attribute.isDirty()) {
-                     rString = "Attribute: " + attribute.getNameValueDescription();
-                     break;
+                     rd.errorf("Dirty Attribute: " + attribute.getNameValueDescription() + "\n");
                   }
                }
 
-               if (rString == null) {
-                  rString = RelationManager.reportHasDirtyLinks(artifact);
+               String rString = RelationManager.reportHasDirtyLinks(artifact);
+               if (Strings.isValid(rString)) {
+                  rd.errorf("Dirty Relation Tab: " + rString + " \n");
                }
-               return new Result(true, String.format("Artifact %s is dirty\n\n%s", artifact.toStringWithId(), rString));
+
             }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Unable to determine if artifact is dirty " + getAtsId(), ex);
+         rd.errorf("Exception in isWfeDirty [%s]", Lib.exceptionToString(ex));
       }
-      return Result.FalseResult;
+      return rd;
    }
 
    public void save(IAtsChangeSet changes) {
@@ -269,7 +269,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    /**
-    * Return true if workItem is TeamWorkflowArtifact or review of a team workflow and it's IAtsTeamDefinition has rule set
+    * Return true if workItem is TeamWorkflowArtifact or review of a team workflow and it's IAtsTeamDefinition has rule
+    * set
     */
    public boolean teamDefHasRule(RuleDefinitionOption option) {
       TeamWorkFlowArtifact teamArt = null;

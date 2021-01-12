@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -36,11 +36,19 @@ public class DirtyReportAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      Result result = reportable.isDirtyResult();
+      XResultData rd = new XResultData();
+      rd.log("WorkflowEditor Dirty Report\n-----------------------------------------------\n");
+      reportable.isDirtyResult(rd);
       if (AtsUtil.isInTest()) {
-         throw new OseeStateException("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
+         throw new OseeStateException("Dirty Report", rd.isSuccess() ? "Not Dirty" : "Dirty -> " + rd.toString());
       } else {
-         AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
+         rd.log("\n-----------------------------------------------");
+         if (rd.isSuccess()) {
+            rd.log("Editor is Not Dirty");
+         } else {
+            rd.error("Editor is Dirty");
+         }
+         XResultDataUI.report(rd, "Dirty Report - " + (rd.isSuccess() ? "Not Dirty" : "Dirty"));
       }
    }
 

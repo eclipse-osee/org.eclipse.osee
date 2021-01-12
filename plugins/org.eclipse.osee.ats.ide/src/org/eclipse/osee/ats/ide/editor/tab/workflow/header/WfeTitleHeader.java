@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -82,11 +83,13 @@ public class WfeTitleHeader extends Composite implements IWfeEventHandle {
       return titleText;
    }
 
-   public Result isXWidgetDirty() {
+   public XResultData isXWidgetDirty(XResultData rd) {
       if (titleText != null) {
-         return titleText.isDirty();
+         if (titleText.isDirty().isTrue()) {
+            rd.error("Title is dirty");
+         }
       }
-      return Result.FalseResult;
+      return rd;
    }
 
    public Result isXWidgetSavable() {

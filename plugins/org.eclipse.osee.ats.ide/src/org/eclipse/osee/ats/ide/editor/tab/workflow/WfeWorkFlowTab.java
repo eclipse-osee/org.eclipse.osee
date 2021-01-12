@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -372,21 +373,16 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       });
    }
 
-   public Result isXWidgetDirty() {
-      Result result = null;
+   public XResultData isXWidgetDirty(XResultData rd) {
       if (Widgets.isAccessible(headerComp)) {
-         result = headerComp.isXWidgetDirty();
-         if (result != null && result.isTrue()) {
-            return result;
-         }
+         rd.log("======> WFE - Header\n");
+         headerComp.isXWidgetDirty(rd);
       }
       for (WfeWorkflowSection section : sections) {
-         result = section.isXWidgetDirty();
-         if (result.isTrue()) {
-            return result;
-         }
+         rd.logf("======> WFE Section - %s\n", section.getStatePage().getName());
+         section.isXWidgetDirty(rd);
       }
-      return Result.FalseResult;
+      return rd;
    }
 
    public Result isXWidgetSavable() {
