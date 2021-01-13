@@ -17,6 +17,7 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
@@ -235,7 +236,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AtsAttributeTypes.TeamDefinition)
       .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(ValidationRequired)
-      .zeroOrOne(WeeklyBenefit));
+      .zeroOrOne(WeeklyBenefit)
+      .any(GitChangeId));
    ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, AtsArtifact)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)

@@ -13,15 +13,21 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
+import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.Collection;
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -38,5 +44,16 @@ public interface AtsTeamWfEndpointApi {
    @Path("{aiId}/version")
    @Produces({MediaType.APPLICATION_JSON})
    Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId);
+
+   @GET
+   @Path("{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   IAtsTeamWorkflow getTeamWorkflow(String id);
+
+   @PUT
+   @Path("{id}/addchangeids/{teamId}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData addChangeIds(@PathParam("id") String workItemId, @PathParam("teamId") String teamId, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds);
 
 }

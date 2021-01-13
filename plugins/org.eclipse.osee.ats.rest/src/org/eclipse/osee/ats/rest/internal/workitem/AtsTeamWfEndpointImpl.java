@@ -13,10 +13,17 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,13 +31,20 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -38,10 +52,10 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 @Path("teamwf")
 public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
-   private final AtsApi services;
+   private final AtsApi atsApi;
 
-   public AtsTeamWfEndpointImpl(AtsApi services) {
-      this.services = services;
+   public AtsTeamWfEndpointImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -49,20 +63,32 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    @Path("{id}/changedata")
    @Produces({MediaType.APPLICATION_JSON})
    public List<ChangeItem> getChangeData(@PathParam("id") String id) {
-      IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(id);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
       if (!workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
       }
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-      TransactionToken trans = services.getBranchService().getEarliestTransactionId(teamWf);
+      TransactionToken trans = atsApi.getBranchService().getEarliestTransactionId(teamWf);
       if (trans.isValid()) {
-         return services.getBranchService().getChangeData(trans);
+         return atsApi.getBranchService().getChangeData(trans);
       }
-      BranchId branch = services.getBranchService().getWorkingBranch(teamWf);
+      BranchId branch = atsApi.getBranchService().getWorkingBranch(teamWf);
       if (branch.isValid()) {
-         return services.getBranchService().getChangeData(branch);
+         return atsApi.getBranchService().getChangeData(branch);
       }
       return Collections.<ChangeItem> emptyList();
+   }
+
+   @Override
+   @GET
+   @Path("{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   public IAtsTeamWorkflow getTeamWorkflow(@PathParam("id") String id) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
+      if (!workItem.isTeamWorkflow()) {
+         throw new UnsupportedOperationException();
+      }
+      return (IAtsTeamWorkflow) workItem;
    }
 
    @Override
@@ -70,11 +96,67 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    @Path("{aiId}/version")
    @Produces({MediaType.APPLICATION_JSON})
    public Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId) {
-      IAtsActionableItem ai = services.getActionableItemService().getActionableItem(aiId);
-      IAtsTeamDefinition impactedTeamDef = services.getTeamDefinitionService().getImpactedTeamDef(ai);
+      IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(aiId);
+      IAtsTeamDefinition impactedTeamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
       IAtsTeamDefinition teamDefHoldingVersions =
-         services.getTeamDefinitionService().getTeamDefinitionHoldingVersions(impactedTeamDef);
+         atsApi.getTeamDefinitionService().getTeamDefinitionHoldingVersions(impactedTeamDef);
 
-      return services.getVersionService().getVersions(teamDefHoldingVersions);
+      return atsApi.getVersionService().getVersions(teamDefHoldingVersions);
+   }
+
+   @Override
+   @PUT
+   @Path("{id}/addchangeids/{teamId}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   public XResultData addChangeIds(@PathParam("id") String workItemId, @PathParam("teamId") String teamId, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds) {
+      XResultData rd = new XResultData();
+      rd.setTitle("Add Change Ids: " + changeIds);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(workItemId);
+
+      if (workItem == null) {
+         rd.errorf("%s is not a valid team workflow id.", workItemId);
+         return rd;
+      }
+      if (!workItem.isTeamWorkflow()) {
+         rd.errorf("%s is not a valid team workflow id.", workItem.toStringWithId());
+         return rd;
+      }
+      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+      if (teamWf.isCompletedOrCancelled()) {
+         rd.errorf("%s is completed/cancelled and cannot be updated.", teamWf.toStringWithId());
+         return rd;
+      }
+      TeamDefinition passedTeamDef =
+         atsApi.getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(teamId));
+      if (passedTeamDef == null) {
+         rd.errorf("%s is an invalid Team Definition Id", teamId);
+         return rd;
+      }
+      if (!teamWf.getTeamDefinition().getIdString().equals(teamId)) {
+         if (!passedTeamDef.getChildrenTeamDefs().contains(teamWf.getTeamDefinition())) {
+            rd.errorf(
+               "Workflow %s has a Team Definition %s which does not match/nor is the child of the passed in Team Definition %s",
+               teamWf.toStringWithId(), teamWf.getTeamDefinition().toStringWithId(), passedTeamDef.toStringWithId());
+            return rd;
+         }
+      }
+      if (userId.isInvalid()) {
+         rd.errorf("%s is an invalid ATS userId", userId);
+         return rd;
+      }
+      if (!atsApi.getUserService().isUserIdValid(userId.getIdString())) {
+         rd.errorf("%s is an invalid ATS userId", userId);
+         return rd;
+      }
+      AtsUser asUser = atsApi.getUserService().getUserById(userId);
+      IAtsChangeSet changes = atsApi.createChangeSet("Add Change Id(s)", asUser);
+      Set<String> distinctChangeIds = new HashSet<String>(
+         atsApi.getAttributeResolver().getAttributesToStringList(workItem, CoreAttributeTypes.GitChangeId));
+      distinctChangeIds.addAll(changeIds);
+      List<String> updatedChangeIdsList = new ArrayList<>(distinctChangeIds);
+      changes.setAttributeValuesAsStrings(workItem, CoreAttributeTypes.GitChangeId, updatedChangeIdsList);
+      changes.executeIfNeeded();
+      return rd;
    }
 }

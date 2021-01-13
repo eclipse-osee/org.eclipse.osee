@@ -72,7 +72,7 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
             teamDef.setAtsApi(atsApi);
          } else {
             ArtifactToken teamDefArt = atsApi.getQueryService().getArtifact(teamDefId);
-            if (teamDefArt.isValid()) {
+            if (teamDefArt != null && teamDefArt.isValid()) {
                TeamDefinition teamDef2 = createTeamDefinition(teamDefArt);
                atsApi.getConfigService().getConfigurations().addTeamDef(teamDef2);
                teamDef = teamDef2;
