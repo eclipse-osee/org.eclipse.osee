@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Donald G Dunne
@@ -113,21 +113,10 @@ public class DbConnectionUtility {
 
    private static Collection<String> getIdeClientSupportedVersions() {
       IdeVersion clientResult = null;
-      ClientEndpoint client = getClientEndpoint();
+      ClientEndpoint client = ServiceUtil.getOseeClient().getClientEndpoint();
       if (client != null) {
          clientResult = client.getSupportedVersions();
       }
       return clientResult != null ? clientResult.getVersions() : Collections.<String> emptySet();
    }
-
-   private static ClientEndpoint getClientEndpoint() {
-      if (clientEp == null) {
-         String appServer = OseeClientProperties.getOseeApplicationServer();
-         String orcsUri = String.format("%s/ide", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
-         clientEp = jaxRsClient.target(orcsUri).newProxy(ClientEndpoint.class);
-      }
-      return clientEp;
-   }
-
 }
