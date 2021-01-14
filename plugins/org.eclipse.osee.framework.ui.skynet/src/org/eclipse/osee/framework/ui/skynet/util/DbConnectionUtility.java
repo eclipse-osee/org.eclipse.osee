@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 
 /**
  * @author Donald G Dunne
@@ -116,11 +115,7 @@ public class DbConnectionUtility {
       IdeVersion clientResult = null;
       ClientEndpoint client = getClientEndpoint();
       if (client != null) {
-         try {
-            clientResult = client.getSupportedVersions();
-         } catch (Exception ex) {
-            throw JaxRsExceptions.asOseeException(ex);
-         }
+         clientResult = client.getSupportedVersions();
       }
       return clientResult != null ? clientResult.getVersions() : Collections.<String> emptySet();
    }

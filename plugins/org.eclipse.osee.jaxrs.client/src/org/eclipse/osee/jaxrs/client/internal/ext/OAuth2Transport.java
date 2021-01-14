@@ -32,7 +32,6 @@ import org.apache.cxf.rs.security.oauth2.grants.refresh.RefreshTokenGrant;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientBuilder;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows.OwnerCredentials;
 
@@ -68,12 +67,8 @@ public class OAuth2Transport {
    }
 
    public Response sendAccessConfirmation(OwnerCredentials owner, String sessionCookie, String confirmUri, Form form) {
-      try {
-         return newTargetBuilder(owner, confirmUri, sessionCookie).accept(MediaType.APPLICATION_JSON_TYPE).post(
-            Entity.form(form));
-      } catch (WebApplicationException ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return newTargetBuilder(owner, confirmUri, sessionCookie).accept(MediaType.APPLICATION_JSON_TYPE).post(
+         Entity.form(form));
    }
 
    public AccessTokenValidation sendTokenValidationRequest(OwnerCredentials owner, Consumer client, String sessionCookie, String tokenValidationUri, Form form) {

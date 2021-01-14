@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 
@@ -107,24 +106,18 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
                boolean compressOnSave = false;
 
                String resourceName = String.format("%s.zip", getAttribute().getArtifact().getGuid());
-               try {
-                  Response response = endpoint.saveResource(new ByteArrayInputStream(compressed),
-                     BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId, resourceName, overwriteAllowed,
-                     compressOnSave);
-                  String location = BinaryContentUtils.getAttributeLocation(response);
-                  if (location != null) {
-                     this.remoteUri = location;
-                     this.localUri = null;
-                  }
-               } catch (Exception ex) {
-                  throw JaxRsExceptions.asOseeException(ex);
+               Response response = endpoint.saveResource(new ByteArrayInputStream(compressed),
+                  BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId, resourceName, overwriteAllowed,
+                  compressOnSave);
+               String location = BinaryContentUtils.getAttributeLocation(response);
+               if (location != null) {
+                  this.remoteUri = location;
+                  this.localUri = null;
                }
             } finally {
                Lib.close(inputStream);
             }
          }
-      } catch (OseeCoreException ex) {
-         throw ex; // keep exceptions of type OseeCoreException from being unnecessarily wrapped
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
@@ -137,16 +130,12 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
             String path = BinaryContentUtils.asResourcePath(remoteUri);
 
             ResourcesEndpoint endpoint = getResourcesEndpoint();
-            try {
-               Response response = endpoint.deleteResource(path);
-               if (Status.OK.getStatusCode() == response.getStatus()) {
-                  remoteUri = null;
-                  if (isBackingFileValid()) {
-                     backingFile.delete(true, null);
-                  }
+            Response response = endpoint.deleteResource(path);
+            if (Status.OK.getStatusCode() == response.getStatus()) {
+               remoteUri = null;
+               if (isBackingFileValid()) {
+                  backingFile.delete(true, null);
                }
-            } catch (Exception ex) {
-               throw JaxRsExceptions.asOseeException(ex);
             }
          }
       } catch (Exception ex) {
@@ -202,7 +191,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
          ZipEntry entry = zipInputStream.getNextEntry();
          file = OseeData.getIFile(entry.getName(), zipInputStream, true);
       } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
+         throw OseeCoreException.wrap(ex);
       } finally {
          Lib.close(inputStream);
       }

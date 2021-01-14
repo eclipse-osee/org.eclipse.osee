@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 
 /**
@@ -88,101 +87,63 @@ public class AccountClientImpl implements AccountClient {
       data.setScheme(scheme);
 
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_LOGIN).build();
-      try {
-         return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data),
-            AccountSessionData.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data), AccountSessionData.class);
    }
 
    @Override
    public boolean logout(AccountSessionData session) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_LOGOUT).build();
-      try {
-         Response response = newTarget(uri).request().post(Entity.json(session));
-         return Status.OK.getStatusCode() == response.getStatus();
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      Response response = newTarget(uri).request().post(Entity.json(session));
+      return Status.OK.getStatusCode() == response.getStatus();
    }
 
    @Override
    public AccountInfoData createAccount(String userName, AccountInput input) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_USERNAME_TEMPLATE).build(userName);
-      try {
-         return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(input), AccountInfoData.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(input), AccountInfoData.class);
    }
 
    @Override
    public boolean deleteAccount(Long accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).build(accountId);
-      try {
-         Response response = newTarget(uri).request().delete();
-         return Status.OK.getStatusCode() == response.getStatus();
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      Response response = newTarget(uri).request().delete();
+      return Status.OK.getStatusCode() == response.getStatus();
    }
 
    @Override
    public ResultSet<AccountSessionDetailsData> getAccountSessionDataByUniqueField(String accountId) {
       URI uri =
          UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_SESSSIONS).build(accountId);
-      try {
-         AccountSessionDetailsData[] data =
-            newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountSessionDetailsData[].class);
-         return ResultSets.newResultSet(data);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      AccountSessionDetailsData[] data =
+         newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountSessionDetailsData[].class);
+      return ResultSets.newResultSet(data);
    }
 
    @Override
    public ResultSet<AccountInfoData> getAllAccounts() {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).build();
-      try {
-         AccountInfoData[] accounts =
-            newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountInfoData[].class);
-         return ResultSets.newResultSet(accounts);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      AccountInfoData[] accounts = newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountInfoData[].class);
+      return ResultSets.newResultSet(accounts);
    }
 
    @Override
    public AccountDetailsData getAccountDetailsById(Long accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).build(accountId);
-      try {
-         return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountDetailsData.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountDetailsData.class);
    }
 
    @Override
    public AccountPreferencesData getAccountPreferencesById(Long accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(
          accountId);
-      try {
-         return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountPreferencesData.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountPreferencesData.class);
    }
 
    @Override
    public AccountWebPreferences getAccountWebPreferencesByUniqueField(ArtifactId accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_PREFERENCES).path(ACCOUNT_ID_TEMPLATE).build(
          accountId.getId());
-      try {
-         return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountWebPreferences.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountWebPreferences.class);
    }
 
    @Override
@@ -204,30 +165,18 @@ public class AccountClientImpl implements AccountClient {
       URI uri =
          UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_ACTIVE).build(accountId);
 
-      try {
-         AccountActiveData data = newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountActiveData.class);
-         return data.isActive();
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      AccountActiveData data = newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountActiveData.class);
+      return data.isActive();
    }
 
    private boolean setAccountActive(URI uri) {
-      try {
-         Response response = newTarget(uri).request().put(null);
-         return Status.OK.getStatusCode() == response.getStatus();
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      Response response = newTarget(uri).request().put(null);
+      return Status.OK.getStatusCode() == response.getStatus();
    }
 
    private boolean setAccountInActive(URI uri) {
-      try {
-         Response response = newTarget(uri).request().delete();
-         return Status.OK.getStatusCode() == response.getStatus();
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      Response response = newTarget(uri).request().delete();
+      return Status.OK.getStatusCode() == response.getStatus();
    }
 
    @Override
@@ -237,24 +186,15 @@ public class AccountClientImpl implements AccountClient {
 
       AccountPreferencesInput input = new AccountPreferencesInput();
       input.setMap(preferences);
-      try {
-         Response response = newTarget(uri).request().put(Entity.json(input));
-         return Status.OK.getStatusCode() == response.getStatus();
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      Response response = newTarget(uri).request().put(Entity.json(input));
+      return Status.OK.getStatusCode() == response.getStatus();
    }
 
    private ResultSet<SubscriptionData> getSubscriptionsForAccount(Long accountId) {
       URI uri =
          UriBuilder.fromUri(baseUri).path("subscriptions").path("for-account").path("{account-id}").build(accountId);
-      try {
-         SubscriptionData[] data =
-            newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(SubscriptionData[].class);
-         return ResultSets.newResultSet(data);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      SubscriptionData[] data = newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(SubscriptionData[].class);
+      return ResultSets.newResultSet(data);
    }
 
    @Override

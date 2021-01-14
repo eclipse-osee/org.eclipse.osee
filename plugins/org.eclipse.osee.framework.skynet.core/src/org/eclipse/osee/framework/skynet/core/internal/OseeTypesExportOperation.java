@@ -19,9 +19,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
@@ -52,7 +52,7 @@ public class OseeTypesExportOperation extends AbstractOperation {
             }
          }
       } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 }

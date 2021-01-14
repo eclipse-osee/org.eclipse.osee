@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
@@ -71,7 +70,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
             branch.setArchived(archived);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branch));
          }
-      } catch (Exception ex) {
+      } catch (RuntimeException ex) {
          try {
             branch.setBranchState(currentState);
             branch.setArchived(archived);
@@ -79,7 +78,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
          } catch (Exception ex2) {
             log(ex2);
          }
-         throw JaxRsExceptions.asOseeException(ex);
+         throw ex;
       }
    }
 }

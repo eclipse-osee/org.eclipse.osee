@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -146,12 +145,7 @@ public class WasIsCompareEditorAction extends Action {
       URI uri = UriBuilder.fromUri(appServer).path("orcs").path("branch").path(artifact.getBranch().getIdString()).path(
          "artifact").path(artifact.getIdString()).path("attribute").path(String.valueOf(attrId)).path("version").path(
             String.valueOf(transactionId)).path("text").build();
-      try {
-         return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
-
+      return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
    }
 
    protected static ISelectionProvider getSelectionProvider() {

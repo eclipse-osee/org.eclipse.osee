@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.IndexResources;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
@@ -42,10 +41,6 @@ public class AttributeTaggingOperation extends AbstractOperation {
       IndexResources data = new IndexResources();
       data.setWaitForIndexerToComplete(true);
       data.setGammaIds(Lists.newArrayList(gammaIds));
-      try {
-         endpoint.indexResources(data);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      endpoint.indexResources(data);
    }
 }

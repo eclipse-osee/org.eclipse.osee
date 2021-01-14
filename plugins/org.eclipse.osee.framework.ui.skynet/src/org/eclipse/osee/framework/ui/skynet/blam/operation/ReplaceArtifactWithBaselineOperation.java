@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
@@ -63,17 +62,13 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                monitor.worked(1);
                Artifact sourceArtifact =
                   ArtifactQuery.getHistoricalArtifactOrNull(artifact, txRecord, DeletionFlag.INCLUDE_DELETED);
-               try {
-                  if (sourceArtifact != null) {
-                     UserId userId = UserManager.getUser();
-                     TransactionEndpoint.replaceWithBaselineTxVersion(userId, branch, txRecord, sourceArtifact,
-                        ReplaceArtifactWithBaselineOperation.class.getSimpleName());
-                     monitor.done();
-                  } else {
-                     artifact.deleteAndPersist(getClass().getSimpleName());
-                  }
-               } catch (Exception ex) {
-                  throw JaxRsExceptions.asOseeException(ex);
+               if (sourceArtifact != null) {
+                  UserId userId = UserManager.getUser();
+                  TransactionEndpoint.replaceWithBaselineTxVersion(userId, branch, txRecord, sourceArtifact,
+                     ReplaceArtifactWithBaselineOperation.class.getSimpleName());
+                  monitor.done();
+               } else {
+                  artifact.deleteAndPersist(getClass().getSimpleName());
                }
             }
             persistAndReloadArtifacts();

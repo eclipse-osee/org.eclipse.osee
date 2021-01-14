@@ -19,12 +19,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 
@@ -74,8 +74,6 @@ public class AttributeResourceProcessor {
             resourceId, resourceName, overwriteAllowed, compressOnSave);
          String location = BinaryContentUtils.getAttributeLocation(response);
          dataStore.setLocator(location);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
       } finally {
          Lib.close(inputStream);
       }
@@ -121,21 +119,16 @@ public class AttributeResourceProcessor {
             }
          }
       } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
    public void purge(DataStore dataStore) {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
       String path = BinaryContentUtils.asResourcePath(dataStore.getLocator());
-      try {
-         Response response = endpoint.deleteResource(path);
-         if (Status.OK.getStatusCode() == response.getStatus()) {
-            dataStore.clear();
-         }
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
+      Response response = endpoint.deleteResource(path);
+      if (Status.OK.getStatusCode() == response.getStatus()) {
+         dataStore.clear();
       }
    }
-
 }

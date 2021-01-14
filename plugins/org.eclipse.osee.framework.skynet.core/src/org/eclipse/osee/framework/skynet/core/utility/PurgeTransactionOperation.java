@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
@@ -68,15 +67,11 @@ public class PurgeTransactionOperation extends AbstractOperation {
       TransactionEndpoint txEndpoint = client.getTransactionEndpoint();
 
       String deleteTxs = Collections.toString(",", txIdsToDelete);
-      try {
-         Response result = txEndpoint.purgeTxs(deleteTxs);
-         if (Status.OK.getStatusCode() == result.getStatus()) {
-            for (PurgeTransactionListener listener : listeners) {
-               listener.onPurgeTransactionSuccess(txIdsToDelete, transEventAndIds);
-            }
+      Response result = txEndpoint.purgeTxs(deleteTxs);
+      if (Status.OK.getStatusCode() == result.getStatus()) {
+         for (PurgeTransactionListener listener : listeners) {
+            listener.onPurgeTransactionSuccess(txIdsToDelete, transEventAndIds);
          }
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 }

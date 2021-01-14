@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
@@ -129,11 +128,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       SearchRequest params = new SearchRequest(branch, predicates, requestType, fromTx, includeDeleted);
       JaxRsWebTarget resource = client.target(searchUriBuilder.build(branch.getIdString()));
 
-      try {
-         return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
    }
 
    @Override

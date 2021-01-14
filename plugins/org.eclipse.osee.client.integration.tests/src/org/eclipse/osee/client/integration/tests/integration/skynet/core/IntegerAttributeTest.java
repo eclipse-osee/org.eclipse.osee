@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -92,10 +91,6 @@ public class IntegerAttributeTest {
       URI uri = UriBuilder.fromUri(appServer).path("orcs").path("branch").path(artifact.getBranch().getIdString()).path(
          "artifact").path(artifact.getIdString()).path("attribute").path(String.valueOf(attrId)).path("version").path(
             String.valueOf(transactionId)).path("text").build();
-      try {
-         return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
    }
 }

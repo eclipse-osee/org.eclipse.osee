@@ -16,8 +16,6 @@ package org.eclipse.osee.jaxrs.client;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -38,59 +36,6 @@ public final class JaxRsExceptions {
    public static boolean isErrorResponse(Response response) {
       String header = response.getHeaderString(JaxRsConstants.OSEE_ERROR_REPONSE_HEADER);
       return Boolean.valueOf(header);
-   }
-
-   public static OseeCoreException asOseeException(Throwable th) {
-      OseeCoreException toReturn;
-      if (th instanceof ResponseProcessingException) {
-         toReturn = asOseeException((ResponseProcessingException) th);
-      } else if (th instanceof WebApplicationException) {
-         toReturn = asOseeException((WebApplicationException) th);
-      } else if (th instanceof OseeCoreException) {
-         toReturn = (OseeCoreException) th;
-      } else {
-         toReturn = new OseeCoreException(th.getCause(), th.getLocalizedMessage());
-      }
-      return toReturn;
-   }
-
-   private static OseeCoreException asOseeException(ResponseProcessingException ex) {
-      Response response = ex.getResponse();
-      OseeCoreException toReturn;
-      if (response.hasEntity()) {
-         toReturn = asOseeException(response);
-      } else {
-         Throwable cause = ex.getCause();
-         String message = buildExceptionMessage(response.getStatus(), cause, ex.getMessage());
-         toReturn = new OseeCoreException(cause, message);
-      }
-      return toReturn;
-   }
-
-   private static OseeCoreException asOseeException(WebApplicationException ex) {
-      Response response = ex.getResponse();
-      OseeCoreException toReturn;
-      if (response.hasEntity()) {
-         toReturn = asOseeException(response);
-      } else {
-         Throwable cause = ex.getCause();
-         String message = buildExceptionMessage(response.getStatus(), cause, ex.getMessage());
-         toReturn = new OseeCoreException(cause, message);
-      }
-      return toReturn;
-   }
-
-   private static String buildExceptionMessage(int statusCode, Throwable cause, String exMessage) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("JAX-RS Client Exception caught - ").append(statusCode);
-      String message = cause == null ? exMessage : cause.getMessage();
-      if (message == null && cause != null) {
-         message = "exception cause class: " + cause.getClass().getName();
-      }
-      if (message != null) {
-         sb.append(", message: ").append(message);
-      }
-      return sb.toString();
    }
 
    public static OseeCoreException asOseeException(Response response) {
