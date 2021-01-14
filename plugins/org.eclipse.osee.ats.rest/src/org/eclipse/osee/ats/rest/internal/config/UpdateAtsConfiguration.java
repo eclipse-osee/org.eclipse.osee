@@ -44,9 +44,9 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Donald G. Dunne
  */
 public class UpdateAtsConfiguration {
-   private static final String VIEWS_KEY = "views";
+   public static final String VIEWS_KEY = "views";
    private static final String VIEWS_EQUAL_KEY = VIEWS_KEY + "=";
-   private static final String COLOR_COLUMN_KEY = "colorColumns";
+   public static final String COLOR_COLUMN_KEY = "colorColumns";
    public static final String VALID_STATE_NAMES_KEY = "validStateNames";
 
    private final AtsApi atsApi;
@@ -80,7 +80,7 @@ public class UpdateAtsConfiguration {
 
    private void createUpdateConfigAttributes(ArtifactReadable configArt, UserId userId, XResultData rd) {
       try {
-         AtsViews databaseViews = getConfigViews();
+         AtsViews databaseViews = atsApi.getConfigService().getConfigurations().getViews();
          for (String viewsJson : getViewsJsonStrings()) {
             AtsViews atsViews = JsonUtil.readValue(viewsJson, AtsViews.class);
             // merge any new default view items to current database view items
@@ -142,8 +142,7 @@ public class UpdateAtsConfiguration {
       atsApi.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
    }
 
-   public Collection<String> getValidStateNames() {
-      String stateNamesStr = atsApi.getConfigValue(VALID_STATE_NAMES_KEY);
+   public Collection<String> getValidStateNames(String stateNamesStr) {
       List<String> stateNames = new LinkedList<>();
       if (Strings.isValid(stateNamesStr)) {
          for (String stateName : stateNamesStr.split(",")) {
@@ -153,8 +152,7 @@ public class UpdateAtsConfiguration {
       return stateNames;
    }
 
-   public AtsViews getConfigViews() {
-      String viewsStr = atsApi.getConfigValue(VIEWS_KEY);
+   public AtsViews getConfigViews(String viewsStr) {
       AtsViews views = null;
       if (Strings.isValid(viewsStr)) {
          views = JsonUtil.readValue(viewsStr, AtsViews.class);
@@ -164,8 +162,7 @@ public class UpdateAtsConfiguration {
       return views;
    }
 
-   public ColorColumns getColorColumns() {
-      String colorStr = atsApi.getConfigValue(COLOR_COLUMN_KEY);
+   public ColorColumns getColorColumns(String colorStr) {
       ColorColumns columns = null;
       if (Strings.isValid(colorStr)) {
          columns = JsonUtil.readValue(colorStr, ColorColumns.class);

@@ -28,11 +28,16 @@ public class ElapsedTime {
    private boolean on = true;
 
    public ElapsedTime(String name) {
-      this(name, false);
+      this(name, true, true);
    }
 
-   public ElapsedTime(String name, boolean logStart) {
+   public ElapsedTime(String name, boolean on) {
+      this(name, true, on);
+   }
+
+   public ElapsedTime(String name, boolean logStart, boolean on) {
       this.logStart = logStart;
+      this.on = on;
       start(name);
    }
 
@@ -61,7 +66,7 @@ public class ElapsedTime {
    }
 
    public String end(Units units) {
-      return end(units, true);
+      return end(units, isOn());
    }
 
    public String end(Units units, boolean printToSysErr) {
@@ -79,10 +84,10 @@ public class ElapsedTime {
          time = time / 60000; // convert from milliseconds to minutes
          milliseconds = " ( " + timeSpent + " ms ) ";
       }
-      String str = String.format("%s- elapsed %d %s%s - start %s - end %s", name, time, units.name(), milliseconds,
+      String str = String.format("%s - elapsed %d %s%s - start %s - end %s\n", name, time, units.name(), milliseconds,
          DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
       if (printToSysErr) {
-         XConsoleLogger.err(str + (logStart ? "" : "\n"));
+         XConsoleLogger.err(str);
       }
       return str;
    }

@@ -41,6 +41,7 @@ public class AtsConfigurations {
    private Map<Long, AtsUser> idToUser = new HashMap<>();
    private Map<String, Long> userIdToUserArtId = new HashMap<>();
    private Map<String, Long> userNameToUserArtId = new HashMap<>();
+   private Map<String, String> atsConfig = new HashMap<>();
 
    public AtsViews getViews() {
       return views;
@@ -158,6 +159,23 @@ public class AtsConfigurations {
 
    public void setUserNameToUserArtId(Map<String, Long> userNameToUserArtId) {
       this.userNameToUserArtId = userNameToUserArtId;
+   }
+
+   public Map<String, String> getAtsConfig() {
+      return atsConfig;
+   }
+
+   public void setAtsConfig(Map<String, String> atsConfig) {
+      this.atsConfig = atsConfig;
+   }
+
+   public void addAtsConfig(String key, String value) {
+      this.atsConfig.put(key, value);
+   }
+
+   @JsonIgnore
+   public String getConfigValue(String key) {
+      return this.atsConfig.get(key);
    }
 
 }

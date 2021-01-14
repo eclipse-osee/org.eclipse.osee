@@ -564,4 +564,9 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       return getStoreService().createAtsChangeSet(comment, userService.getCurrentUser());
    }
 
+   @Override
+   public String getConfigValue(String key) {
+      return getConfigService().getConfigurations().getConfigValue(key);
+   }
+
 }

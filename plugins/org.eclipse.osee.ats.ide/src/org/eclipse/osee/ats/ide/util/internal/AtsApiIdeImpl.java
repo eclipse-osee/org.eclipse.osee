@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
@@ -66,12 +65,9 @@ import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -200,22 +196,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public void setNotifactionsEnabled(boolean enabled) {
       AtsUtilClient.setEmailEnabled(enabled);
-   }
-
-   @Override
-   public String getConfigValue(String key) {
-      String result = null;
-      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig);
-      if (atsConfig != null) {
-         for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
-            String str = (String) obj;
-            if (str.startsWith(key)) {
-               result = str.replaceFirst(key + "=", "");
-               break;
-            }
-         }
-      }
-      return result;
    }
 
    @Override

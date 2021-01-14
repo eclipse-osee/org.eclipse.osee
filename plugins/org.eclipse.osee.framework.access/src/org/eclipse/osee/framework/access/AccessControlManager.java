@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public final class AccessControlManager {
 
    public static final String DEBUG_BRANCH_ACCESS = "DebugBranchAccess";
+   private static Boolean isOseeAdmin = null;
 
    private AccessControlManager() {
       // Hide constructor
@@ -85,7 +86,10 @@ public final class AccessControlManager {
    }
 
    public static boolean isOseeAdmin() {
-      return UserGroupService.getOseeAdmin().isCurrentUserMember();
+      if (isOseeAdmin == null) {
+         isOseeAdmin = UserGroupService.getOseeAdmin().isCurrentUserMember();
+      }
+      return isOseeAdmin;
    }
 
    public static Collection<AccessControlData> getAccessControlList(Object object) {

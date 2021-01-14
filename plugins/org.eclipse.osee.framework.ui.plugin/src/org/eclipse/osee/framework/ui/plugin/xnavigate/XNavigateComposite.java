@@ -27,6 +27,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -199,11 +200,15 @@ public class XNavigateComposite extends Composite {
    }
 
    public void refresh() {
+      ElapsedTime time = new ElapsedTime("Navigate Items - load", false);
       final List<XNavigateItem> items = navigateViewItems.getSearchNavigateItems();
+      time.end();
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            ElapsedTime time = new ElapsedTime("Navigate Items - setInput", false);
             filteredTree.getViewer().setInput(items);
+            time.end();
          }
       });
    }

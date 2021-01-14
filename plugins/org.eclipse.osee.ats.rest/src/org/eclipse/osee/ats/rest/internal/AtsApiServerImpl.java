@@ -23,7 +23,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
@@ -54,7 +53,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -171,23 +169,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public Iterable<IAtsDatabaseConversion> getDatabaseConversions() {
       return externalConversions.values();
-   }
-
-   @Override
-   public String getConfigValue(String key) {
-      String result = null;
-      ArtifactToken atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
-      if (atsConfig != null) {
-         Collection<String> attributeValues =
-            getAttributeResolver().getAttributesToStringList(atsConfig, CoreAttributeTypes.GeneralStringData);
-         for (String str : attributeValues) {
-            if (str.startsWith(key)) {
-               result = str.replaceFirst(key + "=", "");
-               break;
-            }
-         }
-      }
-      return result;
    }
 
    @Override

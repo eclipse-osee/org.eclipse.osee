@@ -21,6 +21,8 @@ import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVer
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -44,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -108,57 +111,95 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       AtsConfigurations configs = new AtsConfigurations();
       Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
 
-      ElapsedTime time = new ElapsedTime("Server ACS - getAtsConfigurationsFromDb.loadTeamDefsOld", false);
-      time.off(); // Turn on to debug (change above to false so doesn't log begin)
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
-      for (ArtifactReadable art : query.andTypeEquals(TeamDefinition, ActionableItem, Version,
-         CoreArtifactTypes.User).getResults()) {
-         if (art.isOfType(TeamDefinition)) {
-            TeamDefinition teamDef = atsApi.getTeamDefinitionService().createTeamDefinition(art);
-            configs.addTeamDef(teamDef);
-            handleTeamDef(art, teamDef, idToArtifact, configs);
-            if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
-               configs.setTopTeamDefinition(ArtifactId.valueOf(art.getId()));
-            }
-            teamDef.setAtsApi(atsApi);
-            addExtraAttributes(teamDef, atsApi);
-         } else if (art.isOfType(ActionableItem)) {
-            ActionableItem ai = atsApi.getActionableItemService().createActionableItem(art);
-            configs.addAi(ai);
-            handleAi(art, ai, idToArtifact, configs);
-            if (AtsArtifactToken.TopActionableItem.equals(art)) {
-               configs.setTopActionableItem(ArtifactId.valueOf(art.getId()));
-            }
-            ai.setAtsApi(atsApi);
-            addExtraAttributes(ai, atsApi);
-         } else if (art.isOfType(Version)) {
-            Version version = atsApi.getVersionService().createVersion(art);
-            configs.addVersion(version);
-            handleVersion(art, version, idToArtifact, configs);
-            version.setAtsApi(atsApi);
-            addExtraAttributes(version, atsApi);
-         } else if (art.isOfType(CoreArtifactTypes.User)) {
-            AtsUser user = AtsUserServiceServerImpl.valueOf(art);
-            configs.addUser(user);
-            user.setAtsApi(atsApi);
-            addExtraAttributes(user, atsApi);
-         }
-         idToArtifact.put(art.getId(), art);
+      boolean debugOn = false; // Set to true to enable debugging
+      ElapsedTime time = new ElapsedTime("Server ACS - getAtsConfigurationsFromDb", debugOn);
+      if (!debugOn) {
+         time.off(); // Turn on to debug (change above to false so doesn't log begin)
       }
-      time.end();
 
-      time.start("Server ACS - getAtsConfigurationsFromDb.views/cols/states");
+      ElapsedTime time2 = new ElapsedTime("Server ACS - query", debugOn);
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
+      ResultSet<ArtifactReadable> results =
+         query.andTypeEquals(TeamDefinition, ActionableItem, Version, CoreArtifactTypes.User).getResults();
+      time2.end();
+
+      time2.start("Server ACS - process configs");
+      for (ArtifactReadable art : results) {
+         try {
+            if (art.isOfType(TeamDefinition)) {
+               TeamDefinition teamDef = atsApi.getTeamDefinitionService().createTeamDefinition(art);
+               configs.addTeamDef(teamDef);
+               handleTeamDef(art, teamDef, idToArtifact, configs);
+               if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
+                  configs.setTopTeamDefinition(ArtifactId.valueOf(art.getId()));
+               }
+               teamDef.setAtsApi(atsApi);
+               addExtraAttributes(teamDef, atsApi);
+            } else if (art.isOfType(ActionableItem)) {
+               ActionableItem ai = atsApi.getActionableItemService().createActionableItem(art);
+               configs.addAi(ai);
+               handleAi(art, ai, idToArtifact, configs);
+               if (AtsArtifactToken.TopActionableItem.equals(art)) {
+                  configs.setTopActionableItem(ArtifactId.valueOf(art.getId()));
+               }
+               ai.setAtsApi(atsApi);
+               addExtraAttributes(ai, atsApi);
+            } else if (art.isOfType(Version)) {
+               Version version = atsApi.getVersionService().createVersion(art);
+               configs.addVersion(version);
+               handleVersion(art, version, idToArtifact, configs);
+               version.setAtsApi(atsApi);
+               addExtraAttributes(version, atsApi);
+            } else if (art.isOfType(CoreArtifactTypes.User)) {
+               AtsUser user = AtsUserServiceServerImpl.valueOf(art);
+               configs.addUser(user);
+               user.setAtsApi(atsApi);
+               addExtraAttributes(user, atsApi);
+            }
+            idToArtifact.put(art.getId(), art);
+         } catch (Exception ex) {
+            System.err.println("Exception " + ex.getLocalizedMessage());
+         }
+      }
+      time2.end();
+
+      time2.start("Server ACS - setConfigValues");
+      Map<String, String> configValues = setConfigValues(configs);
+      time2.end();
+
+      time2.start("Server ACS - views/cols/states");
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
-      AtsViews views = update.getConfigViews();
+      AtsViews views = update.getConfigViews(configValues.get(UpdateAtsConfiguration.VIEWS_KEY));
       // load views
       configs.setViews(views);
       // load color column config
-      configs.setColorColumns(update.getColorColumns());
+      configs.setColorColumns(update.getColorColumns(configValues.get(UpdateAtsConfiguration.COLOR_COLUMN_KEY)));
       // load valid state names
-      configs.setValidStateNames(update.getValidStateNames());
+      configs.setValidStateNames(
+         update.getValidStateNames(configValues.get(UpdateAtsConfiguration.VALID_STATE_NAMES_KEY)));
+      time2.end();
+
       time.end();
 
       return configs;
+   }
+
+   Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)$");
+
+   private Map<String, String> setConfigValues(AtsConfigurations configs) {
+      ArtifactToken atsConfig = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
+      if (atsConfig != null) {
+         for (String keyValue : atsApi.getAttributeResolver().getAttributesToStringList(atsConfig,
+            CoreAttributeTypes.GeneralStringData)) {
+            Matcher m = keyValuePattern.matcher(keyValue);
+            if (m.find()) {
+               String key = m.group(1);
+               String value = m.group(2);
+               configs.addAtsConfig(key, value);
+            }
+         }
+      }
+      return configs.getAtsConfig();
    }
 
    /**
