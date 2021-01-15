@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.RecentlyVisitedNavigateItems;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -198,6 +199,7 @@ public class WfeReloadTab extends FormPage {
                   // do nothing
                }
 
+               final IAtsWorkItem fWorkItem = workItem;
                Displays.ensureInDisplayThread(new Runnable() {
 
                   @Override
@@ -206,6 +208,7 @@ public class WfeReloadTab extends FormPage {
                      editor.disposeTabs();
                      editor.loadPages();
                      editor.setPage(currentPage);
+                     RecentlyVisitedNavigateItems.addVisited(fWorkItem);
                   }
                });
             }

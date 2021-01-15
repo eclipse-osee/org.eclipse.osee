@@ -45,6 +45,7 @@ public class AtsBulkLoad {
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
                AtsApiService.get().clearCaches();
+               AtsApiService.get().getUserService().getCurrentUser();
                AtsApiService.get().getConfigService().getConfigurations();
             }
          };

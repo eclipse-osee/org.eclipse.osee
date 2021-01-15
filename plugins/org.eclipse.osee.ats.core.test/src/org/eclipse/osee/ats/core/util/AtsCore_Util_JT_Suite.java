@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsCoreServiceImplTest.class,
-   VisitedItemCacheTest.class,
+   RecentlyVisitedItemsTest.class,
    AtsObjectsTest.class,
    AtsUserGroupTest.class,
    HoursSpentUtilTest.class})

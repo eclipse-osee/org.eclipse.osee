@@ -102,17 +102,24 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public AtsUser getUserByLogin(String loginId) {
       AtsUser user = atsApi.getConfigService().getUserByLoginId(loginId);
+
+      // Load Saved Searches
       user.getSavedSearches().clear();
       // Always reload art to get latest sarches and user groups
       ArtifactToken userArt = atsApi.getQueryService().getArtifact(user.getStoreObject().getId());
       user.getSavedSearches().addAll(
          atsApi.getAttributeResolver().getAttributesToStringList(userArt, CoreAttributeTypes.AtsActionSearch));
+
+      // Load User Groups
       user.getUserGroups().clear();
       for (ArtifactToken userGroup : atsApi.getRelationResolver().getRelated(userArt,
          CoreRelationTypes.Users_Artifact)) {
          user.getUserGroups().add(userGroup);
       }
+
+      // Set Store Object
       user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
+
       return user;
    }
 

@@ -13,22 +13,35 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNavigateViewItemsOperation extends AbstractOperation {
 
-   public AtsNavigateViewItemsOperation() {
+   private final NavigateView navigateView;
+
+   public AtsNavigateViewItemsOperation(NavigateView navigateView) {
       super("Loading ATS Navigate View Items", Activator.PLUGIN_ID);
+      this.navigateView = navigateView;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      NavigateViewItems.getInstance().getSearchNavigateItems();
+      List<XNavigateItem> navigateItems = NavigateViewItems.getInstance().getSearchNavigateItems();
+      setRefresher(navigateItems);
+   }
+
+   private void setRefresher(List<XNavigateItem> navigateItems) {
+      for (XNavigateItem item : navigateItems) {
+         item.setRefresher(navigateView);
+         setRefresher(item.getChildren());
+      }
    }
 
 }

@@ -17,12 +17,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -78,7 +77,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          items.add(new XNavigateItemAction(parentItem, new OpenUsersInMassEditor("Open All Users", Active.Both),
             FrameworkImage.USER));
 
-         if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
+         if (AccessControlManager.isOseeAdmin()) {
             items.add(new XNavigateItemBlam(parentItem, new CreateNewUser(), FrameworkImage.ADD_GREEN));
             items.add(new XNavigateItemBlam(parentItem, new PopulateUserGroupBlam(), FrameworkImage.GROUP));
          }
@@ -99,8 +98,8 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
    @Override
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       try {
-         boolean admin = UserGroupService.getOseeAdmin().isCurrentUserMember();
-         if (UserGroupService.isInUserGrp(CoreUserGroups.Everyone) || admin) {
+         boolean admin = AccessControlManager.isOseeAdmin();
+         if (admin) {
             XNavigateItem reviewItem = new XNavigateItem(null, "User Management", FrameworkImage.USER);
             addOseeUserSectionChildren(reviewItem);
             items.add(reviewItem);

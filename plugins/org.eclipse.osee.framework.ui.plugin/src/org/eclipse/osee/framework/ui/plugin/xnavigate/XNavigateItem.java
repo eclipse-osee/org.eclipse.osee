@@ -34,6 +34,7 @@ public class XNavigateItem {
    private List<IXNavigateMenuItem> menuItems;
    private Object data;
    private long id = 0L;
+   protected INavigateItemRefresher refresher;
 
    public XNavigateItem(XNavigateItem parent, String name, KeyedImage oseeImage) {
       this.parent = parent;
@@ -56,10 +57,6 @@ public class XNavigateItem {
 
    public List<XNavigateItem> getChildren() {
       return children;
-   }
-
-   public List<XNavigateItem> getDynamicChildren() {
-      return Collections.emptyList();
    }
 
    public String getName() {
@@ -143,4 +140,18 @@ public class XNavigateItem {
    public void setId(long id) {
       this.id = id;
    }
+
+   /**
+    * Will be called on refresh of Navigator and on clear of filter box. This gives late-loading NavigateItems the
+    * chance to refresh once visible. If filtered on start-up and then filter removed, all items will receive refresh
+    * call. XNavigateItem should refresh in background and then call refresher once completed.
+    */
+   public void refresh() {
+      // do nothing
+   }
+
+   public void setRefresher(INavigateItemRefresher refresher) {
+      this.refresher = refresher;
+   }
+
 }

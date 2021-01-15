@@ -87,6 +87,7 @@ import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -121,6 +122,7 @@ import org.osgi.framework.Bundle;
 public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
    private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private boolean ensurePopulatedRanOnce = false;
+   private boolean debug = false;
 
    private final static NavigateViewItems instance = new NavigateViewItems();
 
@@ -130,12 +132,16 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
+      debug = XNavigateCommonItems.debug;
+      ElapsedTime time = new ElapsedTime("NavigateViewItems", debug);
       ensurePopulated();
+      time.end();
       return items;
    }
 
    @Override
    public void addUtilItems(XNavigateItem utilItems) {
+      ElapsedTime time = new ElapsedTime("NVI - addUtilItems", debug);
       try {
          new ToggleAtsAdmin(utilItems);
          new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
@@ -150,6 +156,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+      time.end();
    }
 
    private synchronized void ensurePopulated() {
@@ -160,30 +167,53 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          this.ensurePopulatedRanOnce = true;
 
          addAtsSectionChildren(null);
+
+         ElapsedTime time = new ElapsedTime("NVI - addCommonNavigateItems", debug);
          XNavigateCommonItems.addCommonNavigateItems(items, Arrays.asList(getSectionId()));
+         time.end();
       }
    }
 
    public void addAtsSectionChildren(XNavigateItem item) {
+      ElapsedTime time = new ElapsedTime("NVI - addAtsSectionChildren", debug);
       try {
 
+         ElapsedTime time2 = new ElapsedTime("NVI - addAtsSectionChildren - My World", debug);
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", true)));
-         items.add(new RecentlyVisitedNavigateItems(item));
-         items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
+         time2.end();
 
-         items.add(new SavedSearchesNavigateItem(item));
+         time2.start("NVI - addAtsSectionChildren - Recently Visited");
+         items.add(new RecentlyVisitedNavigateItems(item));
+         time2.end();
+
+         time2.start("NVI - addAtsSectionChildren - Search");
+         items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
+         time2.end();
+
+         time2.start("NVI - addAtsSectionChildren - Saved Srch");
+         items.add(new SavedActionSearchNavigateItem(item));
+         time2.end();
 
          createAdvancedSearchesSection(item, items, null);
 
          createOpenViewsSection(item, items);
-         items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
 
-         if (AgileUtil.isAgileUser(AtsApiService.get())) {
+         time2.start("NVI - addAtsSectionChildren - NewAction");
+         items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
+         time2.end();
+
+         time2.start("NVI - addAtsSectionChildren - agileUser");
+         boolean agileUser = AgileUtil.isAgileUser(AtsApiService.get());
+         time2.end();
+         if (agileUser) {
             createAgileSection(item, items);
          }
+
+         time2.start("NVI - addAtsSectionChildren - EV Items");
          if (AgileUtil.isEarnedValueUser(AtsApiService.get())) {
             EvNavigateItems.createSection(item, items);
          }
+         time2.end();
 
          addExtensionPointItems(item, items);
 
@@ -200,9 +230,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+      time.end();
    }
 
    private void createAdvancedSearchesSection(XNavigateItem parent, List<XNavigateItem> items, AtsUser user) {
+      ElapsedTime time = new ElapsedTime("NVI - advSearch", debug);
       XNavigateItem advancedSearchesItems = new XNavigateItemFolder(parent, "Advanced Searches");
       new SearchNavigateItem(advancedSearchesItems, new MyFavoritesSearchItem("My Favorites", null));
       new SearchNavigateItem(advancedSearchesItems, new MySubscribedSearchItem("My Subscribed", null));
@@ -229,17 +261,21 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       new XNavigateItemOperation(advancedSearchesItems, AtsImage.GLOBE, "Action Quick Search",
          new AtsQuickSearchOperationFactory());
       items.add(advancedSearchesItems);
+      time.end();
    }
 
    private void createOpenViewsSection(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - openViews", debug);
       XNavigateItem openViewsItems = new XNavigateItemFolder(parent, "Open Views");
       new XNavigateItemAction(openViewsItems, new OpenArtifactExplorerViewAction(), FrameworkImage.ARTIFACT_EXPLORER);
       new XNavigateItemAction(openViewsItems, new OpenArtifactQuickSearchViewAction(), FrameworkImage.ARTIFACT_SEARCH);
       new XNavigateItemAction(openViewsItems, new OpenBranchManagerAction(), FrameworkImage.BRANCH);
       items.add(openViewsItems);
+      time.end();
    }
 
    private void createAdminItems(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - admin", debug);
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
          createWorkDefinitionsSection(parent, items);
          createExampleItems(parent, items);
@@ -288,9 +324,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
          items.add(adminItems);
       }
+      time.end();
    }
 
    private void createEmailItems(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - email", debug);
       XNavigateItem emailItems = new XNavigateItem(parent, "Email & Notifications", FrameworkImage.EMAIL);
       new EmailTeamsItem(emailItems, null, MemberType.Both);
       new EmailTeamsItem(emailItems, null, MemberType.Leads);
@@ -300,19 +338,25 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       new SubscribeByTeamDefinition(emailItems);
       new XNavigateItemBlam(emailItems, new EmailActionsBlam(), FrameworkImage.EMAIL);
       items.add(emailItems);
+      time.end();
    }
 
    private void createReportItems(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - report", debug);
       XNavigateItem reportItems = new XNavigateItem(parent, "Reports", AtsImage.REPORT);
       new FirstTimeQualityMetricReportItem(reportItems);
+      time.end();
    }
 
    private void createGoalItems(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - goal", debug);
       XNavigateItem goalItems = new XNavigateItem(parent, "Goals", AtsImage.REPORT);
       items.add(new XNavigateItemAction(goalItems, new NewGoal(), AtsImage.GOAL));
+      time.end();
    }
 
    private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - example", debug);
       if (AtsApiService.get().getUserService().isUserMember(
          CoreUserGroups.OseeAdmin) || AtsApiService.get().getUserService().isUserMember(CoreUserGroups.Everyone)) {
          XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
@@ -331,9 +375,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new XNavigateItemAction(exampleItems, new XWidgetsDialogExampleAction(), FrameworkImage.GEAR);
          items.add(exampleItems);
       }
+      time.end();
    }
 
    private void createWorkDefinitionsSection(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - workDef", debug);
       try {
          XNavigateItem workDefItems = new XNavigateItem(parent, "Work Definition", FrameworkImage.VERSION);
          new WorkDefinitionViewer(workDefItems);
@@ -342,9 +388,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
+      time.end();
    }
 
    private void createVersionsSection(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - version", debug);
       try {
          XNavigateItem releaseItems = new XNavigateItem(parent, "Versions", FrameworkImage.VERSION);
          new ParallelConfigurationView(releaseItems);
@@ -365,9 +413,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
+      time.end();
    }
 
    private void createAgileSection(XNavigateItem parent, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - agile section", debug);
       try {
          XNavigateItem agileItems = new XNavigateItem(parent, "Agile", FrameworkImage.VERSION);
          new OpenAgileBacklog(agileItems);
@@ -391,9 +441,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Agile section");
       }
+      time.end();
    }
 
    private void addExtensionPointItems(XNavigateItem parentItem, List<XNavigateItem> items) {
+      ElapsedTime time = new ElapsedTime("NVI - extPts", debug);
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsNavigateItem");
       if (point == null) {
@@ -428,6 +480,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          }
       }
       items.addAll(nameToNavItem.values());
+      time.end();
    }
 
    private static final class MultipleIdSearchOperationFactory implements IOperationFactory {

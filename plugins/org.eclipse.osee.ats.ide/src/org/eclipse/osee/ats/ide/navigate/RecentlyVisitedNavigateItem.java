@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +37,8 @@ public class RecentlyVisitedNavigateItem extends XNavigateItemAction {
 
    public RecentlyVisitedNavigateItem(XNavigateItem parent, RecentlyVisistedItem item) {
       super(parent, item.getIdToken().getName(), FrameworkImage.OPEN);
-      ArtifactTypeToken artifactType = item.getArtifactType();
+      ArtifactTypeId artifactTypeId = item.getArtifactTypeId();
+      ArtifactTypeToken artifactType = AtsApiService.get().tokenService().getArtifactType(artifactTypeId.getId());
       if (artifactType != null && artifactType.isValid()) {
          oseeImage = ArtifactImageManager.getArtifactTypeImage(artifactType);
       }

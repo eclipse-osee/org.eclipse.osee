@@ -25,13 +25,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.actions.MyFavoritesAction;
 import org.eclipse.osee.ats.ide.actions.MyWorldAction;
 import org.eclipse.osee.ats.ide.actions.NewAction;
-import org.eclipse.osee.ats.ide.actions.NewGoal;
 import org.eclipse.osee.ats.ide.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.actions.OpenWorldByIdAction;
@@ -39,16 +37,14 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.event.EventType;
-import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.WorkbenchTargetProvider;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.INavigateItemRefresher;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -59,18 +55,18 @@ import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.FrameworkEvents;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -80,7 +76,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class NavigateView extends ViewPart implements IXNavigateEventListener, IRefreshActionHandler {
+public class NavigateView extends ViewPart implements IXNavigateEventListener, IRefreshActionHandler, INavigateItemRefresher {
 
    public static final String VIEW_ID = "org.eclipse.osee.navigate.NavigateView";
    private static final String INPUT = "filter";
@@ -94,6 +90,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    @Override
    public void createPartControl(Composite parent) {
+      // Start loading current user and user groups for improved performance
+      AtsApiService.get().getUserService().getCurrentUser();
+      UserGroupService.getUserGrps();
       this.parent = parent;
       NavigateView.navView = this;
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
@@ -104,7 +103,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    public void refreshData() {
       OperationBuilder builder = Operations.createBuilder("Load OSEE Navigator");
-      builder.addOp(new AtsNavigateViewItemsOperation());
+      builder.addOp(new AtsNavigateViewItemsOperation(this));
       Operations.executeAsJob(builder.build(), false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
@@ -167,12 +166,18 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                         OseeStatusContributionItemFactory.addTo(navView, false);
                         addExtensionPointListenerBecauseOfWorkspaceLoading();
 
-                        // Notify listeners that Navigator is loaded
-                        TopicEvent event = new TopicEvent(FrameworkEvents.NAVIGATE_VIEW_LOADED, "", "",
-                           TransactionToken.SENTINEL, EventType.LocalOnly);
-                        OseeEventManager.kickTopicEvent(NavigateView.class, event);
+                        xNavComp.getFilteredTree().getFilterControl().addModifyListener(new ModifyListener() {
 
+                           @Override
+                           public void modifyText(ModifyEvent e) {
+                              String filterText = xNavComp.getFilteredTree().getFilterControl().getText();
+                              if (Strings.isInValid(filterText)) {
+                                 refreshItems();
+                              }
+                           }
+                        });
                      }
+
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -274,12 +279,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
       toolbarManager.add(new OpenWorkflowByIdAction());
       toolbarManager.add(new NewAction());
       getViewSite().getActionBars().updateActionBars();
-
-      IActionBars bars = getViewSite().getActionBars();
-      IMenuManager mm = bars.getMenuManager();
-      mm.add(new NewAction());
-      mm.add(new NewGoal());
-
       toolbarManager.update(true);
    }
 
@@ -351,13 +350,41 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
       return null;
    }
 
+   /**
+    * Calls refresh on all XNavigateItem(s)
+    */
+   public void refreshItems() {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            for (TreeItem treeItem : xNavComp.getFilteredTree().getViewer().getTree().getItems()) {
+               XNavigateItem treeNavItem = (XNavigateItem) treeItem.getData();
+               refreshItem(treeNavItem);
+            }
+         }
+      });
+   }
+
+   public void refreshItem(XNavigateItem item) {
+      item.refresh();
+      for (XNavigateItem child : item.getChildren()) {
+         refreshItem(child);
+      }
+   }
+
    @Override
    public void refreshActionHandler() {
       refreshData();
+      refreshItems();
    }
 
    public static boolean isAccessible() {
       return navView != null && Widgets.isAccessible(navView.parent);
+   }
+
+   public AtsNavigateComposite getxNavComp() {
+      return xNavComp;
    }
 
 }

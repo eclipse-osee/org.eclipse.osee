@@ -17,15 +17,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.event.EventType;
-import org.eclipse.osee.framework.core.event.TopicEvent;
+import org.eclipse.osee.ats.ide.navigate.SavedActionSearchNavigateItem;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -54,7 +50,7 @@ public final class SaveAsSearchAction extends Action {
 
    @Override
    public void run() {
-      AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
+      AtsUser asUser = AtsApiService.get().getConfigService().getCurrentUserByLoginId();
       EntryDialog dialog = new EntryDialog("Save Search As", "Save Search?\n\nSearch Name");
       if (dialog.open() == 0) {
          if (!Strings.isValid(dialog.getEntry())) {
@@ -73,11 +69,9 @@ public final class SaveAsSearchAction extends Action {
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "New Search Name");
-         TransactionId transaction = AtsApiService.get().getQueryService().saveSearch(asUser, data);
+         AtsApiService.get().getQueryService().saveSearch(asUser, data);
 
-         TopicEvent event =
-            new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", transaction, EventType.LocalOnly);
-         OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
+         SavedActionSearchNavigateItem.refreshItems();
 
          AWorkbench.popupf("Search Saved as [%s]", data.getSearchName());
       }

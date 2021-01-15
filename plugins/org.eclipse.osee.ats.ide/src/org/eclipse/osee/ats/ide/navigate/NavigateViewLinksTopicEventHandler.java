@@ -15,8 +15,7 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.links.LinksNavigateViewItems;
+import org.eclipse.osee.framework.ui.skynet.links.LinksNavigateViewItem;
 import org.eclipse.osee.framework.ui.skynet.util.FrameworkEvents;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.osgi.service.event.Event;
@@ -40,9 +39,7 @@ public class NavigateViewLinksTopicEventHandler implements EventHandler {
             @Override
             public void run() {
                if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
-                  XNavigateItem linkItem = NavigateView.getNavigateView().getItem(TOP_LINK_ID, true);
-                  LinksNavigateViewItems.reloadLinks(linkItem);
-                  NavigateView.getNavigateView().refresh(linkItem);
+                  LinksNavigateViewItem.clearAndReload();
                }
             }
          });

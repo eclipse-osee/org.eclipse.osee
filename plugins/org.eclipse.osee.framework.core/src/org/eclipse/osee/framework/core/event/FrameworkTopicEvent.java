@@ -21,7 +21,11 @@ public class FrameworkTopicEvent extends AbstractTopicEvent {
 
    public static Map<String, FrameworkTopicEvent> idToEvent = new HashMap<String, FrameworkTopicEvent>();
 
+   public static final FrameworkTopicEvent LINK_MODIFIED =
+      new FrameworkTopicEvent(EventType.LocalAndRemote, "osee/link/modified");
+
    public static final String TRANSACTION_ID = "transactionId";
+   public static final String NAVIGATOR_ID = "navigatorItemId";
 
    private FrameworkTopicEvent(EventType eventType, String topic) {
       super(eventType, TransactionToken.SENTINEL, topic);

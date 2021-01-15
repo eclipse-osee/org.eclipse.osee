@@ -37,7 +37,6 @@ public class XNavigateContentProvider implements ITreeContentProvider {
       }
       if (parentElement instanceof XNavigateItem) {
          List<XNavigateItem> items = new ArrayList<>();
-         items.addAll(((XNavigateItem) parentElement).getDynamicChildren());
          items.addAll(((XNavigateItem) parentElement).getChildren());
          return items.toArray(new Object[items.size()]);
       }

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -43,33 +44,37 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
 
    private static RecentlyVisitedItems visitedItems;
    private static String RECENTLY_VISITED_TOKENS = "recentlyVisitedTokens";
-   private static RecentlyVisitedNavigateItems navigateItem;
+   private static RecentlyVisitedNavigateItems topNavigateItem;
 
    public RecentlyVisitedNavigateItems(XNavigateItem parent) {
       super(parent, "Recently Visited Workflows", AtsImage.GLOBE);
-      navigateItem = this;
+      topNavigateItem = this;
       PlatformUI.getWorkbench().addWorkbenchListener(this);
-      refreshChildren();
+      refresh();
    }
 
-   private static void refreshChildren() {
-      if (navigateItem != null) {
-         Thread refresh = new Thread(navigateItem.getClass().getSimpleName()) {
+   @Override
+   public void refresh() {
+      // Only load once, even if refresh is called cause we cache current visited
+      if (topNavigateItem != null) {
+         Thread refresh = new Thread(topNavigateItem.getClass().getSimpleName()) {
             @Override
             public void run() {
                super.run();
-               ensureLoaded();
-               navigateItem.getChildren().clear();
+               ensureFirstLoad();
+               topNavigateItem.getChildren().clear();
                for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
-                  new RecentlyVisitedNavigateItem(navigateItem, item);
+                  new RecentlyVisitedNavigateItem(topNavigateItem, item);
                }
-               Displays.ensureInDisplayThread(new Runnable() {
+               if (refresher != null) {
+                  Displays.ensureInDisplayThread(new Runnable() {
 
-                  @Override
-                  public void run() {
-                     NavigateView.getNavigateView().refresh(navigateItem);
-                  }
-               });
+                     @Override
+                     public void run() {
+                        refresher.refresh(topNavigateItem);
+                     }
+                  });
+               }
             }
          };
          refresh.start();
@@ -78,7 +83,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      ensureLoaded();
+      ensureFirstLoad();
       List<ArtifactToken> workItems = new ArrayList<>();
       for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
          IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(item.getIdToken());
@@ -90,18 +95,20 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    }
 
    public static void clearVisited() {
-      ensureLoaded();
+      ensureFirstLoad();
       visitedItems.clearVisited();
-      refreshChildren();
+      topNavigateItem.refresh();
    }
 
    public static void addVisited(IAtsWorkItem workItem) {
-      ensureLoaded();
+      ensureFirstLoad();
       visitedItems.addVisited(workItem);
-      refreshChildren();
+      if (topNavigateItem != null) {
+         topNavigateItem.refresh();
+      }
    }
 
-   private static void ensureLoaded() {
+   private static void ensureFirstLoad() {
       if (visitedItems == null) {
          try {
             String recentlyVisistedTokensJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
@@ -113,15 +120,15 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
             }
          } catch (Exception ex) {
             AtsApiService.get().getLogger().error(
-               "Unable to read visited items from Ats Config attribute on user artifact %s",
-               AtsApiService.get().getUserService().getCurrentUser());
+               "Unable to read visited items from Ats Config attribute on user artifact %s; Exception %s",
+               AtsApiService.get().getUserService().getCurrentUser(), Lib.exceptionToString(ex));
             visitedItems = new RecentlyVisitedItems();
          }
       }
    }
 
    public static List<RecentlyVisistedItem> getReverseItems() {
-      ensureLoaded();
+      ensureFirstLoad();
       return visitedItems.getReverseVisited();
    }
 

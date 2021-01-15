@@ -23,11 +23,13 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -89,7 +91,11 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       Map<String, XNavigateItem> nameToParent = new HashMap<>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
+
+      ElapsedTime time = new ElapsedTime("NVI - BLAM loadUserGroups", XNavigateCommonItems.debug);
       Collection<IUserGroupArtifactToken> userGroups = UserGroupService.getUserGrps();
+      time.end();
+
       for (AbstractBlam blamOperation : getBlamOperations()) {
          if (!blamOperation.showBlam()) {
             continue;

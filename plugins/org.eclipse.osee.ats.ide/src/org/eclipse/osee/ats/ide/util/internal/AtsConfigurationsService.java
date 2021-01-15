@@ -113,4 +113,9 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return atsConfigurations != null;
    }
 
+   @Override
+   public AtsUser getCurrentUserByLoginId() {
+      return getUserByLoginId(System.getProperty("user.name"));
+   }
+
 }

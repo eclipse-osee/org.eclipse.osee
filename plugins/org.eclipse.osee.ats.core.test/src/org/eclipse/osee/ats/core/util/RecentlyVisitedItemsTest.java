@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Donald G. Dunne
  */
-public class VisitedItemCacheTest {
+public class RecentlyVisitedItemsTest {
 
    // @formatter:off
    @Mock private IAtsWorkItem workItem1, workItem2, workItem3;

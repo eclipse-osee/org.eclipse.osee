@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class UserGroupService implements IUserGroupService {
 
    private static UserGroupService userGroupService;
+   private static List<IUserGroupArtifactToken> userGrps;
 
    public static IUserGroupService instance() {
       return userGroupService;
@@ -77,9 +78,11 @@ public class UserGroupService implements IUserGroupService {
    }
 
    public static Collection<IUserGroupArtifactToken> getUserGrps() {
-      List<IUserGroupArtifactToken> userGrps = new ArrayList<>();
-      for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-         userGrps.add(new UserGroupImpl(userGrp));
+      if (userGrps == null) {
+         userGrps = new ArrayList<>();
+         for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+            userGrps.add(new UserGroupImpl(userGrp));
+         }
       }
       return userGrps;
    }

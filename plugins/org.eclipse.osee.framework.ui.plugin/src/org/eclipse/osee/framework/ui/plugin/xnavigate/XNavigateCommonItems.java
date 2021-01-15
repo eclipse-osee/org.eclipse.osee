@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -30,12 +31,15 @@ import org.osgi.framework.Bundle;
 public class XNavigateCommonItems {
 
    private static Set<IXNavigateCommonItem> items;
+   public static final boolean debug = false;
 
    public static void addCommonNavigateItems(List<XNavigateItem> items, List<String> excludeSectionIds) {
       try {
          for (IXNavigateCommonItem item : getProviders()) {
             if (!excludeSectionIds.contains(item.getSectionId())) {
+               ElapsedTime time = new ElapsedTime("NVI - " + item.getClass().getSimpleName(), debug);
                item.createCommonSection(items, excludeSectionIds);
+               time.end();
             }
          }
       } catch (Exception ex) {

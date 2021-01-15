@@ -18,12 +18,8 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.event.EventType;
-import org.eclipse.osee.framework.core.event.TopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.ats.ide.navigate.SavedActionSearchNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -50,7 +46,7 @@ public final class DeleteSearchAction extends Action {
    @Override
    public void run() {
       List<AtsSearchData> searchDatas = AtsApiService.get().getQueryService().getSavedSearches(
-         AtsApiService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
+         AtsApiService.get().getConfigService().getCurrentUserByLoginId(), searchItem.getNamespace());
       Collections.sort(searchDatas, new QuickSearchDataComparator());
       FilteredTreeDialog dialog = new FilteredTreeDialog("Delete Saved Search", "Select Search to Delete",
          new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -58,12 +54,10 @@ public final class DeleteSearchAction extends Action {
 
       if (dialog.open() == 0) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
-         TransactionId transaction = AtsApiService.get().getQueryService().removeSearch(
-            AtsApiService.get().getUserService().getCurrentUser(), selected);
+         AtsApiService.get().getQueryService().removeSearch(AtsApiService.get().getUserService().getCurrentUser(),
+            selected);
 
-         TopicEvent event =
-            new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", transaction, EventType.LocalOnly);
-         OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
+         SavedActionSearchNavigateItem.refreshItems();
 
          AWorkbench.popup("Search Deleted");
       }

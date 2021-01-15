@@ -324,4 +324,9 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return user;
    }
 
+   @Override
+   public AtsUser getCurrentUserByLoginId() {
+      throw new UnsupportedOperationException("Not supported on the server");
+   }
+
 }
