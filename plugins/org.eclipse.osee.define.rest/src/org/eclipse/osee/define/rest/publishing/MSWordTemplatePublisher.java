@@ -92,6 +92,8 @@ public class MSWordTemplatePublisher {
    protected static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
    protected static final String INSERT_LINK = "INSERT_LINK_HERE";
    protected static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
+   protected static final String FONT = "Times New Roman";
+   protected static final String LANDSCAPE = "Landscape";
 
    //Patterns
    protected static final Pattern headElementsPattern =
@@ -834,11 +836,10 @@ public class MSWordTemplatePublisher {
          return;
       }
 
-      List<Object> attributes = artifact.getAttributeValues(attributeType);
       if (attributeType.equals(WordTemplateContent)) {
          renderWordTemplateContent(attributeType, artifact, presentationType, wordMl, attributeElement.getFormat(),
             attributeElement.getLabel());
-      } else if (!attributes.isEmpty()) {
+      } else if (artifact.isAttributeTypeValid(attributeType)) {
          renderSpecifiedAttribute(attributeType, artifact, presentationType, wordMl, attributeElement.getFormat(),
             attributeElement.getLabel());
       }
