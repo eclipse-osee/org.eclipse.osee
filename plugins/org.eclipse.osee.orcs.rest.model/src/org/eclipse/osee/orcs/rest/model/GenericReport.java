@@ -23,7 +23,11 @@ public interface GenericReport {
 
    public GenericReport level(String levelName, QueryBuilder addedQuery);
 
-   public GenericReport column(String columnName);
+   public GenericReport level(String levelName, String typeName);
+
+   public GenericReport column(String columName);
+
+   public GenericReport column(String columnName, String typeName);
 
    public GenericReport column(String columnName, AttributeTypeToken type);
 

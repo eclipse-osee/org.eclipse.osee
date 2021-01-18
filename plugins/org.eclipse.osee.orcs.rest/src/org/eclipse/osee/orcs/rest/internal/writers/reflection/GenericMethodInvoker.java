@@ -74,6 +74,7 @@ public class GenericMethodInvoker<T> {
 
                      } else {
                         argsMatch = false;
+                        arguments.clear();
                         break;
                      }
                   }

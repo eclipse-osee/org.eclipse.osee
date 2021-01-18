@@ -64,8 +64,28 @@ public class GenericReportBuilder implements GenericReport {
    }
 
    @Override
+   public GenericReport level(String levelName, String typeName) {
+      int depth = 0;
+      if (currentLevel != null) {
+         depth = currentLevel.getDepth() + 1;
+      }
+      currentLevel = new ReportLevel(levelName);
+      currentLevel.setDepth(depth);
+      reportLevels.add(currentLevel);
+      query = query.andIsOfType(orcsApi.tokenService().getArtifactType(typeName));
+      return this;
+   }
+
+   @Override
    public GenericReport column(String columnName) {
       currentLevel.column(columnName);
+      return this;
+   }
+
+   @Override
+   public GenericReport column(String columnName, String typeName) {
+      AttributeTypeToken type = orcsApi.tokenService().getAttributeType(typeName);
+      currentLevel.column(columnName, type);
       return this;
    }
 

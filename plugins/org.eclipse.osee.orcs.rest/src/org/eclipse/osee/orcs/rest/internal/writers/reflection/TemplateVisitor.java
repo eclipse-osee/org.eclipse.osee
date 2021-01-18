@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.internal.writers.reflection;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
 /**
@@ -23,13 +24,23 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
  */
 public class TemplateVisitor extends ASTVisitor {
    List<MethodInvocation> methods = new ArrayList<>();
+   List<ImportDeclaration> imports = new ArrayList<>();
 
    public List<MethodInvocation> getInvocations() {
       return methods;
    }
 
+   public List<ImportDeclaration> getImports() {
+      return imports;
+   }
+
    @Override
    public boolean visit(MethodInvocation node) {
       return methods.add(node);
+   }
+
+   @Override
+   public boolean visit(ImportDeclaration node) {
+      return imports.add(node);
    }
 }

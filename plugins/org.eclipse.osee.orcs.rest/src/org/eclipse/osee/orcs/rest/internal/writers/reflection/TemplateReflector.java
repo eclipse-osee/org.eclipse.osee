@@ -28,9 +28,6 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.rest.model.GenericReport;
@@ -43,6 +40,7 @@ public class TemplateReflector {
    Stack<GenericMethodInvoker<GenericReport>> realMethods = new Stack<>();
    private final GenericReport report;
    private final XResultData results;
+   private final ArrayList<Class<?>> allowedReflectors = new ArrayList<>();
 
    public TemplateReflector(GenericReport report, XResultData results) {
       this.report = report;
@@ -114,10 +112,14 @@ public class TemplateReflector {
       return toReturn;
    }
 
+   public void setAllowedReflectionClass(Class<?> clazz) {
+      allowedReflectors.add(clazz);
+   }
+
    private Object getArgumentFromQualifiedName(QualifiedName qname) {
-      Object o = null;
       String qualifier = qname.getQualifier().toString();
       String name = qname.getName().toString();
+
       try {
          Class<?> clazz = getClassFromWhiteList(qualifier);
          Field field = clazz.getDeclaredField(name);
@@ -125,18 +127,15 @@ public class TemplateReflector {
       } catch (Exception ex) {
          results.errorf("Failed to get argument for %s, full error: %s", qname, ex.toString());
       }
-      return o;
+      return null;
    }
 
    private Class<?> getClassFromWhiteList(String className) {
       Class<?> toReturn = null;
-
-      if (CoreArtifactTypes.class.getName().endsWith(className)) {
-         toReturn = CoreArtifactTypes.class;
-      } else if (CoreAttributeTypes.class.getName().endsWith(className)) {
-         toReturn = CoreAttributeTypes.class;
-      } else if (CoreRelationTypes.class.getName().endsWith(className)) {
-         toReturn = CoreRelationTypes.class;
+      for (Class<?> clazz : allowedReflectors) {
+         if (clazz.getName().endsWith(className)) {
+            toReturn = clazz;
+         }
       }
       return toReturn;
    }
