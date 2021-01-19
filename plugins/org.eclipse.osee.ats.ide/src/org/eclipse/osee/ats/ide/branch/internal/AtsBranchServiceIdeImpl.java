@@ -520,6 +520,13 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
          @Override
          public IStatus run(IProgressMonitor monitor) {
+            XResultData rd = new XResultData();
+            for (IAtsWorkItemHook item : atsApi.getWorkItemService().getWorkItemHooks()) {
+               rd = item.creatingBranch(teamWf, rd);
+            }
+            if (rd.isErrors()) {
+               throw new OseeCoreException("Can not create branch.  Reason: [%s]", rd.toString());
+            }
             atsApi.getBranchService().setWorkingBranchCreationInProgress(teamWf, true);
             BranchToken branch = BranchManager.createWorkingBranch(parentTransactionId, branchName,
                atsApi.getQueryService().getArtifact(teamWf));

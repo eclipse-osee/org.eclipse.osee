@@ -29,7 +29,15 @@ public interface IAtsWorkItemHook {
     * Called before commit for other applications/extensions to do checks and provide status. Result.False will stop the
     * commit.
     */
-   default public XResultData committing(IAtsTeamWorkflow workItem, XResultData rd) {
+   default public XResultData committing(IAtsTeamWorkflow teamWf, XResultData rd) {
+      return rd;
+   }
+
+   default public XResultData creatingBranch(IAtsTeamWorkflow teamWf, XResultData rd) {
+      return rd;
+   }
+
+   default public XResultData postBranchCreation(IAtsTeamWorkflow teamWf, XResultData rd) {
       return rd;
    }
 
