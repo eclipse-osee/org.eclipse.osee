@@ -41,11 +41,6 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
    }
 
    @Override
-   public Collection<String> getColorTeams() {
-      throw new UnsupportedOperationException("operation not supported on server");
-   }
-
-   @Override
    public double getEstimatedHoursFromTasks(IAtsWorkItem workItem, IStateToken relatedToState) {
       return 0;
    }

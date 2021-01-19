@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -73,7 +72,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Collection<Long> aiIds;
    protected Long versionId;
    protected String stateName;
-   protected String colorTeam;
    protected Long programId;
    protected Long insertionId;
    protected Long insertionActivityId;
@@ -418,8 +416,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    private void addEvConfigCriteria() {
-      addColorTeamCriteria();
-
       addWorkPackageCriteria();
 
       addInsertionActivityCriteria();
@@ -435,10 +431,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    protected boolean isInsertionSpecified() {
       return insertionId != null && insertionId > 0;
-   }
-
-   protected boolean isColorTeamSpecified() {
-      return Strings.isValid(colorTeam);
    }
 
    protected boolean isVersionSpecified() {
@@ -765,12 +757,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return this;
    }
 
-   @Override
-   public IAtsQuery andColorTeam(String colorTeam) {
-      this.colorTeam = colorTeam;
-      return this;
-   }
-
    private void getBaseSearchCriteria(Collection<ArtifactTypeToken> artTypes, boolean withIds, Set<ArtifactTypeToken> allArtTypes) {
       createQueryBuilder();
 
@@ -792,33 +778,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    public abstract void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes);
 
-   /**
-    * Color Team is handled through workpackage, insertion, activity and program if specified. Otherwise, use color team
-    * to find all workpackages and add those as work package criteria.
-    */
-   private void addColorTeamCriteria() {
-      if (Strings.isValid(
-         colorTeam) && !isWorkPackageSpecified() && !isInsertionActivitySpecified() && !isInsertionSpecified() && !isProgramSpecified()) {
-         List<String> workPackageIds = org.eclipse.osee.framework.jdk.core.util.Collections.transform(
-            getWorkPackagesForColorTeam(colorTeam), ArtifactId::getIdString);
-         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-      }
-   }
-
-   public abstract List<ArtifactId> getWorkPackagesForColorTeam(String colorTeam);
-
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
          ArtifactId workPackArt = atsApi.getQueryService().getArtifact(workPackageId);
-         if (isColorTeamMatch(workPackArt)) {
-            queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString());
-         }
+         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString());
       }
-   }
-
-   private boolean isColorTeamMatch(ArtifactId workPackArt) {
-      return !isColorTeamSpecified() || isColorTeamSpecified() && colorTeam.equals(
-         atsApi.getAttributeResolver().getSoleAttributeValue(workPackArt, AtsAttributeTypes.ColorTeam, ""));
    }
 
    public abstract void queryAnd(AttributeTypeId attrType, String value);
@@ -919,9 +883,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
                   AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
                   for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
                      AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-                     if (isColorTeamMatch(workPackageArt)) {
-                        workPackageIds.add(workPackageArt.getIdString());
-                     }
+                     workPackageIds.add(workPackageArt.getIdString());
                   }
                }
             }
@@ -941,9 +903,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
                AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
                for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
                   AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-                  if (isColorTeamMatch(workPackageArt)) {
-                     workPackageIds.add(workPackageArt.getIdString());
-                  }
+                  workPackageIds.add(workPackageArt.getIdString());
                }
             }
             if (!workPackageIds.isEmpty()) {
@@ -972,9 +932,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          ArtifactId insertionActivityArt = atsApi.getQueryService().getArtifact(insertionActivityId);
          for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
             AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-            if (isColorTeamMatch(workPackageArt)) {
-               ids.add(workPackageArt.getIdString());
-            }
+            ids.add(workPackageArt.getIdString());
          }
       }
       return ids;

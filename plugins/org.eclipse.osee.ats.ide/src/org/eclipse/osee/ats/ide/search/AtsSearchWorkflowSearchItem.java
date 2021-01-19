@@ -161,9 +161,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (showWorkPackageWidgets() && getWorkPackage() != null && getWorkPackage().get() != null) {
          data.setWorkPackageId(getWorkPackage().get().getId());
       }
-      if (getColorTeam() != null && Strings.isValid(getColorTeam().get())) {
-         data.setColorTeam(getColorTeam().get());
-      }
       if (data.getWorkItemTypes().isEmpty()) {
          for (WorkItemType type : WorkItemType.values()) {
             data.getWorkItemTypes().add(type);
@@ -198,7 +195,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
             getInsertionActivity().set(data);
             getWorkPackage().set(data);
          }
-         getColorTeam().set(data);
          getReviewType().set(data);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

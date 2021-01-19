@@ -26,11 +26,9 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.ColorTeam;
 import org.eclipse.osee.ats.api.util.ColorTeams;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -97,44 +95,12 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
                workItem.getArtifactTypeName());
          }
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackageArt);
-         autoAddWorkItemToColorTeamGoals(getColorTeams(), workPackageArt, workPackageId, workItem, changes);
          rd.getIds().add(workItemId.toString());
       }
       if (!changes.isEmpty()) {
          changes.execute();
       }
       return rd;
-   }
-
-   private void autoAddWorkItemToColorTeamGoals(ColorTeams colorTeams, ArtifactReadable workPackageArt, long workPackageId, IAtsWorkItem workItem, IAtsChangeSet changes) {
-      try {
-         String workPackageColorTeam =
-            atsApi.getAttributeResolver().getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, null);
-         if (Strings.isValid(workPackageColorTeam)) {
-            for (ColorTeam colorTeam : colorTeams.getTeams()) {
-               if (!colorTeam.getGoalIds().isEmpty() && colorTeam.getName().equals(workPackageColorTeam)) {
-                  for (Long id : colorTeam.getGoalIds()) {
-                     ArtifactReadable goalArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(id);
-                     if (goalArt != null) {
-                        IAtsWorkItem goalWorkItem = atsApi.getWorkItemService().getWorkItem(goalArt);
-                        if (!atsApi.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,
-                           workItem)) {
-                           changes.relate(goalWorkItem, AtsRelationTypes.Goal_Member, workItem);
-                        }
-                     } else {
-                        logger.error(
-                           "Goal Id [%d] invalid in Color Team [%s] for Work Package [%s] Work Item [%s]; Skipping...",
-                           id, colorTeam, workPackageArt.toStringWithId(), workItem.toStringWithId());
-                     }
-                  }
-               }
-            }
-         }
-      } catch (Exception ex) {
-         logger.error(ex,
-            "Error adding Work ITem to Color Team goals. Color Teams [%s] Work Package [%s] Work Item [%s]", colorTeams,
-            workPackageArt.toStringWithId(), workItem.toStringWithId());
-      }
    }
 
    @Override

@@ -20,8 +20,6 @@ import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeTyp
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.ColorTeamAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.IptAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType;
@@ -83,7 +81,6 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean ClosureActive = ats.createBoolean(1152921875139002555L, "ats.Closure Active", MediaType.TEXT_PLAIN, "Closure Active status of Program");
    ClosureStateAttributeType ClosureState = ats.createEnum(new ClosureStateAttributeType());
    AttributeTypeString CognosUniqueId = ats.createString(72063457009467630L, "ats.Cognos Unique Id", MediaType.TEXT_PLAIN, "");
-   ColorTeamAttributeType ColorTeam = ats.createEnum(new ColorTeamAttributeType());
    AttributeTypeString CommitOverride = ats.createString(104739333325561L, "ats.Commit Override", MediaType.TEXT_PLAIN, "Commit was overridden by user.");
    AttributeTypeString CompletedBy = ats.createString(1152921504606847167L, "ats.Completed By", MediaType.TEXT_PLAIN, "UserId of the user who completed workflow.");
    AttributeTypeDate CompletedDate = ats.createDate(1152921504606847166L, "ats.Completed Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was completed.");
@@ -108,7 +105,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString GoalOrderVote = ats.createString(1152921504606847211L, "ats.Goal Order Vote", MediaType.TEXT_PLAIN, "Vote for order item belongs to within goal.");
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
-   IptAttributeType IPT = ats.createEnum(new IptAttributeType());
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", MediaType.TEXT_PLAIN, "Is Direct Commercial Sale");
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", MediaType.TEXT_PLAIN, "");
    AttributeTypeString KanbanStoryName = ats.createString(72645877009467643L, "ats.kb.Story Name", MediaType.TEXT_PLAIN, "");

@@ -72,12 +72,6 @@ public class ActionOperations {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.Priority, values.iterator().next());
          attrTypeId = AtsAttributeTypes.Priority;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.ColorTeam.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.ColorTeam;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.IPT.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.IPT, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.IPT;
       } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
          String state = values.iterator().next();
          TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,

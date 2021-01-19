@@ -51,25 +51,10 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   public void testGetValidColorTeams() throws Exception {
-      getFirstAndCount(AttributeKey.ColorTeam.getUrl(), 11);
-
-      Object object = getFirstAndCount("ats/attr/" + AtsAttributeTypes.ColorTeam.getName(), 11);
-      Assert.assertEquals("Blood Red Team", object);
-   }
-
-   @Test
    public void testGetValidPriority() throws Exception {
       getFirstAndCount(AttributeKey.Priority.getUrl(), 5);
       Object object = getFirstAndCount("ats/attr/" + AtsAttributeTypes.Priority.getName(), 5);
       Assert.assertEquals("1", object);
-   }
-
-   @Test
-   public void testGetValidIPT() throws Exception {
-      getFirstAndCount(AttributeKey.IPT.getUrl(), 6);
-      Object object = getFirstAndCount("ats/attr/" + AtsAttributeTypes.IPT.getName(), 6);
-      Assert.assertEquals("Comm/Nav/Ase", object);
    }
 
    @Test

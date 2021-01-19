@@ -23,9 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 public enum AttributeKey {
    Title("N/A"),
    Priority("/ats/attr/" + AtsAttributeTypes.Priority.getIdString()),
-   ColorTeam("/ats/attr/" + AtsAttributeTypes.ColorTeam.getIdString()),
    Assignee("/ats/attr/Assignee"),
-   IPT("/ats/attr/" + AtsAttributeTypes.IPT.getIdString()),
    Originator("/ats/attr/Originator"),
    Version("/ats/action/{id}/UnrelasedVersions"),
    assocArt("/ats/action/{id}/assocArt/{attrTypeId}"),

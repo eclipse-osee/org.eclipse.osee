@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.config;
 
-import static org.eclipse.osee.ats.core.column.ColorTeamColumnTest.workPackageArt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -34,6 +33,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +46,8 @@ import org.mockito.MockitoAnnotations;
  * @author Donald G. Dunne
  */
 public class WorkPackageUtilityTest {
+
+   public static final ArtifactToken workPackageArt = ArtifactToken.valueOf(5, "Work Package", CoreBranches.COMMON);
 
    // @formatter:off
    @Mock private IAtsGoal goal;

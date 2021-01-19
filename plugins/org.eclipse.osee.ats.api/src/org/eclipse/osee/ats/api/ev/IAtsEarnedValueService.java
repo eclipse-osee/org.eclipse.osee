@@ -38,8 +38,6 @@ public interface IAtsEarnedValueService {
 
    public IAtsWorkPackage getWorkPackage(ArtifactId artifact);
 
-   public Collection<String> getColorTeams();
-
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity);
 
    double getEstimatedHoursFromArtifact(IAtsWorkItem workItem);

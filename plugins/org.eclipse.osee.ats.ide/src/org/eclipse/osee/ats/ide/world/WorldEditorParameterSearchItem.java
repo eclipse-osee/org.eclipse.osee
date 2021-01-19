@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.ColorTeamSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
@@ -89,7 +88,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private InsertionSearchWidget insertion;
    private InsertionActivitySearchWidget insertionFeature;
    private WorkPackageSearchWidget workPackage;
-   private ColorTeamSearchWidget colorTeam;
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
 
@@ -222,8 +220,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
          getWorkPackage().setup(widget);
          getWorkPackage().setInsertionActivityWidget(getInsertionActivity());
-      } else if (widget.getLabel().equals(ColorTeamSearchWidget.COLOR_TEAM)) {
-         getColorTeam().setup(widget);
       } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
          getUser().setup(widget);
       } else if (widget.getLabel().equals(UserTypeSearchWidget.USER_TYPE)) {
@@ -265,8 +261,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
          widget.setUseToStringSorter(true);
       } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
-         widget.setUseToStringSorter(true);
-      } else if (widget.getLabel().equals(ColorTeamSearchWidget.COLOR_TEAM)) {
          widget.setUseToStringSorter(true);
       } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
          widget.setUseToStringSorter(true);
@@ -386,13 +380,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          workPackage = new WorkPackageSearchWidget(this);
       }
       return workPackage;
-   }
-
-   public ColorTeamSearchWidget getColorTeam() {
-      if (colorTeam == null) {
-         colorTeam = new ColorTeamSearchWidget(this);
-      }
-      return colorTeam;
    }
 
    public UserTypeSearchWidget getUserType() {

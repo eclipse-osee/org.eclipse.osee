@@ -15,11 +15,9 @@ package org.eclipse.osee.ats.rest.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -30,7 +28,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -120,16 +117,6 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public void queryAndExists(RelationTypeSide relationTypeSide) {
       query.andRelationExists(relationTypeSide);
-   }
-
-   @Override
-   public List<ArtifactId> getWorkPackagesForColorTeam(String colorTeam) {
-      List<ArtifactId> workPackageIds = new LinkedList<>();
-      for (ArtifactReadable workPackageArt : query.andTypeEquals(AtsArtifactTypes.WorkPackage).andAttributeIs(
-         AtsAttributeTypes.ColorTeam, colorTeam).getResults()) {
-         workPackageIds.add(workPackageArt);
-      }
-      return workPackageIds;
    }
 
    @Override

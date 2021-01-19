@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.util.ColorColumns;
-import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -61,7 +60,6 @@ public class UpdateAtsConfiguration {
    public XResultData createUpdateConfig(XResultData rd) {
       UserId user = SystemUser.OseeSystem;
       ArtifactReadable atsConfigArt = (ArtifactReadable) AtsDbConfigBase.getOrCreateAtsConfig(atsApi);
-      createUpdateColorColumnAttributes();
       createUpdateConfigAttributes(atsConfigArt, user, rd);
       try {
          createUpdateValidStateAttributes();
@@ -136,13 +134,6 @@ public class UpdateAtsConfiguration {
 
    private String getViewsAttrValue(AtsViews defaultViews) {
       return VIEWS_EQUAL_KEY + JsonUtil.toJson(defaultViews);
-   }
-
-   private void createUpdateColorColumnAttributes() {
-      ColorColumns columns = new ColorColumns();
-      columns.addColumn(ColorTeamColumn.getColor());
-      String colorColumnsJson = JsonUtil.toJson(columns);
-      atsApi.setConfigValue(COLOR_COLUMN_KEY, colorColumnsJson);
    }
 
    private void createUpdateValidStateAttributes() throws Exception {

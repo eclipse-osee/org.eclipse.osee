@@ -31,8 +31,7 @@ import org.junit.runners.Suite;
    InsertionActivityColumnTest.class,
    ParentTopTeamColumnTest.class,
    ProgramColumnTest.class,
-   TeamColumnUtilityTest.class,
-   ColorTeamColumnTest.class})
+   TeamColumnUtilityTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

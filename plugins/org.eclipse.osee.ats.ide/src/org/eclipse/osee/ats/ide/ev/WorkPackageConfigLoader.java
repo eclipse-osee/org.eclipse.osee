@@ -76,17 +76,15 @@ public class WorkPackageConfigLoader {
             }
          }
 
-         data.setColorTeam(workPackageArt.getSoleAttributeValueAsString(AtsAttributeTypes.ColorTeam, ""));
          data.setWorkPackageProgram(
             workPackageArt.getSoleAttributeValueAsString(AtsAttributeTypes.WorkPackageProgram, ""));
          data.setWorkPackageIdStr(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageId, ""));
          data.setActivityId(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.ActivityId, ""));
-         data.setWorkPackageIpt(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.IPT, ""));
          data.setWorkPackageType(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageType, ""));
          data.setWorkPackageNotes(workPackageArt.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
          data.setWorkPackageAnnotation(workPackageArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, ""));
-         data.setTeamNames(
-            Collections.toString("; ", workPackageArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToWorkPackage_AtsTeamDefOrAi)));
+         data.setTeamNames(Collections.toString("; ",
+            workPackageArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToWorkPackage_AtsTeamDefOrAi)));
          data.setWorkPackageActive(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
          data.setWorkPackageStartDate(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.StartDate, null));
          data.setWorkPackageEndDate(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.EndDate, null));

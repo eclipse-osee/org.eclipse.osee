@@ -190,7 +190,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          ProgramColumnUI.getInstance(),
          getColumnServiceColumn(AtsColumnToken.InsertionColumn),
          getColumnServiceColumn(AtsColumnToken.InsertionActivityColumn),
-         ColorTeamColumnUI.getInstance(),
          RelatedArtifactChangedColumn.getInstance(),
          RelatedArtifactLastModifiedByColumn.getInstance(),
          RelatedArtifactLastModifiedDateColumn.getInstance(),

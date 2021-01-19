@@ -139,9 +139,6 @@ public class AtsSearchDataSearch {
       if (data.getWorkPackageId() > 0L) {
          query.andWorkPackage(data.getWorkPackageId());
       }
-      if (Strings.isValid(data.getColorTeam())) {
-         query.andColorTeam(data.getColorTeam());
-      }
       if (criteriaProvider != null) {
          criteriaProvider.andCriteria(query);
       }

@@ -520,16 +520,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   public void testSetActionColorTeamByKey() {
-      testSetActionByKey("", "Red Team", AtsAttributeTypes.ColorTeam, AttributeKey.ColorTeam);
-   }
-
-   @Test
-   public void testSetActionIptByKey() {
-      testSetActionByKey("", "My IPT", AtsAttributeTypes.IPT, AttributeKey.IPT);
-   }
-
-   @Test
    public void testSetActionVersionByKey() {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
@@ -633,8 +623,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       IAtsActionableItem ai =
          AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       data.setAiIds(Arrays.asList(ai.getIdString()));
-      data.addAttrValue(AtsAttributeTypes.ColorTeam, "Blue Team");
-      data.addAttrValue(AtsAttributeTypes.IPT, "My IPT");
       NewActionResult result = AtsApiService.get().getServerEndpoints().getActionEndpoint().createAction(data);
       Assert.assertFalse(result.getResults().toString(), result.getResults().isErrors());
       Assert.assertNotNull(result.getAction());
@@ -655,10 +643,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals(ai, teamWf.getActionableItems().iterator().next());
       Assert.assertEquals(needBy,
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
-      Assert.assertEquals("Blue Team",
-         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ColorTeam, ""));
-      Assert.assertEquals("My IPT",
-         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.IPT, ""));
 
       AtsDeleteManager.handleDeletePurgeAtsObject(
          Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Delete);
@@ -746,7 +730,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertNotNull(teamArt);
 
       // Cleanup test
-      AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getParentAction()).deleteAndPersist(getClass().getSimpleName());
+      AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getParentAction()).deleteAndPersist(
+         getClass().getSimpleName());
       teamArt.deleteAndPersist(getClass().getSimpleName());
    }
 

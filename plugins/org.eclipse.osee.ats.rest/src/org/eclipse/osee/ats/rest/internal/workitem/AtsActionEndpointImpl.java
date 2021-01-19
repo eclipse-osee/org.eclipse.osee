@@ -302,12 +302,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.Priority, values.iterator().next());
          attrTypeId = AtsAttributeTypes.Priority;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.ColorTeam.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.ColorTeam;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.IPT.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.IPT, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.IPT;
       } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
          String state = values.iterator().next();
          TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
@@ -494,8 +488,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             query.andName(entry.getValue().iterator().next(), QueryOption.CONTAINS_MATCH_OPTIONS);
          } else if (entry.getKey().equals("Priority")) {
             query.andAttr(AtsAttributeTypes.Priority, entry.getValue());
-         } else if (entry.getKey().equals("ColorTeam")) {
-            query.andColorTeam(entry.getValue().iterator().next());
          } else if (entry.getKey().equals("Assignee")) {
             Collection<AtsUser> assignees = new LinkedList<>();
             for (String userId : entry.getValue()) {
@@ -505,8 +497,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                }
             }
             query.andAssignee(assignees.toArray(new AtsUser[assignees.size()]));
-         } else if (entry.getKey().equals("IPT")) {
-            query.andAttr(AtsAttributeTypes.IPT, entry.getValue().iterator().next());
          } else if (entry.getKey().equals("Team")) {
             for (String teamId : entry.getValue()) {
                IAtsTeamDefinition team = atsApi.getQueryService().getConfigItem(Long.valueOf(teamId));

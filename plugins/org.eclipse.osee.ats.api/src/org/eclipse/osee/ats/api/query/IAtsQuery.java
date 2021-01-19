@@ -99,8 +99,6 @@ public interface IAtsQuery {
 
    IAtsQuery andWorkPackage(Long workPackageId);
 
-   IAtsQuery andColorTeam(String colorTeam);
-
    IAtsQuery andActionableItem(IAtsActionableItem actionableItem);
 
    Collection<ArtifactId> getItemIds();

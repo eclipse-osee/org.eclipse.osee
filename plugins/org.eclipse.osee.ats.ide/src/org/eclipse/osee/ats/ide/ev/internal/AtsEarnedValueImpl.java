@@ -98,11 +98,6 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
    }
 
    @Override
-   public Collection<String> getColorTeams() {
-      return AtsAttributeTypes.ColorTeam.getEnumStrValues();
-   }
-
-   @Override
    public double getEstimatedHoursFromTasks(IAtsWorkItem workItem, IStateToken relatedToState) {
       return 0;
    }
