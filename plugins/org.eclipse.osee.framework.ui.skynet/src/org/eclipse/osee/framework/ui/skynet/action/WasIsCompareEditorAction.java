@@ -13,16 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.action;
 
-import java.net.URI;
 import java.util.List;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -39,8 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -141,11 +137,7 @@ public class WasIsCompareEditorAction extends Action {
    }
 
    protected String loadAttributeValue(AttributeId attrId, TransactionId transactionId, Artifact artifact) {
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("branch").path(artifact.getBranch().getIdString()).path(
-         "artifact").path(artifact.getIdString()).path("attribute").path(String.valueOf(attrId)).path("version").path(
-            String.valueOf(transactionId)).path("text").build();
-      return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
+      return ServiceUtil.getOseeClient().loadAttributeValue(attrId.getIdIntValue(), transactionId, artifact);
    }
 
    protected static ISelectionProvider getSelectionProvider() {

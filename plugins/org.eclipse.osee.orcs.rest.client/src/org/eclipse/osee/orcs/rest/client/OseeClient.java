@@ -17,7 +17,9 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -71,5 +73,8 @@ public interface OseeClient {
    DefineBranchEndpointApi getDefineBranchEndpoint();
 
    SessionEndpoint getSessionEndpoint();
+
+   @Deprecated
+   String loadAttributeValue(Integer attrId, TransactionId transactionId, ArtifactToken artifact);
 
 }

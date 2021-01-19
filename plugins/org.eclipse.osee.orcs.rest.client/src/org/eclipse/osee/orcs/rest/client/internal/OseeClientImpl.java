@@ -13,25 +13,23 @@
 
 package org.eclipse.osee.orcs.rest.client.internal;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
@@ -62,9 +60,6 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    private PredicateFactory predicateFactory;
-   private volatile JaxRsClient client;
-   private volatile URI orcsUri;
-   private UriBuilder searchUriBuilder;
    private JaxRsApi jaxRsApi;
 
    public void setJaxRsApi(JaxRsApi jaxRsApi) {
@@ -73,26 +68,10 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
-      update(properties);
    }
 
    public void stop() {
-      client = null;
-      orcsUri = null;
       predicateFactory = null;
-   }
-
-   public void update(Map<String, Object> properties) {
-      client = JaxRsClient.newBuilder().properties(properties).build();
-      String address = properties != null ? (String) properties.get(OSEE_APPLICATION_SERVER) : null;
-      if (address == null) {
-         address =
-            System.getProperty(OSEE_APPLICATION_SERVER, org.eclipse.osee.framework.core.data.OseeClient.DEFAULT_URL);
-      }
-      if (Strings.isValid(address)) {
-         orcsUri = UriBuilder.fromUri(address).path("orcs").build();
-         searchUriBuilder = UriBuilder.fromUri(address).path("orcs/branch/{branch-uuid}/artifact/search/v1");
-      }
    }
 
    @Override
@@ -127,9 +106,9 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       }
 
       SearchRequest params = new SearchRequest(branch, predicates, requestType, fromTx, includeDeleted);
-      JaxRsWebTarget resource = client.target(searchUriBuilder.build(branch.getIdString()));
+      WebTarget target = jaxRsApi.newTarget("orcs/branch/" + branch.getIdString() + "/artifact/search/v1");
+      return target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
 
-      return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
    }
 
    @Override
@@ -222,5 +201,13 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public SessionEndpoint getSessionEndpoint() {
       return jaxRsApi.newProxy("ide", SessionEndpoint.class);
+   }
+
+   @Override
+   public String loadAttributeValue(Integer attrId, TransactionId transactionId, ArtifactToken artifact) {
+      String url = String.format("orcs/branch/%s/artifact/%s/attribute/%s/version/%s/text",
+         artifact.getBranchIdString(), artifact.getIdString(), attrId, transactionId.getIdString());
+      WebTarget target = jaxRsApi.newTarget(url);
+      return target.request(MediaType.TEXT_PLAIN).get(String.class);
    }
 }
