@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConstants;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuth;
@@ -32,16 +33,21 @@ import org.osgi.framework.BundleContext;
  */
 public class OAuth2ResourceServer {
 
-   private JaxRsApplicationRegistry registry;
-
    private final Set<String> registeredProviders = new HashSet<>();
    private final AtomicBoolean wasRegistered = new AtomicBoolean();
    private volatile JaxRsOAuthResourceServerFilter filter;
    private volatile List<String> audiences;
    private volatile Bundle bundle;
 
+   private JaxRsApplicationRegistry registry;
+   private JaxRsApi jaxRsApi;
+
    public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
       this.registry = registry;
+   }
+
+   public void bindJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
    }
 
    public void start(BundleContext bundleContext, Map<String, Object> props) {
@@ -72,7 +78,7 @@ public class OAuth2ResourceServer {
    private void initialize(OAuth2ResourceServerConfig config) {
       audiences = Collections.emptyList();
 
-      Builder builder = JaxRsOAuthResourceServerFilter.newBuilder() //
+      Builder builder = JaxRsOAuthResourceServerFilter.newBuilder(jaxRsApi) //
          .serverKey(config.getResourceServerKey()) //
          .serverSecret(config.getResourceServerSecret())//
          .serverUri(config.getValidationServerUri());

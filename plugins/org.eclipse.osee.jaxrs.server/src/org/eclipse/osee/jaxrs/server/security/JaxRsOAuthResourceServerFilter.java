@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Form;
@@ -32,17 +33,16 @@ import org.apache.cxf.rs.security.oauth2.provider.AccessTokenValidator;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 
 /**
  * Filter used to protect resource server end-points. This filter is used when the resource server is not located in the
  * same JVM as the authorization server. When a request is processed, the resource server will contact the authorization
  * server and validate the access token provided by the request through the HTTP authorization header.
- * 
+ *
  * @author Roberto E. Escobar
  */
 @Provider
@@ -79,16 +79,22 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
       delegate.filter(context);
    };
 
-   public static Builder newBuilder() {
-      return new Builder();
+   public static Builder newBuilder(JaxRsApi jaxRsApi) {
+      return new Builder(jaxRsApi);
    }
 
    public static class Builder {
       public static final long MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS = 24L * 60L * 60L * 1000L; // one day
 
+      private final JaxRsApi jaxRsApi;
+
       private String resourceServerKey;
       private String resourceServerSecret;
       private String validationServerUri;
+
+      public Builder(JaxRsApi jaxRsApi) {
+         this.jaxRsApi = jaxRsApi;
+      }
 
       public JaxRsOAuthResourceServerFilter build() {
          ClientAccessTokenValidator validator = newTokenValidator();
@@ -101,13 +107,7 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
       }
 
       private JaxRsOAuthResourceServerFilter build(ClientAccessTokenValidator validator) {
-         JaxRsClient client = JaxRsClient.newBuilder()//
-            .username(resourceServerKey)//
-            .password(resourceServerSecret)//
-            .build();
-
-         validator.setClient(client);
-         validator.setValidationServerUri(validationServerUri);
+         validator.setTarget(jaxRsApi.newTarget(validationServerUri, resourceServerKey, resourceServerSecret));
 
          OAuth2RequestFilter filter = new OAuth2RequestFilter();
          filter.setTokenValidator(validator);
@@ -186,27 +186,21 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
 
       private static abstract class ClientAccessTokenValidator implements AccessTokenValidator {
 
-         private JaxRsClient client;
-         private String validationServerUri;
-
-         public void setClient(JaxRsClient client) {
-            this.client = client;
-         }
-
-         public void setValidationServerUri(String validationServerUri) {
-            this.validationServerUri = validationServerUri;
-         }
+         private WebTarget target;
 
          @Override
          public List<String> getSupportedAuthorizationSchemes() {
             return Collections.singletonList(OAuthConstants.ALL_AUTH_SCHEMES);
          }
 
+         public void setTarget(WebTarget target) {
+            this.target = target;
+         }
+
          protected AccessTokenValidation getRemoteTokenValidation(String authScheme, String accessToken) {
             Form form = new Form();
             form.param(OAuthConstants.AUTHORIZATION_SCHEME_TYPE, authScheme);
             form.param(OAuthConstants.AUTHORIZATION_SCHEME_DATA, accessToken);
-            JaxRsWebTarget target = client.target(validationServerUri);
             return target.request().post(Entity.form(form), AccessTokenValidation.class);
          }
       }

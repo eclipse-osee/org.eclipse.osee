@@ -98,6 +98,14 @@ public final class JaxRsApiImpl implements JaxRsApi {
       return factory.newWebTarget(url(path));
    }
 
+   @Override
+   public WebTarget newTarget(String path, String serverUsername, String serverPassword) {
+      JaxRsClientConfig config = factory.copyDefaultConfig();
+      config.setServerPassword(serverPassword);
+      config.setServerUsername(serverUsername);
+      return factory.newWebTarget(config, url(path));
+   }
+
    private String url(String path) {
       return baseUrl + "/" + path;
    }

@@ -46,6 +46,7 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       client = builder.build();
    }
 
+   @Override
    public JaxRsClientConfig copyDefaultConfig() {
       return config.copy();
    }

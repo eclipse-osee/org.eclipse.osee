@@ -2,4 +2,5 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" configuration-policy="require" deactivate="stop" modified="update">
 	<implementation class="org.eclipse.osee.jaxrs.server.internal.security.oauth2.rs.OAuth2ResourceServer" />
  	<reference bind="setJaxRsApplicationRegistry" cardinality="1..1" interface="org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry" name="JaxRsApplicationRegistry" policy="static"/>
+ 	<reference bind="bindJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
 </scr:component>

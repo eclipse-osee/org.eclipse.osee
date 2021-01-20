@@ -42,7 +42,9 @@ public interface JaxRsApi {
 
    <T> T readValue(String json, Class<? extends Collection> collectionClass, Class<?> elementClass);
 
-   WebTarget newTarget(String uri);
+   WebTarget newTarget(String path);
+
+   WebTarget newTarget(String path, String serverUsername, String serverPassword);
 
    <T> T newProxy(WebTarget target, Class<T> clazz);
 

@@ -37,6 +37,8 @@ public final class JaxRsClient {
       WebTarget newWebTarget(String url);
 
       <T> T newProxy(String url, Class<T> clazz);
+
+      JaxRsClientConfig copyDefaultConfig();
    }
 
    public static JaxRsClientBuilder newBuilder() {
