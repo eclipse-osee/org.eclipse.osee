@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.actions.wizard;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,19 +23,21 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoAis;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -73,13 +76,15 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
    protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
    private Text descriptionLabel;
    private boolean debugPopulated = false;
-   private static IAtsActionableItem atsAi;
+   private static List<IAtsActionableItem> testAis;
    protected static final String TITLE = "Title";
+   private final AtsApi atsApi;
 
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       setMessage("Enter title and select impacted items.");
       this.wizard = actionWizard;
+      this.atsApi = AtsApiService.get();
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
@@ -155,8 +160,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
       try {
          if (selectableAis == null) {
             List<IAtsActionableItem> activeActionableItemTree = new LinkedList<>();
-            AtsApiIde atsClient = AtsApiService.get();
-            AtsConfigurations configs = atsClient.getConfigService().getConfigurations();
+            AtsConfigurations configs = AtsApiService.get().getConfigService().getConfigurations();
             for (Long aiId : configs.getIdToAi().get(configs.getTopActionableItem().getId()).getChildren()) {
                ActionableItem ai = configs.getIdToAi().get(aiId);
                if (ai.isActive()) {
@@ -230,14 +234,22 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
          return;
       }
       try {
-         ((XText) getXWidget(TITLE)).set("tt");
-         if (atsAi == null) {
-            atsAi = AtsApiService.get().getActionableItemService().getActionableItemById(
-               AtsArtifactToken.TopActionableItem);
-            if (atsAi != null) {
-               treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
-               treeViewer.setChecked(atsAi, true);
+         ((XText) getXWidget(TITLE)).set(DemoAis.TEST_Action);
+         if (testAis == null) {
+            testAis = new ArrayList<>();
+            for (ArtifactToken art : atsApi.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).andTag(
+               DemoAis.TEST_AI).getArtifacts()) {
+               IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(art);
+               if (ai != null) {
+                  testAis.add(ai);
+               }
             }
+         }
+         if (!testAis.isEmpty()) {
+            for (IAtsActionableItem ai : testAis) {
+               treeViewer.setChecked(ai, true);
+            }
+            treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(testAis)));
          }
          getContainer().updateButtons();
          debugPopulated = true;
@@ -273,7 +285,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
             selected.add((IAtsActionableItem) obj);
          } else if (obj instanceof ActionableItem) {
             ActionableItem ai = (ActionableItem) obj;
-            selected.add(AtsApiService.get().getQueryService().getConfigItem(ai.getId()));
+            selected.add(atsApi.getQueryService().getConfigItem(ai.getId()));
          }
       }
       return selected;
@@ -286,20 +298,22 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
 
    @Override
    public boolean isPageComplete() {
+      if (wizard.isTestAction()) {
+         return true;
+      }
       if (treeViewer.getChecked().isEmpty()) {
          return false;
       }
       try {
          for (IAtsActionableItem aia : getSelectedIAtsActionableItems()) {
             if (!aia.isActionable() || !userActionCreationEnabled(aia)) {
-               AWorkbench.popup("ERROR",
-                  AtsApiService.get().getActionableItemService().getNotActionableItemError(aia));
+               AWorkbench.popup("ERROR", atsApi.getActionableItemService().getNotActionableItemError(aia));
                treeViewer.setChecked(aia, false);
                return false;
             }
          }
          Collection<IAtsTeamDefinition> teamDefs =
-            AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(getSelectedIAtsActionableItems());
+            atsApi.getTeamDefinitionService().getImpactedTeamDefs(getSelectedIAtsActionableItems());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

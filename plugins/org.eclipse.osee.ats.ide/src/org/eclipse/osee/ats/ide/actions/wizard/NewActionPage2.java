@@ -64,7 +64,7 @@ public class NewActionPage2 extends WizardPage {
          if (wizard.getInitialDescription() != null && ((XText) getXWidget(DESCRIPTION)).get().equals("")) {
             ((XText) getXWidget(DESCRIPTION)).set(wizard.getInitialDescription());
          }
-         if (wizard.isTTAction()) {
+         if (wizard.isTestAction()) {
             handlePopulateWithDebugInfo();
          }
          wizard.createPage3IfNecessary();

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.demo.DemoAis;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -111,7 +112,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
 
    @Override
    public boolean canFinish() {
-      return page3 == null ? page2.isPageComplete() : page3.isPageComplete();
+      return isTestAction() || page3 == null ? page2.isPageComplete() : page3.isPageComplete();
    }
 
    public void createPage3IfNecessary() {
@@ -121,8 +122,8 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public boolean isTTAction() {
-      return getTitle().equals("tt");
+   public boolean isTestAction() {
+      return getTitle().equals(DemoAis.TEST_Action);
    }
 
    public String getTitle() {
