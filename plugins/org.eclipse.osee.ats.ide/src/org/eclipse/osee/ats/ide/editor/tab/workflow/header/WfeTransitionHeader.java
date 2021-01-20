@@ -24,9 +24,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateOption;
@@ -45,7 +43,6 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -59,8 +56,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -72,7 +67,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicEventListener {
+public class WfeTransitionHeader extends Composite {
 
    private final Label transitionAssigneesLabel;
    private final AbstractWorkflowArtifact awa;
@@ -95,18 +90,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       layout.marginHeight = 0;
       setLayout(layout);
       editor.getWorkFlowTab().getManagedForm().getToolkit().adapt(this);
-
-      // Register for events and deregister on dispose
-      AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-         AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
-      final WfeTransitionHeader fThis = this;
-      addDisposeListener(new DisposeListener() {
-
-         @Override
-         public void widgetDisposed(DisposeEvent e) {
-            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
-         }
-      });
 
       transitionLabelLink = editor.getToolkit().createHyperlink(this, "Transition", SWT.NONE);
       transitionLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
@@ -412,25 +395,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       awa.setTransitionAssignees(users);
       refresh();
       editor.onDirtied();
-   }
-
-   @Override
-   public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
-      if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
-         AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
-         if (this.isDisposed()) {
-            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
-            return;
-         }
-         Displays.ensureInDisplayThread(new Runnable() {
-
-            @Override
-            public void run() {
-               userSelectedTransitionToState = null;
-               refresh();
-            }
-         });
-      }
    }
 
    public boolean isSelected() {

@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * All client transitions should go through this service which handles transitioning on server, reloading client work
@@ -132,9 +131,11 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
     */
    private TransitionResults postEventAndReturn(TransitionData transData, TransitionResults results) {
       Conditions.assertNotNullOrEmpty(results.getWorkItemIds(), "workItemIds");
+      AtsApiService.get().getStoreService().reload(transData.getWorkItems());
 
       if (results.isSuccess()) {
-         ArtifactQuery.reloadArtifacts(transData.getWorkItemIds());
+         atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, transData.getWorkItems(),
+            results.getTransaction());
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
             transData.getWorkItems(), results.getTransaction());
       } else {

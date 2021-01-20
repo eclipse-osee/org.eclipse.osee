@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.ev.internal;
 
-import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -90,9 +88,6 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
       TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
          AtsObjects.toIdsString(";", workItems));
-      event.addProperty(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY,
-         Collections.toString(";", Arrays.asList(AtsAttributeTypes.WorkPackage.getIdString(),
-            AtsAttributeTypes.WorkPackageReference.getIdString())));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
    }

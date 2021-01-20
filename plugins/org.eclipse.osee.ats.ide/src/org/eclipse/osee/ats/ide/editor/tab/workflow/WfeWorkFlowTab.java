@@ -26,8 +26,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
-import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -40,12 +38,10 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeRelationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -65,8 +61,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -82,9 +76,9 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventHandler, IAtsWorkItemTopicEventListener {
+public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventHandler {
    private final AbstractWorkflowArtifact awa;
-   private final List<WfeWorkflowSection> sections = new ArrayList<>();
+   private final List<WfeWorkflowSection> stateSections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
    private IManagedForm managedForm;
    private Composite bodyComp;
@@ -93,9 +87,9 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public final static String ID = "ats.workflow.tab";
    private final WorkflowEditor editor;
    private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
-   private WfeDetailsSection smaDetailsSection;
-   private WfeRelationsSection smaRelationsSection;
-   private WfeHistorySection smaHistorySection;
+   private WfeDetailsSection detailsSection;
+   private WfeRelationsSection relationsSection;
+   private WfeHistorySection historySection;
 
    public WfeWorkFlowTab(WorkflowEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, awa, "Workflow");
@@ -129,23 +123,10 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
          }
 
-         // Register for events and deregister on dispose
-         AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-            AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
-
          List<IOperation> ops = new ArrayList<>();
          ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
          IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
          Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
-
-         final WfeWorkFlowTab fThis = this;
-         bodyComp.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-               AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
-            }
-         });
 
       } catch (Exception ex) {
          handleException(ex);
@@ -259,8 +240,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    private void createDetailsSection() {
       try {
-         smaDetailsSection = new WfeDetailsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-         managedForm.addPart(smaDetailsSection);
+         detailsSection = new WfeDetailsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
+         managedForm.addPart(detailsSection);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -278,8 +259,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    private void createRelationsSection() {
       try {
-         smaRelationsSection = new WfeRelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-         managedForm.addPart(smaRelationsSection);
+         relationsSection = new WfeRelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
+         managedForm.addPart(relationsSection);
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -303,8 +284,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    private void createHistorySection() {
       try {
-         smaHistorySection = new WfeHistorySection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-         managedForm.addPart(smaHistorySection);
+         historySection = new WfeHistorySection(editor, atsBody, editor.getToolkit(), SWT.NONE);
+         managedForm.addPart(historySection);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -348,7 +329,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    private void createStateSection(Composite sectionsComp, StateXWidgetPage statePage) {
       WfeWorkflowSection section = new WfeWorkflowSection(sectionsComp, SWT.NONE, statePage, awa, editor);
       managedForm.addPart(section);
-      sections.add(section);
+      stateSections.add(section);
       statePages.add(statePage);
    }
 
@@ -378,7 +359,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          rd.log("======> WFE - Header\n");
          headerComp.isXWidgetDirty(rd);
       }
-      for (WfeWorkflowSection section : sections) {
+      for (WfeWorkflowSection section : stateSections) {
          rd.logf("======> WFE Section - %s\n", section.getStatePage().getName());
          section.isXWidgetDirty(rd);
       }
@@ -390,7 +371,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       if (Widgets.isAccessible(headerComp)) {
          result = headerComp.isXWidgetSavable();
       }
-      for (WfeWorkflowSection section : sections) {
+      for (WfeWorkflowSection section : stateSections) {
          result = section.isXWidgetSavable();
          if (result.isFalse()) {
             return result;
@@ -403,7 +384,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       List<IArtifactStoredWidget> artWidgets = new ArrayList<>();
       headerComp.getDirtyIArtifactWidgets(artWidgets);
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
-      for (WfeWorkflowSection section : sections) {
+      for (WfeWorkflowSection section : stateSections) {
          section.getDirtyIArtifactWidgets(artWidgets);
       }
       for (IArtifactStoredWidget widget : artWidgets) {
@@ -416,19 +397,19 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       if (Widgets.isAccessible(headerComp)) {
          headerComp.dispose();
       }
-      if (smaDetailsSection != null) {
-         smaDetailsSection.dispose();
+      if (detailsSection != null) {
+         detailsSection.dispose();
       }
       for (WfeUndefinedStateSection section : undefinedStateSections) {
          section.dispose();
       }
-      if (smaHistorySection != null) {
-         smaHistorySection.dispose();
+      if (historySection != null) {
+         historySection.dispose();
       }
-      if (smaRelationsSection != null) {
-         smaRelationsSection.dispose();
+      if (relationsSection != null) {
+         relationsSection.dispose();
       }
-      for (WfeWorkflowSection section : sections) {
+      for (WfeWorkflowSection section : stateSections) {
          section.dispose();
       }
    }
@@ -436,7 +417,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    private WfeHeaderComposite headerComp;
 
    public WfeWorkflowSection getCurrentStateSection() {
-      for (WfeWorkflowSection section : sections) {
+      for (WfeWorkflowSection section : stateSections) {
          if (section.getPage().getName().equals(editor.getWorkItem().getCurrentStateName())) {
             return section;
          }
@@ -446,32 +427,47 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    public void refresh() {
       if (editor != null) {
-         String stateName = awa.getCurrentStateName();
+         Displays.ensureInDisplayThread(new Runnable() {
 
-         // Determine if state already exists
-         boolean found = false;
-         for (WfeWorkflowSection section : sections) {
-            if (section.getPage().getName().equals(stateName)) {
-               found = true;
-            }
-         }
+            @Override
+            public void run() {
+               String stateName = awa.getCurrentStateName();
 
-         // Create state if not exist
-         if (!found) {
-            Pair<StateXWidgetPage, Composite> pageAndComp = stateNameToPageAndComposite.get(stateName);
-            if (pageAndComp != null) {
-               StateXWidgetPage statePage = pageAndComp.getFirst();
-               createStateSection(pageAndComp.getSecond(), statePage);
+               // Determine if state already exists
+               boolean found = false;
+               for (WfeWorkflowSection section : stateSections) {
+                  if (section.getPage().getName().equals(stateName)) {
+                     found = true;
+                  }
+               }
+
+               headerComp.refresh();
+
+               // Create state if not exist
+               if (!found) {
+                  Pair<StateXWidgetPage, Composite> pageAndComp = stateNameToPageAndComposite.get(stateName);
+                  if (pageAndComp != null) {
+                     StateXWidgetPage statePage = pageAndComp.getFirst();
+                     createStateSection(pageAndComp.getSecond(), statePage);
+                  }
+               }
+
+               for (WfeWorkflowSection section : stateSections) {
+                  section.refresh();
+               }
+               refreshExpandStates();
+
+               relationsSection.refresh();
+               historySection.refresh();
+               detailsSection.refresh();
             }
-         }
-         for (WfeWorkflowSection section : sections) {
-            section.refresh();
-         }
+
+         });
       }
    }
 
    public void refreshExpandStates() {
-      for (WfeWorkflowSection wfeSection : sections) {
+      for (WfeWorkflowSection wfeSection : stateSections) {
          if (!Widgets.isAccessible(wfeSection.getMainComp())) {
             continue;
          }
@@ -510,27 +506,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       return statePages;
    }
 
-   @Override
-   public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
-      if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
-         AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
-         if (this.isDisposed()) {
-            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
-            return;
-         }
-         Displays.ensureInDisplayThread(new Runnable() {
-
-            @Override
-            public void run() {
-               refresh();
-               refreshExpandStates();
-            }
-         });
-      }
-   }
-
    public void computeSizeAndReflow() {
-      for (WfeWorkflowSection section : sections) {
+      for (WfeWorkflowSection section : stateSections) {
          section.computeTextSizesAndReflow();
       }
    }

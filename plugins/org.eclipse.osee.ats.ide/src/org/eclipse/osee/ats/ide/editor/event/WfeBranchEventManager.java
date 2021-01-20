@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -39,23 +40,23 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class WfeBranchEventManager implements IBranchEventListener {
 
-   List<IWfeEventHandler> handlers = new CopyOnWriteArrayList<>();
+   List<WorkflowEditor> editors = new CopyOnWriteArrayList<>();
    static WfeBranchEventManager instance = new WfeBranchEventManager();
 
    private WfeBranchEventManager() {
       OseeEventManager.addListener(this);
    }
 
-   public static void add(IWfeEventHandler iWorldEventHandler) {
+   public static void add(WorkflowEditor editor) {
       OseeEventManager.addListener(instance);
       if (instance != null) {
-         instance.handlers.add(iWorldEventHandler);
+         instance.editors.add(editor);
       }
    }
 
-   public static void remove(IWfeEventHandler iWorldEventHandler) {
+   public static void remove(WorkflowEditor editor) {
       if (instance != null) {
-         instance.handlers.remove(iWorldEventHandler);
+         instance.editors.remove(editor);
       }
    }
 
@@ -66,12 +67,12 @@ public class WfeBranchEventManager implements IBranchEventListener {
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      for (IWfeEventHandler handler : new ArrayList<>(handlers)) {
-         if (handler.isDisposed()) {
-            handlers.remove(handler);
+      for (WorkflowEditor editor : new ArrayList<>(editors)) {
+         if (editor.isDisposed()) {
+            editors.remove(editor);
          }
       }
-      for (final IWfeEventHandler handler : handlers) {
+      for (final WorkflowEditor handler : editors) {
          try {
             safelyProcessHandler(branchEvent.getEventType(), branchEvent.getSourceBranch());
          } catch (Exception ex) {
@@ -81,11 +82,11 @@ public class WfeBranchEventManager implements IBranchEventListener {
    }
 
    private void safelyProcessHandler(BranchEventType branchEventType, BranchId branch) {
-      for (final IWfeEventHandler handler : handlers) {
-         if (handler.isDisposed()) {
+      for (final WorkflowEditor editor : editors) {
+         if (editor.isDisposed()) {
             OseeLog.log(Activator.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");
          }
-         final AbstractWorkflowArtifact awa = handler.getWorkflowEditor().getWorkItem();
+         final AbstractWorkflowArtifact awa = editor.getWorkItem();
          try {
             if (!awa.isTeamWorkflow()) {
                return;
@@ -105,12 +106,12 @@ public class WfeBranchEventManager implements IBranchEventListener {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override
                            public void run() {
-                              if (handler.isDisposed()) {
+                              if (editor.isDisposed()) {
                                  return;
                               }
                               try {
-                                 handler.getWorkflowEditor().refreshPages();
-                                 handler.getWorkflowEditor().onDirtied();
+                                 editor.refresh();
+                                 editor.onDirtied();
                               } catch (Exception ex) {
                                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                               }

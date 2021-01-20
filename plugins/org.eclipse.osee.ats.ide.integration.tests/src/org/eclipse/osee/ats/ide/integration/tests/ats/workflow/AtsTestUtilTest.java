@@ -105,10 +105,8 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf4());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt4());
       Assert.assertNotSame(
-         AtsApiService.get().getActionableItemService().getActionableItems(
-            AtsTestUtil.getTeamWf()).iterator().next(),
-         AtsApiService.get().getActionableItemService().getActionableItems(
-            AtsTestUtil.getTeamWf4()).iterator().next());
+         AtsApiService.get().getActionableItemService().getActionableItems(AtsTestUtil.getTeamWf()).iterator().next(),
+         AtsApiService.get().getActionableItemService().getActionableItems(AtsTestUtil.getTeamWf4()).iterator().next());
       Assert.assertEquals(AtsApiService.get().getVersionService().getTargetedVersion(AtsTestUtil.getTeamWf4()),
          AtsTestUtil.getVerArt4());
    }

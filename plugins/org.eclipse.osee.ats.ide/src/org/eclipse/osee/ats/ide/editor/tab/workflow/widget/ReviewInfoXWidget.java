@@ -323,7 +323,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }
-                     workflowSection.getEditor().refreshPages();
+                     workflowSection.getEditor().refresh();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }

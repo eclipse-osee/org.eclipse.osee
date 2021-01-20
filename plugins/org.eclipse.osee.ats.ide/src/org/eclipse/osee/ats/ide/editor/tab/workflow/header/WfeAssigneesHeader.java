@@ -14,11 +14,9 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,7 +37,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
+public class WfeAssigneesHeader extends Composite {
 
    private final static String TARGET_VERSION = "Assignee(s):";
    Label valueLabel;
@@ -93,10 +91,8 @@ public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
       valueLabel = editor.getToolkit().createLabel(this, "Not Set");
       valueLabel.setLayoutData(new GridData());
       refresh();
-      editor.registerEvent(this, AtsAttributeTypes.CurrentState);
    }
 
-   @Override
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "";
@@ -113,13 +109,9 @@ public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
             valueLabel.setToolTipText(value);
          }
          valueLabel.setText(Strings.truncate(value, 150, true));
-         valueLabel.getParent().getParent().layout();
+         valueLabel.getParent().layout(true);
+         valueLabel.getParent().getParent().layout(true);
       }
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
    }
 
 }

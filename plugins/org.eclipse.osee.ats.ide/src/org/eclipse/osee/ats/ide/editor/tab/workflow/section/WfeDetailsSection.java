@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -55,17 +54,15 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
+public class WfeDetailsSection extends SectionPart {
 
    private Browser browser;
    private final WorkflowEditor editor;
    private boolean sectionCreated = false;
-   private final IAtsWorkItem workItem;
 
    public WfeDetailsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
-      workItem = editor.getWorkItem();
    }
 
    @Override
@@ -84,7 +81,6 @@ public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
             createSection();
          }
       });
-      editor.registerEvent(this, editor.getWorkItem());
    }
 
    private synchronized void createSection() {
@@ -190,9 +186,8 @@ public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
       return message;
    }
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
+   public boolean isDisposed() {
+      return browser == null || browser.isDisposed();
    }
 
 }

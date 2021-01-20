@@ -16,10 +16,8 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.column.OriginatorColumn;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -40,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
+public class WfeOriginatorHeader extends Composite {
 
    private final static String ORIGINATOR = "Originator:";
    private Label userIconLabel;
@@ -77,11 +75,7 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  if (OriginatorColumn.promptChangeOriginator(workItem, true)) {
-                     origLabel.setText(workItem.getCreatedBy().getName());
-                     origLabel.getParent().layout();
-                     editor.onDirtied();
-                  }
+                  OriginatorColumn.promptChangeOriginator(workItem, true);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -90,7 +84,6 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
          userIconLabel = editor.getToolkit().createLabel(this, "");
          origLabel = editor.getToolkit().createLabel(this, "");
          origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         editor.registerEvent(this, AtsAttributeTypes.CreatedBy);
          refresh();
 
       } catch (OseeCoreException ex) {
@@ -100,12 +93,6 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
 
    }
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
-   }
-
-   @Override
    public void refresh() {
       try {
          if (workItem.getCreatedBy() == null) {
@@ -117,7 +104,8 @@ public class WfeOriginatorHeader extends Composite implements IWfeEventHandle {
             origLabel.setText(workItem.getCreatedBy().getName());
             origLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
-         origLabel.getParent().getParent().layout();
+         origLabel.getParent().layout(true);
+         origLabel.getParent().getParent().layout(true);
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));

@@ -14,9 +14,7 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.history.XHistoryViewer;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.log.XLogViewer;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -24,7 +22,6 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.SWT;
@@ -43,21 +40,17 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
+public class WfeHistorySection extends SectionPart {
 
    private final WorkflowEditor editor;
    private boolean sectionCreated = false;
-   private final IAtsWorkItem workItem;
    private XHistoryViewer xHistoryViewer;
    private XLogViewer xLogViewer;
+   private Composite mainComp;
 
    public WfeHistorySection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.editor = editor;
-      workItem = editor.getWorkItem();
-      if (workItem.getStoreObject() instanceof Artifact) {
-         editor.registerEvent(this, (Artifact) workItem.getStoreObject());
-      }
    }
 
    @Override
@@ -85,21 +78,21 @@ public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
 
       AbstractWorkflowArtifact awa = editor.getWorkItem();
       final FormToolkit toolkit = getManagedForm().getToolkit();
-      Composite composite = toolkit.createComposite(getSection(), SWT.WRAP);
-      composite.setLayout(new GridLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      mainComp = toolkit.createComposite(getSection(), SWT.WRAP);
+      mainComp.setLayout(new GridLayout(1, false));
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Label logLabel = toolkit.createLabel(composite, "ATS Log:", SWT.NONE);
+      Label logLabel = toolkit.createLabel(mainComp, "ATS Log:", SWT.NONE);
       logLabel.setFont(FontManager.getCourierNew12Bold());
       xLogViewer = new XLogViewer(awa);
-      xLogViewer.createWidgets(composite, 2);
+      xLogViewer.createWidgets(mainComp, 2);
 
-      Label historyLabel = toolkit.createLabel(composite, "Detailed History (if available):", SWT.NONE);
+      Label historyLabel = toolkit.createLabel(mainComp, "Detailed History (if available):", SWT.NONE);
       historyLabel.setFont(FontManager.getCourierNew12Bold());
       xHistoryViewer = new XHistoryViewer(awa);
-      xHistoryViewer.createWidgets(composite, 2);
+      xHistoryViewer.createWidgets(mainComp, 2);
 
-      Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
+      Label button = toolkit.createLabel(mainComp, "   ", SWT.NONE);
       button.setText("    ");
       final AbstractWorkflowArtifact fSma = awa;
       button.addListener(SWT.MouseDoubleClick, new Listener() {
@@ -113,8 +106,8 @@ public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
          }
       });
 
-      getSection().setClient(composite);
-      toolkit.paintBordersFor(composite);
+      getSection().setClient(mainComp);
+      toolkit.paintBordersFor(mainComp);
       sectionCreated = true;
 
    }
@@ -129,9 +122,8 @@ public class WfeHistorySection extends SectionPart implements IWfeEventHandle {
       }
    }
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
+   public boolean isDisposed() {
+      return mainComp == null || mainComp.isDisposed();
    }
 
 }

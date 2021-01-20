@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
@@ -41,7 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTitleHeader extends Composite implements IWfeEventHandle {
+public class WfeTitleHeader extends Composite {
 
    private final IAtsWorkItem workItem;
    private XTextDam titleText;
@@ -66,17 +64,10 @@ public class WfeTitleHeader extends Composite implements IWfeEventHandle {
       }
 
       refresh();
-      editor.registerEvent(this, AtsAttributeTypes.Title);
    }
 
-   @Override
    public void refresh() {
       titleText.setAttributeType((Artifact) workItem.getStoreObject(), CoreAttributeTypes.Name);
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
    }
 
    public XTextDam getTitleText() {

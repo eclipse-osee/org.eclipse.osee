@@ -19,16 +19,15 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -37,7 +36,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
+public class WfeTeamAndIdsHeader extends Composite {
 
    private final IAtsWorkItem workItem;
    Text teamWfIdValue, parentIdValue, idValue, actionIdValue;
@@ -77,38 +76,62 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
       }
 
       refresh();
-      if (workItem.getStoreObject() instanceof Artifact) {
-         editor.registerEvent(this, (Artifact) workItem.getStoreObject());
-      }
-
    }
 
-   @Override
    public void refresh() {
       if (Widgets.isAccessible(idValue)) {
-         String legacyPcrId = (AtsApiService.get()).getAttributeResolver().getSoleAttributeValueAsString(workItem,
-            AtsAttributeTypes.LegacyPcrId, "");
-         if (Strings.isValid(legacyPcrId)) {
-            legacyPcrId = " | " + legacyPcrId;
-         } else {
-            legacyPcrId = "";
-         }
-         idValue.setText(workItem.getAtsId() + legacyPcrId);
-         if (workItem.isTeamWorkflow()) {
-            teamWfIdValue.setText(((TeamWorkFlowArtifact) workItem).getTeamName());
-         } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
-            IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
-            parentIdValue.setText(AtsApiService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
-         }
-         IAtsAction action = workItem.getParentAction();
-         if (action != null) {
-            actionIdValue.setText(action.getAtsId());
-         }
+         Thread refreshThread = new Thread("Refresh Workflow Editor") {
+
+            @Override
+            public void run() {
+               super.run();
+               String legacyPcrId = (AtsApiService.get()).getAttributeResolver().getSoleAttributeValueAsString(workItem,
+                  AtsAttributeTypes.LegacyPcrId, "");
+               if (Strings.isValid(legacyPcrId)) {
+                  legacyPcrId = " | " + legacyPcrId;
+               } else {
+                  legacyPcrId = "";
+               }
+               String idValueStr = workItem.getAtsId() + legacyPcrId;
+               String teamWfIdValueStr = "";
+               String parentIdValueStr = "";
+               if (workItem.isTeamWorkflow()) {
+                  teamWfIdValueStr = ((TeamWorkFlowArtifact) workItem).getTeamName();
+               } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
+                  IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
+                  parentIdValueStr = AtsApiService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow);
+               }
+               IAtsAction action = workItem.getParentAction();
+               String actionIdValueStr = "";
+               if (action != null) {
+                  actionIdValueStr = action.getAtsId();
+               }
+
+               final String fTeamWfIdValueStr = teamWfIdValueStr;
+               final String fIdValueStr = idValueStr;
+               final String fParentIdValueStr = parentIdValueStr;
+               final String fActionIdValueStrr = actionIdValueStr;
+               Displays.ensureInDisplayThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     idValue.setText(fIdValueStr);
+                     if (Widgets.isAccessible(teamWfIdValue)) {
+                        teamWfIdValue.setText(fTeamWfIdValueStr);
+                     }
+                     if (Widgets.isAccessible(parentIdValue)) {
+                        parentIdValue.setText(fParentIdValueStr);
+                     }
+                     if (Widgets.isAccessible(actionIdValue)) {
+                        actionIdValue.setText(fActionIdValueStrr);
+                     }
+                  }
+               });
+            }
+
+         };
+         refreshThread.start();
       }
    }
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
-   }
 }

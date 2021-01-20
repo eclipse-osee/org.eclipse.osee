@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectUtil;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectXViewer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -40,18 +39,16 @@ public class WfeDefectsToolbar {
    private final DefectXViewer defectXViewer;
    private DefectUtil defectUtil;
    private Action importDefectsAction;
-   private final IRefreshActionHandler refreshActionHandler;
 
-   public WfeDefectsToolbar(ScrolledForm scrolledForm, DefectXViewer defectXViewer, IAtsPeerToPeerReview review, IRefreshActionHandler refreshActionHandler) {
+   public WfeDefectsToolbar(ScrolledForm scrolledForm, DefectXViewer defectXViewer, IAtsPeerToPeerReview review) {
       this.scrolledForm = scrolledForm;
       this.defectXViewer = defectXViewer;
       this.review = review;
-      this.refreshActionHandler = refreshActionHandler;
    }
 
    public DefectUtil getDefectUtil() {
       if (defectUtil == null) {
-         defectUtil = new DefectUtil(defectXViewer, review, refreshActionHandler);
+         defectUtil = new DefectUtil(defectXViewer, review);
       }
       return defectUtil;
    }

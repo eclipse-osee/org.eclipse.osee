@@ -15,11 +15,9 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,7 +39,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkPackage extends Composite implements IWfeEventHandle {
+public class WfeWorkPackage extends Composite {
 
    private final static String WORK_PACKAGE = "Work Package:";
    Text valueLabel;
@@ -90,9 +88,7 @@ public class WfeWorkPackage extends Composite implements IWfeEventHandle {
          valueLabel.setLayoutData(new GridData());
          editor.getToolkit().adapt(valueLabel, true, true);
          valueLabel.setText("Not Set");
-         editor.registerEvent(this, AtsAttributeTypes.WorkPackage, AtsAttributeTypes.WorkPackageReference);
          refresh();
-
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -101,7 +97,6 @@ public class WfeWorkPackage extends Composite implements IWfeEventHandle {
 
    }
 
-   @Override
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
@@ -124,11 +119,6 @@ public class WfeWorkPackage extends Composite implements IWfeEventHandle {
       if (Widgets.isAccessible(link)) {
          link.setBackground(color);
       }
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
    }
 
 }

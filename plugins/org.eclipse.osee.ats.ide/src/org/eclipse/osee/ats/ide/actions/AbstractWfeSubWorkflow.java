@@ -17,7 +17,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -39,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Bhawana Mishra
  */
-public class AbstractWfeSubWorkflow extends Composite implements IWfeEventHandle {
+public class AbstractWfeSubWorkflow extends Composite {
    protected IAtsWorkItem workItem;
    private Hyperlink labelLink;
    private Hyperlink reasonLink;
@@ -121,10 +120,8 @@ public class AbstractWfeSubWorkflow extends Composite implements IWfeEventHandle
       }
 
       refresh();
-      editor.registerEvent(this, attrType);
    }
 
-   @Override
    public void refresh() {
       String reason = "";
       String label = "";
@@ -194,8 +191,4 @@ public class AbstractWfeSubWorkflow extends Composite implements IWfeEventHandle
       changes.executeIfNeeded();
    }
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
-   }
 }

@@ -14,14 +14,11 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -43,16 +40,18 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTargetedVersionHeader extends Composite implements IWfeEventHandle {
+public class WfeTargetedVersionHeader extends Composite {
 
    private final static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
    Hyperlink link;
    private final IAtsTeamWorkflow teamWf;
+   private final WorkflowEditor editor;
 
    public WfeTargetedVersionHeader(Composite parent, int style, final IAtsTeamWorkflow teamWf, final WorkflowEditor editor) {
       super(parent, style);
       this.teamWf = teamWf;
+      this.editor = editor;
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
@@ -76,20 +75,13 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
                if (editor.isDirty()) {
                   editor.doSave(null);
                }
-               if (chooseVersion(teamWf)) {
-                  refresh();
-
-               }
-
-               editor.onDirtied();
+               promptChangeVersion();
             }
          });
 
          valueLabel = editor.getToolkit().createLabel(this, "Not Set");
          valueLabel.setLayoutData(new GridData());
          refresh();
-         editor.registerEvent(this, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -98,9 +90,17 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
 
    }
 
-   public static boolean chooseVersion(final IAtsTeamWorkflow teamWf) {
+   public boolean promptChangeVersion() {
+      return promptChangeVersion(editor, teamWf);
+   }
+
+   public static boolean promptChangeVersion(final IAtsTeamWorkflow teamWf) {
+      WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(teamWf);
+      return promptChangeVersion(editor, teamWf);
+   }
+
+   public static boolean promptChangeVersion(WorkflowEditor editor, final IAtsTeamWorkflow teamWf) {
       try {
-         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(teamWf);
 
          if (editor.isDirty()) {
             editor.doSave(null);
@@ -117,7 +117,6 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
       return false;
    }
 
-   @Override
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
@@ -138,11 +137,6 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
       if (Widgets.isAccessible(link)) {
          link.setBackground(color);
       }
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return teamWf;
    }
 
 }

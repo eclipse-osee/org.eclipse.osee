@@ -17,10 +17,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AICheckTreeDialog;
@@ -42,7 +40,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeActionableItemReviewHeader extends Composite implements IWfeEventHandle {
+public class WfeActionableItemReviewHeader extends Composite {
 
    private Label label;
    private final AbstractReviewArtifact review;
@@ -82,8 +80,6 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
          });
 
          refresh();
-         editor.registerEvent(this, AtsAttributeTypes.ActionableItemReference);
-
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -118,7 +114,6 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
 
    }
 
-   @Override
    public void refresh() {
       label.setText("This \"" + review.getArtifactTypeName() +
       //
@@ -127,11 +122,6 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
          AtsApiService.get().getActionableItemService().getActionableItemsStr(review) + "\" ");
       label.update();
       layout();
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return review;
    }
 
 }

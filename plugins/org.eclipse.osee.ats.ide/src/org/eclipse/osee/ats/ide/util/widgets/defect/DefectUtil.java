@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
@@ -37,12 +36,10 @@ public class DefectUtil {
 
    private final DefectXViewer defectXViewer;
    private final IAtsPeerToPeerReview review;
-   private final IRefreshActionHandler refreshActionHandler;
 
-   public DefectUtil(DefectXViewer defectXViewer, IAtsPeerToPeerReview review, IRefreshActionHandler refreshActionHandler) {
+   public DefectUtil(DefectXViewer defectXViewer, IAtsPeerToPeerReview review) {
       this.defectXViewer = defectXViewer;
       this.review = review;
-      this.refreshActionHandler = refreshActionHandler;
    }
 
    public void handleNewDefect() {
@@ -65,7 +62,6 @@ public class DefectUtil {
             defectManager.addOrUpdateDefectItem(item);
             defectManager.saveToArtifact(review, changes);
             changes.execute();
-            refreshActionHandler.refreshActionHandler();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -98,7 +94,6 @@ public class DefectUtil {
                defectManager.saveToArtifact(review, changes);
             }
             changes.executeIfNeeded();
-            refreshActionHandler.refreshActionHandler();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -120,7 +115,6 @@ public class DefectUtil {
                }
             }
             changes.execute();
-            refreshActionHandler.refreshActionHandler();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

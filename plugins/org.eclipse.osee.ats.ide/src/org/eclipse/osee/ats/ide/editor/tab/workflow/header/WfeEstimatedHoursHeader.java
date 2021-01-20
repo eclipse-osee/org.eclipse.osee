@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
@@ -38,7 +37,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeEstimatedHoursHeader extends Composite implements IWfeEventHandle {
+public class WfeEstimatedHoursHeader extends Composite {
 
    private final static String LABEL = "Estimated Hours:";
    Label valueLabel;
@@ -87,8 +86,6 @@ public class WfeEstimatedHoursHeader extends Composite implements IWfeEventHandl
          valueLabel.setToolTipText(getToolTip());
          valueLabel.setLayoutData(new GridData());
          refresh();
-         editor.registerEvent(this, AtsAttributeTypes.EstimatedHours);
-
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -115,7 +112,6 @@ public class WfeEstimatedHoursHeader extends Composite implements IWfeEventHandl
       }
    }
 
-   @Override
    public void refresh() {
       valueLabel.setText(getEstHoursStr());
       valueLabel.getParent().getParent().layout();
@@ -123,11 +119,6 @@ public class WfeEstimatedHoursHeader extends Composite implements IWfeEventHandl
 
    private String getToolTip() {
       return "[Workflow Estimate] | [Calculation: Sum estimated hours for workflow and all tasks and reviews]";
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
    }
 
 }

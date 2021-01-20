@@ -68,18 +68,24 @@ public class WfeHeaderComposite extends Composite {
 
    private final WorkflowEditor editor;
    private final IAtsWorkItem workItem;
-   private WfeRelationsHyperlinkComposite smaRelationsComposite;
+   private WfeRelationsHyperlinkComposite relationsComposite;
    private WfeActionableItemHeader actionableItemHeader;
-   private WfeMetricsHeader workflowMetricsHeader;
+   private WfeMetricsHeader metricsHeader;
    private final StateXWidgetPage currentStateXWidgetPage;
    private static Color LIGHT_GREY;
    private final IManagedForm managedForm;
    private WfeCustomHeader customHeader;
    private WfeTitleHeader titleHeader;
-   private WfeTransitionHeader wfeTransitionComposite;
+   private WfeTransitionHeader transitionHeader;
+   private WfeStateCreatedOrigHeader stateHeader;
+   private WfeTeamAndIdsHeader teamHeader;
+   private WfeTargetedVersionHeader versionHeader;
+   private WfeAssigneesHeader assigneeHeader;
+   private WfeWorkPackage workPackageHeader;
+   private WfeActionableItemReviewHeader aiReviewHeader;
 
    public WfeTransitionHeader getWfeTransitionComposite() {
-      return wfeTransitionComposite;
+      return transitionHeader;
    }
 
    public WfeHeaderComposite(Composite parent, int style, WorkflowEditor editor, StateXWidgetPage currentStateXWidgetPage, IManagedForm managedForm) {
@@ -90,6 +96,51 @@ public class WfeHeaderComposite extends Composite {
       this.workItem = editor.getWorkItem();
    }
 
+   public void refresh() {
+      if (titleHeader != null) {
+         titleHeader.refresh();
+      }
+      if (stateHeader != null) {
+         stateHeader.refresh();
+      }
+      if (teamHeader != null) {
+         teamHeader.refresh();
+      }
+      if (versionHeader != null) {
+         versionHeader.refresh();
+      }
+      if (assigneeHeader != null) {
+         assigneeHeader.refresh();
+      }
+      if (actionableItemHeader != null) {
+         actionableItemHeader.refresh();
+      }
+      if (metricsHeader != null) {
+         metricsHeader.refresh();
+      }
+      if (workPackageHeader != null) {
+         workPackageHeader.refresh();
+      }
+      if (relationsComposite != null) {
+         relationsComposite.refresh();
+      }
+      if (transitionHeader != null) {
+         transitionHeader.refresh();
+      }
+      if (blockedWfHeader != null) {
+         blockedWfHeader.refresh();
+      }
+      if (holdWfHeader != null) {
+         holdWfHeader.refresh();
+      }
+      if (aiReviewHeader != null) {
+         aiReviewHeader.refresh();
+      }
+      if (customHeader != null) {
+         customHeader.refresh();
+      }
+   }
+
    public void create() {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 100;
@@ -98,8 +149,8 @@ public class WfeHeaderComposite extends Composite {
 
       try {
          titleHeader = new WfeTitleHeader(this, SWT.NONE, workItem, editor, xModListener);
-         new WfeStateCreatedOrigHeader(this, SWT.NONE, workItem, editor);
-         new WfeTeamAndIdsHeader(this, SWT.NONE, workItem, editor);
+         stateHeader = new WfeStateCreatedOrigHeader(this, SWT.NONE, workItem, editor);
+         teamHeader = new WfeTeamAndIdsHeader(this, SWT.NONE, workItem, editor);
          createTargetVersionAndAssigneeHeader(this, currentStateXWidgetPage, editor.getToolkit());
 
          createLatestHeader(this, editor.getToolkit());
@@ -108,7 +159,7 @@ public class WfeHeaderComposite extends Composite {
          }
 
          if (workItem.getWorkDefinition().getHeaderDef().isShowMetricsHeader()) {
-            workflowMetricsHeader = new WfeMetricsHeader(this, editor.getToolkit(), workItem, editor, managedForm);
+            metricsHeader = new WfeMetricsHeader(this, editor.getToolkit(), workItem, editor, managedForm);
          }
 
          int workPackageNumColumns = 2;
@@ -117,8 +168,8 @@ public class WfeHeaderComposite extends Composite {
          }
          int numColumns = 4;
          createWorkDefHeader(this, editor.getToolkit(), workItem, numColumns);
-         new WfeBlockedWorkflowHeader(this, SWT.NONE, workItem, editor);
-         new WfeHoldWorkflowHeader(this, SWT.NONE, workItem, editor);
+         blockedWfHeader = new WfeBlockedWorkflowHeader(this, SWT.NONE, workItem, editor);
+         holdWfHeader = new WfeHoldWorkflowHeader(this, SWT.NONE, workItem, editor);
 
          customHeader = createCustomHeader(this, editor.getToolkit(), workItem, editor, managedForm);
 
@@ -127,17 +178,18 @@ public class WfeHeaderComposite extends Composite {
          createAnnotationsHeader(this, editor.getToolkit());
 
          if (WfeRelationsHyperlinkComposite.relationExists((AbstractWorkflowArtifact) workItem)) {
-            smaRelationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
-            smaRelationsComposite.create();
+            relationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
+            relationsComposite.create();
          }
 
          if (WfeActionableItemReviewHeader.isApplicable(workItem)) {
-            new WfeActionableItemReviewHeader(this, editor.getToolkit(), (AbstractReviewArtifact) workItem, editor);
+            aiReviewHeader =
+               new WfeActionableItemReviewHeader(this, editor.getToolkit(), (AbstractReviewArtifact) workItem, editor);
          }
 
          boolean isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(),
             workItem, workItem.getStateDefinition(), AtsApiService.get().getUserService());
-         wfeTransitionComposite = new WfeTransitionHeader(this, editor, isEditable);
+         transitionHeader = new WfeTransitionHeader(this, editor, isEditable);
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -212,7 +264,7 @@ public class WfeHeaderComposite extends Composite {
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          comp.setLayout(ALayout.getZeroMarginLayout(6, false));
 
-         new WfeWorkPackage(comp, SWT.NONE, workItem, editor);
+         workPackageHeader = new WfeWorkPackage(comp, SWT.NONE, workItem, editor);
       }
    }
 
@@ -248,7 +300,7 @@ public class WfeHeaderComposite extends Composite {
 
       // Targeted Version
       if (isShowTargetedVersion) {
-         new WfeTargetedVersionHeader(comp, SWT.NONE, (IAtsTeamWorkflow) workItem, editor);
+         versionHeader = new WfeTargetedVersionHeader(comp, SWT.NONE, (IAtsTeamWorkflow) workItem, editor);
          toolkit.createLabel(comp, "    ");
       }
 
@@ -256,7 +308,7 @@ public class WfeHeaderComposite extends Composite {
       if (isCurrentNonCompleteCanceledState) {
          boolean editable = WorkflowManager.isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject());
 
-         new WfeAssigneesHeader(comp, SWT.NONE, workItem, editable, editor);
+         assigneeHeader = new WfeAssigneesHeader(comp, SWT.NONE, workItem, editable, editor);
       }
    }
 
@@ -283,8 +335,8 @@ public class WfeHeaderComposite extends Composite {
       if (actionableItemHeader != null) {
          actionableItemHeader.dispose();
       }
-      if (workflowMetricsHeader != null) {
-         workflowMetricsHeader.dispose();
+      if (metricsHeader != null) {
+         metricsHeader.dispose();
       }
    }
 
@@ -345,6 +397,8 @@ public class WfeHeaderComposite extends Composite {
          }
       }
    };
+   private WfeBlockedWorkflowHeader blockedWfHeader;
+   private WfeHoldWorkflowHeader holdWfHeader;
 
    public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
       titleHeader.getXWidgets(widgets);

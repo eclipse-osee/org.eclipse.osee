@@ -15,13 +15,11 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.Result;
@@ -39,7 +37,7 @@ import org.eclipse.ui.forms.IManagedForm;
 /**
  * @author Donald G. Dunne
  */
-public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
+public class WfeMetricsHeader extends Composite {
 
    private final IAtsWorkItem workItem;
    private Label percentLabel, hoursSpentLabel, remainHoursLabel;
@@ -72,14 +70,11 @@ public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
             RemainingHoursColumn.getInstance().getDescription());
 
          refresh();
-         editor.registerEvent(this, AtsAttributeTypes.EstimatedHours, AtsAttributeTypes.CurrentState,
-            AtsAttributeTypes.State, AtsAttributeTypes.PercentComplete);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
-   @Override
    public void refresh() {
       if (!Widgets.isAccessible(hoursSpentLabel)) {
          return;
@@ -89,15 +84,15 @@ public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
             totalPercentHeader.refresh();
          }
          if (percentLabel != null && !percentLabel.isDisposed()) {
-            percentLabel.setText(String.valueOf(
-               PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get())));
+            percentLabel.setText(
+               String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get())));
          }
          if (estimatedHoursHeader != null) {
             estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(
-               HoursSpentUtil.getHoursSpentTotal(workItem, AtsApiService.get()))));
+            hoursSpentLabel.setText(String.valueOf(
+               AtsUtil.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, AtsApiService.get()))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = RemainingHoursColumn.isRemainingHoursValid(workItem);
@@ -117,11 +112,6 @@ public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
          percentLabel.update();
       }
       layout();
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
    }
 
 }

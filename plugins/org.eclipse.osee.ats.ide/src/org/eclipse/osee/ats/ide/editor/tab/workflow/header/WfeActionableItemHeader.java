@@ -15,12 +15,10 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -40,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeActionableItemHeader extends Composite implements IWfeEventHandle {
+public class WfeActionableItemHeader extends Composite {
 
    private Label label;
    private final IAtsWorkItem workItem;
@@ -86,14 +84,11 @@ public class WfeActionableItemHeader extends Composite implements IWfeEventHandl
 
          label = toolkit.createLabel(this, " ");
          refresh();
-         editor.registerEvent(this, AtsAttributeTypes.ActionableItemReference);
-
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
-   @Override
    public void refresh() {
       if (label.isDisposed()) {
          return;
@@ -124,11 +119,6 @@ public class WfeActionableItemHeader extends Composite implements IWfeEventHandl
       }
       label.update();
       layout();
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
    }
 
 }

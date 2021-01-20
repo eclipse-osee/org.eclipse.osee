@@ -26,9 +26,16 @@ public class AtsTopicEvent extends AbstractTopicEvent {
 
    public static Map<String, AtsTopicEvent> idToEvent = new HashMap<String, AtsTopicEvent>();
 
+   /**
+    * Event for any work item modified including transition. Artifacts will be reloaded after a transition.
+    */
    public static final AtsTopicEvent WORK_ITEM_MODIFIED =
       new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/modified");
 
+   /**
+    * Specific event for only transitions. No reloaded is done through this event for transitioning so the events don't
+    * collide.
+    */
    public static final AtsTopicEvent WORK_ITEM_TRANSITIONED =
       new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/transitioned");
    public static final AtsTopicEvent WORK_ITEM_TRANSITION_FAILED =

@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,8 +36,6 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.IDirtyReportable;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.agile.SprintMemberProvider;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandler;
 import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.editor.event.WfeBranchEventManager;
 import org.eclipse.osee.ats.ide.editor.tab.attributes.WfeAttributesTab;
@@ -62,17 +58,10 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -80,14 +69,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -116,7 +98,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyReportable, IWfeEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider {
+public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyReportable, ISelectedAtsArtifacts, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.ide.editor.WorkflowEditor";
    private AbstractWorkflowArtifact workItem;
    private WfeWorkFlowTab workFlowTab;
@@ -126,16 +108,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private WfeAttributesTab attrTab;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
-   private final HashCollectionSet<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollectionSet<>();
-   private final HashCollectionSet<RelationTypeToken, IWfeEventHandle> relHandlers = new HashCollectionSet<>();
-   // This MUST be string guid until types are converted to id all at once and events use id
-   private final HashCollectionSet<String, IWfeEventHandle> artHandlers = new HashCollectionSet<>();
-   /**
-    * This MUST be string guid until types are converted to id all at once and events use id. Used when want to listen
-    * for rel events for a artifact other than the editor workItem.
-    */
-   private final DoubleKeyHashMap<RelationTypeToken, String, List<IWfeEventHandle>> artRelHandlers =
-      new DoubleKeyHashMap<>();
    private WfeReloadTab reloadTab;
    private WfeMetricsTab metricsTab;
 
@@ -435,8 +407,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   public void refreshPages() {
+   /**
+    * Refresh all tabs, sections and widgets. Should be called on reload of artifact or artifact changed event.
+    * Attribute widgets are reset so they don't register as dirty cause they don't have latest value in artifact.
+    */
+   public void refresh() {
       try {
+         System.err.println("WFE Refresh " + workItem.toStringWithId());
          if (getContainer() == null || getContainer().isDisposed()) {
             return;
          }
@@ -449,6 +426,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          if (taskTab != null) {
             taskTab.refresh();
          }
+         if (defectsTab != null) {
+            defectsTab.refresh();
+         }
+         // Don't refresh attribute tab, it listens for reload events and ArtifactEvents
          onDirtied();
          updatePartName();
       } catch (Exception ex) {
@@ -644,12 +625,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       return this;
    }
 
-   @Override
-   public WorkflowEditor getWorkflowEditor() {
-      return this;
-   }
-
-   @Override
    public boolean isDisposed() {
       return getContainer() == null || getContainer().isDisposed();
    }
@@ -737,166 +712,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    public void setTabName(int index, String tabName) {
       setPageText(index, tabName);
-   }
-
-   public void registerEvent(IWfeEventHandle handler, AttributeTypeToken... attrTypes) {
-      for (AttributeTypeToken attrType : attrTypes) {
-         attrHandlers.put(attrType, handler);
-      }
-   }
-
-   public void registerEvent(IWfeEventHandle handler, RelationTypeToken... relTypes) {
-      for (RelationTypeToken relType : relTypes) {
-         relHandlers.put(relType, handler);
-      }
-   }
-
-   public void registerEvent(IWfeEventHandle handler, Artifact... artifacts) {
-      for (Artifact art : artifacts) {
-         artHandlers.put(art.getGuid(), handler);
-      }
-   }
-
-   /**
-    * Listen to events for other artifact relation changes (like TeamWf siblings added/deleted)
-    */
-   public void registerEvent(IWfeEventHandle handler, ArtifactToken artifact, RelationTypeToken... relTypes) {
-      for (RelationTypeToken relType : relTypes) {
-         List<IWfeEventHandle> handlers = artRelHandlers.get(relType, artifact.getGuid());
-         if (handlers == null) {
-            handlers = new ArrayList<>();
-            artRelHandlers.put(relType, artifact.getGuid(), handlers);
-         }
-         handlers.add(handler);
-      }
-   }
-
-   /**
-    * Handle Events for attributes change to this WorkItem or relations against this WorkItem
-    */
-   public void handleEvent(ArtifactEvent artifactEvent) {
-      OrcsTokenService tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
-
-      // Only want to call artHandlers once if an artifact changed for any reason
-      Set<String> handledArts = new HashSet<>();
-      for (EventBasicGuidArtifact eArt : artifactEvent.getArtifacts()) {
-         if (eArt instanceof EventModifiedBasicGuidArtifact) {
-            EventModifiedBasicGuidArtifact eMArt = (EventModifiedBasicGuidArtifact) eArt;
-            handleArtifactEvent(handledArts, eMArt.getGuid());
-            if (eMArt.getGuid().equals(getWorkItem().getGuid())) {
-               for (AttributeChange attr : eMArt.getAttributeChanges()) {
-                  handleEvent(tokenService.getAttributeType(attr.getAttrTypeGuid()));
-               }
-            }
-         }
-      }
-      for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
-         if (eRel.getArtA().getGuid().equals(getWorkItem().getGuid()) || eRel.getArtB().getGuid().equals(
-            getWorkItem().getGuid())) {
-
-            Set<IWfeEventHandle> handlers = relHandlers.getValues(tokenService.getRelationType(eRel.getRelTypeGuid()));
-            if (handlers != null) {
-               for (IWfeEventHandle handler : handlers) {
-                  Displays.ensureInDisplayThread(new Runnable() {
-
-                     @Override
-                     public void run() {
-                        handler.refresh();
-                     }
-                  });
-               }
-            }
-            handledArts.clear();
-            if (!handledArts.contains(getWorkItem().getGuid())) {
-               Set<IWfeEventHandle> handlers2 = artHandlers.getValues(getWorkItem().getStoreObject().getGuid());
-               if (handlers2 != null) {
-                  for (IWfeEventHandle handler : handlers2) {
-                     Displays.ensureInDisplayThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                           handler.refresh();
-                        }
-                     });
-                  }
-               }
-            }
-            handledArts.add(getWorkItem().getGuid());
-         }
-      }
-      for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
-         for (Entry<RelationTypeToken, String> relArt : artRelHandlers.keySet().entrySet()) {
-            String artGuid = relArt.getValue();
-            RelationTypeToken relation = relArt.getKey();
-            if (eRel.getArtA().getGuid().equals(artGuid) || eRel.getArtB().getGuid().equals(artGuid)) {
-               if (eRel.getRelTypeGuid().equals(relation.getId())) {
-                  List<IWfeEventHandle> handlers = artRelHandlers.get(relation, artGuid);
-                  if (handlers != null) {
-                     for (IWfeEventHandle handler : handlers) {
-                        Displays.ensureInDisplayThread(new Runnable() {
-
-                           @Override
-                           public void run() {
-                              handler.refresh();
-                           }
-                        });
-                     }
-                  }
-               }
-               handledArts.clear();
-               if (!handledArts.contains(artGuid)) {
-                  List<IWfeEventHandle> handlers2 = artRelHandlers.get(relation, artGuid);
-                  if (handlers2 != null) {
-                     for (IWfeEventHandle handler : handlers2) {
-                        Displays.ensureInDisplayThread(new Runnable() {
-
-                           @Override
-                           public void run() {
-                              handler.refresh();
-                           }
-                        });
-                     }
-                  }
-               }
-            }
-         }
-         handledArts.add(getWorkItem().getGuid());
-      }
-
-      onDirtied();
-
-      updatePartName();
-   }
-
-   private void handleArtifactEvent(Set<String> handledArts, String guid) {
-      if (!handledArts.contains(guid)) {
-         Artifact loadedWf = ArtifactCache.getActive(guid, AtsApiService.get().getAtsBranch());
-         if (loadedWf != null) {
-            if (artHandlers.containsKey(loadedWf.getGuid())) {
-               Set<IWfeEventHandle> handlers = new HashSet<IWfeEventHandle>();
-               handlers.addAll(artHandlers.getValues(loadedWf.getGuid()));
-               for (IWfeEventHandle handler : handlers) {
-                  handler.refresh();
-               }
-            }
-         }
-         handledArts.add(guid);
-      }
-   }
-
-   public void handleEvent(AttributeTypeToken attrType) {
-      Set<IWfeEventHandle> handlers = attrHandlers.getValues(attrType);
-      if (handlers != null && !handlers.isEmpty()) {
-         for (IWfeEventHandle handler : handlers) {
-            Displays.ensureInDisplayThread(new Runnable() {
-
-               @Override
-               public void run() {
-                  handler.refresh();
-               }
-            });
-         }
-      }
    }
 
    public void setPage(int pageId) {

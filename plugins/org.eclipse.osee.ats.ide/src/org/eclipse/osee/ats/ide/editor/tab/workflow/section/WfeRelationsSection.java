@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeDragAndDrop;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -38,12 +37,11 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class WfeRelationsSection extends RelationsFormSection implements IWfeEventHandle {
+public class WfeRelationsSection extends RelationsFormSection {
    IAtsWorkItem workItem;
 
    public WfeRelationsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, true);
-      editor.registerEvent(this, editor.getWorkItem());
       workItem = editor.getWorkItem();
    }
 
@@ -88,9 +86,8 @@ public class WfeRelationsSection extends RelationsFormSection implements IWfeEve
       AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
       CoreRelationTypes.DefaultHierarchical_Child.getName(), CoreRelationTypes.Users_Artifact.getName());
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
+   public boolean isDisposed() {
+      return getRelationComposite() == null || getRelationComposite().isDisposed();
    }
 
 }

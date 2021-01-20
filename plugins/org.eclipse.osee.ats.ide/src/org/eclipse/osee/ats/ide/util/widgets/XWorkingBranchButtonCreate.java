@@ -101,7 +101,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                AtsBranchServiceIde.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
                new String[] {"Select Targeted Version", "Cancel"}, 0);
             if (dialog.open() == 0) {
-               WfeTargetedVersionHeader.chooseVersion(getTeamArt());
+               WfeTargetedVersionHeader.promptChangeVersion(getTeamArt());
             }
          } else {
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,

@@ -13,15 +13,12 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.defects;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.core.review.ReviewDefectError;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -37,21 +34,11 @@ import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -62,10 +49,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class WfeDefectsTab extends WfeAbstractTab implements IRefreshActionHandler, DefectRefreshListener, IArtifactEventListener {
-   private static final List<IEventFilter> EVENT_FILTERS =
-      Arrays.asList(new BranchIdEventFilter(AtsApiService.get().getAtsBranch()),
-         new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview));
+public class WfeDefectsTab extends WfeAbstractTab implements DefectRefreshListener {
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
    public final static String ID = "ats.review.defects.tab";
@@ -73,13 +57,10 @@ public class WfeDefectsTab extends WfeAbstractTab implements IRefreshActionHandl
    private DefectXViewer xViewer;
    private WfeDefectsToolbar toolBar;
    private Label messageLabel;
-   private final WfeDefectsTab fTab;
 
    public WfeDefectsTab(WorkflowEditor editor, IAtsPeerToPeerReview review) {
       super(editor, ID, review, "Defects");
       this.review = review;
-      fTab = this;
-      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -93,13 +74,6 @@ public class WfeDefectsTab extends WfeAbstractTab implements IRefreshActionHandl
          bodyComp.setLayout(gridLayout);
          GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, true);
          bodyComp.setLayoutData(gd);
-         bodyComp.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-               OseeEventManager.removeListener(fTab);
-            }
-         });
 
          final Composite mainComp = new Composite(bodyComp, SWT.BORDER);
          GridData gd2 = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -159,7 +133,6 @@ public class WfeDefectsTab extends WfeAbstractTab implements IRefreshActionHandl
          public void run() {
             try {
                if (!Widgets.isAccessible(messageLabel)) {
-                  OseeEventManager.removeListener(fTab);
                   return;
                }
                ReviewDefectError error = data.getError();
@@ -179,10 +152,8 @@ public class WfeDefectsTab extends WfeAbstractTab implements IRefreshActionHandl
       });
    }
 
-   @Override
-   public void refreshActionHandler() {
+   public void refresh() {
       if (xViewer != null) {
-         AtsApiService.get().getQueryServiceIde().getArtifact(review).reloadAttributesAndRelations();
          xViewer.loadTable(this);
       }
    }
@@ -194,22 +165,9 @@ public class WfeDefectsTab extends WfeAbstractTab implements IRefreshActionHandl
    }
 
    @Override
-   public List<? extends IEventFilter> getEventFilters() {
-      return EVENT_FILTERS;
-   }
-
-   @Override
-   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isModified(AtsApiService.get().getQueryServiceIde().getArtifact(review.getStoreObject()))) {
-         refreshActionHandler();
-         refreshMessageLabel();
-      }
-   }
-
-   @Override
    public IToolBarManager createToolbar(IManagedForm managedForm) {
 
-      toolBar = new WfeDefectsToolbar(scrolledForm, xViewer, review, this);
+      toolBar = new WfeDefectsToolbar(scrolledForm, xViewer, review);
       toolBar.build();
 
       return super.createToolbar(managedForm);

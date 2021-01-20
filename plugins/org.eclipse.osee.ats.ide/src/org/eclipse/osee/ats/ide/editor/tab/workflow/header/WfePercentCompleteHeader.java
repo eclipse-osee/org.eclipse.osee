@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfePercentCompleteHeader extends Composite implements IWfeEventHandle {
+public class WfePercentCompleteHeader extends Composite {
 
    private final static String PERCENT_COMPLETE = "Percent Complete:";
    Label valueLabel;
@@ -101,8 +100,6 @@ public class WfePercentCompleteHeader extends Composite implements IWfeEventHand
          valueLabel.setToolTipText(getToolTip());
          valueLabel.setLayoutData(new GridData());
          refresh();
-         editor.registerEvent(this, AtsAttributeTypes.PercentComplete);
-
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -114,8 +111,7 @@ public class WfePercentCompleteHeader extends Composite implements IWfeEventHand
    public String getPercentCompleteStr() {
       int awaPercent = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.PercentComplete, 0);
-      int totalPecent =
-         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get());
+      int totalPecent = PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get());
       if (awaPercent != totalPecent) {
          return String.format("%d | %d", awaPercent, totalPecent);
       } else {
@@ -123,18 +119,14 @@ public class WfePercentCompleteHeader extends Composite implements IWfeEventHand
       }
    }
 
-   @Override
    public void refresh() {
       valueLabel.setText(getPercentCompleteStr());
-      valueLabel.getParent().getParent().layout();
+      valueLabel.getParent().layout(true);
+      valueLabel.getParent().getParent().layout(true);
    }
 
    private String getToolTip() {
       return " [Workflow Percent] | [Calculation: Sum of percent for workflow, reviews and tasks / # workflows, reviews and tasks] ";
    }
 
-   @Override
-   public IAtsWorkItem getWorkItem() {
-      return workItem;
-   }
 }

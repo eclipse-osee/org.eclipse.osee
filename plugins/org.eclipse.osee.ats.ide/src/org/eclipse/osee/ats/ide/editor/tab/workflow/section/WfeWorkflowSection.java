@@ -18,14 +18,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StateHoursSpentXWidget;
@@ -228,25 +226,6 @@ public class WfeWorkflowSection extends SectionPart {
          if (xWidget.getLabelWidget() != null) {
             // Set all XWidget labels to bold font
             WorkflowEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
-         }
-         // Set editor if applicable
-         if (xWidget instanceof IWfeEventHandle) {
-            ((IWfeEventHandle) xWidget).setEditor(editor);
-         } else if (xWidget instanceof IAttributeWidget) {
-            IAttributeWidget attrWidget = (IAttributeWidget) xWidget;
-            editor.registerEvent(new IWfeEventHandle() {
-
-               @Override
-               public IAtsWorkItem getWorkItem() {
-                  return sma;
-               }
-
-               @Override
-               public void refresh() {
-                  attrWidget.reSet();
-               }
-
-            }, attrWidget.getAttributeType());
          }
       }
 
@@ -490,10 +469,14 @@ public class WfeWorkflowSection extends SectionPart {
       super.refresh();
       try {
          for (XWidget xWidget : allXWidgets) {
-            xWidget.refresh();
+            if (xWidget instanceof IAttributeWidget) {
+               // Reload with with current artifact/attribute value
+               ((IAttributeWidget) xWidget).reSet();
+            } else {
+               xWidget.refresh();
+            }
          }
          refreshStateTitle();
-         editor.onDirtied();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
