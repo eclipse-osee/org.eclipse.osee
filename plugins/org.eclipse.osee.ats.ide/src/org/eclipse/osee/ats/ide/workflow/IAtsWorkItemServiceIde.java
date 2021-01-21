@@ -21,6 +21,4 @@ public interface IAtsWorkItemServiceIde extends IAtsWorkItemService {
 
    public Set<IAtsWorkItemHookIde> getWorkItemHooksIde();
 
-   void addWorkItemHookIde(IAtsWorkItemHookIde hook);
-
 }

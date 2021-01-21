@@ -82,7 +82,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
-   private static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
+   protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();
 
    @Override

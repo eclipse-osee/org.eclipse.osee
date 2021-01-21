@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -41,20 +42,19 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl implements IAtsWorkItemServiceIde {
 
-   private static Set<IAtsWorkItemHookIde> workflowHooksIde = new HashSet<>();
-
-   @Override
-   public void addWorkItemHookIde(IAtsWorkItemHookIde hook) {
-      workflowHooksIde.add(hook);
-   }
-
    public AtsWorkItemServiceClientImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsApi, teamWorkflowProvidersLazy);
    }
 
    @Override
    public Set<IAtsWorkItemHookIde> getWorkItemHooksIde() {
-      return workflowHooksIde;
+      Set<IAtsWorkItemHookIde> hooks = new HashSet<>();
+      for (IAtsWorkItemHook hook : workflowHooks) {
+         if (hook instanceof IAtsWorkItemHookIde) {
+            hooks.add((IAtsWorkItemHookIde) hook);
+         }
+      }
+      return hooks;
    }
 
    @Override
