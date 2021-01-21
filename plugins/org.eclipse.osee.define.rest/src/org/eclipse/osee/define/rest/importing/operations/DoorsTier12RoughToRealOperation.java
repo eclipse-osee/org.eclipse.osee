@@ -13,14 +13,14 @@
 
 package org.eclipse.osee.define.rest.importing.operations;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DoorsId;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Parent;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.define.api.importing.DoorsImportFieldTokens;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.rest.importing.resolvers.RoughArtifactTranslatorImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -39,11 +39,10 @@ public class DoorsTier12RoughToRealOperation {
    private final OrcsApi orcsApi;
    private final RoughArtifactCollector rawData;
    private final ArtifactReadable destinationArtifact;
-   private final RoughArtifactTranslatorImpl translator = new RoughArtifactTranslatorImpl();
    private final BranchId branch;
-   private final Map<String, ArtifactToken> knownArtsByReqNum = new HashMap<>();
-   private final List<ArtifactToken> modifiedParents = new LinkedList<>();
+   private final Map<String, ArtifactToken> knownArtsByOFD = new HashMap<>();
    private final XResultData results;
+   private final static String systemReqPrefix = "OFD";
 
    public DoorsTier12RoughToRealOperation(OrcsApi orcsApi, XResultData results, BranchId branch, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData) {
       this.orcsApi = orcsApi;
@@ -54,7 +53,7 @@ public class DoorsTier12RoughToRealOperation {
    }
 
    public XResultData doWork() {
-      //setupAllKnownArtifacts();
+      setupAllKnownArtifacts();
       String operationComment = String.format("Modify Safety Hazard for %s", destinationArtifact.getName());
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, operationComment);
@@ -75,9 +74,12 @@ public class DoorsTier12RoughToRealOperation {
    public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
       ArtifactReadable targetArtifact = findApplicableArtifact(roughArtifact, branch);
       if (targetArtifact != null && targetArtifact.isValid()) {
-
-         transaction.createAttribute(targetArtifact, CoreAttributeTypes.Hazard,
-            roughArtifact.getRoughAttribute(DoorsImportFieldTokens.blockAttrSafetyHazard.getImportTypeName()));
+         try {
+            transaction.createAttribute(targetArtifact, CoreAttributeTypes.Hazard,
+               roughArtifact.getRoughAttribute(DoorsImportFieldTokens.blockAttrSafetyHazard.getImportTypeName()));
+         } catch (Exception ex) {
+            results.errorf("Exception: %s", ex.toString());
+         }
       } else {
          results.logf("Doors ID resolver cant find target artifact. roughArtifactifact: [%s]. DoorsId: [%s]",
             roughArtifact.getName(), roughArtifact.getAttributes().getSoleAttributeValue(
@@ -86,24 +88,41 @@ public class DoorsTier12RoughToRealOperation {
    }
 
    private ArtifactReadable findApplicableArtifact(RoughArtifact roughArtifact, BranchId branch) {
+      ArtifactReadable current = null;
       String doorsId = roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName());
 
-      System.out.println(doorsId);
-      ArtifactReadable current = null;
-      try {
-         current = orcsApi.getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsId,
-            doorsId).asArtifact();
-      } catch (Exception ex) {
-         results.errorf("Couldn't find artifact for %s with doorsId %s",
-            roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), doorsId);
-         return null;
-      }
-      if (!current.isTypeEqual(CoreArtifactTypes.SubsystemRequirementMsWord)) {
-         results.errorf("Invalid import type %s for Doors Id:%s", current.getArtifactType().getName(), doorsId);
-         current = null;
+      if (doorsId.startsWith(systemReqPrefix)) {
+         ArtifactToken currentToken = knownArtsByOFD.get(doorsId);
+         try {
+            current = orcsApi.getQueryFactory().fromBranch(branch).andId(currentToken).asArtifact();
+         } catch (Exception ex) {
+            results.errorf("Couldn't find artifact for %s with doorsId %s",
+               roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), doorsId);
+            return null;
+         }
+      } else {
+         try {
+            current = orcsApi.getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsId,
+               doorsId).asArtifact();
+         } catch (Exception ex) {
+            results.errorf("Couldn't find artifact for %s with doorsId %s",
+               roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()), doorsId);
+            return null;
+         }
+         if (!current.isTypeEqual(CoreArtifactTypes.SubsystemRequirementMsWord)) {
+            results.errorf("Invalid import type %s for Doors Id:%s", current.getArtifactType().getName(), doorsId);
+            current = null;
+         }
       }
 
       return current;
+   }
+
+   private void setupAllKnownArtifacts() {
+      List<ArtifactToken> knownIds =
+         orcsApi.getQueryFactory().fromBranch(branch).andRelatedRecursive(DefaultHierarchical_Parent,
+            destinationArtifact).asArtifactTokens(DoorsId);
+      knownIds.forEach(item -> knownArtsByOFD.put(item.getName(), item));
    }
 
 }
