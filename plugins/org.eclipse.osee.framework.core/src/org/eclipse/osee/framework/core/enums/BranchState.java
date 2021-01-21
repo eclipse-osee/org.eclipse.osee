@@ -91,8 +91,8 @@ public class BranchState extends NamedIdBase {
       return this == BranchState.PURGE_IN_PROGRESS;
    }
 
-   public static BranchState valueOf(int id) {
-      return NamedIdBase.valueOf(Long.valueOf(id), values);
+   public static BranchState valueOf(long id) {
+      return NamedIdBase.valueOf(id, values);
    }
 
    public static BranchState valueOf(String id) {

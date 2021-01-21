@@ -50,8 +50,8 @@ public class BranchType extends NamedIdBase {
       return this == BranchType.PORT;
    }
 
-   public static BranchType valueOf(int id) {
-      return NamedIdBase.valueOf(Long.valueOf(id), values);
+   public static BranchType valueOf(long id) {
+      return NamedIdBase.valueOf(id, values);
    }
 
    public static BranchType valueOf(String id) {
