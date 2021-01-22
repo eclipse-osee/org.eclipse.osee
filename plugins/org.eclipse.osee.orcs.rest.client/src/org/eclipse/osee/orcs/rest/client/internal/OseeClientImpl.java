@@ -23,7 +23,7 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.RenderEndpoint;
-import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -57,14 +57,9 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  * @author John Misinco
  * @author Roberto E. Escobar
  */
-public class OseeClientImpl implements OseeClient, QueryExecutor {
+public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExecutor {
 
    private PredicateFactory predicateFactory;
-   private JaxRsApi jaxRsApi;
-
-   public void setJaxRsApi(JaxRsApi jaxRsApi) {
-      this.jaxRsApi = jaxRsApi;
-   }
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
@@ -106,7 +101,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       }
 
       SearchRequest params = new SearchRequest(branch, predicates, requestType, fromTx, includeDeleted);
-      WebTarget target = jaxRsApi.newTarget("orcs/branch/" + branch.getIdString() + "/artifact/search/v1");
+      WebTarget target = jaxRsApi().newTarget("orcs/branch/" + branch.getIdString() + "/artifact/search/v1");
       return target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
 
    }
@@ -133,7 +128,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public ClientEndpoint getClientEndpoint() {
-      return jaxRsApi.newProxy("ide", ClientEndpoint.class);
+      return jaxRsApi().newProxy("ide", ClientEndpoint.class);
    }
 
    @Override
@@ -178,7 +173,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public ActivityLogEndpoint getActivityLogEndpoint() {
-      return jaxRsApi.newProxy("", ActivityLogEndpoint.class);
+      return jaxRsApi().newProxy("", ActivityLogEndpoint.class);
    }
 
    @Override
@@ -187,27 +182,27 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    private <T> T getOrcsBranchEndpoint(Class<T> clazz, BranchId branch) {
-      return jaxRsApi.newProxy("orcs/branch/" + branch.getIdString(), clazz);
+      return jaxRsApi().newProxy("orcs/branch/" + branch.getIdString(), clazz);
    }
 
    private <T> T getDefineEndpoint(Class<T> clazz) {
-      return jaxRsApi.newProxy("define", clazz);
+      return jaxRsApi().newProxy("define", clazz);
    }
 
    private <T> T getOrcsEndpoint(Class<T> clazz) {
-      return jaxRsApi.newProxy("orcs", clazz);
+      return jaxRsApi().newProxy("orcs", clazz);
    }
 
    @Override
    public SessionEndpoint getSessionEndpoint() {
-      return jaxRsApi.newProxy("ide", SessionEndpoint.class);
+      return jaxRsApi().newProxy("ide", SessionEndpoint.class);
    }
 
    @Override
    public String loadAttributeValue(Integer attrId, TransactionId transactionId, ArtifactToken artifact) {
       String url = String.format("orcs/branch/%s/artifact/%s/attribute/%s/version/%s/text",
          artifact.getBranchIdString(), artifact.getIdString(), attrId, transactionId.getIdString());
-      WebTarget target = jaxRsApi.newTarget(url);
+      WebTarget target = jaxRsApi().newTarget(url);
       return target.request(MediaType.TEXT_PLAIN).get(String.class);
    }
 }

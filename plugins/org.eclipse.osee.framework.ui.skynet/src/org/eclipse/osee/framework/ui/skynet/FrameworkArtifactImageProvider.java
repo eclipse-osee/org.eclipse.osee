@@ -13,17 +13,15 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -38,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.util.DynamicImage;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImages;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.ProgramImage;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -107,17 +104,14 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
    }
 
    private void readDynamicImagesFromUrl() {
-
       try {
-         String appServer = OseeClientProperties.getOseeApplicationServer();
-         URI uri = UriBuilder.fromUri(appServer).path("images.json").build();
-
          // first, retrieve the images.json file to see if there are any images
+         WebTarget target = ServiceUtil.getOseeClient().jaxRsApi().newTarget("images.json");
          String imagesJson = null;
          try {
-            imagesJson = JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
+            imagesJson = target.request(MediaType.TEXT_PLAIN).get(String.class);
          } catch (Exception ex) {
-            // do nothing if does't exist
+            return;
          }
          if (Strings.isValid(imagesJson)) {
 
@@ -164,7 +158,6 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
                "Error processing dynamic artifact images.");
          }
       }
-
    }
 
    @Override

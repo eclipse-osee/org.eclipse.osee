@@ -17,6 +17,7 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -36,7 +37,7 @@ import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 /**
  * @author John Misinco
  */
-public interface OseeClient {
+public interface OseeClient extends OseeApi {
 
    String OSEE_APPLICATION_SERVER = org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
 
