@@ -106,8 +106,8 @@ public class AbstractWfeSubWorkflow extends Composite implements IWfeEventHandle
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  EntryDialog ed = new EntryDialog("View Or Change Reason for Workflow about" + positive,
-                     "Current" + positive + "Reason: " + getReason() + "\n\n\nEnter the new reason for setting this workflow to" + positive + "if you wish to change");
+                  EntryDialog ed = new EntryDialog("View Or Change Reason for Workflow about " + positive,
+                     "Current " + positive + " Reason: " + getReason() + "\n\n\nEnter the new reason for setting this workflow to " + positive + " if you wish to change");
                   setReason(ed);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -167,23 +167,23 @@ public class AbstractWfeSubWorkflow extends Composite implements IWfeEventHandle
 
    private void handlePositiveButtonSelection() {
       if (isNegative()) {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set" + positive + "status");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set " + positive + " status");
          boolean unblock = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            negative + "Workflow", "Are you sure you wish to set this workflow to" + negative + "?");
+            negative + " Workflow ", "Are you sure you wish to set this workflow to " + negative + "?");
          if (unblock) {
             changes.deleteSoleAttribute(workItem, attrType);
          }
          changes.executeIfNeeded();
       } else {
          EntryDialog ed =
-            new EntryDialog("Setting Workflow to" + positive, "Enter the reason to set this workflow to " + positive);
+            new EntryDialog("Setting Workflow to " + positive, " Enter the reason to set this workflow to " + positive);
          setReason(ed);
       }
    }
 
    private void setReason(EntryDialog ed) {
       String Reason = "";
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set" + positive + "reason");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set " + positive + " reason");
       if (ed.open() == 0) {
          Reason = ed.getEntry();
          if (!Strings.isValid(Reason)) {
