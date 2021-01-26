@@ -100,8 +100,34 @@ public final class JaxRsApiImpl implements JaxRsApi {
    }
 
    @Override
+   public WebTarget newTargetNoRedirect(String path) {
+      JaxRsClientConfig config = factory.copyDefaultConfig();
+      config.setFollowRedirects(false);
+      return newTarget(path, config);
+   }
+
+   @Override
    public WebTarget newTarget(String... pathSegments) {
       return factory.newWebTarget(Collections.toString(pathSegments, baseUrl + "/", "/", null));
+   }
+
+   @Override
+   public WebTarget newTargetQuery(String path, String... queryParams) {
+      StringBuilder strB = new StringBuilder(path);
+      strB.append("/?");
+
+      boolean first = true;
+      for (int x = 0; x < queryParams.length; x += 2) {
+         if (first) {
+            first = false;
+         } else {
+            strB.append("&");
+         }
+         strB.append(queryParams[x]);
+         strB.append("=");
+         strB.append(queryParams[x + 1]);
+      }
+      return newTarget(strB.toString());
    }
 
    @Override
@@ -109,6 +135,10 @@ public final class JaxRsApiImpl implements JaxRsApi {
       JaxRsClientConfig config = factory.copyDefaultConfig();
       config.setServerPassword(serverPassword);
       config.setServerUsername(serverUsername);
+      return newTarget(path, config);
+   }
+
+   private WebTarget newTarget(String path, JaxRsClientConfig config) {
       return factory.newWebTarget(config, url(path));
    }
 

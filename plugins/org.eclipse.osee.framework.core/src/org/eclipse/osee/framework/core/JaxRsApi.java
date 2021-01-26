@@ -44,10 +44,18 @@ public interface JaxRsApi {
 
    WebTarget newTarget(String path);
 
+   WebTarget newTargetNoRedirect(String path);
+
    /**
     * @return a WebTarget using the url created by the server's base url appened with the provided path segments
     */
    WebTarget newTarget(String... pathSegments);
+
+   /**
+    * @return a WebTarget using the url created by the server's base url appened with the provided path followe by ? and
+    * the query parameters in key value format
+    */
+   WebTarget newTargetQuery(String path, String... queryParams);
 
    WebTarget newTargetPasswd(String path, String serverUsername, String serverPassword);
 

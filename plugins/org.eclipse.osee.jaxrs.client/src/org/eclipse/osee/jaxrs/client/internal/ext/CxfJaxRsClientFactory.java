@@ -65,6 +65,7 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
 
    @Override
    public WebTarget newWebTarget(JaxRsClientConfig config, String url) {
+      url = url.replaceAll(" ", "%20");
       WebTarget target = client.target(url);
 
       // This is here to force a webClient creation so we can configure the conduit

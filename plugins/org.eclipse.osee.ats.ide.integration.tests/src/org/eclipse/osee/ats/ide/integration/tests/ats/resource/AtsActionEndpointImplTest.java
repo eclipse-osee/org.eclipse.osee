@@ -16,18 +16,17 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -51,7 +50,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -62,7 +61,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -72,97 +70,86 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class AtsActionEndpointImplTest extends AbstractRestTest {
-
+   private static final String committedCodeWfId = DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString();
+   private static final String codeWfId = DemoArtifactToken.SAW_Code.getIdString();
    private TeamWorkFlowArtifact teamWfArt;
+   private final JaxRsApi jaxRsApi = AtsApiService.get().jaxRsApi();
 
    @Test
    public void testUnreleasedVersions() {
-      Object object = getFirstAndCount(
-         "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/UnreleasedVersions", 2);
+      Object object = getFirstAndCount("ats/action/" + committedCodeWfId + "/UnreleasedVersions", 2);
       Assert.assertEquals(DemoBranches.SAW_Bld_2.getName(), object);
    }
 
    @Test
    public void testTransitionToStates() {
-      Object object = getFirstAndCount(
-         "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/TransitionToStates", 4);
+      Object object = getFirstAndCount("ats/action/" + committedCodeWfId + "/TransitionToStates", 4);
       Assert.assertEquals(TeamState.Completed.getName(), object);
    }
 
    @Test
    public void testQueryTitle() {
-
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
          "Title", "SAW"//
       );
 
-      getFirstAndCount(uri, 3);
+      getFirstAndCount(target, 3);
    }
 
    @Test
    public void testQueryPriority() {
-
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
          AtsAttributeTypes.Priority.getIdString(), "1", //
          AtsAttributeTypes.Priority.getIdString(), "3"//
       );
 
-      getAndCountWorkItems(uri, 4);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
    public void testQueryWorking() {
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
          "StateType", StateType.Working.name()//
       );
-      getAndCountWorkItems(uri, 4);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
    public void testQueryAssignee() {
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
          "Assignee", "4444", //
          "Assignee", "3333");
-      getAndCountWorkItems(uri, 4);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
    public void testQueryOriginator() {
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
          "Originator", "3333" //
       );
-      getAndCountWorkItems(uri, 4);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
    public void testQueryTeam() {
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString //
-      );
-      getFirstAndCount(uri, 4);
+      WebTarget target = createWebTarget("Team", codeWfId);
+      getFirstAndCount(target, 4);
    }
 
    @Test
    public void testQueryTeamPriorityAndWorking() {
-      String idString = DemoArtifactToken.SAW_Code.getIdString();
-      URI uri = createQueryUri( //
-         "Team", idString, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
          "Priority", "2", //
          "Priority", "3", //
          "StateType", StateType.Working.name() //
       );
-      getFirstAndCount(uri, 2);
+      getFirstAndCount(target, 2);
    }
 
    public TeamWorkFlowArtifact getCodeWorkflow() {
@@ -193,13 +180,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
    }
 
-   private URI createQueryUri(String... queryParmPairs) {
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      UriBuilder builder = UriBuilder.fromUri(appServer).path("ats").path("action").path("query");
-      for (int x = 0; x < queryParmPairs.length; x += 2) {
-         builder.queryParam(queryParmPairs[x], queryParmPairs[x + 1]);
-      }
-      return builder.build();
+   private WebTarget createWebTarget(String... queryParmPairs) {
+      return jaxRsApi.newTargetQuery("ats/action/query", queryParmPairs);
    }
 
    @Test
@@ -207,34 +189,29 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
 
       String idString = sawCodeCommittedWf.getTeamDefinition().getIdString();
-      URI uri = createQueryUri( //
+      WebTarget target = createWebTarget( //
          "Team", idString, //
          AtsAttributeTypes.AtsId.getIdString(), sawCodeCommittedWf.getAtsId() //
       );
 
-      JsonNode action = testActionRestCall(uri, 1);
+      JsonNode action = testActionRestCall(target, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
 
-      uri = createQueryUri( //
+      target = createWebTarget( //
          "Team", idString, //
          AtsAttributeTypes.AtsId.getName(), sawCodeCommittedWf.getAtsId() //
       );
 
-      action = testActionRestCall(uri, 1);
+      action = testActionRestCall(target, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
    }
 
-   private JsonNode testActionRestCall(String url, int size) {
-      return testActionRestCall(toURI(url), size);
+   private JsonNode testActionRestCall(String path, int size) {
+      return testActionRestCall(jaxRsApi.newTarget(path), size);
    }
 
-   private JsonNode testActionRestCall(URI uri, int size) {
-      String json = getJson(uri);
-      if (json.length() < 3) {
-         json = getJson(uri.toString());
-         String ur = uri.toString().replaceAll("%3F", "?");
-         json = getJson(ur);
-      }
+   private JsonNode testActionRestCall(WebTarget target, int size) {
+      String json = target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
       JsonNode arrayNode = JsonUtil.readTree(json);
       Assert.assertEquals(size, arrayNode.size());
 
@@ -248,14 +225,12 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20").replaceAll("\\(",
             "%28").replaceAll("\\)", "%29");
 
-      String codeTeamIdStr = DemoArtifactToken.SAW_Code.getIdString();
-      String testTeamIdStr = DemoArtifactToken.SAW_Test.getIdString();
-      URI uri = createQueryUri( //
-         "Team", codeTeamIdStr, //
-         "Team", testTeamIdStr, //
+      WebTarget target = createWebTarget( //
+         "Team", codeWfId, //
+         "Team", DemoArtifactToken.SAW_Test.getIdString(), //
          "Name", name //
       );
-      JsonNode action = testActionRestCall(uri, 2);
+      JsonNode action = testActionRestCall(target, 2);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
    }
 
@@ -267,13 +242,13 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsRestCall() {
-      String url = "/ats/action/" + DemoUtil.getSawAtsIdsStr();
+      String url = "ats/action/" + DemoUtil.getSawAtsIdsStr();
       testActionRestCall(url, 3);
    }
 
    @Test
    public void testAtsActionsDetailsRestCall() {
-      String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details";
+      String url = "ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details";
       JsonNode action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
       Assert.assertFalse(Strings.isNumeric(action.get("ats.Created Date").asText()));
@@ -281,7 +256,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsChildRestCall() {
-      String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getParentAction().getIdString() + "/child";
+      String url = "ats/action/" + DemoUtil.getSawCodeCommittedWf().getParentAction().getIdString() + "/child";
       JsonNode action = testActionRestCall(url, 3);
       Assert.assertEquals(action.get("TargetedVersion").asText().replaceAll("\n", ""),
          DemoBranches.SAW_Bld_2.toString());
@@ -289,7 +264,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsSiblingsRestCall() {
-      String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/sibling";
+      String url = "ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/sibling";
       JsonNode action = testActionRestCall(url, 2);
       Assert.assertEquals(action.get("TargetedVersion").asText().replaceAll("\n", ""),
          DemoBranches.SAW_Bld_2.toString());
@@ -305,13 +280,12 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionRestCall() {
-      testActionRestCall("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId(), 1);
+      testActionRestCall("ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId(), 1);
    }
 
    @Test
    public void testAtsActionDetailsRestCall() {
-      JsonNode action =
-         testActionRestCall("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/details", 1);
+      JsonNode action = testActionRestCall("ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/details", 1);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
    }
 
@@ -741,11 +715,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    private Response post(Form form) {
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("/ats/action").build();
-      Response response = JaxRsClient.newBuilder().followRedirects(false).build().target(uri).request(
-         MediaType.APPLICATION_JSON_TYPE).post(Entity.form(form));
-      return response;
+      WebTarget target = jaxRsApi.newTargetNoRedirect("ats/action");
+      return target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.form(form));
    }
 
    private void validateResponse(Response response, String errorMessage) throws IOException {

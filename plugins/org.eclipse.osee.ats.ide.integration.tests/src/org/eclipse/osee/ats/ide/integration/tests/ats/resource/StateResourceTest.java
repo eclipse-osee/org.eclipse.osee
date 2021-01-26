@@ -15,16 +15,15 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -32,10 +31,8 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -81,12 +78,11 @@ public class StateResourceTest extends AbstractRestTest {
       form.param("operation", "transition");
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(StateResourceTest.class.getName());
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
-         StateResourceTest.class.getName(), "description", ChangeType.Improvement, "1", false, null,
+      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, StateResourceTest.class.getName(),
+         "description", ChangeType.Improvement, "1", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-         new Date(), AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), null,
-         changes);
+         new Date(), AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), null, changes);
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
       changes.execute();
       Assert.assertEquals("Endorse", teamWf.getCurrentStateName());
@@ -112,11 +108,8 @@ public class StateResourceTest extends AbstractRestTest {
    }
 
    private Response post(Form form) {
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("/ats/action/state").build();
-      Response response = JaxRsClient.newBuilder().followRedirects(false).build().target(uri).request(
-         MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(Entity.form(form));
-      return response;
+      WebTarget target = AtsApiService.get().jaxRsApi().newTargetNoRedirect("ats/action/state");
+      return target.request(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(Entity.form(form));
    }
 
    private void validateResponse(Response response, Status status, String errorMessage) throws IOException {

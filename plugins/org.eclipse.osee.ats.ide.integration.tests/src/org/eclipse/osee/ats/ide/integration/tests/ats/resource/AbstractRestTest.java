@@ -14,16 +14,13 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.net.URI;
 import java.util.List;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
 
 /**
@@ -31,8 +28,8 @@ import org.junit.Assert;
  */
 public abstract class AbstractRestTest {
 
-   protected void getAndCountWorkItems(URI url, int expected) {
-      String json = getJson(url);
+   protected void getAndCountWorkItems(WebTarget target, int expected) {
+      String json = getJson(target);
       try {
          List<Long> ids = WorkItemsJsonReader.getWorkItemIdsFromJson(json);
          Assert.assertEquals(expected, ids.size());
@@ -41,8 +38,8 @@ public abstract class AbstractRestTest {
       }
    }
 
-   protected Object getFirstAndCount(URI url, int count) {
-      String json = getJson(url);
+   protected Object getFirstAndCount(WebTarget target, int count) {
+      String json = getJson(target);
 
       Object[] objs = JsonUtil.readValue(json, Object[].class);
       Assert.assertEquals(count, objs.length);
@@ -66,7 +63,7 @@ public abstract class AbstractRestTest {
       return objs[0];
    }
 
-   protected JsonNode readTree(String url) {
+   private JsonNode readTree(String url) {
       return JsonUtil.readTree(getJson(url));
    }
 
@@ -74,29 +71,16 @@ public abstract class AbstractRestTest {
       return getAndCheckResponseCode(url, MediaType.TEXT_HTML_TYPE);
    }
 
-   protected String getXml(String url) {
-      return getAndCheckResponseCode(url, MediaType.APPLICATION_XML_TYPE);
-   }
-
    protected String getJson(String url) {
       return getAndCheckResponseCode(url, MediaType.APPLICATION_JSON_TYPE);
    }
 
-   protected String getJson(URI uri) {
-      return getAndCheckResponseCode(uri, MediaType.APPLICATION_JSON_TYPE);
+   protected String getJson(WebTarget target) {
+      return target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
    }
 
-   private String getAndCheckResponseCode(String url, MediaType mediaType) {
-      return getAndCheckResponseCode(toURI(url), mediaType);
-   }
-
-   protected URI toURI(String urlPath) {
-      return UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path(urlPath).build();
-   }
-
-   private String getAndCheckResponseCode(URI uri, MediaType mediaType) {
-      Response response = JaxRsClient.newClient().target(uri).request(mediaType).get();
-      return response.readEntity(String.class);
+   private String getAndCheckResponseCode(String path, MediaType mediaType) {
+      return AtsApiService.get().jaxRsApi().newTarget(path).request(mediaType).get().readEntity(String.class);
    }
 
    protected JsonNode testUrl(String url, int size, String expectedName, String key, boolean keyExists) {
