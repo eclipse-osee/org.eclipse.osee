@@ -10,9 +10,8 @@ Import-Package: javax.ws.rs,
  javax.ws.rs.client,
  javax.ws.rs.core,
  org.eclipse.osee.account.rest.model,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.jaxrs,
- org.eclipse.osee.jaxrs.client
+ org.eclipse.osee.framework.jdk.core.type
 Export-Package: org.eclipse.osee.account.rest.client
 Bundle-Vendor: Eclipse Open System Engineering Environment

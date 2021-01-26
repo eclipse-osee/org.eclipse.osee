@@ -44,7 +44,12 @@ public interface JaxRsApi {
 
    WebTarget newTarget(String path);
 
-   WebTarget newTarget(String path, String serverUsername, String serverPassword);
+   /**
+    * @return a WebTarget using the url created by the server's base url appened with the provided path segments
+    */
+   WebTarget newTarget(String... pathSegments);
+
+   WebTarget newTargetPasswd(String path, String serverUsername, String serverPassword);
 
    <T> T newProxy(WebTarget target, Class<T> clazz);
 

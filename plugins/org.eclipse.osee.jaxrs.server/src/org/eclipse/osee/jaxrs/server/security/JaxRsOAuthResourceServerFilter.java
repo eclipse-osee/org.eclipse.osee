@@ -107,7 +107,7 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
       }
 
       private JaxRsOAuthResourceServerFilter build(ClientAccessTokenValidator validator) {
-         validator.setTarget(jaxRsApi.newTarget(validationServerUri, resourceServerKey, resourceServerSecret));
+         validator.setTarget(jaxRsApi.newTargetPasswd(validationServerUri, resourceServerKey, resourceServerSecret));
 
          OAuth2RequestFilter filter = new OAuth2RequestFilter();
          filter.setTokenValidator(validator);

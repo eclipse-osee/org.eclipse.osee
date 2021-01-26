@@ -101,6 +101,37 @@ public class Collections {
       return strB.toString();
    }
 
+   public static String toString(String[] items, String separator) {
+      return toString(items, null, separator, null);
+   }
+
+   public static String toString(String[] items, String prefix, String separator, String suffix) {
+      if (items == null) {
+         return "";
+      }
+      StringBuilder strB = new StringBuilder();
+
+      if (prefix != null) {
+         strB.append(prefix);
+      }
+
+      boolean first = true;
+      for (String item : items) {
+         if (first) {
+            first = false;
+         } else {
+            strB.append(separator);
+         }
+         strB.append(item);
+      }
+
+      if (suffix != null) {
+         strB.append(suffix);
+      }
+
+      return strB.toString();
+   }
+
    public static String toString(String separator, Object... items) {
       return toString(separator, Arrays.asList(items));
    }

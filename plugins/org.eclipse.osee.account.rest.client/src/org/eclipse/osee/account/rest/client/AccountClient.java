@@ -71,9 +71,4 @@ public interface AccountClient {
    ResultSet<UnsubscribeInfo> getUnsubscribeUris(Long accountId, Collection<String> groupNames);
 
    AccountWebPreferences getAccountWebPreferencesByUniqueField(ArtifactId accountId);
-
-   boolean isLocalHost();
-
-   String getBaseUri();
-
 }

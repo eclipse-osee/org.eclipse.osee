@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
 import org.eclipse.osee.jaxrs.client.internal.JaxRsClientRuntime;
 
@@ -99,7 +100,12 @@ public final class JaxRsApiImpl implements JaxRsApi {
    }
 
    @Override
-   public WebTarget newTarget(String path, String serverUsername, String serverPassword) {
+   public WebTarget newTarget(String... pathSegments) {
+      return factory.newWebTarget(Collections.toString(pathSegments, baseUrl + "/", "/", null));
+   }
+
+   @Override
+   public WebTarget newTargetPasswd(String path, String serverUsername, String serverPassword) {
       JaxRsClientConfig config = factory.copyDefaultConfig();
       config.setServerPassword(serverPassword);
       config.setServerUsername(serverUsername);
