@@ -145,11 +145,11 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          rd.errorf("%s is an invalid ATS userId", userId);
          return rd;
       }
-      if (!atsApi.getUserService().isUserIdValid(userId.getIdString())) {
+      AtsUser asUser = atsApi.getUserService().getUserByAccountId(userId);
+      if (asUser.isInvalid()) {
          rd.errorf("%s is an invalid ATS userId", userId);
          return rd;
       }
-      AtsUser asUser = atsApi.getUserService().getUserById(userId);
       IAtsChangeSet changes = atsApi.createChangeSet("Add Change Id(s)", asUser);
       Set<String> distinctChangeIds = new HashSet<String>(
          atsApi.getAttributeResolver().getAttributesToStringList(workItem, CoreAttributeTypes.GitChangeId));
