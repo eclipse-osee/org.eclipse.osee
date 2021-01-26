@@ -39,6 +39,8 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverServiceImpl {
 
+   // for ReviewOsgiXml public void setLogger(Log logger)
+
    private OrcsApi orcsApi;
 
    public void setOrcsApi(OrcsApi orcsApi) {
