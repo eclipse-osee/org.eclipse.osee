@@ -94,7 +94,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
          if (codeUnit.isValid()) {
             if (Strings.isValid(newPath)) {
                tx.setName(codeUnit, getCodeUnitName(newPath));
-               tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
+               tx.setSoleAttributeValue(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
                pathToCodeunitReferenceMap.remove(path);
                pathToCodeunitMap.remove(path);
                pathToCodeunitMap.put(newPath, codeUnit);
@@ -131,9 +131,10 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
             CoreRelationTypes.DefaultHierarchical_Child, repoArtifact).asArtifacts();
       for (ArtifactReadable art : existingFolders) {
          String wholePath = art.getName();
-         while (!art.getParent().equals(repoArtifact) && art.isValid()) {
-            art = art.getParent();
-            wholePath = art.getName() + "/" + wholePath;
+         ArtifactReadable parentArt = art;
+         while (!parentArt.getParent().equals(repoArtifact) && parentArt.isValid()) {
+            parentArt = parentArt.getParent();
+            wholePath = parentArt.getName() + "/" + wholePath;
          }
          if (!existingCodeUnitPath.containsKey(wholePath)) {
             existingCodeUnitPath.put(wholePath, art);
@@ -157,13 +158,14 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
       path.remove(path.size() - 1);
 
       for (String newFolder : path) {
-         wholePath += newFolder + "/";
+         wholePath += newFolder;
          if (!existingCodeUnitPath.containsKey(wholePath)) {
             folder = tx.createArtifact(folder, CoreArtifactTypes.Folder, newFolder);
             existingCodeUnitPath.put(wholePath, folder);
          } else {
             folder = existingCodeUnitPath.get(wholePath);
          }
+         wholePath += "/";
       }
       if (newCodeUnit) {
          ArtifactId codeUnit = tx.createArtifact(folder, CoreArtifactTypes.CodeUnit, codeUnitName);
