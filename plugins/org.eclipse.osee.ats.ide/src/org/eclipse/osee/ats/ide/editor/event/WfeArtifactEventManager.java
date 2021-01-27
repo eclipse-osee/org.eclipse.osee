@@ -16,15 +16,12 @@ package org.eclipse.osee.ats.ide.editor.event;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -32,15 +29,14 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventHandler;
 
 /**
- * Common location for event handling for ATS objects
+ * Common location for WFE handling events. Only need to listen for ArtifactEvent cause transition locally will reload
+ * and remote transition will reload if in cache.
  *
  * @author Donald G. Dunne
  */
-public class WfeArtifactEventManager implements IArtifactEventListener, EventHandler {
+public class WfeArtifactEventManager implements IArtifactEventListener {
 
    static List<WorkflowEditor> editors = new CopyOnWriteArrayList<>();
    static WfeArtifactEventManager instance = new WfeArtifactEventManager();
@@ -104,35 +100,6 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
          }
       });
 
-   }
-
-   @Override
-   public void handleEvent(Event event) {
-      try {
-         if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
-            String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
-            for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
-               ArtifactId workItemArtId = ArtifactId.valueOf(workItemId);
-               for (WorkflowEditor editor : editors) {
-                  try {
-                     if (!editor.isDisposed()) {
-                        if (editor.getWorkItem().equals(workItemArtId)) {
-                           editor.refresh();
-                        }
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for - %s", editor);
-                  }
-               }
-            }
-         }
-      } catch (Exception ex) {
-         // do nothing
-      }
-   }
-
-   public static void handleEventAfterReload(Event event) {
-      instance.handleEvent(event);
    }
 
 }

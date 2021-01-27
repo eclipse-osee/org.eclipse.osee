@@ -19,12 +19,13 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.client.TopicEventUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.core.event.TopicEvent;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -125,6 +126,9 @@ public final class OseeEventManager {
       Assert.isNotNull(topicEvent);
       Assert.isNotNull(topicEvent.getEventType(), "TopicEvent.eventType can not be null");
       Assert.isTrue(Strings.isValid(topicEvent.getTopic()), "TopicEvent.topic can not be null.");
+      // Add sender session to all topic events
+      String sessionJson = TopicEventUtil.getSessionJson();
+      topicEvent.addProperty(TopicEventUtil.SENDER_SESSION_PROPERTY, sessionJson);
       getEventService().send(source, topicEvent);
    }
 
@@ -238,7 +242,7 @@ public final class OseeEventManager {
     * Kick a commit event to this local client to update artifact model for committed artifacts. This is needed cause
     * commit is made on server, but clients need to be notified of updates to commited branch artifact model.
     */
-   public static void kickCommitEvent(Class class1, ArtifactEvent artifactEvent) {
+   public static void kickCommitEvent(Class<?> class1, ArtifactEvent artifactEvent) {
       getEventService().sendCommitEvent(class1, artifactEvent);
    }
 

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.event.AbstractAtsEventServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -57,25 +56,16 @@ public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
             artifact.reloadAttributesAndRelations();
          }
       }
-      // And, handle event for those WorkflowEditor listeners to specific attr, rel or arts
-      WfeArtifactEventManager.handleEventAfterReload(event);
    }
 
    @Override
    public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems, TransactionId transaction) {
-      // Send locally if need be
-      if (event.getEventType() == EventType.LocalOnly || event.getEventType() == EventType.LocalAndRemote) {
-         super.postAtsWorkItemTopicEvent(event, workItems, transaction);
+      TopicEvent topicEvent = new TopicEvent(event.getTopic(), AtsTopicEvent.WORK_ITEM_IDS_KEY,
+         AtsObjects.toIdsString(";", workItems), transaction, EventType.RemoteOnly);
+      if (transaction != null && transaction.isValid()) {
+         topicEvent.addProperty(FrameworkTopicEvent.TRANSACTION_ID, transaction.getIdString());
       }
-      // Send remote if need be
-      if (event.getEventType() == EventType.LocalAndRemote || event.getEventType() == EventType.RemoteOnly) {
-         TopicEvent topicEvent = new TopicEvent(event.getTopic(), AtsTopicEvent.WORK_ITEM_IDS_KEY,
-            AtsObjects.toIdsString(";", workItems), transaction, EventType.RemoteOnly);
-         if (transaction != null && transaction.isValid()) {
-            topicEvent.addProperty(FrameworkTopicEvent.TRANSACTION_ID, transaction.getIdString());
-         }
-         OseeEventManager.kickTopicEvent(getClass(), topicEvent);
-      }
+      OseeEventManager.kickTopicEvent(getClass(), topicEvent);
    }
 
 }

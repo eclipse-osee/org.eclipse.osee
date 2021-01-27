@@ -7,7 +7,8 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.client.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.core.runtime,
+Import-Package: com.fasterxml.jackson.core,
+ org.eclipse.core.runtime,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -25,7 +26,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.orcs.rest.client,
  org.eclipse.osee.orcs.rest.model,
- org.osgi.framework
+ org.osgi.framework,
+ org.osgi.service.event
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server
 Service-Component: OSGI-INF/*.xml

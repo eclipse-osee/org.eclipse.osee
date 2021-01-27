@@ -20,6 +20,19 @@ import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
 import org.eclipse.osee.framework.core.event.EventType;
 
 /**
+ * Topic Events are the new mechanism for communicating both local and remote clients. This replaces the old
+ * ArtifactEvent from a transaction persist. Listeners should handle the topic event only, if possible. Or, realize that
+ * both events can come through. remotely. Eventually, everything will be done through these topic events.<br/>
+ * <br/>
+ * Example: IDE A initiates transition > Server transitions and persists > IDE A reloads workitems and kicks
+ * WORK_ITEM_MODIFIED remotely and WORK_ITEM_RELOADED locally. <br/>
+ * <br/>
+ * IDE A listeners either react to ArtifactEvent from the reload (deprecated) or listens for WORK_ITEM_RELOADED to
+ * refresh.<br/>
+ * <br/>
+ * IDE B,C,D listeners listens for WORK_ITEM_MODIFIED (one handler to reload), reloads and kicks WORK_ITEM_RELOADED.
+ * ArtifactEvent goes out from reload along with WORK_ITEM_RELOADED like IDE A.
+ *
  * @author Donald G. Dunne
  */
 public class AtsTopicEvent extends AbstractTopicEvent {
@@ -27,10 +40,18 @@ public class AtsTopicEvent extends AbstractTopicEvent {
    public static Map<String, AtsTopicEvent> idToEvent = new HashMap<String, AtsTopicEvent>();
 
    /**
-    * Event for any work item modified including transition. Artifacts will be reloaded after a transition.
+    * Remote event to notify other clients that work items were modified. This handles the case where changes are made
+    * on server and reloaded locally, but other clients need to be notified to reload and refresh. There should only be
+    * ONE listener for this event.
     */
    public static final AtsTopicEvent WORK_ITEM_MODIFIED =
-      new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/modified");
+      new AtsTopicEvent(EventType.RemoteOnly, "ats/workitem/modified");
+
+   /**
+    * Local event to notify listeners that work items were reloaded and they may need to refresh.
+    */
+   public static final AtsTopicEvent WORK_ITEM_RELOADED =
+      new AtsTopicEvent(EventType.LocalOnly, "ats/workitem/reloaded");
 
    /**
     * Specific event for only transitions. No reloaded is done through this event for transitioning so the events don't

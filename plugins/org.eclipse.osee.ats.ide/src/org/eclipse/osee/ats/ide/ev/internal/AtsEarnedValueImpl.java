@@ -23,16 +23,15 @@ import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.event.TopicEvent;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -74,10 +73,14 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
       }
 
       AtsWorkPackageEndpointApi workPackageEp = AtsApiService.get().getServerEndpoints().getWorkPackageEndpoint();
+      TransactionId transId = TransactionId.SENTINEL;
       if (remove) {
          XResultData rd = workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
          if (rd.isErrors()) {
             throw new OseeCoreException(rd.toString());
+         }
+         if (Strings.isNumeric(rd.getTxId())) {
+            transId = TransactionId.valueOf(rd.getTxId());
          }
       } else {
          XResultData rd = workPackageEp.setWorkPackage(workPackage.getId(), data);
@@ -85,11 +88,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
             throw new OseeCoreException(rd.toString());
          }
       }
-
-      TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
-         AtsObjects.toIdsString(";", workItems));
-      OseeEventManager.kickTopicEvent(getClass(), event);
-
+      atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, workItems, transId);
    }
 
    @Override

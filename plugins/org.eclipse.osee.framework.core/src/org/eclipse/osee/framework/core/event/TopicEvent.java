@@ -16,8 +16,6 @@ package org.eclipse.osee.framework.core.event;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
-import org.eclipse.osee.framework.core.event.EventType;
 
 /**
  * @author Donald G. Dunne
@@ -86,6 +84,11 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
 
    public void setTransaction(TransactionId transaction) {
       this.transaction = transaction;
+   }
+
+   @Override
+   public String toString() {
+      return "TopicEvnt [type=" + eventType + ", topic=" + topic + ",\nprops=" + properties + ", tx=" + transaction + ", sender=" + networkSender + "]";
    }
 
 }

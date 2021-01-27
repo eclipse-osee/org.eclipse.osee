@@ -59,6 +59,7 @@ public class XResultData {
    @JsonIgnore
    private boolean logToSysErr;
    public List<XResultTable> tables = new ArrayList<XResultTable>();
+   private String txId = "";
 
    public XResultData() {
       this(false);
@@ -379,6 +380,14 @@ public class XResultData {
       this.warningCount += rd.getWarningCount();
       this.infoCount += rd.getInfoCount();
       addRaw(rd.toString());
+   }
+
+   public String getTxId() {
+      return txId;
+   }
+
+   public void setTxId(String txId) {
+      this.txId = txId;
    }
 
 }
