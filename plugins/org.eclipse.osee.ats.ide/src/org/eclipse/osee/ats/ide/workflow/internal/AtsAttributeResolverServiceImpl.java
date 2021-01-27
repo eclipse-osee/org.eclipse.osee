@@ -18,11 +18,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AbstractAtsAttributeResolverServiceImpl;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -37,6 +37,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverServiceImpl {
 
+   public AtsAttributeResolverServiceImpl(AtsApi atsApi) {
+      super(atsApi);
+   }
+
    @Override
    public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
@@ -50,7 +54,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType) {
-      return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).getAttributesToStringList(attributeType);
+      return ((Artifact) atsApi.getQueryService().getArtifact(artifact)).getAttributesToStringList(attributeType);
    }
 
    @Override
@@ -71,7 +75,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultValue) {
       String result = defaultValue;
-      Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(artifact);
+      Artifact art = (Artifact) atsApi.getQueryService().getArtifact(artifact);
       if (art != null) {
          result = art.getSoleAttributeValueAsString(attributeType, defaultValue);
       }
@@ -93,9 +97,9 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       if (artifact instanceof Artifact) {
          return (Artifact) artifact;
       }
-      ArtifactId art = AtsApiService.get().getQueryService().getArtifact(artifact);
+      ArtifactId art = atsApi.getQueryService().getArtifact(artifact);
       if (art instanceof Artifact) {
-         return AtsApiService.get().getQueryServiceIde().getArtifact(art);
+         return (Artifact) atsApi.getQueryService().getArtifact(art);
       }
       return null;
    }

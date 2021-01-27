@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -29,8 +30,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
@@ -39,12 +38,8 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverServiceImpl {
 
-   // for ReviewOsgiXml public void setLogger(Log logger)
-
-   private OrcsApi orcsApi;
-
-   public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+   public AtsAttributeResolverServiceImpl(AtsApi atsApi) {
+      super(atsApi);
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
@@ -53,15 +48,6 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    private ArtifactReadable getArtifact(ArtifactId artifact) {
       return (ArtifactReadable) atsApi.getQueryService().getArtifact(artifact);
-   }
-
-   public void start() {
-      Conditions.checkNotNull(orcsApi, "OrcsApi");
-      logger.info("AtsAttributeResolverServiceImpl started");
-   }
-
-   public void stop() {
-      //
    }
 
    @Override

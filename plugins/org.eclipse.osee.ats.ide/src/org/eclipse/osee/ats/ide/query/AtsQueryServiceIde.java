@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -67,7 +66,7 @@ public class AtsQueryServiceIde {
          if (artId instanceof Artifact) {
             result = (Artifact) artId;
          } else if (artId.isValid()) {
-            ArtifactId dbArt = AtsApiService.get().getQueryServiceIde().getArtifact(artId);
+            ArtifactId dbArt = atsApi.getQueryService().getArtifact(artId);
             if (dbArt instanceof Artifact) {
                result = (Artifact) dbArt;
             }

@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.ide.health;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.health.AbstractAtsHealthServiceImpl;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -22,9 +22,15 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class AtsHealthServiceImpl extends AbstractAtsHealthServiceImpl {
 
+   private final AtsApi atsApi;
+
+   public AtsHealthServiceImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
+   }
+
    @Override
    public XResultData healthCheck() {
-      XResultData rd = AtsApiService.get().getServerEndpoints().getConfigEndpoint().validate();
+      XResultData rd = atsApi.getServerEndpoints().getConfigEndpoint().validate();
       return rd;
    }
 

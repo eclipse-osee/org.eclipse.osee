@@ -16,21 +16,15 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractAtsAttributeResolverServiceImpl implements IAttributeResolver {
 
-   protected Log logger;
    protected AtsApi atsApi;
 
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
-
-   public void setServices(AtsApi atsApi) {
+   public AbstractAtsAttributeResolverServiceImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 

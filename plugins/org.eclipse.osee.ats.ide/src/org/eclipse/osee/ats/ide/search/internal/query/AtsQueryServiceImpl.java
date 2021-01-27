@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -301,7 +300,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       Artifact result = null;
       try {
          if (atsObject.getStoreObject() instanceof Artifact) {
-            result = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
+            result = ArtifactQuery.getArtifactFromToken((Artifact) atsObject.getStoreObject());
          } else {
             result = getArtifact(atsObject.getId());
             if (result != null) {
@@ -319,11 +318,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       Artifact result = null;
       try {
          if (artifact instanceof Artifact) {
-            result = AtsApiService.get().getQueryServiceIde().getArtifact(artifact);
+            result = ArtifactQuery.getArtifactFromToken((Artifact) artifact);
          } else if (artifact instanceof IAtsObject) {
             IAtsObject atsObject = (IAtsObject) artifact;
             if (atsObject.getStoreObject() instanceof Artifact) {
-               result = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
+               result = ArtifactQuery.getArtifactFromToken((Artifact) atsObject.getStoreObject());
             } else {
                result = getArtifact(atsObject.getId());
             }
@@ -445,7 +444,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromAttributeValues(attributeType, values,
-         AtsApiService.get().getAtsBranch(), estimatedCount));
+         atsApi.getAtsBranch(), estimatedCount));
    }
 
    @Override

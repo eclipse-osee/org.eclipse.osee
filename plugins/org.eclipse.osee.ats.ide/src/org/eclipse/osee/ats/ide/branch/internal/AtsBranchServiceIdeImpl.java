@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -42,7 +43,6 @@ import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -88,6 +88,12 @@ import org.eclipse.ui.PlatformUI;
  * @author Donald G. Dunne
  */
 public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
+
+   private final AtsApi atsApi;
+
+   public AtsBranchServiceIdeImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
+   }
 
    @Override
    public void showMergeManager(TeamWorkFlowArtifact teamArt) {
@@ -140,12 +146,11 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
    @Override
    public void showMergeManager(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) {
-      if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-         IOseeBranch workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt);
+      if (atsApi.getBranchService().isWorkingBranchInWork(teamArt)) {
+         IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(teamArt);
          MergeView.openView(workingBranch, destinationBranch, BranchManager.getBaseTransaction(workingBranch));
-      } else if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-         for (TransactionRecord transactionId : AtsApiService.get().getBranchService().getTransactionIds(teamArt,
-            true)) {
+      } else if (atsApi.getBranchService().isCommittedBranchExists(teamArt)) {
+         for (TransactionRecord transactionId : atsApi.getBranchService().getTransactionIds(teamArt, true)) {
             if (transactionId.isOnBranch(destinationBranch)) {
                MergeView.openView(transactionId);
             }
@@ -160,7 +165,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    public boolean deleteWorkingBranch(TeamWorkFlowArtifact teamWf, boolean promptUser, boolean pend) {
       boolean isExecutionAllowed = !promptUser;
       try {
-         BranchId branch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf);
+         BranchId branch = atsApi.getBranchService().getWorkingBranch(teamWf);
          if (promptUser) {
             StringBuilder message = new StringBuilder();
             if (BranchManager.hasChanges(branch)) {
@@ -205,7 +210,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    @Override
    public TransactionToken getTransactionIdOrPopupChoose(IAtsTeamWorkflow teamWf, String title, boolean showMergeManager) {
       Collection<TransactionRecord> transactions =
-         AtsApiService.get().getBranchService().getTransactionIds(teamWf, showMergeManager);
+         atsApi.getBranchService().getTransactionIds(teamWf, showMergeManager);
       final Map<IOseeBranch, TransactionId> branchToTx = new LinkedHashMap<>();
 
       if (transactions.size() == 1) {
@@ -258,16 +263,16 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    @Override
    public void showChangeReport(IAtsTeamWorkflow teamArt) {
       try {
-         if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-            BranchId parentBranch = AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+         if (atsApi.getBranchService().isWorkingBranchInWork(teamArt)) {
+            BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamArt);
             if (parentBranch.isInvalid()) {
                AWorkbench.popup("Parent Branch Error",
                   "Parent Branch can not be null. Set Targeted Version or configure Team for Parent Branch");
                return;
             }
-            IOseeBranch workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt);
+            IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(teamArt);
             ChangeUiUtil.open(workingBranch, parentBranch, true);
-         } else if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt)) {
+         } else if (atsApi.getBranchService().isCommittedBranchExists(teamArt)) {
             TransactionToken transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
             if (TransactionToken.SENTINEL.equals(transactionId)) {
                return;
@@ -287,8 +292,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    @Override
    public void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) {
       try {
-         for (TransactionToken transactionId : AtsApiService.get().getBranchService().getTransactionIds(teamArt,
-            false)) {
+         for (TransactionToken transactionId : atsApi.getBranchService().getTransactionIds(teamArt, false)) {
             if (transactionId.isOnBranch(destinationBranch)) {
                ChangeUiUtil.open(transactionId);
             }
@@ -320,7 +324,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       if (rd == null) {
          rd = new XResultData();
       }
-      if (AtsApiService.get().getBranchService().isBranchInCommit(teamArt)) {
+      if (atsApi.getBranchService().isBranchInCommit(teamArt)) {
          rd.error("Branch is currently being committed.");
       }
       try {
@@ -350,18 +354,16 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       Collection<Change> changes = new ArrayList<>();
 
       IOperation operation = null;
-      if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamWf)) {
-         operation =
-            ChangeManager.comparedToParent(AtsApiService.get().getBranchService().getWorkingBranch(teamWf), changes);
+      if (atsApi.getBranchService().isWorkingBranchInWork(teamWf)) {
+         operation = ChangeManager.comparedToParent(atsApi.getBranchService().getWorkingBranch(teamWf), changes);
          Operations.executeWorkAndCheckStatus(operation);
       } else {
-         if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamWf)) {
+         if (atsApi.getBranchService().isCommittedBranchExists(teamWf)) {
             TransactionToken transactionId = null;
             if (commitConfigItem == null) {
-               transactionId = AtsApiService.get().getBranchService().getEarliestTransactionId(teamWf);
+               transactionId = atsApi.getBranchService().getEarliestTransactionId(teamWf);
             } else {
-               Collection<TransactionRecord> transIds =
-                  AtsApiService.get().getBranchService().getTransactionIds(teamWf, false);
+               Collection<TransactionRecord> transIds = atsApi.getBranchService().getTransactionIds(teamWf, false);
                if (transIds.size() == 1) {
                   transactionId = transIds.iterator().next();
                } else {
@@ -414,8 +416,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
-      TeamWorkFlowArtifact teamWfArt =
-         (TeamWorkFlowArtifact) AtsApiService.get().getQueryServiceIde().getArtifact(teamWf);
+      TeamWorkFlowArtifact teamWfArt = (TeamWorkFlowArtifact) atsApi.getQueryService().getArtifact(teamWf);
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (IAtsDecisionReviewDefinition decRevDef : teamWf.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
@@ -449,23 +450,23 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    @Override
    public Result createWorkingBranch_Validate(IAtsTeamWorkflow teamWf) {
       try {
-         if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamWf)) {
+         if (atsApi.getBranchService().isCommittedBranchExists(teamWf)) {
             return new Result(
                "Committed branch already exists. Can not create another working branch once changes have been committed.");
          }
-         if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamWf)) {
+         if (atsApi.getBranchService().isWorkingBranchInWork(teamWf)) {
             return new Result("Cannot create another branch while the current branch is in work.");
          }
-         BranchId parentBranch = AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
+         BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
          if (parentBranch == null || parentBranch.isInvalid()) {
             return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
          }
 
-         if (AtsApiService.get().getBranchService().getBranch(parentBranch) == null) {
+         if (atsApi.getBranchService().getBranch(parentBranch) == null) {
             return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
          }
 
-         Result result = AtsApiService.get().getBranchService().isCreateBranchAllowed(teamWf);
+         Result result = atsApi.getBranchService().isCreateBranchAllowed(teamWf);
          if (result.isFalse()) {
             return result;
          }
@@ -491,7 +492,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
     */
    @Override
    public Job createWorkingBranch_Create(final IAtsTeamWorkflow teamWf, boolean pend) {
-      final BranchId parentBranch = AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
+      final BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
       return createWorkingBranch_Create(teamWf, parentBranch, pend);
    }
 
@@ -511,7 +512,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
    @Override
    public Job createWorkingBranch(final IAtsTeamWorkflow teamWf, final TransactionToken parentTransactionId, boolean pend) {
-      final String branchName = AtsApiService.get().getBranchService().getBranchName(teamWf);
+      final String branchName = atsApi.getBranchService().getBranchName(teamWf);
       Conditions.checkNotNull(teamWf, "Parent Team Workflow");
       Conditions.checkNotNull(parentTransactionId, "Parent Branch");
 
@@ -519,10 +520,10 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
          @Override
          public IStatus run(IProgressMonitor monitor) {
-            AtsApiService.get().getBranchService().setWorkingBranchCreationInProgress(teamWf, true);
+            atsApi.getBranchService().setWorkingBranchCreationInProgress(teamWf, true);
             IOseeBranch branch = BranchManager.createWorkingBranch(parentTransactionId, branchName,
-               AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
-            AtsApiService.get().getBranchService().setWorkingBranchCreationInProgress(teamWf, false);
+               atsApi.getQueryService().getArtifact(teamWf));
+            atsApi.getBranchService().setWorkingBranchCreationInProgress(teamWf, false);
             Conditions.assertTrue(branch.isValid(), "Working Branch creation failed.");
             performPostBranchCreationTasks(teamWf);
             return Status.OK_STATUS;
@@ -545,7 +546,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
    private void performPostBranchCreationTasks(final IAtsTeamWorkflow teamWf) {
       // Create reviews as necessary
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Reviews upon Transition");
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Reviews upon Transition");
       boolean created = createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamWf, new Date(),
          AtsCoreUsers.SYSTEM_USER, changes);
       if (created) {
@@ -554,7 +555,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
       // Notify extensions of branch creation
       XResultData rd = new XResultData();
-      for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+      for (IAtsWorkItemHook item : atsApi.getWorkItemService().getWorkItemHooks()) {
          item.workingBranchCreated(teamWf, rd);
       }
       if (rd.isErrors()) {
@@ -564,7 +565,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
    @Override
    public Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend) {
-      BranchId branch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt);
+      BranchId branch = atsApi.getBranchService().getWorkingBranch(teamArt);
       if (branch != null) {
          IStatus status = null;
          if (pend) {

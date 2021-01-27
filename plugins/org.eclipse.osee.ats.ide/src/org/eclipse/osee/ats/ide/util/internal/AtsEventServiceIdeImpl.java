@@ -19,8 +19,10 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.event.AbstractAtsEventServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.core.event.FrameworkTopicEvent;
 import org.eclipse.osee.framework.core.event.TopicEvent;
@@ -51,7 +53,7 @@ public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
    @Override
    protected void reloadWorkItemsAsNecessry(Collection<ArtifactId> ids, Event event) {
       for (ArtifactId workItemId : ids) {
-         Artifact artifact = ArtifactCache.getActive(workItemId, AtsApiService.get().getAtsBranch());
+         Artifact artifact = ArtifactCache.getActive(workItemId, CoreBranches.COMMON);
          if (artifact != null) {
             artifact.reloadAttributesAndRelations();
          }

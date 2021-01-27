@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -251,14 +250,13 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    @Override
    public Collection<AtsUser> getSubscribed(IAtsActionableItem ai) {
-      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getArtifactToken(),
+      return atsApi.getUserService().getRelatedUsers(atsApi, ai.getArtifactToken(),
          AtsRelationTypes.SubscribedUser_User);
    }
 
    @Override
    public Collection<AtsUser> getLeads(IAtsActionableItem ai) {
-      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getStoreObject(),
-         AtsRelationTypes.TeamLead_Lead);
+      return atsApi.getUserService().getRelatedUsers(atsApi, ai.getStoreObject(), AtsRelationTypes.TeamLead_Lead);
    }
 
    @Override
@@ -312,7 +310,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    @Override
    public Collection<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService) {
       Collection<IAtsActionableItem> ais = new HashSet<>();
-      for (ActionableItem ai : AtsApiService.get().getConfigService().getConfigurations().getIdToAi().values()) {
+      for (ActionableItem ai : atsApi.getConfigService().getConfigurations().getIdToAi().values()) {
          if (active == Active.Both || ((active == Active.Active && ai.isActive()) || (active == Active.InActive && ai.isInActive()))) {
             ais.add(ai);
          }

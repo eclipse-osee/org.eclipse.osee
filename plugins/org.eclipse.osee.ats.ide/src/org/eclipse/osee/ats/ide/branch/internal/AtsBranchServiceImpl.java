@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -44,8 +43,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
-   public AtsBranchServiceImpl(AtsApi atsServices, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
-      super(atsServices, teamWorkflowProvidersLazy);
+   public AtsBranchServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      super(atsApi, teamWorkflowProvidersLazy);
    }
 
    /**
@@ -177,12 +176,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public List<ChangeItem> getChangeData(BranchId branch) {
-      return AtsApiService.get().getServerEndpoints().getActionEndpoint().getBranchChangeData(branch);
+      return atsApi.getServerEndpoints().getActionEndpoint().getBranchChangeData(branch);
    }
 
    @Override
    public List<ChangeItem> getChangeData(TransactionId transaction) {
-      return AtsApiService.get().getServerEndpoints().getActionEndpoint().getTransactionChangeData(transaction);
+      return atsApi.getServerEndpoints().getActionEndpoint().getTransactionChangeData(transaction);
    }
 
    @Override

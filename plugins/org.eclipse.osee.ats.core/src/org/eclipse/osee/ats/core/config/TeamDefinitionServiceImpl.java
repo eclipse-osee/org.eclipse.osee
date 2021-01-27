@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -201,19 +200,18 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
 
    @Override
    public Collection<AtsUser> getLeads(IAtsTeamDefinition teamDef) {
-      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, teamDef.getStoreObject(),
-         AtsRelationTypes.TeamLead_Lead);
+      return atsApi.getUserService().getRelatedUsers(atsApi, teamDef.getStoreObject(), AtsRelationTypes.TeamLead_Lead);
    }
 
    @Override
    public Collection<AtsUser> getMembers(IAtsTeamDefinition teamDef) {
-      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, teamDef.getArtifactToken(),
+      return atsApi.getUserService().getRelatedUsers(atsApi, teamDef.getArtifactToken(),
          AtsRelationTypes.TeamMember_Member);
    }
 
    @Override
    public Collection<AtsUser> getSubscribed(IAtsTeamDefinition teamDef) {
-      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, teamDef.getArtifactToken(),
+      return atsApi.getUserService().getRelatedUsers(atsApi, teamDef.getArtifactToken(),
          AtsRelationTypes.SubscribedUser_User);
    }
 
@@ -399,7 +397,7 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    public Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(active)) {
-         if (AtsApiService.get().getVersionService().getVersions(teamDef).size() > 0) {
+         if (atsApi.getVersionService().getVersions(teamDef).size() > 0) {
             teamDefs.add(teamDef);
          }
       }
@@ -417,8 +415,7 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    public Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       teamDefs.add(teamDef);
-      for (IAtsTeamDefinition child : AtsApiService.get().getTeamDefinitionService().getChildrenTeamDefinitions(
-         teamDef)) {
+      for (IAtsTeamDefinition child : atsApi.getTeamDefinitionService().getChildrenTeamDefinitions(teamDef)) {
          teamDefs.addAll(getTeamsFromItemAndChildren(child));
       }
       return teamDefs;

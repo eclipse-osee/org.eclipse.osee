@@ -112,7 +112,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    @Override
    public void start() {
-      attributeResolverService = new AtsAttributeResolverServiceImpl();
+      attributeResolverService = new AtsAttributeResolverServiceImpl(this);
 
       super.start();
 
@@ -279,7 +279,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    @Override
    public IAtsHealthService getHealthService() {
-      return new AtsHealthServiceImpl();
+      return new AtsHealthServiceImpl(this);
    }
 
    @Override
@@ -316,7 +316,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public AtsBranchServiceIde getBranchServiceIde() {
       if (branchServiceIde == null) {
-         branchServiceIde = new AtsBranchServiceIdeImpl();
+         branchServiceIde = new AtsBranchServiceIdeImpl(this);
       }
       return branchServiceIde;
    }

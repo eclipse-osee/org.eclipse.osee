@@ -49,7 +49,7 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
    }
 
    private DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd, ChangeData changeData) {
-      final IAutoGenTaskData data = AtsApiService.get().getTaskRelatedService().getAutoGenTaskData(trd.getTask());
+      final IAutoGenTaskData data = atsApi.getTaskRelatedService().getAutoGenTaskData(trd.getTask());
 
       if (data.isNoChangedArtifact()) {
          trd.getResults().error("No changed artifact to show");

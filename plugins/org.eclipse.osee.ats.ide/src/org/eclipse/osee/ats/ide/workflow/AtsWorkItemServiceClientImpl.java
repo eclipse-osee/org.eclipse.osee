@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -96,7 +95,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       transData.setWorkItems(helper.getWorkItems());
 
       // Set dummy cancel reason
-      IAtsStateDefinition toStateDef = AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(
+      IAtsStateDefinition toStateDef = atsApi.getWorkDefinitionService().getStateDefinitionByName(
          helper.getWorkItems().iterator().next(), helper.getToStateName());
       if (toStateDef.getStateType() == StateType.Cancelled) {
          transData.setCancellationReason("temp reason");
@@ -131,7 +130,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
     */
    private TransitionResults postEventAndReturn(TransitionData transData, TransitionResults results) {
       Conditions.assertNotNullOrEmpty(results.getWorkItemIds(), "workItemIds");
-      AtsApiService.get().getStoreService().reload(transData.getWorkItems());
+      atsApi.getStoreService().reload(transData.getWorkItems());
 
       if (results.isSuccess()) {
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, transData.getWorkItems(),

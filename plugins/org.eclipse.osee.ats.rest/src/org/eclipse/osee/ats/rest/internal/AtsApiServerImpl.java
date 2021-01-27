@@ -111,7 +111,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public void start() {
       configurationsService = new AtsConfigurationsService(this, orcsApi);
-      attributeResolverService = new AtsAttributeResolverServiceImpl();
+      attributeResolverService = new AtsAttributeResolverServiceImpl(this);
 
       super.start();
 
@@ -121,8 +121,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
       relationResolver = new AtsRelationResolverServiceImpl(this);
-      ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);
-      ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
 
       storeService = new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory, this);
 
