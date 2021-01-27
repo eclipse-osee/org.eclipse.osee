@@ -155,7 +155,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
    }
 
    public void refresh() {
-      createUpdateLinks();
+      if (Widgets.isAccessible(this)) {
+         createUpdateLinks();
+      }
    }
 
    private void removeRelations(final Set<Long> existingRels) {
@@ -167,6 +169,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
          public void run() {
             if (Widgets.isAccessible(fComp) && relIdToHyperlink != null) {
                for (Long relationId : existingRels) {
+                  if (relIdToHyperlink.getValues(relationId) == null) {
+                     continue;
+                  }
                   for (Hyperlink link : relIdToHyperlink.getValues(relationId)) {
                      if (link != null) {
                         link.dispose();

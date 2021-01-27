@@ -39,15 +39,21 @@ import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -60,10 +66,12 @@ public class AtsDbConfigBase {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
+   private final OrcsBranch branchOps;
 
    public AtsDbConfigBase(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+      branchOps = orcsApi.getBranchOps();
    }
 
    public XResultData run() {
@@ -74,7 +82,7 @@ public class AtsDbConfigBase {
          return results;
       }
 
-      // load top team / ai into cache
+      // Load top team / ai into cache
       IAtsTeamDefinition topTeam =
          atsApi.getTeamDefinitionService().getTeamDefinitionById(AtsArtifactToken.TopTeamDefinition);
       IAtsActionableItem topAi =
@@ -94,39 +102,40 @@ public class AtsDbConfigBase {
 
       createUserCreationDisabledConfig();
 
-      configureDemoPeerChecklist();
+      CreateAndconfigureProcessesBranchAndDemoPeerChecklist();
 
       return results;
    }
 
-   private void configureDemoPeerChecklist() {
+   private void CreateAndconfigureProcessesBranchAndDemoPeerChecklist() {
       String CONFIG_VALUE = //
-         "Requirements Review Checklist;/c/checklists/requirements_checklist.xlsx\n" + //
-            "Code Review Checklist;/c/checklists/codeeck if_checklist.txt\n" + //
-            "Test Review Checklist;/c/checklists/test_checklist.doc\n" + //
-            "Document Review Checklist;osee:570:Document_Checklist\n" + //
-            "Process Review Checklist;osee:570:Process_Checklist";
-      atsApi.setConfigValue("DemoPeerReviewChecklist", CONFIG_VALUE);
-      IAtsChangeSet changes = atsApi.createChangeSet("Import Peer Checklist");
-      ArtifactToken atsHeader = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
-      changes.createArtifact(atsHeader, AtsArtifactToken.AttachmentFolder);
+         "Document_Checklist;osee:" + DemoBranches.Processes.getIdString() + ":Document_Checklist\n" + //
+            "Process_Checklist;osee:" + DemoBranches.Processes.getIdString() + ":Process_Checklist";
+      atsApi.setConfigValue("PeerReviewChecklist", CONFIG_VALUE);
+
+      // Create Processes Branch
+      Branch branch = branchOps.createBaselineBranch(DemoBranches.Processes, DemoUsers.Joe_Smith,
+         CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL);
+      branchOps.setBranchPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
+
+      // Create Top Folders on Processes Branch
+      IAtsChangeSet changes = atsApi.createChangeSet("Create attachment Folders", branch);
+      ArtifactToken branchRoot = atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot, branch);
+      changes.createArtifact(branchRoot, AtsArtifactToken.PeerAttachmentFolder);
+
       changes.execute();
 
-      File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDbConfigBase.class);
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes,
          SystemUser.OseeSystem, "Import Peer Checklist");
-      importChecklist(file, transaction);
-      transaction.commit();
+      File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDbConfigBase.class);
+      importChecklist(file, transaction, AtsArtifactToken.PeerAttachmentFolder);
 
-      transaction = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, SystemUser.OseeSystem,
-         "Import Peer Checklist");
       File file2 = OseeInf.getResourceAsFile("demoPeerChecklists/Process_Checklist.xlsx", AtsDbConfigBase.class);
-      importChecklist(file2, transaction);
+      importChecklist(file2, transaction, AtsArtifactToken.PeerAttachmentFolder);
       transaction.commit();
-
    }
 
-   private void importChecklist(File file, TransactionBuilder transaction) {
+   private void importChecklist(File file, TransactionBuilder transaction, ArtifactToken token) {
       IArtifactExtractor extractor = getArtifactExtractor(CoreArtifactTypes.GeneralDocument);
       XResultData resultData = new XResultData();
       RoughArtifactCollector collector = new RoughArtifactCollector(
@@ -135,8 +144,8 @@ public class AtsDbConfigBase {
       IArtifactImportResolver resolver =
          ArtifactResolverFactory.createResolver(transaction, ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
             CoreArtifactTypes.GeneralDocument, Arrays.asList(CoreAttributeTypes.Name), true, false);
-      ArtifactReadable attachmentFolder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         AtsArtifactToken.AttachmentFolder).asArtifact();
+      ArtifactReadable attachmentFolder =
+         orcsApi.getQueryFactory().fromBranch(DemoBranches.Processes).andId(token).asArtifact();
       SourceToRoughArtifactOperation sourceToRoughArtifactOperation =
          new SourceToRoughArtifactOperation(orcsApi, resultData, extractor, file, collector);
       sourceToRoughArtifactOperation.importFiles();

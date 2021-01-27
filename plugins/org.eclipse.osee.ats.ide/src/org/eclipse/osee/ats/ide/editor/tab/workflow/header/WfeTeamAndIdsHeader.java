@@ -115,7 +115,9 @@ public class WfeTeamAndIdsHeader extends Composite {
 
                   @Override
                   public void run() {
-                     idValue.setText(fIdValueStr);
+                     if (Widgets.isAccessible(idValue)) {
+                        idValue.setText(fIdValueStr);
+                     }
                      if (Widgets.isAccessible(teamWfIdValue)) {
                         teamWfIdValue.setText(fTeamWfIdValueStr);
                      }

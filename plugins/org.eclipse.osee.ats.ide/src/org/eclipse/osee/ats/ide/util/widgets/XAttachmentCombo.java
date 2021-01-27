@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -99,7 +100,8 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
    }
 
    private boolean isChecklistAttached() {
-      return getSelectedChecklist() != null;
+      Pair<Artifact, RelationLink> artRelPair = getSelectedChecklist();
+      return artRelPair.getFirst() != null && artRelPair.getSecond() != null;
    }
 
    /**
@@ -176,8 +178,8 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
                }
                Artifact art =
                   ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralDocument, checklistName, branch);
-               Artifact duplicateArt = art.duplicate(branch);
-               SkynetTransaction transaction = TransactionManager.createTransaction(branch, "file");
+               Artifact duplicateArt = art.duplicate((CoreBranches.COMMON));
+               SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "file");
                ((Artifact) workItem.getStoreObject()).addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo,
                   duplicateArt);
                duplicateArt.addAttribute(CoreAttributeTypes.StaticId, getAttachmentStaticId());
