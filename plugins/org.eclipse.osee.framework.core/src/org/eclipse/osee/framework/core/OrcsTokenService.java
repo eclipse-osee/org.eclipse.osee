@@ -92,6 +92,8 @@ public interface OrcsTokenService {
     */
    RelationTypeToken getRelationTypeOrCreate(Long id);
 
+   void registerTokenClasses(Class<?>[] tokenClasses);
+
    /**
     * Register the given artifact type token by its id. Throws OseeArgumentException if the types id is already
     * registered.
@@ -174,4 +176,10 @@ public interface OrcsTokenService {
    boolean attributeTypeExists(String name);
 
    Set<AttributeTypeToken> getSingletonAttributeTypes();
+
+   /**
+    * @return the Java type, usually an interface, that contains the static fields that define ORCS type tokens that
+    * were registered by its OrcsTypeTokenProvider
+    */
+   Class<?> getTokenClass(String canonicalClassName);
 }

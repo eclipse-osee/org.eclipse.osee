@@ -28,6 +28,8 @@ public final class DoorsTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public DoorsTypeTokenProvider() {
       super(doors);
+
       loadClasses(DoorsOseeTypes.DoorReqId);
+      registerTokenClasses(DoorsOseeTypes.class);
    }
 }

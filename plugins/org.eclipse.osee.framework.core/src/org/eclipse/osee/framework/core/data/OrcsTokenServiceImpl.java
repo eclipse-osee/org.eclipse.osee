@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  * @author Ryan D. Brooks
  */
 public final class OrcsTokenServiceImpl implements OrcsTokenService {
+   private final Map<String, Class<?>> tokenClasses = new ConcurrentHashMap<>();
    private final Map<Long, ArtifactTypeToken> artifactTypes = new ConcurrentHashMap<>();
    private final Map<Long, AttributeTypeGeneric<?>> attributeTypes = new ConcurrentHashMap<>();
    private final Map<Long, RelationTypeToken> relationTypes = new ConcurrentHashMap<>();
@@ -166,6 +167,18 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          registerRelationType(relationType);
       }
       return relationType;
+   }
+
+   @Override
+   public void registerTokenClasses(Class<?>[] tokenClasses) {
+      for (Class<?> tokenClass : tokenClasses) {
+         this.tokenClasses.put(tokenClass.getCanonicalName(), tokenClass);
+      }
+   }
+
+   @Override
+   public Class<?> getTokenClass(String canonicalClassName) {
+      return tokenClasses.get(canonicalClassName);
    }
 
    @Override
