@@ -18,27 +18,32 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
 import org.apache.cxf.rs.security.oauth2.grants.code.AuthorizationCodeGrant;
 import org.apache.cxf.rs.security.oauth2.grants.refresh.RefreshTokenGrant;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientBuilder;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows.OwnerCredentials;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OAuth2Transport {
+   private final JaxRsApi jaxRsApi;
+
+   public OAuth2Transport(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
+   }
 
    public ClientAccessToken sendAuthorizationCodeGrant(OwnerCredentials owner, Consumer client, String sessionCookie, String tokenUri, String authCode, String redirectUri, Map<String, String> extraParams) {
       AuthorizationCodeGrant grant = new AuthorizationCodeGrant();
@@ -88,20 +93,17 @@ public class OAuth2Transport {
       return newTargetBuilder(credentials, uri.toASCIIString());
    }
 
-   private WebClient newWebClient(OwnerCredentials credentials, String uri, String sessionCookie) {
-      JaxRsWebTarget target;
+   private WebClient newWebClient(OwnerCredentials credentials, String url, String sessionCookie) {
+      WebTarget target;
       if (Strings.isValid(sessionCookie)) {
-         target = JaxRsClient.newClient().target(uri);
+         target = jaxRsApi.newTargetUrl(url);
       } else {
-         target = JaxRsClient.newBuilder()//
-            .username(credentials.getUsername())//
-            .password(credentials.getPassword())//
-            .build().target(uri);
+         target = jaxRsApi.newTargetUrlPasswd(url, credentials.getUsername(), credentials.getPassword());
       }
 
       WebClient webClient = null;
-      if (target instanceof JaxRsWebTargetImpl) {
-         webClient = ((JaxRsWebTargetImpl) target).getWebClient();
+      if (target instanceof WebTargetImpl) {
+         webClient = ((WebTargetImpl) target).getWebClient();
       }
       if (webClient != null && Strings.isValid(sessionCookie)) {
          webClient.header(HttpHeaders.COOKIE, sessionCookie);
@@ -109,18 +111,10 @@ public class OAuth2Transport {
       return webClient;
    }
 
-   private Builder newTargetBuilder(OwnerCredentials credentials, String uri, String sessionCookie) {
-      JaxRsClientBuilder clientBuilder = JaxRsClient.newBuilder().followRedirects(false);
-      Builder builder;
+   private Builder newTargetBuilder(OwnerCredentials credentials, String url, String sessionCookie) {
       if (Strings.isValid(sessionCookie)) {
-         builder = clientBuilder.build().target(uri).request().header(HttpHeaders.COOKIE, sessionCookie);
-      } else {
-         builder = clientBuilder//
-            .username(credentials.getUsername())//
-            .password(credentials.getPassword())//
-            .build().target(uri).request();
+         return jaxRsApi.newTargetUrl(url).request().header(HttpHeaders.COOKIE, sessionCookie);
       }
-      return builder;
+      return jaxRsApi.newTargetUrlPasswd(url, credentials.getUsername(), credentials.getPassword()).request();
    }
-
 }

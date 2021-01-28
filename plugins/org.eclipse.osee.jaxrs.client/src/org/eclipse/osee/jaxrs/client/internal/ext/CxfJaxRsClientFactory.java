@@ -22,7 +22,6 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 
 /**
@@ -49,18 +48,6 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
    @Override
    public JaxRsClientConfig copyDefaultConfig() {
       return config.copy();
-   }
-
-   /**
-    * Creates a JAX-RS WebTarget
-    *
-    * @param properties - configuration options
-    * @param baseAddress - optional base target address
-    * @return target
-    */
-   @Override
-   public JaxRsWebTarget newTarget(JaxRsClientConfig config, String serverAddress) {
-      return new JaxRsWebTargetImpl(newWebTarget(config, serverAddress));
    }
 
    @Override

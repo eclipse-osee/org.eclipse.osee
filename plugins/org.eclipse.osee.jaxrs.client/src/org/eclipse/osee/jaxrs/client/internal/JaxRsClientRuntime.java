@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -47,9 +48,9 @@ public final class JaxRsClientRuntime {
    public static final long MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS = 24L * 60L * 60L * 1000L; // one day
    private static volatile JaxRsClientFactory instance;
 
-   public static JaxRsClientFactory getClientFactoryInstance(ObjectMapper mapper, OrcsTokenService tokenService) {
+   public static JaxRsClientFactory getClientFactoryInstance(ObjectMapper mapper, OrcsTokenService tokenService, JaxRsApi jaxRsApi) {
       if (instance == null) {
-         OAuthFactory oauthFactory = newOAuthFactory();
+         OAuthFactory oauthFactory = newOAuthFactory(jaxRsApi);
          CxfJaxRsClientConfigurator configurator = new CxfJaxRsClientConfigurator(oauthFactory, tokenService);
          configurator.configureJaxRsRuntime();
          configurator.configureDefaults(Collections.<String, Object> emptyMap(), mapper);
@@ -58,14 +59,14 @@ public final class JaxRsClientRuntime {
       return instance;
    }
 
-   private static OAuthFactory newOAuthFactory() {
+   private static OAuthFactory newOAuthFactory(JaxRsApi jaxRsApi) {
       return new OAuthFactory() {
 
          @Override
          public OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String clientId, String clientSecret, String authorizeUri, String tokenUri, String tokenValidationUri) {
             OwnerCredentials owner = newOwner(username, password);
             Consumer client = new Consumer(clientId, clientSecret);
-            OAuth2Transport transport = new OAuth2Transport();
+            OAuth2Transport transport = new OAuth2Transport(jaxRsApi);
             OAuth2Flows flowManager =
                new OAuth2Flows(transport, owner, client, authorizeUri, tokenUri, tokenValidationUri);
             OAuth2Serializer serializer = new OAuth2Serializer();

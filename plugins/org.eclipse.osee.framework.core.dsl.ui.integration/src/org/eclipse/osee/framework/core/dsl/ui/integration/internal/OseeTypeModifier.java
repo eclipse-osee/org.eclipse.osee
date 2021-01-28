@@ -21,10 +21,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.AttributeModifier;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
 /**
  * @author Roberto E. Escobar
@@ -57,11 +57,10 @@ public class OseeTypeModifier implements AttributeModifier {
          OseeCoreException.wrapAndThrow(ex);
       }
 
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      String typesUri = String.format("%s/orcs/types/config", appServer);
       OseeDsl oseeDsl = null;
       try {
-         Response response = JaxRsClient.newClient().target(typesUri).request(MediaType.APPLICATION_JSON_TYPE).get();
+         WebTarget target = ServiceUtil.getOseeClient().jaxRsApi().newTarget("orcs/types/config");
+         Response response = target.request(MediaType.APPLICATION_JSON_TYPE).get();
          if (javax.ws.rs.core.Response.Status.OK.getStatusCode() != response.getStatus()) {
             throw new OseeStateException("Error retrieving orcs types config " + response);
          }

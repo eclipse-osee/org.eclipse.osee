@@ -66,7 +66,7 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
       mapper = JsonUtil.createStandardDateObjectMapper(module);
       typeFactory = mapper.getTypeFactory();
-      factory = JaxRsClientRuntime.getClientFactoryInstance(mapper, tokenService);
+      factory = JaxRsClientRuntime.getClientFactoryInstance(mapper, tokenService, this);
       baseUrl = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, OseeClient.DEFAULT_URL);
    }
 
@@ -100,6 +100,11 @@ public final class JaxRsApiImpl implements JaxRsApi {
    }
 
    @Override
+   public WebTarget newTargetUrl(String url) {
+      return factory.newWebTarget(url);
+   }
+
+   @Override
    public WebTarget newTargetNoRedirect(String path) {
       JaxRsClientConfig config = factory.copyDefaultConfig();
       config.setFollowRedirects(false);
@@ -113,8 +118,13 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public WebTarget newTargetQuery(String path, String... queryParams) {
-      StringBuilder strB = new StringBuilder(path);
-      strB.append("/?");
+      return newTargetUrlQuery(url(path), queryParams);
+   }
+
+   @Override
+   public WebTarget newTargetUrlQuery(String url, String... queryParams) {
+      StringBuilder strB = new StringBuilder(url);
+      strB.append("?");
 
       boolean first = true;
       for (int x = 0; x < queryParams.length; x += 2) {
@@ -127,15 +137,20 @@ public final class JaxRsApiImpl implements JaxRsApi {
          strB.append("=");
          strB.append(queryParams[x + 1]);
       }
-      return newTarget(strB.toString());
+      return newTargetUrl(strB.toString());
+   }
+
+   @Override
+   public WebTarget newTargetUrlPasswd(String url, String serverUsername, String serverPassword) {
+      JaxRsClientConfig config = factory.copyDefaultConfig();
+      config.setServerPassword(serverPassword);
+      config.setServerUsername(serverUsername);
+      return factory.newWebTarget(config, url);
    }
 
    @Override
    public WebTarget newTargetPasswd(String path, String serverUsername, String serverPassword) {
-      JaxRsClientConfig config = factory.copyDefaultConfig();
-      config.setServerPassword(serverPassword);
-      config.setServerUsername(serverUsername);
-      return newTarget(path, config);
+      return newTargetUrlPasswd(url(path), serverUsername, serverPassword);
    }
 
    private WebTarget newTarget(String path, JaxRsClientConfig config) {

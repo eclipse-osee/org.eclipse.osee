@@ -47,15 +47,22 @@ public interface JaxRsApi {
    WebTarget newTargetNoRedirect(String path);
 
    /**
-    * @return a WebTarget using the url created by the server's base url appened with the provided path segments
+    * @return a WebTarget using the url created by the server's base URL appended with the provided path segments
     */
    WebTarget newTarget(String... pathSegments);
 
    /**
-    * @return a WebTarget using the url created by the server's base url appened with the provided path followe by ? and
-    * the query parameters in key value format
+    * @return a WebTarget using the url created by the server's base URL appended with the provided path followed by ?
+    * and the query parameters in key value format
     */
    WebTarget newTargetQuery(String path, String... queryParams);
+
+   /**
+    * @return a WebTarget using the given absolute URL followed by ? and the query parameters in key value format
+    */
+   WebTarget newTargetUrlQuery(String url, String... queryParams);
+
+   WebTarget newTargetUrlPasswd(String url, String serverUsername, String serverPassword);
 
    WebTarget newTargetPasswd(String path, String serverUsername, String serverPassword);
 
@@ -64,4 +71,9 @@ public interface JaxRsApi {
    ObjectMapper getObjectMapper();
 
    <T> T newProxy(String path, Class<T> clazz);
+
+   /**
+    * @return a WebTarget using the given absolute URL
+    */
+   WebTarget newTargetUrl(String url);
 }
