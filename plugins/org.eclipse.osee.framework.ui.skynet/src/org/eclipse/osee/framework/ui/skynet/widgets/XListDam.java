@@ -47,10 +47,14 @@ public class XListDam extends XList implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attrType) {
       this.artifact = artifact;
-      this.attributeType = attrName;
-      super.setSelected(getStoredStrs());
+      this.attributeType = attrType;
+      add(artifact.getAttributesToStringList(attrType));
+      //if you want read-only widget with no selection
+      if (!isNoSelect()) {
+         super.setSelected(getStoredStrs());
+      }
    }
 
    @Override

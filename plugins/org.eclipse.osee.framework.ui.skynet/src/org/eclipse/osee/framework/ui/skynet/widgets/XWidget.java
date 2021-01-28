@@ -59,7 +59,7 @@ public abstract class XWidget {
    protected boolean verticalLabel = false;
    protected boolean fillVertically = false;
    protected boolean fillHorizontally = false;
-
+   private boolean noSelect = false;
    private boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<>();
    private MouseListener mouseLabelListener;
@@ -436,5 +436,13 @@ public abstract class XWidget {
 
    public void setId(String id) {
       this.id = id;
+   }
+
+   public boolean isNoSelect() {
+      return noSelect;
+   }
+
+   public void setNoSelect(boolean noSelect) {
+      this.noSelect = noSelect;
    }
 }

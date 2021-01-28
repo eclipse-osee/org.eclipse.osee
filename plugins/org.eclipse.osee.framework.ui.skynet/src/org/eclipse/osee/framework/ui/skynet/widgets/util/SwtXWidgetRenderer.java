@@ -126,6 +126,8 @@ public class SwtXWidgetRenderer {
 
       xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
       xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+      xWidget.setNoSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_SELECT));
+
       xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
 
       return xWidget;

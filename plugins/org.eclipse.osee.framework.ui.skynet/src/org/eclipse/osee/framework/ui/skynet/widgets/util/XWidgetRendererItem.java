@@ -41,6 +41,7 @@ public class XWidgetRendererItem implements Cloneable {
    private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
    private boolean endComposite, endGroupComposite; // indicated end of child composite
    private int height = DEFAULT_HEIGHT;
+   private boolean noSelect;
    private String toolTip;
    private SwtXWidgetRenderer dynamicXWidgetLayout;
    private String defaultValue;
@@ -296,5 +297,13 @@ public class XWidgetRendererItem implements Cloneable {
 
    public Map<String, Object> getParameters() {
       return parameters;
+   }
+
+   public boolean isNoSelect() {
+      return noSelect;
+   }
+
+   public void setNoSelect(boolean noSelect) {
+      this.noSelect = noSelect;
    }
 }

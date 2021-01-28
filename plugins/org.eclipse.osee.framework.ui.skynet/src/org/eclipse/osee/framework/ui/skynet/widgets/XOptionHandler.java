@@ -30,6 +30,8 @@ public class XOptionHandler {
 
    public void add(XOption xOption) {
       switch (xOption) {
+         case NO_SELECT:
+            xOptions.remove(XOption.MULTI_SELECT);
          case ALIGN_CENTER:
          case ALIGN_LEFT:
          case ALIGN_RIGHT:
@@ -101,7 +103,7 @@ public class XOptionHandler {
 
    /**
     * Must go through the add method to ensure values set properly
-    * 
+    *
     * @param options the xOptions to set
     */
    public void set(Set<XOption> options) {
@@ -111,7 +113,7 @@ public class XOptionHandler {
 
    /**
     * Must go through the add method to ensure values set properly
-    * 
+    *
     * @param options the xOptions to set
     */
    public void set(XOption[] options) {

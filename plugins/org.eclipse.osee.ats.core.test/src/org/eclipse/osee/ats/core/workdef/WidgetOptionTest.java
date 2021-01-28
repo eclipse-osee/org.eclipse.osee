@@ -26,7 +26,7 @@ public class WidgetOptionTest {
 
    @Test
    public void testValues() {
-      Assert.assertEquals(31, WidgetOption.values().length);
+      Assert.assertEquals(32, WidgetOption.values().length);
    }
 
    @Test

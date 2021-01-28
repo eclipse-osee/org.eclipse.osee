@@ -359,13 +359,11 @@ public final class FrameworkXWidgetProvider {
                if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
                   String values[] = xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(
                      xWidgetLayoutData);
+                  XListDam list = new XListDam(name);
                   if (values.length > 0) {
-                     XListDam list = new XListDam(name);
                      list.add(values);
-                     xWidget = list;
-                  } else {
-                     throw new OseeArgumentException("Invalid XList.  Must be \"XList(option1,option2,option3)\"");
                   }
+                  xWidget = list;
                }
             } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
                xWidget = new XHyperlabelMemberSelDam(name);
