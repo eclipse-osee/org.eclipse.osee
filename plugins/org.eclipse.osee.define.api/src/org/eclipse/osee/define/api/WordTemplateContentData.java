@@ -35,6 +35,7 @@ public class WordTemplateContentData {
    private ArtifactId viewId;
    private PresentationType presentationType;
    private String permanentLinkUrl;
+   private boolean artIsChanged;
 
    public Long getArtId() {
       return artId;
@@ -122,5 +123,13 @@ public class WordTemplateContentData {
 
    public void setPermanentLinkUrl(String permanentLinkUrl) {
       this.permanentLinkUrl = permanentLinkUrl;
+   }
+
+   public boolean getArtIsChanged() {
+      return artIsChanged;
+   }
+
+   public void setArtIsChanged(boolean artIsChanged) {
+      this.artIsChanged = artIsChanged;
    }
 }

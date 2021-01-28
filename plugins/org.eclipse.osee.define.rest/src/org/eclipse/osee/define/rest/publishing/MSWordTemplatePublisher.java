@@ -57,6 +57,7 @@ import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
+import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -64,6 +65,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -94,6 +96,7 @@ public class MSWordTemplatePublisher {
    protected static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    protected static final String FONT = "Times New Roman";
    protected static final String LANDSCAPE = "Landscape";
+   protected static final String CHANGE_TAG = WordUtilities.CHANGE_TAG;
 
    //Patterns
    protected static final Pattern headElementsPattern =
@@ -125,6 +128,7 @@ public class MSWordTemplatePublisher {
    protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
    protected final Map<ApplicabilityId, Boolean> applicabilityMap = new HashMap<>();
    protected final List<ArtifactReadable> headerArtifacts = new LinkedList<>();
+   protected List<ArtifactId> changedArtifacts = new LinkedList<>();
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -627,7 +631,7 @@ public class MSWordTemplatePublisher {
 
          List<ArtifactReadable> siblings = artifact.getParent().getChildren();
          for (ArtifactReadable sibling : siblings) {
-            if (!artifactsWithContext.contains(sibling)) {
+            if (!artifactsWithContext.contains(sibling) && !sibling.isOfType(CoreArtifactTypes.HeadingMsWord)) {
                artifactsWithContext.add(sibling);
             }
          }
@@ -675,7 +679,7 @@ public class MSWordTemplatePublisher {
          !artifact.isAttributeTypeValid(WholeWordContent) && !artifact.isAttributeTypeValid(NativeContent);
       boolean excludeFolder = publishingOptions.excludeFolders && artifact.isOfType(Folder);
 
-      if (!excludeFolder) {
+      if (!excludeFolder && checkIsArtifactApplicable(artifact)) {
          if (validWordTemplateContent) {
             return true;
          } else {
@@ -723,15 +727,20 @@ public class MSWordTemplatePublisher {
    //--- RenderArtifact Helper Methods ---//
 
    /**
-    * If outlining is enabled, this default method inserts the heading with the paragraph number for the artifact. Also
-    * puts the artifact and paragraph number into a hashmap together for potential updating of paragraph numbers
+    * If outlining is enabled, this default method inserts the heading with the paragraph number for the artifact. This
+    * will also add a change tag to the heading text if this artifact is included into the populated list of changed
+    * artifacts. Also puts the artifact and paragraph number into a hashmap together for potential updating of paragraph
+    * numbers
     */
    protected void setArtifactOutlining(ArtifactReadable artifact, WordMLWriter wordMl) {
       AttributeTypeToken attrToken = AttributeTypeToken.valueOf(headingAttributeType.getIdString());
       String headingText = artifact.getSoleAttributeAsString(attrToken, "");
+      if (changedArtifacts.contains(artifact)) {
+         headingText = CHANGE_TAG.concat(headingText);
+      }
       CharSequence paragraphNumber = null;
 
-      paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, null);
+      paragraphNumber = wordMl.startOutlineSubSection(FONT, headingText, null);
       if (paragraphNumber == null) {
          paragraphNumber = wordMl.startOutlineSubSection();
       }
@@ -891,6 +900,7 @@ public class MSWordTemplatePublisher {
       wtcData.setPresentationType(presentationType);
       wtcData.setViewId(publishingOptions.view);
       wtcData.setPermanentLinkUrl(new ArtifactUrlServer(orcsApi).getSelectedPermanentLinkUrl());
+      wtcData.setArtIsChanged(changedArtifacts.contains(artifact));
 
       Pair<String, Set<String>> content = null;
       try {
@@ -935,7 +945,14 @@ public class MSWordTemplatePublisher {
          wordMl.addTextInsideParagraph(valueList);
       }
       wordMl.endParagraph();
+   }
 
+   /**
+    * Generic method for passing in an AttributeTypeToken and getting the string value from the artifact. Meant for
+    * subclasses to overwrite and make changes as needed.
+    */
+   protected String getAttributeValueAsString(AttributeTypeToken token, ArtifactReadable artifact) {
+      return artifact.getAttributeValuesAsString(token);
    }
 
    //--- Error Handling Methods ---//

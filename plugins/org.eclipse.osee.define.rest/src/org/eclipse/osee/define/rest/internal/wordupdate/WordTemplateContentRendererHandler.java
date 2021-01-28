@@ -85,11 +85,15 @@ public class WordTemplateContentRendererHandler {
             //Change the BinData Id so images do not get overridden by the other images
             data = WordUtilities.reassignBinDataID(data);
 
+            if (wtcData.getArtIsChanged()) {
+               data = WordUtilities.appendInlineChangeTag(data);
+            }
+            data = WordUtilities.removeNewLines(data);
+
             LinkType link = wtcData.getLinkType() != null ? LinkType.valueOf(wtcData.getLinkType()) : null;
             data = WordMlLinkHandler.link(queryFactory, link, artifact, data, wtcData.getTxId(), unknownGuids,
                wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordUtilities.reassignBookMarkID(data);
-            data = WordUtilities.removeNewLines(data);
 
             // if no extra paragraphs have been added this will replace the normal footer
             data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");

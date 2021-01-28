@@ -34,6 +34,9 @@ import org.w3c.dom.Element;
  */
 public class WordUtilities {
 
+   public static final String CHANGE_TAG = "[*] ";
+   public static final String CHANGE_TAG_WORDML =
+      "<w:r><w:rPr><w:color w:val=\"#FF0000\"/></w:rPr><w:t>" + CHANGE_TAG + "</w:t></w:r>";
    public static final String LISTNUM_FIELD_HEAD = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr>";
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
@@ -129,7 +132,6 @@ public class WordUtilities {
     * @return the content with the ending bookmark IDs being reassigned to a unique number. This is done to ensure all
     * versions of MS Word will function correctly.
     */
-
    public static String reassignBookMarkID(String content) {
       return updateBookmarkIds.fixTags(content);
    }
@@ -142,6 +144,23 @@ public class WordUtilities {
     */
    public static String removeNewLines(String content) {
       return content.replaceAll(newLineChar, "><");
+   }
+
+   /**
+    * Currently OSEE is using the above change tag to signify changes on that content. This method is used to append
+    * that tag along with red text formatting. The WordML must be added inside the first paragraph tag in the content in
+    * order to achieve proper formatting.
+    */
+   public static String appendInlineChangeTag(String content) {
+      Matcher paragraphMatcher = paragraphPattern.matcher(content);
+      if (paragraphMatcher.find()) {
+         StringBuilder strB = new StringBuilder();
+         strB.append(content.substring(0, paragraphMatcher.end()));
+         strB.append(CHANGE_TAG_WORDML);
+         strB.append(content.substring(paragraphMatcher.end(), content.length()));
+         content = strB.toString();
+      }
+      return content;
    }
 
 }
