@@ -37,7 +37,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * <br/>
  * <br/>
  * Note: This widget has a main and can be run to see an example
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XComboWithText extends XCombo {
@@ -76,6 +76,9 @@ public class XComboWithText extends XCombo {
       comboGd.verticalAlignment = SWT.TOP;
       getComboBox().setLayoutData(comboGd);
       comboGd = (GridData) getLabelWidget().getLayoutData();
+      if (comboGd == null) {
+         comboGd = new GridData();
+      }
       comboGd.verticalAlignment = SWT.TOP;
       getLabelWidget().setLayoutData(comboGd);
 
