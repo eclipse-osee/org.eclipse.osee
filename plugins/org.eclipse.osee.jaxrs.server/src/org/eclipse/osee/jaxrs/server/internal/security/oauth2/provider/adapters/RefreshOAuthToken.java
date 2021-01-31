@@ -57,9 +57,4 @@ public class RefreshOAuthToken extends org.apache.cxf.rs.security.oauth2.tokens.
       return type;
    }
 
-   @Override
-   public String getAudience() {
-      return null;
-   }
-
 }

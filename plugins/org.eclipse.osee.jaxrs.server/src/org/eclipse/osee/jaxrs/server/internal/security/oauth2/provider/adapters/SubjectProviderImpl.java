@@ -27,8 +27,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.ext.MessageContextImpl;
 import org.apache.cxf.phase.PhaseInterceptorChain;
-import org.apache.cxf.rs.security.oauth2.common.Client;
-import org.apache.cxf.rs.security.oauth2.common.OAuthRedirectionState;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
@@ -106,7 +104,7 @@ public class SubjectProviderImpl implements SubjectProvider {
    }
 
    // Create Authenticity Session Token
-
+   @Override
    public String createSessionToken(MessageContext mc, MultivaluedMap<String, String> params, UserSubject subject) {
       logger.debug("Create Session Token - subject[%s]", subject);
 
@@ -160,6 +158,7 @@ public class SubjectProviderImpl implements SubjectProvider {
       return sessionAuthenticityToken;
    }
 
+   @Override
    public UserSubject createUserSubject(MessageContext mc) throws OAuthServiceException {
       UserSubject subject = mc.getContent(UserSubject.class);
       if (subject == null) {
@@ -256,6 +255,7 @@ public class SubjectProviderImpl implements SubjectProvider {
       return toReturn;
    }
 
+   @Override
    public UserSubject createSubject(String username, String password) {
       OseePrincipal principal = authenticate(OAuthConstants.BASIC_SCHEME, username, password);
       return OAuthUtil.newUserSubject(principal);
@@ -289,45 +289,5 @@ public class SubjectProviderImpl implements SubjectProvider {
       }
 
       return subject;
-   }
-
-   @Override
-   public String createSessionToken(MessageContext mc, MultivaluedMap<String, String> arg1, UserSubject subject, OAuthRedirectionState arg3) {
-      logger.debug("Create Session Token - subject[%s]", subject);
-
-      String sessionAuthenticityToken = null;
-      if (sessionDelegate != null) {
-         Long subjectId = OAuthUtil.getUserSubjectUuid(subject);
-         sessionAuthenticityToken = sessionDelegate.createAuthenticitySessionToken(subjectId);
-      } else {
-         HttpSession session = mc.getHttpServletRequest().getSession();
-         sessionAuthenticityToken = (String) session.getAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
-         if (!Strings.isValid(sessionAuthenticityToken)) {
-            sessionAuthenticityToken = UUID.randomUUID().toString();
-            session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionAuthenticityToken);
-         }
-      }
-      return sessionAuthenticityToken;
-   }
-
-   @Override
-   public OAuthRedirectionState getSessionState(MessageContext mc, String arg1, UserSubject subject) {
-      return null;
-   }
-
-   @Override
-   public UserSubject createUserSubject(MessageContext mc, MultivaluedMap<String, String> arg1) throws OAuthServiceException {
-      UserSubject subject = mc.getContent(UserSubject.class);
-      if (subject == null) {
-         SecurityContext securityContext = getSecurityContext(mc);
-         subject = OAuthUtil.newSubject(securityContext);
-      }
-      return subject;
-   }
-
-   @Override
-   public UserSubject createSubject(Client client, String username, String password) {
-      OseePrincipal principal = authenticate(OAuthConstants.BASIC_SCHEME, username, password);
-      return OAuthUtil.newUserSubject(principal);
    }
 }

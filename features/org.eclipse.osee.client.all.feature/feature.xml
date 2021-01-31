@@ -17,10 +17,10 @@
       %license
    </license>
 
-	<includes
+   <includes
          id="edu.umd.cs.findbugs.plugin.eclipse"
          version="0.0.0"/>
-   
+
    <includes
          id="org.eclipse.osee.client.feature"
          version="0.0.0"/>

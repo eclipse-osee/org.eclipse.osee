@@ -184,8 +184,8 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
       boolean ignoreApplicationPath = true;
       boolean staticSubresourceResolution = true;
-      JAXRSServerFactoryBean bean = ResourceUtils.createApplication(application, ignoreApplicationPath,
-         staticSubresourceResolution, staticSubresourceResolution, bus);
+      JAXRSServerFactoryBean bean =
+         ResourceUtils.createApplication(application, ignoreApplicationPath, staticSubresourceResolution);
 
       if (JaxRsUtils.hasPath(applicationPath)) {
          String subAddress = JaxRsUtils.normalize(applicationPath);

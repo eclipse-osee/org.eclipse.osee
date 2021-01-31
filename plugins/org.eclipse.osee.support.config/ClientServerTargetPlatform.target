@@ -45,8 +45,8 @@
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
 <plugin id="javax.activation.source"/>
-<plugin id="javax.annotation"/>
-<plugin id="javax.annotation.source"/>
+<plugin id="javax.annotation" version="1.2.0.v201709271724-DEV"/>
+<plugin id="javax.annotation.source" version="1.2.0.v201709271724-DEV"/>
 <plugin id="javax.el"/>
 <plugin id="javax.el.source"/>
 <plugin id="javax.inject"/>
@@ -57,6 +57,7 @@
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
 <plugin id="javax.servlet.source"/>
+<plugin id="javax.ws.rs"/>
 <plugin id="javax.wsdl"/>
 <plugin id="javax.xml"/>
 <plugin id="jms.activemq.launch"/>
@@ -81,8 +82,8 @@
 <plugin id="org.apache.batik.css.source"/>
 <plugin id="org.apache.batik.util.source"/>
 <plugin id="org.apache.commons.cli"/>
-<plugin id="org.apache.commons.codec"/>
-<plugin id="org.apache.commons.codec.source"/>
+<plugin id="org.apache.commons.codec" version="1.9.0.v201709181954-DEV"/>
+<plugin id="org.apache.commons.codec.source" version="1.9.0.v201709181954-DEV"/>
 <plugin id="org.apache.commons.compress"/>
 <plugin id="org.apache.commons.dbcp"/>
 <plugin id="org.apache.commons.dbcp.source"/>
@@ -102,6 +103,21 @@
 <plugin id="org.apache.commons.net.source"/>
 <plugin id="org.apache.commons.pool"/>
 <plugin id="org.apache.commons.pool.source"/>
+<plugin id="org.apache.cxf.core"/>
+<plugin id="org.apache.cxf.core.config"/>
+<plugin id="org.apache.cxf.core.source"/>
+<plugin id="org.apache.cxf.jaxrs.client"/>
+<plugin id="org.apache.cxf.jaxrs.client.source"/>
+<plugin id="org.apache.cxf.jaxrs.frontend"/>
+<plugin id="org.apache.cxf.jaxrs.frontend.source"/>
+<plugin id="org.apache.cxf.jaxrs.model.wadl"/>
+<plugin id="org.apache.cxf.jaxrs.model.wadl.source"/>
+<plugin id="org.apache.cxf.jaxrs.provider"/>
+<plugin id="org.apache.cxf.jaxrs.provider.source"/>
+<plugin id="org.apache.cxf.rs.security.oauth2"/>
+<plugin id="org.apache.cxf.rs.security.oauth2.source"/>
+<plugin id="org.apache.cxf.transport.http"/>
+<plugin id="org.apache.cxf.transport.http.source"/>
 <plugin id="org.apache.felix.gogo.command"/>
 <plugin id="org.apache.felix.gogo.command.source"/>
 <plugin id="org.apache.felix.gogo.runtime"/>
@@ -116,6 +132,8 @@
 <plugin id="org.apache.oro"/>
 <plugin id="org.apache.oro.source"/>
 <plugin id="org.apache.solr.client.solrj"/>
+<plugin id="org.apache.ws.commons.schema"/>
+<plugin id="org.apache.ws.commons.schema.source"/>
 <plugin id="org.apache.ws.commons.util"/>
 <plugin id="org.apache.xerces"/>
 <plugin id="org.apache.xml.resolver"/>
@@ -726,7 +744,7 @@
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
-<plugin id="org.slf4j.api"/>
+<plugin id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
 <plugin id="org.slf4j.api.source"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.slf4j.jcl.source"/>
@@ -742,7 +760,7 @@
 <plugin id="org.w3c.dom.svg.source"/>
 <plugin id="rest.assured"/>
 <plugin id="rest.assured.source"/>
-<plugin id="org.eclipse.jdt.annotation.source" />
+<plugin id="org.eclipse.jdt.annotation.source" version="2.2.0.v20180417-0931"/>
 <plugin id="org.objectweb.asm"/>
 <plugin id="org.objectweb.asm.tree"/>
 <plugin id="org.objectweb.asm.tree.source"/>
@@ -766,6 +784,8 @@
 <plugin id="org.eclipse.xtext.ui.testing"/>
 <plugin id="org.eclipse.xtext.ui.codetemplates.ide"/>
 <plugin id="com.google.gson"/>
+<plugin id="com.google.guava"/>
+<plugin id="javax.servlet"/>
 <plugin id="org.eclipse.xtext.common.types"/>
 <plugin id="org.eclipse.mylyn.tasks.core"/>
 <plugin id="org.eclipse.mylyn.tasks.ui"/>
@@ -805,12 +825,13 @@
 <plugin id="org.eclipse.wst.common.environment"/>
 <plugin id="lpg.runtime.java"/>
 <plugin id="org.eclipse.ocl.common"/>
-<plugin id="org.eclipse.jdt.annotation"/>
-<plugin id="org.apache.lucene.core" />
+<plugin id="org.eclipse.jdt.annotation" version="2.2.0.v20180417-0931"/>
+<plugin id="org.apache.lucene.core"/>
 <plugin id="org.eclipse.help.base"/>
 <plugin id="org.eclipse.help.base.source"/>
 <plugin id="org.apache.lucene.analyzers-common"/>
 <plugin id="org.apache.lucene.analyzers-smartcn"/>
+<plugin id="org.apache.lucene.core"/>
 <plugin id="org.eclipse.e4.ui.workbench"/>
 <plugin id="org.eclipse.e4.ui.workbench3"/>
 <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
@@ -825,13 +846,13 @@
 <plugin id="org.eclipse.e4.ui.workbench.source"/>
 <plugin id="org.eclipse.e4.ui.workbench.swt.source"/>
 <plugin id="org.eclipse.e4.ui.workbench3.source"/>
-<plugin id="org.eclipse.ui.genericeditor"/>
-<plugin id="javax.xml.stream"/>
-<plugin id="org.eclipse.jgit.lfs"/>
-<plugin id="org.slf4j.api"/>
-<plugin id="org.eclipse.equinox.http.jetty"/>
-<plugin id="org.eclipse.jetty.http" version="9.4.35.v20201120"/>
-<plugin id="org.eclipse.jetty.util.ajax"/>
+	<plugin id="org.eclipse.ui.genericeditor"/>
+	<plugin id="javax.xml.stream"/>
+	<plugin id="org.eclipse.jgit.lfs"/>
+	<plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
+	<plugin id="org.eclipse.equinox.http.jetty"/>
+	<plugin id="org.eclipse.jetty.http" version="9.4.35.v20201120"/>
+	<plugin id="org.eclipse.jetty.util.ajax"/>
 </includeBundles>
 <environment>
 <os>win32</os>

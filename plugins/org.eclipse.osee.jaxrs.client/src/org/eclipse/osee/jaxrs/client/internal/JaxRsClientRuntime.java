@@ -19,7 +19,7 @@ import com.google.common.cache.CacheBuilder;
 import java.net.URI;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
-import org.apache.cxf.rs.security.oauth2.client.Consumer;
+import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -64,7 +64,7 @@ public final class JaxRsClientRuntime {
          @Override
          public OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String clientId, String clientSecret, String authorizeUri, String tokenUri, String tokenValidationUri) {
             OwnerCredentials owner = newOwner(username, password);
-            Consumer client = new Consumer(clientId, clientSecret);
+            OAuthClientUtils.Consumer client = new OAuthClientUtils.Consumer(clientId, clientSecret);
             OAuth2Transport transport = new OAuth2Transport();
             OAuth2Flows flowManager =
                new OAuth2Flows(transport, owner, client, authorizeUri, tokenUri, tokenValidationUri);

@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
@@ -40,7 +39,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jaxrs.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
@@ -94,6 +92,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       // Ensure CXF JAX-RS implementation is loaded
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
+
       new org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl();
       System.setProperty(JAVAX_WS_RS_CLIENT_BUILDER_PROPERTY, DEFAULT_JAXRS_CLIENT_BUILDER_IMPL);
    }
@@ -252,13 +251,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    private static void register(ClientBuilder builder, Iterable<? extends Object> objects) {
       for (Object object : objects) {
-         try {
-            builder.register(object);
-         }
-
-         catch (Exception ex) {
-            OseeLog.log(CxfJaxRsClientConfigurator.class, Level.WARNING, ex);
-         }
+         builder.register(object);
       }
    }
 

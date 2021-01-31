@@ -25,7 +25,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
@@ -72,7 +71,7 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
    }
 
    public void setAudiences(List<String> audiences) {
-      delegate.setAudience(audiences.toString());
+      delegate.setAudiences(audiences);
    }
 
    @Override
@@ -136,11 +135,6 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
             public AccessTokenValidation validateAccessToken(MessageContext mc, final String authScheme, final String accessToken) throws OAuthServiceException {
                return getRemoteTokenValidation(authScheme, accessToken);
             }
-
-            @Override
-            public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken, MultivaluedMap<String, String> values) throws OAuthServiceException {
-               return null;
-            }
          };
       }
 
@@ -170,11 +164,6 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
                   throw new OAuthServiceException("Error validating access token", ex.getCause());
                }
             }
-
-            @Override
-            public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken, MultivaluedMap<String, String> values) throws OAuthServiceException {
-               return null;
-            }
          };
       }
 
@@ -198,10 +187,6 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
       private static abstract class ClientAccessTokenValidator implements AccessTokenValidator {
 
          private WebTarget target;
-
-         public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken) throws OAuthServiceException {
-            return null;
-         }
 
          @Override
          public List<String> getSupportedAuthorizationSchemes() {

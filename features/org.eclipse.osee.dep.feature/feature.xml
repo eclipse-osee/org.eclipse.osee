@@ -16,7 +16,8 @@
    <license url="%licenseURL">
       %license
    </license>
-
+ 
+    
     <includes
          id="edu.umd.cs.findbugs.plugin.eclipse"
          version="0.0.0"/>
@@ -28,6 +29,7 @@
     <includes
          id="org.eclipse.wst.xml_userdoc.feature"
          version="0.0.0"/>
+         
         
     <includes
          id="org.eclipse.xsd"
@@ -420,15 +422,15 @@
    <includes
          id="org.eclipse.launchbar"
          version="0.0.0"/>
- 
-  <includes
+	
+   <includes
          id="org.polarion.eclipse.team.svn.connector"
          version="0.0.0"/>
 
    <includes
          id="org.polarion.eclipse.team.svn.connector.svnkit18"
          version="0.0.0"/>
-         	   
+   
    <includes
          id="org.eclipse.eclemma.feature"
          version="0.0.0"/>
@@ -522,35 +524,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false" />
-     
-  <plugin
-         id="org.apache.cxf.cxf-rt-rs-security-jose"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
- 
-   <plugin
-         id="org.apache.ws.xmlschema.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-                     
-   <plugin
-         id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-   
-   <plugin
-         id="org.apache.cxf.cxf-rt-rs-json-basic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-                                   
+                  
     <plugin
          id="org.flywaydb.core"
          download-size="0"
@@ -642,9 +616,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
 
-         
    <plugin
          id="org.antlr.runtime"
          download-size="0"
@@ -707,13 +679,56 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-           
+
+   <plugin
+         id="org.apache.cxf.core.config"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.cxf.jaxrs.model.wadl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.cxf.jaxrs.provider"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.cxf.rs.security.oauth2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.cxf.transport.http"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.apache.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.apache.ws.commons.schema"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
 
    <plugin
          id="org.codehaus.stax2"
@@ -862,56 +877,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
-   <plugin
-         id="org.apache.cxf.cxf-core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
-   <plugin
-         id="org.apache.cxf.cxf-rt-transports-http"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>       
- 								
-   <plugin
-         id="org.apache.cxf.cxf-rt-rs-security-oauth2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-          
-    <plugin
-         id="org.apache.cxf.cxf-rt-rs-client"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
- 
-     <plugin
-         id="org.apache.cxf.cxf-rt-frontend-jaxrs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/> 
 
-   <plugin
-         id="org.apache.cxf.cxf-rt-rs-service-description"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-    
-    <plugin
-         id="org.apache.cxf.cxf-rt-security"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>        
-    
    <plugin
          id="org.objectweb.asm"
          download-size="0"
@@ -919,7 +885,6 @@
          version="6.1.1"
          unpack="false"/>
 
-         
    <plugin
          id="org.slf4j.api"
          download-size="0"
@@ -1025,13 +990,18 @@
          version="0.0.0"
          unpack="false"/> 
 
-
+   <plugin
+         id="javax.ws.rs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="javax.annotation"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.2.0"
          unpack="false"/>
 
    <plugin
@@ -1053,13 +1023,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.ws.rs"
-         download-size="0"
-         install-size="0"
-         version="2.0.1"
          unpack="false"/>
 
    <plugin
@@ -1104,7 +1067,26 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.apache.cxf.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
+   <plugin
+         id="org.apache.cxf.jaxrs.client"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.cxf.jaxrs.frontend"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="javax.activation"
@@ -2106,7 +2088,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
    <plugin
          id="javax.xml.soap"
          download-size="0"
@@ -2146,7 +2127,7 @@
          id="org.eclipse.jetty.webapp"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="9.4.35"
          unpack="false"/>    
          
    <plugin
@@ -2160,7 +2141,7 @@
          id="org.eclipse.jetty.xml"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="9.4.35"
          unpack="false"/>    
           
    <plugin

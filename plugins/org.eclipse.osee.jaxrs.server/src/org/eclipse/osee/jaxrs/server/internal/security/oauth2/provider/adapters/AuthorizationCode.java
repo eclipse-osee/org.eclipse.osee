@@ -49,9 +49,4 @@ public class AuthorizationCode extends ServerAuthorizationCodeGrant implements O
       return clientId;
    }
 
-   @Override
-   public String getClientCodeVerifier() {
-      return getCodeVerifier();
-   }
-
 }
