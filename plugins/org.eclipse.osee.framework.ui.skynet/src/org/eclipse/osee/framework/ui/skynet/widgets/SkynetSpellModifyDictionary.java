@@ -95,7 +95,6 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
          return;
       }
       try {
-         System.err.println(getClass().getSimpleName() + ".loadDictionary");
          dictionary = new HashSet<>();
          User user = UserManager.getUser();
          if (user != null) {

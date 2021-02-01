@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public final class OseeSystemArtifacts {
 
    public static Artifact getGlobalPreferenceArtifact() {
-      System.err.println("OseeSystemArtifacts.getGlobalPreferenceArtifact");
       return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.GlobalPreferences);
    }
 
