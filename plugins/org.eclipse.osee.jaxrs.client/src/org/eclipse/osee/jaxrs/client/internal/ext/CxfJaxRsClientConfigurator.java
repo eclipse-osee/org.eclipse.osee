@@ -40,14 +40,13 @@ import org.eclipse.osee.jaxrs.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
-import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 import org.eclipse.osee.jaxrs.client.internal.OseeAccountClientRequestFilter;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator {
+public final class CxfJaxRsClientConfigurator {
 
    public static interface OAuthFactory {
 
@@ -71,15 +70,14 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
    private List<? extends Object> providers;
    private List<Feature> features;
 
-   public List<? extends Object> getProviders() {
+   private List<? extends Object> getProviders() {
       return providers;
    }
 
-   public List<Feature> getFeatures() {
+   private List<Feature> getFeatures() {
       return features;
    }
 
-   @Override
    public void configureJaxRsRuntime() {
       // Ensure CXF JAX-RS implementation is loaded
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
@@ -88,7 +86,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       System.setProperty(JAVAX_WS_RS_CLIENT_BUILDER_PROPERTY, DEFAULT_JAXRS_CLIENT_BUILDER_IMPL);
    }
 
-   @Override
    public void configureDefaults(ObjectMapper mapper) {
       List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
@@ -107,7 +104,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       this.features = features;
    }
 
-   @Override
    public void configureBean(JaxRsClientConfig config, String serverAddress, JAXRSClientFactoryBean bean) {
       Conditions.checkNotNullOrEmpty(serverAddress, "server address");
       bean.setAddress(serverAddress);
@@ -132,14 +128,12 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       bean.setInheritHeaders(inheritHeaders);
    }
 
-   @Override
    public void configureClientBuilder(JaxRsClientConfig config, ClientBuilder builder) {
       register(builder, getProviders());
       register(builder, getFeatures());
       register(builder, getOAuthProviders(config));
    }
 
-   @Override
    public void configureConnection(JaxRsClientConfig config, HTTPConduit conduit) {
       HTTPClientPolicy policy1 = getClientPolicy(conduit);
 
@@ -164,7 +158,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       }
    }
 
-   @Override
    public void configureProxy(JaxRsClientConfig config, HTTPConduit conduit) {
       if (config.isProxyRequired()) {
          HTTPClientPolicy policy1 = getClientPolicy(conduit);
@@ -186,7 +179,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       }
    }
 
-   protected List<Object> getOAuthProviders(JaxRsClientConfig config) {
+   private List<Object> getOAuthProviders(JaxRsClientConfig config) {
       List<Object> providers = Collections.emptyList();
       if (isOAuthEnabled(config)) {
 
@@ -218,12 +211,12 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       return providers;
    }
 
-   private static boolean isOAuthEnabled(JaxRsClientConfig config) {
+   private boolean isOAuthEnabled(JaxRsClientConfig config) {
       String clientId = config.getOAuthClientId();
       return Strings.isValid(clientId);
    }
 
-   private static void register(ClientBuilder builder, Iterable<? extends Object> objects) {
+   private void register(ClientBuilder builder, Iterable<? extends Object> objects) {
       for (Object object : objects) {
          try {
             builder.register(object);
@@ -235,7 +228,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       }
    }
 
-   private static HTTPClientPolicy getClientPolicy(HTTPConduit conduit) {
+   private HTTPClientPolicy getClientPolicy(HTTPConduit conduit) {
       HTTPClientPolicy toReturn = conduit.getClient();
       if (toReturn == null) {
          toReturn = new HTTPClientPolicy();
@@ -244,7 +237,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       return toReturn;
    }
 
-   private static AuthorizationPolicy getAuthorizationPolicy(HTTPConduit conduit) {
+   private AuthorizationPolicy getAuthorizationPolicy(HTTPConduit conduit) {
       AuthorizationPolicy toReturn = conduit.getAuthorization();
       if (toReturn == null) {
          toReturn = new AuthorizationPolicy();
@@ -253,7 +246,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       return toReturn;
    }
 
-   private static ProxyAuthorizationPolicy getProxyAuthorizationPolicy(HTTPConduit conduit) {
+   private ProxyAuthorizationPolicy getProxyAuthorizationPolicy(HTTPConduit conduit) {
       ProxyAuthorizationPolicy toReturn = conduit.getProxyAuthorization();
       if (toReturn == null) {
          toReturn = new ProxyAuthorizationPolicy();
@@ -262,7 +255,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       return toReturn;
    }
 
-   private static ProxyServerType asProxyServerType(ProxyType type) {
+   private ProxyServerType asProxyServerType(ProxyType type) {
       ProxyServerType toReturn = ProxyServerType.HTTP;
       if (ProxyType.SOCKS == type) {
          toReturn = ProxyServerType.SOCKS;
@@ -270,7 +263,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       return toReturn;
    }
 
-   private static org.apache.cxf.transports.http.configuration.ConnectionType asCxfConnectionType(ConnectionType type) {
+   private org.apache.cxf.transports.http.configuration.ConnectionType asCxfConnectionType(ConnectionType type) {
       org.apache.cxf.transports.http.configuration.ConnectionType toReturn =
          org.apache.cxf.transports.http.configuration.ConnectionType.KEEP_ALIVE;
       if (ConnectionType.CLOSE == type) {

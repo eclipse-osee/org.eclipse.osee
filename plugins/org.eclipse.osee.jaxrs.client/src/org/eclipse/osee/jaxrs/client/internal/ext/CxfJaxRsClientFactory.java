@@ -21,18 +21,17 @@ import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
-import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CxfJaxRsClientFactory {
 
-   private final JaxRsClientConfigurator configurator;
+   private final CxfJaxRsClientConfigurator configurator;
    private final Client client;
    private final JaxRsClientConfig config;
 
-   public CxfJaxRsClientFactory(JaxRsClientConfigurator configurator) {
+   public CxfJaxRsClientFactory(CxfJaxRsClientConfigurator configurator) {
       this.configurator = configurator;
 
       config = new JaxRsClientConfig();
