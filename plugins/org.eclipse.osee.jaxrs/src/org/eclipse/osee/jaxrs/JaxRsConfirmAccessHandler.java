@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client;
+package org.eclipse.osee.jaxrs;
 
 import java.util.List;
 

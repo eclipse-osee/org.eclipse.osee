@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.JaxRsClient;
 
 /**
  * @author Roberto E. Escobar

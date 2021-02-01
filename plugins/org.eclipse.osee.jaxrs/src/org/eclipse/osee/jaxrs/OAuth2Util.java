@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client.internal.ext;
+package org.eclipse.osee.jaxrs;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,8 +23,6 @@ import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthContextProvider;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthJSONProvider;
-import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 
 /**
  * @author Roberto E. Escobar

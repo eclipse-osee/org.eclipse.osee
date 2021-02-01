@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client.internal.ext;
+package org.eclipse.osee.jaxrs;
 
-import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.newException;
-import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.toException;
+import static org.eclipse.osee.jaxrs.OAuth2Util.newException;
+import static org.eclipse.osee.jaxrs.OAuth2Util.toException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -22,12 +22,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.UriBuilder;
+import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
@@ -37,10 +37,9 @@ import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
-import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler;
-import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler.ConfirmAccessRequest;
-import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler.ConfirmAccessResponse;
-import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler.Permission;
+import org.eclipse.osee.jaxrs.JaxRsConfirmAccessHandler.ConfirmAccessRequest;
+import org.eclipse.osee.jaxrs.JaxRsConfirmAccessHandler.ConfirmAccessResponse;
+import org.eclipse.osee.jaxrs.JaxRsConfirmAccessHandler.Permission;
 
 /**
  * @author Roberto E. Escobar

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client.internal.ext;
+package org.eclipse.osee.jaxrs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
@@ -36,12 +36,9 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.jaxrs.OrcsParamConverterProvider;
-import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
-import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
-import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
-import org.eclipse.osee.jaxrs.client.internal.OseeAccountClientRequestFilter;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
+import org.eclipse.osee.jaxrs.JaxRsClientConstants.ConnectionType;
+import org.eclipse.osee.jaxrs.JaxRsClientConstants.ProxyType;
+import org.eclipse.osee.jaxrs.OAuth2ClientRequestFilter.ClientAccessTokenCache;
 
 /**
  * @author Roberto E. Escobar

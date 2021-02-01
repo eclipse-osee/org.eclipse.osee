@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client.internal.ext;
+package org.eclipse.osee.jaxrs;
 
 import java.net.URI;
 import java.util.Map;
@@ -33,7 +33,7 @@ import org.apache.cxf.rs.security.oauth2.grants.code.AuthorizationCodeGrant;
 import org.apache.cxf.rs.security.oauth2.grants.refresh.RefreshTokenGrant;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows.OwnerCredentials;
+import org.eclipse.osee.jaxrs.OAuth2Flows.OwnerCredentials;
 
 /**
  * @author Roberto E. Escobar

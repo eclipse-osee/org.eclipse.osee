@@ -11,22 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client.internal.ext;
+package org.eclipse.osee.jaxrs;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
-import org.apache.cxf.jaxrs.client.ResponseExceptionMapper;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import java.net.URI;
 
 /**
  * @author Roberto E. Escobar
  */
-@Provider
-public class GenericResponseExceptionMapper implements ResponseExceptionMapper<Throwable> {
+public interface JaxRsTokenStore {
 
-   @Override
-   public Throwable fromResponse(Response response) {
-      return JaxRsExceptions.asOseeException(response);
-   }
+   String getToken(URI uri);
+
+   void storeToken(URI uri, String token);
 
 }

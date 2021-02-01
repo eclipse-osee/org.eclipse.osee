@@ -11,13 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client.internal;
+package org.eclipse.osee.jaxrs;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.core.data.OseeClient;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
 /**
  * @author Donald G. Dunne

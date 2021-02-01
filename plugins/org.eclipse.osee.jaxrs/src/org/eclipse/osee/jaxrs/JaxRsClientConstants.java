@@ -11,11 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client;
+package org.eclipse.osee.jaxrs;
 
-import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.newAcceptAllTokenHandler;
+import static org.eclipse.osee.jaxrs.OAuth2Util.newAcceptAllTokenHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util;
 
 /**
  * @author Roberto E. Escobar

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client;
+package org.eclipse.osee.jaxrs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.JaxRsConstants;
 
 /**
  * @author Roberto E. Escobar

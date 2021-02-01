@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.jaxrs.client;
+package org.eclipse.osee.jaxrs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,15 +43,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.client.internal.ext.CxfJaxRsClientConfigurator;
-import org.eclipse.osee.jaxrs.client.internal.ext.CxfJaxRsClientConfigurator.OAuthFactory;
-import org.eclipse.osee.jaxrs.client.internal.ext.CxfJaxRsClientFactory;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows.OwnerCredentials;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Serializer;
-import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Transport;
+import org.eclipse.osee.jaxrs.CxfJaxRsClientConfigurator.OAuthFactory;
+import org.eclipse.osee.jaxrs.OAuth2ClientRequestFilter.ClientAccessTokenCache;
+import org.eclipse.osee.jaxrs.OAuth2Flows.OwnerCredentials;
 
 /**
  * @author Ryan D. Brooks
