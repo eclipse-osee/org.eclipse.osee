@@ -13,25 +13,10 @@
 
 package org.eclipse.osee.jaxrs.client;
 
-import javax.ws.rs.client.WebTarget;
-
 /**
  * @author Roberto E. Escobar
  */
 public final class JaxRsClient {
-
-   public interface JaxRsClientFactory {
-
-      <T> T newProxy(JaxRsClientConfig config, String url, Class<T> clazz);
-
-      WebTarget newWebTarget(JaxRsClientConfig config, String url);
-
-      WebTarget newWebTarget(String url);
-
-      <T> T newProxy(String url, Class<T> clazz);
-
-      JaxRsClientConfig copyDefaultConfig();
-   }
 
    private static Long accountId;
    private static Long clientId;

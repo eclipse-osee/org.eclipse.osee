@@ -20,14 +20,13 @@ import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CxfJaxRsClientFactory implements JaxRsClientFactory {
+public class CxfJaxRsClientFactory {
 
    private final JaxRsClientConfigurator configurator;
    private final Client client;
@@ -45,12 +44,10 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       client = builder.build();
    }
 
-   @Override
    public JaxRsClientConfig copyDefaultConfig() {
       return config.copy();
    }
 
-   @Override
    public WebTarget newWebTarget(JaxRsClientConfig config, String url) {
       url = url.replaceAll(" ", "%20");
       WebTarget target = client.target(url);
@@ -62,7 +59,6 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       return target;
    }
 
-   @Override
    public WebTarget newWebTarget(String url) {
       return newWebTarget(config, url);
    }
@@ -76,7 +72,6 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
     * @param clazz - JAX-RS annotated class used to create the client interface
     * @return targetProxy
     */
-   @Override
    public <T> T newProxy(JaxRsClientConfig config, String url, Class<T> clazz) {
       JAXRSClientFactoryBean bean = new JAXRSClientFactoryBean();
       configurator.configureBean(config, url, bean);
@@ -86,7 +81,6 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       return client;
    }
 
-   @Override
    public <T> T newProxy(String url, Class<T> clazz) {
       return newProxy(config, url, clazz);
    }

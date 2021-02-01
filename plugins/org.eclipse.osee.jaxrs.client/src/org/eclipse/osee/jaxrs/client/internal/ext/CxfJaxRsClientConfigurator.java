@@ -19,17 +19,13 @@ import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.configuration.security.ProxyAuthorizationPolicy;
 import org.apache.cxf.feature.Feature;
-import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.ThreadLocalClientState;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
@@ -37,7 +33,6 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -75,7 +70,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    private List<? extends Object> providers;
    private List<Feature> features;
-   private Map<String, Object> properties;
 
    public List<? extends Object> getProviders() {
       return providers;
@@ -83,10 +77,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    public List<Feature> getFeatures() {
       return features;
-   }
-
-   public Map<String, Object> getProperties() {
-      return properties;
    }
 
    @Override
@@ -99,12 +89,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
    }
 
    @Override
-   public void configureDefaults(Map<String, Object> properties) {
-      configureDefaults(properties, JsonUtil.getMapper());
-   }
-
-   @Override
-   public void configureDefaults(Map<String, Object> properties, ObjectMapper mapper) {
+   public void configureDefaults(ObjectMapper mapper) {
       List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
 
@@ -118,12 +103,8 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       this.providers = providers;
 
       List<Feature> features = new ArrayList<>(2);
-      LoggingFeature loggingFeature = new LoggingFeature();
-      loggingFeature.setPrettyLogging(true);
-      features.add(loggingFeature);
       features.add(new GZIPFeature());
       this.features = features;
-      this.properties = new LinkedHashMap<>(properties);
    }
 
    @Override
@@ -133,7 +114,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
       bean.setProviders(getProviders());
       bean.setFeatures(getFeatures());
-      bean.setProperties(getProperties());
       bean.setProviders(getOAuthProviders(config));
 
       /**
@@ -156,7 +136,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
    public void configureClientBuilder(JaxRsClientConfig config, ClientBuilder builder) {
       register(builder, getProviders());
       register(builder, getFeatures());
-      register(builder, getProperties());
       register(builder, getOAuthProviders(config));
    }
 
@@ -242,12 +221,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
    private static boolean isOAuthEnabled(JaxRsClientConfig config) {
       String clientId = config.getOAuthClientId();
       return Strings.isValid(clientId);
-   }
-
-   private static void register(ClientBuilder builder, Map<String, Object> properties) {
-      for (Entry<String, Object> entry : properties.entrySet()) {
-         builder.property(entry.getKey(), entry.getValue());
-      }
    }
 
    private static void register(ClientBuilder builder, Iterable<? extends Object> objects) {
