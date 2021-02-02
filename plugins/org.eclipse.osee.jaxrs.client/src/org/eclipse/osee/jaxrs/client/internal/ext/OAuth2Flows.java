@@ -22,13 +22,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
-import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils.Consumer;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
 import org.apache.cxf.rs.security.oauth2.common.OAuthAuthorizationData;
@@ -277,7 +277,7 @@ public class OAuth2Flows {
       public List<? extends Permission> getPermissionsRequested() {
          if (permissions == null) {
             List<Permission> permissions = new ArrayList<>();
-            for (org.apache.cxf.rs.security.oauth2.common.Permission perm : data.getPermissions()) {
+            for (org.apache.cxf.rs.security.oauth2.common.OAuthPermission perm : data.getPermissions()) {
                permissions.add(asPermission(perm));
             }
             this.permissions = Collections.unmodifiableList(permissions);
@@ -316,14 +316,14 @@ public class OAuth2Flows {
       }
    };
 
-   protected static Permission asPermission(final org.apache.cxf.rs.security.oauth2.common.Permission perm) {
+   protected static Permission asPermission(final org.apache.cxf.rs.security.oauth2.common.OAuthPermission perm) {
       return new PermissionWrapper(perm);
    }
 
    private static final class PermissionWrapper implements Permission {
-      private final org.apache.cxf.rs.security.oauth2.common.Permission perm;
+      private final org.apache.cxf.rs.security.oauth2.common.OAuthPermission perm;
 
-      public PermissionWrapper(org.apache.cxf.rs.security.oauth2.common.Permission perm) {
+      public PermissionWrapper(org.apache.cxf.rs.security.oauth2.common.OAuthPermission perm) {
          super();
          this.perm = perm;
       }

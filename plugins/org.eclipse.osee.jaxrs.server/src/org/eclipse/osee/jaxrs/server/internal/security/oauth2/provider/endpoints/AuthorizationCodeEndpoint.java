@@ -56,7 +56,7 @@ public class AuthorizationCodeEndpoint extends AuthorizationCodeGrantService {
     * Extra security features:
     *  - only confidential clients should have a client secret
     *  - if they are not confidential they should not have a client secret.
-    * 
+    *
     *  If desired, add the following:
     * && !c.isConfidential() && c.getClientSecret() == null
     * </pre>
@@ -78,9 +78,10 @@ public class AuthorizationCodeEndpoint extends AuthorizationCodeGrantService {
    /**
     * Override fixes OAuthAuthorizationData creation
     */
-   @Override
+
    protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params, UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
-      OAuthAuthorizationData secData = super.createAuthorizationData(client, params, subject, redirectUri, perms);
+      OAuthAuthorizationData secData =
+         super.createAuthorizationData(client, params, redirectUri, subject, perms, perms, canSupportPublicClients);
       secData.setApplicationName(client.getApplicationName());
       secData.setApplicationCertificates(client.getApplicationCertificates());
 

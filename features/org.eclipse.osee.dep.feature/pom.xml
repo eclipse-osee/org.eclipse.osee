@@ -29,9 +29,21 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.apache.xerces" />
+								<plugin id="org.apache.cxf.cxf-core" />
+								<plugin id="org.apache.cxf.cxf-rt-security" />
+								<plugin id="org.apache.cxf.cxf-rt-transports-http" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
+							  	<plugin id="org.apache.cxf.cxf-rt-rs-security-oauth" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
+								<plugin id="org.apache.cxf.cxf-rt-rs-client" />
+								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />								
 								<plugin id="org.eclipse.m2e.maven.runtime" />
+								<plugin id="org.apache.cxf.cxf-rt-transports-http" />
+								<plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
+								<plugin id="javax.mail" />
 								<plugin id="org.eclipse.m2e.archetype.common" />
-								<plugin id="org.eclipse.m2e.maven.indexer" />
+								<plugin id="org.eclipse.m2e.mwsaven.indexer" />
 								<plugin id="org.eclipse.m2e.workspace.cli" />
 								<feature id="org.eclipse.cdt.sdk" />
 								<feature id="org.eclipse.mylyn.commons" />
@@ -46,7 +58,7 @@
 								<feature id="org.eclipse.launchbar" />
 								<feature id="org.eclipse.tm.terminal.control.feature" />
 								<plugin id="javax.xml" />
-								<plugin id="javax.mail" />
+								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
 								<plugin id="javax.xml.rpc" />
 								<plugin id="org.apache.commons.discovery" />
 								<feature id="org.eclipse.mylyn_feature" />
@@ -68,6 +80,7 @@
 								<plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple" />
 								<plugin id="org.eclipse.xtext" />
 								<plugin id="org.antlr.runtime" />							
+								<plugin id="javax.annotation" />
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
 								<plugin id="org.apache.commons.cli" />
@@ -80,6 +93,7 @@
 								<plugin id="org.eclipse.swt" />
 								<plugin id="org.eclipse.wst.common.project.facet.core" />
 								<plugin id="org.eclipse.wst.xml.core" />
+								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="org.uddi4j" />
 								<plugin id="org.eclipse.wst.internet.monitor.core" />	
 								<plugin id="org.eclipse.wst.common.project.facet.ui" />			
@@ -94,7 +108,7 @@
 								<plugin id="org.eclipse.gmf.runtime.emf.type.core" />
 								<plugin id="org.eclipse.gmf.runtime.emf.ui" />
 								<plugin id="org.eclipse.uml2.uml" />
-							   	<plugin id="org.apache.wsil4j" />
+							   <plugin id="org.apache.wsil4j" />
 								<plugin id="org.eclipse.uml2.uml.resources" />
 								<plugin id="org.eclipse.uml2.uml.edit" />
 								<plugin id="org.eclipse.uml2.uml.editor" />
@@ -124,20 +138,20 @@
 								<feature id="org.eclipse.xtext.ui" />
 								<feature id="org.eclipse.wst.common_core.feature" />
 								<feature id="org.eclipse.wst.xml.xpath2.processor.feature" />
-							   	<feature id="org.eclipse.wst.ws_core.feature" />
+							   <feature id="org.eclipse.wst.ws_core.feature" />
 							  	<feature id="org.eclipse.wst.server_userdoc.feature" />
 								<feature id="org.eclipse.wst.xsl.feature" />
-							   	<plugin id="java_cup.runtime" />
+							   <plugin id="java_cup.runtime" />
 								<feature id="org.eclipse.wst.server_core.feature" />		
-							   	<feature id="org.eclipse.wst.server_adapters.feature" />	
-							   	<feature id="org.eclipse.m2e.feature" />	
-							   	<feature id="org.eclipse.wst.server_ui.feature" />																					
+							   <feature id="org.eclipse.wst.server_adapters.feature" />	
+							   <feature id="org.eclipse.m2e.feature" />	
+							   <feature id="org.eclipse.wst.server_ui.feature" />																					
 								<feature id="org.eclipse.jgit.lfs" />
 								<feature id="org.eclipse.wst.xml_userdoc.feature" />
 								<feature id="org.eclipse.wst.web_ui.feature" />
 								<feature id="org.eclipse.wst.jsdt.feature" />							
 								<feature id="org.eclipse.xsd.edit" />
-							   	<feature id="org.eclipse.wst.common_ui.feature" />
+							   <feature id="org.eclipse.wst.common_ui.feature" />
 							   	<feature id="org.eclipse.wst.common.fproj" />
 							  	<feature id="org.eclipse.jgit.http.apache" />
 								<plugin id="org.eclipse.uml2.codegen.ecore" />
@@ -177,6 +191,9 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>

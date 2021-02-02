@@ -25,8 +25,8 @@ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.grants.code.ServerAuthorizationCodeGrant;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthDataProvider;
 import org.apache.cxf.rs.security.oauth2.tokens.refresh.RefreshToken;
-import org.apache.cxf.rs.security.oauth2.utils.crypto.CryptoUtils;
-import org.apache.cxf.rs.security.oauth2.utils.crypto.KeyProperties;
+import org.apache.cxf.rt.security.crypto.CryptoUtils;
+import org.apache.cxf.rt.security.crypto.KeyProperties;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.session.SessionData;
@@ -78,7 +78,7 @@ public class OAuthEncryption {
       state.append(tokenizeString(grant.getAudience()));
       state.append(SEP);
       // 6: code verifier
-      state.append(tokenizeString(grant.getClientCodeVerifier()));
+      state.append(tokenizeString(grant.getCodeVerifier()));
       state.append(SEP);
       // 7: approved scopes
       state.append(grant.getApprovedScopes().toString());
@@ -136,7 +136,7 @@ public class OAuthEncryption {
          Long.valueOf(parts[2]), Long.valueOf(parts[3]));
       grant.setRedirectUri(getStringPart(parts[4]));
       grant.setAudience(getStringPart(parts[5]));
-      grant.setClientCodeVerifier(getStringPart(parts[6]));
+      grant.setCodeVerifier(getStringPart(parts[6]));
       grant.setApprovedScopes(parseSimpleList(parts[7]));
       grant.setSubject(recreateUserSubject(parts[8]));
       return grant;
@@ -222,7 +222,10 @@ public class OAuthEncryption {
 
       newToken.setRefreshToken(getStringPart(parts[5]));
       newToken.setGrantType(getStringPart(parts[6]));
-      newToken.setAudience(getStringPart(parts[7]));
+      List<String> audi = new LinkedList<String>();
+      audi.add(parts[7]);
+
+      newToken.setAudiences(audi);
       newToken.setParameters(parseSimpleMap(parts[8]));
 
       // Permissions
@@ -231,7 +234,8 @@ public class OAuthEncryption {
          String[] allPermParts = parts[9].split("&");
          for (int i = 0; i + 4 < allPermParts.length; i = i + 5) {
             OAuthPermission perm = new OAuthPermission(allPermParts[i], allPermParts[i + 1]);
-            perm.setDefault(Boolean.valueOf(allPermParts[i + 2]));
+
+            perm.setDefaultPermission(Boolean.valueOf(allPermParts[i + 2]));
             perm.setHttpVerbs(parseSimpleList(allPermParts[i + 3]));
             perm.setUris(parseSimpleList(allPermParts[i + 4]));
             perms.add(perm);
@@ -323,7 +327,7 @@ public class OAuthEncryption {
       state.append(tokenizeString(token.getGrantType()));
       // 7: audience
       state.append(SEP);
-      state.append(tokenizeString(token.getAudience()));
+      state.append(tokenizeString(token.getAudiences().toString()));
       // 8: other parameters
       state.append(SEP);
       // {key=value, key=value}

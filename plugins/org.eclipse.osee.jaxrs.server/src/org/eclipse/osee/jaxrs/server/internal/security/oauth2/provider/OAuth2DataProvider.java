@@ -150,9 +150,11 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
 
       grant.setAudience(reg.getAudience());
       grant.setRedirectUri(reg.getRedirectUri());
-      grant.setClientCodeVerifier(reg.getClientCodeVerifier());
+      grant.setCodeVerifier(reg.getNonce());
+      reg.setClientCodeChallenge(reg.getClientCodeChallenge());
       grant.setApprovedScopes(getApprovedScopes(reg.getRequestedScope(), reg.getApprovedScope()));
-      grant.setClientCodeVerifier(reg.getClientCodeVerifier());
+      grant.setCodeVerifier(reg.getNonce());
+      reg.setClientCodeChallenge(reg.getClientCodeChallenge());
 
       String encrypted = serializer.encryptCodeGrant(grant, getSecretKey());
       grant.setCode(encrypted);
@@ -193,7 +195,6 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
       accessToken.setSubject(reg.getSubject());
 
       accessToken.setTokenType(type.getType());
-      accessToken.setAudience(reg.getAudience());
       accessToken.setGrantType(reg.getGrantType());
       accessToken.setScopes(permissions);
 
@@ -252,7 +253,6 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
       newAccessToken.setSubject(oldRefreshToken.getSubject());
 
       newAccessToken.setTokenType(type.getType());
-      newAccessToken.setAudience(oldRefreshToken.getAudience());
       newAccessToken.setGrantType(oldRefreshToken.getGrantType());
       newAccessToken.setScopes(oldRefreshToken.getScopes());
 
@@ -277,16 +277,14 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
       toReturn.setClient(token.getClient());
       toReturn.setSubject(token.getSubject());
 
-      toReturn.setAudience(token.getAudience());
+      toReturn.setAudiences(token.getAudiences());
       toReturn.setGrantType(token.getGrantType());
       toReturn.setScopes(token.getScopes());
-
       String encryptedRefreshToken = serializer.encryptRefreshToken(toReturn, secretKey);
       toReturn.setTokenKey(encryptedRefreshToken);
       return toReturn;
    }
 
-   @Override
    public void removeAccessToken(ServerAccessToken accessToken) {
       storage.removeTokenByKey(accessToken.getTokenKey());
    }
@@ -390,5 +388,20 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
 
    private List<String> getApprovedScopes(List<String> requestedScopes, List<String> approvedScopes) {
       return approvedScopes.isEmpty() ? requestedScopes : approvedScopes;
+   }
+
+   @Override
+   public List<ServerAccessToken> getAccessTokens(Client arg0, UserSubject arg1) throws OAuthServiceException {
+      return null;
+   }
+
+   @Override
+   public List<RefreshToken> getRefreshTokens(Client arg0, UserSubject arg1) throws OAuthServiceException {
+      return null;
+   }
+
+   @Override
+   public List<ServerAuthorizationCodeGrant> getCodeGrants(Client arg0, UserSubject arg1) throws OAuthServiceException {
+      return null;
    }
 }

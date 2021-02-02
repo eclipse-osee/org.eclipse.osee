@@ -28,8 +28,20 @@
 						</goals>
 						<configuration>
 							<excludes>
+							   <plugin id="org.apache.cxf.cxf-rt-transports-http" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
+							   <plugin id="org.apache.cxf.cxf-rt-security" />							   
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth" />
+								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
+								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
+						      <plugin id="org.apache.cxf.cxf-core" />
 								<plugin id="org.apache.xerces" />
 								<plugin id="javax.xml" />
+								<plugin id="org.apache.ws.xmlschema.core" />
+								<plugin id="javax.annotation" />
+								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
+								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="com.jcraft.jsch" />
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />								

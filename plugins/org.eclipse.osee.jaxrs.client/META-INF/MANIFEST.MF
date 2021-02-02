@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JAX-RS Client (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.jaxrs.client;singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.jaxrs.client
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -34,6 +34,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.apache.cxf.rs.security.oauth2.provider,
  org.apache.cxf.rs.security.oauth2.utils,
  org.apache.cxf.rs.security.oauth2.utils.crypto,
+ org.apache.cxf.rt.security,
+ org.apache.cxf.rt.security.crypto,
  org.apache.cxf.transport.common.gzip,
  org.apache.cxf.transport.http,
  org.apache.cxf.transports.http.configuration,
@@ -42,5 +44,6 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
  org.eclipse.osee.jaxrs
 Export-Package: org.eclipse.osee.jaxrs.client

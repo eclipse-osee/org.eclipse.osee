@@ -27,7 +27,7 @@
 				</property>
 			</activation>
 			<modules>
-							<module>../../plugins/org.postgresql.driver</module>		
+				<module>../../plugins/org.postgresql.driver</module>		
 			
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
@@ -162,10 +162,10 @@
 
 
 				<module>../../features/org.eclipse.osee.client.feature</module>
-
 				<module>../../plugins/org.eclipse.osee.client.integration.tests</module>
-
 				<module>../../plugins/org.eclipse.osee.client.p2</module>
+
+
 			</modules>
 		</profile>
 
@@ -178,7 +178,7 @@
 			</activation>
 			<modules>
 				<module>../../plugins/org.eclipse.osee.framework.dev.help.ui.test</module>
-				<module>../../plugins/org.eclipse.osee.framework.help.ui.test</module>
+			   <module>../../plugins/org.eclipse.osee.framework.help.ui.test</module>
 			</modules>
 		</profile>
 	</profiles>

@@ -21,7 +21,6 @@ import java.util.List;
 import javax.ws.rs.ext.Provider;
 import org.apache.cxf.rs.security.oauth2.common.OAuthAuthorizationData;
 import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
-import org.apache.cxf.rs.security.oauth2.common.Permission;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.jaxrs.server.internal.resources.AbstractHtmlWriter;
@@ -70,24 +69,24 @@ public class AuthorizationDataHtmlWriter extends AbstractHtmlWriter<OAuthAuthori
       model.param(AUTHORIZE_PAGE__DECISION_ALLOW_TAG, AUTHORIZATION_DECISION_ALLOW);
       model.param(AUTHORIZE_PAGE__DECISION_DENY_TAG, AUTHORIZATION_DECISION_DENY);
 
-      model.param(AUTHORIZE_PAGE__HIDDEN_FIELDS_SECTION_TAG,
-         HiddenFormFields.newForm() //
-            .add(OAuthConstants.CLIENT_AUDIENCE, data.getAudience()) //
-            .add(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, data.getAuthenticityToken())//
-            .add(OAuthConstants.CLIENT_ID, data.getClientId()) //
-            .add(OAuthConstants.SCOPE, data.getProposedScope())//
-            .add(OAuthConstants.REDIRECT_URI, data.getRedirectUri()) //
-            .add(OAuthConstants.STATE, data.getState())//
-            .build());
+      model.param(AUTHORIZE_PAGE__HIDDEN_FIELDS_SECTION_TAG, HiddenFormFields.newForm() //
+         .add(OAuthConstants.CLIENT_AUDIENCE, data.getAudience()) //
+         .add(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, data.getAuthenticityToken())//
+         .add(OAuthConstants.CLIENT_ID, data.getClientId()) //
+         .add(OAuthConstants.SCOPE, data.getProposedScope())//
+         .add(OAuthConstants.REDIRECT_URI, data.getRedirectUri()) //
+         .add(OAuthConstants.STATE, data.getState())//
+         .build());
 
       InputFields input = InputFields.newListGroupContainer();
-      List<? extends Permission> permissions = data.getPermissions();
+      List<? extends OAuthPermission> permissions = data.getPermissions();
       if (permissions.isEmpty()) {
-         Permission permission = new OAuthPermission("Full Data Access", "Application is able to read/write all data.");
-         permission.setDefault(true);
+         OAuthPermission permission =
+            new OAuthPermission("Full Data Access", "Application is able to read/write all data.");
+         permission.setDefaultPermission(true);
          addItem(input, permission);
       } else {
-         for (Permission permission : permissions) {
+         for (OAuthPermission permission : permissions) {
             addItem(input, permission);
          }
       }
@@ -95,7 +94,7 @@ public class AuthorizationDataHtmlWriter extends AbstractHtmlWriter<OAuthAuthori
       return model;
    }
 
-   private void addItem(InputFields input, Permission perm) {
+   private void addItem(InputFields input, OAuthPermission perm) {
       String permissionName = perm.getPermission();
       String key = String.format("%s_status", permissionName);
       input.add(key, InputType.checkbox, permissionName, perm.getDescription(), "", "allow", perm.isDefault());

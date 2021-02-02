@@ -13,8 +13,11 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.eclipse.osee.define.api.report.ArtifactIdReportColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
@@ -34,7 +37,7 @@ public class ReportLevel {
    }
 
    public ReportLevel column(String columnName) {
-      columns.add(new ArtifactIdReportColumn(columnName));
+      columns.addAll((Collection<? extends ReportColumn>) new ArtifactIdReportColumn(columnName));
       return this;
    }
 

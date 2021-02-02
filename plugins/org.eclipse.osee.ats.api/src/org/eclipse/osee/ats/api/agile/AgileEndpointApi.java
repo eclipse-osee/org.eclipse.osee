@@ -381,6 +381,8 @@ public interface AgileEndpointApi {
 
    @PUT
    @Path("item/{itemId}/unplanned")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
    public Response setUnPlanned(@PathParam("itemId") long itemId, boolean unPlanned);
 
    /**
