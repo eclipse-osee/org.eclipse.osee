@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -173,20 +175,6 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
       areaComposite.removeMouseMoveListener(compListener);
    }
 
-   public void handleModified() {
-      if (!isEntryValid()) {
-         getButton(getDefaultButtonIndex()).setEnabled(false);
-         errorLabel.setText(errorString);
-         errorLabel.update();
-         areaComposite.layout();
-      } else {
-         getButton(getDefaultButtonIndex()).setEnabled(true);
-         errorLabel.setText("");
-         errorLabel.update();
-         areaComposite.layout();
-      }
-   }
-
    /**
     * override this method to make own checks on entry this will be called with every keystroke
     *
@@ -243,19 +231,27 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
       return errorLabel;
    }
 
-   protected void updateErrorLabel(boolean error, String text) {
-      if (error) {
-         getButton(getDefaultButtonIndex()).setEnabled(false);
-         errorLabel.setText(text);
-         errorLabel.update();
-         areaComposite.layout();
-         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else {
-         getButton(getDefaultButtonIndex()).setEnabled(true);
-         errorLabel.setText(text);
-         errorLabel.update();
+   public void handleModified() {
+      boolean valid = isEntryValid();
+      if (Widgets.isAccessible(getButton(getDefaultButtonIndex()))) {
+         getButton(getDefaultButtonIndex()).setEnabled(valid);
+      }
+      errorLabel.setText(errorString);
+      errorLabel.update();
+      errorLabel.getParent().layout();
+      areaComposite.layout();
+      if (valid) {
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
-         areaComposite.layout();
+      } else {
+         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      }
+   }
+
+   protected void logError(String text) {
+      if (Strings.isValid(text)) {
+         errorString = text;
+      } else {
+         errorString = "";
       }
    }
 

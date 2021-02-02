@@ -39,6 +39,7 @@ public class SprintFilteredListDialog extends FilteredTreeDialog {
    public SprintFilteredListDialog(String dialogTitle, String dialogMessage, Collection<? extends IAgileSprint> values) {
       super(dialogTitle, dialogMessage, new ArrayTreeContentProvider(), new StringLabelProvider(),
          new StringNameComparator());
+      setInput(values);
    }
 
    @Override

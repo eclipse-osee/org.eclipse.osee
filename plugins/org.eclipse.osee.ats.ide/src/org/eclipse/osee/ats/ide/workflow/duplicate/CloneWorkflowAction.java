@@ -13,22 +13,18 @@
 
 package org.eclipse.osee.ats.ide.workflow.duplicate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
+import org.eclipse.osee.ats.api.workflow.clone.CloneData;
+import org.eclipse.osee.ats.core.workflow.duplicate.CloneTeamWorkflowOperation;
 import org.eclipse.osee.ats.core.workflow.util.IDuplicateWorkflowListener;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -41,52 +37,31 @@ public class CloneWorkflowAction extends Action {
    private final IAtsTeamWorkflow teamWf;
    private final IDuplicateWorkflowListener duplicateListener;
    private CloneDialog dialog;
+   private final AtsApi atsApi;
 
    public CloneWorkflowAction(IAtsTeamWorkflow teamWf, IDuplicateWorkflowListener duplicateListener) {
       super("Clone Workflow");
       this.teamWf = teamWf;
       this.duplicateListener = duplicateListener;
+      atsApi = AtsApiService.get();
    }
 
    @Override
    public void run() {
-      String title = teamWf.getName() + " (cloned)";
+      CloneData data = new CloneData();
 
-      dialog = new CloneDialog(getText(), "Enter details for new cloned Team Workflow", teamWf);
-      dialog.setXTextString("title", title);
-      dialog.setXTextString("desc", teamWf.getDescription());
-
+      dialog = new CloneDialog(getText(), "Enter details for new cloned Team Workflow", teamWf, data);
       if (dialog.open() == Window.OK) {
-         List<IDuplicateWorkflowListener> listeners = new ArrayList<IDuplicateWorkflowListener>();
-         if (duplicateListener != null) {
-            listeners.add(duplicateListener);
-         }
-         boolean newAction = dialog.getXCheckBoxChecked("newAction");
-         String newTitle = dialog.getXtextString("title");
-         DuplicateWorkflowAsIsOperation op = new DuplicateWorkflowAsIsOperation(Arrays.asList(teamWf), false, newTitle,
-            AtsApiService.get().getUserService().getCurrentUser(), AtsApiService.get(),
-            "Clone from " + teamWf.toStringWithId(), newAction, listeners);
 
-         AtsUser orig = null;
-         XAssigneesHyperlinkWidget origWidget = (XAssigneesHyperlinkWidget) dialog.getXWidget("orig");
-         Collection<AtsUser> selected = origWidget.getSelected();
-         if (selected.size() > 0) {
-            orig = selected.iterator().next();
-            op.setOriginator(orig);
-         }
-         String desc = dialog.getXtextString("desc");
-         if (Strings.isInValid(desc)) {
-            desc = teamWf.getDescription();
-         }
-         op.setDescription(desc);
+         CloneTeamWorkflowOperation clone = new CloneTeamWorkflowOperation(teamWf, duplicateListener, data, atsApi);
 
-         XResultData results = op.run();
-         if (!results.isErrors()) {
-            for (IAtsTeamWorkflow newTeamArt : op.getResults().values()) {
-               WorkflowEditor.edit(newTeamArt);
-            }
+         data = clone.run();
+         if (data.getResults().isErrors()) {
+            XResultDataUI.report(data.getResults(), "Clone Workflow");
          } else {
-            XResultDataUI.report(results, "Clone Workflow");
+            ArtifactId newTeamWf = data.getNewTeamWf();
+            IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(newTeamWf.getIdString());
+            WorkflowEditor.edit(workItem);
          }
       }
    }

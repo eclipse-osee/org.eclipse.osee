@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
    AtsUser originator;
+   public static final String WIDGET_ID = XOriginatorHyperlinkWidget.class.getSimpleName();
 
    public XOriginatorHyperlinkWidget() {
       super("Originator", true, 50);
@@ -55,6 +56,10 @@ public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection
 
    public AtsUser getSelected() {
       return originator;
+   }
+
+   public void setSelected(AtsUser originator) {
+      this.originator = originator;
    }
 
 }

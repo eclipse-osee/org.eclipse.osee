@@ -120,35 +120,10 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          AWorkbench.popup("All workflows must belong to same Backlog.");
          return false;
       }
-
       AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
-      List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
       long teamId = items.getCommonBacklog().getTeamId();
-      try {
-         for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(items.getCommonBacklog().getTeamId())) {
-            if (feature.isActive()) {
-               activeFeatureGroups.add(feature);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return false;
-      }
 
-      FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog =
-         new FilteredCheckboxTreeDialog<JaxAgileFeatureGroup>("Select Feature Group(s)", "Select Feature Group(s)",
-            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
-      dialog.setInput(activeFeatureGroups);
-      Collection<JaxAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
-      if (!selectedFeatureGroups.isEmpty()) {
-         dialog.setInitialSelections(selectedFeatureGroups);
-      }
-      dialog.setShowSelectButtons(true);
-
-      int result = dialog.open();
-      if (result != 0) {
-         return false;
-      }
+      FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog = openSelectionDialog(agileEp, teamId, awas);
 
       JaxAgileItem updateItem = new JaxAgileItem();
       if (dialog.getResult().length == 0) {
@@ -173,6 +148,36 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       return true;
    }
 
+   public static FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> openSelectionDialog(AgileEndpointApi agileEp, long teamId, Collection<? extends AbstractWorkflowArtifact> awas) {
+      List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
+      try {
+         for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(teamId)) {
+            if (feature.isActive()) {
+               activeFeatureGroups.add(feature);
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return null;
+      }
+
+      FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog =
+         new FilteredCheckboxTreeDialog<JaxAgileFeatureGroup>("Select Feature Group(s)", "Select Feature Group(s)",
+            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
+      dialog.setInput(activeFeatureGroups);
+      Collection<JaxAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
+      if (!selectedFeatureGroups.isEmpty()) {
+         dialog.setInitialSelections(selectedFeatureGroups);
+      }
+      dialog.setShowSelectButtons(true);
+
+      int result = dialog.open();
+      if (result != 0) {
+         return null;
+      }
+      return dialog;
+   }
+
    private static Collection<JaxAgileFeatureGroup> getSelectedFeatureGroups(Collection<? extends AbstractWorkflowArtifact> awas) {
       List<JaxAgileFeatureGroup> selected = new LinkedList<>();
       if (awas.size() == 1) {
@@ -187,7 +192,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       return selected;
    }
 
-   private static JaxAgileFeatureGroup createJaxAgileFeatureGroupFromAgileFeatureGroup(IAgileFeatureGroup group) {
+   public static JaxAgileFeatureGroup createJaxAgileFeatureGroupFromAgileFeatureGroup(IAgileFeatureGroup group) {
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
       newGroup.setName(group.getName());
       newGroup.setId(group.getId());

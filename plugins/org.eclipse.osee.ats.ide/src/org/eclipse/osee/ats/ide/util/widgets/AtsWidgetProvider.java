@@ -190,6 +190,14 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XAssigneesHyperlinkWidget(null);
       } else if (widgetName.equals(XPeerChecklistAttachmentExampleCombo.WIDGET_ID)) {
          return new XPeerChecklistAttachmentExampleCombo();
+      } else if (widgetName.equals(XAgileFeatureHyperlinkWidget.WIDGET_ID)) {
+         return new XAgileFeatureHyperlinkWidget();
+      } else if (widgetName.equals(XTargetedVersionHyperlinkWidget.WIDGET_ID)) {
+         return new XTargetedVersionHyperlinkWidget();
+      } else if (widgetName.equals(XOriginatorHyperlinkWidget.WIDGET_ID)) {
+         return new XOriginatorHyperlinkWidget();
+      } else if (widgetName.equals(XSprintHyperlinkWidget.WIDGET_ID)) {
+         return new XSprintHyperlinkWidget();
       }
 
       return toReturn;

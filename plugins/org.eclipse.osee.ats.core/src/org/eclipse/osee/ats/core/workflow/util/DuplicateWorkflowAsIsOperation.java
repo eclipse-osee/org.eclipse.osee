@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -61,6 +62,10 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    private final boolean newAction;
    private AtsUser originator;
    private String description;
+   private Collection<AtsUser> assigneesOverride;
+   private String changeType;
+   private String priority;
+   private String points;
 
    public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, AtsUser asUser, AtsApi atsApi) {
       this(teamWfs, duplicateTasks, title, asUser, atsApi, "", false, null);
@@ -133,13 +138,23 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
 
       // assignees == add in existing assignees, leads and originator (current user)
       List<AtsUser> assignees = new LinkedList<>();
-      assignees.addAll(workItem.getStateMgr().getAssignees());
+      if (assigneesOverride != null) {
+         if (assigneesOverride.isEmpty()) {
+            assignees.addAll(assigneesOverride);
+         } else {
+            assignees.add(AtsCoreUsers.UNASSIGNED_USER);
+         }
+      } else {
+         assignees.addAll(workItem.getStateMgr().getAssignees());
+      }
       if (workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-         assignees.addAll(
-            AtsApiService.get().getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition()));
-         if (!assignees.contains(asUser)) {
-            assignees.add(asUser);
+         if (assigneesOverride == null) {
+            assignees.addAll(AtsApiService.get().getTeamDefinitionService().getLeads(
+               ((IAtsTeamWorkflow) workItem).getTeamDefinition()));
+            if (!assignees.contains(asUser)) {
+               assignees.add(asUser);
+            }
          }
          // Auto-add actions to configured goals
          if (newWorkItemArt instanceof IAtsTeamWorkflow) {
@@ -152,10 +167,30 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
                (IAtsTeamWorkflow) newWorkItemArt, teamWf.getActionableItems(), goal, changes);
          }
       }
+      workItem.getStateMgr().setAssignees(assignees);
 
       for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
          if (!getExcludeTypes().contains(attr.getAttributeType())) {
-            if (attr.getAttributeType().equals(AtsAttributeTypes.CreatedBy)) {
+            if (attr.getAttributeType().equals(AtsAttributeTypes.Points) || attr.getAttributeType().equals(
+               AtsAttributeTypes.PointsNumeric)) {
+               if (Strings.isValid(points)) {
+                  changes.setSoleAttributeValue(newWorkItemArt, attr.getAttributeType(), points);
+               } else {
+                  changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
+               }
+            } else if (attr.getAttributeType().equals(AtsAttributeTypes.Priority)) {
+               if (Strings.isValid(priority)) {
+                  changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.Priority, priority);
+               } else {
+                  changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
+               }
+            } else if (attr.getAttributeType().equals(AtsAttributeTypes.ChangeType)) {
+               if (Strings.isValid(changeType)) {
+                  changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.ChangeType, changeType);
+               } else {
+                  changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
+               }
+            } else if (attr.getAttributeType().equals(AtsAttributeTypes.CreatedBy)) {
                if (originator != null) {
                   changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.CreatedBy, originator.getUserId());
                } else {
@@ -235,6 +270,22 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
 
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   public void setAssignees(Collection<AtsUser> assignees) {
+      this.assigneesOverride = assignees;
+   }
+
+   public void setChangeType(String changeType) {
+      this.changeType = changeType;
+   }
+
+   public void setPriority(String priority) {
+      this.priority = priority;
+   }
+
+   public void setPoints(String points) {
+      this.points = points;
    }
 
 }

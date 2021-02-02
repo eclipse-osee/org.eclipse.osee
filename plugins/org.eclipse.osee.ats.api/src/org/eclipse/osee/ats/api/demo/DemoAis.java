@@ -16,6 +16,6 @@ package org.eclipse.osee.ats.api.demo;
 public class DemoAis {
 
    public static String TEST_AI = "Test AI";
-   public static String TEST_Action = "Test Action";
+   public static String TEST_Action = "Test Action - Delete Me";
 
 }

@@ -77,4 +77,8 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
       return assignees;
    }
 
+   public Collection<AtsUser> getAssignees() {
+      return assignees;
+   }
+
 }
