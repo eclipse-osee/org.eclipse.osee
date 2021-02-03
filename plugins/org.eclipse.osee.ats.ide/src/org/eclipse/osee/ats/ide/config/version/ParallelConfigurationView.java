@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
  */
 public class ParallelConfigurationView extends XNavigateItemAction {
 
-   public static final String TITLE = "Pallel Configuration View";
+   public static final String TITLE = "Parallel Configuration View";
    private static enum Columns {
       AtsVersion,
       Branch,
@@ -78,6 +78,8 @@ public class ParallelConfigurationView extends XNavigateItemAction {
             @Override
             public List<IResultsEditorTab> getResultsEditorTabs() {
                if (tabs == null) {
+                  // load all versions first
+                  AtsApiService.get().getVersionService().getVersions(teamDef);
                   tabs = new LinkedList<>();
                   tabs.add(createDataTab(teamDef));
                }
@@ -116,7 +118,7 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       public VersionRow(IAtsVersion version, VersionRow parent) {
          this.version = version;
          this.parent = parent;
-         setData(version.getArtifactId());
+         setData(version.getArtifactToken());
          values.add(version.getName());
          BranchId baselineBranch = version.getBaselineBranch();
          if (baselineBranch.isValid()) {
