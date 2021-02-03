@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -217,6 +218,11 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public List<ArtifactId> getArtifactIdsByType(ArtifactTypeToken artifactType) {
       return orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactType).asArtifactIds();
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactTokensByApplicability(ApplicabilityId appId) {
+      return orcsApi.getQueryFactory().fromBranch(branch, appId).asArtifactTokens();
    }
 
    @Override

@@ -26,6 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -96,6 +97,11 @@ public interface ArtifactEndpoint {
    List<ArtifactToken> getChangedArtifactTokens(@DefaultValue("-1") @QueryParam("view") ArtifactId view, @PathParam("attributeTypeJoin") AttributeTypeJoin typeJoin, @PathParam("commentPattern") String commentPattern);
 
    @GET
+   @Path("applicability/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getArtifactTokensByApplicability(@PathParam("id") ApplicabilityId appId);
+
+   @GET
    @Path("type/{artifactType}/id")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactId> getArtifactIdsByType(@PathParam("artifactType") ArtifactTypeToken artifactType);
@@ -131,4 +137,5 @@ public interface ArtifactEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken setSoleAttributeValue(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact, @PathParam("attributeType") AttributeTypeToken attributeType, String value);
+
 }

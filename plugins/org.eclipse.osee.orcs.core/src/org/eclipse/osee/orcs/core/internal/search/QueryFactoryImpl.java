@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -66,6 +67,11 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public QueryBuilder fromBranch(BranchId branch, ArtifactId view) {
       return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch, view);
+   }
+
+   @Override
+   public QueryBuilder fromBranch(BranchId branch, ApplicabilityId appId) {
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch, appId);
    }
 
    @Override

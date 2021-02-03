@@ -325,7 +325,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
          String mainTxsAlias = getMainTableAlias(SqlTable.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
          writeTxBranchFilter(mainTxsAlias);
-
+         if (queryDataCursor.getAppId().isValid()) {
+            write(" AND ");
+            writeEqualsParameter(mainTxsAlias, "app_id", queryDataCursor.getAppId());
+         }
          if (queryDataCursor.getView().isValid()) {
             write(" AND ");
             writeEqualsParameterAnd(tupleAlias, "tuple_type", CoreTupleTypes.ViewApplicability);
