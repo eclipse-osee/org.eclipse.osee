@@ -52,6 +52,7 @@ import org.eclipse.osee.define.api.AttributeAlphabeticalComparator;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
 import org.eclipse.osee.define.api.OseeHierarchyComparator;
+import org.eclipse.osee.define.api.OseeLinkBuilder;
 import org.eclipse.osee.define.api.PublishingArtifactError;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
@@ -97,6 +98,7 @@ public class MSWordTemplatePublisher {
    protected static final String FONT = "Times New Roman";
    protected static final String LANDSCAPE = "Landscape";
    protected static final String CHANGE_TAG = WordUtilities.CHANGE_TAG;
+   protected static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
    //Patterns
    protected static final Pattern headElementsPattern =
@@ -128,6 +130,7 @@ public class MSWordTemplatePublisher {
    protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
    protected final Map<ApplicabilityId, Boolean> applicabilityMap = new HashMap<>();
    protected final List<ArtifactReadable> headerArtifacts = new LinkedList<>();
+   protected final Map<ArtifactTypeToken, List<ArtifactReadable>> oseeLinkedArtifactMap = new HashMap<>();
    protected List<ArtifactId> changedArtifacts = new LinkedList<>();
 
    //Error Variables
@@ -1034,5 +1037,34 @@ public class MSWordTemplatePublisher {
                artWithLink.getArtifactType(), description));
          }
       }
+   }
+
+   /**
+    * This method can be used to look through the OSEE hyperlinkIds that have not been found yet in the publish, and
+    * populate them into a map given a set of Artifact Types that are of interest. Currently searches using guids.
+    */
+   protected void populateOseeLinkedArtifacts(ArtifactTypeToken... typeTokens) {
+      List<ArtifactReadable> linkedArts = orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andGuids(
+         hyperlinkedIds.keySet()).getResults().getList();
+
+      for (ArtifactReadable artifact : linkedArts) {
+         if (artifact.isOfType(typeTokens)) {
+            ArtifactTypeToken artifactType = artifact.getArtifactType();
+            if (oseeLinkedArtifactMap.containsKey(artifactType)) {
+               oseeLinkedArtifactMap.get(artifactType).add(artifact);
+            } else {
+               List<ArtifactReadable> artList = new LinkedList<>();
+               artList.add(artifact);
+               oseeLinkedArtifactMap.put(artifactType, artList);
+            }
+            hyperlinkedIds.remove(artifact.getGuid());
+         }
+      }
+   }
+
+   protected String getWordMlBookmark(ArtifactReadable artifact) {
+      String bookmark = linkBuilder.getWordMlBookmark(artifact);
+      bookmark = WordUtilities.reassignBookMarkID(bookmark);
+      return bookmark;
    }
 }
