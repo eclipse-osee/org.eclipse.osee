@@ -264,7 +264,7 @@ public class WfeHeaderComposite extends Composite {
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          comp.setLayout(ALayout.getZeroMarginLayout(6, false));
 
-         workPackageHeader = new WfeWorkPackage(comp, SWT.NONE, workItem, editor);
+         workPackageHeader = new WfeWorkPackage(comp, SWT.NONE, (IAtsTeamWorkflow) workItem, editor);
       }
    }
 

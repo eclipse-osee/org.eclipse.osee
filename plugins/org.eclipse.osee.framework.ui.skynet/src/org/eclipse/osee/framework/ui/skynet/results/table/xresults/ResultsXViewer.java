@@ -60,7 +60,12 @@ public class ResultsXViewer extends XViewer implements ISelectedArtifacts {
                ArtifactDoubleClick.open(artifact);
                return;
             } else if (data instanceof ArtifactToken) {
-               Artifact artifact = ArtifactQuery.getArtifactFromToken((ArtifactToken) data);
+               Artifact artifact = null;
+               if (data instanceof Artifact) {
+                  artifact = (Artifact) data;
+               } else {
+                  artifact = ArtifactQuery.getArtifactFromToken((ArtifactToken) data);
+               }
                ArtifactDoubleClick.open(artifact);
                return;
             }

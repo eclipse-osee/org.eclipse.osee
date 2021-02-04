@@ -413,7 +413,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
     */
    public void refresh() {
       try {
-         System.err.println("WFE Refresh " + workItem.toStringWithId());
          if (getContainer() == null || getContainer().isDisposed()) {
             return;
          }

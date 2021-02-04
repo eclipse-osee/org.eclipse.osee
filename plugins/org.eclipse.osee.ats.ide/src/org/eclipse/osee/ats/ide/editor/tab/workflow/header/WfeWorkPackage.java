@@ -13,13 +13,18 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
+import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,18 +49,20 @@ public class WfeWorkPackage extends Composite {
    private final static String WORK_PACKAGE = "Work Package:";
    Text valueLabel;
    Hyperlink link;
-   private final IAtsWorkItem workItem;
+   private final IAtsTeamWorkflow teamWf;
+   AtsApi atsApi;
 
-   public WfeWorkPackage(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
+   public WfeWorkPackage(Composite parent, int style, final IAtsTeamWorkflow teamWf, final WorkflowEditor editor) {
       super(parent, style);
-      this.workItem = workItem;
+      this.teamWf = teamWf;
+      this.atsApi = AtsApiService.get();
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
       try {
          link = editor.getToolkit().createHyperlink(this, WORK_PACKAGE, SWT.NONE);
-         if (!workItem.isCancelled() && !workItem.isCompleted()) {
+         if (!teamWf.isCancelled() && !teamWf.isCompleted()) {
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -74,7 +81,13 @@ public class WfeWorkPackage extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     WorkPackageColumnUI.promptChangeActivityId(workItem, true);
+                     if (atsApi.getEarnedValueService().isUseTextWorkPackages(Collections.singleton(teamWf))) {
+                        PromptChangeUtil.promptChangeAttribute(
+                           Collections.singleton((AbstractWorkflowArtifact) teamWf.getStoreObject()),
+                           AtsAttributeTypes.WorkPackage, true, false);
+                     } else {
+                        WorkPackageColumnUI.promptChangeActivityId(teamWf, true);
+                     }
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -100,9 +113,13 @@ public class WfeWorkPackage extends Composite {
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
-         IAtsWorkPackage workPackage = AtsApiService.get().getEarnedValueService().getWorkPackage(workItem);
-         if (workPackage != null) {
-            value = workPackage.toString();
+         if (atsApi.getEarnedValueService().isUseTextWorkPackages(Collections.singleton(teamWf))) {
+            value = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackage, "");
+         } else {
+            IAtsWorkPackage workPackage = atsApi.getEarnedValueService().getWorkPackage(teamWf);
+            if (workPackage != null) {
+               value = workPackage.toString();
+            }
          }
          valueLabel.setText(value);
          valueLabel.getParent().layout();

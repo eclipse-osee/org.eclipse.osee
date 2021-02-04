@@ -13,13 +13,18 @@
 
 package org.eclipse.osee.ats.core.internal.column.ev;
 
+import java.util.Collections;
 import java.util.Map;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.IWorkPackageColumn;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.IWorkPackageUtility;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,9 +39,11 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
    private Map<ArtifactId, ArtifactToken> idToWorkPackage;
+   private final AtsApi atsApi;
 
    public WorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
+      atsApi = AtsApiService.get();
    }
 
    @Override
@@ -56,25 +63,31 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
    public String getColumnText(IAtsObject atsObject) {
       String result = "";
       try {
-         IAtsWorkPackage workPackage = null;
-         if (atsObject instanceof IAtsWorkItem) {
-            ArtifactId workPackageId =
-               earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
-            if (idToWorkPackage != null) {
-               if (workPackageId.isValid()) {
-                  ArtifactToken wpArt = idToWorkPackage.get(workPackageId);
-                  workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
+         if (atsObject instanceof IAtsTeamWorkflow && atsApi.getEarnedValueService().isUseTextWorkPackages(
+            Collections.singleton((IAtsTeamWorkflow) atsObject))) {
+            result = atsApi.getAttributeResolver().getSoleAttributeValue((IAtsTeamWorkflow) atsObject,
+               AtsAttributeTypes.WorkPackage, "");
+         } else {
+            IAtsWorkPackage workPackage = null;
+            if (atsObject instanceof IAtsWorkItem) {
+               ArtifactId workPackageId =
+                  earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
+               if (idToWorkPackage != null) {
+                  if (workPackageId.isValid()) {
+                     ArtifactToken wpArt = idToWorkPackage.get(workPackageId);
+                     workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
+                  }
                }
-            }
-            if (workPackage == null) {
-               workPackage =
-                  earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) atsObject);
-               if (workPackage != null && idToWorkPackage != null) {
-                  idToWorkPackage.put(workPackageId, workPackage.getStoreObject());
+               if (workPackage == null) {
+                  workPackage =
+                     earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) atsObject);
+                  if (workPackage != null && idToWorkPackage != null) {
+                     idToWorkPackage.put(workPackageId, workPackage.getStoreObject());
+                  }
                }
-            }
-            if (workPackage != null) {
-               result = getText(workPackage);
+               if (workPackage != null) {
+                  result = getText(workPackage);
+               }
             }
          }
       } catch (OseeCoreException ex) {
