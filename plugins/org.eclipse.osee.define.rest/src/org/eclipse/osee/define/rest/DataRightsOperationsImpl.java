@@ -79,22 +79,24 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    private void populateRequest(List<ArtifactId> artifacts, BranchId branch, DataRightInput request, String overrideClassification) {
       int index = 0;
 
-      for (ArtifactId artifact : artifacts) {
-         ArtifactReadable art =
-            orcsApi.getQueryFactory().fromBranch(branch).andId(artifact).getResults().getOneOrDefault(
-               ArtifactReadable.SENTINEL);
+      if (!artifacts.isEmpty() && branch.isValid()) {
+         Map<ArtifactId, ArtifactReadable> artifactMap =
+            orcsApi.getQueryFactory().fromBranch(branch).andIds(artifacts).asArtifactMap();
 
-         String classification = null;
-         String orientation = "Portrait";
-         if (DataRightsClassification.isValid(overrideClassification)) {
-            classification = overrideClassification;
-         } else if (art.isValid()) {
-            classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
-            orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageOrientation, "Portrait");
+         for (ArtifactId artifact : artifacts) {
+            ArtifactReadable art = artifactMap.getOrDefault(artifact, ArtifactReadable.SENTINEL);
+            String classification = null;
+            String orientation = "Portrait";
+            if (DataRightsClassification.isValid(overrideClassification)) {
+               classification = overrideClassification;
+            } else if (art.isValid()) {
+               classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
+               orientation = art.getSoleAttributeAsString(CoreAttributeTypes.PageOrientation, "Portrait");
+            }
+
+            request.addData(artifact, classification, PageOrientation.fromString(orientation), index);
+            index++;
          }
-
-         request.addData(artifact, classification, PageOrientation.fromString(orientation), index);
-         index++;
       }
    }
 
@@ -166,10 +168,10 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    private Map<String, DataRight> getClassificationToDataRights(QueryBuilder query) {
       Map<String, DataRight> toReturn = new HashMap<>();
 
-      ArtifactReadable footerMappingArt =
-         query.andId(MAPPING_ARTIFACT).getResults().getOneOrDefault(ArtifactReadable.SENTINEL);
+      List<ArtifactReadable> mappingArtifacts = query.andId(MAPPING_ARTIFACT).asArtifacts();
 
-      if (footerMappingArt.isValid()) {
+      if (!mappingArtifacts.isEmpty()) {
+         ArtifactReadable footerMappingArt = mappingArtifacts.get(0);
          List<String> footers = new ArrayList<>();
          footers = footerMappingArt.getAttributeValues(CoreAttributeTypes.GeneralStringData);
          for (String footer : footers) {
