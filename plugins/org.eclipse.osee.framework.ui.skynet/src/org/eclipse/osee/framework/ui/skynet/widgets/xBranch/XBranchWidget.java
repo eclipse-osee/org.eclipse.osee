@@ -25,6 +25,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -227,6 +228,10 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
             baselineButton.addSelectionListener(new SelectionAdapter() {
                @Override
                public void widgetSelected(SelectionEvent e) {
+                  if (allButton != null) {
+                     allButton.setSelection(false);
+                     handleAllBranchSelection();
+                  }
                   branchData.setAsIds(false);
                   if (baselineButton.getSelection()) {
                      branchData.getBranchTypes().add(BranchType.BASELINE);
@@ -244,6 +249,10 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
             workingButton.addSelectionListener(new SelectionAdapter() {
                @Override
                public void widgetSelected(SelectionEvent e) {
+                  if (allButton != null) {
+                     allButton.setSelection(false);
+                     handleAllBranchSelection();
+                  }
                   branchData.setAsIds(false);
                   if (workingButton.getSelection()) {
                      branchData.getBranchTypes().add(BranchType.WORKING);
@@ -253,25 +262,18 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                }
             });
 
-            allButton = new ToolItem(toolBar, SWT.CHECK);
-            allButton.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
-            allButton.setToolTipText("Show All Branches");
-            allButton.addSelectionListener(new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  if (allButton.getSelection()) {
-                     branchData.getBranchTypes().clear();
-                     baselineButton.setSelection(false);
-                     workingButton.setSelection(false);
-                  } else {
-                     branchData.getBranchTypes().clear();
-                     branchData.getBranchTypes().add(BranchType.BASELINE);
-                     branchData.getBranchTypes().add(BranchType.WORKING);
-                     baselineButton.setSelection(true);
-                     workingButton.setSelection(true);
+            if (AccessControlManager.isOseeAdmin()) {
+               allButton = new ToolItem(toolBar, SWT.CHECK);
+               allButton.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
+               allButton.setToolTipText("Show All Branches");
+               allButton.addSelectionListener(new SelectionAdapter() {
+                  @Override
+                  public void widgetSelected(SelectionEvent e) {
+                     handleAllBranchSelection();
                   }
-               }
-            });
+
+               });
+            }
 
             new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -328,6 +330,24 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
             });
 
          }
+      }
+   }
+
+   private void handleAllBranchSelection() {
+      if (allButton.getSelection()) {
+         branchData.getBranchTypes().clear();
+         branchData.setIncludeArchived(true);
+         branchData.setIncludeDeleted(true);
+         baselineButton.setSelection(false);
+         workingButton.setSelection(false);
+      } else {
+         branchData.getBranchTypes().clear();
+         branchData.getBranchTypes().add(BranchType.BASELINE);
+         branchData.getBranchTypes().add(BranchType.WORKING);
+         branchData.setIncludeArchived(false);
+         branchData.setIncludeDeleted(false);
+         baselineButton.setSelection(true);
+         workingButton.setSelection(true);
       }
    }
 
@@ -429,9 +449,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
 
                @Override
                public void run() {
-                  if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
-                     extraInfoLabel.setText("");
-                  }
+                  setExtraInfoLabel("");
                   if (branchXViewer != null && branchXViewer.getTree() != null && !branchXViewer.getTree().isDisposed()) {
                      if (input instanceof BranchTransactionUiData) {
                         Object[] transactions = ((BranchTransactionUiData) input).getTransactions();

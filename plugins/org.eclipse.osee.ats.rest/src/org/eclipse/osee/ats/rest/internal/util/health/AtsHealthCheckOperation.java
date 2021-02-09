@@ -191,6 +191,9 @@ public class AtsHealthCheckOperation {
 
       @Override
       public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+         if (workItem.isReview() && atsApi.getReviewService().isStandAloneReview(workItem)) {
+            return;
+         }
          if (workItem.hasAction() && workItem.getParentAction() == null) {
             results.log(artifact, "TestWorkflowHasAction",
                String.format("Error: Workflow %s has no parent Action", workItem.toStringWithId()));

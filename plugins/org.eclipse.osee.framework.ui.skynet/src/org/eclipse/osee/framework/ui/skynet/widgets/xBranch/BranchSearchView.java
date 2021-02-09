@@ -15,11 +15,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
@@ -34,6 +35,7 @@ import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 public class BranchSearchView extends BranchView {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView";
+   BranchQueryData showBranchData = branchData;
 
    public BranchSearchView() {
       super(VIEW_ID, "Branch Search Manager");
@@ -59,29 +61,53 @@ public class BranchSearchView extends BranchView {
    }
 
    @Override
+   public BranchQueryData getShowQueryData() {
+      return showBranchData;
+   }
+
+   @Override
    public void handleQuerySearch() {
-      OseeClient oseeClient = ServiceUtil.getOseeClient();
-      BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
-      if (branchData.isAsIds()) {
-         if (Strings.isNumeric(branchData.getNamePattern())) {
-            // Only want to search by id and ignore rest of criteria
-            BranchQueryData idBranchData = new BranchQueryData();
-            idBranchData.setAsIds(true);
-            idBranchData.setBranchIds(Arrays.asList(BranchId.valueOf(branchData.getNamePattern())));
-            if (UserManager.getUser().isOseeAdmin()) {
-               idBranchData.setIncludeArchived(true);
-               idBranchData.setIncludeDeleted(true);
+      // Clear results
+      xBranchWidget.getXViewer().setInput(Collections.emptyList());
+      List<Branch> branches = null;
+      boolean exceptionCaught = false;
+      try {
+         xBranchWidget.setExtraInfoLabel("Searching... ");
+         OseeClient oseeClient = ServiceUtil.getOseeClient();
+         BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
+         if (branchData.isAsIds()) {
+            if (Strings.isNumeric(branchData.getNamePattern())) {
+               // Only want to search by id and ignore rest of criteria
+               BranchQueryData idBranchData = new BranchQueryData();
+               idBranchData.setAsIds(true);
+               idBranchData.setBranchIds(Arrays.asList(BranchId.valueOf(branchData.getNamePattern())));
+               if (UserManager.getUser().isOseeAdmin()) {
+                  idBranchData.setIncludeArchived(true);
+                  idBranchData.setIncludeDeleted(true);
+               }
+               showBranchData = idBranchData;
+               branches = endpoint.getFromQuery(idBranchData);
+            } else {
+               xBranchWidget.setExtraInfoLabel("Must enter ID to search");
+               return;
             }
-            List<Branch> branches = endpoint.getFromQuery(idBranchData);
-            loadData(branches);
-            return;
          } else {
-            AWorkbench.popup("No numeric id to search.");
-            loadData(Collections.emptyList());
+            showBranchData = branchData;
+            branches = endpoint.getFromQuery(branchData);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(BranchSearchView.class, Level.SEVERE, ex);
+         xBranchWidget.setExtraInfoLabel("Exception caught, see error log");
+         exceptionCaught = true;
+      }
+      if (!exceptionCaught && branches != null) {
+         if (branches.isEmpty()) {
+            xBranchWidget.setExtraInfoLabel("No Branches Found");
+         } else {
+            loadData(branches);
+            xBranchWidget.setExtraInfoLabel(String.format("%s Branches Found", branches.size()));
          }
       }
-      List<Branch> branches = endpoint.getFromQuery(branchData);
-      loadData(branches);
    }
 
 }

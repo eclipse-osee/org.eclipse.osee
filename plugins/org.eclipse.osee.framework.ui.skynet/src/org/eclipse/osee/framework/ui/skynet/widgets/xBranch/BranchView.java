@@ -301,6 +301,11 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
       // not needed for normal BranchView, only BranchSearchView
    }
 
+   public BranchQueryData getShowQueryData() {
+      // not needed for normal BranchView, only BranchSearchView
+      return null;
+   }
+
    public void loadData() {
       // not needed for normal BranchView, only BranchSearchView
    }

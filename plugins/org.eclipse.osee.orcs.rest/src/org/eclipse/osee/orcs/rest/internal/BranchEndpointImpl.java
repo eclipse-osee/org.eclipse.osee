@@ -804,17 +804,17 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private ResultSet<Branch> searchBranches(BranchQueryData options) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
 
-      List<BranchId> branchIds = options.getBranchIds();
+      Collection<BranchId> branchIds = options.getBranchIds();
       if (Conditions.hasValues(branchIds)) {
          query.andIds(branchIds);
       }
 
-      List<BranchState> branchStates = options.getBranchStates();
+      Collection<BranchState> branchStates = options.getBranchStates();
       if (Conditions.hasValues(branchStates)) {
          query.andStateIs(branchStates.toArray(new BranchState[branchStates.size()]));
       }
 
-      List<BranchType> branchTypes = options.getBranchTypes();
+      Collection<BranchType> branchTypes = options.getBranchTypes();
       if (Conditions.hasValues(branchTypes)) {
          query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
       }

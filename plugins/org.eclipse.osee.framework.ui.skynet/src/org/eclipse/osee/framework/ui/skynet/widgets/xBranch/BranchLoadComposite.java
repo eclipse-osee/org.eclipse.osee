@@ -22,7 +22,10 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -51,7 +54,7 @@ public class BranchLoadComposite extends Composite {
    public BranchLoadComposite(BranchView branchView, Composite parent, int style) {
       super(parent, style);
       this.branchView = branchView;
-      setLayout(ALayout.getZeroMarginLayout(7, false));
+      setLayout(ALayout.getZeroMarginLayout(8, false));
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       this.branchData = branchView.getBranchData();
 
@@ -80,6 +83,13 @@ public class BranchLoadComposite extends Composite {
       nameText = new XText("Srch String: ");
       nameText.setToolTip("Search Branch names for String");
       nameText.createWidgets(this, 1);
+      nameText.addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            setSearchString();
+         }
+      });
       nameText.getStyledText().addKeyListener(new KeyListener() {
 
          @Override
@@ -88,7 +98,6 @@ public class BranchLoadComposite extends Composite {
                branchView.handleQuerySearch();
                return;
             }
-            setSearchString();
          }
 
          @Override
@@ -119,7 +128,7 @@ public class BranchLoadComposite extends Composite {
 
       Button resetButton = new Button(this, SWT.PUSH);
       resetButton.setText("Reset");
-      resetButton.setToolTipText("Reset search criteria to defaults.");
+      resetButton.setToolTipText("Reset search criteria to defaults");
       resetButton.addMouseListener(new MouseAdapter() {
 
          @Override
@@ -128,6 +137,18 @@ public class BranchLoadComposite extends Composite {
             asIdButton.setSelection(false);
             branchView.getXBranchWidget().resetButtons();
             branchView.loadData(Collections.emptyList());
+         }
+      });
+
+      Button showSearchDataButton = new Button(this, SWT.PUSH);
+      showSearchDataButton.setImage(ImageManager.getImage(FrameworkImage.GEAR));
+      showSearchDataButton.setToolTipText("Show Branch Query Data");
+      showSearchDataButton.addMouseListener(new MouseAdapter() {
+
+         @Override
+         public void mouseUp(MouseEvent e) {
+            BranchQueryData showQueryData = branchView.getShowQueryData();
+            ResultsEditor.open("Branch Query Data", "Branch Query Data", showQueryData.getHtml());
          }
       });
 

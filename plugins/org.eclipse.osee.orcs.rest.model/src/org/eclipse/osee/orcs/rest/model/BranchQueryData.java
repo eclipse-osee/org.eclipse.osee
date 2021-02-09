@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * @author John Misinco
@@ -26,9 +28,9 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 @XmlRootElement
 public class BranchQueryData {
 
-   private List<BranchId> branchIds = new ArrayList<>();
-   private List<BranchType> branchTypes = new ArrayList<>();
-   private List<BranchState> branchStates = new ArrayList<>();
+   private final Set<BranchId> branchIds = new HashSet<>();
+   private final Set<BranchType> branchTypes = new HashSet<>();
+   private final Set<BranchState> branchStates = new HashSet<>();
    private boolean includeDeleted;
    private boolean includeArchived;
    private boolean asIds;
@@ -38,28 +40,31 @@ public class BranchQueryData {
    private Long isChildOf = -1L;
    private Long isAncestorOf = -1L;
 
-   public List<BranchId> getBranchIds() {
+   public Collection<BranchId> getBranchIds() {
       return branchIds;
    }
 
-   public void setBranchIds(List<BranchId> branchUuids) {
-      this.branchIds = branchUuids;
+   public void setBranchIds(Collection<BranchId> branchUuids) {
+      this.branchIds.clear();
+      this.branchIds.addAll(branchUuids);
    }
 
-   public List<BranchType> getBranchTypes() {
+   public Collection<BranchType> getBranchTypes() {
       return branchTypes;
    }
 
-   public void setBranchTypes(List<BranchType> branchTypes) {
-      this.branchTypes = branchTypes;
+   public void setBranchTypes(Collection<BranchType> branchTypes) {
+      this.branchTypes.clear();
+      this.branchTypes.addAll(branchTypes);
    }
 
-   public List<BranchState> getBranchStates() {
+   public Collection<BranchState> getBranchStates() {
       return branchStates;
    }
 
-   public void setBranchStates(List<BranchState> branchStates) {
-      this.branchStates = branchStates;
+   public void setBranchStates(Collection<BranchState> branchStates) {
+      this.branchStates.clear();
+      this.branchStates.addAll(branchStates);
    }
 
    public boolean isIncludeDeleted() {
@@ -124,6 +129,15 @@ public class BranchQueryData {
 
    public void setAsIds(boolean asIds) {
       this.asIds = asIds;
+   }
+
+   public String getHtml() {
+      return AHTML.simplePage(
+         "BranchQueryData <br/>branchIds=" + branchIds + "<br/>branchTypes=" + branchTypes + "<br/>branchStates=" //
+            + branchStates + "<br/>includeDeleted=" + includeDeleted + "<br/>includeArchived=" //
+            + includeArchived + "<br/>asIds=" + asIds + "<br/>nameEquals=" + nameEquals + //
+            "<br/>namePattern=" + namePattern + "<br/>namePatternIgnoreCase=" + namePatternIgnoreCase //
+            + "<br/>isChildOf=" + isChildOf + "<br/>isAncestorOf=" + isAncestorOf);
    }
 
 }
