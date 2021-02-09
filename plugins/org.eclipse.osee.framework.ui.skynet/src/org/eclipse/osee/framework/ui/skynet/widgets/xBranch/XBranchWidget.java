@@ -265,7 +265,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
             if (AccessControlManager.isOseeAdmin()) {
                allButton = new ToolItem(toolBar, SWT.CHECK);
                allButton.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
-               allButton.setToolTipText("Show All Branches");
+               allButton.setToolTipText("Show All Branches (Admin)");
                allButton.addSelectionListener(new SelectionAdapter() {
                   @Override
                   public void widgetSelected(SelectionEvent e) {
