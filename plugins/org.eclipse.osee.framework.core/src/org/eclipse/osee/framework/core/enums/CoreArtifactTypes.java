@@ -94,6 +94,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DefaultMailServer)
       .zeroOrOne(Dictionary)
       .any(GeneralStringData)
+      .zeroOrOne(ProductLinePreferences)
       .zeroOrOne(WebPreferences));
    ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, Artifact));
    ArtifactTypeToken HtmlArtifact = osee.add(osee.artifactType(798L, "HTML Artifact", false, Artifact)

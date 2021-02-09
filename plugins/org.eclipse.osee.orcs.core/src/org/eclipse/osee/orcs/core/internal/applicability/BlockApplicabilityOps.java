@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -33,6 +35,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
@@ -52,6 +56,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class BlockApplicabilityOps {
    private static String SCRIPT_ENGINE_NAME = "JavaScript";
+
+   private static final String BEGINFEATURE = " ?(Feature ?(\\[(.*?)\\])) ?";
+   private static final String ENDFEATURE = " ?(End Feature ?((\\[.*?\\]))?) ?";
+
+   public static final int beginFeatureCommentMatcherGroup = 1;
+   public static final int beginFeatureTagMatcherGroup = 2;
+   public static final int endFeatureCommentMatcherGroup = 5;
+   public static final int endFeatureTagMatcherGroup = 6;
 
    private final OrcsApi orcsApi;
    private final Log logger;
@@ -80,11 +92,13 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public String applyApplicabilityToFiles(String sourcePath, Map<String, String> fileExtensionToCommentPrefix) {
-      Rule rule = new BlockApplicabilityRule(this, branch, view, fileExtensionToCommentPrefix);
+   public String applyApplicabilityToFiles(String sourcePath) {
+      Map<String, Pattern> fileExtensionToCommentStyle = populateExtensionToPatternMap();
+
+      Rule rule = new BlockApplicabilityRule(this, fileExtensionToCommentStyle);
 
       StringBuilder filePattern = new StringBuilder(".*\\.(");
-      filePattern.append(Collections.toString("|", fileExtensionToCommentPrefix.keySet()));
+      filePattern.append(Collections.toString("|", fileExtensionToCommentStyle.keySet()));
       filePattern.append(")");
       rule.setFileNamePattern(filePattern.toString());
 
@@ -355,5 +369,35 @@ public class BlockApplicabilityOps {
          }
       }
       return toReturn;
+   }
+
+   private Map<String, Pattern> populateExtensionToPatternMap() {
+      Map<String, Pattern> fileExtensionToPatternMap = new HashMap<>();
+      ArtifactReadable globalPreferences = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         CoreArtifactTokens.GlobalPreferences).getArtifact();
+      String preferences = globalPreferences.getSoleAttributeValue(CoreAttributeTypes.ProductLinePreferences, "");
+
+      JsonNode preferencesJson = orcsApi.jaxRsApi().readTree(preferences);
+      JsonNode commentStyles = preferencesJson.findValue("FileExtensionCommentStyle");
+      Iterator<JsonNode> iter = commentStyles.elements();
+
+      while (iter.hasNext()) {
+         JsonNode currNode = iter.next();
+         String fileExtension = currNode.findValue("FileExtension").asText();
+         String commentPrefix = currNode.findValue("CommentPrefix").asText();
+         JsonNode optionalSuffix = currNode.findValue("CommentSuffix");
+         String commentSuffix = optionalSuffix == null ? "" : optionalSuffix.asText();
+
+         fileExtensionToPatternMap.put(fileExtension, createFullPatternFromCommentStyle(commentPrefix, commentSuffix));
+      }
+
+      return fileExtensionToPatternMap;
+   }
+
+   private Pattern createFullPatternFromCommentStyle(String commentPrefix, String commentSuffix) {
+      String commentedFeatureStart = "(" + commentPrefix + BEGINFEATURE + commentSuffix + ")";
+      String commentedFeatureEnd = "(" + commentPrefix + ENDFEATURE + commentSuffix + ")";
+      String pattern = commentedFeatureStart + "|" + commentedFeatureEnd;
+      return Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);
    }
 }

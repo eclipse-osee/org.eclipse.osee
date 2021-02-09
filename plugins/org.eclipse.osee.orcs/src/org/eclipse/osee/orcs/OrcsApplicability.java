@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs;
 
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -87,5 +86,5 @@ public interface OrcsApplicability {
 
    String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic);
 
-   String applyApplicabilityToFiles(BranchId branch, ArtifactId view, String sourcePath, Map<String, String> fileExtensionToCommentPrefix);
+   String applyApplicabilityToFiles(BranchId branch, ArtifactId view, String sourcePath);
 }

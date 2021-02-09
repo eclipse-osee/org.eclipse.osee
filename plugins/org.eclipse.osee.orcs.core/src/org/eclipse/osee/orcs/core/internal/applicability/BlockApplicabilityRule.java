@@ -13,13 +13,10 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
@@ -34,60 +31,60 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Ryan D. Brooks
  */
 public class BlockApplicabilityRule extends Rule {
-   private final Map<String, Matcher> fileExtensionTofeatureStart;
-   private final Map<String, Matcher> fileExtensionTofeatureEnd;
    private final BlockApplicabilityOps orcsApplicability;
-   private final BranchId branch;
-   private final ArtifactToken view;
-   private Matcher startMatcher;
-   private Matcher endMatcher;
+   private final Map<String, Pattern> fileExtensionToPatternMap;
+   private final Stack<ApplicabilityBlock> applicBlocks = new Stack<>();
 
-   public BlockApplicabilityRule(BlockApplicabilityOps orcsApplicability, BranchId branch, ArtifactToken view, Map<String, String> fileExtensionToCommentPrefix) {
+   public BlockApplicabilityRule(BlockApplicabilityOps orcsApplicability, Map<String, Pattern> fileExtensionToPatternMap) {
       super(null); // don't change extension on resulting file (i.e. overwrite the original file)
 
       this.orcsApplicability = orcsApplicability;
-      this.branch = branch;
-      this.view = view;
-      fileExtensionTofeatureStart = new HashMap<>();
-      fileExtensionTofeatureEnd = new HashMap<>();
-
-      for (Entry<String, String> entry : fileExtensionToCommentPrefix.entrySet()) {
-         String commentPrefix = entry.getValue();
-         fileExtensionTofeatureStart.put(entry.getKey(),
-            Pattern.compile(commentPrefix + "(Feature\\[([^\\]]+)\\])").matcher(""));
-         fileExtensionTofeatureEnd.put(entry.getKey(),
-            Pattern.compile(commentPrefix + "End Feature[ \t]*").matcher(""));
-      }
+      this.fileExtensionToPatternMap = fileExtensionToPatternMap;
    }
 
    @Override
    public ChangeSet computeChanges(CharSequence seq) {
       ChangeSet changeSet = new ChangeSet(seq);
-      setupMatchers(seq);
+      Matcher matcher = fileExtensionToPatternMap.get(Lib.getExtension(getInputFile().getName())).matcher(seq);
 
-      int endMatcherIndex = 0;
-      while (startMatcher.find(endMatcherIndex)) {
-         String feature = startMatcher.group(2);
+      int matcherIndex = 0;
+      while (matcherIndex < seq.length() && matcher.find(matcherIndex)) {
+         String beginFeature = matcher.group(BlockApplicabilityOps.beginFeatureCommentMatcherGroup);
+         String endFeature = matcher.group(BlockApplicabilityOps.endFeatureCommentMatcherGroup);
 
-         if (endMatcher.find(startMatcher.end())) {
-            endMatcherIndex = endMatcher.end();
-            ApplicabilityBlock applicBlock =
-               orcsApplicability.createApplicabilityBlock(ApplicabilityType.Feature, startMatcher.group(1));
-            applicBlock.setInsideText(changeSet.subSequence(startMatcher.end(), endMatcher.start()).toString());
-
-            String replacementText = orcsApplicability.evaluateApplicabilityExpression(applicBlock);
-            changeSet.replace(startMatcher.start(), endMatcher.end(), replacementText);
+         if (beginFeature != null) {
+            matcherIndex = startApplicabilityBlock(beginFeature, matcher);
+         } else if (endFeature != null) {
+            matcherIndex = finishApplicabilityBlock(changeSet, matcher);
             ruleWasApplicable = true;
          } else {
-            throw new OseeCoreException("Didn't find matching End Feature for Feature[%s", feature);
+            throw new OseeCoreException("Did not find a start or end feature tag");
          }
       }
       return changeSet;
    }
 
-   private void setupMatchers(CharSequence seq) {
-      String fileExtension = Lib.getExtension(getInputFile().getName());
-      startMatcher = fileExtensionTofeatureStart.get(fileExtension).reset(seq);
-      endMatcher = fileExtensionTofeatureEnd.get(fileExtension).reset(seq);
+   private int startApplicabilityBlock(String beginFeature, Matcher matcher) {
+      ApplicabilityBlock applicStart = new ApplicabilityBlock(ApplicabilityType.Feature);
+      applicStart.setApplicabilityExpression(matcher.group(BlockApplicabilityOps.beginFeatureTagMatcherGroup));
+      applicStart.setStartInsertIndex(matcher.start());
+      applicStart.setStartTextIndex(matcher.end());
+      applicStart.setBeginTag(beginFeature);
+      applicBlocks.add(applicStart);
+      return matcher.end();
+   }
+
+   private int finishApplicabilityBlock(ChangeSet changeSet, Matcher matcher) {
+      if (applicBlocks.isEmpty()) {
+         throw new OseeCoreException("An End Feature tag was found before a beginning Feature tag");
+      }
+      ApplicabilityBlock applicBlock = applicBlocks.pop();
+      applicBlock.setEndTextIndex(matcher.start());
+      applicBlock.setEndInsertIndex(matcher.end());
+      applicBlock.setInsideText(
+         changeSet.subSequence(applicBlock.getStartTextIndex(), applicBlock.getEndTextIndex()).toString());
+      String replacementText = orcsApplicability.evaluateApplicabilityExpression(applicBlock);
+      changeSet.replace(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex(), replacementText);
+      return matcher.end();
    }
 }
