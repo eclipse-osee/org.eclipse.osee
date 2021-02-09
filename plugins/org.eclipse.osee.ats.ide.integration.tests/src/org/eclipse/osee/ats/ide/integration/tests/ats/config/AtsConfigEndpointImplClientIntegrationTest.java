@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test unit for {@link AtsConfigEndpointImpl}
@@ -32,4 +33,18 @@ public class AtsConfigEndpointImplClientIntegrationTest {
       Assert.assertEquals("Alive", resultData.getResults().iterator().next());
    }
 
+   @Test
+   public void testKeyValue() {
+      String value = "This is the one line test";
+      AtsApiService.get().setConfigValue("Singleline", value);
+      AtsApiService.get().reloadServerAndClientCaches();
+      String configValue = AtsApiService.get().getConfigValue("Singleline");
+      Assert.assertEquals(value, configValue);
+
+      value = "This is the multi-line test \n Second line \n Third line";
+      AtsApiService.get().setConfigValue("Multiline", value);
+      AtsApiService.get().reloadServerAndClientCaches();
+      configValue = AtsApiService.get().getConfigValue("Multiline");
+      Assert.assertEquals(value, configValue);
+   }
 }

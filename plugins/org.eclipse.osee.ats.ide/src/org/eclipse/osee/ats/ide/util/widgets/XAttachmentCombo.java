@@ -19,9 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.AtsAttachment;
+import org.eclipse.osee.ats.api.workflow.AtsAttachments;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeEditorAddSupportingFiles;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite;
@@ -33,10 +36,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -60,8 +64,10 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget {
 
    protected IAtsWorkItem workItem;
-   HashMap<String, String> locationMap = new HashMap<>();
+   HashMap<String, BranchId> nameBranchMap = new HashMap<>();
    private final String configKey;
+   boolean inOsee = false;
+   private String location;
 
    public XAttachmentCombo(String displayLabel, String configKey) {
       super(displayLabel);
@@ -72,21 +78,21 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
       fillCombo();
-      Pair<Artifact, RelationLink> entry = getSelectedChecklist();
-      Artifact checklistArt = entry.getFirst();
-      if (checklistArt != null) {
+      Pair<Artifact, RelationLink> entry = getSelectedAttachment();
+      Artifact attachmentArt = entry.getFirst();
+      if (attachmentArt != null) {
          WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
-         WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem, checklistArt, parent,
+         WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem, attachmentArt, parent,
             editor, OpenType.Read.name());
-         WfeRelationsHyperlinkComposite.createEditHyperlink(checklistArt, parent, editor);
-         WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem, checklistArt,
+         WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
+         WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem, attachmentArt,
             entry.getSecond(), parent, editor);
-         // Show selected checklist in combo box
-         set(checklistArt.toString());
+         // Show selected attachment in combo box
+         set(attachmentArt.toString());
       }
    }
 
-   private Pair<Artifact, RelationLink> getSelectedChecklist() {
+   private Pair<Artifact, RelationLink> getSelectedAttachment() {
       Artifact workflowArt = (AbstractWorkflowArtifact) workItem;
       Artifact thatArt = null;
       RelationLink relation = null;
@@ -99,20 +105,19 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
       return new Pair<Artifact, RelationLink>(thatArt, relation);
    }
 
-   private boolean isChecklistAttached() {
-      Pair<Artifact, RelationLink> artRelPair = getSelectedChecklist();
+   private boolean isAttachmentAttached() {
+      Pair<Artifact, RelationLink> artRelPair = getSelectedAttachment();
       return artRelPair.getFirst() != null && artRelPair.getSecond() != null;
    }
 
    /**
-    * This id is added to a checklist when it's copy and attached to the workflow. This Id has to be different for every
-    * different types of checklist.
+    * This id is added to a attachment when it's copy and attached to the workflow. This Id has to be different for
+    * every different types of attachment.
     */
    public abstract String getAttachmentStaticId();
 
    /**
-    * @return single string of \"name;fullfilename\name;fullfilename\" from the fileDirectory and single string of
-    * \"fileName;osee:570:file\n" from OSEE
+    * @return json representation of Attachements/Attachment to be used.
     */
    protected String getFileListString() {
       return AtsApiService.get().getConfigValue(configKey);
@@ -129,67 +134,71 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
       }
    }
 
-   protected Map<String, String> getNameToLocationMap() {
+   protected Map<String, BranchId> getNameToLocationMap() {
       String locationList = getFileListString();
-      for (String nameAndLocation : locationList.split("\n")) {
-         String nameLocation[] = nameAndLocation.split(";");
-         locationMap.put(nameLocation[0], nameLocation[1]);
+      AtsAttachments allAttachments = JsonUtil.readValue(locationList, AtsAttachments.class);
+      for (AtsAttachment attachment : allAttachments.getAttachments()) {
+         nameBranchMap.put(attachment.getName(), attachment.getBranch());
+         location = attachment.getlocation();
+         if (location.equals("osee")) {
+            inOsee = true;
+         }
       }
-      return locationMap;
+      return nameBranchMap;
    }
 
    private void fillCombo() {
 
       getNameToLocationMap();
 
-      // add to fileNames
-      setDataStrings(locationMap.keySet().toArray(new String[locationMap.size()]));
+      // Add to fileNames
+      setDataStrings(nameBranchMap.keySet().toArray(new String[nameBranchMap.size()]));
 
       addXModifiedListener(new XModifiedListener() {
 
          @Override
          public void widgetModified(XWidget widget) {
             // Determine if file is already attached and ask if want to replace
-            if (isChecklistAttached()) {
+            if (isAttachmentAttached()) {
                if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Attach Selected",
-                  "There is already one checklist attached, do you want to delete and replace with the new one?")) {
+                  "There is already one attachment attached, do you want to delete and replace with the new one?")) {
                   return;
                }
                IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Related Artifact");
-               Pair<Artifact, RelationLink> entry = getSelectedChecklist();
+               Pair<Artifact, RelationLink> entry = getSelectedAttachment();
                changes.deleteArtifact(entry.getFirst());
                changes.execute();
             }
-            String location = locationMap.get(getData());
 
-            //check if this files are stored in OSEE
-            if (location.startsWith("osee")) {
-               String[] values = location.split(":");
-               String branchIdStr = values[1];
-               String checklistName = values[2];
-               checklistName = checklistName.replaceAll("\r", "");
-               BranchId branch = null;
-               if (Strings.isNumeric(branchIdStr)) {
-                  branch = BranchId.valueOf(branchIdStr);
-               } else {
-                  AWorkbench.popup("Error Attaching Checklist",
-                     String.format("Invalid Branch Id [%s].  Aborting.", branchIdStr));
-                  return;
+            // Check if these files are stored in OSEE
+            if (inOsee) {
+               String selection = (String) getData();
+               for (Entry<String, BranchId> entry : nameBranchMap.entrySet()) {
+                  if (entry.getKey().equals(selection)) {
+                     String attachmentName = entry.getKey();
+                     BranchId branchId = entry.getValue();
+                     try {
+                        Artifact art = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralDocument,
+                           attachmentName, branchId);
+                        Artifact duplicateArt = art.duplicate((CoreBranches.COMMON));
+                        SkynetTransaction transaction =
+                           TransactionManager.createTransaction(CoreBranches.COMMON, "Duplicate and store attachment");
+                        ((Artifact) workItem.getStoreObject()).addRelation(
+                           CoreRelationTypes.SupportingInfo_SupportingInfo, duplicateArt);
+                        duplicateArt.addAttribute(CoreAttributeTypes.StaticId, getAttachmentStaticId());
+                        transaction.addArtifact(duplicateArt);
+                        transaction.execute();
+                     } catch (ArtifactDoesNotExist ex) {
+                        AWorkbench.popup("Selected attachment does not exist");
+                     }
+                     return;
+                  }
                }
-               Artifact art =
-                  ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralDocument, checklistName, branch);
-               Artifact duplicateArt = art.duplicate((CoreBranches.COMMON));
-               SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "file");
-               ((Artifact) workItem.getStoreObject()).addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo,
-                  duplicateArt);
-               duplicateArt.addAttribute(CoreAttributeTypes.StaticId, getAttachmentStaticId());
-               transaction.addArtifact(duplicateArt);
-               transaction.execute();
 
             } else {
                File file = new File(location);
                if (!file.exists()) {
-                  AWorkbench.popup("Error Attaching Checklist",
+                  AWorkbench.popup("Error Attaching Attachment",
                      String.format("Select file [%s] does not exist.  Aborting.", file.getAbsolutePath()));
                   return;
                }

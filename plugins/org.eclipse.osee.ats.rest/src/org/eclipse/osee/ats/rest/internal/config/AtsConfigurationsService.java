@@ -60,6 +60,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
    private final OrcsApi orcsApi;
+   Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)", Pattern.DOTALL);
 
    public AtsConfigurationsService(AtsApi atsApi, OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -183,8 +184,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
       return configs;
    }
-
-   Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)$");
 
    private Map<String, String> setConfigValues(AtsConfigurations configs) {
       ArtifactToken atsConfig = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);

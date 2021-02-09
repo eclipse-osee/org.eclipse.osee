@@ -28,6 +28,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
+import org.eclipse.osee.ats.api.workflow.AtsAttachment;
+import org.eclipse.osee.ats.api.workflow.AtsAttachments;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.define.rest.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.define.rest.importing.operations.SourceToRoughArtifactOperation;
@@ -50,6 +52,7 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.OseeInfo;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -108,10 +111,11 @@ public class AtsDbConfigBase {
    }
 
    private void CreateAndconfigureProcessesBranchAndDemoPeerChecklist() {
-      String CONFIG_VALUE = //
-         "Document_Checklist;osee:" + DemoBranches.Processes.getIdString() + ":Document_Checklist\n" + //
-            "Process_Checklist;osee:" + DemoBranches.Processes.getIdString() + ":Process_Checklist";
-      atsApi.setConfigValue("PeerReviewChecklist", CONFIG_VALUE);
+      AtsAttachments checklists = new AtsAttachments();
+      checklists.addAttachment(new AtsAttachment("Document_Checklist", "osee", DemoBranches.Processes));
+      checklists.addAttachment(new AtsAttachment("Process_Checklist", "osee", DemoBranches.Processes));
+      String jsonToStore = JsonUtil.toJson(checklists);
+      atsApi.setConfigValue("PeerReviewChecklist", jsonToStore);
 
       // Create Processes Branch
       Branch branch = branchOps.createBaselineBranch(DemoBranches.Processes, DemoUsers.Joe_Smith,
