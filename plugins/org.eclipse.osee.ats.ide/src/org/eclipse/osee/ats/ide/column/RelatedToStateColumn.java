@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -75,16 +76,16 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   public static boolean promptChangeRelatedToState(AbstractWorkflowArtifact sma, boolean persist) {
+   public static boolean promptChangeRelatedToState(AbstractWorkflowArtifact sma) {
       if (sma.isTask()) {
-         return promptChangeRelatedToState(Arrays.asList((TaskArtifact) sma), persist);
+         return promptChangeRelatedToState(Arrays.asList((TaskArtifact) sma));
       } else {
          AWorkbench.popup("Select Tasks to change Related-to-State");
       }
       return false;
    }
 
-   public static boolean promptChangeRelatedToState(final Collection<? extends TaskArtifact> tasks, boolean persist) {
+   public static boolean promptChangeRelatedToState(final Collection<? extends TaskArtifact> tasks) {
       if (tasks.isEmpty()) {
          AWorkbench.popup("Select Tasks to change Related-to-State");
          return false;
@@ -113,15 +114,15 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
                if (!state.equals(selectedState)) {
-                  task.setSoleAttributeFromString(AtsAttributeTypes.RelatedToState, selectedState);
-                  if (persist) {
-                     task.save(changes);
+                  if (Strings.isInValid(selectedState)) {
+                     changes.deleteAttributes((IAtsWorkItem) task, AtsAttributeTypes.RelatedToState);
+                  } else {
+                     changes.setSoleAttributeValue((IAtsWorkItem) task, AtsAttributeTypes.RelatedToState,
+                        selectedState);
                   }
                }
             }
-            if (persist) {
-               changes.execute();
-            }
+            changes.executeIfNeeded();
          }
          return true;
       } catch (Exception ex) {
@@ -132,8 +133,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<>();
-      for (String state : AtsApiService.get().getWorkDefinitionService().getStateNames(
-         teamArt.getWorkDefinition())) {
+      for (String state : AtsApiService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition())) {
          if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {
             names.add(state);
          }
@@ -147,7 +147,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       try {
          if (Artifacts.isOfType(treeItem.getData(), AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
-            boolean modified = promptChangeRelatedToState(taskArt, isPersistViewer());
+            boolean modified = promptChangeRelatedToState(taskArt);
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                taskArt.persist("persist related-to-state via alt-left-click");
@@ -178,7 +178,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
          AWorkbench.popup("Invalid selection for setting related-to-state.");
          return;
       }
-      promptChangeRelatedToState(tasks, true);
+      promptChangeRelatedToState(tasks);
    }
 
 }
