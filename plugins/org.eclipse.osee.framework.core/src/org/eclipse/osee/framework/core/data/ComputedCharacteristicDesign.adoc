@@ -1,0 +1,62 @@
+= Design
+Stephen Molaro <stephen.j.molaro@boeing.com>
+
+== Computed Characteristic Purpose and Use
+
+Computed Characteristics are similar to attribute types, except the value is derived from a calculation rather than a user set value.
+
+For example, given the two attribute types "Start Index" and "End Index", then "Length" might be a computed characteristic that is calculated from the difference of the two plus one.
+
+Can support arbitrarily complex (i.e. custom) calculations as well and predefined ones such as:
+
+	Rate		Numerator is delta of <type parameter>	Denominator is a duration
+	Ratio		Ratio of <type parameter>
+	Delta		Delta of <type parameter>
+	Quotient	numerator is a <type parameter>	denominator is a <type parameter> (not Duration)
+	Product		multiplicand is a <type parameter> and multiplier is a <type parameter>
+	sum
+	average
+
+== Computed Characteristic Requirements
+
+Must support arbitrarily complex calculations.
+
+The computed characteristic value shall not be directly modifiable (cannot be set through functionality like setSoleAttribute()). The only method to setting this value will be through calculations done using the relevant attribute types. The computed Characteristic will be recalculated every time it is obtained via the API.
+
+Compile time checking will be used to ensure the compatability of the attribute type's parameterized type (e.g. Integer, String).
+
+At runtime, during token definition, the multiplicity of the supplied attribute type(s) will be checked for compatability with the predefined calculation. Examples for the predefined calculations as follows:
+	Rate, Ratio, Delta, Quotient - Provided attribute types must have max 1 multiplicity
+	Product, Sum, Average - Provided attributes types can have any multiplicity
+
+When the computed characteristic value is accessed via the API, an exception will be thrown if referenced attribute instances are not valid for the relevant artifact.
+
+An invalid value shall not be displayed to the user to avoid returning false/misleading information.
+
+== Computed Characteristic Details/Design
+
+Computed Characteristic is a interface that extends NamedId. Contains a calculate function for doing arbitrarily complex calculations. Results can be obtained through a getComputedCharacteristic(ComputedCharacteristicToken<T>) method in ArtifactReadable. Generics will be used in order to ensure supplied attribute types have compatible parameterized types. (Generic <T> represents the specific calculation object being utilized (e.g. LengthCharacteristic)). This will be done by utilizing a validity check method .isComputedCharacteristicValid() on ArtifaceReadable.
+
+== Declaring a Computed Characteristic
+
+Given attribute types such as
+
+	AttributeTypeInteger start = osee.createInteger(...L, "start", MediaType.TEXT_PLAIN, "Starting Point");
+	AttributeTypeInteger end = osee.createInteger(...L, "end", MediaType.TEXT_PLAIN, "Ending Point");
+  LengthCharacteristic length = new LengthCharacteristic(start, end);
+  
+You declare a computed characteristic on an artifact just as you would an artifact type. A runtime check will exception out if referenced attribute types are not valid for the relevant artifact type.
+
+	 ArtifactTypeToken Measurements = osee.add(osee.artifactType(...L, "Measurements", false, Artifact)
+      .zeroOrOne(start)
+      .zeroOrOne(end)
+      .computed(length);
+
+
+== Additional Tasks
+
+Update new search mechanism for computed characteristics
+
+== Considerations for the future
+
+Consider storing expensive values in the future (toggle case)
