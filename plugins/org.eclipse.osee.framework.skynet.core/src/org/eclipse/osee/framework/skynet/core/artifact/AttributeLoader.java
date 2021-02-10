@@ -106,7 +106,7 @@ public class AttributeLoader {
          modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          transactionId = chStmt.getLong("transaction_id");
-         attributeType = tokenservice.getAttributeType(chStmt.getLong("attr_type_id"));
+         attributeType = tokenservice.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
 
          value = chStmt.loadAttributeValue(attributeType);
 

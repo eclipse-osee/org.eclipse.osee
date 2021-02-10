@@ -398,7 +398,7 @@ public final class TransactionManager {
 
    private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {
       OrcsTokenService tokenService = OsgiUtil.getService(TransactionManager.class, OrcsTokenService.class);
-      AttributeTypeToken attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
+      AttributeTypeToken attributeType = tokenService.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));

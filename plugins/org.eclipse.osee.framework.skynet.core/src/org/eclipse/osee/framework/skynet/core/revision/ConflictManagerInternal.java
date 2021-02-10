@@ -97,7 +97,7 @@ public class ConflictManagerInternal {
                new AttributeConflict(GammaId.valueOf(chStmt.getLong("source_gamma_id")),
                   GammaId.valueOf(chStmt.getLong("dest_gamma_id")), ArtifactId.valueOf(chStmt.getLong("art_id")), null,
                   commitTransaction, chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
-                  AttributeTypeManager.getAttributeType(chStmt.getLong("attr_type_id")),
+                  ServiceUtil.getOrcsTokenService().getAttributeTypeOrCreate(chStmt.getLong("attr_type_id")),
                   BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                   BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));

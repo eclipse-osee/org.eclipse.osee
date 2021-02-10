@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
@@ -113,7 +112,7 @@ public class AttributeTypeManager {
       } else if (attributeTypeToken.equals(CoreAttributeTypes.ParagraphNumber)) {
          return OutlineNumberAttribute.class;
       } else {
-         throw new OseeCoreException("Unexpected Attribute Base Type for: " + attributeType);
+         return StringAttribute.class;
       }
    }
 

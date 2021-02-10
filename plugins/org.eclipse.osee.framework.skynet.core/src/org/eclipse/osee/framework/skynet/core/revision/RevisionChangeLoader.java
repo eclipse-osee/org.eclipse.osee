@@ -178,7 +178,7 @@ public final class RevisionChangeLoader {
             changeBuilders = artifactChangeAcquirer.acquireChanges();
          } else if (changeType.isAttributeChange()) {
             AttributeChangeAcquirer attributeChangeAcquirer = new AttributeChangeAcquirer(sourceBranch, transactionId,
-               monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
+               monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds, tokenService);
             changeBuilders = attributeChangeAcquirer.acquireChanges();
          } else if (changeType.isRelationChange()) {
             RelationChangeAcquirer relationChangeAcquirer = new RelationChangeAcquirer(sourceBranch, transactionId,
