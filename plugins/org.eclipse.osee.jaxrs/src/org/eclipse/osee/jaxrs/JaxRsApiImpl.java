@@ -23,11 +23,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.apache.cxf.rs.security.oauth2.client.Consumer;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
+import org.apache.cxf.transport.http.HTTPConduit;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -54,8 +60,10 @@ public final class JaxRsApiImpl implements JaxRsApi {
    private OrcsTokenService tokenService;
    private ObjectMapper mapper;
    private TypeFactory typeFactory;
-   private CxfJaxRsClientFactory factory;
    private String baseUrl;
+   private Client client;
+   private CxfJaxRsClientConfigurator configurator;
+   private JaxRsClientConfig config;
 
    public void setOrcsTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
@@ -75,7 +83,7 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
       mapper = JsonUtil.createStandardDateObjectMapper(module);
       typeFactory = mapper.getTypeFactory();
-      factory = getClientFactoryInstance(mapper, tokenService, this);
+      createClientFactory(mapper, tokenService);
       baseUrl = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, OseeClient.DEFAULT_URL);
    }
 
@@ -105,24 +113,25 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public WebTarget newTarget(String path) {
-      return factory.newWebTarget(url(path));
+      return newWebTarget(config, url(path));
    }
 
    @Override
    public WebTarget newTargetUrl(String url) {
-      return factory.newWebTarget(url);
+      return newWebTarget(config, url);
    }
 
    @Override
    public WebTarget newTargetNoRedirect(String path) {
-      JaxRsClientConfig config = factory.copyDefaultConfig();
-      config.setFollowRedirects(false);
-      return newTarget(path, config);
+      JaxRsClientConfig modifiedConfig = config.copy();
+      modifiedConfig.setFollowRedirects(false);
+
+      return newWebTarget(modifiedConfig, url(path));
    }
 
    @Override
    public WebTarget newTarget(String... pathSegments) {
-      return factory.newWebTarget(Collections.toString(pathSegments, baseUrl + "/", "/", null));
+      return newWebTarget(config, Collections.toString(pathSegments, baseUrl + "/", "/", null));
    }
 
    @Override
@@ -151,10 +160,10 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public WebTarget newTargetUrlPasswd(String url, String serverUsername, String serverPassword) {
-      JaxRsClientConfig config = factory.copyDefaultConfig();
-      config.setServerPassword(serverPassword);
-      config.setServerUsername(serverUsername);
-      return factory.newWebTarget(config, url);
+      JaxRsClientConfig modifiedConfig = config.copy();
+      modifiedConfig.setServerPassword(serverPassword);
+      modifiedConfig.setServerUsername(serverUsername);
+      return newWebTarget(modifiedConfig, url);
    }
 
    @Override
@@ -162,8 +171,22 @@ public final class JaxRsApiImpl implements JaxRsApi {
       return newTargetUrlPasswd(url(path), serverUsername, serverPassword);
    }
 
-   private WebTarget newTarget(String path, JaxRsClientConfig config) {
-      return factory.newWebTarget(config, url(path));
+   public WebTarget newWebTarget(JaxRsClientConfig config, String url) {
+      url = url.replaceAll(" ", "%20");
+      WebTarget target = client.target(url);
+
+      // This is here to force a webClient creation so we can configure the conduit
+      target.request();
+
+      configureConnection(config, target);
+      return target;
+   }
+
+   private void configureConnection(JaxRsClientConfig config, Object client) {
+      ClientConfiguration clientConfig = WebClient.getConfig(client);
+      HTTPConduit conduit = clientConfig.getHttpConduit();
+      configurator.configureConnection(config, conduit);
+      configurator.configureProxy(config, conduit);
    }
 
    private String url(String path) {
@@ -188,27 +211,51 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public <T> T newProxy(String path, Class<T> clazz) {
-      return factory.newProxy(url(path), clazz);
+      return newProxy(config, url(path), clazz);
+   }
+
+   /**
+    * Proxy sub-resource methods returning Objects can not be invoked. Prefer to have sub-resource methods returning
+    * typed classes: interfaces, abstract classes or concrete implementations.
+    *
+    * @param properties - configuration options
+    * @param baseAddress - proxy base address
+    * @param clazz - JAX-RS annotated class used to create the client interface
+    * @return targetProxy
+    */
+   private <T> T newProxy(JaxRsClientConfig config, String url, Class<T> clazz) {
+      JAXRSClientFactoryBean bean = new JAXRSClientFactoryBean();
+      configurator.configureBean(config, url, bean);
+      bean.setServiceClass(clazz);
+      T client = bean.create(clazz);
+      configureConnection(config, client);
+      return client;
    }
 
    private static final long MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS = 24L * 60L * 60L * 1000L; // one day
 
-   private CxfJaxRsClientFactory getClientFactoryInstance(ObjectMapper mapper, OrcsTokenService tokenService, JaxRsApi jaxRsApi) {
-      OAuthFactory oauthFactory = newOAuthFactory(jaxRsApi);
-      CxfJaxRsClientConfigurator configurator = new CxfJaxRsClientConfigurator(oauthFactory, tokenService);
+   private void createClientFactory(ObjectMapper mapper, OrcsTokenService tokenService) {
+      OAuthFactory oauthFactory = newOAuthFactory();
+      configurator = new CxfJaxRsClientConfigurator(oauthFactory, tokenService);
       configurator.configureJaxRsRuntime();
       configurator.configureDefaults(mapper);
-      return new CxfJaxRsClientFactory(configurator);
+
+      config = new JaxRsClientConfig();
+      config.setCreateThreadSafeProxyClients(true);
+
+      ClientBuilder builder = ClientBuilder.newBuilder();
+      configurator.configureClientBuilder(config, builder);
+      client = builder.build();
    }
 
-   private static OAuthFactory newOAuthFactory(JaxRsApi jaxRsApi) {
+   private OAuthFactory newOAuthFactory() {
       return new OAuthFactory() {
 
          @Override
          public OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String clientId, String clientSecret, String authorizeUri, String tokenUri, String tokenValidationUri) {
             OwnerCredentials owner = newOwner(username, password);
             Consumer client = new Consumer(clientId, clientSecret);
-            OAuth2Transport transport = new OAuth2Transport(jaxRsApi);
+            OAuth2Transport transport = new OAuth2Transport(JaxRsApiImpl.this);
             OAuth2Flows flowManager =
                new OAuth2Flows(transport, owner, client, authorizeUri, tokenUri, tokenValidationUri);
             OAuth2Serializer serializer = new OAuth2Serializer();
