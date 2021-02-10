@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -66,6 +67,7 @@ public class AtsHealthCheckOperation {
    private final JdbcService jdbcService;
    private final MailService mailService;
    boolean inTest = false;
+   boolean persist = false;
 
    public AtsHealthCheckOperation(AtsApi atsApi, JdbcService jdbcService, MailService mailService) {
       this.atsApi = atsApi;
@@ -90,10 +92,15 @@ public class AtsHealthCheckOperation {
 
    private void emailResults(XResultData rd) {
       if (mailService != null) {
+         String dbName = "";
+         String configDbName = atsApi.getConfigValue("DatabaseName");
+         if (Strings.isValid(configDbName)) {
+            dbName = " " + configDbName;
+         }
          MailMessage msg = MailMessage.newBuilder() //
             .from("noop@osee.com") //
             .recipients(Arrays.asList("donald.g.dunne@boeing.com")) //
-            .subject("ATS Health Check") //
+            .subject(dbName + "ATS Health Check") //
             .addHtml(AHTML.simplePage(rd.toString().replaceAll("\n", "</br>")))//
             .build();
 
@@ -121,6 +128,8 @@ public class AtsHealthCheckOperation {
             check.check(vResults, atsApi);
          }
 
+         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+
          // Break artifacts into blocks so don't run out of memory
          List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
          for (Collection<Long> artIdList : artIdLists) {
@@ -138,19 +147,22 @@ public class AtsHealthCheckOperation {
 
             for (ArtifactToken artifact : artifacts) {
                for (IAtsHealthCheck check : checks) {
-                  if (atsApi.getStoreService().isDeleted(artifact)) {
-                     continue;
-                  }
-                  IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
                   Date date = new Date();
                   try {
-                     check.check(artifact, workItem, vResults, atsApi, null);
+                     if (atsApi.getStoreService().isDeleted(artifact)) {
+                        continue;
+                     }
+                     IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
+                     check.check(artifact, workItem, vResults, atsApi, (persist ? changes : null));
                   } catch (Exception ex) {
                      vResults.log(artifact, check.getName(), "Error: Exception: " + Lib.exceptionToString(ex));
                   }
                   vResults.logTestTimeSpent(date, check.getName());
                }
             }
+         }
+         if (persist) {
+            changes.executeIfNeeded();
          }
          // Throw away checks so caches will get garbage collected
          checks = null;
@@ -171,7 +183,8 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
-      healthChecks.add(new TestStateMgr());
+      healthChecks.add(new TestStateMgr()); // TBD Need duplicate state check
+      // TBD Need Work Definition attr check
       healthChecks.add(new TestCurrentStateIsInWorkDef());
       healthChecks.add(new TestWorkflowHasAction());
       healthChecks.add(new TestTeamDefinitions());

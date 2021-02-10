@@ -57,13 +57,18 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
 
       for (Entry<AttributeTypeToken, List<IAttribute<?>>> entry : attrsByType.entrySet()) {
          AttributeTypeToken attrType = entry.getKey();
+         // If attr type missing, log separately cause just bad code/db, handle manually
+         if (attrType.getName().contains("Mising Attribute Type")) {
+            results.log(workItem.getStoreObject(), getClass().getSimpleName() + ".MissingAttributeType",
+               String.format("Error: %s for " + workItem.getAtsId(), attrType.getName()));
+            continue;
+         }
          ArtifactReadable art = (ArtifactReadable) artifact;
          int count = entry.getValue().size();
          int max = art.getArtifactType().getMax(attrType);
          if (count > art.getArtifactType().getMax(attrType)) {
-            String result =
-               String.format("Artifact: " + artifact.toStringWithId() + " Type [%s] AttrType [%s] Max [%d] Actual [%d]",
-                  art.getArtifactType().getName(), attrType.getName(), max, count);
+            String result = String.format("Artifact: %s Type [%s] AttrType [%s] Max [%d] Actual [%d]",
+               artifact.toStringWithId(), art.getArtifactType().getName(), attrType.getName(), max, count);
             Map<String, IAttribute<?>> valuesAttrMap = new HashMap<>();
             GammaId latestGamma = GammaId.valueOf(0);
             StringBuffer fixInfo = new StringBuffer(" - FIX AVAILABLE");
