@@ -390,6 +390,8 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       toolBarMgr.add(new AddTaskAction(taskComposite));
       toolBarMgr.add(new DeleteTasksAction(this));
       toolBarMgr.add(new Separator());
+      toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsTaskEditorAction(taskComposite));
       toolBarMgr.add(new OpenNewAtsTaskEditorSelected(taskComposite));
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(taskComposite));
