@@ -32,13 +32,16 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -158,5 +161,23 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       changes.setAttributeValuesAsStrings(workItem, CoreAttributeTypes.GitChangeId, updatedChangeIdsList);
       changes.executeIfNeeded();
       return rd;
+   }
+
+   @Override
+   @GET
+   @Path("{id}/goal")
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsGoal> getGoals(@PathParam("id") String id) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
+      if (!workItem.isTeamWorkflow()) {
+         throw new UnsupportedOperationException();
+      }
+      Collection<ArtifactToken> artifacts =
+         atsApi.getRelationResolver().getRelated(workItem.getArtifactId(), AtsRelationTypes.Goal_Goal);
+      List<IAtsGoal> goalList = new ArrayList<IAtsGoal>();
+      for (ArtifactToken art : artifacts) {
+         goalList.add(atsApi.getWorkItemService().getGoal(art));
+      }
+      return goalList;
    }
 }

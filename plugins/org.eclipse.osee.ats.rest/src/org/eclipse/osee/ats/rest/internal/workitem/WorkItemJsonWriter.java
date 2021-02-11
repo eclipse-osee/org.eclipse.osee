@@ -126,15 +126,21 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       String atsId = workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);
       IAtsAction action = workItem.getParentAction();
-      writer.writeStringField("ActionAtsId", action == null ? "" : action.getAtsId());
+      if (!workItem.isGoal()) {
+         writer.writeStringField("ActionAtsId", action == null ? "" : action.getAtsId());
+      }
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-      writer.writeStringField("TeamWfAtsId", teamWf == null ? "" : teamWf.getAtsId());
+      if (!workItem.isGoal()) {
+         writer.writeStringField("TeamWfAtsId", teamWf == null ? "" : teamWf.getAtsId());
+      }
       writer.writeStringField("ArtifactType", workItemArt.getArtifactType().getName());
       String actionUrl = AtsUtil.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsApi);
       writer.writeStringField("actionLocation", actionUrl);
       if (!identityView) {
          ConfigJsonWriter.addAttributeData(writer, workItemArt, options, atsApi, orcsApi);
-         writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
+         if (!workItem.isGoal()) {
+            writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
+         }
          writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());
          if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
             writer.writeArrayFieldStart("AssigneesTokens");

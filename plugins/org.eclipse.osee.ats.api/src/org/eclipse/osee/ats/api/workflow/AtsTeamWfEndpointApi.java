@@ -56,4 +56,8 @@ public interface AtsTeamWfEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    XResultData addChangeIds(@PathParam("id") String workItemId, @PathParam("teamId") String teamId, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds);
 
+   @GET
+   @Path("{id}/goal")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<IAtsGoal> getGoals(@PathParam("id") String id);
 }
