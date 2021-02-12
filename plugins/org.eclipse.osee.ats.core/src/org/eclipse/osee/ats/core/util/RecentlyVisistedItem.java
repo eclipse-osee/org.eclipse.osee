@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
@@ -23,7 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public class RecentlyVisistedItem {
 
    ArtifactToken idToken;
-   ArtifactTypeId artifactTypeId; // Don't switch to Token without testing desearialization
+   ArtifactTypeToken artifactType;
 
    public ArtifactToken getIdToken() {
       return idToken;
@@ -36,7 +35,7 @@ public class RecentlyVisistedItem {
    public static RecentlyVisistedItem valueOf(ArtifactToken idToken, ArtifactTypeToken typeToken) {
       RecentlyVisistedItem item = new RecentlyVisistedItem();
       item.setIdToken(idToken);
-      item.setArtifactTypeId(ArtifactTypeId.valueOf(typeToken.getId()));
+      item.setArtifactTypeId(typeToken);
       return item;
    }
 
@@ -75,18 +74,11 @@ public class RecentlyVisistedItem {
       return true;
    }
 
-   public ArtifactTypeId getArtifactTypeId() {
-      return artifactTypeId;
+   public ArtifactTypeToken getArtifactType() {
+      return artifactType;
    }
 
-   public void setArtifactTypeId(ArtifactTypeId artifactTypeId) {
-      this.artifactTypeId = artifactTypeId;
-   }
-
-   /**
-    * Keep this method around to handle backward compatibility with old method
-    */
-   public void setArtifactType(ArtifactTypeId artifactTypeId) {
-      this.artifactTypeId = artifactTypeId;
+   public void setArtifactTypeId(ArtifactTypeToken artifactType) {
+      this.artifactType = artifactType;
    }
 }

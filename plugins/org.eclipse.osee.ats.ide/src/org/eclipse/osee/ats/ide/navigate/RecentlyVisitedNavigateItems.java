@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisitedItems;
@@ -111,10 +112,10 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    private static void ensureFirstLoad() {
       if (visitedItems == null) {
          try {
-            String recentlyVisistedTokensJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
+            AtsApi atsApi = AtsApiService.get();
+            String recentlyVisistedTokensJson = atsApi.getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (Strings.isValid(recentlyVisistedTokensJson)) {
-               ObjectMapper mapper = JsonUtil.getMapper();
-               visitedItems = mapper.readValue(recentlyVisistedTokensJson, RecentlyVisitedItems.class);
+               visitedItems = atsApi.jaxRsApi().readValue(recentlyVisistedTokensJson, RecentlyVisitedItems.class);
             } else {
                visitedItems = new RecentlyVisitedItems();
             }
