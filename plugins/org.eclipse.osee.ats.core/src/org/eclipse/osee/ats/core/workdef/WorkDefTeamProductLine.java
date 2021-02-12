@@ -72,7 +72,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
             ), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new WidgetDefinition("PL ARB Approved", "XProductLineApprovalWidget(true)", REQUIRED_FOR_TRANSITION) //
+            new WidgetDefinition("PL ARB Approved", "XProductLineApprovalWidget", REQUIRED_FOR_TRANSITION) //
          );
 
       bld.andState(3, "Completed", StateType.Completed) //

@@ -32,13 +32,7 @@ public class XProductLineApprovalWidget extends XAbstractSignDateAndByButton {
 
    public XProductLineApprovalWidget() {
       super("PL ARB Approved", "Sign or clear changes", AtsAttributeTypes.ProductLineApprovedDate,
-         AtsAttributeTypes.ProductLineApprovedBy, FrameworkImage.RUN_EXC);
-   }
-
-   public XProductLineApprovalWidget(boolean isRequired) {
-      super("PL ARB Approved", "Sign or clear changes", AtsAttributeTypes.ProductLineApprovedDate,
-         AtsAttributeTypes.ProductLineApprovedBy, FrameworkImage.RUN_EXC, isRequired);
-
+         AtsAttributeTypes.ProductLineApprovedBy, FrameworkImage.RUN_EXC, true);
    }
 
    @Override
