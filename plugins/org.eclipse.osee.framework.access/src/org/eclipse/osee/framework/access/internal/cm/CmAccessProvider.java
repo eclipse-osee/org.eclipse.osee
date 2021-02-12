@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.access.AccessData;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -40,15 +40,15 @@ public class CmAccessProvider implements IAccessProvider {
 
    @Override
    public void computeAccess(ArtifactToken userArtifact, Collection<?> objToChecks, AccessData accessData) {
-      DoubleKeyHashMap<CmAccessControl, IAccessContextId, Collection<Object>> cmToCheckObjects =
+      DoubleKeyHashMap<CmAccessControl, AccessContextToken, Collection<Object>> cmToCheckObjects =
          new DoubleKeyHashMap<>();
 
       for (Object objectToCheck : objToChecks) {
          CmAccessControl management = provider.getService(userArtifact, objectToCheck);
          if (management instanceof HasAccessModel) {
-            Collection<? extends IAccessContextId> contextIds = management.getContextId(userArtifact, objectToCheck);
+            Collection<? extends AccessContextToken> contextIds = management.getContextId(userArtifact, objectToCheck);
             if (contextIds != null) {
-               for (IAccessContextId contextId : contextIds) {
+               for (AccessContextToken contextId : contextIds) {
                   Collection<Object> entries = cmToCheckObjects.get(management, contextId);
                   if (entries == null) {
                      entries = new HashSet<>();
@@ -62,9 +62,9 @@ public class CmAccessProvider implements IAccessProvider {
 
       for (CmAccessControl cm : cmToCheckObjects.getKeySetOne()) {
          AccessModel accessModel = ((HasAccessModel) cm).getAccessModel();
-         Map<IAccessContextId, Collection<Object>> sub = cmToCheckObjects.getSubHash(cm);
-         for (Entry<IAccessContextId, Collection<Object>> entry : sub.entrySet()) {
-            IAccessContextId contextId = entry.getKey();
+         Map<AccessContextToken, Collection<Object>> sub = cmToCheckObjects.getSubHash(cm);
+         for (Entry<AccessContextToken, Collection<Object>> entry : sub.entrySet()) {
+            AccessContextToken contextId = entry.getKey();
             Collection<Object> objectsToCheck = entry.getValue();
 
             accessModel.computeAccess(contextId, objectsToCheck, accessData);

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -161,7 +161,7 @@ public class WfeDetailsSection extends SectionPart {
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         Collection<? extends IAccessContextId> ids = null;
+         Collection<? extends AccessContextToken> ids = null;
          if (workingBranch == null) {
             try {
                // get what would be if branch created

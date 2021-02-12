@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
@@ -66,7 +66,7 @@ public class AccessModelInterpreterProxy implements AccessModelInterpreter {
    }
 
    @Override
-   public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) {
+   public AccessContext getContext(Collection<AccessContext> contexts, AccessContextToken contextId) {
       checkInitialized();
       return getProxiedService().getContext(contexts, contextId);
    }

@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.services;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 
 /**
  * @author Roberto E. Escobar
@@ -24,6 +24,6 @@ public interface CmAccessControl {
 
    boolean isApplicable(ArtifactToken user, Object object);
 
-   Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object);
+   Collection<? extends AccessContextToken> getContextId(ArtifactToken user, Object object);
 
 }

@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 /**
  * @author Roberto E. Escobar
  */
-public interface IAccessContextId extends NamedId {
+public interface AccessContextToken extends NamedId {
 
-   public static IAccessContextId valueOf(Long id, String name) {
+   public static AccessContextToken valueOf(Long id, String name) {
       return new AccessContextIdToken(id, name);
    }
 
-   public static IAccessContextId valueOf(String idStr) {
+   public static AccessContextToken valueOf(String idStr) {
       return valueOf(Long.valueOf(idStr), "");
    }
 

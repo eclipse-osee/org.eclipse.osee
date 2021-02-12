@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.access.internal;
 import java.util.Collection;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
@@ -104,7 +104,7 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
+   public Collection<? extends AccessContextToken> getContextId(ArtifactToken user, Object object) {
       return getProxiedService().getContextId(user, object);
    }
 

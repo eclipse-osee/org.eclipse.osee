@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -140,9 +140,9 @@ public class AtsBranchAccessManagerTest {
 
       mgr.clearCache();
 
-      Collection<IAccessContextId> contextIds = mgr.getContextId(teamArt.getWorkingBranch());
+      Collection<AccessContextToken> contextIds = mgr.getContextId(teamArt.getWorkingBranch());
       Assert.assertEquals(1, contextIds.size());
-      IAccessContextId contextId = contextIds.iterator().next();
+      AccessContextToken contextId = contextIds.iterator().next();
       Assert.assertEquals(Long.valueOf(16546), contextId.getId());
    }
 }

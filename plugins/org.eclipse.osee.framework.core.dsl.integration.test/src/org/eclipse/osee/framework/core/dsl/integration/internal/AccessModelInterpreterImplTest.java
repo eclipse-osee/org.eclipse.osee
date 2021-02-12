@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.AccessDataCollector;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.CheckAccessDetailCollectorNotCalled;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactDataProvider;
@@ -38,8 +38,8 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class AccessModelInterpreterImplTest {
-   private IAccessContextId contextId1;
-   private IAccessContextId contextId2;
+   private AccessContextToken contextId1;
+   private AccessContextToken contextId2;
 
    private AccessContext expectedContext1;
    private AccessContext expectedContext2;
@@ -50,8 +50,8 @@ public class AccessModelInterpreterImplTest {
    public void setup() {
       interpreterNoArtData = new AccessModelInterpreterImpl(null, null);
 
-      contextId1 = IAccessContextId.valueOf(Lib.generateArtifactIdAsInt(), "Context 1");
-      contextId2 = IAccessContextId.valueOf(Lib.generateArtifactIdAsInt(), "Context 2");
+      contextId1 = AccessContextToken.valueOf(Lib.generateArtifactIdAsInt(), "Context 1");
+      contextId2 = AccessContextToken.valueOf(Lib.generateArtifactIdAsInt(), "Context 2");
 
       expectedContext1 = MockModel.createAccessContext(contextId1.getId(), "c1");
       expectedContext2 = MockModel.createAccessContext(contextId2.getId(), "c2");

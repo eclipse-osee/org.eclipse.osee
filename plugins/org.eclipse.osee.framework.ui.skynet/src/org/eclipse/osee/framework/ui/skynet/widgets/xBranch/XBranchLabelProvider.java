@@ -25,7 +25,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -172,7 +172,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       String accessContextId = "";
       try {
          CmAccessControl cmAccessControl = OsgiUtil.getService(getClass(), CmAccessControl.class);
-         Collection<? extends IAccessContextId> ids = cmAccessControl.getContextId(UserManager.getUser(), branch);
+         Collection<? extends AccessContextToken> ids = cmAccessControl.getContextId(UserManager.getUser(), branch);
          accessContextId = ids.toString();
       } catch (Exception ex) {
          return String.format("Exception %s", ex.getLocalizedMessage());

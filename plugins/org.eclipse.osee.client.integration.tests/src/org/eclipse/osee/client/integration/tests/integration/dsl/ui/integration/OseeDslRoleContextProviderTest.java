@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
@@ -58,7 +58,7 @@ public class OseeDslRoleContextProviderTest {
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
+      Collection<? extends AccessContextToken> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());
       Assert.assertEquals(contextId, contextIds.iterator().next().getId());
@@ -75,7 +75,7 @@ public class OseeDslRoleContextProviderTest {
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
+      Collection<? extends AccessContextToken> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());
       Assert.assertEquals(contextId1, contextIds.iterator().next().getId());
@@ -84,7 +84,7 @@ public class OseeDslRoleContextProviderTest {
       contextIds = contextProvider.getContextId(role2User);
 
       Assert.assertEquals(2, contextIds.size());
-      Iterator<? extends IAccessContextId> iterator = contextIds.iterator();
+      Iterator<? extends AccessContextToken> iterator = contextIds.iterator();
       List<Long> contextList = new LinkedList<>();
       contextList.add(contextId1);
       contextList.add(contextId2);

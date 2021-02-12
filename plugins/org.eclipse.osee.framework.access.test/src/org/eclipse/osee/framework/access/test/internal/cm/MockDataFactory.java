@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.access.test.internal.cm;
 
 import org.eclipse.osee.framework.core.access.AccessDetail;
 import org.eclipse.osee.framework.core.access.Scope;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.junit.Assert;
 
@@ -28,8 +28,8 @@ public final class MockDataFactory {
       // Utility Class
    }
 
-   public static IAccessContextId createAccessContextId(Long id, String name) {
-      IAccessContextId cxt = IAccessContextId.valueOf(id, name);
+   public static AccessContextToken createAccessContextId(Long id, String name) {
+      AccessContextToken cxt = AccessContextToken.valueOf(id, name);
       Assert.assertEquals(id, cxt.getId());
       Assert.assertEquals(name, cxt.getName());
       return cxt;

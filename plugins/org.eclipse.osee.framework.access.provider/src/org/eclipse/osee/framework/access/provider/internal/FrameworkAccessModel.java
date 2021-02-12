@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.AccessData;
 import org.eclipse.osee.framework.core.access.AccessDetail;
 import org.eclipse.osee.framework.core.access.Scope;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
@@ -41,7 +41,7 @@ public class FrameworkAccessModel extends OseeDslAccessModel {
    }
 
    @Override
-   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
+   public void computeAccess(AccessContextToken contextId, Collection<Object> objectsToCheck, AccessData accessData) {
       if (contextId.equals(DefaultFrameworkAccessConstants.INVALID_ASSOC_ART_ID)) {
          for (Object obj : objectsToCheck) {
             AccessDetail<Object> data = new AccessDetail<>(obj, PermissionEnum.READ, Scope.createLegacyScope(),

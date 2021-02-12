@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -55,7 +55,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user) {
+   public Collection<? extends AccessContextToken> getContextId(ArtifactToken user) {
       OseeDsl dsl = null;
       try {
          dsl = dslProvider.getDsl();
@@ -64,7 +64,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          return Collections.emptyList();
       }
 
-      Collection<IAccessContextId> toReturn = Collections.emptyList();
+      Collection<AccessContextToken> toReturn = Collections.emptyList();
       EList<Role> roleDeclarations = dsl.getRoleDeclarations();
 
       if (!roleDeclarations.isEmpty()) {
@@ -104,7 +104,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
             for (Role role : applicableRoles) {
                for (ReferencedContext ref : role.getReferencedContexts()) {
                   String contextName = ref.getAccessContextRef();
-                  toReturn.add(IAccessContextId.valueOf(accessContextMap.get(contextName), contextName));
+                  toReturn.add(AccessContextToken.valueOf(accessContextMap.get(contextName), contextName));
                }
             }
          }

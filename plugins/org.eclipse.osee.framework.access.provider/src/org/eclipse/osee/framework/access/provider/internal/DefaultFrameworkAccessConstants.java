@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.access.provider.internal;
 
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 
 /**
  * @author John R. Misinco
@@ -24,10 +24,10 @@ public final class DefaultFrameworkAccessConstants {
       //do nothing
    }
 
-   public static final IAccessContextId DEFAULT_FRAMEWORK_CONTEXT =
-      IAccessContextId.valueOf(7441402941554657282L, "anonymous.context");
+   public static final AccessContextToken DEFAULT_FRAMEWORK_CONTEXT =
+      AccessContextToken.valueOf(7441402941554657282L, "anonymous.context");
 
-   public final static IAccessContextId INVALID_ASSOC_ART_ID =
-      IAccessContextId.valueOf(8528534420990278776L, "famework.invalidAssocArtId");
+   public final static AccessContextToken INVALID_ASSOC_ART_ID =
+      AccessContextToken.valueOf(8528534420990278776L, "famework.invalidAssocArtId");
 
 }

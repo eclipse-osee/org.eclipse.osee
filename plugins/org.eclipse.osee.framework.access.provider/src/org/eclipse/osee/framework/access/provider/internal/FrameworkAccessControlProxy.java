@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
@@ -127,7 +127,7 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
+   public Collection<? extends AccessContextToken> getContextId(ArtifactToken user, Object object) {
       checkInitialized();
       return getAccessControl().getContextId(user, object);
    }

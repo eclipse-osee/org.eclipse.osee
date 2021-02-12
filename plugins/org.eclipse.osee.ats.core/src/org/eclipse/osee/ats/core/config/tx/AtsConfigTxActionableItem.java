@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -137,8 +137,8 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
    }
 
    @Override
-   public IAtsConfigTxActionableItem andAccessContexts(IAccessContextId... contextIds) {
-      for (IAccessContextId id : contextIds) {
+   public IAtsConfigTxActionableItem andAccessContexts(AccessContextToken... contextIds) {
+      for (AccessContextToken id : contextIds) {
          and(CoreAttributeTypes.AccessContextId, String.format("%s, %s", id.getIdString(), id.getName()));
       }
       return this;

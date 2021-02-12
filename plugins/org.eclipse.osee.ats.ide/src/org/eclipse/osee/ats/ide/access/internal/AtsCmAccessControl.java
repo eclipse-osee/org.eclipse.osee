@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -54,7 +54,7 @@ public class AtsCmAccessControl implements CmAccessControl {
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
+   public Collection<? extends AccessContextToken> getContextId(ArtifactToken user, Object object) {
       if (object != null) {
          if (object instanceof Artifact && !AtsApiService.get().getQueryServiceIde().getArtifact(
             object).isOnBranch(AtsApiService.get().getAtsBranch())) {

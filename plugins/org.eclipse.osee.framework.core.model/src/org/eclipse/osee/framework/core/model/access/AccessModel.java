@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.access.AccessData;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface AccessModel {
 
-   void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData);
+   void computeAccess(AccessContextToken contextId, Collection<Object> objectsToCheck, AccessData accessData);
 }

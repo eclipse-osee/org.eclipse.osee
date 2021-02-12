@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.access.AccessData;
 import org.eclipse.osee.framework.core.access.AccessDetail;
 import org.eclipse.osee.framework.core.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.access.Scope;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -40,11 +40,11 @@ import org.junit.Test;
  */
 public class OseeDslAccessModelTest {
 
-   private static IAccessContextId accessContextId;
+   private static AccessContextToken accessContextId;
 
    @BeforeClass
    public static void setUp() {
-      accessContextId = IAccessContextId.valueOf(Lib.generateArtifactIdAsInt(), "Context 1");
+      accessContextId = AccessContextToken.valueOf(Lib.generateArtifactIdAsInt(), "Context 1");
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -140,7 +140,7 @@ public class OseeDslAccessModelTest {
 
       private final AccessContext contextToReturn;
       private Collection<AccessContext> contexts;
-      private IAccessContextId contextId;
+      private AccessContextToken contextId;
       private boolean wasComputeCalled;
 
       public MockAccessModelInterpreter(AccessContext contextToReturn) {
@@ -151,12 +151,12 @@ public class OseeDslAccessModelTest {
          return contexts;
       }
 
-      public IAccessContextId getContextId() {
+      public AccessContextToken getContextId() {
          return contextId;
       }
 
       @Override
-      public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) {
+      public AccessContext getContext(Collection<AccessContext> contexts, AccessContextToken contextId) {
          this.contextId = contextId;
          this.contexts = contexts;
          return contextToReturn;

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Donald G. Dunne
  */
-public class AccessContextIdToken extends NamedIdBase implements IAccessContextId {
+public class AccessContextIdToken extends NamedIdBase implements AccessContextToken {
 
    public AccessContextIdToken(Long id, String name) {
       super(id, name);

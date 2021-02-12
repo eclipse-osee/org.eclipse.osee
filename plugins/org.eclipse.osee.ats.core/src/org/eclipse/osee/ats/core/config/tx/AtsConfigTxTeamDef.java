@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -187,8 +187,8 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andAccessContexts(IAccessContextId... contextIds) {
-      for (IAccessContextId id : contextIds) {
+   public IAtsConfigTxTeamDef andAccessContexts(AccessContextToken... contextIds) {
+      for (AccessContextToken id : contextIds) {
          and(CoreAttributeTypes.AccessContextId, String.format("%s, %s", id.getIdString(), id.getName()));
       }
       return this;

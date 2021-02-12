@@ -16,14 +16,14 @@ package org.eclipse.osee.framework.core.dsl.integration;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 
 /**
  * @author John R. Misinco
  */
 public interface RoleContextProvider {
 
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user);
+   public Collection<? extends AccessContextToken> getContextId(ArtifactToken user);
 
    Map<String, Long> getContextGuidToIdMap();
 

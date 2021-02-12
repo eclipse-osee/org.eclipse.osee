@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -80,6 +80,6 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andCsci(Csci... cscis);
 
-   IAtsConfigTxTeamDef andAccessContexts(IAccessContextId... contextIds);
+   IAtsConfigTxTeamDef andAccessContexts(AccessContextToken... contextIds);
 
 }

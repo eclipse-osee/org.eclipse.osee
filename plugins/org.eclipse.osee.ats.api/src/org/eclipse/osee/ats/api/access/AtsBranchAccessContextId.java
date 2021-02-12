@@ -13,15 +13,15 @@
 
 package org.eclipse.osee.ats.api.access;
 
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 
 /**
  * @author Donald G. Dunne
  */
 public final class AtsBranchAccessContextId {
 
-   public static final IAccessContextId DENY_CONTEXT =
-      IAccessContextId.valueOf(4870045005030602805L, "ats.branchobject.deny");
+   public static final AccessContextToken DENY_CONTEXT =
+      AccessContextToken.valueOf(4870045005030602805L, "ats.branchobject.deny");
 
    private AtsBranchAccessContextId() {
       // Branch Object Contexts;

@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.access.provider.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 
@@ -35,7 +35,7 @@ public class FrameworkAccessControl implements CmAccessControl {
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
+   public Collection<? extends AccessContextToken> getContextId(ArtifactToken user, Object object) {
       return roleContextProvider.getContextId(user);
    }
 }

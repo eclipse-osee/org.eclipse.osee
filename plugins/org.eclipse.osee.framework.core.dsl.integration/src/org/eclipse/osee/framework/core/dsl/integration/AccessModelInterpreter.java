@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
  */
 public interface AccessModelInterpreter {
 
-   AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId);
+   AccessContext getContext(Collection<AccessContext> contexts, AccessContextToken contextId);
 
    void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck);
 

@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.access.AccessData;
 import org.eclipse.osee.framework.core.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
@@ -35,7 +35,7 @@ public class OseeDslAccessModel implements AccessModel {
    }
 
    @Override
-   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
+   public void computeAccess(AccessContextToken contextId, Collection<Object> objectsToCheck, AccessData accessData) {
       Conditions.checkNotNull(contextId, "contextId");
       Conditions.checkNotNull(objectsToCheck, "objectsToCheck");
       Conditions.checkNotNull(accessData, "accessData");

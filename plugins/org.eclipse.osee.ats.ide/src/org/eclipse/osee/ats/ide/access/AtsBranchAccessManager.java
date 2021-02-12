@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -68,7 +68,7 @@ import org.osgi.service.event.EventHandler;
 public class AtsBranchAccessManager implements IArtifactEventListener, EventHandler {
 
    // Cache to store branch id to context id list so don't have to re-compute
-   private static final Map<BranchId, Collection<IAccessContextId>> branchIdToContextIdCache = new HashMap<>(50);
+   private static final Map<BranchId, Collection<AccessContextToken>> branchIdToContextIdCache = new HashMap<>(50);
 
    private final RoleContextProvider roleContextProvider;
    private volatile long cacheUpdated = 0;
@@ -100,15 +100,15 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       return result;
    }
 
-   public Collection<IAccessContextId> getContextId(BranchId branch) {
+   public Collection<AccessContextToken> getContextId(BranchId branch) {
       return getContextId(branch, true);
    }
 
-   public Collection<IAccessContextId> getContextId(BranchId branch, boolean useCache) {
+   public Collection<AccessContextToken> getContextId(BranchId branch, boolean useCache) {
       if (useCache && branchIdToContextIdCache.containsKey(branch)) {
          return branchIdToContextIdCache.get(branch);
       }
-      Collection<IAccessContextId> contextIds = new ArrayList<>();
+      Collection<AccessContextToken> contextIds = new ArrayList<>();
 
       if (branch.isInvalid()) {
          contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
@@ -145,8 +145,8 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    /**
     * Provided for testing purposes only.
     */
-   public Collection<IAccessContextId> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
-      Set<IAccessContextId> contextIds = new HashSet<>();
+   public Collection<AccessContextToken> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
+      Set<AccessContextToken> contextIds = new HashSet<>();
       try {
          contextIds.addAll(getFromArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)));
          if (contextIds.isEmpty()) {
@@ -178,13 +178,13 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    /**
     * Recursively check artifact and all default hierarchy parents
     */
-   private Collection<IAccessContextId> getFromArtifact(Artifact artifact) {
-      Set<IAccessContextId> contextIds = new HashSet<>();
+   private Collection<AccessContextToken> getFromArtifact(Artifact artifact) {
+      Set<AccessContextToken> contextIds = new HashSet<>();
       try {
          for (String id : artifact.getAttributesToStringList(CoreAttributeTypes.AccessContextId)) {
             // Do not use getOrCreateId here cause name represents where context ids came from
             // Cache above will take care of this not being created on each access request call.
-            contextIds.add(IAccessContextId.valueOf(convertAccessAttributeToContextId(id, artifact),
+            contextIds.add(AccessContextToken.valueOf(convertAccessAttributeToContextId(id, artifact),
                "From [" + artifact.getArtifactTypeName() + "]" + artifact.toStringWithId() + " as [" + id + "]"));
          }
          if (contextIds.isEmpty() && artifact.getParent() != null) {
