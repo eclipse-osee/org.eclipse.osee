@@ -91,8 +91,10 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       ListenableFuture<T> listenableFuture = getExecutor(id).submit(callable);
       if (callback != null) {
          FutureCallback<T> futureCallback = asFutureCallback(callback);
-         Futures.addCallback(listenableFuture, futureCallback);
+         ExecutorService ex = Executors.newSingleThreadExecutor();
+         Futures.addCallback(listenableFuture, futureCallback, ex);
       }
+
       return listenableFuture;
    }
 

@@ -27,7 +27,8 @@
 			</activation>
 			<modules>
 				<module>../../plugins/org.eclipse.osee.framework.core</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.test</module>
+		  		<module>../../plugins/org.eclipse.osee.framework.core.test</module>
+				
 				<module>../../plugins/org.eclipse.osee.framework.core.model</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
 				<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
@@ -37,7 +38,7 @@
 
 				<module>../../plugins/org.eclipse.osee.orcs</module>
 				<module>../../plugins/org.eclipse.osee.orcs.core</module>
-				<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
+			   	<module>../../plugins/org.eclipse.osee.orcs.core.test</module> 
 				<module>../../plugins/org.eclipse.osee.orcs.db</module>
 				<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 				<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>
@@ -63,7 +64,9 @@
 			</activation>
 			<modules>
 				<module>../../plugins/org.eclipse.osee.framework.core</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.test</module>
+			 
+			  	 <module>../../plugins/org.eclipse.osee.framework.core.test</module>
+		
 				<module>../../plugins/org.eclipse.osee.framework.core.model</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
 				<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
@@ -73,7 +76,7 @@
 
 				<module>../../plugins/org.eclipse.osee.orcs</module>
 				<module>../../plugins/org.eclipse.osee.orcs.core</module>
-				<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
+				     <module>../../plugins/org.eclipse.osee.orcs.core.test</module> 
 				<module>../../plugins/org.eclipse.osee.orcs.db</module>
 				<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 				<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>

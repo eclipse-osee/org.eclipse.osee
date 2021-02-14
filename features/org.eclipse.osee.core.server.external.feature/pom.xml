@@ -25,6 +25,9 @@
 						</goals>
 						<configuration>
 							<excludes>
+							   <plugin id="org.eclipse.osgi.services" />								
+							   <plugin id="com.google.gson" />
+							   <plugin id="javax.activation" />
 							   <plugin id="ch.qos.logback.slf4j" />
 							   <plugin id="org.antlr.runtime" />
 							   <plugin id="org.apache.cxf.cxf-core" />
@@ -32,9 +35,16 @@
 							   <plugin id="org.apache.cxf.cxf-rt-security" />
 							   <plugin id="org.apache.cxf.cxf-rt-transports-http" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
-								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
+							   <plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
 							   <plugin id="javaewah" />
-							   <plugin id="org.antlr.runtime" />							
+							   <plugin id="com.google.guava" />
+							   <plugin id="com.fasterxml.jackson.core.jackson-core" />
+							   <plugin id="com.fasterxml.jackson.core.jackson-annotations" />
+							   <plugin id="com.fasterxml.jackson.core.jackson-databind" />
+							   <plugin id="ch.qos.logback.classic" />
+							   <plugin id="ch.qos.logback.core" />
+							   <plugin id="org.eclipse.equinox.ds" />
+							   <plugin id="javax.mail" />
 							   <plugin id="org.apache.ws.xmlschema.core" />
 							   <plugin id="org.postgresql.driver" />
 							   <plugin id="org.eclipse.egit" />

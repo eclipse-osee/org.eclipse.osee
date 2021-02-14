@@ -7,6 +7,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
+Require-Bundle: org.antlr.runtime
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.util,
@@ -18,7 +19,6 @@ Import-Package: com.fasterxml.jackson.annotation,
  com.google.common.base,
  com.google.common.collect,
  com.google.common.io,
- org.antlr.runtime,
  org.eclipse.core.runtime,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,

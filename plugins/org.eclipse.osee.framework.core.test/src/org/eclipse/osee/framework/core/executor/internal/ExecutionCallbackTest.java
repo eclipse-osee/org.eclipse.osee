@@ -72,8 +72,8 @@ public class ExecutionCallbackTest {
       String expected = "Was Called";
 
       when(callable.call()).thenReturn(expected);
-
-      Future<String> future = admin.schedule(ExecutorAdminImpl.DEFAULT_EXECUTOR, callable, callback);
+      Future<String> future;
+      future = admin.schedule(ExecutorAdminImpl.DEFAULT_EXECUTOR, callable, callback);
       String actual = future.get();
 
       assertEquals(expected, actual);
@@ -90,7 +90,6 @@ public class ExecutionCallbackTest {
       when(callable.call()).thenThrow(expectedException);
 
       Future<String> future = admin.schedule(ExecutorAdminImpl.DEFAULT_EXECUTOR, callable, callback);
-
       thrown.expect(ExecutionException.class);
       future.get();
 
@@ -103,7 +102,6 @@ public class ExecutionCallbackTest {
    public void testCallbackOnCancel() throws Exception {
       TestCancellableCallable callable = new TestCancellableCallable("results");
       Future<String> future = admin.schedule(ExecutorAdminImpl.DEFAULT_EXECUTOR, callable, callback);
-
       while (!callable.hasBeenCalled()) {
          Thread.sleep(20);
       }
