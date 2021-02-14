@@ -39,4 +39,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  com.google.common.collect,
  javax.ws.rs.core,
  org.apache.commons.codec.binary,
- org.eclipse.jdt.annotation
+ org.eclipse.jdt.annotation,
+ javax.activation,
+ javax.xml,
+ javax.xml.bind

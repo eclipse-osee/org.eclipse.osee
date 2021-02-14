@@ -34,6 +34,9 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.lowagie.text,
  org.apache.commons.lang,
+ org.eclipse.jface.action,
+ org.eclipse.jface.resource,
+ org.eclipse.jface.viewers,
  org.eclipse.nebula.widgets.xviewer.core.model,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.framework.core,

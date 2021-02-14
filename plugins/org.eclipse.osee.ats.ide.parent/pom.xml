@@ -22,7 +22,7 @@
 			<id>coverage-minimal</id>
 			<activation>
 				<property>
-					<name>no-int-tests</name>
+					<name>skip-int-tests</name>
 				</property>
 			</activation>
 			<modules>
@@ -37,7 +37,6 @@
 				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
 
 				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
 				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
 			</modules>
 		</profile>
@@ -46,7 +45,7 @@
 			<id>coverage-release</id>
 			<activation>
 				<property>
-					<name>!no-int-tests</name>
+					<name>!skip-int-tests</name>
 				</property>
 			</activation>
 			<modules>
@@ -60,7 +59,7 @@
 				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
 
 				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-								<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
 				
 				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
 			</modules>

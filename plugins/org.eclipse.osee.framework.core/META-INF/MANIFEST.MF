@@ -7,6 +7,8 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.annotation,
+ org.antlr.runtime,
+ org.antlr.runtime.tree,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,
  com.fasterxml.jackson.core.util,
@@ -22,8 +24,6 @@ Import-Package: com.fasterxml.jackson.annotation,
  com.google.common.util.concurrent,
  javax.ws.rs.client,
  javax.ws.rs.core,
- org.antlr.runtime,
- org.antlr.runtime.tree,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,

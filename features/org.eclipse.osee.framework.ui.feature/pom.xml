@@ -32,6 +32,8 @@
 								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
 							   <plugin id="org.eclipse.sdk" />
 							   <plugin id="org.antlr.runtime" />							
+							   <plugin id="org.eclipse.swt" />
+							  <plugin id="com.fasterxml.jackson.core.jackson-core" />
 							</excludes>
 						</configuration>
 					</execution>

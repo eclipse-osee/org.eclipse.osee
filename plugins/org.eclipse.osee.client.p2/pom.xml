@@ -15,7 +15,7 @@
 	<name>OSEE Client - p2 Site </name>
 	<version>0.26.0-SNAPSHOT</version>
 
-	<!-- <build>
+   <!-- <build>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>

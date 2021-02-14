@@ -129,7 +129,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+  
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
@@ -152,7 +152,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>         
-         
+        
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
@@ -213,13 +213,6 @@
 
    <plugin
          id="org.eclipse.equinox.ds"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -385,9 +378,23 @@
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
-         version="6.1.1"
+         version="8.0.1.v20200420-1007"
          unpack="false"/>
 
+     <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+  <plugin
+         id="io.github.classgraph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.apache.commons.dbcp"
          download-size="0"

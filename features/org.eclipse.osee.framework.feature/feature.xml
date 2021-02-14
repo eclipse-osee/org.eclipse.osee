@@ -16,20 +16,7 @@
    <license url="%licenseURL">
       %license
    </license>
-
-
-   <includes
-         id="org.eclipse.egit"
-         version="5.0.0"/>
-
-  <includes
-         id="org.eclipse.jgit.lfs"
-         version="5.0.0"/>
-   
-   <includes
-         id="org.eclipse.jgit.http.apache"
-         version="5.0.0"/>
-                 
+                
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
@@ -37,21 +24,79 @@
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.emf.compare" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
-      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
-      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
-      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
-      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />
       <import plugin="org.jsoup"/>
       <import plugin="org.hsqldb"/>
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
    </requires>
+
+ <plugin
+         id="org.eclipse.swt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.intro"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.ui.intro.universal"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.ui.intro.quicklinks"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   
+   <plugin
+         id="io.github.classgraph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+  <plugin
+         id="javaewah"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />   
+          
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="27.1.0.v20190517-1946"
+         unpack="false"/>
+  
+   <plugin
+         id="javax.activation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
+   <plugin
+         id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
   
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-jose"
@@ -93,8 +138,19 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>       
- 								
+         unpack="false"/>  
+         <plugin
+         id="org.eclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>				     
+    <plugin
+         id="org.eclipse.ui.browser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>								
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
          download-size="0"
@@ -166,13 +222,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
-   <plugin
-         id="org.eclipse.egit"
-         download-size="0"
-         install-size="0"
-         version="5.0.0"
-         unpack="false"/>
    
    <plugin
          id="javax.annotation"
@@ -192,7 +241,7 @@
          id="org.mockito"
          download-size="0"
          install-size="0"
-         version="2.13.0" 
+         version="0.0.0" 
          unpack="false"/>
 			
    <plugin
@@ -285,54 +334,61 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+   
+      <plugin
+         id="org.antlr.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
          
 <plugin
          id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.io"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.server"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.servlet"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>   
          
    <plugin
          id="org.eclipse.jetty.util.ajax"
          download-size="0"
          install-size="0"
-         version="9.4.43"
+         version="9.4.43.v20210629"
          unpack="false"/>           
               
 </feature>

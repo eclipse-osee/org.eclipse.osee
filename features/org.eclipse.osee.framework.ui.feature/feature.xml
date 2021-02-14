@@ -20,7 +20,6 @@
 
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
       <import plugin="org.eclipse.osee.framework.skynet.core"/>
@@ -32,8 +31,6 @@
       <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
-      <import plugin="org.eclipse.osee.framework.ui.swt"/>
-      <import plugin="org.eclipse.ui.intro"/>
       <import plugin="javax.mail.glassfish"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.core.expressions"/>
@@ -44,10 +41,6 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.nebula.widgets.xviewer"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.zest.core"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="com.lowagie.text"/>
@@ -58,31 +51,83 @@
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.osee.ote.define"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
       <import plugin="org.apache.commons.io" version="2.2.0" match="compatible"/>
    </requires>
-
+       
+   <plugin
+         id="org.eclipse.osee.framework.ui.swt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>				     		     
+  
+   <plugin
+         id="org.eclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>	
+   
+   <plugin
+         id="org.eclipse.swt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
+         <plugin
+         id="org.eclipse.ui.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+         <plugin
+         id="org.eclipse.ui.forms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+         
+         <plugin
+         id="org.eclipse.ui.workbench.texteditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>	
+    
+         <plugin
+         id="org.eclipse.ui.views"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>	 
+    
+   <plugin
+         id="org.eclipse.ui.browser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+   
    <plugin
          id="org.antlr.runtime"
          download-size="0"
          install-size="0"
-         version="3.2.0"
-         unpack="false"/> 
-      
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.eclipse.sdk"
          download-size="0"
