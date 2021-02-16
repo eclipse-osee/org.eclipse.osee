@@ -77,7 +77,7 @@ public class AtsDbConfigDemoOp {
    }
 
    private void createDemoWebConfig() {
-      ArtifactToken headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+      ArtifactToken headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsTopFolder);
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create Web Programs");
       ArtifactToken oseeWebArt = changes.createArtifact(headingArt, AtsArtifactToken.WebPrograms);

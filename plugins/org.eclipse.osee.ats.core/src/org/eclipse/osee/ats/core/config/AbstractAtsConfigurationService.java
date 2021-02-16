@@ -41,7 +41,7 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
 
    @Override
    public boolean isAtsBaseCreated() {
-      return atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder) != null;
+      return atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsTopFolder) != null;
    }
 
    @Override

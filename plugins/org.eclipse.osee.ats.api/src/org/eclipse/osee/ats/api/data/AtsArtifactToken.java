@@ -35,9 +35,10 @@ public final class AtsArtifactToken {
     */
    public static final ArtifactToken AtsCmAccessControl = ArtifactToken.valueOf(9885573, "ATS CM Access Control", COMMON, CoreArtifactTypes.GeneralData);
 
+
+   public static ArtifactToken AtsTopFolder = ArtifactToken.valueOf(114713, "Action Tracking System", COMMON, CoreArtifactTypes.Folder);
    public static final ArtifactToken AtsConfig = ArtifactToken.valueOf(5367053, "ATS Config", COMMON, CoreArtifactTypes.GeneralData);
    public static final ArtifactToken Users = ArtifactToken.valueOf(95459, "Users", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken HeadingFolder = ArtifactToken.valueOf(114713, "Action Tracking System", COMMON, CoreArtifactTypes.Folder);
    public static IAtsTeamDefinitionArtifactToken TopTeamDefinition = AtsTeamDefinitionArtifactToken.valueOf(56004L, "Teams");
    public static IAtsActionableItemArtifactToken TopActionableItem = AtsActionableItemArtifactToken.valueOf(122894L, "Actionable Items");
    public static ArtifactToken CountryFolder = ArtifactToken.valueOf(7968155, "Countries", COMMON, CoreArtifactTypes.Folder);

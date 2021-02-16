@@ -86,7 +86,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
          }
          if (typeFolderArtifact.getParent() == null) {
             ArtifactReadable headingFolder =
-               (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+               (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsTopFolder);
             changes.relate(headingFolder, CoreRelationTypes.DefaultHierarchical_Child, typeFolderArtifact);
          }
          changes.relate(typeFolderArtifact, CoreRelationTypes.DefaultHierarchical_Child, newArtifact);

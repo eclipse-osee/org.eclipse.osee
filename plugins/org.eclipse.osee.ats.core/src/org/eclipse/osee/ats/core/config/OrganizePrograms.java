@@ -46,9 +46,9 @@ public class OrganizePrograms {
       try {
          IAtsChangeSet changes = atsApi.createChangeSet("Organize Programs");
          ArtifactToken programFolder =
-            atsApi.getQueryService().getOrCreateArtifact(AtsArtifactToken.HeadingFolder, folder, changes);
+            atsApi.getQueryService().getOrCreateArtifact(AtsArtifactToken.AtsTopFolder, folder, changes);
          if (programFolder == null || programFolder.isInvalid()) {
-            changes.createArtifact(AtsArtifactToken.HeadingFolder, AtsArtifactToken.ProgramFolder);
+            changes.createArtifact(AtsArtifactToken.AtsTopFolder, AtsArtifactToken.ProgramFolder);
          }
          for (ArtifactToken programArt : atsApi.getQueryService().getArtifacts(artifactType)) {
             if (!atsApi.getRelationResolver().getChildren(programFolder).contains(programArt)) {

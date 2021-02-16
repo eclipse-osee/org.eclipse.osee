@@ -180,7 +180,7 @@ public class AtsDbConfigBase {
       ArtifactToken atsConfigArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       if (atsConfigArt == null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Create AtsConfig");
-         changes.createArtifact(AtsArtifactToken.HeadingFolder, AtsArtifactToken.AtsConfig);
+         changes.createArtifact(AtsArtifactToken.AtsTopFolder, AtsArtifactToken.AtsConfig);
          changes.execute();
       }
       return atsConfigArt;
@@ -196,7 +196,7 @@ public class AtsDbConfigBase {
       IAtsChangeSet changes = atsApi.createChangeSet("Create ATS Folders");
 
       ArtifactToken headingArt = atsApi.getQueryService().getOrCreateArtifact(CoreArtifactTokens.OseeConfiguration,
-         AtsArtifactToken.HeadingFolder, changes);
+         AtsArtifactToken.AtsTopFolder, changes);
       for (ArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
          AtsArtifactToken.WorkDefinitionsFolder)) {
          atsApi.getQueryService().getOrCreateArtifact(headingArt, token, changes);
