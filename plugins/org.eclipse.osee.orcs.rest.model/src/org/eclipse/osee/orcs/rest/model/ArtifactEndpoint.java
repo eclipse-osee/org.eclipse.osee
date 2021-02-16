@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.orcs.rest.model.search.artifact.ArtifactSearchCriteria;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 
@@ -137,5 +138,17 @@ public interface ArtifactEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken setSoleAttributeValue(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact, @PathParam("attributeType") AttributeTypeToken attributeType, String value);
+
+   @POST
+   @Path("search")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   List<ArtifactId> findArtifactIds(ArtifactSearchCriteria searchCriteria);
+
+   @POST
+   @Path("search/token")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   List<ArtifactToken> findArtifactTokens(ArtifactSearchCriteria searchCriteria);
 
 }

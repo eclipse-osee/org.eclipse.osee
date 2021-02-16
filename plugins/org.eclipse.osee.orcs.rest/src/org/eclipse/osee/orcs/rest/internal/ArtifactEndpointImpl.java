@@ -31,10 +31,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -43,6 +45,7 @@ import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.artifact.ArtifactSearchCriteria;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -274,4 +277,52 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       tx.setSoleAttributeFromString(artifact, attributeType, value);
       return tx.commit();
    }
+
+   private QueryBuilder getQueryBuilder(ArtifactSearchCriteria searchCriteria) {
+      QueryBuilder fromBranch;
+      QueryOption matchCase = QueryOption.getCaseType(searchCriteria.isCaseSensitive());
+      QueryOption matchWordOrder = QueryOption.getTokenOrderType(searchCriteria.isMatchWordOrder());
+      QueryOption matchExact = QueryOption.TOKEN_DELIMITER__ANY;
+
+      if (searchCriteria.isExactMatch()) {
+         matchCase = QueryOption.CASE__MATCH;
+         matchWordOrder = QueryOption.TOKEN_MATCH_ORDER__MATCH;
+         matchExact = QueryOption.TOKEN_DELIMITER__EXACT;
+      }
+
+      if (!searchCriteria.getArtIds().isEmpty()) {
+         fromBranch = orcsApi.getQueryFactory().fromBranch(branch).andIds(searchCriteria.getArtIds());
+
+      } else {
+
+         if (searchCriteria.getView().isValid()) {
+            fromBranch = orcsApi.getQueryFactory().fromBranch(branch, searchCriteria.getView());
+         } else if (searchCriteria.getApplic().isValid()) {
+            fromBranch = orcsApi.getQueryFactory().fromBranch(branch, searchCriteria.getApplic());
+         } else {
+            fromBranch = orcsApi.getQueryFactory().fromBranch(branch);
+         }
+
+         if (!searchCriteria.getArtTypeIds().isEmpty()) {
+            fromBranch.andIsOfType(searchCriteria.getArtTypeIds());
+
+            if (!searchCriteria.getAttrTypeIds().isEmpty() && Strings.isValid(searchCriteria.getSearchString())) {
+               fromBranch.and(searchCriteria.getAttrTypeIds(), searchCriteria.getSearchString(), matchCase,
+                  matchWordOrder, matchExact);
+            }
+         }
+      }
+      return fromBranch;
+   }
+
+   @Override
+   public List<ArtifactId> findArtifactIds(ArtifactSearchCriteria searchCriteria) {
+      return getQueryBuilder(searchCriteria).asArtifactIds();
+   }
+
+   @Override
+   public List<ArtifactToken> findArtifactTokens(ArtifactSearchCriteria searchCriteria) {
+      return getQueryBuilder(searchCriteria).asArtifactTokens();
+   }
+
 }
