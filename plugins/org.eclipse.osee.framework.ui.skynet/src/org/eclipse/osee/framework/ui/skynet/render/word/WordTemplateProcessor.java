@@ -663,7 +663,12 @@ public class WordTemplateProcessor {
             for (Artifact art : artifacts) {
                allArtifacts.add(art);
                if (!art.isHistorical()) {
-                  allArtifacts.addAll(art.getDescendants());
+                  for (Artifact descendant : art.getDescendants()) {
+                     if (!descendant.isHistorical() && isWordTemplateContentValid(descendant) && isArtifactIncluded(
+                        descendant)) {
+                        allArtifacts.add(descendant);
+                     }
+                  }
                }
             }
          } else {
@@ -701,16 +706,9 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, DataRightResult data) {
-      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(
-         CoreAttributeTypes.NativeContent)) {
+      if (isWordTemplateContentValid(artifact)) {
          // If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
-
-            boolean ignoreArtifact =
-               (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || (artifactsToExclude.containsKey(
-                  ArtifactId.valueOf(artifact.getId())) || emptyFolders.contains(artifact));
-
-            boolean ignoreArtType = excludeArtifactTypes != null && isOfType(artifact, excludeArtifactTypes);
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
             boolean templateOnly = (boolean) renderer.getRendererOptionValue(RendererOption.TEMPLATE_ONLY);
@@ -720,7 +718,7 @@ public class WordTemplateProcessor {
 
             boolean includeUUIDs = (boolean) renderer.getRendererOptionValue(RendererOption.INCLUDE_UUIDS);
 
-            if (!ignoreArtifact && !ignoreArtType) {
+            if (isArtifactIncluded(artifact)) {
                if (outlining && includeOutline) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 
@@ -951,5 +949,19 @@ public class WordTemplateProcessor {
       wordMl.startOutlineSubSection("Heading" + outlineLevel, paragraphNumber, "Times New Roman", headingText);
 
       return paragraphNumber;
+   }
+
+   private boolean isWordTemplateContentValid(Artifact artifact) {
+      return !artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(
+         CoreAttributeTypes.NativeContent);
+   }
+
+   private boolean isArtifactIncluded(Artifact artifact) {
+      boolean excludedArtifact =
+         (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || (artifactsToExclude.containsKey(
+            ArtifactId.valueOf(artifact.getId())) || emptyFolders.contains(artifact));
+      boolean excludedArtifactType = excludeArtifactTypes != null && isOfType(artifact, excludeArtifactTypes);
+
+      return !excludedArtifact && !excludedArtifactType;
    }
 }
