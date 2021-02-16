@@ -52,6 +52,8 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(getTeamArt());
             boolean appropriate = selectTargetedVersionOrConfigureParentBranchIfAppropriate(result, button);
             if (appropriate) {
+               disableAll = false;
+               refreshEnablement(button);
                return;
             }
             if (result.isFalse()) {
