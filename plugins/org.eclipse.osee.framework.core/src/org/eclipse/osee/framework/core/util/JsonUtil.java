@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -175,6 +176,8 @@ public class JsonUtil {
       addDeserializer(module, ArtifactId.class, ArtifactId::valueOf);
       addDeserializer(module, TransactionId.class, TransactionId::valueOf);
       addDeserializer(module, Id.class, Id::valueOf);
+      addDeserializer(module, ApplicabilityId.class, ApplicabilityId::valueOf);
+
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
       module.addDeserializer(ArtifactToken.class,
          new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));
@@ -187,6 +190,7 @@ public class JsonUtil {
       module.addSerializer(TransactionId.class, idSerializer);
       module.addSerializer(BranchType.class, idSerializer);
       module.addSerializer(BranchState.class, idSerializer);
+      module.addSerializer(ApplicabilityId.class, idSerializer);
       module.addSerializer(java.util.Date.class, DateSerializer.instance);
 
       return module;

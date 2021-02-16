@@ -13,35 +13,27 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 
 /**
  * @author Ryan D. Brooks
  */
-@JsonSerialize(using = IdSerializer.class)
-@JsonDeserialize(using = ApplicabilityTokenDeserializer.class)
 public interface ApplicabilityId extends Id {
    public static final ApplicabilityId BASE = ApplicabilityId.valueOf(1L);
    public static final ApplicabilityId SENTINEL = valueOf(Id.SENTINEL);
-
-   default Long getUuid() {
-      return getId();
-   }
 
    public static ApplicabilityId valueOf(String id) {
       return Id.valueOf(id, ApplicabilityId::valueOf);
    }
 
-   public static ApplicabilityId valueOf(Long id) {
-      final class ApplicabilityToken extends BaseId implements ApplicabilityId {
-         public ApplicabilityToken(Long txId) {
-            super(txId);
+   public static @NonNull ApplicabilityId valueOf(Long id) {
+      final class ApplicabilityIdImpl extends BaseId implements ApplicabilityId {
+         public ApplicabilityIdImpl(Long id) {
+            super(id);
          }
       }
-      return new ApplicabilityToken(id);
+      return new ApplicabilityIdImpl(id);
    }
 }

@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Ryan D. Brooks
@@ -38,7 +39,7 @@ public interface Id {
       return new BaseId(Long.valueOf(id));
    }
 
-   public static Id valueOf(Long id) {
+   public static @NonNull Id valueOf(Long id) {
       return new BaseId(id);
    }
 
