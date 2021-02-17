@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -47,11 +46,9 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
 
    private static final String COLOR_TEAM_KEY = "colorTeam";
    private final AtsApi atsApi;
-   private final Log logger;
 
-   public AtsWorkPackageEndpointImpl(AtsApi atsApi, Log logger) {
+   public AtsWorkPackageEndpointImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.logger = logger;
    }
 
    @GET
