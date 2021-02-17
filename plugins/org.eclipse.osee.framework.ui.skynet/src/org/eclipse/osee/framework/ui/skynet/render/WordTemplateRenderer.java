@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
@@ -155,7 +154,10 @@ public class WordTemplateRenderer extends WordRenderer {
             } else {
                rating = PRESENTATION_SUBTYPE_MATCH;
             }
-         } else if (presentationType.matches(PREVIEW, DIFF)) {
+         } else if (presentationType.matches(PresentationType.DIFF) || (presentationType.matches(
+            PresentationType.PREVIEW) && !artifact.isAttributeTypeValid(
+               CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(
+                  CoreAttributeTypes.NativeContent))) {
             if (OPEN_IN_WORD.equals(rendererOptions.get(RendererOption.OPEN_OPTION))) {
                rating = PRESENTATION_TYPE_OPTION_MATCH;
             } else {

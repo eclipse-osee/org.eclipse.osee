@@ -93,8 +93,8 @@ public class WholeWordRenderer extends WordRenderer {
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("doc");
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor));
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Whole Word Edit", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Whole Word Preview", imageDescriptor));
    }
 
    @Override
