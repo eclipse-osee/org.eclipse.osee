@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 
 /**
  * Provides utility methods for the TreeViewer
- * 
+ *
  * @author Jeff C. Phillips
  * @author Robert A. Fisher
  */
@@ -32,7 +32,7 @@ public class TreeViewerUtility {
 
    /**
     * Retrieve a listing of all the selected items in preorder sequence.
-    * 
+    *
     * @param treeViewer The tree to be traversed
     */
    public static <A extends Object> void getPreorderSelection(TreeViewer treeViewer, List<A> selectedTreeItems) {
@@ -68,6 +68,7 @@ public class TreeViewerUtility {
             selectedTreeItems.add((A) item);
          }
          if (expandedHash.containsKey(item)) {
+            expandedHash.remove(item);
             traverseTree(contentProvider.getChildren(item), contentProvider, selectedTreeItems, selectionHash,
                expandedHash);
          }
