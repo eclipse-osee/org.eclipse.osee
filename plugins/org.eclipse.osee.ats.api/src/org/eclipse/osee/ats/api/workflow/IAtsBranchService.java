@@ -124,6 +124,8 @@ public interface IAtsBranchService {
 
    boolean isArchived(BranchId branch);
 
+   void archiveBranch(BranchId branch);
+
    TransactionRecord getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
    Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf);

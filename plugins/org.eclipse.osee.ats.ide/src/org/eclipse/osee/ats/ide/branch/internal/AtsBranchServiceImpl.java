@@ -102,6 +102,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
+   public void archiveBranch(BranchId branch) {
+      BranchManager.setArchiveState(branch, BranchArchivedState.ARCHIVED);
+   }
+
+   @Override
    public BranchId getParentBranch(BranchId branch) {
       return BranchManager.getParentBranch(branch);
    }

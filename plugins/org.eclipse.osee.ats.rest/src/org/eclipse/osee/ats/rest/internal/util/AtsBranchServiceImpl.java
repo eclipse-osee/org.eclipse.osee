@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.TransactionQuery;
@@ -130,6 +131,15 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public boolean isArchived(BranchId branch) {
       return getBranch(branch).isArchived();
+   }
+
+   @Override
+   public void archiveBranch(BranchId branch) {
+      try {
+         orcsApi.getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE).call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    @Override

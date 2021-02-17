@@ -151,9 +151,7 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
             XResultData rd = new XResultData();
             AtsApiService.get().getBranchServiceIde().commitWorkingBranch(xCommitManager.getTeamArt(), true, false,
-               branch,
-               AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch),
-               rd);
+               branch, false, rd);
             if (rd.isErrors()) {
                ResultsEditor.open("Commit Failure", rd);
             }

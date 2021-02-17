@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHo
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.hooks.AtsNotificationTransitionHook;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsCommitBranchWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
@@ -110,6 +111,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       transitionHooks.add(new AtsDecisionReviewPrepareWorkItemHook());
       transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
       transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
+      transitionHooks.add(new AtsCommitBranchWhenCompleteHook());
    }
 
    @Override
