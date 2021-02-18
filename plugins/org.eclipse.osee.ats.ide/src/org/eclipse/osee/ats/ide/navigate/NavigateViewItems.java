@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprintReports;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileStoredSprintReports;
 import org.eclipse.osee.ats.ide.agile.navigate.SortAgileBacklog;
+import org.eclipse.osee.ats.ide.agile.navigate.SyncJiraAndOseeByEpicBlam;
 import org.eclipse.osee.ats.ide.config.AtsConfig2ExampleNavigateItem;
 import org.eclipse.osee.ats.ide.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
@@ -427,6 +428,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          XNavigateItem agileReports = new XNavigateItem(agileItems, "Reports", AtsImage.REPORT);
          new OpenAgileSprintReports(agileReports);
          new OpenAgileStoredSprintReports(agileReports);
+         new XNavigateItemBlam(agileReports, new SyncJiraAndOseeByEpicBlam());
 
          XNavigateItem agileConfigs = new XNavigateItem(agileItems, "Configuration", FrameworkImage.GEAR);
          new CreateNewAgileTeam(agileConfigs);

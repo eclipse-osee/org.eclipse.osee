@@ -434,7 +434,7 @@ public class SyncJiraOperation {
       return;
    }
    private static Pattern atsTwIdPattern = Pattern.compile("TW[0-9]{5}");
-   private static Pattern atsIdPattern = Pattern.compile("ATS[0-9]{5}");
+   private static Pattern atsIdPattern = Pattern.compile("ATS[0-9]{6}");
 
    private void findAtsId(JiraTask task, String line) {
       Matcher m = atsIdPattern.matcher(line);
@@ -452,6 +452,19 @@ public class SyncJiraOperation {
          atsIds.add(atsId);
          syncTeam.addAtsIdToTask(atsId, task);
       }
+   }
+
+   public static String getAtsId(String str) {
+      Matcher m = atsIdPattern.matcher(str);
+      String atsId = null;
+      while (m.find()) {
+         atsId = m.group();
+      }
+      m = atsTwIdPattern.matcher(str);
+      while (m.find()) {
+         atsId = m.group();
+      }
+      return atsId;
    }
 
 }

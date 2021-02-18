@@ -706,4 +706,12 @@ public class StateManager implements IAtsStateManager {
       }
    }
 
+   @Override
+   public String getCurrentStateNameFast() {
+      String currState =
+         atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "");
+      currState = currState.replaceFirst(";.*$", "");
+      return currState;
+   }
+
 }

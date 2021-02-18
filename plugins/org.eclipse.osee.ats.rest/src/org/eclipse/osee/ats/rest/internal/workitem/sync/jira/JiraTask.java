@@ -31,6 +31,8 @@ public class JiraTask {
    String jSprint;
    IAgileSprint aSprint;
    IAtsTeamWorkflow teamWf;
+   String points;
+   String amsId;
 
    public JiraTask() {
    }
@@ -98,5 +100,21 @@ public class JiraTask {
 
    public void setaSprint(IAgileSprint aSprint) {
       this.aSprint = aSprint;
+   }
+
+   public String getPoints() {
+      return points;
+   }
+
+   public void setPoints(String points) {
+      this.points = points;
+   }
+
+   public String getAmsId() {
+      return amsId;
+   }
+
+   public void setAmsId(String amsId) {
+      this.amsId = amsId;
    }
 }

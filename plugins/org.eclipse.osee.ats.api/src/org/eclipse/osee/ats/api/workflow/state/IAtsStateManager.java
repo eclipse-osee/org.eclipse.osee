@@ -166,4 +166,6 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    void internalSetCreatedBy(AtsUser user, IAtsChangeSet changes);
 
+   String getCurrentStateNameFast();
+
 }

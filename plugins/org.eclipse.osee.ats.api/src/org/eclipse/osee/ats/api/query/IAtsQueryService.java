@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -90,6 +91,13 @@ public interface IAtsQueryService {
     * @param id artifact id or ATS Id
     */
    IAtsWorkItem getWorkItem(String id);
+
+   /**
+    * @param ATS Id
+    */
+   IAtsWorkItem getWorkItemByAtsId(String atsId);
+
+   Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds);
 
    /**
     * @param comma separated id artifact id or ATS Id

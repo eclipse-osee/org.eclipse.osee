@@ -15,9 +15,11 @@ package org.eclipse.osee.ats.core.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
@@ -55,8 +57,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
     * when searching is improved.
     */
    private static String ATTR_QUERY =
-      "SELECT art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE art.gamma_id = txs.gamma_id " //
-         + "AND txs.tx_current = 1 AND txs.branch_id = ? and attr.ART_ID = art.ART_ID and " //
+      "SELECT art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE txs.branch_id = ? and " //
+         + "art.gamma_id = txs.gamma_id " //
+         + "AND txs.tx_current = 1 AND attr.ART_ID = art.ART_ID and " //
          + "attr.ATTR_TYPE_ID = ? and attr.VALUE = ?";
 
    public AbstractAtsQueryService(JdbcService jdbcService, AtsApi atsApi) {
@@ -141,6 +144,15 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       ArtifactToken workItemArt = getArtifactById(id);
       if (workItemArt == null) {
          throw new OseeArgumentException("workItem can not be found for id " + id);
+      }
+      return atsApi.getWorkItemService().getWorkItem(workItemArt);
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItemByAtsId(String atsId) {
+      ArtifactToken workItemArt = getArtifactByAtsId(atsId);
+      if (workItemArt == null) {
+         throw new OseeArgumentException("workItem can not be found for id " + atsId);
       }
       return atsApi.getWorkItemService().getWorkItem(workItemArt);
    }
@@ -352,6 +364,16 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          arts.add(getArtifact(obj));
       }
       return arts;
+   }
+
+   @Override
+   public Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds) {
+      Map<String, IAtsWorkItem> results = new HashMap<>();
+      for (ArtifactToken art : getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds, 200)) {
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
+         results.put(workItem.getAtsId(), workItem);
+      }
+      return results;
    }
 
 }

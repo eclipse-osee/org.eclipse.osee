@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,10 +44,13 @@ import org.eclipse.swt.widgets.Control;
 public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    private Collection<? extends Artifact> selectable;
-   XCheckBox checkbox;
+   private XCheckBox checkbox;
    private String checkBoxLabel;
    private boolean defaultChecked;
    private boolean checked;
+   private XText text;
+   private String textLabel;
+   private String enteredText;
 
    public FilteredTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
@@ -89,6 +95,26 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
          });
       }
 
+      if (Strings.isValid(textLabel)) {
+         Composite comp1 = new Composite(container, SWT.NONE);
+         comp1.setLayout(new GridLayout(1, false));
+         comp1.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+         text = new XText(textLabel);
+         text.setFillVertically(true);
+         text.createWidgets(comp1, 2);
+         if (Strings.isValid(enteredText)) {
+            text.set(enteredText);
+         }
+         text.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               enteredText = text.get();
+            }
+         });
+      }
+
       return comp;
    }
 
@@ -123,6 +149,18 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    public void setChecked(boolean checked) {
       this.checked = checked;
+   }
+
+   public void addTextBox(String label) {
+      textLabel = label;
+   }
+
+   public String getEnteredText() {
+      return enteredText;
+   }
+
+   public void setEnteredText(String enteredText) {
+      this.enteredText = enteredText;
    }
 
 }

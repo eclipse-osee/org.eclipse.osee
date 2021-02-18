@@ -40,6 +40,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -70,6 +71,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
+import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffsOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -818,6 +820,17 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false);
       XResultData results = op.run();
       return results;
+   }
+
+   @Path("jira/report/epic")
+   @POST
+   @Override
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public JiraByEpicData reportEpicDiffs(JiraByEpicData data) {
+      JiraReportEpicDiffsOperation op = new JiraReportEpicDiffsOperation(data, atsApi);
+      op.run();
+      return data;
    }
 
 }

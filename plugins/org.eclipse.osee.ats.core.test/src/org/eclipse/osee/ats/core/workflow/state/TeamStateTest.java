@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * Test Unit for {@link TeamState}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TeamStateTest {
@@ -47,7 +47,7 @@ public class TeamStateTest {
 
    @Test
    public void testValues() {
-      Assert.assertEquals(6, TeamState.values().size());
+      Assert.assertEquals(7, TeamState.values().size());
    }
 
 }
