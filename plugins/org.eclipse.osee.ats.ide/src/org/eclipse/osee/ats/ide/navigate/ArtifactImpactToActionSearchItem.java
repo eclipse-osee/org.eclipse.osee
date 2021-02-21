@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -162,8 +163,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
                   // System.out.println(transStr);
                   monitor.subTask(transStr);
-                  Long commitArtId = TransactionManager.getCommitArtId(transactionId);
-                  if (commitArtId > 0) {
+                  ArtifactId commitArtId = TransactionManager.getCommitArtifact(transactionId);
+                  if (commitArtId.isValid()) {
                      Artifact assocArt = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
                      if (assocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                         TeamWorkFlowArtifact twf = (TeamWorkFlowArtifact) assocArt;

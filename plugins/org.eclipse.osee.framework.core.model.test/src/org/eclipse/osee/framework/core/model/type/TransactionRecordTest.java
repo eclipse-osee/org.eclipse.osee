@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.model.type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -46,15 +47,13 @@ public class TransactionRecordTest {
    private final String comment;
    private final Date time;
    private final UserId author;
-   private final int commitArtId;
 
-   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, UserId author, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, UserId author, ArtifactId commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = (long) transactionNumber;
       this.branch = branch;
       this.comment = comment;
       this.time = time;
       this.author = author;
-      this.commitArtId = commitArtId;
       this.txType = txType;
 
       this.transaction =
@@ -109,16 +108,6 @@ public class TransactionRecordTest {
    }
 
    @Test
-   public void testGetSetCommit() {
-      Assert.assertEquals(commitArtId, transaction.getCommit());
-
-      transaction.setCommit(commitArtId * 333);
-      Assert.assertEquals(commitArtId * 333, transaction.getCommit());
-
-      transaction.setCommit(commitArtId);
-   }
-
-   @Test
    public void testEqualsAndHashCode() {
       TransactionRecord tx2 = MockDataFactory.createTransaction(99, 2);
       TransactionId tx1 = TransactionId.valueOf(tx2.getId());
@@ -126,7 +115,6 @@ public class TransactionRecordTest {
       // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
       tx2.setAuthor(UserId.SENTINEL);
       tx2.setComment("a");
-      tx2.setCommit(1);
       tx2.setTimeStamp(new Date(11111111111L));
 
       Assert.assertNotSame(tx1, tx2);
@@ -161,7 +149,7 @@ public class TransactionRecordTest {
          BranchId branch = BranchId.valueOf(index * 9L);
          String comment = GUID.create();
          Date time = new Date();
-         int commitArtId = index * 37;
+         ArtifactId commitArtId = ArtifactId.valueOf(index * 37);
          TransactionDetailsType txType = TransactionDetailsType.valueOf(index % TransactionDetailsType.values.length);
          data.add(new Object[] {transactionNumber, branch, comment, time, DemoUsers.Joe_Smith, commitArtId, txType});
       }

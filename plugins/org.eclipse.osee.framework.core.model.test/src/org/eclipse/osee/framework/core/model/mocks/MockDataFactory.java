@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.model.mocks;
 import java.util.Date;
 import org.eclipse.osee.framework.core.access.AccessDetail;
 import org.eclipse.osee.framework.core.access.Scope;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -48,7 +49,7 @@ public final class MockDataFactory {
          value++;
       }
       IOseeBranch branch = IOseeBranch.create(branchUuid, "fake test branch");
-      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), DemoUsers.Joe_Smith, value * 42,
-         type, 0L);
+      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), DemoUsers.Joe_Smith,
+         ArtifactId.valueOf(value * 42), type, 0L);
    }
 }

@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -55,5 +54,5 @@ public interface TransactionFactory {
 
    boolean purgeTxs(String txIds);
 
-   boolean setTransactionCommitArtifact(TransactionId trans, ArtifactToken commitArt);
+   boolean setTransactionCommitArtifact(TransactionId trans, ArtifactId commitArt);
 }

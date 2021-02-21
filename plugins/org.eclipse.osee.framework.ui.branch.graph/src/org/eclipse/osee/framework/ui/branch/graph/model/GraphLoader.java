@@ -158,7 +158,7 @@ public class GraphLoader {
             BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
             TxData txData = new TxData(branch, UserId.valueOf(chStmt.getLong("author")), chStmt.getTimestamp("time"),
                chStmt.getString("osee_comment"), TransactionDetailsType.valueOf(chStmt.getInt("tx_type")),
-               chStmt.getInt("commit_art_id"), chStmt.getLong("transaction_id"));
+               chStmt.getLong("transaction_id"));
             txDatas.add(txData);
          }
       } finally {

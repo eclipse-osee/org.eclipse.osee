@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
@@ -135,8 +135,7 @@ public class TxCallableFactory {
 
    }
 
-   public void setTransactionCommitArtifact(OrcsSession session, TransactionId trans, ArtifactToken commitArt) {
+   public void setTransactionCommitArtifact(OrcsSession session, TransactionId trans, ArtifactId commitArt) {
       txDataStore.setTransactionCommitArtifact(session, trans, commitArt);
    }
-
 }

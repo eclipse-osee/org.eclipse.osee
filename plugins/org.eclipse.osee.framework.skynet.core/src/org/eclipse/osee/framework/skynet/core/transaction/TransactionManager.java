@@ -133,8 +133,8 @@ public final class TransactionManager {
       return transactions;
    }
 
-   public static Long getCommitArtId(TransactionId tx) {
-      return (long) getTransaction(tx).getCommit();
+   public static ArtifactId getCommitArtifact(TransactionId tx) {
+      return getTransaction(tx).getCommitArtifact();
    }
 
    public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(ArtifactId artifact) {
@@ -192,7 +192,7 @@ public final class TransactionManager {
       String comment = stmt.getString("osee_comment");
       Date timestamp = stmt.getTimestamp("time");
       UserId authorArtId = UserId.valueOf(stmt.getLong("author"));
-      Integer commitArtId = stmt.getInt("commit_art_id");
+      ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
       Long buildId = stmt.getLong("build_id");
       TransactionDetailsType txType = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
       return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType,

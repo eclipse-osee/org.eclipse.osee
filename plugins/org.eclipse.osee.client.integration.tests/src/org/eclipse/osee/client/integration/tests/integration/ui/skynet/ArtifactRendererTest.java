@@ -21,10 +21,11 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -54,31 +55,31 @@ public class ArtifactRendererTest {
    private static final String EXPECTED_NAME = "Name+with+_quot";
    private static Artifact artifact1;
    private static Artifact artifact2;
-   private static TransactionToken startTx;
-   private static TransactionRecord endTx1;
-   private static TransactionRecord endTx2;
+   private static TransactionToken otherBranchTx;
+   private static TransactionToken startTx1;
+   private static TransactionToken startTx2;
 
    @Before
    public void setUp() {
 
-      startTx = TransactionManager.getHeadTransaction(COMMON);
+      otherBranchTx = TransactionManager.getHeadTransaction(COMMON);
       artifact1 = new Artifact(CoreBranches.COMMON, NAME1);
       String comment1 = getClass().getSimpleName() + "_1";
       artifact1.persist(comment1);
-      endTx1 = TransactionManager.getTransaction(comment1).iterator().next();
-      endTx1.setCommit(artifact1.getArtId());
+      startTx1 = TransactionManager.getHeadTransaction(DemoBranches.SAW_Bld_1);
+      BranchManager.setAssociatedArtifactId(DemoBranches.SAW_Bld_1, artifact1);
 
       artifact2 = new Artifact(CoreBranches.COMMON, NAME2);
       String comment2 = getClass().getSimpleName() + "_2";
       artifact2.persist(comment2);
-      endTx2 = TransactionManager.getTransaction(comment2).iterator().next();
-      endTx2.setCommit(artifact2.getArtId());
+      startTx2 = TransactionManager.getHeadTransaction(DemoBranches.SAW_Bld_2);
+      BranchManager.setAssociatedArtifactId(DemoBranches.SAW_Bld_2, artifact2);
    }
 
    @Test
    public void testAssociatedArtifact_notAllowedDoubleQuotes() throws Exception {
 
-      TransactionDelta deltaTx = new TransactionDelta(startTx, endTx1);
+      TransactionDelta deltaTx = new TransactionDelta(startTx1, otherBranchTx);
       ArtifactDelta delta = new ArtifactDelta(null, artifact2, artifact1);
       Change change = new ArtifactChange(COMMON, artifact1.getGammaId(), artifact1, deltaTx, ModificationType.MODIFIED,
          "", "", false, artifact1, delta);
@@ -89,7 +90,7 @@ public class ArtifactRendererTest {
 
    @Test
    public void testAssociatedArtifact_notAllowedSingleQuotes() throws Exception {
-      TransactionDelta deltaTx = new TransactionDelta(startTx, endTx2);
+      TransactionDelta deltaTx = new TransactionDelta(startTx2, otherBranchTx);
       ArtifactDelta delta = new ArtifactDelta(null, artifact1, artifact2);
       Change change = new ArtifactChange(COMMON, artifact2.getGammaId(), artifact2, deltaTx, ModificationType.MODIFIED,
          "", "", false, artifact2, delta);

@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -32,6 +32,6 @@ public interface TxDataStore {
 
    Callable<Void> setTransactionComment(OrcsSession session, TransactionId transaction, String comment);
 
-   void setTransactionCommitArtifact(OrcsSession session, TransactionId trans, ArtifactToken commitArt);
+   void setTransactionCommitArtifact(OrcsSession session, TransactionId trans, ArtifactId commitArt);
 
 }

@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -39,8 +40,8 @@ public class LoadAssociatedArtifactOperation extends AbstractOperation {
       TransactionDelta txDelta = changeData.getTxDelta();
       if (changeData.getCompareType().areSpecificTxs()) {
 
-         Long commitId = TransactionManager.getCommitArtId(txDelta.getEndTx());
-         if (!commitId.equals(0L)) {
+         ArtifactId commitId = TransactionManager.getCommitArtifact(txDelta.getEndTx());
+         if (commitId.isValid()) {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitId, COMMON);
          }
       } else {

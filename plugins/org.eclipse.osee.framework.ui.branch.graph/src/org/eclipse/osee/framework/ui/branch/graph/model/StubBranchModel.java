@@ -40,7 +40,7 @@ public class StubBranchModel extends BranchModel {
       TxModel toReturn = stubs.get(value);
       if (toReturn == null) {
          toReturn = new TxModel(new TxData(STUB_BRANCH, UserId.SENTINEL, new Timestamp(new Date().getTime()),
-            String.format("Transaction: [%s] not found", value), TransactionDetailsType.NonBaselined, 0, value));
+            String.format("Transaction: [%s] not found", value), TransactionDetailsType.NonBaselined, value));
          addTx(toReturn);
       }
       return toReturn;

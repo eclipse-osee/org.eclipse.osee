@@ -24,8 +24,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -199,10 +200,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = transaction.getComment();
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
-            if (transaction.getCommit() == 0) {
+            if (transaction.getCommitArtifact().isInvalid()) {
                return "";
             }
-            Artifact art = ArtifactQuery.getArtifactFromId(transaction.getCommit(), COMMON);
+            Artifact art = ArtifactQuery.getArtifactFromId(transaction.getCommitArtifact(), COMMON);
             if (art != null) {
                columnText = art.getName();
             }
@@ -246,10 +247,11 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             }
          } else if (element instanceof TransactionRecord) {
             try {
-               if (((TransactionRecord) element).getCommit() == 0) {
+               ArtifactId commitId = ((TransactionRecord) element).getCommitArtifact();
+               if (commitId.isInvalid()) {
                   return null;
                }
-               Artifact artifact = ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(), COMMON);
+               Artifact artifact = ArtifactQuery.getArtifactFromId(commitId, COMMON);
                if (artifact != null) {
                   return ArtifactImageManager.getImage(artifact);
                }

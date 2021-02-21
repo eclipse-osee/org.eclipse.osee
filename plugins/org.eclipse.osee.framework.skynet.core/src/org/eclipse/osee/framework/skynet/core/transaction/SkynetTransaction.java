@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.access.PermissionStatus;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -438,7 +439,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       //keep transaction id's sequential in the face of concurrent transaction by multiple users
       Long txId = ConnectionHandler.getNextSequence("SKYNET_TRANSACTION_ID_SEQ", false);
 
-      return new TransactionRecord(txId, branch, comment, timestamp, userToBlame, 0, txType,
+      return new TransactionRecord(txId, branch, comment, timestamp, userToBlame, ArtifactId.SENTINEL, txType,
          OseeCodeVersion.getVersionId());
    }
 

@@ -143,7 +143,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       String comment = stmt.getString(base ? "b_osee_comment" : "p_osee_comment");
       Date timestamp = stmt.getTimestamp(base ? "b_time" : "p_time");
       UserId authorArtId = UserId.valueOf(stmt.getLong(base ? "b_author" : "p_author"));
-      Integer commitArtId = stmt.getInt(base ? "b_commit_art_id" : "p_commit_art_id");
+      ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong(base ? "b_commit_art_id" : "p_commit_art_id"));
       TransactionDetailsType txType = TransactionDetailsType.valueOf(stmt.getInt(base ? "b_tx_type" : "p_tx_type"));
       Long txBuildId = stmt.getLong(base ? "b_tx_build_id" : "p_tx_build_id");
       return new TransactionRecord(transactionId, branch, comment, timestamp, authorArtId, commitArtId, txType,

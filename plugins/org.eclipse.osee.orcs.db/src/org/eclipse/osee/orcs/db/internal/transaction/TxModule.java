@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
@@ -84,12 +84,10 @@ public class TxModule {
          }
 
          @Override
-         public void setTransactionCommitArtifact(OrcsSession session, TransactionId transaction, ArtifactToken commitArt) {
+         public void setTransactionCommitArtifact(OrcsSession session, TransactionId transaction, ArtifactId commitArt) {
             checkNotNull(transaction, "transaction");
             checkNotNull(commitArt, "commitArt");
-
-            jdbcClient.runPreparedUpdate(UPDATE_TRANSACTION_COMMIT_ART_ID, commitArt.getId().toString(),
-               transaction.getIdString());
+            jdbcClient.runPreparedUpdate(UPDATE_TRANSACTION_COMMIT_ART_ID, commitArt, transaction);
          }
       };
    }

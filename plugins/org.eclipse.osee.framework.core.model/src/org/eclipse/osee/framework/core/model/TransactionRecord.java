@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -28,16 +29,16 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
    public static TransactionRecord SENTINEL = new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null,
-      UserId.SENTINEL, 0, TransactionDetailsType.INVALID, 0L);
+      UserId.SENTINEL, ArtifactId.SENTINEL, TransactionDetailsType.INVALID, 0L);
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;
    private Date time;
    private UserId authorArtId;
-   private int commitArtId;
+   private final ArtifactId commitArtId;
    private Long buildId;
 
-   public TransactionRecord(Long id, BranchId branch, String comment, Date time, UserId authorArtId, int commitArtId, TransactionDetailsType txType, Long buildId) {
+   public TransactionRecord(Long id, BranchId branch, String comment, Date time, UserId authorArtId, ArtifactId commitArtId, TransactionDetailsType txType, Long buildId) {
       super(id);
       this.branch = branch;
       this.buildId = buildId;
@@ -65,7 +66,7 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       return authorArtId;
    }
 
-   public int getCommit() {
+   public ArtifactId getCommitArtifact() {
       return commitArtId;
    }
 
@@ -83,10 +84,6 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
 
    public void setAuthor(UserId authorArtId) {
       this.authorArtId = authorArtId;
-   }
-
-   public void setCommit(int commitArtId) {
-      this.commitArtId = commitArtId;
    }
 
    public Long getBuildId() {
