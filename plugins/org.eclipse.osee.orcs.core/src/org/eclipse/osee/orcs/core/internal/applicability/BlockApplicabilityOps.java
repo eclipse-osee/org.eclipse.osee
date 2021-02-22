@@ -14,8 +14,10 @@
 package org.eclipse.osee.orcs.core.internal.applicability;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import org.antlr.runtime.RecognitionException;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -57,13 +60,16 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class BlockApplicabilityOps {
    private static String SCRIPT_ENGINE_NAME = "JavaScript";
 
-   private static final String BEGINFEATURE = " ?(Feature ?(\\[(.*?)\\])) ?";
-   private static final String ENDFEATURE = " ?(End Feature ?((\\[.*?\\]))?) ?";
+   public static final String SPACES = " *";
+   public static final String SINGLE_NEW_LINE = "\\r\\n|[\\n\\r]";
+   public static final String BEGINFEATURE = " ?(Feature ?(\\[(.*?)\\])) ?";
+   public static final String ENDFEATURE = " ?(End Feature ?((\\[.*?\\]))?) ?";
+   public static final String COMMENT_EXTRA_CHARS = SPACES + "(" + SINGLE_NEW_LINE + ")?";
 
    public static final int beginFeatureCommentMatcherGroup = 1;
    public static final int beginFeatureTagMatcherGroup = 2;
-   public static final int endFeatureCommentMatcherGroup = 5;
-   public static final int endFeatureTagMatcherGroup = 6;
+   public static final int endFeatureCommentMatcherGroup = 6;
+   public static final int endFeatureTagMatcherGroup = 7;
 
    private final OrcsApi orcsApi;
    private final Log logger;
@@ -72,6 +78,8 @@ public class BlockApplicabilityOps {
    private final ArtifactToken view;
    private final List<FeatureDefinition> featureDefinition;
    private final Map<String, List<String>> viewApplicabilitiesMap;
+
+   private boolean commentNonApplicableBlocks = false;
 
    public BlockApplicabilityOps(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactToken view) {
       this.orcsApi = orcsApi;
@@ -92,13 +100,14 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public String applyApplicabilityToFiles(String sourcePath) {
-      Map<String, Pattern> fileExtensionToCommentStyle = populateExtensionToPatternMap();
+   public String applyApplicabilityToFiles(String sourcePath, boolean commentNonApplicableBlocks) {
+      Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap();
+      this.commentNonApplicableBlocks = commentNonApplicableBlocks;
 
-      Rule rule = new BlockApplicabilityRule(this, fileExtensionToCommentStyle);
+      Rule rule = new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap);
 
       StringBuilder filePattern = new StringBuilder(".*\\.(");
-      filePattern.append(Collections.toString("|", fileExtensionToCommentStyle.keySet()));
+      filePattern.append(Collections.toString("|", fileTypeApplicabilityDataMap.keySet()));
       filePattern.append(")");
       rule.setFileNamePattern(filePattern.toString());
 
@@ -127,8 +136,8 @@ public class BlockApplicabilityOps {
          ApplicabilityType type = applic.getType();
 
          if (type.equals(ApplicabilityType.Feature)) {
-            toInsert =
-               getValidFeatureContent(insideText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
+            toInsert = getValidFeatureContent(insideText, applic.isInTable(), applic.getFileTypeApplicabilityData(),
+               parser.getIdValuesMap(), parser.getOperators());
          } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
             toInsert = getValidConfigurationContent(branch, view, type, insideText, parser.getIdValuesMap());
          } else if (type.equals(ApplicabilityType.ConfigurationGroup) || type.equals(
@@ -144,7 +153,7 @@ public class BlockApplicabilityOps {
       return toInsert;
    }
 
-   private String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
+   private String getValidFeatureContent(String fullText, boolean isInTable, FileTypeApplicabilityData fileTypeApplicabilityData, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
 
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
@@ -170,7 +179,6 @@ public class BlockApplicabilityOps {
          elseText = elseText.replaceAll(WordCoreUtil.BEGINFEATURE, "");
       }
 
-      String toReturn = "";
       String expression = createFeatureExpression(featureIdValuesMap, featureOperators);
 
       boolean result = false;
@@ -180,13 +188,22 @@ public class BlockApplicabilityOps {
          logger.error("Failed to parse expression: " + expression);
       }
 
+      StringBuilder toReturn = new StringBuilder();
       if (result) {
-         toReturn = beginningText;
+         toReturn.append(beginningText);
+         if (commentNonApplicableBlocks && !elseText.isEmpty()) {
+            toReturn.append(getCommentedString(elseText, fileTypeApplicabilityData.getCommentPrefix(),
+               fileTypeApplicabilityData.getCommentSuffix()));
+         }
       } else {
-         toReturn = elseText;
+         if (commentNonApplicableBlocks && !beginningText.isEmpty()) {
+            toReturn.append(getCommentedString(beginningText, fileTypeApplicabilityData.getCommentPrefix(),
+               fileTypeApplicabilityData.getCommentSuffix()));
+         }
+         toReturn.append(elseText);
       }
 
-      return toReturn;
+      return toReturn.toString();
    }
 
    private String getValidConfigurationGroupContent(BranchId branch, ArtifactToken view, ApplicabilityType type, String fullText, String beginTag) {
@@ -371,10 +388,47 @@ public class BlockApplicabilityOps {
       return toReturn;
    }
 
-   private Map<String, Pattern> populateExtensionToPatternMap() {
-      Map<String, Pattern> fileExtensionToPatternMap = new HashMap<>();
+   private String getCommentedString(String text, String commentPrefix, String commentSuffix) {
+      BufferedReader reader = new BufferedReader(new StringReader(text));
+      StringBuilder strB = new StringBuilder();
+      String line;
+      String newLine = getNewLineFromFile(text);
+      try {
+         while ((line = reader.readLine()) != null) {
+            if (!line.isEmpty()) {
+               strB.append(commentPrefix);
+               strB.append(line);
+               strB.append(commentSuffix);
+            }
+            strB.append(newLine);
+         }
+         reader.close();
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+
+      return strB.toString();
+   }
+
+   /**
+    * Using the given text, this finds the first instance of a newline character and returns that to be replaced back
+    * into the file. This is to protect from different new line characters styles between operating systems. The style
+    * that comes in is the style that goes out.
+    */
+   private String getNewLineFromFile(String text) {
+      Matcher matcher = Pattern.compile(SINGLE_NEW_LINE).matcher(text);
+      if (matcher.find()) {
+         return matcher.group();
+      } else {
+         return System.lineSeparator();
+      }
+   }
+
+   private Map<String, FileTypeApplicabilityData> populateFileTypeApplicabilityDataMap() {
+      Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = new HashMap<>();
       ArtifactReadable globalPreferences = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.GlobalPreferences).getArtifact();
+
       String preferences = globalPreferences.getSoleAttributeValue(CoreAttributeTypes.ProductLinePreferences, "");
 
       JsonNode preferencesJson = orcsApi.jaxRsApi().readTree(preferences);
@@ -384,19 +438,36 @@ public class BlockApplicabilityOps {
       while (iter.hasNext()) {
          JsonNode currNode = iter.next();
          String fileExtension = currNode.findValue("FileExtension").asText();
+
+         String commentPrefixRegex = currNode.findValue("CommentPrefixRegex").asText();
+         JsonNode optionalSuffixRegex = currNode.findValue("CommentSuffixRegex");
+         String commentSuffixRegex = optionalSuffixRegex == null ? "" : optionalSuffixRegex.asText();
+
+         Pattern pattern = createFullPatternFromCommentStyle(commentPrefixRegex, commentSuffixRegex);
+
          String commentPrefix = currNode.findValue("CommentPrefix").asText();
          JsonNode optionalSuffix = currNode.findValue("CommentSuffix");
          String commentSuffix = optionalSuffix == null ? "" : optionalSuffix.asText();
 
-         fileExtensionToPatternMap.put(fileExtension, createFullPatternFromCommentStyle(commentPrefix, commentSuffix));
+         FileTypeApplicabilityData data = new FileTypeApplicabilityData(pattern, commentPrefix, commentSuffix);
+
+         fileTypeApplicabilityDataMap.put(fileExtension, data);
       }
 
-      return fileExtensionToPatternMap;
+      return fileTypeApplicabilityDataMap;
    }
 
+   /**
+    * Using the given comments for the file type, creates an applicability pattern used to match Product Line tagging.
+    * Places content inside parenthesis to group each type together, uses an OR statement between each potential match
+    * pattern. Ex. Start Feature or End Feature. Also appends regex after the potential suffix to match any extra
+    * spaces, plus a single new line character. This is to maintain formatting in the newly written file.
+    */
    private Pattern createFullPatternFromCommentStyle(String commentPrefix, String commentSuffix) {
-      String commentedFeatureStart = "(" + commentPrefix + BEGINFEATURE + commentSuffix + ")";
-      String commentedFeatureEnd = "(" + commentPrefix + ENDFEATURE + commentSuffix + ")";
+      String commentedFeatureStart =
+         "(" + SPACES + commentPrefix + BEGINFEATURE + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedFeatureEnd =
+         "(" + SPACES + commentPrefix + ENDFEATURE + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String pattern = commentedFeatureStart + "|" + commentedFeatureEnd;
       return Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);
    }

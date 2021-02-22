@@ -284,5 +284,5 @@ public interface ApplicabilityEndpoint {
    @POST
    @Path("blockVisibility/{view}")
    @Produces(MediaType.APPLICATION_JSON)
-   String applyBlockVisibility(@PathParam("view") ArtifactId view, String sourcePath);
+   String applyBlockVisibility(@PathParam("view") ArtifactId view, @QueryParam("commentNonApplicableBlocks") boolean commentNonApplicableBlocks, String sourcePath);
 }

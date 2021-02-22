@@ -371,7 +371,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String applyBlockVisibility(ArtifactId view, String sourcePath) {
-      return ops.applyApplicabilityToFiles(branch, view, sourcePath);
+   public String applyBlockVisibility(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath) {
+      return ops.applyApplicabilityToFiles(branch, view, commentNonApplicableBlocks, sourcePath);
    }
 }

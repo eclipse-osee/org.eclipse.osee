@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.grammar;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
 
 /**
  * @author Ryan D. Brooks
@@ -31,6 +32,7 @@ public class ApplicabilityBlock {
    private final ApplicabilityType applicabilityType;
    private final ArrayList<ApplicabilityBlock> embeddedApplicabilityBlocks;
    private final ArrayList<String> outerExpressionOperators;
+   private FileTypeApplicabilityData fileTypeApplicabilityData;
    private String applicabilityExpression;
    private String optionalEndExpression;
    private boolean isInTable;
@@ -50,6 +52,7 @@ public class ApplicabilityBlock {
       this.applicabilityType = applicabilityType;
       embeddedApplicabilityBlocks = new ArrayList<>();
       outerExpressionOperators = new ArrayList<>();
+      fileTypeApplicabilityData = new FileTypeApplicabilityData();
       isInTable = false;
 
       startInsertIndex = Integer.MAX_VALUE;
@@ -180,5 +183,13 @@ public class ApplicabilityBlock {
 
    public void setBeginTag(String beginTag) {
       this.beginTag = beginTag;
+   }
+
+   public FileTypeApplicabilityData getFileTypeApplicabilityData() {
+      return fileTypeApplicabilityData;
+   }
+
+   public void setFileTypeApplicabilityData(FileTypeApplicabilityData fileTypeApplicabilityData) {
+      this.fileTypeApplicabilityData = fileTypeApplicabilityData;
    }
 }

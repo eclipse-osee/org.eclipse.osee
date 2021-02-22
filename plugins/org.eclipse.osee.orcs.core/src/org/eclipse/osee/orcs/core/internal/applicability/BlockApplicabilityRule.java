@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.core.internal.applicability;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
@@ -32,20 +32,22 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class BlockApplicabilityRule extends Rule {
    private final BlockApplicabilityOps orcsApplicability;
-   private final Map<String, Pattern> fileExtensionToPatternMap;
+   private final Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap;
    private final Stack<ApplicabilityBlock> applicBlocks = new Stack<>();
 
-   public BlockApplicabilityRule(BlockApplicabilityOps orcsApplicability, Map<String, Pattern> fileExtensionToPatternMap) {
+   public BlockApplicabilityRule(BlockApplicabilityOps orcsApplicability, Map<String, FileTypeApplicabilityData> fileTypeApplicabilityData) {
       super(null); // don't change extension on resulting file (i.e. overwrite the original file)
 
       this.orcsApplicability = orcsApplicability;
-      this.fileExtensionToPatternMap = fileExtensionToPatternMap;
+      this.fileTypeApplicabilityDataMap = fileTypeApplicabilityData;
    }
 
    @Override
    public ChangeSet computeChanges(CharSequence seq) {
       ChangeSet changeSet = new ChangeSet(seq);
-      Matcher matcher = fileExtensionToPatternMap.get(Lib.getExtension(getInputFile().getName())).matcher(seq);
+      FileTypeApplicabilityData fileTypeApplicabilityData =
+         fileTypeApplicabilityDataMap.get(Lib.getExtension(getInputFile().getName()));
+      Matcher matcher = fileTypeApplicabilityData.getCommentedTagPattern().matcher(seq);
 
       int matcherIndex = 0;
       while (matcherIndex < seq.length() && matcher.find(matcherIndex)) {
@@ -53,7 +55,7 @@ public class BlockApplicabilityRule extends Rule {
          String endFeature = matcher.group(BlockApplicabilityOps.endFeatureCommentMatcherGroup);
 
          if (beginFeature != null) {
-            matcherIndex = startApplicabilityBlock(beginFeature, matcher);
+            matcherIndex = startApplicabilityBlock(beginFeature, matcher, fileTypeApplicabilityData);
          } else if (endFeature != null) {
             matcherIndex = finishApplicabilityBlock(changeSet, matcher);
             ruleWasApplicable = true;
@@ -64,8 +66,9 @@ public class BlockApplicabilityRule extends Rule {
       return changeSet;
    }
 
-   private int startApplicabilityBlock(String beginFeature, Matcher matcher) {
+   private int startApplicabilityBlock(String beginFeature, Matcher matcher, FileTypeApplicabilityData fileTypeApplicabilityData) {
       ApplicabilityBlock applicStart = new ApplicabilityBlock(ApplicabilityType.Feature);
+      applicStart.setFileTypeApplicabilityData(fileTypeApplicabilityData);
       applicStart.setApplicabilityExpression(matcher.group(BlockApplicabilityOps.beginFeatureTagMatcherGroup));
       applicStart.setStartInsertIndex(matcher.start());
       applicStart.setStartTextIndex(matcher.end());
