@@ -624,12 +624,10 @@ public class AccessControlServiceImpl implements IAccessControlService {
    }
 
    public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) {
-
-      int subjectId = data.getSubject().getArtId();
       AccessObject accessControlledObject = data.getObject();
       boolean isArtifact = accessControlledObject instanceof ArtifactAccessObject;
       if (removeFromDb) {
-         accessControlledObject.removeFromDatabase(subjectId);
+         accessControlledObject.removeFromDatabase(data.getSubject());
       }
 
       if (accessControlledObject instanceof ArtifactAccessObject) {

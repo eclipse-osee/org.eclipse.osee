@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.access;
 
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class AccessObject implements HasBranch {
    public abstract void removeFromCache();
 
-   public abstract void removeFromDatabase(int subjectId);
+   public abstract void removeFromDatabase(ArtifactId subjectId);
 
    public static AccessObject getAccessObject(Object object) {
       if (object instanceof Artifact) {

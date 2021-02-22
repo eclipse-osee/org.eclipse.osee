@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.access.internal.data;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
@@ -48,7 +49,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    @Override
-   public void removeFromDatabase(int subjectId) {
+   public void removeFromDatabase(ArtifactId subjectId) {
       final String DELETE_BRANCH_ACL = "DELETE FROM OSEE_BRANCH_ACL WHERE privilege_entity_id = ? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branch);
    }

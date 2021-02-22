@@ -53,7 +53,7 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
    }
 
    @Override
-   public void removeFromDatabase(int subjectId) {
+   public void removeFromDatabase(ArtifactId subjectId) {
       final String DELETE_ARTIFACT_ACL =
          "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branch);
