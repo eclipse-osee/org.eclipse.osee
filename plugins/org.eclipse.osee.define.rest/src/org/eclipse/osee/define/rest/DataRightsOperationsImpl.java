@@ -85,7 +85,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
          for (ArtifactId artifact : artifacts) {
             ArtifactReadable art = artifactMap.getOrDefault(artifact, ArtifactReadable.SENTINEL);
-            String classification = null;
+            String classification = "";
             String orientation = "Portrait";
             if (DataRightsClassification.isValid(overrideClassification)) {
                classification = overrideClassification;
