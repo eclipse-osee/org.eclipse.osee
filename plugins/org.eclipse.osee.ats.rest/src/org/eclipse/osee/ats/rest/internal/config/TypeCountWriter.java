@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -41,7 +42,7 @@ public class TypeCountWriter {
       this.orcsApi = orcsApi;
    }
 
-   public void write(BranchId branch, Set<Long> newArts, Set<Long> modifiedArts, Set<Long> deletedArts, List<Long> artTypes, List<Long> attrTypes, OutputStream outputStream) {
+   public void write(BranchId branch, Set<ArtifactId> newArts, Set<ArtifactId> modifiedArts, Set<ArtifactId> deletedArts, List<Long> artTypes, List<Long> attrTypes, OutputStream outputStream) {
       try {
          Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
          ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);
@@ -56,7 +57,7 @@ public class TypeCountWriter {
 
          if (!newArts.isEmpty()) {
             ResultSet<ArtifactReadable> newArtifacts =
-               orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactTypes).andIdsL(newArts).getResults();
+               orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactTypes).andIds(newArts).getResults();
             for (ArtifactReadable art : newArtifacts) {
                String[] row = new String[columns];
                int index = 0;
@@ -74,7 +75,7 @@ public class TypeCountWriter {
 
          if (!modifiedArts.isEmpty()) {
             ResultSet<ArtifactReadable> modifiedArtifacts =
-               orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactTypes).andIdsL(
+               orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactTypes).andIds(
                   modifiedArts).getResults();
             for (ArtifactReadable art : modifiedArtifacts) {
                String[] row = new String[columns];
@@ -92,7 +93,7 @@ public class TypeCountWriter {
 
          if (!deletedArts.isEmpty()) {
             ResultSet<ArtifactReadable> deletedArtifacts =
-               orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactTypes).andIdsL(
+               orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactTypes).andIds(
                   deletedArts).getResults();
             for (ArtifactReadable art : deletedArtifacts) {
                String[] row = new String[columns];

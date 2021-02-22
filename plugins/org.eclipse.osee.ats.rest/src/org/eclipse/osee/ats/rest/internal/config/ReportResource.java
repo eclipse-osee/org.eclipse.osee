@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -57,11 +58,11 @@ public class ReportResource {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getTypeCount(@QueryParam("branch") BranchId branch, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) {
       List<ChangeItem> changes = getChanges(branch);
-      Set<Long> newArts = new HashSet<>();
-      Set<Long> modArts = new HashSet<>();
-      Set<Long> deletedArts = new HashSet<>();
+      Set<ArtifactId> newArts = new HashSet<>();
+      Set<ArtifactId> modArts = new HashSet<>();
+      Set<ArtifactId> deletedArts = new HashSet<>();
 
-      Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges = new HashMap<>();
+      Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges = new HashMap<>();
 
       buildArtIdToChangeMap(changes, artToChanges);
       buildLists(artToChanges, newArts, modArts, deletedArts);
@@ -82,49 +83,46 @@ public class ReportResource {
          "application/xml").build();
    }
 
-   private void buildArtIdToChangeMap(List<ChangeItem> changes, Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {
+   private void buildArtIdToChangeMap(List<ChangeItem> changes, Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {
       for (ChangeItem change : changes) {
-         int artId = change.getArtId().getIdIntValue();
+         ArtifactId artifact = change.getArtId();
          ChangeType changeType = change.getChangeType();
          if (changeType.isArtifactChange()) {
-            if (!artToChanges.containsKey(artId)) {
-               artToChanges.put(artId, new Pair<>(change, new HashSet<ChangeItem>()));
+            if (!artToChanges.containsKey(artifact)) {
+               artToChanges.put(artifact, new Pair<>(change, new HashSet<ChangeItem>()));
             } else {
                // This entry was added by an attribute change for this art so the changeType hasn't been set
-               Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artId);
+               Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artifact);
                pair.setFirst(change);
             }
          } else if (changeType.isAttributeChange()) {
-            if (!artToChanges.containsKey(artId)) {
+            if (!artToChanges.containsKey(artifact)) {
                Set<ChangeItem> changeSet = new HashSet<>();
                changeSet.add(change);
-               artToChanges.put(artId, new Pair<>(null, changeSet));
+               artToChanges.put(artifact, new Pair<>(null, changeSet));
             } else {
-               Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artId);
+               Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artifact);
                Set<ChangeItem> changeSet = pair.getSecond();
                changeSet.add(change);
             }
          }
-
       }
    }
 
-   private void buildLists(Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges, Set<Long> newArts, Set<Long> modArts, Set<Long> deletedArts) {
-
-      for (Integer artId : artToChanges.keySet()) {
-         Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artId);
+   private void buildLists(Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges, Set<ArtifactId> newArts, Set<ArtifactId> modArts, Set<ArtifactId> deletedArts) {
+      for (ArtifactId artifact : artToChanges.keySet()) {
+         Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artifact);
          ChangeItem artChange = pair.getFirst();
          ModificationType modType = artChange.getNetChange().getModType();
 
          if (modType.equals(ModificationType.NEW)) {
-            newArts.add((long) artId);
+            newArts.add(artifact);
          } else if (modType.equals(ModificationType.DELETED)) {
-            deletedArts.add((long) artId);
+            deletedArts.add(artifact);
          } else if (modType.equals(ModificationType.MODIFIED) && isCountable(artChange, pair.getSecond())) {
-            modArts.add((long) artId);
+            modArts.add(artifact);
          }
       }
-
    }
 
    private boolean isCountable(ChangeItem artChange, Set<ChangeItem> attrChanges) {
