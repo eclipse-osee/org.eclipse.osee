@@ -71,8 +71,10 @@ public class MergeInProgressHandler {
          toReturn = true;
       } else if (userOption == LAUNCH_MERGE_VIEW) { // Launch Merge
          MergeView.openView(sourceBranch, destinationBranch, BranchManager.getBaseTransaction(sourceBranch));
+         toReturn = true;
       } else if (userOption == DELETE_MERGE) { // Delete Merge
          deleteSingleMergeBranches(sourceBranch, destinationBranch, skipPrompts);
+         toReturn = true;
       } else if (userOption == FORCE_COMMIT) { // Force Commit, admin only
          TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, archiveBranch, true);
          if (transactionResult.isFailed()) {
@@ -80,7 +82,7 @@ public class MergeInProgressHandler {
          }
          toReturn = true;
       } else if (userOption == CANCEL) {
-         // do nothing
+         toReturn = true;
       }
       return toReturn;
    }
