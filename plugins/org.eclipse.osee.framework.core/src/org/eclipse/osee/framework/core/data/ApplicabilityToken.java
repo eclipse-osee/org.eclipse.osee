@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
 @JsonSerialize(using = NamedIdSerializer.class)
 public class ApplicabilityToken extends NamedIdBase implements ApplicabilityId {
    public static final ApplicabilityToken BASE = new ApplicabilityToken(ApplicabilityId.BASE.getId(), "Base");
+   public static final ApplicabilityToken SENTINEL =
+      new ApplicabilityToken(ApplicabilityId.SENTINEL.getId(), "Sentinel");
 
    public ApplicabilityToken(long applId, String name) {
       super(applId, name);

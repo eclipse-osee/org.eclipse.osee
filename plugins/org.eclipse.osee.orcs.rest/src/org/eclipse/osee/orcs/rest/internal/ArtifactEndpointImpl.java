@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -45,7 +47,6 @@ import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
-import org.eclipse.osee.orcs.rest.model.search.artifact.ArtifactSearchCriteria;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -278,7 +279,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return tx.commit();
    }
 
-   private QueryBuilder getQueryBuilder(ArtifactSearchCriteria searchCriteria) {
+   private QueryBuilder getQueryBuilder(ArtifactSearchOptions searchCriteria) {
       QueryBuilder fromBranch;
       QueryOption matchCase = QueryOption.getCaseType(searchCriteria.isCaseSensitive());
       QueryOption matchWordOrder = QueryOption.getTokenOrderType(searchCriteria.isMatchWordOrder());
@@ -305,24 +306,33 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
          if (!searchCriteria.getArtTypeIds().isEmpty()) {
             fromBranch.andIsOfType(searchCriteria.getArtTypeIds());
-
-            if (!searchCriteria.getAttrTypeIds().isEmpty() && Strings.isValid(searchCriteria.getSearchString())) {
-               fromBranch.and(searchCriteria.getAttrTypeIds(), searchCriteria.getSearchString(), matchCase,
-                  matchWordOrder, matchExact);
-            }
          }
+         if (Strings.isValid(searchCriteria.getSearchString())) {
+
+            if (searchCriteria.getAttrTypeIds().isEmpty()) {
+               List<AttributeTypeId> attrs = searchCriteria.getAttrTypeIds();
+               attrs.add(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+               searchCriteria.setAttrTypeIds(attrs);
+            }
+            fromBranch.and(searchCriteria.getAttrTypeIds(), searchCriteria.getSearchString(), matchCase, matchWordOrder,
+               matchExact);
+
+         }
+      }
+      if (searchCriteria.getIncludeDeleted().areDeletedAllowed()) {
+         fromBranch.includeDeletedArtifacts();
       }
       return fromBranch;
    }
 
    @Override
-   public List<ArtifactId> findArtifactIds(ArtifactSearchCriteria searchCriteria) {
-      return getQueryBuilder(searchCriteria).asArtifactIds();
+   public List<ArtifactId> findArtifactIds(ArtifactSearchOptions searchOptions) {
+      return getQueryBuilder(searchOptions).asArtifactIds();
    }
 
    @Override
-   public List<ArtifactToken> findArtifactTokens(ArtifactSearchCriteria searchCriteria) {
-      return getQueryBuilder(searchCriteria).asArtifactTokens();
+   public List<ArtifactToken> findArtifactTokens(ArtifactSearchOptions searchOptions) {
+      return getQueryBuilder(searchOptions).asArtifactTokens();
    }
 
 }

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchOptionComposite;
+import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -61,13 +62,15 @@ public class SearchComposite extends Composite implements Listener {
    private boolean entryChanged;
    private final String buttonText, groupBoxText;
    private QuickSearchOptionComposite optionsComposite;
+   private final QuickSearchView quickSearch;
 
-   public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText) {
+   public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText, QuickSearchView quickSearch) {
       super(parent, style);
       this.listeners = new HashSet<>();
       this.entryChanged = false;
       this.buttonText = buttonText;
       this.groupBoxText = groupBoxText;
+      this.quickSearch = quickSearch;
       createControl(this);
    }
 
@@ -209,6 +212,10 @@ public class SearchComposite extends Composite implements Listener {
             } else {
                this.executeSearch.setEnabled(Strings.isValid(value));
             }
+
+         }
+         if ((this.quickSearch.getApplicabilityCheckBox() && this.quickSearch.getApplicabilityId().isValid()) || (this.quickSearch.getViewCheckBox() && this.quickSearch.getViewId().isValid())) {
+            this.executeSearch.setEnabled(true);
          }
          if (Widgets.isAccessible(this.clear)) {
             this.clear.setEnabled(this.searchArea.getItemCount() > 0);

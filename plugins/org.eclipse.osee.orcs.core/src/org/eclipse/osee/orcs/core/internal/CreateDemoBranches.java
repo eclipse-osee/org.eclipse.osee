@@ -101,7 +101,7 @@ public class CreateDemoBranches {
       // Configure productions for each feature
       configureFeature(tx, DemoFeatures.ROBOT_ARM_LIGHT.name(), products, "Excluded", "Included", "Excluded",
          "Excluded");
-      configureFeature(tx, DemoFeatures.ENGINE_5.name(), products, "A2543", "A2543", "A2543", "A5543");
+      configureFeature(tx, DemoFeatures.ENGINE_5.name(), products, "A2543", "A2543", "A2543", "B5543");
       configureFeature(tx, DemoFeatures.JHU_CONTROLLER.name(), products, "Excluded", "Included", "Included",
          "Excluded");
       configureFeature(tx, DemoFeatures.ROBOT_SPEAKER.name(), products, "SPKR_A", "SPKR_A", "SPKR_B", "SPKR_B");

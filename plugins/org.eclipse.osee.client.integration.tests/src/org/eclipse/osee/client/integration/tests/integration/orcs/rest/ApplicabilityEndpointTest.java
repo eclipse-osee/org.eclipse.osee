@@ -15,19 +15,24 @@ package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ViewDefinition;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -121,18 +126,30 @@ public class ApplicabilityEndpointTest {
    public void testApplicabilityRestCalls() throws Exception {
       ApplicabilityEndpoint appl =
          ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
+      ArtifactEndpoint artifactEndpoint =
+         ServiceUtil.getOseeClient().getArtifactEndpoint(DemoBranches.SAW_PL_Working_Branch);
 
       ViewDefinition view = appl.getView("Product A");
       XResultData createNewApp =
          appl.createApplicabilityForView(ArtifactId.valueOf(view.getId()), "ROBOT_ARM_LIGHT = Included");
-      Assert.assertEquals("ApplicabilityEndpoint.createApplicabilityForView failure", createNewApp.getErrorCount(), 0);
+      Assert.assertEquals(createNewApp.getErrorCount(), 0);
       XResultData createInvalidApp =
          appl.createApplicabilityForView(ArtifactId.valueOf(view.getId()), "MADEUPFEATURE = Included");
-      Assert.assertNotEquals("ApplicabilityEndpoint.createApplicabilityForView failure",
-         createInvalidApp.getErrorCount(), 0);
+      Assert.assertNotEquals(createInvalidApp.getErrorCount(), 0);
       XResultData createMultiApp =
          appl.createApplicabilityForView(ArtifactId.valueOf(view.getId()), "ROBOT_SPEAKER = SPKR_C");
-      Assert.assertEquals("ApplicabilityEndpoint.createApplicabilityForView with multiple values failure",
-         createMultiApp.getErrorCount(), 0);
+      Assert.assertEquals(createMultiApp.getErrorCount(), 0);
+      Collection<ApplicabilityToken> appTokens = appl.getApplicabilityTokens();
+      ApplicabilityToken robotIncluded = appTokens.stream().filter(
+         appToken -> "ROBOT_ARM_LIGHT = Included".equals(appToken.getName())).findAny().orElse(
+            ApplicabilityToken.SENTINEL);
+      Assert.assertTrue(robotIncluded.isValid());
+      ArtifactToken newArtifact = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.Folder, CoreArtifactTokens.DefaultHierarchyRoot, "TestArtifact");
+      appl.setApplicability(robotIncluded, Collections.singletonList(newArtifact));
+      ApplicabilityToken testAppToken = appl.getApplicabilityToken(newArtifact);
+      Assert.assertTrue(testAppToken.equals(robotIncluded));
+      artifactEndpoint.deleteArtifact(DemoBranches.SAW_PL_Working_Branch, newArtifact);
+
    }
 }

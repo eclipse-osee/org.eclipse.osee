@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -22,31 +20,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
-import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
-import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
-import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -84,8 +80,10 @@ public class QuickSearchView extends GenericViewPart {
    private static final String ENTRY_SEPARATOR = "##";
    private static final String LAST_QUERY_KEY_ID = "lastQuery";
    private static final String LAST_BRANCH_UUID = "lastBranchUuid";
+   private static final String LAST_APPLIC_UUID = "lastApplicUuid";
+   private static final String LAST_APPLIC_TEXT = "lastApplicText";
+   private static final String LAST_VIEW_UUID = "lastViewUuid";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
-
    private Label branchLabel;
    private XBranchSelectWidget branchSelect;
    private SearchComposite attrSearchComposite;
@@ -93,9 +91,13 @@ public class QuickSearchView extends GenericViewPart {
    private QuickSearchOptionComposite optionsComposite;
    private IMemento memento;
    private Button includeDeleted;
-
    private final AttributeSearchListener attrSearchListener = new AttributeSearchListener();
    private final IdSearchListener idSearchListener = new IdSearchListener();
+   private QuickSearchViewApplicability view;
+   private QuickSearchApplicabilityToken applicability;
+   private ApplicabilityToken applicabilityId = ApplicabilityToken.SENTINEL;
+   private ArtifactId viewId = ArtifactId.SENTINEL;
+   private BranchId branch = BranchId.SENTINEL;
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
@@ -110,9 +112,16 @@ public class QuickSearchView extends GenericViewPart {
       if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
          if (Widgets.isAccessible(attrSearchComposite)) {
             memento.putString(LAST_QUERY_KEY_ID, attrSearchComposite.getQuery());
-            BranchId branch = branchSelect.getData();
+            branch = branchSelect.getData();
             if (branch != null) {
                memento.putString(LAST_BRANCH_UUID, branch.getIdString());
+            }
+            if (viewId.isValid()) {
+               memento.putString(LAST_VIEW_UUID, viewId.getIdString());
+            }
+            if (applicabilityId.isValid()) {
+               memento.putString(LAST_APPLIC_UUID, applicabilityId.getIdString());
+               memento.putString(LAST_APPLIC_TEXT, applicabilityId.getName());
             }
             StringBuilder builder = new StringBuilder();
             String[] queries = attrSearchComposite.getQueryHistory();
@@ -152,18 +161,34 @@ public class QuickSearchView extends GenericViewPart {
             }
             attrSearchComposite.restoreWidgetValues(queries, lastQuery, null, null);
          }
-         if (Widgets.isAccessible(optionsComposite)) {
-            optionsComposite.loadState(memento);
-         }
+
          if (branchSelect != null) {
             String uuid = memento.getString(LAST_BRANCH_UUID);
+            String viewUuid = memento.getString(LAST_VIEW_UUID);
+            String applicUuid = memento.getString(LAST_APPLIC_UUID);
+            String applicText = memento.getString(LAST_APPLIC_TEXT);
+
             if (Strings.isValid(uuid) && uuid.matches("\\d+")) {
                try {
                   branchSelect.setSelection(BranchManager.getBranchToken(Long.valueOf(uuid)));
+                  setBranch(branchSelect.getData());
+                  if (Strings.isValid(viewUuid) && viewUuid.matches("\\d+")) {
+                     setViewId(ArtifactId.valueOf(viewUuid));
+                  }
+                  if (Strings.isValid(applicUuid) && applicUuid.matches("\\d+")) {
+                     setApplicabilityId(ApplicabilityToken.valueOf(Long.valueOf(applicUuid), applicText));
+                  }
+                  refreshView();
+                  refreshApplicability();
+
                } catch (OseeCoreException ex) {
                   // do nothing
                }
             }
+            if (Widgets.isAccessible(optionsComposite)) {
+               optionsComposite.loadState(memento);
+            }
+
          }
       }
    }
@@ -175,7 +200,7 @@ public class QuickSearchView extends GenericViewPart {
          ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
          sc.setExpandHorizontal(true);
          sc.setExpandVertical(true);
-         sc.setMinSize(300, 300);
+         sc.setMinSize(500, 500);
 
          Composite group = new Composite(sc, SWT.NONE);
          sc.setContent(group);
@@ -195,8 +220,25 @@ public class QuickSearchView extends GenericViewPart {
                branchSelect.getSelectComposite().getBranchSelectText().setDoubleClickEnabled(true);
             }
          }
-         OseeStatusContributionItemFactory.addTo(this, true);
+         branchSelect.addListener(new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               try {
+                  BranchId selectedBranch = branchSelect.getData();
+                  if (selectedBranch != null && !BranchId.SENTINEL.equals(selectedBranch)) {
+                     branch = selectedBranch;
+                     setViewId(ArtifactId.SENTINEL);
+                     setApplicabilityId(ApplicabilityToken.SENTINEL);
+                     refreshView();
+                     refreshApplicability();
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(getClass(), Level.SEVERE, ex);
+               }
+            }
 
+         });
+         OseeStatusContributionItemFactory.addTo(this, true);
          Composite panel = new Composite(group, SWT.NONE);
          GridLayout gL = new GridLayout();
          gL.marginHeight = 0;
@@ -205,16 +247,14 @@ public class QuickSearchView extends GenericViewPart {
          panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
          if (AccessControlManager.isOseeAdmin()) {
-            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
+            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this);
             idSearchComposite.addListener(idSearchListener);
          }
 
          Group attrSearchGroup = new Group(panel, SWT.NONE);
          attrSearchGroup.setLayout(new GridLayout());
          attrSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         attrSearchGroup.setText("Search by Attributes:");
-
-         attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null);
+         attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null, this);
          attrSearchComposite.addListener(attrSearchListener);
 
          optionsComposite = new QuickSearchOptionComposite(attrSearchGroup, SWT.NONE);
@@ -222,9 +262,19 @@ public class QuickSearchView extends GenericViewPart {
          optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
          attrSearchComposite.setOptionsComposite(optionsComposite);
          optionsComposite.setAttrSearchComposite(attrSearchComposite);
+         Group appSearchGroup = new Group(attrSearchGroup, SWT.NONE);
+         appSearchGroup.setLayout(ALayout.getZeroMarginLayout());
 
+         appSearchGroup.setLayout(new GridLayout());
+         appSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         appSearchGroup.setText("Product Line Options:");
+         view = new QuickSearchViewApplicability(appSearchGroup, this);
+         view.create();
+
+         applicability = new QuickSearchApplicabilityToken(appSearchGroup, this);
+         applicability.create();
          if (!AccessControlManager.isOseeAdmin()) {
-            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
+            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this);
             idSearchComposite.addListener(idSearchListener);
          }
 
@@ -276,6 +326,7 @@ public class QuickSearchView extends GenericViewPart {
    public void setBranch(BranchToken branch) {
       if (branchSelect != null) {
          branchSelect.setSelection(branch);
+         this.branch = branchSelect.getData();
          // branch has been selected; allow user to set up search string
          compositeEnablement(attrSearchComposite, true);
       }
@@ -299,43 +350,31 @@ public class QuickSearchView extends GenericViewPart {
             } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
                event) && Widgets.isAccessible(optionsComposite)) {
 
-               // if just search artifact type without attribute value
-               if (optionsComposite.getArtifactTypeFilter().length > 0 && optionsComposite.getAttributeTypeFilter().length == 0) {
-                  NewSearchUI.activateSearchResultView();
-                  FilterModelList filterModelList = new FilterModelList();
+               NewSearchUI.activateSearchResultView();
 
-                  List<ArtifactTypeToken> artTypes = new LinkedList<>();
-                  for (ArtifactTypeToken artType : optionsComposite.getArtifactTypeFilter()) {
-                     artTypes.add(artType);
-                  }
-                  ISearchPrimitive primitive = new ArtifactTypeSearch(artTypes);
-                  FilterModel model = new FilterModel(primitive,
-                     String.format("All of Artifact Type [%s]", Collections.toString(";", artTypes)),
-                     artTypes.toString(), "");
-
-                  filterModelList.addFilter(model, true);
-                  AbstractArtifactSearchQuery searchQuery = new FilterArtifactSearchQuery(filterModelList, branch);
-                  NewSearchUI.runQueryInBackground(searchQuery);
-
+               ISearchQuery query;
+               ArtifactSearchOptions options = new ArtifactSearchOptions();
+               options.setIncludeDeleted(DeletionFlag.allowDeleted(includeDeleted.getSelection()));
+               if (optionsComposite.isAttributeTypeFilterEnabled()) {
+                  options.setAttrTypeIds(Arrays.asList(optionsComposite.getAttributeTypeFilter()));
                }
-               // else search for attribute type values as well
-               else {
-                  DeletionFlag allowDeleted = isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
-                  NewSearchUI.activateSearchResultView();
-
-                  ISearchQuery query;
-                  SearchOptions options = new SearchOptions();
-                  options.setDeletedIncluded(allowDeleted);
-                  options.setAttributeTypeFilter(optionsComposite.getAttributeTypeFilter());
-                  options.setArtifactTypeFilter(optionsComposite.getArtifactTypeFilter());
-                  options.setCaseSensive(optionsComposite.isCaseSensitiveEnabled());
-                  options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
-                  options.setExactMatch(optionsComposite.isExactMatchEnabled());
-
-                  SearchRequest searchRequest = new SearchRequest(branch, attrSearchComposite.getQuery(), options);
-                  query = new RemoteArtifactSearch(searchRequest);
-                  NewSearchUI.runQueryInBackground(query);
+               if (optionsComposite.isArtifactTypeFilterEnabled()) {
+                  options.setArtTypeIds(Arrays.asList(optionsComposite.getArtifactTypeFilter()));
                }
+               options.setCaseSensitive(optionsComposite.isCaseSensitiveEnabled());
+               options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
+               options.setExactMatch(optionsComposite.isExactMatchEnabled());
+               if (Strings.isValid(attrSearchComposite.getQuery())) {
+                  options.setSearchString(attrSearchComposite.getQuery());
+               }
+               if (applicability.getCheckBox()) {
+                  options.setApplic(getApplicabilityId());
+               }
+               if (view.getCheckBox()) {
+                  options.setView(getViewId());
+               }
+               query = new ArtifactSearch(branchSelect.getData(), options);
+               NewSearchUI.runQueryInBackground(query);
 
             } else {
                // branch has been selected; allow user to set up search string
@@ -429,6 +468,70 @@ public class QuickSearchView extends GenericViewPart {
       });
 
       searchArea.setMenu(menu);
+   }
+
+   public ApplicabilityToken getApplicabilityId() {
+      return applicabilityId;
+   }
+
+   public void setApplicabilityId(ApplicabilityToken applicabilityId) {
+      if (applicabilityId.isValid()) {
+         view.refresh();
+      }
+      this.applicabilityId = applicabilityId;
+      updateWidgetEnablements();
+   }
+
+   public ArtifactId getViewId() {
+      return viewId;
+   }
+
+   public void setViewId(ArtifactId viewId) {
+      if (viewId.isValid()) {
+         applicability.refresh();
+      }
+      this.viewId = viewId;
+      updateWidgetEnablements();
+   }
+
+   public void setViewCheckBox(boolean selected) {
+      view.setCheckBox(selected);
+      updateWidgetEnablements();
+   }
+
+   public boolean getViewCheckBox() {
+      return view.getCheckBox();
+
+   }
+
+   public void updateWidgetEnablements() {
+      attrSearchComposite.updateWidgetEnablements();
+   }
+
+   public void setApplicabilityCheckBox(boolean selected) {
+      applicability.setCheckBox(selected);
+      updateWidgetEnablements();
+   }
+
+   public boolean getApplicabilityCheckBox() {
+      return applicability.getCheckBox();
+
+   }
+
+   private void refreshView() {
+      if (view != null) {
+         view.refresh();
+      }
+   }
+
+   private void refreshApplicability() {
+      if (applicability != null) {
+         applicability.refresh();
+      }
+   }
+
+   public BranchId getBranch() {
+      return branch;
    }
 
 }

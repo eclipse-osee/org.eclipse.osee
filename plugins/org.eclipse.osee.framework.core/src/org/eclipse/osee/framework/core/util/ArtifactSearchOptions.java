@@ -13,7 +13,7 @@
 /**
  * @author Audrey Denk
  */
-package org.eclipse.osee.orcs.rest.model.search.artifact;
+package org.eclipse.osee.framework.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,9 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
-public class ArtifactSearchCriteria {
+public class ArtifactSearchOptions {
    private List<ArtifactId> artIds = new ArrayList<>();
    private List<ArtifactTypeToken> artTypeIds = new ArrayList<>();
    private List<AttributeTypeId> attrTypeIds = new ArrayList<>();
@@ -32,11 +33,12 @@ public class ArtifactSearchCriteria {
    private boolean caseSensitive = false;
    private boolean matchWordOrder = false;
    private boolean exactMatch = false;
+   private DeletionFlag includeDeleted = DeletionFlag.EXCLUDE_DELETED;
 
-   public ArtifactSearchCriteria() {
+   public ArtifactSearchOptions() {
    };
 
-   public ArtifactSearchCriteria(ArtifactId view, ApplicabilityId applic, List<ArtifactId> artIds, List<ArtifactTypeToken> artTypeIds, List<AttributeTypeId> attrTypeIds, String searchString, boolean caseSensitive, boolean matchWordOrder, boolean exactMatch) {
+   public ArtifactSearchOptions(ArtifactId view, ApplicabilityId applic, List<ArtifactId> artIds, List<ArtifactTypeToken> artTypeIds, List<AttributeTypeId> attrTypeIds, String searchString, boolean caseSensitive, boolean matchWordOrder, boolean exactMatch, DeletionFlag includeDeleted) {
       super();
       this.setView(view);
       this.setApplic(applic);
@@ -47,6 +49,7 @@ public class ArtifactSearchCriteria {
       this.setCaseSensitive(caseSensitive);
       this.setExactMatch(exactMatch);
       this.setMatchWordOrder(matchWordOrder);
+      this.setIncludeDeleted(includeDeleted);
    }
 
    public List<ArtifactId> getArtIds() {
@@ -119,6 +122,14 @@ public class ArtifactSearchCriteria {
 
    public void setApplic(ApplicabilityId applic) {
       this.applic = applic;
+   }
+
+   public DeletionFlag getIncludeDeleted() {
+      return includeDeleted;
+   }
+
+   public void setIncludeDeleted(DeletionFlag includeDeleted) {
+      this.includeDeleted = includeDeleted;
    }
 
 }
