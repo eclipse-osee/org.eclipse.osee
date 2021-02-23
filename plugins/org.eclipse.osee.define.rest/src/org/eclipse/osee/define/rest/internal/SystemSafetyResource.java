@@ -64,6 +64,23 @@ public final class SystemSafetyResource {
    }
 
    /**
+    * Produce the Requirements Only System Safety Report
+    *
+    * @param branchId The Branch to run the System Safety Report on.
+    * @view view The applicability view for the requirements.
+    * @return Produces a streaming xml file containing the System Safety Report
+    */
+   @Path("safety/swreqts")
+   @GET
+   @Produces(MediaType.APPLICATION_XML)
+   public Response getReqtsOnlySafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("view") ArtifactId view) {
+      StreamingOutput reqtsOutput = new SafetyReqtsOnlyStreamingOutput(activityLog, orcsApi, branchId, view);
+      ResponseBuilder builder = Response.ok(reqtsOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + "Safety_Reqts_Only_Report.xml");
+      return builder.build();
+   }
+
+   /**
     * Produce the System Safety Report
     *
     * @param branchId The Branch to run the System Safety Report on.
