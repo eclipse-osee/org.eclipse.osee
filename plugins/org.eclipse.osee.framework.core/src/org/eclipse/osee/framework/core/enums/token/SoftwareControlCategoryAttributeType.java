@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.core.enums.token.SoftwareControlCategoryAttrib
  */
 public class SoftwareControlCategoryAttributeType extends AttributeTypeEnum<SoftwareControlCategoryEnum> {
 
-   public final SoftwareControlCategoryEnum _1At = new SoftwareControlCategoryEnum(0, "1(AT)");
-   public final SoftwareControlCategoryEnum _2Sat = new SoftwareControlCategoryEnum(1, "2(SAT)");
-   public final SoftwareControlCategoryEnum _3Rft = new SoftwareControlCategoryEnum(2, "3(RFT)");
-   public final SoftwareControlCategoryEnum _4In = new SoftwareControlCategoryEnum(3, "4(IN)");
-   public final SoftwareControlCategoryEnum _5Nsi = new SoftwareControlCategoryEnum(4, "5(NSI)");
-   public final SoftwareControlCategoryEnum Unspecified = new SoftwareControlCategoryEnum(5, "Unspecified");
+   public final SoftwareControlCategoryEnum Unspecified = new SoftwareControlCategoryEnum(0, "Unspecified");
+   public final SoftwareControlCategoryEnum _1At = new SoftwareControlCategoryEnum(1, "1(AT)");
+   public final SoftwareControlCategoryEnum _2Sat = new SoftwareControlCategoryEnum(2, "2(SAT)");
+   public final SoftwareControlCategoryEnum _3Rft = new SoftwareControlCategoryEnum(3, "3(RFT)");
+   public final SoftwareControlCategoryEnum _4In = new SoftwareControlCategoryEnum(4, "4(IN)");
+   public final SoftwareControlCategoryEnum _5Nsi = new SoftwareControlCategoryEnum(5, "5(NSI)");
 
    public SoftwareControlCategoryAttributeType(NamespaceToken namespace, int enumCount) {
       super(1958401980089733639L, namespace, "Software Control Category", MediaType.TEXT_PLAIN,
