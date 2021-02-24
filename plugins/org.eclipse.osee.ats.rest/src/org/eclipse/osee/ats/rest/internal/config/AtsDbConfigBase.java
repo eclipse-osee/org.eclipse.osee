@@ -107,6 +107,8 @@ public class AtsDbConfigBase {
 
       CreateAndconfigureProcessesBranchAndDemoPeerChecklist();
 
+      ConfigureWalkthroughChecklist();
+
       return results;
    }
 
@@ -122,8 +124,8 @@ public class AtsDbConfigBase {
          CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL);
       branchOps.setBranchPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
 
-      // Create Top Folders on Processes Branch
-      IAtsChangeSet changes = atsApi.createChangeSet("Create attachment Folders", branch);
+      // Create Top Folder on Processes Branch
+      IAtsChangeSet changes = atsApi.createChangeSet("Create PR Attachment Folder", branch);
       ArtifactToken branchRoot = atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot, branch);
       changes.createArtifact(branchRoot, AtsArtifactToken.PeerAttachmentFolder);
 
@@ -136,6 +138,33 @@ public class AtsDbConfigBase {
 
       File file2 = OseeInf.getResourceAsFile("demoPeerChecklists/Process_Checklist.xlsx", AtsDbConfigBase.class);
       importChecklist(file2, transaction, AtsArtifactToken.PeerAttachmentFolder);
+      transaction.commit();
+   }
+
+   private void ConfigureWalkthroughChecklist() {
+      AtsAttachments checklists = new AtsAttachments();
+      checklists.addAttachment(new AtsAttachment("W_Document_Checklist", "osee", DemoBranches.Processes));
+      checklists.addAttachment(new AtsAttachment("W_Process_Checklist", "osee", DemoBranches.Processes));
+      String jsonToStore = JsonUtil.toJson(checklists);
+      atsApi.setConfigValue("WalkthroughChecklist", jsonToStore);
+
+      // Create Top Folder on Processes Branch
+      IAtsChangeSet changes = atsApi.createChangeSet("Create WT Attachment Folder", DemoBranches.Processes);
+      ArtifactToken branchRoot =
+         atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot, DemoBranches.Processes);
+      changes.createArtifact(branchRoot, AtsArtifactToken.WalkthroughAttachmentFolder);
+
+      changes.execute();
+
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes,
+         SystemUser.OseeSystem, "Import Walkthrough Checklist");
+      File file =
+         OseeInf.getResourceAsFile("demoWalkthroughChecklists/W_Document_Checklist.xlsx", AtsDbConfigBase.class);
+      importChecklist(file, transaction, AtsArtifactToken.WalkthroughAttachmentFolder);
+
+      File file2 =
+         OseeInf.getResourceAsFile("demoWalkthroughChecklists/W_Process_Checklist.xlsx", AtsDbConfigBase.class);
+      importChecklist(file2, transaction, AtsArtifactToken.WalkthroughAttachmentFolder);
       transaction.commit();
    }
 

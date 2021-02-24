@@ -147,6 +147,13 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
       return nameBranchMap;
    }
 
+   private void deletePreviouslySelectedArtifact() {
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Related Artifact");
+      Pair<Artifact, RelationLink> entry = getSelectedAttachment();
+      changes.deleteArtifact(entry.getFirst());
+      changes.execute();
+   }
+
    private void fillCombo() {
 
       getNameToLocationMap();
@@ -158,16 +165,19 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
 
          @Override
          public void widgetModified(XWidget widget) {
+
             // Determine if file is already attached and ask if want to replace
             if (isAttachmentAttached()) {
-               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Attach Selected",
+               if (getData().equals("--select--")) {
+                  if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Attach Selected",
+                     "You didn't select the right attachment, do you want to delete previous attachment and attach nothing?")) {
+                     return;
+                  }
+               } else if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Attach Selected",
                   "There is already one attachment attached, do you want to delete and replace with the new one?")) {
                   return;
                }
-               IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Related Artifact");
-               Pair<Artifact, RelationLink> entry = getSelectedAttachment();
-               changes.deleteArtifact(entry.getFirst());
-               changes.execute();
+               deletePreviouslySelectedArtifact();
             }
 
             // Check if these files are stored in OSEE

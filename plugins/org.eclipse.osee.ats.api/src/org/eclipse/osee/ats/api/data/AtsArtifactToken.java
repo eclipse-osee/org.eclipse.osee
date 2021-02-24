@@ -47,6 +47,7 @@ public final class AtsArtifactToken {
    public static ArtifactToken WebPrograms = ArtifactToken.valueOf(277592, "Web Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken PeerAttachmentFolder = ArtifactToken.valueOf(8635196, "Peer Review Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
+   public static ArtifactToken WalkthroughAttachmentFolder = ArtifactToken.valueOf(8649004, "Walkthrough Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
    // Default Work Definitions
 
    // Safety Workflow configuration
