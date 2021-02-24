@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
 
+   public static final RelationTypeSide SENTINEL =
+      new RelationTypeSide(RelationTypeToken.SENTINEL, RelationSide.SIDE_A);
+
    private final RelationTypeToken type;
    private final RelationSide side;
    private RelationTypeSide opposite;

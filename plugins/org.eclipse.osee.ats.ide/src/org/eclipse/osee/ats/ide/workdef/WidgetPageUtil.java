@@ -157,6 +157,7 @@ public class WidgetPageUtil {
             data.setStoreName(widgetDef.getAttributeType().getName());
             data.setStoreId(widgetDef.getAttributeType().getId());
          }
+         data.setRelationTypeSide(widgetDef.getRelationTypeSide());
          data.setToolTip(widgetDef.getToolTip());
          data.setId(widgetDef.getName());
          data.setXWidgetName(widgetDef.getXWidgetName());

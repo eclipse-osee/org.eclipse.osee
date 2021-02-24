@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
@@ -29,13 +30,14 @@ public class XWidgetRendererItem implements Cloneable {
    private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
    private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
+   private final XOptionHandler xOptionHandler = new XOptionHandler();
 
    private String name = "Unknown";
    private String id = "";
    private String storeName = "";
    private Long storeId = -1L;
    private String xWidgetName = UNKNOWN;
-
    private XWidget xWidget;
    private int beginComposite = 0; // If >0, indicates new child composite with columns == value
    private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
@@ -46,12 +48,11 @@ public class XWidgetRendererItem implements Cloneable {
    private SwtXWidgetRenderer dynamicXWidgetLayout;
    private String defaultValue;
    private String keyedBranchName;
-   private final XOptionHandler xOptionHandler = new XOptionHandler();
    private Artifact artifact;
    private Object object;
    private String doubleClickText;
    private ArtifactTypeId artifactType;
-   private final Map<String, Object> parameters = new HashMap<String, Object>();
+   private RelationTypeSide relationTypeSide;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -273,6 +274,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public String getDoubleClickText() {
       return doubleClickText;
+   }
+
+   public RelationTypeSide getRelationTypeSide() {
+      return relationTypeSide;
+   }
+
+   public void setRelationTypeSide(RelationTypeSide relationTypeSide) {
+      this.relationTypeSide = relationTypeSide;
    }
 
    /**

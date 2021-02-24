@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * Used by XWidgets that perform external data storage
+ * Used by XWidgets that perform data binding using OSEE attributes
  *
  * @author Roberto E. Escobar
  */
@@ -26,16 +26,10 @@ public interface AttributeWidget extends ArtifactStoredWidget {
    /**
     * Set attributeType used as storage for this widget
     */
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeToken);
+   void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeToken);
 
    /**
-    * Get attributeType used as storage for this widget
+    * Get attributeType used for data binding for this widget
     */
-   public AttributeTypeToken getAttributeType();
-
-   /**
-    * Reload widget from current attr value
-    */
-   public void reSet();
-
+   AttributeTypeToken getAttributeType();
 }

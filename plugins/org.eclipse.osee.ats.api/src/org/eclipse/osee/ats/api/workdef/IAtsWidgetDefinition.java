@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -60,5 +61,7 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
    public Object getParameter(String key);
 
    Map<String, Object> getParameters();
+
+   RelationTypeSide getRelationTypeSide();
 
 }

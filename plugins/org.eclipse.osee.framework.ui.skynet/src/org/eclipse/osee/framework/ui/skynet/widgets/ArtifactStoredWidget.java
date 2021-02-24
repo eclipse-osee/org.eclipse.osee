@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * Used by XWidgets that perform external data storage
- * 
+ * Used by XWidgets that perform data binding using OSEE artifacts
+ *
  * @author Roberto E. Escobar
  */
 public interface ArtifactStoredWidget {
@@ -31,16 +31,22 @@ public interface ArtifactStoredWidget {
    /**
     * Save data changes to artifact
     */
-   public void saveToArtifact();
+   void saveToArtifact();
 
    /**
     * Revert changes to widget data back to what was in artifact
     */
-   public void revert();
+   void revert();
 
    /**
     * Return true if storage data different than widget data
     */
-   public Result isDirty();
+   Result isDirty();
 
+   /**
+    * Reload widget from current attribute value
+    */
+   default void reSet() {
+      // if necessary reload the bound data
+   }
 }

@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -469,9 +468,9 @@ public class WfeWorkflowSection extends SectionPart {
       super.refresh();
       try {
          for (XWidget xWidget : allXWidgets) {
-            if (xWidget instanceof AttributeWidget) {
-               // Reload with with current artifact/attribute value
-               ((AttributeWidget) xWidget).reSet();
+            if (xWidget instanceof ArtifactStoredWidget) {
+               // Reload with with current artifact/attribute/relation
+               ((ArtifactStoredWidget) xWidget).reSet();
             } else {
                xWidget.refresh();
             }

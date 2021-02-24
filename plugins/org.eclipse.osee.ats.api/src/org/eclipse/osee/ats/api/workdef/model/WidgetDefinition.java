@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -27,31 +28,40 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition {
 
-   private AttributeTypeToken attributeType;
+   private final AttributeTypeToken attributeType;
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
+   private final RelationTypeSide relationTypeSide;
+   private final WidgetOptionHandler options = new WidgetOptionHandler();
+
    private String toolTip;
    private String description;
    private int height;
    private String xWidgetName;
    private String defaultValue;
-   private final WidgetOptionHandler options = new WidgetOptionHandler();
    private Double min;
    private Double max;
-   private final Map<String, Object> parameters = new HashMap<String, Object>();
 
    public WidgetDefinition(String name) {
-      super(name);
+      this(name, "");
+   }
+
+   public WidgetDefinition(String name, AttributeTypeToken attributeType, String xWidgetName, WidgetOption... widgetOptions) {
+      this(name, RelationTypeSide.SENTINEL, attributeType, xWidgetName, widgetOptions);
    }
 
    public WidgetDefinition(String name, String xWidgetName, WidgetOption... widgetOptions) {
-      this(name, AttributeTypeToken.SENTINEL, xWidgetName, widgetOptions);
+      this(name, RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL, xWidgetName, widgetOptions);
    }
 
-   public WidgetDefinition(String name, AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
-      this(name);
-      Conditions.assertNotNull(attrType, "attribute type can not be null for WidgetDefinition [%s]", name);
-      if (attrType.isValid()) {
-         setAttributeType(attrType);
-      }
+   public WidgetDefinition(String name, RelationTypeSide relationTypeSide, String xWidgetName, WidgetOption... widgetOptions) {
+      this(name, relationTypeSide, AttributeTypeToken.SENTINEL, xWidgetName, widgetOptions);
+   }
+
+   public WidgetDefinition(String name, RelationTypeSide relationTypeSide, AttributeTypeToken attributeType, String xWidgetName, WidgetOption... widgetOptions) {
+      super(name);
+      this.relationTypeSide = relationTypeSide;
+      Conditions.assertNotNull(attributeType, "attribute type can not be null for WidgetDefinition [%s]", name);
+      this.attributeType = attributeType;
       this.xWidgetName = xWidgetName;
       for (WidgetOption opt : widgetOptions) {
          options.add(opt);
@@ -59,7 +69,7 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    }
 
    public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
-      this(attrType.getUnqualifiedName(), attrType, xWidgetName, widgetOptions);
+      this(attrType.getUnqualifiedName(), RelationTypeSide.SENTINEL, attrType, xWidgetName, widgetOptions);
    }
 
    @Override
@@ -123,7 +133,7 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    @Override
    public String toString() {
       return String.format("[%s][%s]", getName(),
-         getAttributeType() == null ? "" : getAttributeType().toStringWithId());
+         getAttributeType().isValid() ? getAttributeType().toStringWithId() : "");
    }
 
    @Override
@@ -147,13 +157,14 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       return max;
    }
 
-   public void setAttributeType(AttributeTypeToken attributeTypeTok) {
-      this.attributeType = attributeTypeTok;
-   }
-
    @Override
    public AttributeTypeToken getAttributeType() {
       return attributeType;
+   }
+
+   @Override
+   public RelationTypeSide getRelationTypeSide() {
+      return relationTypeSide;
    }
 
    @Override

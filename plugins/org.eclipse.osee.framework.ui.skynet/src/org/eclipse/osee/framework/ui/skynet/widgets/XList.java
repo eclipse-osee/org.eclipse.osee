@@ -179,7 +179,7 @@ public class XList extends GenericXWidget {
       if (grabHorizontal) {
          gridData5.grabExcessHorizontalSpace = true;
       }
-      int listHeight = listList.getItemHeight() * 6;
+      int listHeight = listList.getItemHeight() * 3;
       Rectangle trim = listList.computeTrim(0, 0, 0, listHeight);
       gridData5.heightHint = trim.height;
       gridData5.grabExcessVerticalSpace = true;
