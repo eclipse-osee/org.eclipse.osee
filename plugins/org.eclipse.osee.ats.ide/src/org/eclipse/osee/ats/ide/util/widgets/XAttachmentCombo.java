@@ -53,7 +53,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * This is an example of how to implement and use the XAttachmentCombo.
@@ -68,6 +70,11 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
    private final String configKey;
    boolean inOsee = false;
    private String location;
+   private Composite parent;
+   private Hyperlink readHyperlink;
+   private Hyperlink editHyperlink;
+   private Hyperlink deleteHyperlink;
+   private boolean listenerEnabled = false;
 
    public XAttachmentCombo(String displayLabel, String configKey) {
       super(displayLabel);
@@ -76,20 +83,9 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
+      this.parent = parent;
       super.createControls(parent, horizontalSpan);
       fillCombo();
-      Pair<Artifact, RelationLink> entry = getSelectedAttachment();
-      Artifact attachmentArt = entry.getFirst();
-      if (attachmentArt != null) {
-         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
-         WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem, attachmentArt, parent,
-            editor, OpenType.Read.name());
-         WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
-         WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem, attachmentArt,
-            entry.getSecond(), parent, editor);
-         // Show selected attachment in combo box
-         set(attachmentArt.toString());
-      }
    }
 
    private Pair<Artifact, RelationLink> getSelectedAttachment() {
@@ -166,6 +162,9 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
          @Override
          public void widgetModified(XWidget widget) {
 
+            if (!listenerEnabled) {
+               return;
+            }
             // Determine if file is already attached and ask if want to replace
             if (isAttachmentAttached()) {
                if (getData().equals("--select--")) {
@@ -248,6 +247,31 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
    @Override
    public Artifact getArtifact() {
       return (Artifact) workItem.getStoreObject();
+   }
+
+   @Override
+   public void refresh() {
+      super.refresh();
+      listenerEnabled = false;
+      Pair<Artifact, RelationLink> entry = getSelectedAttachment();
+      Artifact attachmentArt = entry.getFirst();
+      if (attachmentArt != null && !Widgets.isAccessible(readHyperlink)) {
+         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
+         readHyperlink = WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
+            attachmentArt, parent, editor, OpenType.Read.name());
+         editHyperlink = WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
+         deleteHyperlink = WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
+            attachmentArt, entry.getSecond(), parent, editor);
+         set(attachmentArt.toString());
+      } else {
+         if (Widgets.isAccessible(readHyperlink)) {
+            readHyperlink.dispose();
+            editHyperlink.dispose();
+            deleteHyperlink.dispose();
+         }
+         set("");
+      }
+      listenerEnabled = true;
    }
 
 }
