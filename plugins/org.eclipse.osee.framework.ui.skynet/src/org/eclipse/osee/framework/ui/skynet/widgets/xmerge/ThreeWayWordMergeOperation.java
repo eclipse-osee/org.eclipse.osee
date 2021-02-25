@@ -25,11 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.render.ArtifactFileMonitor;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.UpdateArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
@@ -65,6 +64,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
 
    private static final Pattern rsidPattern =
       Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   private static final ArtifactFileMonitor fileMonitor = new ArtifactFileMonitor();
 
    private final AttributeConflict attributeConflict;
 
@@ -106,14 +107,13 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
 
             IOperation op = new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact),
                mergeArtifact.getBranch(), true);
-            Operations.executeWorkAndCheckStatus(op, monitor);
+            fileMonitor.addFile(mergedFile, op);
 
             monitor.done();
-            RendererManager.openInJob(mergeArtifact, PresentationType.SPECIALIZED_EDIT);
          }
       };
       Map<RendererOption, Object> rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.NO_DISPLAY, true);
+      rendererOptions.put(RendererOption.NO_DISPLAY, false);
 
       RendererManager.merge(colletor, mergeArtifact, null, sourceChangeFile, destChangeFile, "Source_Dest_Merge",
          rendererOptions);

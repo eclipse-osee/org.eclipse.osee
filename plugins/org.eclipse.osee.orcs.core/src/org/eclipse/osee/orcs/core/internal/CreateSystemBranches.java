@@ -44,6 +44,8 @@ public class CreateSystemBranches {
    private final QueryBuilder query;
    private static String EDIT_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String MERGE_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : false, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
    private static String PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
    private static String RECURSIVE_NO_ATTR_RENDERER_OPTIONS =
@@ -130,10 +132,22 @@ public class CreateSystemBranches {
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer SPECIALIZED_EDIT");
       tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.TisRenderer SPECIALIZED_EDIT");
-      tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
+
+      ArtifactId templateArtMergeEdit =
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "WordMergeTemplate");
+      tx.setSoleAttributeValue(templateArtWe, CoreAttributeTypes.RendererOptions, MERGE_RENDERER_OPTIONS);
+      tx.setSoleAttributeValue(templateArtMergeEdit, CoreAttributeTypes.WholeWordContent,
+         OseeInf.getResourceContents("templates/PREVIEW_ALL.xml", getClass()));
+      tx.createAttribute(templateArtMergeEdit, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.word MERGE_EDIT");
+      tx.createAttribute(templateArtMergeEdit, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.word MERGE");
+      tx.createAttribute(templateArtMergeEdit, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE");
-      tx.createAttribute(templateArtWe, CoreAttributeTypes.TemplateMatchCriteria,
+      tx.createAttribute(templateArtMergeEdit, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE_EDIT");
+      tx.createAttribute(templateArtMergeEdit, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF THREE_WAY_MERGE");
 
       ArtifactId templateArtPrev =
          tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "PreviewAll");

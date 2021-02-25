@@ -18,44 +18,46 @@ Dim mainDoc
 dim newDoc
 
 Public Sub main()
- wdCompareTargetSelectedDiff = 2
-    wdGranularityWordLevel = 1
-    wdDoNotSaveChanges = 0
-    wdFormattingFromCurrent = 3
-    wdFormatXML = 11
+	wdCompareTargetSelectedDiff = 2
+	wdGranularityWordLevel = 1
+	wdDoNotSaveChanges = 0
+	wdFormattingFromCurrent = 0
+	wdFormatXML = 11
 
-    authorName = "OSEE Doc compare"
-    set oWord = WScript.CreateObject("Word.Application")
-    oWord.Visible = False
-    detectFormatChanges = false
-    wdFieldCodeChanges = true
+	authorName = "OSEE Doc compare"
+	set oWord = WScript.CreateObject("Word.Application")
+	oWord.Visible = False
+	detectFormatChanges = false
+	wdFieldCodeChanges = true
+
 
 WScript.sleep(250)
-    ver1 = "##SRC_FILE1##"
-    ver2 = "##SRC_FILE2##"
+	ver1 = "##SRC_FILE1##"
+	ver2 = "##SRC_FILE2##"
 
-    set baseDoc = oWord.Documents.Open (ver1)
-    baseDoc.TrackRevisions = false
-    baseDoc.AcceptAllRevisions
+	set baseDoc = oWord.Documents.Open (ver1)
+	baseDoc.TrackRevisions = false
+	baseDoc.AcceptAllRevisions
+	baseDoc.Save
 
+	set compareDoc = oWord.Documents.Open (ver2)
+	compareDoc.TrackRevisions = false
+	compareDoc.AcceptAllRevisions
+	compareDoc.Save
 
-    set compareDoc = oWord.Documents.Open (ver2)
-    compareDoc.AcceptAllRevisions
-    compareDoc.TrackRevisions = false
-    compareDoc.Save
-    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName) 
-    compareDoc.close 
-    newDoc.Activate
-    set compareDoc = oWord.ActiveDocument
+	set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName)
+	compareDoc.close
+	newDoc.Activate
+	set compareDoc = oWord.ActiveDocument
 
-    set mainDoc = compareDoc
-    baseDoc.close
-    set baseDoc = Nothing
-    oWord.NormalTemplate.Saved = True
-    mainDoc.SaveAs "##DIFF_OUTPUT##", wdFormatXML, , , False
+	set mainDoc = compareDoc
+	baseDoc.close
+	set baseDoc = Nothing
+	oWord.NormalTemplate.Saved = True
+	mainDoc.SaveAs "##DIFF_OUTPUT##", wdFormatXML, , , False
 
-        oWord.Quit()
-        set oWord = Nothing
+		oWord.Quit()
+		set oWord = Nothing
 End Sub
 
 main

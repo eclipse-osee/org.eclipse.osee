@@ -45,32 +45,32 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private static final String OSEE_WORD_DIFF_SLEEP_MS = "osee.word.diff.sleep.ms";
 
    private final static String header_begin =
-      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\ndim wdGranularityWordLevel\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim wdFieldCodeChanges\nDim mainDoc\ndim newDoc\n\nPublic Sub main()\n ";
+      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\ndim wdGranularityWordLevel\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim wdFieldCodeChanges\nDim mainDoc\ndim newDoc\n\nPublic Sub main()\n";
 
    private final static String header_end =
-      "wdCompareTargetSelectedDiff = 2\n    wdGranularityWordLevel = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
+      "\twdCompareTargetSelectedDiff = 2\n\twdGranularityWordLevel = 1\n\twdDoNotSaveChanges = 0\n\twdFormattingFromCurrent = 0\n\twdFormatXML = 11\n\n\tauthorName = \"OSEE Doc compare\"\n\tset oWord = WScript.CreateObject(\"Word.Application\")\n\toWord.Visible = False\n\tdetectFormatChanges = ";
 
-   private final static String diff_field_codes = "    wdFieldCodeChanges = ";
+   private final static String diff_field_codes = "\twdFieldCodeChanges = ";
 
-   private static final String Skip_Errors = "On error resume next\n ";
+   private static final String Skip_Errors = "\tOn error resume next\n";
 
    private final static String comparisonCommand =
       // The true/false flags define what to compare: Formats, Case, Whitespace, Tables, Headers, Footers, TextBox, Field values (wdFieldCodeChanges), Comments
-      "    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName) \n    compareDoc.close \n    newDoc.Activate\n    set compareDoc = oWord.ActiveDocument\n\n";
+      "\tset newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName)\n\tcompareDoc.close\n\tnewDoc.Activate\n\tset compareDoc = oWord.ActiveDocument\n\n";
    private final static String comparisonCommandFirst =
-      "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";
+      "\tset mainDoc = compareDoc\n\tbaseDoc.close\n\tset baseDoc = Nothing\n";
 
    private final static String comparisonCommandOthers =
-      "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    compareDoc.close wdDoNotSaveChanges\n    set compareDoc = Nothing\n\n";
+      "\tmainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n\tbaseDoc.close wdDoNotSaveChanges\n\tset baseDoc = Nothing\n\n\tcompareDoc.close wdDoNotSaveChanges\n\tset compareDoc = Nothing\n\n";
 
    private final static String altComparisonCommandOthers =
-      "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    set compareDoc = Nothing\n\n";
+      "\tmainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n\tbaseDoc.close wdDoNotSaveChanges\n\tset baseDoc = Nothing\n\n\tset compareDoc = Nothing\n\n";
 
    private final static String mergeCommand =
-      "    compareDoc.close \n    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs %s, wdFormatXML, , , False\n\n";
+      "\tcompareDoc.close\n\tbaseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n\toWord.ActiveDocument.SaveAs %s, wdFormatXML, , , False\n\n";
 
    private final static String altMergeCommand =
-      "    compareDoc.close \n    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    set compareDoc = oWord.ActiveDocument\n\n";
+      "\tcompareDoc.close\n\tbaseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n\tset compareDoc = oWord.ActiveDocument\n\n";
 
    private final boolean merge;
    private final boolean show;
@@ -121,17 +121,16 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          writer.append("\n\n");
 
          addComparison(monitor, writer, compareData, merge);
-         writer.append("    oWord.NormalTemplate.Saved = True\n");
+         if (!merge) {
+            writer.append("\toWord.NormalTemplate.Saved = True\n");
+            writer.append("\tmainDoc.SaveAs \"" + compareData.getOutputPath() + "\", wdFormatXML, , , False\n\n");
+         }
 
          if (show) {
             writer.append("oWord.Visible = True\n");
-         }
-
-         writer.append("    mainDoc.SaveAs \"" + compareData.getOutputPath() + "\", wdFormatXML, , , False\n\n");
-
-         if (!show) {
-            writer.append("        oWord.Quit()\n");
-            writer.append("        set oWord = Nothing\n");
+         } else {
+            writer.append("\t\toWord.Quit()\n");
+            writer.append("\t\tset oWord = Nothing\n");
          }
 
          writer.append("End Sub\n\nmain");
@@ -171,47 +170,49 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          }
 
          if (!propertyWordDiffSleepMs.equals("0")) {
-            appendable.append("WScript.sleep(" + propertyWordDiffSleepMs + ")\n");
+            appendable.append("\nWScript.sleep(" + propertyWordDiffSleepMs + ")\n");
          }
 
-         appendable.append("    ver1 = \"");
+         appendable.append("\tver1 = \"");
          appendable.append(entry.getKey());
+         appendable.append("\"\n");
 
-         appendable.append("\"\n    ver2 = \"");
+         appendable.append("\tver2 = \"");
          appendable.append(entry.getValue());
+         appendable.append("\"\n\n");
 
-         appendable.append("\"\n\n    set baseDoc = oWord.Documents.Open (ver1)\n");
+         appendable.append("\tset baseDoc = oWord.Documents.Open (ver1)\n");
+         appendable.append("\tbaseDoc.TrackRevisions = false\n");
+         appendable.append("\tbaseDoc.AcceptAllRevisions\n");
+         appendable.append("\tbaseDoc.Save\n\n");
 
-         appendable.append("    baseDoc.TrackRevisions = false\n");
-         appendable.append("    baseDoc.AcceptAllRevisions\n");
-
-         appendable.append("\n\n    set compareDoc = oWord.Documents.Open (ver2)\n");
-         appendable.append("    compareDoc.AcceptAllRevisions\n");
-         appendable.append("    compareDoc.TrackRevisions = false\n");
-         appendable.append("    compareDoc.Save\n");
+         appendable.append("\tset compareDoc = oWord.Documents.Open (ver2)\n");
+         appendable.append("\tcompareDoc.TrackRevisions = false\n");
+         appendable.append("\tcompareDoc.AcceptAllRevisions\n");
+         appendable.append("\tcompareDoc.Save\n\n");
 
          boolean mergeFromCompare = compareData.isMerge(entry.getKey());
-         if (merge || mergeFromCompare) {
-            if (mergeFromCompare) {
-               if (first) {
-                  appendable.append(comparisonCommand);
-               } else {
-                  appendable.append(altMergeCommand);
-               }
+         if (mergeFromCompare) {
+            if (first) {
+               appendable.append(comparisonCommand);
             } else {
-               appendable.append(String.format(mergeCommand, "\"" + compareData.getOutputPath() + "\""));
+               appendable.append(altMergeCommand);
             }
+         } else if (merge) {
+            appendable.append(String.format(mergeCommand, "\"" + compareData.getOutputPath() + "\""));
          } else {
             appendable.append(comparisonCommand);
          }
-         if (first) {
-            appendable.append(comparisonCommandFirst);
-            first = false;
-         } else {
-            if (mergeFromCompare) {
-               appendable.append(altComparisonCommandOthers);
+         if (!merge) {
+            if (first) {
+               appendable.append(comparisonCommandFirst);
+               first = false;
             } else {
-               appendable.append(comparisonCommandOthers);
+               if (mergeFromCompare) {
+                  appendable.append(altComparisonCommandOthers);
+               } else {
+                  appendable.append(comparisonCommandOthers);
+               }
             }
          }
 
