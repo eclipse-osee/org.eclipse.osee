@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>Add Configuration</h1>
+<div mat-dialog-content>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" [(ngModel)]="data.title" #input required>
+    </mat-form-field>
+    <br>
+    <mat-label [style.fontSize.px]="18">Copy From:</mat-label>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select a Configuration</mat-label>
+        <mat-select (selectionChange)="selectConfiguration($event)" required>
+            <mat-option *ngFor="let option of (branchApplicability |async)?.views" [value]="option">
+                {{option.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-label [style.fontSize.px]="18">Add a Configuration Group:</mat-label>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>
+            Select a Configuration Group
+        </mat-label>
+        <mat-select (selectionChange)="selectCfgGroup($event)">
+            <mat-option *ngFor="let config of (cfgGroups | async)" [value]="config">
+                {{config.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div>
+        <mat-label [style.fontSize.px]="18">Select Product Types</mat-label>
+        <mat-selection-list [(ngModel)]="data.productApplicabilities" color="primary" [style.fontSize.px]="18">
+            <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type">
+                {{type}}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">
+        Cancel
+    </button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.copyFrom.id.length===0||data.title.length===0">
+        Ok
+    </button>
+</div>

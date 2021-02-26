@@ -1,0 +1,32 @@
+@import '~@angular/material/theming';
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$modern-ple-light-primary: mat-palette($mat-blue, A400,400,900);
+$modern-ple-dark-primary: mat-palette($mat-light-blue, 300,200,400);
+$modern-ple-light-accent: mat-palette($mat-amber, A100, 50, A200);
+$modern-ple-dark-accent: mat-palette($mat-yellow, 600, 50, A200);
+
+// The warn palette is optional (defaults to red).
+$modern-ple-light-warn: mat-palette($mat-red);
+$modern-ple-dark-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$modern-ple-light-theme: mat-light-theme((
+  color: (
+    primary: $modern-ple-light-primary,
+    accent: $modern-ple-light-accent,
+    warn: $modern-ple-light-warn,
+  ),
+));
+$modern-ple-dark-theme: mat-dark-theme((
+  color:(
+    primary:$modern-ple-dark-primary,
+    accent:$modern-ple-dark-accent,
+    warn:$modern-ple-dark-warn,
+  )
+));
+$modern-ple-typography: mat-typography-config(
+  $font-family:'Roboto,"Helvetica Neue", sans-serif'
+);

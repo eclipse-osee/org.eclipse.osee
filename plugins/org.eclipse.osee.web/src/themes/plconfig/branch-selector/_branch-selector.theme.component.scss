@@ -1,0 +1,43 @@
+@import '~@angular/material/theming';
+
+@mixin color($config-or-theme) {
+  // Extract the color configuration in case a theme has been passed.
+  // This allows consumers to either pass a theme object or a color configuration.
+  $config: mat-get-color-config($config-or-theme);
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($config, primary);
+  $accent: map-get($config, accent);
+  $warn: map-get($config, warn);
+  $background: map-get($config, background);
+  $foreground: map-get($config, foreground);
+  
+  // Define any styles affected by the theme.
+  .pl-config-radio-option{
+    color:mat-color($foreground,base);
+  }
+  .pl-config-radio-option-selected{
+    @extend .pl-config-radio-option;
+    color:mat-color($primary,900);
+    text-shadow:mat-color($foreground,base)
+  }
+}
+@mixin typography($config-or-theme){
+
+}
+@mixin typography-themed($config-or-theme){
+  $config: mat-get-typography-config($config-or-theme);
+
+}
+
+@mixin theme($theme){
+    $color: mat-get-color-config($theme);
+    $typography: mat-get-typography-config($theme);
+    @include typography($theme);
+    
+    @if $color != null {  
+      @include color($color);   
+    }  
+    @if $typography != null {
+      @include typography-themed($typography);  
+    }
+}

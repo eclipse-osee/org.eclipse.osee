@@ -1,0 +1,61 @@
+<h1 mat-dialog-title>Add Feature</h1>
+<div mat-dialog-content>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" [(ngModel)]="data.feature.name" #input required>
+    </mat-form-field>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Description</mat-label>
+        <input matInput type="text" [(ngModel)]="data.feature.description" #input required>
+    </mat-form-field>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select a Value Type</mat-label>
+        <mat-select [(ngModel)]="data.feature.valueType" required>
+            <mat-option *ngFor="let type of (valueTypes |async)" [value]="type" >
+                {{type}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-slide-toggle [(ngModel)]="data.feature.multiValued" labelPosition='before' (change)="selectMultiValued()" [style.fontSize.px]="18">
+        Multi-Valued
+    </mat-slide-toggle>
+    <br>
+    <mat-form-field *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker " [style.fontSize.px]="18">
+        <mat-label>Value</mat-label>
+        <input matInput type="text" #input [(ngModel)]="data.feature.values[i]" (keyup)="data.feature.setValueStr()" required>
+    </mat-form-field>
+    <br>
+    <button mat-stroked-button (click)="increaseValueArray()" [style.fontSize.px]="18">Add a Value</button>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select a Default Value</mat-label>
+        <mat-select [(ngModel)]="data.feature.defaultValue" required>
+            <mat-option *ngFor="let value of data.feature.values" [value]="value">
+                {{value}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <div>
+        <mat-label [style.fontSize.px]="18">Select Product Types</mat-label>
+        <mat-selection-list [(ngModel)]="data.feature.productApplicabilities" color="primary" [style.fontSize.px]="18">
+            <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type">
+                {{type}}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">
+        Cancel
+    </button>
+    <button mat-button (click)="clearFeatureData()">
+        Clear Feature Data
+    </button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.feature.name.length === 0 || data.feature.description.length === 0 || data.feature.valueType.length === 0 || data.feature.defaultValue.length === 0">
+        Ok
+    </button>
+</div>

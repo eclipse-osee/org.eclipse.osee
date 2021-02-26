@@ -1,0 +1,12 @@
+<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(branchApplicability | async)?.editable" class="pl-config-feature-dropdown-dd-button">Change Features</button>
+<mat-menu #mainMenu="matMenu">
+    <button mat-menu-item (click)="addFeature()">Add Feature</button>
+    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(branchApplicability | async)?.editable">Edit Feature</button>
+    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(branchApplicability | async)?.editable">Delete Feature</button>
+</mat-menu>
+<mat-menu #deleteConfigMenu="matMenu">
+    <button *ngFor="let feature of (branchApplicability | async)?.features" mat-menu-item (click)="deleteFeature(feature)">{{feature.name}}</button>
+</mat-menu>
+<mat-menu #editConfigMenu="matMenu">
+    <button *ngFor="let feature of (branchApplicability | async)?.features" mat-menu-item (click)="openEditDialog(feature)">{{feature.name}}</button>
+</mat-menu>

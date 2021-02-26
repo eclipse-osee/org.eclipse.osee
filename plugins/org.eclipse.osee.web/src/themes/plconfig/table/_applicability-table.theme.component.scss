@@ -1,0 +1,87 @@
+@import '~@angular/material/theming';
+
+@mixin color($config-or-theme) {
+  // Extract the color configuration in case a theme has been passed.
+  // This allows consumers to either pass a theme object or a color configuration.
+  $config: mat-get-color-config($config-or-theme);
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($config, primary);
+  $accent: map-get($config, accent);
+  $warn: map-get($config, warn);
+  $background: map-get($config, background);
+  $foreground: map-get($config, foreground);
+  
+  // Define any styles affected by the theme.
+  .config-group-header {
+    color: mat-color($primary, darker);
+  }
+  .config-header {
+    color: mat-color($primary)
+  }
+  .applic-table-header{
+    color:mat-color($primary,600)
+  }
+  .applic-table-row-even{
+    background-color:mat-color($background, card)
+  }
+  .applic-table-row-odd{
+    background-color:mat-color($background, background)
+  }
+  .table-container::-webkit-scrollbar{
+    background-color:mat-color($background,app-bar);
+  }
+  .table-container::-webkit-scrollbar-track{
+    background-color:mat-color($background,app-bar);
+    border-radius: 10px;
+  }
+  .table-container::-webkit-scrollbar-thumb{
+    background-color:mat-color($primary);
+  }
+  .table-container::-webkit-scrollbar-corner{
+    background-color:mat-color($background,app-bar);
+  }
+}
+@mixin typography($config-or-theme){
+    .config-group-header {
+      font: {
+        weight:bold;
+      }
+        text-align: center;
+        cursor: pointer;
+    }
+    .config-header {
+      font: {
+        weight:bold;
+      }
+      text-align: center;
+      cursor: pointer;
+    }
+    .applic-table-header{
+      font: {
+        weight:bold;
+      }
+    }
+    .mat-form-field-infix {
+      border-top: 0;
+      margin-top: 1.25em;
+    }
+    .mat-tooltip{
+      font-size: 15px   // current default is 10px :-/
+    }
+}
+@mixin typography-themed($config-or-theme){
+  $config: mat-get-typography-config($config-or-theme);
+}
+
+@mixin theme($theme, $typography){
+    $color: mat-get-color-config($theme);
+    $typography: mat-get-typography-config($typography);
+    @include typography($theme);
+    
+    @if $color != null {  
+      @include color($color);   
+    }  
+    @if $typography != null {
+      @include typography-themed($typography);  
+    }
+}

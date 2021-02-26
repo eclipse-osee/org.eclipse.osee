@@ -1,0 +1,97 @@
+<div class="mat-elevation-z8">
+    <mat-form-field>
+        <mat-label>Filter Configuration Information</mat-label>
+        <input matInput type="text" (keyup)="applyFilter($event)" #input>
+        <mat-hint>Enter text to filter Configuration Table</mat-hint>
+    </mat-form-field>
+    <div class="table-container">
+        <table mat-table  [dataSource]="dataSource" matSort matSortActive="feature" matSortDirection="asc" class="mat-elevation-z8">
+            <ng-container matColumnDef=" ">
+                <th mat-header-cell *matHeaderCellDef colspan="1" class="applic-table-header"> </th>
+            </ng-container>
+            <ng-container matColumnDef="Configurations">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="viewCount|async" class="applic-table-header">Configurations</th>
+            </ng-container>
+            <ng-container matColumnDef="Groups">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="groupCount|async" class="applic-table-header">Configuration Groups</th>
+            </ng-container>
+            <ng-container [matColumnDef]="secondaryHeader" *ngFor="let secondaryHeader of (secondaryHeaders | async); let i = index; trackBy:valueTracker;">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="(secondaryHeaderLength|async)![i]">
+                    <div class="config-group-header">
+                        {{secondaryHeader}}
+                    </div>
+                </th>
+            </ng-container>
+            <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of (headers | async); let i = index; trackBy:valueTracker;" [sticky]="isSticky(displayedColumn)">
+                <th mat-header-cell *matHeaderCellDef>
+                    <div mat-sort-header [id]="displayedColumn" *ngIf="displayedColumn === 'feature'" start='asc' style="font-weight:bold;">
+                        {{displayedColumn}}
+                    </div>
+                    <div mat-header-cell [id]="displayedColumn" *ngIf="displayedColumn !== 'feature' && displayedColumn !=='values' && (_editable | async) as _editable_" [ngClass]="isACfgGroup(displayedColumn)? 'config-group-header':'config-header'" (click)="openConfigMenu(displayedColumn, _editable_)">
+                        {{displayedColumn}}
+                    </div>
+                    <div mat-header-cell [id]="displayedColumn" *ngIf="displayedColumn === 'values'"></div>
+                </th>
+                <div *ngIf="  
+                displayedColumn === 'valueType'|| 
+                displayedColumn === 'productApplicabilities'|| 
+                displayedColumn === 'defaultValue'|| 
+                displayedColumn === 'multiValued'">
+                    <td mat-cell *matCellDef="let element">
+                        {{element[displayedColumn]}}
+                    </td>
+                </div>
+                <div *ngIf=" 
+                displayedColumn === 'feature'">
+                    <td mat-cell *matCellDef="let element; index as r" [matTooltip]="element['description']" style="padding-right:10%;cursor:pointer" (click)="displayFeatureMenu(element)" [ngClass]="r%2===0? 'applic-table-row-even':'applic-table-row-odd'">
+                        {{element['name']}}
+                    </td>
+                </div>
+                <div *ngIf="displayedColumn !=='feature' &&
+                 displayedColumn !== 'description' && 
+                 displayedColumn !=='values' && 
+                 displayedColumn !=='valueType' && 
+                 displayedColumn !=='productApplicabilities' && 
+                 displayedColumn !=='defaultValue' && 
+                 displayedColumn !=='multiValued'">
+                            <td mat-cell *matCellDef="let element; index as r" [ngClass]="r%2===0? 'applic-table-row-even':'applic-table-row-odd'">
+                                <div *ngFor="let config of element.configurations">
+                                    <div *ngIf="isCorrectConfiguration(config,displayedColumn)">
+                                        <div *ngIf="(_editable | async) === 'false' || isACfgGroup(config.name);else edit_content;" [ngClass]="(_editable | async) === 'true'? 'selectApplicabilityTableOption':''">
+                                            <mat-label>{{config.value}}</mat-label>
+                                        </div>
+                                        <ng-template #edit_content >
+                                            <div *ngIf="(element.values.length===0 || element.multiValued)">
+                                                <mat-form-field appearance="fill" class="selectApplicabilityTableOption">
+                                                    <mat-label>{{config.value}}</mat-label>
+                                                    <input matInput type="text" (input)="modifyConfiguration(displayedColumn,element,$event)" matTooltip="{{'Acceptable values:\n'+element['values'].toString()}}">
+                                                    <!-- <mat-icon aria-hidden="false" matSuffix>add_circle_outline</mat-icon> Uncomment when mat-icon hosting is figured out-->
+                                                </mat-form-field>
+                                            </div>
+                                            <div *ngIf="element.values.length!=0 && !element.multiValued" class="applicabilityTableMatSelect">
+                                                <mat-form-field class="selectApplicabilityTableOption" id="selectableTableOption">
+                                                    <mat-select [(ngModel)]="config.value" (selectionChange)="modifyProduct(displayedColumn,element,$event)">
+                                                        <mat-option *ngFor="let value of element.values" [value]="value">
+                                                            {{value}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </td>
+                </div>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="topLevelHeaders|async;sticky: true"></tr>
+            <tr mat-header-row *matHeaderRowDef="secondaryHeaders|async; sticky:true"></tr>
+            <tr mat-header-row *matHeaderRowDef="headers|async; sticky:true"></tr>
+            <tr mat-row *matRowDef= "let row; columns: headers|async;" [ngClass]="(_editable | async) === 'false'? 'mat-title':''"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="(viewCount|async)+(groupCount|async)+1">No data matching filter</td>
+              </tr>
+        </table>
+    </div>
+</div>
+<mat-paginator [pageSizeOptions]="[10, 15, 25, 100]"></mat-paginator>
+<mat-error *ngIf="(errors | async)!.length>0">{{errors |async}}</mat-error>

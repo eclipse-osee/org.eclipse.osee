@@ -1,0 +1,4 @@
+<button mat-raised-button (click)="addAction()" *ngIf = "(branchInfo|async)?.branchType === '2' " color="primary">Create an ATS Action</button>
+<button mat-raised-button (click)="transitionToReview()" *ngIf = 'isBranchTransitionable() ' color="accent">Transition To Review</button>
+<button mat-raised-button (click)="commitBranch()" *ngIf = 'isBranchCommittable() ' color="warn">Commit Working Branch {{branchName|async}}</button>
+

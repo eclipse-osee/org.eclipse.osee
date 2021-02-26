@@ -1,0 +1,113 @@
+<h1 mat-dialog-title *ngIf="(editable|async)==='true'">Editing Feature {{data.feature.name}}</h1>
+<h1 mat-dialog-title *ngIf="(editable|async)==='false'">Feature Details</h1>
+<div mat-dialog-content>
+    <div *ngIf="(editable | async) === 'true';">
+        <mat-form-field [style.fontSize.px]="18">
+            <mat-label>Title</mat-label>
+            <input matInput type="text" [(ngModel)]="data.feature.name" #input [disabled]="(editable|async)==='false'">
+        </mat-form-field>
+        <br>
+        <mat-form-field [style.fontSize.px]="18">
+            <mat-label>Description</mat-label>
+            <input matInput type="text" [(ngModel)]="data.feature.description" #input [disabled]="(editable|async)==='false'">
+        </mat-form-field>
+        <br>
+        <mat-form-field [style.fontSize.px]="18">
+            <mat-label>Select a Value Type</mat-label>
+            <mat-select [(ngModel)]="data.feature.valueType" [disabled]="(editable|async)==='false'">
+                <mat-option *ngFor="let type of (valueTypes |async)" [value]="type" >
+                    {{type}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+        <mat-slide-toggle [(ngModel)]="data.feature.multiValued" labelPosition='before' (change)="selectMultiValued()" [disabled]="(editable|async)==='false'" [style.fontSize.px]="18">
+            Multi-Valued
+        </mat-slide-toggle>
+        <br>
+        <mat-form-field *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker " [style.fontSize.px]="18">
+            <mat-label>Value</mat-label>
+            <input matInput type="text" #input [(ngModel)]="data.feature.values[i]" (keyup)="data.feature.setValueStr()" [disabled]="(editable|async)==='false'">
+        </mat-form-field>
+        <br>
+        <div *ngIf="(editable|async)==='true'">
+            <button mat-stroked-button (click)="increaseValueArray()" [disabled]="(editable|async)==='false'" [style.fontSize.px]="18">Add a Value</button>
+            <br>
+        </div>
+        <mat-form-field [style.fontSize.px]="18">
+            <mat-label>Select a Default Value</mat-label>
+            <mat-select [(ngModel)]="data.feature.defaultValue" [disabled]="(editable|async)==='false'">
+                <mat-option *ngFor="let value of data.feature.values" [value]="value">
+                    {{value}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+        <div>
+            <mat-label [style.fontSize.px]="18">Select Product Types</mat-label>
+            <mat-selection-list [(ngModel)]="data.feature.productApplicabilities" color="primary" [style.fontSize.px]="18">
+                <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type">
+                    {{type}}
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
+    </div>
+    <div *ngIf="(editable | async) === 'false';">
+        <div>
+            <mat-label><b>Title:</b></mat-label>
+            {{data.feature.name}}
+        </div>
+        <br>
+        <div>
+            <mat-label><b>Description:</b></mat-label>
+            {{data.feature.description}}
+        </div>
+        <br>
+        <div>
+            <mat-label><b>Value Type:</b></mat-label>
+            {{data.feature.valueType}}
+        </div>
+        <br>
+        <div>
+            <mat-label><b>Multi-Valued:</b></mat-label>
+            {{data.feature.multiValued}}
+        </div>
+        <br>
+        <div>
+            <mat-label><b>Values:</b></mat-label>
+            <div *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker ">
+                {{value}}
+            </div> 
+        </div>
+        <br>
+        <div>
+            <mat-label><b>Default Value:</b></mat-label>
+            {{data.feature.defaultValue}}
+        </div>
+        <br>
+        <div>
+            <mat-label><b>Product Types:</b></mat-label>
+            <div *ngFor="let value of data.feature.productApplicabilities;index as i; trackBy:valueTracker ">
+                {{value}}
+            </div>
+            <div *ngIf="data.feature.productApplicabilities.length===0">
+                None
+            </div> 
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">
+        <div *ngIf="(editable|async)==='true'">
+            Cancel
+        </div>
+        <div *ngIf="(editable|async)==='false'">
+            Ok
+        </div>
+    </button>
+    <div *ngIf="(editable|async)==='true'">
+        <button mat-button [mat-dialog-close]="data" cdkFocusInitial>
+            Ok
+        </button>
+    </div>
+</div>

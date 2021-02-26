@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Copy Configuration</h1>
+<mat-label [style.fontSize.px]="18">Copy To:</mat-label>
+<br>
+<mat-form-field [style.fontSize.px]="18">
+    <mat-label>Select a Configuration</mat-label>
+    <mat-select (selectionChange)="selectDestinationBranch($event)">
+        <mat-option *ngFor="let option of (branchApplicability |async)?.views" [value]="option" >
+            {{option.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<br>
+<mat-label [style.fontSize.px]="18">Copy From:</mat-label>
+<br>
+<mat-form-field [style.fontSize.px]="18">
+    <mat-label>Select a Configuration</mat-label>
+    <mat-select (selectionChange)="selectBranch($event)">
+        <mat-option *ngFor="let option of (branchApplicability |async)?.views" [value]="option.id" >
+            {{option.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">
+        Cancel
+    </button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>
+        Ok
+    </button>
+</div>

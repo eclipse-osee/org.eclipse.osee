@@ -1,0 +1,9 @@
+<mat-form-field appearance="fill">
+    <mat-label>Select a Branch</mat-label>
+    <mat-select (selectionChange)="selectBranch($event)" [disabled]="(selectedBranchType |async)?.length ==0 || (loading|async)==='true'" [(value)]="selectedBranchState" required>
+        <mat-option *ngFor="let option of (options |async)" [value]="option.id" [id]="option.id" >
+            {{option.name}}
+        </mat-option>
+    </mat-select>
+    <mat-spinner *ngIf="(loading|async)==='true'" diameter=25 matSuffix></mat-spinner>
+</mat-form-field>

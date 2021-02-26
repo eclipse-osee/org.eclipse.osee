@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Create Action</h1>
+<div mat-dialog-content>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select Originator</mat-label>
+        <mat-select [(ngModel)]="data.originator" required>
+            <mat-option *ngFor="let user of (users |async)" [value]="user">
+                {{user.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select Actionable Item</mat-label>
+        <mat-select [(ngModel)]="data.actionableItem" (selectionChange)="selectActionableItem()" required>
+            <mat-option *ngFor="let item of (arb |async)" [value]="item" >
+                {{item.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <div *ngIf="data.actionableItem.id.length != 0" [style.fontSize.px]="18">
+        <mat-form-field *ngIf="data.actionableItem.id.length !=0">
+            <mat-label>Select Targeted Version</mat-label>
+            <mat-select [(ngModel)]="data.targetedVersion" required>
+                <mat-option *ngFor="let item of (targetedVersions |async)" [value]="item" >
+                    {{item.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" [(ngModel)]="data.title" #input required>
+    </mat-form-field>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Description</mat-label>
+        <input matInput type="text" [(ngModel)]="data.description" #input required>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">
+        Cancel
+    </button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.description.length ===0 || data.title.length ===0 || data.targetedVersion.length ===0 || data.actionableItem.id.length ===0 || data.originator.id.length ===0">
+        Create Action
+    </button>
+</div>

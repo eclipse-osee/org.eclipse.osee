@@ -1,0 +1,14 @@
+<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(branchApplicability | async)?.editable" class="pl-config-configuration-dropdown-dd-button">Change Configurations</button>
+<mat-menu #mainMenu="matMenu">
+    <button mat-menu-item (click)="addConfiguration()">Add Configuration</button>
+    <button mat-menu-item *ngIf="(branchApplicability | async)?.editable" (click)="copyConfiguration()">Copy Configuration</button>
+    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(branchApplicability | async)?.editable">Edit Configuration</button>
+    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(branchApplicability | async)?.editable">Delete Configuration</button>
+</mat-menu>
+<mat-menu #deleteConfigMenu="matMenu">
+    <button *ngFor="let configuration of (branchApplicability | async)?.views" mat-menu-item (click)="deleteConfig(configuration)">{{configuration.name}}</button>
+</mat-menu>
+<mat-menu #editConfigMenu="matMenu">
+    <button *ngFor="let configuration of (branchApplicability | async)?.views" mat-menu-item (click)="openEditDialog(configuration, configuration?.productApplicabilities)">{{configuration.name}}</button>
+</mat-menu>
+<mat-label *ngIf="!(branchApplicability | async)?.editable" style="align-items:center; text-align:center;">Branch is not editable</mat-label>

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Transition Action : {{actionInfo.AtsId}}</h1>
+<div mat-dialog-content>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select a User</mat-label>
+        <mat-select [(ngModel)]="data.selectedUser">
+            <mat-option *ngFor="let user of (users |async)" [value]="user" >
+                {{user.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">
+        Cancel
+    </button>
+    <button mat-raised-button [mat-dialog-close]="data" color="warn" [disabled]="!data.selectedUser">
+        Transition
+    </button>
+</div>

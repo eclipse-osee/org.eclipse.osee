@@ -1,0 +1,22 @@
+<div *ngIf="(_loading|async)==='true'">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+<div class="pl-config">
+    <plconfig-branch-type-selector (selectedType)="branchTypeSelected($event)">
+    </plconfig-branch-type-selector>
+    <div style="display:flex; flex-direction:row; flex-grow:1; justify-content: space-between; align-items:baseline;">
+        <plconfig-branch-selector (selectedBranch)="branchSelected($event)">   
+        </plconfig-branch-selector>
+        <plconfig-configuration-dropdown>
+        </plconfig-configuration-dropdown>
+        <plconfig-configuration-group-dropdown>
+        </plconfig-configuration-group-dropdown>
+        <plconfig-feature-dropdown>
+        </plconfig-feature-dropdown>
+        <plconfig-action-dropdown>
+        </plconfig-action-dropdown>
+    </div>
+    <plconfig-applicability-table>
+        <!-- [updateRequired]="_updateRequired |async" -->
+    </plconfig-applicability-table>
+</div>
