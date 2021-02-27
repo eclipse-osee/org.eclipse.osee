@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -106,8 +106,8 @@ public class AttributeFormPart extends AbstractFormPart {
       List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
       for (XWidget xWidget : widgets) {
          if (xWidget.isEditable()) {
-            if (xWidget instanceof IArtifactStoredWidget) {
-               IArtifactStoredWidget aWidget = (IArtifactStoredWidget) xWidget;
+            if (xWidget instanceof ArtifactStoredWidget) {
+               ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
                try {
                   aWidget.revert();
                } catch (OseeCoreException ex) {
@@ -317,8 +317,8 @@ public class AttributeFormPart extends AbstractFormPart {
       List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
       for (XWidget xWidget : widgets) {
          if (xWidget.isEditable()) {
-            if (xWidget instanceof IArtifactStoredWidget) {
-               IArtifactStoredWidget aWidget = (IArtifactStoredWidget) xWidget;
+            if (xWidget instanceof ArtifactStoredWidget) {
+               ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
                try {
                   if (aWidget.isDirty().isTrue()) {
                      aWidget.saveToArtifact();
@@ -360,8 +360,8 @@ public class AttributeFormPart extends AbstractFormPart {
 
       @Override
       public void widgetModified(XWidget xWidget) {
-         if (xWidget != null && xWidget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget aWidget = (IArtifactStoredWidget) xWidget;
+         if (xWidget != null && xWidget instanceof ArtifactStoredWidget) {
+            ArtifactStoredWidget aWidget = (ArtifactStoredWidget) xWidget;
             try {
                Result result = aWidget.isDirty();
                if (result.isTrue()) {

@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -381,13 +381,13 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    }
 
    public void saveXWidgetToArtifact() {
-      List<IArtifactStoredWidget> artWidgets = new ArrayList<>();
+      List<ArtifactStoredWidget> artWidgets = new ArrayList<>();
       headerComp.getDirtyIArtifactWidgets(artWidgets);
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
       for (WfeWorkflowSection section : stateSections) {
          section.getDirtyIArtifactWidgets(artWidgets);
       }
-      for (IArtifactStoredWidget widget : artWidgets) {
+      for (ArtifactStoredWidget widget : artWidgets) {
          widget.saveToArtifact();
       }
    }

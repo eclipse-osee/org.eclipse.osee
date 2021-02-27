@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * 
  * @author Donald G. Dunne
  */
-public interface ArtifactWidget extends IArtifactStoredWidget {
+public interface ArtifactWidget extends ArtifactStoredWidget {
 
    /**
     * Set artifact used as storage for this widget

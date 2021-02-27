@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -350,7 +350,7 @@ public class WfeHeaderComposite extends Composite {
       return rd;
    }
 
-   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> artWidgets) {
+   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> artWidgets) {
       if (titleHeader != null) {
          titleHeader.getDirtyIArtifactWidgets(artWidgets);
       }

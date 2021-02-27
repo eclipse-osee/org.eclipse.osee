@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -323,7 +323,7 @@ public class WfeWorkflowSection extends SectionPart {
 
    public Result isXWidgetSavable() {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactStoredWidget) {
+         if (widget instanceof ArtifactStoredWidget) {
             IStatus status = widget.isValid();
             if (!status.isOK()) {
                return new Result(false, status.getMessage());
@@ -340,8 +340,8 @@ public class WfeWorkflowSection extends SectionPart {
 
    public Result isXWidgetDirty(XResultData rd) {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
+         if (widget instanceof ArtifactStoredWidget) {
+            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
             if (artifactStoredWidget.getArtifact() != null) {
                Result result = artifactStoredWidget.isDirty();
                if (result.isTrue()) {
@@ -353,10 +353,10 @@ public class WfeWorkflowSection extends SectionPart {
       return Result.FalseResult;
    }
 
-   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) {
+   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> widgets) {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
+         if (widget instanceof ArtifactStoredWidget) {
+            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
             if (artifactStoredWidget.isDirty().isTrue()) {
                widgets.add(artifactStoredWidget);
             }

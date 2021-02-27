@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * 
  * @author Roberto E. Escobar
  */
-public interface IArtifactStoredWidget {
+public interface ArtifactStoredWidget {
 
    /**
     * @return the artifact

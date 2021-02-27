@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -91,7 +91,7 @@ public class WfeTitleHeader extends Composite {
       return Result.TrueResult;
    }
 
-   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> artWidgets) {
+   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> artWidgets) {
       if (titleText.isDirty().isTrue()) {
          artWidgets.add(titleText);
       }

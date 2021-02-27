@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  *
  * @author Roberto E. Escobar
  */
-public interface IAttributeWidget extends IArtifactStoredWidget {
+public interface IAttributeWidget extends ArtifactStoredWidget {
 
    /**
     * Set attributeType used as storage for this widget

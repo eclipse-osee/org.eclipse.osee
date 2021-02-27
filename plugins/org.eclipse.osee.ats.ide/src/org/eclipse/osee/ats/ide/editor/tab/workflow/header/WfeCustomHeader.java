@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -140,7 +140,7 @@ public class WfeCustomHeader extends Composite {
 
    public Result isXWidgetSavable() {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactStoredWidget) {
+         if (widget instanceof ArtifactStoredWidget) {
             IStatus status = widget.isValid();
             if (!status.isOK()) {
                return new Result(false, status.getMessage());
@@ -157,8 +157,8 @@ public class WfeCustomHeader extends Composite {
 
    public XResultData isXWidgetDirty(XResultData rd) {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
+         if (widget instanceof ArtifactStoredWidget) {
+            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
             if (artifactStoredWidget.getArtifact() != null) {
                Result result = artifactStoredWidget.isDirty();
                if (result.isTrue()) {
@@ -170,10 +170,10 @@ public class WfeCustomHeader extends Composite {
       return rd;
    }
 
-   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) {
+   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> widgets) {
       for (XWidget widget : allXWidgets) {
-         if (widget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
+         if (widget instanceof ArtifactStoredWidget) {
+            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
             if (artifactStoredWidget.isDirty().isTrue()) {
                widgets.add(artifactStoredWidget);
             }
