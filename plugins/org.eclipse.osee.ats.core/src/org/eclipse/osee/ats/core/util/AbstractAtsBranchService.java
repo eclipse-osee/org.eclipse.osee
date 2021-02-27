@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.commit.operations.CommitOverrideOperationsImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -680,6 +682,16 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public Collection<ChangeItem> getChangeData(IAtsTeamWorkflow teamWf) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isAtsBranch(BranchId branchId) {
+      ArtifactId assocArtId = atsApi.getBranchService().getAssociatedArtifactId(branchId);
+      ArtifactToken assocArt = atsApi.getQueryService().getArtifact(assocArtId);
+      if (assocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         return true;
+      }
+      return false;
    }
 
 }

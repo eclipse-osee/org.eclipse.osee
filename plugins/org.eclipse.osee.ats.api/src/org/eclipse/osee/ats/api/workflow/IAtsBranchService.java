@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -173,5 +174,9 @@ public interface IAtsBranchService {
    IOseeBranch getBranch(BranchId branch);
 
    Collection<ChangeItem> getChangeData(IAtsTeamWorkflow teamWf);
+
+   boolean isAtsBranch(BranchId branchId);
+
+   XResultData deleteBranch(BranchId branch);
 
 }

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -234,6 +235,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public boolean isBaselinBranchConfigured(CommitConfigItem commitConfigArt) {
       return commitConfigArt.getBaselineBranchId().isValid();
+   }
+
+   @Override
+   public XResultData deleteBranch(BranchId branch) {
+      throw new UnsupportedOperationException("Not supported on server");
    }
 
 }

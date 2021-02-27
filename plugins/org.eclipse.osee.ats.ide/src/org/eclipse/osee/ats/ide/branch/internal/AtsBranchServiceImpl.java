@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -202,6 +203,17 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public IOseeBranch getBranch(BranchId branch) {
       return BranchManager.getBranch(branch);
+   }
+
+   @Override
+   public XResultData deleteBranch(BranchId branch) {
+      XResultData rd = new XResultData();
+      try {
+         BranchManager.deleteBranch(branch);
+      } catch (Exception ex) {
+         rd.errorf("Exception deleting branch %s", branch.toString());
+      }
+      return rd;
    }
 
 }
