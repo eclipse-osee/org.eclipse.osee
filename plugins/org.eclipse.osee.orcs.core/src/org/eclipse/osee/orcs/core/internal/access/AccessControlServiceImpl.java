@@ -88,4 +88,9 @@ public class AccessControlServiceImpl implements IAccessControlService {
       // No server caches to clear
    }
 
+   @Override
+   public boolean isOseeAdmin() {
+      return false;
+   }
+
 }

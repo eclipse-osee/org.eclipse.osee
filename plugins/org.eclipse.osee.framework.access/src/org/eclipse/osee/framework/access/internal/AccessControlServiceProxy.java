@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.access.AccessControlServiceImpl;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.AccessDataQuery;
@@ -222,5 +223,10 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    @Override
    public void clearCache() {
       accessService.clearCache();
+   }
+
+   @Override
+   public boolean isOseeAdmin() {
+      return accessService.isOseeAdmin();
    }
 }

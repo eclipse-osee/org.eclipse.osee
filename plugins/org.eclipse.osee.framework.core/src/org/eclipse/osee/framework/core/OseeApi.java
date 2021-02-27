@@ -21,4 +21,5 @@ public interface OseeApi {
    JaxRsApi jaxRsApi();
 
    OrcsTokenService tokenService();
+
 }

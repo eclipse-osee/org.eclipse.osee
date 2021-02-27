@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.access.internal;
+package org.eclipse.osee.framework.access;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.cache.Cache;
@@ -32,9 +32,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.access.AccessObject;
+import org.eclipse.osee.framework.access.internal.AccessControlHelper;
+import org.eclipse.osee.framework.access.internal.AccessProviderVisitor;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -838,6 +837,11 @@ public class AccessControlServiceImpl implements IAccessControlService {
          check.isDeleteableRelation(artifact, relationType, results);
       }
       return results;
+   }
+
+   @Override
+   public boolean isOseeAdmin() {
+      return UserManager.getUser().isOseeAdmin();
    }
 
 }

@@ -181,7 +181,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    public DefineBranchEndpointApi getDefineBranchEndpoint() {
       return getDefineEndpoint(DefineBranchEndpointApi.class);
    }
-   
+
    @Override
    public MailEndpoint getMailEndpoint() {
       return getOrcsEndpoint(MailEndpoint.class);
@@ -211,4 +211,5 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
       WebTarget target = jaxRsApi().newTarget(url);
       return target.request(MediaType.TEXT_PLAIN).get(String.class);
    }
+
 }

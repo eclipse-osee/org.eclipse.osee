@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.access;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.internal.AccessControlHelper;
-import org.eclipse.osee.framework.access.internal.AccessControlServiceImpl;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.data.BranchId;

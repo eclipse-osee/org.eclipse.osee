@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.access.internal;
 
+import org.eclipse.osee.framework.access.AccessControlServiceImpl;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 

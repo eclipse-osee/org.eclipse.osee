@@ -36,4 +36,6 @@ public interface IAccessControlService extends ArtifactCheck {
 
    void clearCache();
 
+   boolean isOseeAdmin();
+
 }

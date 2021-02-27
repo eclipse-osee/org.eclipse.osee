@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core;
 /**
  * @author Ryan D. Brooks
  */
-public class OseeApiBase implements OseeApi {
+public abstract class OseeApiBase implements OseeApi {
 
    private JaxRsApi jaxRsApi;
    private OrcsTokenService tokenService;
