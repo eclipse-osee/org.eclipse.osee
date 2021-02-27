@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboWithTextAndComboWithText;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @author Donald G. Dunne
  */
-public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndComboWithText implements IArtifactWidget {
+public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndComboWithText implements ArtifactWidget {
 
    TeamWorkFlowArtifact teamArt;
    public static String ID = "ats.OperationalImpactWithWorkaround";

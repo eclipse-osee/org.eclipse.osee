@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @author Donald G. Dunne
  */
-public class XTransitionToStateComboWidget extends XComboViewer implements IArtifactWidget {
+public class XTransitionToStateComboWidget extends XComboViewer implements ArtifactWidget {
 
    private Artifact artifact;
    private AbstractWorkflowArtifact awa;

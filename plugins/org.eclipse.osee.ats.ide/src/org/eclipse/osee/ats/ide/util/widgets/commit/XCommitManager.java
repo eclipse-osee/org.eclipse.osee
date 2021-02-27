@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -66,7 +66,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends GenericXWidget implements IArtifactWidget, IBranchEventListener, IArtifactEventListener {
+public class XCommitManager extends GenericXWidget implements ArtifactWidget, IBranchEventListener, IArtifactEventListener {
 
    private CommitXManager xCommitManager;
    public final static String normalColor = "#EEEEEE";

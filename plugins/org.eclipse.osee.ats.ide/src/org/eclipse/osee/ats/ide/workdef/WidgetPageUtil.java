@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -66,8 +66,8 @@ public class WidgetPageUtil {
       }
       for (XWidgetRendererItem layoutData : set) {
          XWidget xWidget = layoutData.getXWidget();
-         if (xWidget instanceof IArtifactWidget) {
-            ((IArtifactWidget) xWidget).setArtifact(layoutData.getArtifact());
+         if (xWidget instanceof ArtifactWidget) {
+            ((ArtifactWidget) xWidget).setArtifact(layoutData.getArtifact());
          }
          sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT));
          sb.append(AHTML.newline());

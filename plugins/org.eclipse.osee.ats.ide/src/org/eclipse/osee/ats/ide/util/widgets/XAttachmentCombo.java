@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -63,7 +63,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * @author Bhawana Mishra
  */
 
-public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget {
+public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget {
 
    protected IAtsWorkItem workItem;
    HashMap<String, BranchId> nameBranchMap = new HashMap<>();

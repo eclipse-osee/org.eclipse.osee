@@ -37,13 +37,13 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Shawn F. Cook
  */
-public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implements IArtifactWidget, IArtifactEventListener, IBranchEventListener {
+public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implements ArtifactWidget, IArtifactEventListener, IBranchEventListener {
    private TeamWorkFlowArtifact teamArt;
    private boolean workingBranchCreationInProgress = false;
    private boolean workingBranchCommitInProgress = false;

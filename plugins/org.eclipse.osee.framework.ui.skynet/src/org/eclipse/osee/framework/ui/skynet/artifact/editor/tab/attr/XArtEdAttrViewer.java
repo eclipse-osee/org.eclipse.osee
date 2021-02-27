@@ -15,14 +15,14 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr;
 
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
 /**
  * @author Donald G. Dunne
  */
-public class XArtEdAttrViewer extends XLabelValue implements IArtifactWidget, IOseeTreeReportProvider {
+public class XArtEdAttrViewer extends XLabelValue implements ArtifactWidget, IOseeTreeReportProvider {
 
    private Artifact artifact;
    public final static String normalColor = "#EEEEEE";

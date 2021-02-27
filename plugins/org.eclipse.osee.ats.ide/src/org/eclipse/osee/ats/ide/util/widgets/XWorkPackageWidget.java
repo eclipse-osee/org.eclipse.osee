@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * @author Donald G. Dunne
  */
-public class XWorkPackageWidget extends GenericXWidget implements IArtifactWidget {
+public class XWorkPackageWidget extends GenericXWidget implements ArtifactWidget {
    public static final String WIDGET_ID = XWorkPackageWidget.class.getSimpleName();
    protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
 

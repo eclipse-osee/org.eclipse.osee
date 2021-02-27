@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -80,7 +80,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, IArtifactEventListener {
+public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, IArtifactEventListener {
 
    private UserRoleXViewer xViewer;
    private PeerToPeerReviewArtifact reviewArt;

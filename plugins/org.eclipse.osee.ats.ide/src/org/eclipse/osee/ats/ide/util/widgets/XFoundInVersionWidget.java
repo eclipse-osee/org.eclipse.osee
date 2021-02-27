@@ -28,12 +28,12 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 
 /**
  * @author Jeremy A. Midvidy
  */
-public class XFoundInVersionWidget extends XHyperlabelVersionSelection implements IArtifactWidget {
+public class XFoundInVersionWidget extends XHyperlabelVersionSelection implements ArtifactWidget {
 
    public static final String WIDGET_ID = XFoundInVersionWidget.class.getSimpleName();
    public static RelationTypeSide FOUND_VERSION_RELATION = AtsRelationTypes.TeamWorkflowToFoundInVersion_Version;

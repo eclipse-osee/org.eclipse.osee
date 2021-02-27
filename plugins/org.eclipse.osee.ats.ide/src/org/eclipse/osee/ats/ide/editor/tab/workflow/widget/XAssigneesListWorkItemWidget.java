@@ -24,13 +24,13 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
  */
-public class XAssigneesListWorkItemWidget extends AbstractXAssigneesListWidget implements IArtifactWidget {
+public class XAssigneesListWorkItemWidget extends AbstractXAssigneesListWidget implements ArtifactWidget {
 
    private AbstractWorkflowArtifact awa;
    public static final String WIDGET_ID = XAssigneesListWorkItemWidget.class.getSimpleName();

@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 
 /**
  * @author Donald G. Dunne
  */
-public class XCpaOpenPcrWidget extends XHyperlinkLabel implements IArtifactWidget {
+public class XCpaOpenPcrWidget extends XHyperlinkLabel implements ArtifactWidget {
 
    public static final String WIDGET_ID = XCpaOpenPcrWidget.class.getSimpleName();
    private Artifact artifact;

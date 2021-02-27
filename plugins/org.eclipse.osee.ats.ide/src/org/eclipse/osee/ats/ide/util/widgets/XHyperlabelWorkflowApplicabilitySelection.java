@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityTokenFilterTreeDialog;
@@ -44,7 +44,7 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCmdValueSelection implements IArtifactWidget {
+public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCmdValueSelection implements ArtifactWidget {
 
    public static final String WIDGET_ID = XHyperlabelWorkflowApplicabilitySelection.class.getSimpleName();
    public List<ApplicabilityToken> selectedAppls;

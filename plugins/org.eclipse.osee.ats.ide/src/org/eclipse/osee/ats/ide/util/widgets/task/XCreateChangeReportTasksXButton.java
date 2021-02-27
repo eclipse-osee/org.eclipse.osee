@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  *
  * @author Donald G. Dunne
  */
-public class XCreateChangeReportTasksXButton extends XButton implements IArtifactWidget {
+public class XCreateChangeReportTasksXButton extends XButton implements ArtifactWidget {
 
    public static final Object WIDGET_ID = XCreateChangeReportTasksXButton.class.getSimpleName();
    // Team Workflow hosting this button (not necessarily one holding branch/commit

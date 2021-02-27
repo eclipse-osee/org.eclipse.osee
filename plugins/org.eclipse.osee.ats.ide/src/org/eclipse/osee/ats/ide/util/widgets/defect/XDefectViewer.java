@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
  *
  * @author Donald G. Dunne
  */
-public class XDefectViewer extends XLabelValue implements IArtifactWidget, IOseeTreeReportProvider {
+public class XDefectViewer extends XLabelValue implements ArtifactWidget, IOseeTreeReportProvider {
 
    private PeerToPeerReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
