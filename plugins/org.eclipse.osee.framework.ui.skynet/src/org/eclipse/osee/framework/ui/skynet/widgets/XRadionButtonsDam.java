@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public abstract class XRadionButtonsDam extends XRadioButtons implements IAttributeWidget {
+public abstract class XRadionButtonsDam extends XRadioButtons implements AttributeWidget {
 
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;

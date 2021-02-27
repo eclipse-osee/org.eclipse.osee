@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class XComboBooleanDam extends XCombo implements IAttributeWidget {
+public class XComboBooleanDam extends XCombo implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

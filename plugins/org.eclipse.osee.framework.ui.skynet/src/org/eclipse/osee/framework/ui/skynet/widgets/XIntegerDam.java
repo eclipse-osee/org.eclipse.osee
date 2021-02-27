@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class XIntegerDam extends XInteger implements IAttributeWidget {
+public class XIntegerDam extends XInteger implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class XListDam extends XList implements IAttributeWidget {
+public class XListDam extends XList implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -314,7 +314,7 @@ public class SwtXWidgetRenderer {
       if (artifact == null) {
          return;
       }
-      if (xWidget instanceof IAttributeWidget) {
+      if (xWidget instanceof AttributeWidget) {
          AttributeTypeToken attributeType = null;
          if (xWidgetLayoutData.getStoreId() > 0) {
             attributeType = AttributeTypeManager.getAttributeType(xWidgetLayoutData.getStoreId());
@@ -323,7 +323,7 @@ public class SwtXWidgetRenderer {
             attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
          }
          try {
-            ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+            ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

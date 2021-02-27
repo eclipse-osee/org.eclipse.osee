@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements IAttributeWidget {
+public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

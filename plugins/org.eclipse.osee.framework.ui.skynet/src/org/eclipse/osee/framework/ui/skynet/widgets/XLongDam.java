@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class XLongDam extends XLong implements IAttributeWidget {
+public class XLongDam extends XLong implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

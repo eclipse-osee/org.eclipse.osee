@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
@@ -472,14 +472,14 @@ public final class FrameworkXWidgetProvider {
          }
          if (artifact != null) {
             AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
-            if (xWidget instanceof IAttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
+            if (xWidget instanceof AttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
                attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
             }
             if (attributeType == AttributeTypeToken.SENTINEL && Strings.isValid(xWidgetLayoutData.getStoreName())) {
                attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreName());
             }
-            if (attributeType != AttributeTypeToken.SENTINEL && xWidget instanceof IAttributeWidget) {
-               ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+            if (attributeType != AttributeTypeToken.SENTINEL && xWidget instanceof AttributeWidget) {
+               ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
             }
             if (xWidget instanceof ArtifactWidget) {
                ((ArtifactWidget) xWidget).setArtifact(artifact);

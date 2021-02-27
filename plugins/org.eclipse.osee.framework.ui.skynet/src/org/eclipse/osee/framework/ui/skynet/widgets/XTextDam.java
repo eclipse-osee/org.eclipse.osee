@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class XTextDam extends XText implements IAttributeWidget {
+public class XTextDam extends XText implements AttributeWidget {
 
    public static final String WIDGET_ID = XStackedDam.class.getSimpleName();
    private Artifact artifactStrongRef;

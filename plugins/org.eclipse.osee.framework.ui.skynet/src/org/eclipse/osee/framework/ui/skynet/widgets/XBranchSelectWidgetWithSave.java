@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements IAttributeWidget {
+public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

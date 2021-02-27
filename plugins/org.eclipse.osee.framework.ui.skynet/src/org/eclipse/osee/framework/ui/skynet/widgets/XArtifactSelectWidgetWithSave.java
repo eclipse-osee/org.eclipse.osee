@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  *
  * @author Donald G. Dunne
  */
-public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget implements IAttributeWidget {
+public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

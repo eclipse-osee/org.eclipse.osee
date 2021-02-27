@@ -43,7 +43,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidget {
+public class XTextFlatDam extends XFlatWidget<String> implements AttributeWidget {
    private Artifact artifact;
    private AttributeTypeToken attributeType;
    private final Map<String, XWidget> xWidgets;

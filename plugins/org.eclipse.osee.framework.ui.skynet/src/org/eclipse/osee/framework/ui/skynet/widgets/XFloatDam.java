@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class XFloatDam extends XFloat implements IAttributeWidget {
+public class XFloatDam extends XFloat implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

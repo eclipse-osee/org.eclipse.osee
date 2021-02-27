@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Text;
  *
  * @author Donald G. Dunne
  */
-public class XLabelDam extends GenericXWidget implements IAttributeWidget {
+public class XLabelDam extends GenericXWidget implements AttributeWidget {
 
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;

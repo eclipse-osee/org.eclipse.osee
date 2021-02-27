@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 /**
  * @author Donald G. Dunne
  */
-public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
+public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

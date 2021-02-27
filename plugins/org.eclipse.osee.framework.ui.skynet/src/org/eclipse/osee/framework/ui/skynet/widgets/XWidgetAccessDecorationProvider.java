@@ -51,8 +51,8 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
 
    @Override
    public void onUpdate(XWidget xWidget, Decorator decorator) {
-      if (xWidget instanceof IAttributeWidget) {
-         IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
+      if (xWidget instanceof AttributeWidget) {
+         AttributeWidget attributeWidget = (AttributeWidget) xWidget;
          AttributeTypeId attributeType = attributeWidget.getAttributeType();
 
          PermissionStatus permissionStatus = new PermissionStatus();

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 /**
  * @author Roberto E. Escobar
  */
-public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> implements IAttributeWidget {
+public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

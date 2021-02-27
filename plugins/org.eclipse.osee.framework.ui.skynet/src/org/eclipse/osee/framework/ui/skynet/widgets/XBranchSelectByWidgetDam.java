@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  *
  * @author Donald G. Dunne
  */
-public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAttributeWidget {
+public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements AttributeWidget {
    public static final String WIDGET_ID = XBranchSelectByWidgetDam.class.getSimpleName();
 
    private Artifact artifact;

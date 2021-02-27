@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * XListDropViewer with save artifacts/state
  */
-public class XListDropViewWithSave extends XListDropViewer implements IAttributeWidget {
+public class XListDropViewWithSave extends XListDropViewer implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

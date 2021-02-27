@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class XDateDam extends XDate implements IAttributeWidget {
+public class XDateDam extends XDate implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;

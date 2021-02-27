@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  *
  * @author Donald G. Dunne
  */
-public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IAttributeWidget {
+public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
