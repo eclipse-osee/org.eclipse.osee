@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.access.AtsBranchAccessContextId;
+import org.eclipse.osee.ats.api.access.AtsAccessContextTokens;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -111,7 +111,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       Collection<AccessContextToken> contextIds = new ArrayList<>();
 
       if (branch.isInvalid()) {
-         contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
+         contextIds.add(AtsAccessContextTokens.DENY_CONTEXT);
 
          return contextIds;
       }
@@ -131,13 +131,13 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
                if (assocArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   contextIds.addAll(internalGetFromWorkflow((TeamWorkFlowArtifact) assocArtifact));
                } else {
-                  contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
+                  contextIds.add(AtsAccessContextTokens.DENY_CONTEXT);
                }
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
-         contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);
+         contextIds.add(AtsAccessContextTokens.DENY_CONTEXT);
       }
       return contextIds;
    }
@@ -170,7 +170,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
-         return Arrays.asList(AtsBranchAccessContextId.DENY_CONTEXT);
+         return Arrays.asList(AtsAccessContextTokens.DENY_CONTEXT);
       }
       return contextIds;
    }

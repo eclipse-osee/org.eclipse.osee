@@ -18,12 +18,12 @@ import org.eclipse.osee.framework.core.data.AccessContextToken;
 /**
  * @author Donald G. Dunne
  */
-public final class AtsBranchAccessContextId {
+public final class AtsAccessContextTokens {
 
    public static final AccessContextToken DENY_CONTEXT =
       AccessContextToken.valueOf(4870045005030602805L, "ats.branchobject.deny");
 
-   private AtsBranchAccessContextId() {
+   private AtsAccessContextTokens() {
       // Branch Object Contexts;
    }
 }
