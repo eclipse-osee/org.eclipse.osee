@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 /**
  * @author Roberto E. Escobar
  */
-public interface IAccessControlService extends IArtifactCheck {
+public interface IAccessControlService extends ArtifactCheck {
 
    /**
     * @param object Artifact, Branch or collection of either

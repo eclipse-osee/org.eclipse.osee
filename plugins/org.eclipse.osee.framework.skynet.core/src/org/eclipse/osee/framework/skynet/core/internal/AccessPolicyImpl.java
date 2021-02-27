@@ -238,12 +238,12 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
       return accessControlService.isDeleteable(artifacts, results);
    }
 
    @Override
-   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+   public XResultData isRenamable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
       return accessControlService.isRenamable(artifacts, results);
    }
 

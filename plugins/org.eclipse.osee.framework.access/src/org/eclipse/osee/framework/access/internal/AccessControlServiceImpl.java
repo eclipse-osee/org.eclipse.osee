@@ -41,8 +41,8 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.AccessData;
 import org.eclipse.osee.framework.core.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.ArtifactCheck;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
-import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -136,9 +136,9 @@ public class AccessControlServiceImpl implements IAccessControlService {
    private IArtifactEventListener listener2;
 
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
-   private final static Collection<IArtifactCheck> artifactChecks = new LinkedList<IArtifactCheck>();
+   private final static Collection<ArtifactCheck> artifactChecks = new LinkedList<ArtifactCheck>();
 
-   public void addArtifactCheck(IArtifactCheck artifactCheck) {
+   public void addArtifactCheck(ArtifactCheck artifactCheck) {
       artifactChecks.add(artifactCheck);
    }
 
@@ -817,16 +817,16 @@ public class AccessControlServiceImpl implements IAccessControlService {
    }
 
    @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
-      for (IArtifactCheck check : artifactChecks) {
+   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
+      for (ArtifactCheck check : artifactChecks) {
          check.isDeleteable(artifacts, results);
       }
       return results;
    }
 
    @Override
-   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
-      for (IArtifactCheck check : artifactChecks) {
+   public XResultData isRenamable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
+      for (ArtifactCheck check : artifactChecks) {
          check.isRenamable(artifacts, results);
       }
       return results;
@@ -834,7 +834,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
 
    @Override
    public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
-      for (IArtifactCheck check : artifactChecks) {
+      for (ArtifactCheck check : artifactChecks) {
          check.isDeleteableRelation(artifact, relationType, results);
       }
       return results;

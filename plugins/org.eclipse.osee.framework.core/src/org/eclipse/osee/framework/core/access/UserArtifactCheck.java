@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  *
  * @author Donald G. Dunne
  */
-public class UserArtifactCheck extends ArtifactCheck {
+public class UserArtifactCheck implements ArtifactCheck {
 
    static boolean enabled = true;
 
@@ -32,7 +32,7 @@ public class UserArtifactCheck extends ArtifactCheck {
    }
 
    @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
       if (enabled) {
          for (ArtifactToken art : artifacts) {
             if (art.getArtifactType().equals(CoreArtifactTypes.User)) {

@@ -17,15 +17,16 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.access.ArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author John Misinco
  */
-public class AssociatedArtifactCheck extends ArtifactCheck {
+public class AssociatedArtifactCheck implements ArtifactCheck {
 
    @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
-      return BranchManager.isDeleteable(artifacts, results);
+   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
+      return BranchManager.isDeleteable(Collections.castAll(artifacts), results);
    }
 }

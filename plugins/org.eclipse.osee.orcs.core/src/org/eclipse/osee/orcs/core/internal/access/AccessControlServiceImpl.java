@@ -16,8 +16,8 @@ package org.eclipse.osee.orcs.core.internal.access;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.framework.core.access.AccessDataQuery;
+import org.eclipse.osee.framework.core.access.ArtifactCheck;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
-import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -29,9 +29,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class AccessControlServiceImpl implements IAccessControlService {
 
-   private final static Collection<IArtifactCheck> artifactChecks = new LinkedList<IArtifactCheck>();
+   private final static Collection<ArtifactCheck> artifactChecks = new LinkedList<ArtifactCheck>();
 
-   public void addArtifactCheck(IArtifactCheck artifactCheck) {
+   public void addArtifactCheck(ArtifactCheck artifactCheck) {
       artifactChecks.add(artifactCheck);
    }
 
@@ -55,16 +55,16 @@ public class AccessControlServiceImpl implements IAccessControlService {
    }
 
    @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
-      for (IArtifactCheck check : artifactChecks) {
+   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
+      for (ArtifactCheck check : artifactChecks) {
          check.isDeleteable(artifacts, results);
       }
       return results;
    }
 
    @Override
-   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
-      for (IArtifactCheck check : artifactChecks) {
+   public XResultData isRenamable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
+      for (ArtifactCheck check : artifactChecks) {
          check.isRenamable(artifacts, results);
       }
       return results;
@@ -72,7 +72,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
 
    @Override
    public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
-      for (IArtifactCheck check : artifactChecks) {
+      for (ArtifactCheck check : artifactChecks) {
          check.isDeleteableRelation(artifact, relationType, results);
       }
       return results;

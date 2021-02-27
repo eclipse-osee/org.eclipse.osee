@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
-public class AtsArtifactChecks extends ArtifactCheck {
+public class AtsArtifactChecks implements ArtifactCheck {
 
    private static final List<Long> Admin_Only_Relation_Type_Ids = Arrays.asList(
       AtsRelationTypes.TeamWorkflowToReview_Review.getId(), AtsRelationTypes.ActionToWorkflow_Action.getId());
@@ -68,7 +68,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
 
       if (isDeletionChecksEnabled()) {
          AtsApi atsApi = AtsApiService.get();
@@ -92,7 +92,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    // Get all artifacts and recurse down default hierarchy
-   private Set<ArtifactToken> getAllArtifacts(AtsApi atsApi, Collection<ArtifactToken> artifacts, Set<ArtifactToken> allArtifacts) {
+   private Set<ArtifactToken> getAllArtifacts(AtsApi atsApi, Collection<? extends ArtifactToken> artifacts, Set<ArtifactToken> allArtifacts) {
       for (ArtifactToken art : artifacts) {
          if (art.getBranch().equals(atsApi.getAtsBranch())) {
             allArtifacts.addAll(atsApi.getStoreService().getDescendants(art));

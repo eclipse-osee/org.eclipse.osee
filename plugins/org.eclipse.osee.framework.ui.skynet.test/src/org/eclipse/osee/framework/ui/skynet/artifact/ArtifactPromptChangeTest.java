@@ -96,12 +96,12 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+      public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
          return new XResultData();
       }
 
       @Override
-      public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+      public XResultData isRenamable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
          return new XResultData();
       }
 

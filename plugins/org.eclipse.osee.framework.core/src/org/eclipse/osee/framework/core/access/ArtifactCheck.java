@@ -21,20 +21,26 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactCheck implements IArtifactCheck {
+public interface ArtifactCheck {
 
-   @Override
-   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+   /**
+    * @return error(s) of which artifacts and why they can not be deleted
+    */
+   default public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
       return new XResultData();
    }
 
-   @Override
-   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+   /**
+    * @return errors(s) of which artifacts and why they can not be renamed
+    */
+   default public XResultData isRenamable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
       return new XResultData();
    }
 
-   @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
+   /**
+    * @return error(s) of which artifact(s) and why relation(s) can not be deleted
+    */
+   default public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       return new XResultData();
    }
 }
