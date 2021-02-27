@@ -35,6 +35,10 @@ public final class AtsArtifactToken {
     */
    public static final ArtifactToken AtsCmAccessControl = ArtifactToken.valueOf(9885573, "ATS CM Access Control", COMMON, CoreArtifactTypes.GeneralData);
 
+   /**
+   * Associated artifact marking branch as an ATS CM Branch.  Mostly for Baseline branches that don't have Team Workflow associated.
+   */
+   public static final ArtifactToken AtsCmBranch = ArtifactToken.valueOf(10867103, "ATS CM Branch", COMMON, CoreArtifactTypes.GeneralData);
 
    public static ArtifactToken AtsTopFolder = ArtifactToken.valueOf(114713, "Action Tracking System", COMMON, CoreArtifactTypes.Folder);
    public static final ArtifactToken AtsConfig = ArtifactToken.valueOf(5367053, "ATS Config", COMMON, CoreArtifactTypes.GeneralData);

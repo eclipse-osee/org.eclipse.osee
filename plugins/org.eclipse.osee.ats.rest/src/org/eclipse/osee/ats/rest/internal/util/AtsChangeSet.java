@@ -476,4 +476,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       throw new UnsupportedOperationException("Unsupported on Server");
    }
 
+   @Override
+   public void clear() {
+      super.clear();
+      transaction = null;
+   }
+
 }

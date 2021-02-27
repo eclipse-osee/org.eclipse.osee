@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.define.api.importing.IArtifactExtractor;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
@@ -55,6 +56,7 @@ import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -77,6 +79,13 @@ public class AtsDbConfigBase {
       branchOps = orcsApi.getBranchOps();
    }
 
+   String getMultipleArtEntriesonCommon(AtsApi atsApi) {
+      return "SELECT DISTINCT art1.art_id FROM osee_artifact art1, osee_artifact art2, \n" + //
+         "osee_txs txs WHERE art1.ART_ID = art2.ART_ID AND \n" + //
+         "art1.art_type_id = art2.art_type_id AND art1.GAMMA_ID <> art2.GAMMA_ID AND \n" + //
+         "art2.GAMMA_ID = txs.GAMMA_ID and txs.BRANCH_ID = 570 ORDER BY art1.art_id";
+   }
+
    public XResultData run() {
       OseeInfo.setValue(atsApi.getJdbcService().getClient(), "osee.work.def.as.name", "true");
 
@@ -96,6 +105,16 @@ public class AtsDbConfigBase {
          changes);
       changes.setSoleAttributeValue(topAi, AtsAttributeTypes.Actionable, false);
       changes.execute();
+
+      changes.reset("Create ATS CM Artifact");
+      ArtifactToken art = changes.createArtifact(AtsArtifactToken.AtsTopFolder, AtsArtifactToken.AtsCmBranch);
+      changes.setSoleAttributeValue(art, CoreAttributeTypes.Description,
+         "Used to denote Baseline branch as ATS CM branch");
+      changes.execute();
+
+      List<ArtifactId> artIds = atsApi.getQueryService().getArtifactIdsFromQuery(getMultipleArtEntriesonCommon(atsApi));
+
+      Conditions.assertTrue(artIds.isEmpty(), "Duplicate artifact ids found [%s]", artIds);
 
       atsApi.clearCaches();
 
@@ -237,9 +256,9 @@ public class AtsDbConfigBase {
 
       changes.execute();
 
-      (new OrganizePrograms(atsApi)).run();
+      XResultData results = (new OrganizePrograms(atsApi)).run();
 
-      return new XResultData();
+      return results;
    }
 
 }
