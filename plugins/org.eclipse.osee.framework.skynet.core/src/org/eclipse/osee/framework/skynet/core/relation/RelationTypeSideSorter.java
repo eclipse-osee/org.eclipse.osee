@@ -133,4 +133,10 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       return String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=%s, sorterId=%s}",
          getRelationType(), getSide(), getArtifact(), sorterId);
    }
+
+   @Override
+   public RelationTypeToken getRelationType() {
+      return relationType;
+   }
+
 }

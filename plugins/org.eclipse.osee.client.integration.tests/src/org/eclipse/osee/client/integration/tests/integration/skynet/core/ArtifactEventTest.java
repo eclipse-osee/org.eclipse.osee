@@ -818,7 +818,6 @@ public class ArtifactEventTest {
       return injectArt;
    }
 
-   @SuppressWarnings("deprecation")
    private Artifact remoteInjection_attributes_deleteAttribute(Artifact injectArt) throws Exception {
       listener.reset();
 

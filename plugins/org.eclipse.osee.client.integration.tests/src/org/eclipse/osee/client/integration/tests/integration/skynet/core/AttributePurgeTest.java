@@ -55,7 +55,6 @@ public class AttributePurgeTest {
 
    private static final String[] TABLES = new String[] {"osee_attribute", "osee_txs"};
 
-   @SuppressWarnings("deprecation")
    @Test
    public void testPurge() throws Exception {
       Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10,

@@ -233,7 +233,6 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
 
    @Override
    public Result isDirty() {
-      // do nothing
       return Result.FalseResult;
    }
 

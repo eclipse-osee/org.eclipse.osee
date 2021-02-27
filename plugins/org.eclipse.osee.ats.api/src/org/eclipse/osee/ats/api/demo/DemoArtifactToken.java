@@ -101,6 +101,8 @@ public final class DemoArtifactToken {
    public static final IAtsTeamDefinitionArtifactToken SAW_Test = AtsTeamDefinitionArtifactToken.valueOf(31608252L, "SAW Test");
    public static final IAtsTeamDefinitionArtifactToken SAW_SW_Design = AtsTeamDefinitionArtifactToken.valueOf(138220L, "SAW SW Design");
    public static final IAtsTeamDefinitionArtifactToken SAW_Requirements = AtsTeamDefinitionArtifactToken.valueOf(20592L, "SAW Requirements");
+   public static final IAtsTeamDefinitionArtifactToken SAW_Systems_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(23452333L, "SAW Systems");
+   public static final IAtsTeamDefinitionArtifactToken SAW_SubSystems_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(4354624L, "SAW Sub-Systems");
    public static final IAtsTeamDefinitionArtifactToken SAW_SW = AtsTeamDefinitionArtifactToken.valueOf(3902389L, "SAW SW");
 
    // SAW Actionable Items
@@ -110,6 +112,8 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken SAW_Test_AI = AtsActionableItemArtifactToken.valueOf(75881049L, "SAW Test");
    public static final IAtsActionableItemArtifactToken SAW_Code_AI = AtsActionableItemArtifactToken.valueOf(733306468L, "SAW Code");
    public static final IAtsActionableItemArtifactToken SAW_Requirements_AI = AtsActionableItemArtifactToken.valueOf(668954846L, "SAW Requirements");
+   public static final IAtsActionableItemArtifactToken SAW_Systems_AI = AtsActionableItemArtifactToken.valueOf(42662435L, "SAW Systems");
+   public static final IAtsActionableItemArtifactToken SAW_SubSystems_AI = AtsActionableItemArtifactToken.valueOf(323423423L, "SAW Sub-Systems");
    public static final IAtsActionableItemArtifactToken SAW_SW_Design_AI = AtsActionableItemArtifactToken.valueOf(98129283L, "SAW SW Design");
 
    // SAW_SW Versions
@@ -170,6 +174,8 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    // CIS Program Configuration
    //////////////////////////////////
+
+   public static final IAtsVersionArtifactToken CIS_Bld_1 = AtsVersionArtifactToken.valueOf(34523466L, "CIS_Bld_1");
 
    public static final IAtsProgramArtifactToken CIS_Program = AtsProgramArtifactToken.valueOf(8242414L, "CIS Program");
 

@@ -65,9 +65,10 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -477,6 +478,17 @@ public class AtsTestUtil {
       }
       if (!changes.isEmpty()) {
          changes.execute();
+      }
+
+      if (teamWf != null) {
+         IOseeBranch branch = AtsApiService.get().getBranchService().getBranch(teamWf);
+         if (branch.isValid()) {
+            AtsApiService.get().getBranchService().setAssociatedArtId(branch, ArtifactId.SENTINEL);
+            XResultData rd = AtsApiService.get().getBranchService().deleteBranch(branch);
+            if (rd.isErrors()) {
+               throw new OseeCoreException(rd.toString());
+            }
+         }
       }
 
       deleteTeamWf(teamWf);

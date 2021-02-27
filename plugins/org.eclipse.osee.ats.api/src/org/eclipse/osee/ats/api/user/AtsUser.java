@@ -109,4 +109,9 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    public void setUserGroups(List<ArtifactId> userGroups) {
       this.userGroups = userGroups;
    }
+
+   public boolean isAnonymous() {
+      return AtsCoreUsers.isAnonymousUser(this);
+   }
+
 }

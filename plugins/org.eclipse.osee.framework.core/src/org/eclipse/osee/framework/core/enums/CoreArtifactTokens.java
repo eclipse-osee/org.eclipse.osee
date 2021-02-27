@@ -60,4 +60,5 @@ public final class CoreArtifactTokens {
    private CoreArtifactTokens() {
       // Constants
    }
+
 }
