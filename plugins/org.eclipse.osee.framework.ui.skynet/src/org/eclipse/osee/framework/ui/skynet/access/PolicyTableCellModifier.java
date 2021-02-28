@@ -36,7 +36,7 @@ public class PolicyTableCellModifier implements ICellModifier {
 
    @Override
    public boolean canModify(Object element, String property) {
-      if (policyTableViewer.isArtifact() && element instanceof AccessControlData && ((AccessControlData) element).getPermission() == PermissionEnum.LOCK) {
+      if (policyTableViewer.isArtifact() && element instanceof AccessControlData && ((AccessControlData) element).getPermission() == PermissionEnum.USER_LOCK) {
          return policyTableViewer.currentUserCanModifyLock();
       }
       boolean toReturn = property.equals(PolicyTableColumns.delete.toString()) || property.equals(
@@ -59,7 +59,7 @@ public class PolicyTableCellModifier implements ICellModifier {
    public void modify(Object element, String property, Object value) {
       TreeItem item = (TreeItem) element;
       AccessControlData data = (AccessControlData) item.getData();
-      if (policyTableViewer.isArtifact() && data.getPermission() == PermissionEnum.LOCK) {
+      if (policyTableViewer.isArtifact() && data.getPermission() == PermissionEnum.USER_LOCK) {
          AccessControlManager.unLockObjects(Collections.singleton(policyTableViewer.getArtifact()),
             UserManager.getUser());
          policyTableViewer.removeData(data);

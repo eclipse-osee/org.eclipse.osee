@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.DENY;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.FULLACCESS;
-import static org.eclipse.osee.framework.core.enums.PermissionEnum.LOCK;
+import static org.eclipse.osee.framework.core.enums.PermissionEnum.USER_LOCK;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.NONE;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.WRITE;
@@ -54,42 +54,42 @@ public class PermissionEnumTest {
       Collection<PermissionTestData> data = new ArrayList<>();
       add(data, DENY, DENY, false, DENY);
       add(data, DENY, FULLACCESS, false, DENY);
-      add(data, DENY, LOCK, false, DENY);
+      add(data, DENY, USER_LOCK, false, DENY);
       add(data, DENY, NONE, false, DENY);
       add(data, DENY, READ, false, DENY);
       add(data, DENY, WRITE, false, DENY);
 
       add(data, FULLACCESS, DENY, false, DENY);
       add(data, FULLACCESS, FULLACCESS, true, FULLACCESS);
-      add(data, FULLACCESS, LOCK, true, LOCK);
+      add(data, FULLACCESS, USER_LOCK, true, USER_LOCK);
       add(data, FULLACCESS, NONE, true, NONE);
       add(data, FULLACCESS, READ, true, READ);
       add(data, FULLACCESS, WRITE, true, WRITE);
 
-      add(data, LOCK, DENY, false, DENY);
-      add(data, LOCK, FULLACCESS, false, LOCK);
-      add(data, LOCK, LOCK, false, LOCK);
-      add(data, LOCK, NONE, false, LOCK);
-      add(data, LOCK, READ, true, LOCK);
-      add(data, LOCK, WRITE, false, LOCK);
+      add(data, USER_LOCK, DENY, false, DENY);
+      add(data, USER_LOCK, FULLACCESS, false, USER_LOCK);
+      add(data, USER_LOCK, USER_LOCK, false, USER_LOCK);
+      add(data, USER_LOCK, NONE, false, USER_LOCK);
+      add(data, USER_LOCK, READ, true, USER_LOCK);
+      add(data, USER_LOCK, WRITE, false, USER_LOCK);
 
       add(data, NONE, DENY, false, DENY);
       add(data, NONE, FULLACCESS, false, NONE);
-      add(data, NONE, LOCK, false, LOCK);
+      add(data, NONE, USER_LOCK, false, USER_LOCK);
       add(data, NONE, NONE, true, NONE);
       add(data, NONE, READ, false, NONE);
       add(data, NONE, WRITE, false, NONE);
 
       add(data, READ, DENY, false, DENY);
       add(data, READ, FULLACCESS, false, READ);
-      add(data, READ, LOCK, false, LOCK);
+      add(data, READ, USER_LOCK, false, USER_LOCK);
       add(data, READ, NONE, true, NONE);
       add(data, READ, READ, true, READ);
       add(data, READ, WRITE, false, READ);
 
       add(data, WRITE, DENY, false, DENY);
       add(data, WRITE, FULLACCESS, false, WRITE);
-      add(data, WRITE, LOCK, false, LOCK);
+      add(data, WRITE, USER_LOCK, false, USER_LOCK);
       add(data, WRITE, NONE, true, NONE);
       add(data, WRITE, READ, true, READ);
       add(data, WRITE, WRITE, true, WRITE);

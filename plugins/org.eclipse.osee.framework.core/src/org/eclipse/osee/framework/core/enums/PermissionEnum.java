@@ -24,7 +24,7 @@ public enum PermissionEnum {
    NONE(5, "None", "Open Access for all Users"),
    READ(10, "Read", "Read only access for specified user"),
    WRITE(20, "Write", "Write access for specified user"),
-   LOCK(25, "Lock", "Locked for write by only the specified user"),
+   USER_LOCK(25, "Lock", "Locked for write by only the specified user"),
    FULLACCESS(30, "Full Access", "Full Access to Read, Write and Change Permissions"),
    DENY(65535, "Deny", "Deny all access.  Usually only if something is ");
 
@@ -73,7 +73,7 @@ public enum PermissionEnum {
    public static PermissionEnum getPermission(int permissionId) {
       // Retain for backward compatibility.  OWNER = 40 was removed.
       if (permissionId == 40) {
-         return PermissionEnum.LOCK;
+         return PermissionEnum.USER_LOCK;
       }
       return rankToPermissionHash.get(permissionId);
    }
@@ -84,9 +84,9 @@ public enum PermissionEnum {
 
    public boolean matches(PermissionEnum toMatch) {
       boolean hasPermission = false;
-      if (toMatch == PermissionEnum.READ && this == PermissionEnum.LOCK) {
+      if (toMatch == PermissionEnum.READ && this == PermissionEnum.USER_LOCK) {
          hasPermission = true;
-      } else if (toMatch == null || this == PermissionEnum.LOCK) {
+      } else if (toMatch == null || this == PermissionEnum.USER_LOCK) {
          hasPermission = false;
       } else {
          hasPermission = this.getRank() >= toMatch.getRank() && !this.equals(PermissionEnum.DENY);
@@ -98,8 +98,8 @@ public enum PermissionEnum {
       PermissionEnum net = null;
       if (perm1 == PermissionEnum.DENY || perm2 == PermissionEnum.DENY) {
          net = PermissionEnum.DENY;
-      } else if (perm1 == PermissionEnum.LOCK || perm2 == PermissionEnum.LOCK) {
-         net = PermissionEnum.LOCK;
+      } else if (perm1 == PermissionEnum.USER_LOCK || perm2 == PermissionEnum.USER_LOCK) {
+         net = PermissionEnum.USER_LOCK;
       } else {
          PermissionEnum object1 = perm1 == null ? PermissionEnum.NONE : perm1;
          PermissionEnum object2 = perm2 == null ? PermissionEnum.NONE : perm2;

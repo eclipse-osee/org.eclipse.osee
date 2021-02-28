@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -268,7 +267,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    }
 
    private void copyAccessRules(ArtifactId author, BranchId parentBranch, BranchId branch) {
-      int lock = PermissionEnum.LOCK.getPermId();
+      int lock = PermissionEnum.USER_LOCK.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<>();

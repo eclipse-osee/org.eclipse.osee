@@ -143,7 +143,7 @@ public class PolicyDialog extends Dialog {
       permissionLevelCombo.setText("-Select Permission-");
       List<PermissionEnum> permissions = new ArrayList<>();
       for (PermissionEnum permission : PermissionEnum.values()) {
-         if (permission == PermissionEnum.LOCK) {
+         if (permission == PermissionEnum.USER_LOCK) {
             if (accessControlledObject instanceof ArtifactId) {
                permissions.add(permission);
             }
@@ -230,7 +230,7 @@ public class PolicyDialog extends Dialog {
    }
 
    private boolean isModifyAccessEnabled() {
-      return isAccessEnabled(PermissionEnum.LOCK);
+      return isAccessEnabled(PermissionEnum.USER_LOCK);
    }
 
    private boolean isAddAccessEnabled() {

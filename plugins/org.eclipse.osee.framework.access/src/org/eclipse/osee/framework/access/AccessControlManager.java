@@ -103,9 +103,9 @@ public final class AccessControlManager {
       if (object instanceof Artifact && hasLock((Artifact) object)) {
          ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject((Artifact) object);
          Artifact subject = getSubjectFromLockedObject(object);
-         data = new AccessControlData(subject, artifactAccessObject, PermissionEnum.LOCK, false, false);
+         data = new AccessControlData(subject, artifactAccessObject, PermissionEnum.USER_LOCK, false, false);
          data.setBranchPermission(getService().getBranchPermission(subject, ((Artifact) object).getBranch()));
-         data.setArtifactPermission(PermissionEnum.LOCK);
+         data.setArtifactPermission(PermissionEnum.USER_LOCK);
       }
       return data;
 

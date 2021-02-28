@@ -240,7 +240,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
 
          if (permission != null) {
-            if (permission.equals(PermissionEnum.LOCK)) {
+            if (permission.equals(PermissionEnum.USER_LOCK)) {
                artifactLockCache.put(branch, objectId.getId(), subjectId);
             } else {
                AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branch);
@@ -324,7 +324,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
          Artifact subject = getSubjectFromLockedObject(obj);
          if (subject != null && subject.notEqual(userArtifact)) {
             accessData.add(obj,
-               new AccessDetail<ArtifactToken>((Artifact) obj, PermissionEnum.LOCK, Scope.createArtifactLockScope()));
+               new AccessDetail<ArtifactToken>((Artifact) obj, PermissionEnum.USER_LOCK, Scope.createArtifactLockScope()));
          }
       }
    }
@@ -420,7 +420,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
          ArtifactId lockOwnerId = artifactLockCache.get(branch, artId);
          // this object is locked under a different branch
          if (subject.notEqual(lockOwnerId)) {
-            userPermission = PermissionEnum.LOCK;
+            userPermission = PermissionEnum.USER_LOCK;
          }
       }
 
@@ -565,7 +565,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
       PermissionEnum permission = data.getPermission();
       ArtifactId subject = data.getSubject();
 
-      if (!permission.equals(PermissionEnum.LOCK)) {
+      if (!permission.equals(PermissionEnum.USER_LOCK)) {
          accessControlListCache.put(data.getSubject().getId(), accessObject, permission);
          objectToSubjectCache.put(accessObject, subject);
 
@@ -690,7 +690,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
 
          if (!artifactLockCache.containsKey(objectBranch, objectArtId)) {
             AccessObject accessObject = getAccessObject(object);
-            AccessControlData data = new AccessControlData(subject, accessObject, PermissionEnum.LOCK, true);
+            AccessControlData data = new AccessControlData(subject, accessObject, PermissionEnum.USER_LOCK, true);
             persistPermission(data);
             artifactLockCache.put(objectBranch, objectArtId, subject);
             event.addArtifact(object.getUuid());
@@ -716,7 +716,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
 
          if (artifactLockCache.containsKey(branch, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
-            removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
+            removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.USER_LOCK, false));
             artifactLockCache.removeAndGet(branch, objectArtId);
             event.addArtifact(object.getUuid());
             lockedArts.add(object);
