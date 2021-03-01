@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
@@ -71,7 +72,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final OrcsApi orcsApi;
    private final KeyValueOps keyValueOps;
    private final TupleQuery tupleQuery;
-   private boolean abandon = false;
+   private boolean committed = false;
 
    public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueOps keyValueOps) {
       this.txFactory = txFactory;
@@ -99,6 +100,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setComment(String comment) {
+      validateBuilder();
       txManager.setComment(txData, comment);
    }
 
@@ -108,11 +110,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    public void setAuthor(UserId author) {
+      validateBuilder();
       txManager.setAuthor(txData, author);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactId parent, ArtifactToken token) {
+      validateBuilder();
       ArtifactToken child = createArtifact(token);
       if (parent.isValid()) {
          addChild(parent, child);
@@ -122,6 +126,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeToken artifactType, String name) {
+      validateBuilder();
       ArtifactToken child = createArtifact(artifactType, name);
       if (parent.isValid()) {
          addChild(parent, child);
@@ -131,46 +136,55 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, (String) null);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ApplicabilityId appId) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, (String) null, appId);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
+      validateBuilder();
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getUuid());
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, artifactId);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, ApplicabilityId appId) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, artifactId, appId);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, guid);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid, ApplicabilityId appId) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, guid, appId);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
+      validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, artifactId, guid);
    }
 
    @Override
    public List<ArtifactToken> createArtifacts(ArtifactTypeToken artifactType, ArtifactId parent, List<String> names) {
+      validateBuilder();
       ResultSet<ArtifactReadable> results =
          queryFactory.fromBranch(getBranch()).andTypeEquals(artifactType).and(CoreAttributeTypes.Name,
             names).getResults();
@@ -190,26 +204,31 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) {
+      validateBuilder();
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact);
    }
 
    @Override
    public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId) {
+      validateBuilder();
       return txManager.copyArtifact(txData, fromBranch, artifactId);
    }
 
    @Override
    public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeToken> attributesToDuplicate) {
+      validateBuilder();
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
    public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeToken> attributesToDuplicate) {
+      validateBuilder();
       return txManager.copyArtifact(txData, fromBranch, artifactId, attributesToDuplicate);
    }
 
    @Override
    public ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) {
+      validateBuilder();
       checkAreOnDifferentBranches(txData, fromBranch);
       ArtifactReadable source = getArtifactReadable(txData.getSession(), queryFactory, fromBranch, sourceArtifact);
       Conditions.assertNotSentinel(source, "Source Artifact");
@@ -220,87 +239,102 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma) {
+      validateBuilder();
       txData.add(txManager.introduceTuple(tupleType, tupleGamma));
    }
 
    @Override
    public ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) {
+      validateBuilder();
       return txManager.replaceWithVersion(txData, sourceArtifact.getBranch(), sourceArtifact, destination);
    }
 
    @Override
    public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType);
    }
 
    @Override
    public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType, value);
    }
 
    @Override
    public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeValue(attributeType, value);
    }
 
    @Override
    public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeToken attributeType, InputStream stream) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromStream(attributeType, stream);
    }
 
    @Override
    public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String value) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromString(attributeType, value);
    }
 
    @Override
    public void setName(ArtifactId sourceArtifact, String value) {
+      validateBuilder();
       setSoleAttributeFromString(sourceArtifact, CoreAttributeTypes.Name, value);
    }
 
    @Override
    public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<T> values) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }
 
    @Override
    public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String... values) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
    }
 
    @Override
    public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<String> values) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
    }
 
    @Override
    public <T> void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, T value) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).setValue(value);
    }
 
    @Override
    public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, String value) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).setFromString(value);
    }
 
    @Override
    public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, InputStream stream) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).setValueFromInputStream(stream);
    }
 
    @Override
    public void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(art);
       Attribute<Object> attribute = asArtifact.getAttributeById(attrId);
       attribute.getOrcsData().setApplicabilityId(applicId);
@@ -308,91 +342,108 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void deleteByAttributeId(ArtifactId sourceArtifact, AttributeId attrId) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).delete();
    }
 
    @Override
    public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteSoleAttribute(attributeType);
    }
 
    @Override
    public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributes(attributeType);
    }
 
    @Override
    public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Object value) {
+      validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributesWithValue(attributeType, value);
    }
 
    @Override
    public void addChild(ArtifactId parent, ArtifactId child) {
+      validateBuilder();
       txManager.addChild(txData, parent, child);
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB) {
+      validateBuilder();
       txManager.relate(txData, artA, relType, artB);
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale) {
+      validateBuilder();
       txManager.relate(txData, artA, relType, artB, rationale);
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType) {
+      validateBuilder();
       txManager.relate(txData, artA, relType, artB, sortType);
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType) {
+      validateBuilder();
       txManager.relate(txData, artA, relType, artB, rationale, sortType);
    }
 
    @Override
    public void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs) {
+      validateBuilder();
       txManager.setRelations(txData, artA, relType, artBs);
    }
 
    @Override
    public void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts) {
+      validateBuilder();
       txManager.setRelationsAndOrder(txData, artifact, relationSide, artifacts);
    }
 
    @Override
    public void setRationale(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale) {
+      validateBuilder();
       txManager.setRationale(txData, artA, relType, artB, rationale);
    }
 
    @Override
    public void unrelate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB) {
+      validateBuilder();
       txManager.unrelate(txData, artA, relType, artB);
    }
 
    @Override
    public void unrelateFromAll(RelationTypeSide typeAndSide, ArtifactId art) {
+      validateBuilder();
       RelationTypeToken type = typeAndSide.getRelationType();
       txManager.unrelateFromAll(txData, type, art, typeAndSide.getSide());
    }
 
    @Override
    public void unrelateFromAll(ArtifactId artA) {
+      validateBuilder();
       txManager.unrelateFromAll(txData, artA);
    }
 
    @Override
    public void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId) {
+      validateBuilder();
       txManager.setRelationApplicabilityId(txData, artA, relType, artB, applicId);
    }
 
    @Override
    public void deleteArtifact(ArtifactId sourceArtifact) {
+      validateBuilder();
       txManager.deleteArtifact(txData, sourceArtifact);
    }
 
@@ -403,19 +454,17 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public TransactionToken commit() {
-      if (abandon) {
-         return TransactionToken.SENTINEL;
-      }
+      validateBuilder();
       try {
-         return txFactory.createTx(txData).call();
+         TransactionToken txId = txFactory.createTx(txData).call();
+         if (txId.isValid()) {
+            committed = true;
+            return txId;
+         }
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
-   }
-
-   @Override
-   public void abandon() {
-      abandon = true;
+      return TransactionToken.SENTINEL;
    }
 
    private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch) {
@@ -431,11 +480,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setApplicability(ArtifactId artId, ApplicabilityId applicId) {
+      validateBuilder();
       txManager.setApplicabilityId(txData, artId, applicId);
    }
 
    @Override
    public void setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts) {
+      validateBuilder();
       TupleQuery tupleQuery = queryFactory.tupleQuery();
 
       for (Entry<? extends ArtifactId, List<ApplicabilityId>> entry : artifacts.entrySet()) {
@@ -449,6 +500,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
+      validateBuilder();
       for (ArtifactId artifact : artifacts) {
          setApplicability(artifact, applicId);
       }
@@ -456,6 +508,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createView(BranchId branch, String viewName) {
+      validateBuilder();
       // Retrieve from transaction in case it has not be persisted yet
       ArtifactId plFolder = txData.getWriteable(CoreArtifactTokens.ProductsFolder);
       if (plFolder == null) {
@@ -470,6 +523,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void createApplicabilityForView(ArtifactId viewId, String applicability) {
+      validateBuilder();
       /**
        * If the view/applicability combo exists (b/c it was created on another branch), update current branch to
        * reference associated gamma_id
@@ -488,11 +542,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public <E1, E2> GammaId addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
+      validateBuilder();
       return txManager.createTuple2(txData, tupleType, toLong(e1), toLong(e2));
    }
 
    @Override
    public <J extends OrcsTypeJoin<J, T>, T extends NamedId> void addOrcsTypeJoin(J typeJoin) {
+      validateBuilder();
       Tuple2Type<J, T> tupleType = typeJoin.getTupleType();
       for (T type : typeJoin.getTypes()) {
          addTuple2(tupleType, typeJoin, type);
@@ -501,11 +557,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public <E1, E2, E3> GammaId addTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 e1, E2 e2, E3 e3) {
+      validateBuilder();
       return txManager.createTuple3(txData, tupleType, toLong(e1), toLong(e2), toLong(e3));
    }
 
    @Override
    public <E1, E2, E3, E4> GammaId addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4) {
+      validateBuilder();
       return txManager.createTuple4(txData, tupleType, toLong(e1), toLong(e2), toLong(e3), toLong(e4));
    }
 
@@ -522,21 +580,25 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void deleteTuple2(GammaId gammaId) {
+      validateBuilder();
       txData.deleteTuple(SqlTable.TUPLE2, gammaId);
    }
 
    @Override
    public void deleteTuple3(GammaId gammaId) {
+      validateBuilder();
       txData.deleteTuple(SqlTable.TUPLE3, gammaId);
    }
 
    @Override
    public void deleteTuple4(GammaId gammaId) {
+      validateBuilder();
       txData.deleteTuple(SqlTable.TUPLE4, gammaId);
    }
 
    @Override
    public <E1, E2> boolean deleteTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
+      validateBuilder();
       List<GammaId> tuples = new ArrayList<>();
       tupleQuery.getTuple2GammaFromE1E2(tupleType, getBranch(), e1, e2, tuples::add);
       if (tuples.isEmpty()) {
@@ -549,16 +611,19 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public <E1, E2, E3> boolean deleteTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 element1, E2 element2, E3 element3) {
+      validateBuilder();
       return false;
    }
 
    @Override
    public <E1, E2, E3, E4> boolean deleteTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
+      validateBuilder();
       return false;
    }
 
    @Override
    public <E1, E2, E3, E4> boolean deleteTuple4ByE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2) {
+      validateBuilder();
       List<GammaId> tuples = new ArrayList<>();
       tupleQuery.getTuple4GammaFromE1E2(tupleType, getBranch(), e1, e2, tuples::add);
       if (tuples.isEmpty()) {
@@ -570,11 +635,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void addKeyValueOps(Long id, String name) {
+      validateBuilder();
       keyValueOps.putByKey(id, name);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artifactType, String name, Long id) {
+      validateBuilder();
       ArtifactToken art = createArtifact(artifactType, name, id);
       txManager.addChild(txData, parent, art);
       return art;
@@ -589,4 +656,9 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return art;
    }
 
+   private void validateBuilder() {
+      if (committed) {
+         throw new OseeStateException("Transaction has been committed and can not be re-used");
+      }
+   }
 }

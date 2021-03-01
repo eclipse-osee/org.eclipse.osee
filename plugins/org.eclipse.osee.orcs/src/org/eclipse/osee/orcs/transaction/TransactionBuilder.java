@@ -56,11 +56,6 @@ public interface TransactionBuilder {
     */
    TransactionToken commit();
 
-   /**
-    * If commit() is called after calling abandon, the commit will do nothing and return TransactionToken.SENTINEL
-    */
-   void abandon();
-
    boolean isCommitInProgress();
 
    // ARTIFACT
