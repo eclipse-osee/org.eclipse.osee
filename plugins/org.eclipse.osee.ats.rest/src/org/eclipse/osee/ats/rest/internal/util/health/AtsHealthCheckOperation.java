@@ -100,7 +100,7 @@ public class AtsHealthCheckOperation {
          MailMessage msg = MailMessage.newBuilder() //
             .from("noop@osee.com") //
             .recipients(Arrays.asList("donald.g.dunne@boeing.com")) //
-            .subject(dbName + "ATS Health Check") //
+            .subject(dbName + " ATS Health Check") //
             .addHtml(AHTML.simplePage(rd.toString().replaceAll("\n", "</br>")))//
             .build();
 
