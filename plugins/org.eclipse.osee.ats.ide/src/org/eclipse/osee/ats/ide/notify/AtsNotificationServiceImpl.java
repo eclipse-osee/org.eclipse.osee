@@ -22,6 +22,8 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.core.notify.AbstractAtsNotificationService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 
 /**
@@ -39,8 +41,12 @@ public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               AtsNotifyEndpointApi notifyEndpoint = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
-               notifyEndpoint.sendNotifications(notifications);
+               try {
+                  AtsNotifyEndpointApi notifyEndpoint = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
+                  notifyEndpoint.sendNotifications(notifications);
+               } catch (Exception ex) {
+                  OseeLog.log(AtsNotificationServiceImpl.class, OseeLevel.SEVERE, ex);
+               }
                return Status.OK_STATUS;
             }
          }, false);
