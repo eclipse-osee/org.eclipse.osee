@@ -29,7 +29,7 @@ public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
 
    private AtsNotificationEventProcessor notificationEventProcessor;
    private boolean loggedNotificationDisabled = false;
-   private final List<IAtsEmailService> notifiers = new CopyOnWriteArrayList<>();
+   private static final List<IAtsEmailService> notifiers = new CopyOnWriteArrayList<>();
    private AtsApi atsApi;
 
    public AtsNotificationServiceImpl() {
