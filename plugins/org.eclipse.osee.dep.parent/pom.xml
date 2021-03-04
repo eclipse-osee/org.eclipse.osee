@@ -78,7 +78,7 @@
  	 <repository>
 			<id>jetty</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.35.v20201120/</url>
+			<url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.37.v20210219/</url>
 	  </repository>	
           
     <repository>
