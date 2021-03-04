@@ -294,6 +294,10 @@ public class WordCoreUtil {
 
       HashMap<String, List<String>> featureIdValuesMap = parser.getIdValuesMap();
 
+      if (featureIdValuesMap.isEmpty()) {
+         return true;
+      }
+
       for (String featureId : featureIdValuesMap.keySet()) {
          featureId = featureId.trim();
          if (validFeatureValues.containsKey(featureId.toUpperCase())) {

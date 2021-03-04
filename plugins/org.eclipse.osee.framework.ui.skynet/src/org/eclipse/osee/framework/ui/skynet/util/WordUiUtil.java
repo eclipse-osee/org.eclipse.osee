@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -96,7 +97,7 @@ public final class WordUiUtil {
       return rd;
    }
 
-   public static void displayErrorMessage(String errorMessage) {
+   public static void displayErrorMessage(Artifact artifact, String errorMessage) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -114,8 +115,11 @@ public final class WordUiUtil {
 
             if (RenderingUtil.arePopupsAllowed()) {
                XResultData rd = new XResultData(false);
-               rd.addRaw(err);
-               XResultDataUI.report(rd, "Artifact Word Content - Failed To Parse");
+               rd.setTitle("Artifact Word Content - Failed To Parse");
+               rd.addRaw(String.format("Error: There was a problem parsing content for the artifact %s\n\n",
+                  artifact.toStringWithId()));
+               rd.addRaw(String.format("Error Stacktrace: %s", err));
+               XResultDataUI.report(rd, rd.getTitle(), Manipulations.ERROR_RED, Manipulations.CONVERT_NEWLINES);
             } else {
                OseeLog.logf(Activator.class, Level.SEVERE, err);
             }

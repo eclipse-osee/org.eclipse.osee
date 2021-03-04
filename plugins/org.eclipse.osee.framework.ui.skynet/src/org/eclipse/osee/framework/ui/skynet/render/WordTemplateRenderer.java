@@ -204,7 +204,10 @@ public class WordTemplateRenderer extends WordRenderer {
          try {
             content = HttpWordUpdateRequest.renderWordTemplateContent(wtcData);
          } catch (Exception ex) {
-            WordUiUtil.displayErrorMessage(ex.toString());
+            WordUiUtil.displayErrorMessage(artifact, ex.toString());
+            wordMl.addParagraph(String.format(
+               "There as a problem parsing content for this artifact - Artifact: %s - Branch: %s.  See OSEE for details.",
+               artifact.toStringWithId(), artifact.getBranch().toString()));
          }
 
          if (content != null) {
