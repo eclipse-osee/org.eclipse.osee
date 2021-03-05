@@ -157,7 +157,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ReviewFormalType, ReviewFormalType.Formal)
       .any(Role)
       .zeroOrOne(VerificationCodeInspection));
-   ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", true, Artifact)
+   ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", false, Artifact)
       .zeroOrOne(Released));
    ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, AbstractWorkflowArtifact)
       .zeroOrOne(RelatedToState)

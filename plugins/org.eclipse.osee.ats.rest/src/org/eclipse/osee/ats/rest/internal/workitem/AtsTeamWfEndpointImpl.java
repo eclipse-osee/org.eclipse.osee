@@ -32,11 +32,13 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -48,6 +50,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -179,5 +182,67 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          goalList.add(atsApi.getWorkItemService().getGoal(art));
       }
       return goalList;
+   }
+
+   @Override
+   @PUT
+   @Path("build/{build}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData setReleases(@PathParam("build") String build, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds) {
+      XResultData rd = new XResultData();
+      try {
+         rd.setTitle("Add Workflow to Release Relations");
+
+         Collection<ArtifactToken> allWorkflows =
+            atsApi.getQueryService().createQuery(AtsArtifactTypes.TeamWorkflow).andAttr(CoreAttributeTypes.GitChangeId,
+               changeIds).getArtifacts();
+         AtsUser asUser = atsApi.getUserService().getUserByAccountId(userId);
+         if (asUser.isInvalid()) {
+            rd.errorf("%s is an invalid ATS user.", userId);
+            return rd;
+         }
+
+         IAtsChangeSet changes = atsApi.createChangeSet("Add Build Incorporation(s)", asUser);
+         for (IAtsWorkItem workItem : atsApi.getWorkItemService().getWorkItems(allWorkflows)) {
+            if (!workItem.isTeamWorkflow()) {
+               rd.errorf("%s is not a valid team workflow id.", workItem.toStringWithId());
+               return rd;
+            }
+
+            Set<String> distinctChangeIds = new HashSet<String>(
+               atsApi.getAttributeResolver().getAttributesToStringList(workItem, CoreAttributeTypes.GitChangeId));
+            boolean isBuildValid = false;
+            for (String changeId : changeIds) {
+               if (distinctChangeIds.contains(changeId)) {
+                  isBuildValid = true;
+                  break;
+               }
+            }
+            Collection<ArtifactToken> release =
+               atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(build).getArtifacts();
+            if (isBuildValid) {
+               if (release.size() > 1) {
+                  rd.errorf("%s has multiple releases", build);
+                  return rd;
+               }
+               if (release.isEmpty()) {
+                  rd.errorf("%s has no elements", build);
+                  return rd;
+               }
+               IRelationResolver relationResolver = atsApi.getRelationResolver();
+               if (!relationResolver.areRelated(workItem.getArtifactId(),
+                  AtsRelationTypes.TeamWorkflowToRelease_Release, release.stream().findFirst().get())) {
+                  changes.relate(workItem, AtsRelationTypes.TeamWorkflowToRelease_Release,
+                     release.stream().findFirst().get());
+               }
+            }
+         }
+         changes.executeIfNeeded();
+      } catch (Exception Ex) {
+         rd.errorf("Exception %s", Lib.exceptionToString(Ex));
+      }
+
+      return rd;
    }
 }

@@ -100,6 +100,7 @@ public interface CoreAttributeTypes {
    FunctionalGroupingAttributeType FunctionalGrouping = osee.createEnum(new FunctionalGroupingAttributeType());
    AttributeTypeString GeneralStringData = osee.createStringNoTag(1152921504606847096L, "General String Data", MediaType.TEXT_PLAIN, "");
    GfeCfeAttributeType GfeCfe = osee.createEnum(new GfeCfeAttributeType());
+   AttributeTypeString GitBuildId = osee.createString(1714059195608838442L, "Git Build-Id", MediaType.TEXT_PLAIN, "Build-Id embedded in Git commit message that is intended to be immutable even during rebase and amending the commit");
    AttributeTypeString GitChangeId = osee.createString(1152921504606847702L, "Git Change-Id", MediaType.TEXT_PLAIN, "Change-Id embedded in Git commit message that is intended to be immutable even during rebase and amending the commit");
    AttributeTypeDate GitCommitAuthorDate = osee.createDate(1152921504606847704L, "Git Commit Author Date", MediaType.TEXT_PLAIN, "when this commit was originally made");
    AttributeTypeString GitCommitMessage = osee.createString(1152921504606847705L, "Git Commit Message", MediaType.TEXT_PLAIN, "Full message minus Change-Id");

@@ -14,7 +14,9 @@
 package org.eclipse.osee.define.api;
 
 import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,9 +41,15 @@ public interface GitEndpoint {
    ArtifactId trackGitBranch(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("git-branch") String gitBranchName, @QueryParam("clone") boolean clone, String gitRepoUrl);
 
    @POST
-   @Path("{branch}/repo/{repository-name}")
+   @Path("{branch}/repo/{repositoryName}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("fetch") boolean fetch, String gitBranchName);
+   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("fetch") boolean fetch, String gitBranchName);
+
+   @GET
+   @Path("{branch}/repo/{repositoryName}/changeId/tags")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<String> getChangeIdBetweenTags(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @QueryParam("startTag") String startTag, @QueryParam("endTag") String endTag);
 
 }

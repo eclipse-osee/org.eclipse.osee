@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.define.api;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -39,4 +40,7 @@ public interface GitOperations {
    void fetch(ArtifactReadable repoArtifact, String password);
 
    ArtifactToken getCommitArtifactId(BranchId branch, String changeId);
+
+   List<String> getChangeIdBetweenTags(BranchId branch, ArtifactReadable repoArtifact, String startTag, String endTag);
+
 }

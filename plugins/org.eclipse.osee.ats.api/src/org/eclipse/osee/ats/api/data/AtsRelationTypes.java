@@ -29,6 +29,7 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Insertion;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.InsertionActivity;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Program;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Project;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ReleaseArtifact;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
@@ -200,6 +201,10 @@ public interface AtsRelationTypes {
    RelationTypeToken TeamWorkflowToFoundInVersion = ats.add(8432547963397826929L, "TeamWorkflowToFoundInVersion", MANY_TO_ONE, UNORDERED, TeamWorkflow, "Team Workflow", Version, "Version");
    RelationTypeSide TeamWorkflowToFoundInVersion_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToFoundInVersion, SIDE_A);
    RelationTypeSide TeamWorkflowToFoundInVersion_Version = RelationTypeSide.create(TeamWorkflowToFoundInVersion, SIDE_B);
+
+   RelationTypeToken TeamWorkflowToRelease = ats.add(2531996123289575340L, "TeamWorkflowToRelease", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", ReleaseArtifact, "Release Artifact");
+   RelationTypeSide TeamWorkflowToRelease_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToRelease, SIDE_A);
+   RelationTypeSide TeamWorkflowToRelease_Release = RelationTypeSide.create(TeamWorkflowToRelease, SIDE_B);
 
    RelationTypeToken TeamWorkflowToReview = ats.add(2305843009213694321L, "TeamWorkflowToReview", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", AbstractReview, "Review");
    RelationTypeSide TeamWorkflowToReview_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReview, SIDE_A);

@@ -52,6 +52,7 @@ import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
@@ -158,7 +159,7 @@ public final class GitOperationsImpl implements GitOperations {
    private void fetch(Repository localRepo, String passphrase) {
       try (Git git = new Git(localRepo)) {
 
-         FetchCommand fetchCommand = git.fetch().setCheckFetchedObjects(true).setTagOpt(TagOpt.NO_TAGS);
+         FetchCommand fetchCommand = git.fetch().setCheckFetchedObjects(true).setTagOpt(TagOpt.FETCH_TAGS);
 
          configurateAuthentication(localRepo, fetchCommand, passphrase);
 
@@ -268,6 +269,41 @@ public final class GitOperationsImpl implements GitOperations {
       return repoArtifact;
    }
 
+   @Override
+   public List<String> getChangeIdBetweenTags(BranchId branch, ArtifactReadable repoArtifact, String startTag, String endTag) {
+
+      Repository jgitRepo = getLocalRepoReference(repoArtifact.getSoleAttributeValue(FileSystemPath));
+      /* fetch second arg (passPhrase) provide a key or password to enter repo. Here we have no pass phrase. */
+      fetch(jgitRepo, "");
+      try (Git git = new Git(jgitRepo)) {
+
+         Ref tag1 = git.getRepository().exactRef("refs/tags/" + startTag);
+         Ref tag2 = git.getRepository().exactRef("refs/tags/" + endTag);
+         Iterable<RevCommit> commits = git.log().addRange(tag1.getPeeledObjectId(), tag2.getPeeledObjectId()).call();
+
+         // parse through commits to get specific tags with specific commits and change ids
+         List<String> changeIdList = new ArrayList<>();
+         for (RevCommit revCommit : commits) {
+            if (revCommit.getShortMessage() != "") {
+               String commitSHA = revCommit.getId().name();
+
+               if (changeIdMatcher.reset(revCommit.getFullMessage()).find()) {
+                  String changeId = changeIdMatcher.group(1);
+                  changeIdList.add(changeId);
+               } else {
+                  changeIdList.add(commitSHA);
+               }
+
+            }
+         }
+
+         return changeIdList;
+
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
    public ArtifactReadable clone(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String passphrase) {
       String serverDataLocation = systemPrefs.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       String repoName = gitRepoUrl.substring(gitRepoUrl.lastIndexOf('/') + 1).replaceAll("\\.git$", "");
@@ -366,26 +402,24 @@ public final class GitOperationsImpl implements GitOperations {
       }
    }
 
-   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact, RevCommit revCommit, BranchId branch, UserId account, HistoryImportStrategy importStrategy) {
+   private ArtifactId createCommitArtifact(RevCommit revCommit, TransactionBuilder tx, BranchId branch) {
+
+      String commitSHA = revCommit.getId().name();
+
+      String commitId;
+      if (changeIdMatcher.reset(revCommit.getFullMessage()).find()) {
+         String changeId = changeIdMatcher.group(1);
+         commitId = changeId;
+
+      } else {
+         commitId = commitSHA;
+      }
+
       try {
-         TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch, account);
-
-         String commitSHA = revCommit.getId().name();
-
-         String commitId;
-         if (changeIdMatcher.reset(revCommit.getFullMessage()).find()) {
-            String changeId = changeIdMatcher.group(1);
-            commitId = changeId;
-
-            if (importStrategy.hasChangeIdAlredyImported(changeId)) {
-               return ArtifactId.SENTINEL;
-            }
-         } else {
-            commitId = commitSHA;
-         }
-
+         return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GitCommit).andNameEquals(
+            revCommit.getShortMessage()).asArtifact();
+      } catch (Exception ex) {
          ArtifactId commitArtifact = tx.createArtifact(GitCommit, revCommit.getShortMessage());
-
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitSha, commitSHA);
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.UserArtifactId, SystemUser.OseeSystem); //TODO: this must convert author to the corresponding user artifact
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitAuthorDate,
@@ -393,9 +427,18 @@ public final class GitOperationsImpl implements GitOperations {
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitMessage, revCommit.getFullMessage());
 
          tx.setSoleAttributeValue(commitArtifact, GitChangeId, commitId);
+         return commitArtifact;
 
-         importFileChanges(objectReader, df, repoArtifact, revCommit, commitSHA, commitArtifact, branch, tx,
-            importStrategy);
+      }
+   }
+
+   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact, RevCommit revCommit, BranchId branch, UserId account, HistoryImportStrategy importStrategy) {
+      try {
+         TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch, account);
+
+         ArtifactId commitArtifact = createCommitArtifact(revCommit, tx, branch);
+         importFileChanges(objectReader, df, repoArtifact, revCommit, revCommit.getId().name(), commitArtifact, branch,
+            tx, importStrategy);
 
          importStrategy.finishGitCommit(tx);
          return commitArtifact;

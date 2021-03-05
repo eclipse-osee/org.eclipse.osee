@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.define.rest;
 
+import java.util.List;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.GitEndpoint;
@@ -46,4 +47,10 @@ public class GitEndpointImpl implements GitEndpoint {
       return gitOps.updateGitTrackingBranch(branch, gitOps.getRepoArtifact(branch, repositoryName), account,
          gitBranchName, fetch, null, false);
    }
+
+   @Override
+   public List<String> getChangeIdBetweenTags(BranchId branch, String repositoryName, String startTag, String endTag) {
+      return gitOps.getChangeIdBetweenTags(branch, gitOps.getRepoArtifact(branch, repositoryName), startTag, endTag);
+   }
+
 }
