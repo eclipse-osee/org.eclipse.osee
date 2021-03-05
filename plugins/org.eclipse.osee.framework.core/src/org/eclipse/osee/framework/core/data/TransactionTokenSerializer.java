@@ -15,18 +15,16 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Donald G. Dunne
  */
-public class TransactionTokenSerializer extends StdSerializer<@NonNull TransactionToken> {
+@SuppressWarnings("serial")
+public class TransactionTokenSerializer extends StdScalarSerializer<@NonNull TransactionToken> {
 
    public TransactionTokenSerializer() {
       super(TransactionToken.class);
@@ -38,22 +36,5 @@ public class TransactionTokenSerializer extends StdSerializer<@NonNull Transacti
       jgen.writeStringField("id", transaction.getIdString());
       jgen.writeStringField("branchId", transaction.getBranchIdString());
       jgen.writeEndObject();
-   }
-
-   /**
-    * Default implementation will write type prefix, call regular serialization method (since assumption is that value
-    * itself does not need JSON Array or Object start/end markers), and then write type suffix. This should work for
-    * most cases; some sub-classes may want to change this behavior.
-    */
-   @Override
-   public void serializeWithType(TransactionToken transaction, JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) throws IOException, JsonGenerationException {
-      typeSer.writeTypePrefixForScalar(transaction, jgen);
-      serialize(transaction, jgen, provider);
-      typeSer.writeTypeSuffixForScalar(transaction, jgen);
-   }
-
-   @Override
-   public JsonNode getSchema(SerializerProvider provider, Type typeHint) {
-      return createSchemaNode("string", true);
    }
 }

@@ -15,17 +15,16 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import java.io.IOException;
-import java.lang.reflect.Type;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BranchIdSerializer extends StdSerializer<BranchId> {
+@SuppressWarnings("serial")
+public class BranchIdSerializer extends StdScalarSerializer<@NonNull BranchId> {
 
    public BranchIdSerializer() {
       super(BranchId.class);
@@ -37,22 +36,5 @@ public class BranchIdSerializer extends StdSerializer<BranchId> {
       jgen.writeStringField("id", branch.getIdString());
       jgen.writeStringField("viewId", branch.getViewId().getIdString());
       jgen.writeEndObject();
-   }
-
-   /**
-    * Default implementation will write type prefix, call regular serialization method (since assumption is that value
-    * itself does not need JSON Array or Object start/end markers), and then write type suffix. This should work for
-    * most cases; some sub-classes may want to change this behavior.
-    */
-   @Override
-   public void serializeWithType(BranchId branch, JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) throws IOException, JsonGenerationException {
-      typeSer.writeTypePrefixForScalar(branch, jgen);
-      serialize(branch, jgen, provider);
-      typeSer.writeTypeSuffixForScalar(branch, jgen);
-   }
-
-   @Override
-   public JsonNode getSchema(SerializerProvider provider, Type typeHint) {
-      return createSchemaNode("string", true);
    }
 }

@@ -20,11 +20,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Morgan E. Cook
  */
-public class BranchIdDeserializer extends StdDeserializer<BranchId> {
+public class BranchIdDeserializer extends StdDeserializer<@NonNull BranchId> {
 
    public BranchIdDeserializer() {
       this(BranchId.class);
