@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
-import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -137,9 +136,9 @@ public class ActionArtifactRollup {
 
    private AttributeTypeEnum<?> getPrioirtyAttrType() {
       if (priorityAttrType == null) {
-         for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
+         for (INewActionPageAttributeFactoryProvider provider : atsApi.getAttributeProviders()) {
             for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-               if (factory.useFactory() && factory.getPrioirtyColumnToken() != null) {
+               if (factory.useFactory()) {
                   priorityAttrType = factory.getPrioirtyAttrToken();
                   return priorityAttrType;
                }

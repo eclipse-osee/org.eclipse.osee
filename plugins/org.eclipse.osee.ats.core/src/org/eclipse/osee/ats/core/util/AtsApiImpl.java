@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -129,6 +130,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsLogFactory logFactory;
    protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
    protected IAtsNotificationService notificationService;
+   protected List<INewActionPageAttributeFactoryProvider> attributeFactoryProviders = new LinkedList<>();
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -172,6 +174,15 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
    }
 
+   public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider) {
+      attributeFactoryProviders.add(provider);
+   }
+
+   @Override
+   public List<INewActionPageAttributeFactoryProvider> getAttributeProviders() {
+      return attributeFactoryProviders;
+   }
+
    public void start() {
 
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
@@ -184,6 +195,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
       logFactory = new AtsLogFactory();
+      actionFactory = new ActionFactory(this);
    }
 
    public void stop() {

@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -79,38 +78,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 public class ActionFactory implements IAtsActionFactory {
-
-   private final IAttributeResolver attrResolver;
    private final AtsApi atsApi;
+
    private IAtsTeamDefinition topTeamDefinition;
    private JsonFactory jsonFactory;
    private IWorkItemListener workItemListener;
-   private static List<INewActionPageAttributeFactoryProvider> attributeFactoryProviders;
-
-   static {
-      attributeFactoryProviders = new LinkedList<>();
-   }
-
-   public ActionFactory() {
-      this.atsApi = null;
-      this.attrResolver = null;
-   }
 
    public ActionFactory(AtsApi atsApi) {
-      this(atsApi.getAttributeResolver(), atsApi);
-   }
-
-   public ActionFactory(IAttributeResolver attrResolver, AtsApi atsApi) {
-      this.attrResolver = attrResolver;
       this.atsApi = atsApi;
-   }
-
-   public static synchronized List<INewActionPageAttributeFactoryProvider> getProviders() {
-      return attributeFactoryProviders;
-   }
-
-   public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider) {
-      getProviders().add(provider);
    }
 
    @Override
@@ -548,7 +523,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    private void logCreatedByChange(IAtsWorkItem workItem, AtsUser user, Date date, AtsUser asUser) {
-      if (attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
+      if (atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
          workItem.getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
       } else {
          workItem.getLog().addLog(LogType.Originated, "", "Changed by " + asUser.getName(), date, user.getUserId());
@@ -561,10 +536,10 @@ public class ActionFactory implements IAtsActionFactory {
          logCreatedByChange(workItem, user, date, changes.getAsUser());
       }
 
-      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+      if (atsApi.getAttributeResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
       }
-      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
+      if (atsApi.getAttributeResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
       changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(changes.getAsUser(),
@@ -608,40 +583,37 @@ public class ActionFactory implements IAtsActionFactory {
     * Set Team Workflow attributes off given action artifact
     */
    public void setArtifactIdentifyData(IAtsAction fromAction, IAtsTeamWorkflow toTeam, IAtsChangeSet changes) {
-      if (!getProviders().isEmpty()) {
-         for (INewActionPageAttributeFactoryProvider provider : getProviders()) {
-            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-               if (factory.useFactory()) {
-                  factory.setArtifactIdentifyData(attrResolver, fromAction, toTeam, changes);
-                  return;
-               }
+      for (INewActionPageAttributeFactoryProvider provider : atsApi.getAttributeProviders()) {
+         for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+            if (factory.useFactory()) {
+               factory.setArtifactIdentifyData(atsApi.getAttributeResolver(), fromAction, toTeam, changes);
+               return;
             }
          }
       }
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
-      ChangeType changeType =
-         ChangeType.valueOf(attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "None"));
+      ChangeType changeType = ChangeType.valueOf(
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "None"));
       setArtifactIdentifyData(toTeam, fromAction.getName(),
-         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), changeType,
-         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Priority, ""),
-         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ValidationRequired, false),
-         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.NeedBy, (Date) null), changes);
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), changeType,
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.Priority, ""),
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ValidationRequired, false),
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.NeedBy, (Date) null),
+         changes);
    }
 
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
    public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
-      if (!getProviders().isEmpty()) {
-         for (INewActionPageAttributeFactoryProvider provider : getProviders()) {
-            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-               if (factory.useFactory()) {
-                  factory.setArtifactIdentifyData(attrResolver, atsObject, title, desc, changeType, priority,
-                     validationRequired, needByDate, changes);
-                  return;
-               }
+      for (INewActionPageAttributeFactoryProvider provider : atsApi.getAttributeProviders()) {
+         for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+            if (factory.useFactory()) {
+               factory.setArtifactIdentifyData(atsApi.getAttributeResolver(), atsObject, title, desc, changeType,
+                  priority, validationRequired, needByDate, changes);
+               return;
             }
          }
       }
@@ -714,5 +686,4 @@ public class ActionFactory implements IAtsActionFactory {
    public void setWorkItemListener(IWorkItemListener workItemListener) {
       this.workItemListener = workItemListener;
    }
-
 }

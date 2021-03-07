@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
-import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
@@ -53,9 +52,9 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
    public static PriorityColumnUI getInstance() {
       if (instance == null) {
-         for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
+         for (INewActionPageAttributeFactoryProvider provider : AtsApiService.get().getAttributeProviders()) {
             for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-               if (factory.useFactory() && factory.getPrioirtyColumnToken() != null) {
+               if (factory.useFactory()) {
                   instance = new PriorityColumnUI(factory.getPrioirtyColumnToken(), factory.getPrioirtyAttrToken());
                   return instance;
                }

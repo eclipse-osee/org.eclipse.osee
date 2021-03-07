@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
-import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
@@ -102,10 +101,11 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
    // for ReviewOsgiXml public void setAtsUserService(IAtsUserService userServiceClient)
    // for ReviewOsgiXml public void addSearchDataProvider(IAtsSearchDataProvider provider)
-   // for ReviewOsgiXml public void removeSearchDataProvider(IAtsSearchDataProvider provider) {
+   // for ReviewOsgiXml public void removeSearchDataProvider(IAtsSearchDataProvider provider)
    // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
+   // for ReviewOsgiXml public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider)
 
    @Override
    public void start() {
@@ -126,7 +126,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       queryServiceIde = new AtsQueryServiceIde(this);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 
-      actionFactory = new ActionFactory(attributeResolverService, this);
       taskService = new AtsTaskService(this);
 
       agileService = new AgileService(logger, this);

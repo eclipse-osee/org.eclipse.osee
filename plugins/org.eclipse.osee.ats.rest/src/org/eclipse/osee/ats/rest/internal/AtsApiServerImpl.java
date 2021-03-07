@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
-import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
@@ -89,13 +88,14 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
    // for ReviewOsgiXml public void setAtsUserService(IAtsUserService userServiceClient)
    // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
-   // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
+   // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
+   // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
+   // for ReviewOsgiXml public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider)
 
    @Override
    public void start() {
       configurationsService = new AtsConfigurationsService(this, orcsApi);
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
-
       super.start();
 
       notificationService = new AtsNotificationServiceImpl(this);
@@ -109,7 +109,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
-      actionFactory = new ActionFactory(attributeResolverService, this);
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this);

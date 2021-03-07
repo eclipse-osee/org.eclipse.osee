@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -236,5 +237,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    default public void setStaticIdValue(IAtsWorkItem workItem, String key, String value, IAtsChangeSet changes) {
       getAttributeResolver().setStaticIdValue(workItem, key, value, changes);
    }
+
+   List<INewActionPageAttributeFactoryProvider> getAttributeProviders();
 
 }

@@ -65,7 +65,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
@@ -619,8 +618,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
 
-         ActionFactory factory = new ActionFactory(atsApi);
-         ActionResult actionResult = factory.createAction(newActionData, changes);
+         ActionResult actionResult = atsApi.getActionFactory().createAction(newActionData, changes);
 
          TransactionId transaction = changes.executeIfNeeded();
          if (transaction != null && transaction.isInvalid()) {

@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
-import org.eclipse.osee.ats.core.util.ActionFactory;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -54,8 +54,8 @@ public class ChangeTypeDialog extends ListDialog {
       return (ChangeType) getResult()[0];
    }
 
-   public static ChangeType[] getValues() {
-      for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
+   private ChangeType[] getValues() {
+      for (INewActionPageAttributeFactoryProvider provider : AtsApiService.get().getAttributeProviders()) {
          for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
             if (factory.useFactory()) {
                if (factory.getChangeTypeValues() != null) {
