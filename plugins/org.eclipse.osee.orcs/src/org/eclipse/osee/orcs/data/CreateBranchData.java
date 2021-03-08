@@ -42,6 +42,7 @@ public class CreateBranchData {
 
    private boolean txCopyBranchType = false;
    private BranchId parentBranch;
+   private boolean inheritAccess = false;
 
    public CreateBranchData() {
       this(BranchId.create());
@@ -144,6 +145,14 @@ public class CreateBranchData {
 
    public void setTxCopyBranchType(boolean value) {
       txCopyBranchType = value;
+   }
+
+   public boolean isInheritAccess() {
+      return inheritAccess;
+   }
+
+   public void setInheritAccess(boolean value) {
+      inheritAccess = value;
    }
 
    @Override

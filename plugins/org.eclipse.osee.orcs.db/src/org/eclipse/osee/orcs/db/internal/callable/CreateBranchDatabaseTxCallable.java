@@ -14,9 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -24,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -88,12 +85,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private static final String TEST_MERGE_BRANCH_EXISTENCE =
       "SELECT COUNT(1) FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
-
-   private static final String INSERT_INTO_BRANCH_ACL =
-      "INSERT INTO osee_branch_acl (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
-
-   private final String GET_BRANCH_ACCESS_CONTROL_LIST =
-      "SELECT permission_id, privilege_entity_id FROM osee_branch_acl WHERE branch_id= ?";
 
    private static final String INSERT_BRANCH =
       "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -185,6 +176,10 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
 
       int inheritAccessControl = jdbcClient.fetch(connection, 0, SELECT_INHERIT_ACCESS_CONTROL, parentBranch);
+      if (inheritAccessControl == 1) {
+         newBranchData.setInheritAccess(true);
+         // used later to copy the access control values
+      }
 
       //write to branch table
       Object[] toInsert = new Object[] {
@@ -200,10 +195,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          inheritAccessControl};
 
       jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
-
-      if (inheritAccessControl != 0) {
-         copyAccessRules(newBranchData.getAuthor(), parentBranch, branch);
-      }
 
       nextTransactionId = tobeTransactionId;
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch, nextTransactionId,
@@ -263,25 +254,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          }
       } finally {
          chStmt.close();
-      }
-   }
-
-   private void copyAccessRules(ArtifactId author, BranchId parentBranch, BranchId branch) {
-      int lock = PermissionEnum.USER_LOCK.getPermId();
-      int deny = PermissionEnum.DENY.getPermId();
-
-      List<Object[]> data = new ArrayList<>();
-      jdbcClient.runQuery(stmt -> {
-         int permissionId = stmt.getInt("permission_id");
-         Long priviledgeId = stmt.getLong("privilege_entity_id");
-         if (author.equals(priviledgeId) && permissionId < lock && permissionId != deny) {
-            permissionId = lock;
-         }
-         data.add(new Object[] {permissionId, priviledgeId, branch});
-      }, JdbcConstants.JDBC__MAX_FETCH_SIZE, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch);
-
-      if (!data.isEmpty()) {
-         jdbcClient.runBatchUpdate(INSERT_INTO_BRANCH_ACL, data);
       }
    }
 }

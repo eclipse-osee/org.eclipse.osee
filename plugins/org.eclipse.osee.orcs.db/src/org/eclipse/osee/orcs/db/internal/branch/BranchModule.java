@@ -44,6 +44,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
+import org.eclipse.osee.orcs.db.internal.callable.BranchInheritACLCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchFieldCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseTxCallable;
@@ -70,7 +71,6 @@ public class BranchModule {
       "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id = ? AND branch_id = ?";
    private final String GET_BRANCH_PERMISSION =
       "SELECT permission_id FROM osee_branch_acl WHERE privilege_entity_id = ? AND branch_id = ?";
-
    private static final String COPY_APPLIC =
       "INSERT INTO osee_txs (branch_id, gamma_id, transaction_id, tx_current, mod_type, app_id)\n" + "with cte as (select branch_id as chid, baseline_transaction_id as chtx, parent_branch_id as pid from osee_branch where branch_id = ?)\n" + "select chid, txsP.gamma_id, chtx, tx_current, mod_type, app_id from cte, osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and t2.gamma_id = txsP.gamma_id and txsP.branch_id = pid and txsP.tx_current =1 and not exists (select 1 from osee_txs txsC where txsC.branch_id = chid and txsC.gamma_id = txsP.gamma_id)";
 
@@ -105,6 +105,9 @@ public class BranchModule {
          public void createBranch(CreateBranchData branchData) {
             jdbcClient.runTransaction(
                new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData, OseeCodeVersion.getVersionId()));
+            if (branchData.isInheritAccess()) {
+               jdbcClient.runTransaction(new BranchInheritACLCallable(jdbcClient, branchData));
+            }
          }
 
          @Override
