@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -57,12 +57,12 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      HashCollectionSet<IOseeBranch, AttrData> attributesWithErrors = new HashCollectionSet<>(HashSet::new);
-      List<? extends IOseeBranch> branches = BranchManager.getBaselineBranches();
+      HashCollectionSet<BranchToken, AttrData> attributesWithErrors = new HashCollectionSet<>(HashSet::new);
+      List<? extends BranchToken> branches = BranchManager.getBaselineBranches();
       if (branches.isEmpty()) {
          throw new OseeStateException("no branches found");
       }
-      for (IOseeBranch branch : branches) {
+      for (BranchToken branch : branches) {
          Set<AttrData> datas = getRepeatEnumeratedAttrs(monitor, branch);
          if (!datas.isEmpty()) {
             attributesWithErrors.put(branch, datas);
@@ -72,7 +72,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"GUID", "ATTR TYPE ID", "VALUE"}));
-      for (IOseeBranch branch : attributesWithErrors.keySet()) {
+      for (BranchToken branch : attributesWithErrors.keySet()) {
          appendToDetails(AHTML.addRowSpanMultiColumnTable(branch.getName(), 3));
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
             appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
@@ -89,7 +89,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       setItemsToFix(attributesWithErrors.size());
       checkForCancelledStatus(monitor);
       if (isFixOperationEnabled() && hadItemsToFix()) {
-         for (IOseeBranch branch : attributesWithErrors.keySet()) {
+         for (BranchToken branch : attributesWithErrors.keySet()) {
             Collection<AttrData> attributeData = attributesWithErrors.getValues(branch);
             List<ArtifactId> artifactIds = new ArrayList<>(attributeData.size());
             for (AttrData attrData : attributeData) {

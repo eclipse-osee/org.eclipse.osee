@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -47,16 +47,16 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class UpdateBranchHandler extends CommandHandler {
 
-   protected boolean isValid(IOseeBranch branch) {
+   protected boolean isValid(BranchToken branch) {
       return !BranchManager.isParentSystemRoot(branch) && BranchManager.isEditable(
          branch) && BranchManager.getType(branch).matches(BranchType.WORKING,
             BranchType.BASELINE) && !BranchManager.hasChildren(branch);
    }
 
-   private IOseeBranch getSelectedBranch(IStructuredSelection selection) {
-      IOseeBranch branch = null;
+   private BranchToken getSelectedBranch(IStructuredSelection selection) {
+      BranchToken branch = null;
 
-      List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+      List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(selection);
       if (branches.size() == 1) {
          branch = branches.iterator().next();
       }
@@ -66,7 +66,7 @@ public class UpdateBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       boolean enabled = false;
-      IOseeBranch branch = getSelectedBranch(structuredSelection);
+      BranchToken branch = getSelectedBranch(structuredSelection);
       if (branch != null) {
          enabled = isValid(branch);
       }
@@ -75,7 +75,7 @@ public class UpdateBranchHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      IOseeBranch branchToUpdate = getSelectedBranch(selection);
+      BranchToken branchToUpdate = getSelectedBranch(selection);
 
       if (branchToUpdate != null) {
          if (BranchManager.isUpdatable(branchToUpdate)) {

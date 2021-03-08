@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -265,8 +265,8 @@ public class ArtifactMatchInterpreterTest {
          }
 
          @Override
-         public IOseeBranch getBranchToken() {
-            return IOseeBranch.create(branch, branchName);
+         public BranchToken getBranchToken() {
+            return BranchToken.create(branch, branchName);
          }
 
          @Override

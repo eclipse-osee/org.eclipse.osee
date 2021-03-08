@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -49,7 +49,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       this.type = type;
    }
 
-   public abstract void performOperation(final List<IOseeBranch> branches);
+   public abstract void performOperation(final List<BranchToken> branches);
 
    @Override
    public Object executeWithException(ExecutionEvent arg0, IStructuredSelection selection) {
@@ -60,8 +60,8 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       XResultData confirmDialogResults = new XResultData();
       confirmDialogResults.logf("Are you sure you want to %s branch(es):\n\n", type.dialogType);
 
-      List<IOseeBranch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
-      for (IOseeBranch branch : selectedBranches) {
+      List<BranchToken> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
+      for (BranchToken branch : selectedBranches) {
          confirmDialogResults.logf("Branch: %s\n", branch.toStringWithId());
          if (!AccessControlManager.hasPermission(branch, PermissionEnum.WRITE)) {
             errorResults.errorf("No write permission for Branch %s.\n\n", branch.toStringWithId());

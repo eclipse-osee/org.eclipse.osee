@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -61,8 +61,8 @@ public class Handlers {
    /**
     * Populates a list of branches from a IStructuredSelection. Returns an empty list if no branches were found.
     */
-   public static List<IOseeBranch> getBranchesFromStructuredSelection(IStructuredSelection structuredSelection) {
-      return processSelectionObjects(IOseeBranch.class, structuredSelection);
+   public static List<BranchToken> getBranchesFromStructuredSelection(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(BranchToken.class, structuredSelection);
    }
 
    public static List<Branch> getBranchesFromStructuredSelection2(IStructuredSelection structuredSelection) {

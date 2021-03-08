@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -44,8 +44,8 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
-   public ResultSet<IOseeBranch> getResultsAsId() {
-      List<IOseeBranch> branches = new ArrayList<>();
+   public ResultSet<BranchToken> getResultsAsId() {
+      List<BranchToken> branches = new ArrayList<>();
       query(branches);
       return ResultSets.newResultSet(branches);
    }

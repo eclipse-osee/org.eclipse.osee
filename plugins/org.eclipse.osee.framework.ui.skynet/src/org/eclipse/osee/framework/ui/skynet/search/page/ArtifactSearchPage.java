@@ -37,7 +37,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.data.Adaptable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -451,7 +451,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    @Override
-   public IOseeBranch getBranch() {
+   public BranchToken getBranch() {
       if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
          return getInput().getArtifactResults().get(0).getBranchToken();
       }

@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -114,8 +114,8 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       try {
-         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-         Iterator<IOseeBranch> iterator = branches.iterator();
+         List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         Iterator<BranchToken> iterator = branches.iterator();
          if (iterator.hasNext()) {
             BranchId sourceBranch = iterator.next();
 
@@ -136,16 +136,16 @@ public abstract class CommitHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-      List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
       if (branches.size() == 1) {
-         IOseeBranch branch = branches.iterator().next();
+         BranchToken branch = branches.iterator().next();
          return useParentBranchValid(branch) || !useParentBranch && AccessControlManager.isOseeAdmin();
       }
       return false;
    }
 
-   protected boolean useParentBranchValid(IOseeBranch branch) {
+   protected boolean useParentBranchValid(BranchToken branch) {
       return branch.notEqual(CoreBranches.SYSTEM_ROOT) && useParentBranch && !BranchManager.isChangeManaged(
          branch) && !BranchManager.isArchived(branch);
    }

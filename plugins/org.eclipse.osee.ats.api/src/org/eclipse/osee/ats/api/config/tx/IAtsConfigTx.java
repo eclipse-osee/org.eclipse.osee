@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
@@ -34,9 +34,9 @@ public interface IAtsConfigTx {
 
    TransactionId execute();
 
-   IAtsConfigTxVersion createVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
+   IAtsConfigTxVersion createVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
 
-   IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
+   IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
 
    IAtsTeamDefinition getTeamDef(ArtifactId teamDef);
 

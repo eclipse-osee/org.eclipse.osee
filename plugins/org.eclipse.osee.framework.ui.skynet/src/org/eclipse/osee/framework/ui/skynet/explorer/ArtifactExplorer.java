@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -410,7 +410,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       artifactExplorerMenu.setupPopupMenu();
    }
 
-   public void setBranch(IOseeBranch branch) {
+   public void setBranch(BranchToken branch) {
       this.branch = branch;
    }
 

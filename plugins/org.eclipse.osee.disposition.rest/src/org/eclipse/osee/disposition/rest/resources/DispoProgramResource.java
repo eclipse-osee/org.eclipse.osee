@@ -37,7 +37,7 @@ import org.eclipse.osee.disposition.model.DispoProgamDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 
 /**
@@ -115,16 +115,16 @@ public class DispoProgramResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response getAllPrograms() {
-      List<IOseeBranch> allPrograms = dispoApi.getDispoPrograms();
-      Collections.sort(allPrograms, new Comparator<IOseeBranch>() {
+      List<BranchToken> allPrograms = dispoApi.getDispoPrograms();
+      Collections.sort(allPrograms, new Comparator<BranchToken>() {
          @Override
-         public int compare(IOseeBranch o1, IOseeBranch o2) {
+         public int compare(BranchToken o1, BranchToken o2) {
             return o1.getName().compareTo(o2.getName());
          }
       });
       List<Map<String, String>> branchList = new LinkedList<>();
 
-      for (IOseeBranch branch : allPrograms) {
+      for (BranchToken branch : allPrograms) {
          Map<String, String> mapObject = new HashMap<>();
 
          String uuid = branch.getIdString();
@@ -190,7 +190,7 @@ public class DispoProgramResource {
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    public Response importDispoBranchByName(@FormParam("filterState") String filterState, @FormParam("name") String branchName) {
-      IOseeBranch branch = dispoApi.getDispoProgramIdByName(branchName);
+      BranchToken branch = dispoApi.getDispoProgramIdByName(branchName);
       Response.Status status;
       dispoApi.importAllDispoSets(branch, filterState, "OSEE System Auto-Import (Branch)");
       status = Status.OK;

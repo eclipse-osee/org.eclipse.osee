@@ -21,7 +21,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -77,7 +77,7 @@ public class RelationIntegrityCheckTest {
       Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");
       art_A.persist(getClass().getSimpleName());
 
-      workingBranch = BranchManager.createWorkingBranch(parentBranch, IOseeBranch.create("2"));
+      workingBranch = BranchManager.createWorkingBranch(parentBranch, BranchToken.create("2"));
 
       art_A.deleteAndPersist(getClass().getSimpleName());
 

@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -31,7 +31,7 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
    ResultSet<Branch> getResults();
 
-   ResultSet<IOseeBranch> getResultsAsId();
+   ResultSet<BranchToken> getResultsAsId();
    BranchQuery SENTINEL = createSentinel();
 
    @Override
@@ -141,7 +141,7 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          }
 
          @Override
-         public ResultSet<IOseeBranch> getResultsAsId() {
+         public ResultSet<BranchToken> getResultsAsId() {
             return null;
          }
 

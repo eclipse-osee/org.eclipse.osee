@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -122,7 +122,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    }
 
    @Override
-   public IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
+   public IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
       checkUsedIds(versionTok);
       ArtifactToken verArt = changes.createArtifact(AtsArtifactTypes.Version, versionTok.getName(), versionTok.getId());
       changes.setSoleAttributeValue(verArt, AtsAttributeTypes.Released, released != ReleasedOption.UnReleased);
@@ -139,7 +139,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    }
 
    @Override
-   public IAtsConfigTxVersion createVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
+   public IAtsConfigTxVersion createVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
       return createVersion(AtsVersionArtifactToken.valueOf(Lib.generateArtifactIdAsInt(), name), released, branch,
          nextRelease, teamDef);
    }

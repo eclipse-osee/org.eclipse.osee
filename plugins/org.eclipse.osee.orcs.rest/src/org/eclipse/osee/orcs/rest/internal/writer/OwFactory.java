@@ -19,7 +19,7 @@ package org.eclipse.osee.orcs.rest.internal.writer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -108,7 +108,7 @@ public class OwFactory {
       return attribute;
    }
 
-   public static OwBranch createBranchToken(IOseeBranch branch) {
+   public static OwBranch createBranchToken(BranchToken branch) {
       String tokenStr = String.format("[%s]-[%d]", branch.getName(), branch.getId());
       OwBranch owBranch = new OwBranch(branch.getId(), branch.getName());
       owBranch.setData(tokenStr);

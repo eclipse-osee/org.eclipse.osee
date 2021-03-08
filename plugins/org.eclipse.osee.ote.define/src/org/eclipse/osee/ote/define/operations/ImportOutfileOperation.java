@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -111,19 +111,19 @@ public class ImportOutfileOperation {
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {
-      Map<IOseeBranch, List<Artifact>> commitMap = getArtifactsByBranch(items);
-      for (IOseeBranch branch : commitMap.keySet()) {
+      Map<BranchToken, List<Artifact>> commitMap = getArtifactsByBranch(items);
+      for (BranchToken branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
          commitTestRunTx(monitor, commitComment, branch, artList.toArray(new Artifact[artList.size()]));
       }
    }
 
-   private Map<IOseeBranch, List<Artifact>> getArtifactsByBranch(Object[] items) {
-      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<>();
+   private Map<BranchToken, List<Artifact>> getArtifactsByBranch(Object[] items) {
+      Map<BranchToken, List<Artifact>> branchMap = new HashMap<>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
-         IOseeBranch branch = testRun.getBranchToken();
+         BranchToken branch = testRun.getBranchToken();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
             artList = new ArrayList<>();

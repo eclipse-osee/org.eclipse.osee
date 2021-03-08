@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -307,7 +307,7 @@ public class ActionPage {
 
    private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, IAtsWidgetDefinition widget) {
       sb.append("Commit Manager: ");
-      IOseeBranch branch = atsApi.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
+      BranchToken branch = atsApi.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
       if (branch.isValid()) {
          sb.append(branch.getName());
       }

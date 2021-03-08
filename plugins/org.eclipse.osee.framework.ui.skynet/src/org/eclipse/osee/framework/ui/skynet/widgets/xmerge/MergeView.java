@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -71,8 +71,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
 
    private MergeXWidget mergeXWidget;
-   private IOseeBranch sourceBranch;
-   private IOseeBranch destBranch;
+   private BranchToken sourceBranch;
+   private BranchToken destBranch;
    private TransactionToken transactionId;
    private TransactionToken commitTrans;
    private boolean showConflicts;

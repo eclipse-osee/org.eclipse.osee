@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -68,7 +68,7 @@ public class ArtifactDelta {
       return baseArt;
    }
 
-   public IOseeBranch getBranch() {
+   public BranchToken getBranch() {
       return getStartArtifact() != null ? getStartArtifact().getBranchToken() : getEndArtifact().getBranchToken();
    }
 

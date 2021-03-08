@@ -14,7 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -49,7 +49,7 @@ public class UpdateChangeUiData extends AbstractOperation {
       }
 
       if (!txDelta.areOnTheSameBranch()) {
-         IOseeBranch mergeBranch =
+         BranchToken mergeBranch =
             BranchManager.getMergeBranch(txDelta.getStartTx().getBranch(), txDelta.getEndTx().getBranch());
          changeData.setMergeBranch(mergeBranch);
       }

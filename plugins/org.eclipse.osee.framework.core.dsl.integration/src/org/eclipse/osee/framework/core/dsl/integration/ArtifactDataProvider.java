@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
@@ -29,7 +29,7 @@ public interface ArtifactDataProvider {
 
       Collection<ArtifactProxy> getHierarchy();
 
-      IOseeBranch getBranchToken();
+      BranchToken getBranchToken();
    }
 
    boolean isApplicable(Object object);

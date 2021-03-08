@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -93,7 +93,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return branchView;
    }
 
-   public synchronized List<IOseeBranch> getBranches(Predicate<Branch> branchFilter) {
+   public synchronized List<BranchToken> getBranches(Predicate<Branch> branchFilter) {
       return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
    }
 

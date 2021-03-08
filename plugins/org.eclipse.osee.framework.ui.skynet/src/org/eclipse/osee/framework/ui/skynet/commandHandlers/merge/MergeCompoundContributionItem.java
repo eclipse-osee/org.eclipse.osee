@@ -26,7 +26,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -66,15 +66,15 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
             BranchId selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                try {
-                  Collection<IOseeBranch> destBranches =
+                  Collection<BranchToken> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch);
-                  IOseeBranch parentBranch = BranchManager.getParentBranch(selectedBranch);
+                  BranchToken parentBranch = BranchManager.getParentBranch(selectedBranch);
                   if (parentBranch != null && !BranchManager.getType(
                      selectedBranch).isMergeBranch() && !destBranches.contains(parentBranch)) {
                      destBranches.add(parentBranch);
@@ -84,7 +84,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
                   Command command = configCommandParameter(commandId);
                   CommandContributionItem contributionItem = null;
 
-                  for (IOseeBranch branch : destBranches) {
+                  for (BranchToken branch : destBranches) {
                      contributionItem = createCommand(branch, commandId);
 
                      if (command != null && command.isEnabled()) {
@@ -100,7 +100,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(IOseeBranch branch, String commandId) {
+   private CommandContributionItem createCommand(BranchToken branch, String commandId) {
       Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, branch.getIdString());
       CommandContributionItem contributionItem;

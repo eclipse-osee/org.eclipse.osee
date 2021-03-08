@@ -76,7 +76,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -92,7 +92,7 @@ import org.osgi.service.event.EventAdmin;
 public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    private static final Object lock = new Object();
-   private volatile static IOseeBranch atsBranch;
+   private volatile static BranchToken atsBranch;
    private static final String ATS_BRANCH_NAME = "ats.branch.name";
    private static final String ATS_BRANCH_ID = "ats.branch.id";
    private final List<IAtsSearchDataProvider> searchDataProviders;
@@ -284,7 +284,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    }
 
    @Override
-   public IOseeBranch getAtsBranch() {
+   public BranchToken getAtsBranch() {
       synchronized (lock) {
          if (atsBranch == null) {
             // Preference store overrides all
@@ -317,7 +317,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
          name = "unknown";
       }
       if (Strings.isValid(branchId) && branchId.matches("\\d+")) {
-         atsBranch = IOseeBranch.create(Long.valueOf(branchId), name);
+         atsBranch = BranchToken.create(Long.valueOf(branchId), name);
       }
    }
 

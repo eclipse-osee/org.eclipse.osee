@@ -51,7 +51,7 @@ import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdapter;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -246,11 +246,11 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public void importAllDispoPrograms(String filterState, String userName) {
-      List<IOseeBranch> dispoBranches = new ArrayList<>();
+      List<BranchToken> dispoBranches = new ArrayList<>();
 
       dispoBranches = getDispoPrograms();
 
-      for (IOseeBranch branch : dispoBranches) {
+      for (BranchToken branch : dispoBranches) {
          importAllDispoSets(branch, filterState, userName);
       }
    }
@@ -488,12 +488,12 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public List<IOseeBranch> getDispoPrograms() {
+   public List<BranchToken> getDispoPrograms() {
       return getQuery().getDispoBranches();
    }
 
    @Override
-   public IOseeBranch getDispoProgramIdByName(String branchName) {
+   public BranchToken getDispoProgramIdByName(String branchName) {
       return getQuery().findDispoProgramIdByName(branchName);
    }
 

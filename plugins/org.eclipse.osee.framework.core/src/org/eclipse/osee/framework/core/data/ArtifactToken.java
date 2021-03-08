@@ -120,7 +120,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
          this.guid = guid;
       }
 
-      public ArtifactTokenImpl(Long id, String name, IOseeBranch common, ArtifactTypeToken artifactType) {
+      public ArtifactTokenImpl(Long id, String name, BranchToken common, ArtifactTypeToken artifactType) {
          this(id, GUID.create(), name, common, artifactType);
       }
 

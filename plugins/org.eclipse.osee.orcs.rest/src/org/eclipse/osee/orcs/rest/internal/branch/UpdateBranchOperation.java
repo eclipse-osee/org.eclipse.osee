@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.rest.internal.branch;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -56,7 +56,7 @@ public class UpdateBranchOperation {
             return branchData;
          }
 
-         IOseeBranch toBranch = IOseeBranch.create(branchData.getToName());
+         BranchToken toBranch = BranchToken.create(branchData.getToName());
          branchData.setNewBranchId(
             orcsApi.getBranchOps().createWorkingBranch(toBranch, author, fromBranch, ArtifactId.SENTINEL));
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -67,7 +67,7 @@ public class BranchEventTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private IOseeBranch mainBranch;
+   private BranchToken mainBranch;
    private BranchId topLevel;
 
    private BranchEventListener branchEventListener;
@@ -76,7 +76,7 @@ public class BranchEventTest {
    @Before
    public void setup() {
       String topLevelBranchName = String.format("%s_TOP_LEVEL", method.getQualifiedTestName());
-      mainBranch = IOseeBranch.create(topLevelBranchName);
+      mainBranch = BranchToken.create(topLevelBranchName);
 
       branchEventListener = new BranchEventListener();
       branchEventListenerAsync = new BranchEventListenerAsync();
@@ -122,13 +122,13 @@ public class BranchEventTest {
 
          topLevel = testEvents__topLevelAdded();
 
-         IOseeBranch workingBranch = testEvents__workingAdded();
+         BranchToken workingBranch = testEvents__workingAdded();
          testEvents__workingRenamed(workingBranch);
          testEvents__typeChange(workingBranch);
          testEvents__stateChange(workingBranch);
          testEvents__deleted(workingBranch);
          testEvents__purged();
-         IOseeBranch committedBranch = testEvents__committed();
+         BranchToken committedBranch = testEvents__committed();
          testEvents__changeArchiveState(committedBranch);
 
       } finally {
@@ -137,7 +137,7 @@ public class BranchEventTest {
       }
    }
 
-   private void testEvents__changeArchiveState(IOseeBranch committedBranch) throws Exception {
+   private void testEvents__changeArchiveState(BranchToken committedBranch) throws Exception {
       branchEventListener.reset();
 
       Assert.assertNotNull(committedBranch);
@@ -151,8 +151,8 @@ public class BranchEventTest {
       Assert.assertFalse(BranchManager.isEditable(committedBranch));
    }
 
-   private IOseeBranch testEvents__committed() throws Exception {
-      IOseeBranch workingBranch =
+   private BranchToken testEvents__committed() throws Exception {
+      BranchToken workingBranch =
          BranchManager.createWorkingBranch(mainBranch, method.getQualifiedTestName() + " - to commit");
 
       Assert.assertNotNull(workingBranch);
@@ -195,7 +195,7 @@ public class BranchEventTest {
       Assert.assertFalse("Branch should not exist", BranchManager.branchExists(workingBranch));
    }
 
-   private void testEvents__deleted(IOseeBranch workingBranch) throws Exception {
+   private void testEvents__deleted(BranchToken workingBranch) throws Exception {
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, BranchManager.getState(workingBranch));
 
@@ -216,7 +216,7 @@ public class BranchEventTest {
       Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
    }
 
-   private void testEvents__stateChange(IOseeBranch workingBranch) throws Exception {
+   private void testEvents__stateChange(BranchToken workingBranch) throws Exception {
       branchEventListener.reset();
 
       Assert.assertNotNull(workingBranch);
@@ -228,7 +228,7 @@ public class BranchEventTest {
       Assert.assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
    }
 
-   private void testEvents__typeChange(IOseeBranch workingBranch) throws Exception {
+   private void testEvents__typeChange(BranchToken workingBranch) throws Exception {
       branchEventListener.reset();
       Assert.assertNotNull(workingBranch);
       Assert.assertTrue(BranchManager.getType(workingBranch).isWorkingBranch());
@@ -251,10 +251,10 @@ public class BranchEventTest {
       Assert.assertEquals(newName, BranchManager.getBranchName(workingBranch));
    }
 
-   private IOseeBranch testEvents__workingAdded() throws Exception {
+   private BranchToken testEvents__workingAdded() throws Exception {
       branchEventListener.reset();
 
-      IOseeBranch workingBranch =
+      BranchToken workingBranch =
          BranchManager.createWorkingBranch(mainBranch, method.getQualifiedTestName() + " - working");
       Assert.assertNotNull(workingBranch);
 

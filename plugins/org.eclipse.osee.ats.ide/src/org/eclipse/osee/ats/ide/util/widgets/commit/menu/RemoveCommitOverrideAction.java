@@ -19,7 +19,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -36,9 +36,9 @@ public class RemoveCommitOverrideAction extends Action {
 
    private final AtsApi atsApi;
    private final IAtsTeamWorkflow teamWf;
-   private final IOseeBranch branch;
+   private final BranchToken branch;
 
-   public RemoveCommitOverrideAction(IAtsTeamWorkflow teamWf, IOseeBranch branch, AtsApi atsApi) {
+   public RemoveCommitOverrideAction(IAtsTeamWorkflow teamWf, BranchToken branch, AtsApi atsApi) {
       super(String.format("Remove Commit Override for [%s]", branch.getName()));
       this.teamWf = teamWf;
       this.branch = branch;

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -44,7 +44,7 @@ public interface IAtsBranchService {
     */
    boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
-   IOseeBranch getBranch(IAtsTeamWorkflow teamWf);
+   BranchToken getBranch(IAtsTeamWorkflow teamWf);
 
    BranchId getBranch(IAtsConfigObject configObject);
 
@@ -60,9 +60,9 @@ public interface IAtsBranchService {
 
    boolean isBranchesAllCommitted(IAtsTeamWorkflow teamWf);
 
-   IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf);
+   BranchToken getWorkingBranch(IAtsTeamWorkflow teamWf);
 
-   IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf);
+   BranchToken getCommittedWorkingBranch(IAtsTeamWorkflow teamWf);
 
    Collection<CommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
 
@@ -82,7 +82,7 @@ public interface IAtsBranchService {
 
    CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, CommitConfigItem configArt);
 
-   IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates);
+   BranchToken getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates);
 
    CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch);
 
@@ -99,7 +99,7 @@ public interface IAtsBranchService {
     *
     * @param force == true does not used cached value
     */
-   IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force);
+   BranchToken getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force);
 
    boolean isWorkingBranchEverCommitted(IAtsTeamWorkflow teamWf);
 
@@ -143,7 +143,7 @@ public interface IAtsBranchService {
 
    String getBranchName(BranchId branchId);
 
-   void setBranchName(IOseeBranch branch, String name);
+   void setBranchName(BranchToken branch, String name);
 
    Result moveWorkingBranch(IAtsTeamWorkflow fromTeamWf, IAtsTeamWorkflow toTeamWf, String newBranchName);
 
@@ -171,7 +171,7 @@ public interface IAtsBranchService {
 
    boolean isWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf);
 
-   IOseeBranch getBranch(BranchId branch);
+   BranchToken getBranch(BranchId branch);
 
    Collection<ChangeItem> getChangeData(IAtsTeamWorkflow teamWf);
 

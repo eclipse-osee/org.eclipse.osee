@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -70,8 +70,8 @@ public class ConflictTestManager {
    private static final String FOLDER = "System Requirements";
    private static final String SOURCE_BRANCH = "Conflict_Test_Source_Branch";
    private static final String DEST_BRANCH = "Conflict_Test_Destination_Branch";
-   private static IOseeBranch sourceBranch;
-   private static IOseeBranch destBranch;
+   private static BranchToken sourceBranch;
+   private static BranchToken destBranch;
    private static final int NUMBER_OF_ARTIFACTS = 32;
    private static Artifact[] destArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
@@ -326,7 +326,7 @@ public class ConflictTestManager {
       return artifact.getRelations(CoreRelationTypes.Dependency_Dependency).get(0);
    }
 
-   public static IOseeBranch getSourceBranch() {
+   public static BranchToken getSourceBranch() {
       return sourceBranch;
    }
 
@@ -334,7 +334,7 @@ public class ConflictTestManager {
       return BranchManager.getBaseTransaction(sourceBranch);
    }
 
-   public static IOseeBranch getDestBranch() {
+   public static BranchToken getDestBranch() {
       return destBranch;
    }
 

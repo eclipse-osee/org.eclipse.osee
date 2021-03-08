@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeBranch extends BranchId, NamedId {
+public interface BranchToken extends BranchId, NamedId {
    static final int SHORT_NAME_LIMIT = 35;
-   IOseeBranch SENTINEL = create(Id.SENTINEL, Named.SENTINEL);
+   BranchToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL);
 
    default String getShortName() {
       return getShortName(SHORT_NAME_LIMIT);
@@ -35,20 +35,20 @@ public interface IOseeBranch extends BranchId, NamedId {
       return Strings.truncate(getName(), length);
    }
 
-   public static IOseeBranch create(String name) {
+   public static BranchToken create(String name) {
       return create(Lib.generateUuid(), name);
    }
 
-   public static IOseeBranch create(BranchId id, String name) {
+   public static BranchToken create(BranchId id, String name) {
       return create(id.getId(), name, ArtifactId.SENTINEL);
    }
 
-   public static IOseeBranch create(long id, String name) {
+   public static BranchToken create(long id, String name) {
       return create(Long.valueOf(id), name, ArtifactId.SENTINEL);
    }
 
-   public static IOseeBranch create(Long id, String name, ArtifactId viewId) {
-      final class BranchTokenImpl extends NamedIdBase implements IOseeBranch {
+   public static BranchToken create(Long id, String name, ArtifactId viewId) {
+      final class BranchTokenImpl extends NamedIdBase implements BranchToken {
          private final ArtifactId viewId;
 
          public BranchTokenImpl(Long id, String name, ArtifactId viewId) {
@@ -79,7 +79,7 @@ public interface IOseeBranch extends BranchId, NamedId {
       return new BranchTokenImpl(id, name, viewId);
    }
 
-   public static IOseeBranch create(Long id, String name) {
+   public static BranchToken create(Long id, String name) {
       return create(id, name, ArtifactId.SENTINEL);
    }
 

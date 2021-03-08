@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.branch.graph.core;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -27,9 +27,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class BranchGraphEditorInput implements IEditorInput, Adaptable {
 
-   private final IOseeBranch branch;
+   private final BranchToken branch;
 
-   public BranchGraphEditorInput(IOseeBranch branch) {
+   public BranchGraphEditorInput(BranchToken branch) {
       this.branch = branch;
    }
 

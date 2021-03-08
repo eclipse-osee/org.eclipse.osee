@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -142,13 +142,13 @@ public final class PortPairsOperation extends AbstractOperation {
       }
    }
 
-   private IOseeBranch getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {
+   private BranchToken getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {
       if (!sourceWorkflow.isRelated(AtsRelationTypes.Port_To, destinationWorkflow)) {
          sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
          sourceWorkflow.persist("create port relation");
       }
 
-      Collection<IOseeBranch> branches =
+      Collection<BranchToken> branches =
          BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getAtsId()));
 
       if (branches.isEmpty()) {

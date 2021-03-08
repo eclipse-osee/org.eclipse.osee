@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -54,7 +54,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * branches also).
     */
    @Override
-   public IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
+   public BranchToken getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING, BranchType.BASELINE);
       branchFilter.setNegatedBranchStates(negatedBranchStates);
       branchFilter.setAssociatedArtifact(teamWf.getStoreObject());
@@ -63,7 +63,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
+   public BranchToken getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
       branchFilter.setBranchStates(BranchState.COMMITTED);
       branchFilter.setAssociatedArtifact(teamWf.getStoreObject());
@@ -118,7 +118,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public void setBranchName(IOseeBranch branch, String name) {
+   public void setBranchName(BranchToken branch, String name) {
       BranchManager.setName(branch, name);
    }
 
@@ -137,7 +137,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       if (isCommittedBranchExists(fromTeamWf)) {
          return new Result(false, "Can not move a branch that has commits");
       }
-      IOseeBranch workingBranch = getWorkingBranch(fromTeamWf);
+      BranchToken workingBranch = getWorkingBranch(fromTeamWf);
       if (workingBranch == null) {
          return new Result(false, "Working Branch does not exist for workflow " + toTeamWf.toStringWithId());
       }
@@ -201,7 +201,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getBranch(BranchId branch) {
+   public BranchToken getBranch(BranchId branch) {
       return BranchManager.getBranch(branch);
    }
 

@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -102,12 +102,12 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
-   public static List<IOseeBranch> getBranches(Predicate<Branch> branchFilter) {
+   public static List<BranchToken> getBranches(Predicate<Branch> branchFilter) {
       return getCache().getBranches(branchFilter);
    }
 
-   public static IOseeBranch getBranch(Predicate<Branch> branchFilter) {
-      List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
+   public static BranchToken getBranch(Predicate<Branch> branchFilter) {
+      List<BranchToken> branches = BranchManager.getBranches(branchFilter);
       if (branches.isEmpty()) {
          return null;
       } else if (branches.size() == 1) {
@@ -132,8 +132,8 @@ public final class BranchManager {
       }
    }
 
-   public static IOseeBranch getBranch(String branchName) {
-      Collection<IOseeBranch> branches = getBranchesByName(branchName);
+   public static BranchToken getBranch(String branchName) {
+      Collection<BranchToken> branches = getBranchesByName(branchName);
       if (branches.isEmpty()) {
          throw new BranchDoesNotExist("No branch exists with the name: [%s]", branchName);
       }
@@ -143,8 +143,8 @@ public final class BranchManager {
       return branches.iterator().next();
    }
 
-   public static Collection<IOseeBranch> getBranchesByName(String branchName) {
-      Collection<IOseeBranch> branches = new ArrayList<>(1);
+   public static Collection<BranchToken> getBranchesByName(String branchName) {
+      Collection<BranchToken> branches = new ArrayList<>(1);
       ConnectionHandler.getJdbcClient().runQuery(stmt -> branches.add(getBranchToken(stmt.getLong("branch_id"))),
          SELECT_BRANCH_BY_NAME, branchName);
       return branches;
@@ -153,14 +153,14 @@ public final class BranchManager {
    /**
     * @return Branch or null if doesn't exist
     */
-   public static IOseeBranch getBranchToken(BranchId branch) {
+   public static BranchToken getBranchToken(BranchId branch) {
       return getBranch(branch);
    }
 
    /**
     * @return Branch or null if doesn't exist
     */
-   public static IOseeBranch getBranchToken(Long branchId) {
+   public static BranchToken getBranchToken(Long branchId) {
       return getBranch(BranchId.valueOf(branchId));
    }
 
@@ -238,7 +238,7 @@ public final class BranchManager {
    /**
     * Returns the merge branch for this source destination pair from the cache or null if not found
     */
-   public static IOseeBranch getMergeBranch(BranchId sourceBranch, BranchId destinationBranch) {
+   public static BranchToken getMergeBranch(BranchId sourceBranch, BranchId destinationBranch) {
       return getCache().findMergeBranch(sourceBranch, destinationBranch);
    }
 
@@ -284,7 +284,7 @@ public final class BranchManager {
       }
 
       if (!artIdsToCheck.isEmpty()) {
-         for (IOseeBranch branch : getCache().getAll()) {
+         for (BranchToken branch : getCache().getAll()) {
             ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
             if (getState(branch) != BranchState.DELETED && artIdsToCheck.contains(associatedArtifactId)) {
                results.errorf("Cannot delete artId [%s] because it is the associated artifact of branch [%s]",
@@ -306,11 +306,11 @@ public final class BranchManager {
       return false;
    }
 
-   public static UpdateBranchData updateBranch(IOseeBranch branch, final ConflictResolverOperation resolver) {
+   public static UpdateBranchData updateBranch(BranchToken branch, final ConflictResolverOperation resolver) {
       return new UpdateBranchOperation(branch, resolver).run();
    }
 
-   public static UpdateBranchData updateBranch(IOseeBranch branch, BranchId fromBranch, ConflictResolverOperation resolver) {
+   public static UpdateBranchData updateBranch(BranchToken branch, BranchId fromBranch, ConflictResolverOperation resolver) {
       return new UpdateBranchOperation(branch, fromBranch, resolver).run();
    }
 
@@ -444,8 +444,8 @@ public final class BranchManager {
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public static IOseeBranch getOrCreateMergeBranch(IOseeBranch sourceBranch, IOseeBranch destBranch, ArrayList<ArtifactId> expectedArtIds) {
-      IOseeBranch mergeBranch = getMergeBranch(sourceBranch, destBranch);
+   public static BranchToken getOrCreateMergeBranch(BranchToken sourceBranch, BranchToken destBranch, ArrayList<ArtifactId> expectedArtIds) {
+      BranchToken mergeBranch = getMergeBranch(sourceBranch, destBranch);
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
       } else {
@@ -456,7 +456,7 @@ public final class BranchManager {
       return mergeBranch;
    }
 
-   private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<ArtifactId> expectedArtIds) {
+   private static BranchToken createMergeBranch(final BranchToken sourceBranch, final BranchToken destBranch, final ArrayList<ArtifactId> expectedArtIds) {
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
          for (ArtifactId artId : expectedArtIds) {
             joinQuery.add(sourceBranch, artId, TransactionId.SENTINEL, sourceBranch.getViewId());
@@ -479,64 +479,64 @@ public final class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
-   public static IOseeBranch createWorkingBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) {
+   public static BranchToken createWorkingBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) {
       String creationComment = String.format("New branch, copy of %s from transaction %s",
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(BranchType.WORKING,
-         parentTransactionId, IOseeBranch.create(childBranchName), associatedArtifact, creationComment);
+         parentTransactionId, BranchToken.create(childBranchName), associatedArtifact, creationComment);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }
 
-   public static IOseeBranch createPortBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) {
+   public static BranchToken createPortBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) {
       String creationComment = String.format("New port branch, copy of %s from transaction %s",
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(BranchType.PORT,
-         parentTransactionId, IOseeBranch.create(childBranchName), associatedArtifact, creationComment);
+         parentTransactionId, BranchToken.create(childBranchName), associatedArtifact, creationComment);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }
 
-   public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName) {
+   public static BranchToken createWorkingBranch(BranchId parentBranch, String childBranchName) {
       return createWorkingBranch(parentBranch, childBranchName, ArtifactId.SENTINEL);
    }
 
-   public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName, ArtifactId associatedArtifact) {
+   public static BranchToken createWorkingBranch(BranchId parentBranch, String childBranchName, ArtifactId associatedArtifact) {
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, associatedArtifact);
    }
 
-   public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch) {
+   public static BranchToken createWorkingBranch(BranchId parentBranch, BranchToken childBranch) {
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createBranch(BranchType.WORKING, parentTransactionId, childBranch, ArtifactId.SENTINEL);
    }
 
-   public static IOseeBranch createWorkingBranch(TransactionToken parentTransaction, String branchName, ArtifactId associatedArtifact) {
-      return createBranch(BranchType.WORKING, parentTransaction, IOseeBranch.create(branchName), associatedArtifact);
+   public static BranchToken createWorkingBranch(TransactionToken parentTransaction, String branchName, ArtifactId associatedArtifact) {
+      return createBranch(BranchType.WORKING, parentTransaction, BranchToken.create(branchName), associatedArtifact);
    }
 
-   public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch) {
+   public static BranchId createBaselineBranch(BranchId parentBranch, BranchToken childBranch) {
       return createBaselineBranch(parentBranch, childBranch, ArtifactId.SENTINEL);
    }
 
-   public static BranchId createTopLevelBranch(IOseeBranch branch) {
+   public static BranchId createTopLevelBranch(BranchToken branch) {
       return createBaselineBranch(SYSTEM_ROOT, branch, ArtifactId.SENTINEL);
    }
 
-   private static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch, ArtifactId associatedArtifact) {
+   private static BranchId createBaselineBranch(BranchId parentBranch, BranchToken childBranch, ArtifactId associatedArtifact) {
       TransactionToken parentTransaction = TransactionManager.getHeadTransaction(parentBranch);
       return createBranch(BranchType.BASELINE, parentTransaction, childBranch, associatedArtifact);
    }
 
    public static BranchId createTopLevelBranch(final String branchName) {
-      return createTopLevelBranch(IOseeBranch.create(branchName));
+      return createTopLevelBranch(BranchToken.create(branchName));
    }
 
-   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, IOseeBranch childBranch, ArtifactId associatedArtifact) {
+   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, BranchToken childBranch, ArtifactId associatedArtifact) {
       String creationComment =
          String.format("New Branch from %s (%s)", getBranchName(parentTransaction), parentTransaction.getId());
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(branchType, parentTransaction,
@@ -545,19 +545,19 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
-   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
       CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(branchType, parentTransaction, IOseeBranch.create(branchName),
+         new CreateBranchHttpRequestOperation(branchType, parentTransaction, BranchToken.create(branchName),
             associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranch);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }
 
-   public static List<? extends IOseeBranch> getBaselineBranches() {
+   public static List<? extends BranchToken> getBaselineBranches() {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
    }
 
-   public static List<IOseeBranch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
+   public static List<BranchToken> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
       return getCache().getBranches(new BranchFilter(archivedState, branchTypes));
    }
 
@@ -652,7 +652,7 @@ public final class BranchManager {
       getCache().invalidate();
    }
 
-   public static IOseeBranch getParentBranch(BranchId branch) {
+   public static BranchToken getParentBranch(BranchId branch) {
       return getBranch(branch).getParentBranch();
    }
 
@@ -725,8 +725,8 @@ public final class BranchManager {
     * @param recurse if true all descendants are processed, otherwise, only direct descendants are.
     * @return all unarchived child branches that are not of type merge
     */
-   public static Collection<IOseeBranch> getChildBranches(BranchId branch, boolean recurse) {
-      Set<IOseeBranch> children = new HashSet<>();
+   public static Collection<BranchToken> getChildBranches(BranchId branch, boolean recurse) {
+      Set<BranchToken> children = new HashSet<>();
       BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       filter.setNegatedBranchTypes(BranchType.MERGE);
       getBranch(branch).getChildBranches(children, recurse, filter);

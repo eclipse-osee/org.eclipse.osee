@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,11 +47,11 @@ public class IntegerAttributeTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   private IOseeBranch workingBranch;
+   private BranchToken workingBranch;
 
    @Before
    public void setup() {
-      workingBranch = IOseeBranch.create(testInfo.getQualifiedTestName());
+      workingBranch = BranchToken.create(testInfo.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 

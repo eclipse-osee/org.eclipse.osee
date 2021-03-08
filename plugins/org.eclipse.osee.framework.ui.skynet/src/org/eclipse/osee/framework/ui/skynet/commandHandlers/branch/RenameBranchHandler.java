@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -64,7 +64,7 @@ public class RenameBranchHandler extends CommandHandler {
          final TreeViewer treeViewer = (TreeViewer) selectionProvider;
          Tree tree = treeViewer.getTree();
 
-         final IOseeBranch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
+         final BranchToken selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
          TreeItem[] myTreeItemsSelected = tree.getSelection();
 
          if (myTreeItemsSelected.length != 1) {
@@ -119,11 +119,11 @@ public class RenameBranchHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-      List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       if (branches.size() != 1) {
          return false;
       }
-      IOseeBranch branch = branches.get(0);
+      BranchToken branch = branches.get(0);
       return AccessControlManager.isOseeAdmin() || BranchManager.getType(
          branch).isWorkingBranch() || BranchManager.getBaseTransaction(branch).getAuthor().equals(
             UserManager.getUser());

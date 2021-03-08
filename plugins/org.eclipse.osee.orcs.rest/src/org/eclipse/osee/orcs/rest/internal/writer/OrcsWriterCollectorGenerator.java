@@ -22,7 +22,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -204,8 +204,8 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createBranchSheet() {
-      Map<String, IOseeBranch> branches = new HashMap<>(500);
-      for (IOseeBranch branch : orcsApi.getQueryFactory().branchQuery().getResults()) {
+      Map<String, BranchToken> branches = new HashMap<>(500);
+      for (BranchToken branch : orcsApi.getQueryFactory().branchQuery().getResults()) {
          branches.put(branch.getName(), branch);
       }
 
@@ -213,7 +213,7 @@ public class OrcsWriterCollectorGenerator {
       branchNames.addAll(branches.keySet());
       Collections.sort(branchNames);
       for (String branchName : branchNames) {
-         IOseeBranch type = branches.get(branchName);
+         BranchToken type = branches.get(branchName);
          OwBranch owBranch = OwFactory.createBranchToken(type);
          collector.getBranches().add(owBranch);
       }

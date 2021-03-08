@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.core.commit.operations.CommitOverrideOperationsImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
-   protected static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<>();
+   protected static Map<String, BranchToken> idToWorkingBranchCache = new HashMap<>();
    protected static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<>(50);
    private final Map<ArtifactId, Boolean> workingBranchCreatingInProgress = new HashMap<>();
    private final Map<ArtifactId, Boolean> workingBranchCommitInProgress = new HashMap<>();
@@ -93,16 +93,16 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force) {
+   public BranchToken getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force) {
       long now = new Date().getTime();
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) == null;
       if (AtsUtil.isInTest() || notSet || force || now - idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) > 1000) {
-         IOseeBranch branch = IOseeBranch.SENTINEL;
+         BranchToken branch = BranchToken.SENTINEL;
          try {
-            IOseeBranch workingBranch = getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED,
+            BranchToken workingBranch = getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED,
                BranchState.DELETED, BranchState.PURGED, BranchState.COMMIT_IN_PROGRESS,
                BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS, BranchState.PURGE_IN_PROGRESS);
-            branch = workingBranch == null ? IOseeBranch.SENTINEL : workingBranch;
+            branch = workingBranch == null ? BranchToken.SENTINEL : workingBranch;
          } catch (ItemDoesNotExist ex) {
             // do nothing
          }
@@ -292,7 +292,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * with the cache being updated by local and remote events.
     */
    @Override
-   public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf) {
+   public BranchToken getWorkingBranch(IAtsTeamWorkflow teamWf) {
       return getWorkingBranch(teamWf, false);
    }
 
@@ -359,7 +359,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * with the cache being updated by local and remote events.
     */
    @Override
-   public IOseeBranch getBranch(IAtsTeamWorkflow teamWf) {
+   public BranchToken getBranch(IAtsTeamWorkflow teamWf) {
       return getWorkingBranch(teamWf, false);
    }
 
@@ -638,7 +638,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public BranchId getWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
-      IOseeBranch branch = getWorkingBranch(teamWf);
+      BranchToken branch = getWorkingBranch(teamWf);
       if (branch.isValid() && (getBranchState(branch).isCreated() || getBranchState(branch).isModified())) {
          return branch;
       }

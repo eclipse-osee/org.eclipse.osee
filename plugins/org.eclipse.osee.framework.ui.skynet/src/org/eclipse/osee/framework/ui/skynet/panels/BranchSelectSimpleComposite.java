@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -50,7 +50,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
    private Button branchSelectButton;
    private Combo branchSelectCombo;
    private boolean entryChanged;
-   private IOseeBranch currentBranch;
+   private BranchToken currentBranch;
    private final Set<Listener> listeners;
 
    public BranchSelectSimpleComposite(Composite parent, int style) {
@@ -103,17 +103,17 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       branchSelectButton.setFont(parent.getFont());
    }
 
-   public IOseeBranch getSelectedBranch() {
-      IOseeBranch toReturn = IOseeBranch.SENTINEL;
+   public BranchToken getSelectedBranch() {
+      BranchToken toReturn = BranchToken.SENTINEL;
       if (branchSelectCombo != null && !branchSelectCombo.isDisposed()) {
          String branchName = branchSelectCombo.getText();
          if (Strings.isValid(branchName)) {
-            toReturn = (IOseeBranch) branchSelectCombo.getData(branchName);
+            toReturn = (BranchToken) branchSelectCombo.getData(branchName);
             if (toReturn == null) {
                try {
                   toReturn = BranchManager.getBranch(branchName);
                } catch (Exception ex) {
-                  toReturn = IOseeBranch.SENTINEL;
+                  toReturn = BranchToken.SENTINEL;
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
@@ -186,7 +186,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       for (int i = 0; i < values.size(); i++) {
          Long toStore = values.get(i);
          try {
-            IOseeBranch branch = BranchManager.getBranchToken(toStore);
+            BranchToken branch = BranchManager.getBranchToken(toStore);
 
             String branchName = branch.getName();
             branchSelectCombo.add(branchName);

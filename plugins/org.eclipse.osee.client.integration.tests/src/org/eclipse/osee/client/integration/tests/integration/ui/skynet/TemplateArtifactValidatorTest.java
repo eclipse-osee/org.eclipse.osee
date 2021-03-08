@@ -19,7 +19,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -49,7 +49,7 @@ public class TemplateArtifactValidatorTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   private IOseeBranch testBranch;
+   private BranchToken testBranch;
 
    @Before
    public void setup() {
@@ -109,7 +109,7 @@ public class TemplateArtifactValidatorTest {
       newTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria, templateId);
       newTemplate.persist(testInfo.getQualifiedTestName());
 
-      IOseeBranch testBranch2 =
+      BranchToken testBranch2 =
          BranchManager.createWorkingBranch(CoreBranches.COMMON, testInfo.getQualifiedTestName() + "2");
       Artifact newTemplate2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch2);
       newTemplate2.persist(testInfo.getQualifiedTestName());

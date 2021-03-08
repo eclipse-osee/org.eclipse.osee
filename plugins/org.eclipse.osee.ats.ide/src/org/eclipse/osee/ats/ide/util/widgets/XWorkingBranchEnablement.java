@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.branch.BranchStatus;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -108,7 +108,7 @@ public class XWorkingBranchEnablement {
       return getEnablementData().getBranchStatus();
    }
 
-   public IOseeBranch getWorkingBranch() {
+   public BranchToken getWorkingBranch() {
       return getEnablementData().getWorkingBranch();
    }
 
@@ -143,7 +143,7 @@ public class XWorkingBranchEnablement {
             public BranchEnablementData call() throws Exception {
                BranchEnablementData enablementData = new BranchEnablementData(teamArt, AtsApiService.get());
                if (teamArt != null) {
-                  IOseeBranch workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt, true);
+                  BranchToken workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt, true);
                   enablementData.setWorkingBranch(workingBranch);
 
                   enablementData.setWorkingBranchInWork(

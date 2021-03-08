@@ -23,7 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -114,8 +114,8 @@ public class PolicyDialog extends Dialog {
       new Label(mainComposite, SWT.NONE).setText("  NOTE: Higher permission rank overrides lower rank.");
       Label baseNote = new Label(mainComposite, SWT.NONE);
       baseNote.setText("  NOTE: Baseline Branches are Read-Only by default.");
-      if (accessControlledObject instanceof IOseeBranch) {
-         IOseeBranch branch = (IOseeBranch) accessControlledObject;
+      if (accessControlledObject instanceof BranchToken) {
+         BranchToken branch = (BranchToken) accessControlledObject;
          if (BranchManager.getType(branch).isBaselineBranch()) {
             baseNote.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          }
@@ -287,8 +287,8 @@ public class PolicyDialog extends Dialog {
       String name = "";
       if (object instanceof Artifact) {
          name = ((Artifact) object).getName();
-      } else if (object instanceof IOseeBranch) {
-         name = ((IOseeBranch) object).getName();
+      } else if (object instanceof BranchToken) {
+         name = ((BranchToken) object).getName();
       }
       return name;
    }

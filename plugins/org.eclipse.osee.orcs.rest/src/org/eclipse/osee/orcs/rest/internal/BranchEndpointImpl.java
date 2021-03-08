@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonAttribute;
 import org.eclipse.osee.framework.core.data.JsonRelation;
@@ -529,7 +529,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response exportBranches(BranchExportOptions options) {
-      List<IOseeBranch> branches = getExportImportBranches(options.getBranchUuids());
+      List<BranchToken> branches = getExportImportBranches(options.getBranchUuids());
 
       PropertyStore exportOptions = new PropertyStore();
       addOption(exportOptions, ExportOptions.MIN_TXS, options.getMinTx());
@@ -552,7 +552,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response importBranches(BranchImportOptions options) {
-      List<IOseeBranch> branches;
+      List<BranchToken> branches;
       if (!options.getBranchUuids().isEmpty()) {
          branches = getExportImportBranches(options.getBranchUuids());
       } else {
@@ -632,8 +632,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return toReturn;
    }
 
-   private List<IOseeBranch> getExportImportBranches(Collection<BranchId> branchUids) {
-      ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andIds(branchUids) //
+   private List<BranchToken> getExportImportBranches(Collection<BranchId> branchUids) {
+      ResultSet<BranchToken> resultsAsId = newBranchQuery().andIds(branchUids) //
          .includeArchived()//
          .includeDeleted()//
          .getResultsAsId();
@@ -889,9 +889,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public IOseeBranch createProgramBranch(UserId account, BranchId branch, String branchName) {
-      IOseeBranch branchToken =
-         branch.isValid() ? IOseeBranch.create(branch, branchName) : IOseeBranch.create(branchName);
+   public BranchToken createProgramBranch(UserId account, BranchId branch, String branchName) {
+      BranchToken branchToken =
+         branch.isValid() ? BranchToken.create(branch, branchName) : BranchToken.create(branchName);
       return branchOps.createProgramBranch(branchToken, account);
    }
 

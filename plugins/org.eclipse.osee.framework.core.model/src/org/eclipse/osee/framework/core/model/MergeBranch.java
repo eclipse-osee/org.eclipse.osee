@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
@@ -21,26 +21,26 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  * @author Roberto E. Escobar
  */
 public final class MergeBranch extends Branch {
-   private IOseeBranch source;
-   private IOseeBranch destination;
+   private BranchToken source;
+   private BranchToken destination;
 
    public MergeBranch(Long branchId, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) {
       super(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
    }
 
-   public IOseeBranch getSourceBranch() {
+   public BranchToken getSourceBranch() {
       return source;
    }
 
-   public IOseeBranch getDestinationBranch() {
+   public BranchToken getDestinationBranch() {
       return destination;
    }
 
-   public void setSourceBranch(IOseeBranch branch) {
+   public void setSourceBranch(BranchToken branch) {
       this.source = branch;
    }
 
-   public void setDestinationBranch(IOseeBranch branch) {
+   public void setDestinationBranch(BranchToken branch) {
       this.destination = branch;
    }
 }

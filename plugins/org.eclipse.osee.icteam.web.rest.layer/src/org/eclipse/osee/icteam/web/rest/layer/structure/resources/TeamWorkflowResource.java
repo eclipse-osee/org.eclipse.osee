@@ -52,7 +52,7 @@ import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -1780,7 +1780,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          tx.commit();
 
          if (artifactBranchGuid != null) {
-            IOseeBranch branchNew = orcsApi.getQueryFactory().branchQuery().getResultsAsId().getList().get(
+            BranchToken branchNew = orcsApi.getQueryFactory().branchQuery().getResultsAsId().getList().get(
                Integer.valueOf(artifactBranchGuid));
             TransactionBuilder workspaceTx = txFactory.createTransaction(branchNew,
                UserId.valueOf(CommonUtil.getCurrentUser(orcsApi, artifact.getCurrentLoggedInUser()).getId()),

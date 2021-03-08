@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,7 +39,7 @@ public class MergeManagerHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       if (!selection.isEmpty()) {
-         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
          if (!branches.isEmpty()) {
             BranchId selectedBranch = branches.iterator().next();

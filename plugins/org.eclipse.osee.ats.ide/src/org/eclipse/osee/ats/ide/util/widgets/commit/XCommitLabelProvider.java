@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -191,7 +191,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleDestBranchColumn(Object element, BranchId branchToken) {
-      IOseeBranch branch = BranchManager.getBranchToken(branchToken);
+      BranchToken branch = BranchManager.getBranchToken(branchToken);
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
          return branch == null ? String.format("Parent Branch Not Configured for %s [%s]",

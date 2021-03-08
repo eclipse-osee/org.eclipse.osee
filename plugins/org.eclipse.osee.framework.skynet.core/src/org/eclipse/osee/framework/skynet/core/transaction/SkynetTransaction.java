@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -132,7 +132,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       getAccess().hasArtifactPermission(Collections.singleton(artifact), PermissionEnum.WRITE, Level.FINE);
    }
 
-   public String getCheckAccessError(ArtifactToken artifact, BranchId txBranch, IOseeBranch branch) {
+   public String getCheckAccessError(ArtifactToken artifact, BranchId txBranch, BranchToken branch) {
       String msg =
          String.format("The artifact\n\n%s\n\nis on branch\n\n%s\n\nbut this transaction is for branch\n\n%s\n\n",
             artifact.getGuid(), branch.toStringWithId(), txBranch);
@@ -147,7 +147,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   public String getCheckBranchError(ArtifactToken artifact, IOseeBranch branch) {
+   public String getCheckBranchError(ArtifactToken artifact, BranchToken branch) {
       String msg = String.format("The artifact\n\n%s\n\nis on a non-editable branch\n\n%s\n\n",
          artifact.toStringWithId(), branch.toStringWithId());
       return msg;
@@ -161,7 +161,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   public String getCheckBranchError(RelationLink link, IOseeBranch branch) {
+   public String getCheckBranchError(RelationLink link, BranchToken branch) {
       String msg = String.format("The relation link\n\n%s\n\nis on a non-editable branch\n\n%s\n\n", link,
          branch.toStringWithId());
       return msg;

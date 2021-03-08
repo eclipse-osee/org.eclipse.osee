@@ -24,7 +24,7 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,10 +64,10 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
-            IOseeBranch selectedBranch = branches.iterator().next();
+            BranchToken selectedBranch = branches.iterator().next();
 
             if (selectedBranch != null && selectedBranch.notEqual(CoreBranches.SYSTEM_ROOT)) {
                try {
@@ -89,7 +89,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(IOseeBranch branch, String commandId) {
+   private CommandContributionItem createCommand(BranchToken branch, String commandId) {
 
       Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, branch.getIdString());

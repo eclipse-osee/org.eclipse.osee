@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
@@ -50,7 +50,7 @@ public interface IAtsConfigTxTeamDef {
     */
    IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId... taskWorkDefs);
 
-   IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
+   IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
    IAtsConfigTxTeamDef andParallelVersion(IAtsVersion ver1, IAtsVersion ver2);
 
@@ -60,9 +60,9 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsTeamDefinition getTeamDef();
 
-   IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
+   IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
-   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
+   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
 

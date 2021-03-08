@@ -15,7 +15,7 @@ package org.eclipse.osee.ote.ui.define.viewers.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.swt.graphics.Image;
@@ -25,10 +25,10 @@ import org.eclipse.swt.graphics.Image;
  */
 public class BranchItem extends DataItem implements IXViewerItem {
 
-   private final IOseeBranch branch;
+   private final BranchToken branch;
    private static boolean isScriptItemGrouped = true;
 
-   public BranchItem(IOseeBranch branch, DataItem parentItem) {
+   public BranchItem(BranchToken branch, DataItem parentItem) {
       super(parentItem);
       this.branch = branch;
    }

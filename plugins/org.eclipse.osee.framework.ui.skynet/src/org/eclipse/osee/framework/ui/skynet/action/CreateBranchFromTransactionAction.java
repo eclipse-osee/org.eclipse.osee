@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -75,7 +75,7 @@ public class CreateBranchFromTransactionAction extends Action {
                @Override
                public IStatus run(IProgressMonitor monitor) throws Exception {
                   String newBranchName = dialog.getEntry();
-                  IOseeBranch newBranch = BranchManager.createWorkingBranchFromTx(txToken, newBranchName, null);
+                  BranchToken newBranch = BranchManager.createWorkingBranchFromTx(txToken, newBranchName, null);
                   if (newBranch.isValid()) {
                      AWorkbench.popup("Branch: " + newBranch + " has been created.");
                      return Status.OK_STATUS;

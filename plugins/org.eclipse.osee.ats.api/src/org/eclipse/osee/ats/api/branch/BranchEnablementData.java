@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.api.branch;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 public class BranchEnablementData {
    private final IAtsTeamWorkflow teamWf;
-   private IOseeBranch workingBranch;
+   private BranchToken workingBranch;
 
    private boolean workingBranchInWork;
    private boolean committedBranchExists;
@@ -39,7 +39,7 @@ public class BranchEnablementData {
       this.committedBranchExists = committedBranchExists;
    }
 
-   public void setWorkingBranch(IOseeBranch workingBranch) {
+   public void setWorkingBranch(BranchToken workingBranch) {
       this.workingBranch = workingBranch;
    }
 
@@ -71,7 +71,7 @@ public class BranchEnablementData {
       return disableAll;
    }
 
-   public IOseeBranch getWorkingBranch() {
+   public BranchToken getWorkingBranch() {
       return workingBranch;
    }
 

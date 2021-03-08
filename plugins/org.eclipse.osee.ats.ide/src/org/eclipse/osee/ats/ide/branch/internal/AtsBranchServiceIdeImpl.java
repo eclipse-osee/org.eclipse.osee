@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -147,7 +147,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    @Override
    public void showMergeManager(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) {
       if (atsApi.getBranchService().isWorkingBranchInWork(teamArt)) {
-         IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(teamArt);
+         BranchToken workingBranch = atsApi.getBranchService().getWorkingBranch(teamArt);
          MergeView.openView(workingBranch, destinationBranch, BranchManager.getBaseTransaction(workingBranch));
       } else if (atsApi.getBranchService().isCommittedBranchExists(teamArt)) {
          for (TransactionRecord transactionId : atsApi.getBranchService().getTransactionIds(teamArt, true)) {
@@ -211,7 +211,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    public TransactionToken getTransactionIdOrPopupChoose(IAtsTeamWorkflow teamWf, String title, boolean showMergeManager) {
       Collection<TransactionRecord> transactions =
          atsApi.getBranchService().getTransactionIds(teamWf, showMergeManager);
-      final Map<IOseeBranch, TransactionId> branchToTx = new LinkedHashMap<>();
+      final Map<BranchToken, TransactionId> branchToTx = new LinkedHashMap<>();
 
       if (transactions.size() == 1) {
          return transactions.iterator().next();
@@ -221,7 +221,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
          boolean workingBranch = BranchManager.getType(id).isWorkingBranch();
          BranchState state = BranchManager.getState(id.getBranch());
          if (!workingBranch || !(state.isRebaselined() && state.isCommitted())) {
-            IOseeBranch branch = BranchManager.getBranchToken(id.getBranch());
+            BranchToken branch = BranchManager.getBranchToken(id.getBranch());
             branchToTx.put(branch, id);
          }
       }
@@ -232,8 +232,8 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
             if (e1 == null || e2 == null) {
                return 0;
             }
-            Long b1 = ((IOseeBranch) e1).getId();
-            Long b2 = ((IOseeBranch) e1).getId();
+            Long b1 = ((BranchToken) e1).getId();
+            Long b2 = ((BranchToken) e1).getId();
             if (b1 > b2) {
                return -1;
             }
@@ -248,7 +248,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
 
       dialog.setInput(branchToTx.keySet());
       if (dialog.open() == 0) {
-         IOseeBranch branch = dialog.getSelectedFirst();
+         BranchToken branch = dialog.getSelectedFirst();
          if (branch != null) {
             TransactionId id = branchToTx.get(branch);
             return TransactionToken.valueOf(id, branch);
@@ -270,7 +270,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
                   "Parent Branch can not be null. Set Targeted Version or configure Team for Parent Branch");
                return;
             }
-            IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(teamArt);
+            BranchToken workingBranch = atsApi.getBranchService().getWorkingBranch(teamArt);
             ChangeUiUtil.open(workingBranch, parentBranch, true);
          } else if (atsApi.getBranchService().isCommittedBranchExists(teamArt)) {
             TransactionToken transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
@@ -521,7 +521,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
          @Override
          public IStatus run(IProgressMonitor monitor) {
             atsApi.getBranchService().setWorkingBranchCreationInProgress(teamWf, true);
-            IOseeBranch branch = BranchManager.createWorkingBranch(parentTransactionId, branchName,
+            BranchToken branch = BranchManager.createWorkingBranch(parentTransactionId, branchName,
                atsApi.getQueryService().getArtifact(teamWf));
             atsApi.getBranchService().setWorkingBranchCreationInProgress(teamWf, false);
             Conditions.assertTrue(branch.isValid(), "Working Branch creation failed.");

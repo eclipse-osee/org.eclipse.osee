@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -42,15 +42,15 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final String creationComment;
    private final int mergeAddressingQueryId;
    private final BranchId destinationBranch;
-   private IOseeBranch newBranch;
+   private BranchToken newBranch;
    private boolean txCopyBranchType;
    private final BranchId branch;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, IOseeBranch branch, ArtifactId associatedArtifact, String creationComment) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, BranchToken branch, ArtifactId associatedArtifact, String creationComment) {
       this(branchType, parentTransaction, branch, associatedArtifact, creationComment, -1, BranchId.SENTINEL);
    }
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, IOseeBranch branch, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, BranchToken branch, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
       super("Create branch " + branch.getName(), Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
@@ -86,12 +86,12 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch));
    }
 
-   private IOseeBranch getBranchWithCacheWorkAround(BranchId branch) {
+   private BranchToken getBranchWithCacheWorkAround(BranchId branch) {
       // use this work around because some places assume branch will be cached such as getBranchesByName
       return BranchManager.getBranch(branch);
    }
 
-   public IOseeBranch getNewBranch() {
+   public BranchToken getNewBranch() {
       return newBranch;
    }
 

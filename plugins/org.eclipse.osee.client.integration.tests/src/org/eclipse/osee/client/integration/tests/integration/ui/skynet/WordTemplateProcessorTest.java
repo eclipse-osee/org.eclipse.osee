@@ -25,7 +25,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -83,13 +83,13 @@ public class WordTemplateProcessorTest {
       F_WITHOUT_PUBLISH_INLINE = getResourceData("wordtemplate_f_without_publish_inline.xml");
    }
 
-   private IOseeBranch branch;
+   private BranchToken branch;
 
    private Artifact myRootArtifact;
 
    @Before
    public void setUp() throws Exception {
-      branch = IOseeBranch.create(method.getQualifiedTestName());
+      branch = BranchToken.create(method.getQualifiedTestName());
 
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
 

@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -63,11 +63,11 @@ public class InterArtifactDropTest {
    private static Artifact sourceChildArtifact1;
    private static Artifact sourceDeleteArtifact1;
 
-   private static IOseeBranch sourceBranch;
-   private static IOseeBranch destinationBranch;
-   private static IOseeBranch updateTestBranch1;
-   private static IOseeBranch updateTestBranch2;
-   private static IOseeBranch updateTestBranch3;
+   private static BranchToken sourceBranch;
+   private static BranchToken destinationBranch;
+   private static BranchToken updateTestBranch1;
+   private static BranchToken updateTestBranch2;
+   private static BranchToken updateTestBranch3;
 
    private static boolean wasInitialized = false;
 
@@ -277,8 +277,8 @@ public class InterArtifactDropTest {
       BranchManager.purgeBranch(sourceBranch);
    }
 
-   private IOseeBranch createBranchToken(String name) {
+   private BranchToken createBranchToken(String name) {
       String branchName = String.format("%s__%s", method.getQualifiedTestName(), name);
-      return IOseeBranch.create(branchName);
+      return BranchToken.create(branchName);
    }
 }

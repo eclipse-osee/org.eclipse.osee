@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.commit.menu.CommitOverrideAction;
 import org.eclipse.osee.ats.ide.util.widgets.commit.menu.RemoveCommitOverrideAction;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -69,7 +69,7 @@ public class CommitXManager extends XViewer {
 
       if (!getSelectedArtifacts().isEmpty()) {
          Object firstSelectedArt = getSelectedArtifacts().iterator().next();
-         IOseeBranch branch = null;
+         BranchToken branch = null;
          CommitConfigItem configItem = null;
          if (firstSelectedArt instanceof CommitConfigItem) {
             configItem = (CommitConfigItem) firstSelectedArt;

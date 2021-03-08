@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.rest.internal.util.health.check;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
@@ -31,7 +31,7 @@ public class AtsHealthQueries {
          "art2.GAMMA_ID = txs.GAMMA_ID and txs.BRANCH_ID = 570 ORDER BY art1.art_id";
    }
 
-   public static String getArtIdsOfMuiltipleRelsOnSide(AtsApi atsApi, IOseeBranch branch, RelationTypeSide singleRelTypeSide) {
+   public static String getArtIdsOfMuiltipleRelsOnSide(AtsApi atsApi, BranchToken branch, RelationTypeSide singleRelTypeSide) {
       String sideName = singleRelTypeSide.getSide().isSideA() ? "a_art_id" : "b_art_id";
       return String.format("select %s as art_id from " //
          + "(SELECT count(*) the_count, %s FROM OSEE_RELATION_LINK lin, OSEE_TXS txs " //

@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -51,7 +51,7 @@ public class CreateBranchData {
       this.branch = branch;
    }
 
-   public CreateBranchData(IOseeBranch branch) {
+   public CreateBranchData(BranchToken branch) {
       this.branch = branch;
       this.branchName = branch.getName();
    }

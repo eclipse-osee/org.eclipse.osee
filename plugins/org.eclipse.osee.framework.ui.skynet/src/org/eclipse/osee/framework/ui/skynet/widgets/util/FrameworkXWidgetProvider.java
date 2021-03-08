@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -164,7 +164,7 @@ public final class FrameworkXWidgetProvider {
             } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
                XSelectFromMultiChoiceBranch multiBranchSelect = new XSelectFromMultiChoiceBranch(name);
                try {
-                  List<? extends IOseeBranch> branches =
+                  List<? extends BranchToken> branches =
                      BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
                   Collections.sort(branches);
 

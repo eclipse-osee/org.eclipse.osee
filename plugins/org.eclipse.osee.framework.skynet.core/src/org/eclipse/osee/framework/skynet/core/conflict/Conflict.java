@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -50,13 +50,13 @@ public abstract class Conflict implements Adaptable {
    private Artifact sourceArtifact;
    private Artifact destArtifact;
    protected BranchId mergeBranch;
-   protected IOseeBranch sourceBranch;
-   protected IOseeBranch destBranch;
+   protected BranchToken sourceBranch;
+   protected BranchToken destBranch;
 
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   protected Conflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   protected Conflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, BranchToken sourceBranch, BranchToken destBranch) {
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
@@ -103,11 +103,11 @@ public abstract class Conflict implements Adaptable {
       return mergeBranch;
    }
 
-   public IOseeBranch getSourceBranch() {
+   public BranchToken getSourceBranch() {
       return sourceBranch;
    }
 
-   public IOseeBranch getDestBranch() {
+   public BranchToken getDestBranch() {
       return destBranch;
    }
 

@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -499,7 +499,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    @Override
    public String getEditorTitle() {
       if (selectedBranch != null) {
-         IOseeBranch branch = BranchManager.getBranch(selectedBranch);
+         BranchToken branch = BranchManager.getBranch(selectedBranch);
          return String.format("Table Report - Branch View %s", branch.getName());
       }
       return "Table Report - Branch View";

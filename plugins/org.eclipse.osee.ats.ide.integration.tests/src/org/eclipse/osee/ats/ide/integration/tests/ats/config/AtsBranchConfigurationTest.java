@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -70,11 +70,11 @@ import org.junit.Before;
  */
 public class AtsBranchConfigurationTest {
 
-   public static final IOseeBranch BRANCH_VIA_TEAM_DEFINITION = IOseeBranch.create("BranchViaTeamDef");
-   public static final IOseeBranch BRANCH_VIA_VERSIONS = IOseeBranch.create("BranchViaVersions");
+   public static final BranchToken BRANCH_VIA_TEAM_DEFINITION = BranchToken.create("BranchViaTeamDef");
+   public static final BranchToken BRANCH_VIA_VERSIONS = BranchToken.create("BranchViaVersions");
    private final boolean DEBUG = false;
 
-   private static Collection<String> appendToName(IOseeBranch branch, String... postFixes) {
+   private static Collection<String> appendToName(BranchToken branch, String... postFixes) {
       Collection<String> data = new ArrayList<>();
       for (String postFix : postFixes) {
          data.add(String.format("%s - %s", branch.getName(), postFix));
@@ -82,7 +82,7 @@ public class AtsBranchConfigurationTest {
       return data;
    }
 
-   private static String asNamespace(IOseeBranch branch) {
+   private static String asNamespace(BranchToken branch) {
       return String.format("org.branchTest.%s", branch.getName().toLowerCase());
    }
 
@@ -316,7 +316,7 @@ public class AtsBranchConfigurationTest {
       TestUtil.severeLoggingEnd(monitor);
    }
 
-   public static void cleanupBranchTest(IOseeBranch branch) throws Exception {
+   public static void cleanupBranchTest(BranchToken branch) throws Exception {
       String namespace = "org.branchTest." + branch.getName().toLowerCase();
       Artifact aArt = ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action,
          branch.getName() + " Req Changes", AtsApiService.get().getAtsBranch());
@@ -384,7 +384,7 @@ public class AtsBranchConfigurationTest {
       try {
          BranchManager.refreshBranches();
          // delete working branches
-         for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
+         for (BranchToken workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
             if (workingBranch.getName().contains(branch.getName())) {
                BranchManager.purgeBranch(workingBranch);
             }

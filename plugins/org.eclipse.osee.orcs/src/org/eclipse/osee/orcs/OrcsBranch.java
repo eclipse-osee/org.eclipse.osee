@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -52,15 +52,15 @@ public interface OrcsBranch {
    // branch state
    // assoc art id
 
-   IOseeBranch createTopLevelBranch(IOseeBranch branch, ArtifactId account);
+   BranchToken createTopLevelBranch(BranchToken branch, ArtifactId account);
 
-   Branch createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
+   Branch createBaselineBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact);
 
-   Branch createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
+   Branch createWorkingBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact);
 
-   Branch createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Branch createCopyTxBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
-   Branch createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Branch createPortBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
    Branch createBranch(CreateBranchData branchData);
 
@@ -100,7 +100,7 @@ public interface OrcsBranch {
 
    void addMissingApplicabilityFromParentBranch(BranchId branch);
 
-   IOseeBranch createProgramBranch(IOseeBranch branch, UserId account);
+   BranchToken createProgramBranch(BranchToken branch, UserId account);
 
    XResultData createBranchValidation(CreateBranchData branchData);
 

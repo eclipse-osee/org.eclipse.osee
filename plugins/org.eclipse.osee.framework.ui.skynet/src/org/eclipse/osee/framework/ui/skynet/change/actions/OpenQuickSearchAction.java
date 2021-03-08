@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -51,7 +51,7 @@ public class OpenQuickSearchAction extends Action {
          public IStatus runInUIThread(IProgressMonitor monitor) {
             IStatus status = Status.OK_STATUS;
             try {
-               IOseeBranch branch = BranchManager.getBranchToken(branchProvider.getBranch());
+               BranchToken branch = BranchManager.getBranchToken(branchProvider.getBranch());
                if (branch != null) {
                   IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
                      QuickSearchView.VIEW_ID);

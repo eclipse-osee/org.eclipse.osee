@@ -22,7 +22,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -130,7 +130,7 @@ public class HtmlWriter {
       data.put("Archived", branch.isArchived());
       if (branch.hasParentBranch()) {
          try {
-            IOseeBranch parent = getBranchFromId(branch.getParentBranch());
+            BranchToken parent = getBranchFromId(branch.getParentBranch());
 
             URI uri;
             String parentId = parent.getIdString();
@@ -155,7 +155,7 @@ public class HtmlWriter {
       return data;
    }
 
-   private IOseeBranch getBranchFromId(BranchId branch) {
+   private BranchToken getBranchFromId(BranchId branch) {
       return orcsApi.getQueryFactory().branchQuery().andId(branch).getResultsAsId().getExactlyOne();
    }
 
@@ -166,7 +166,7 @@ public class HtmlWriter {
       data.put("Date", txRecord.getDate());
       data.put("Comment", txRecord.getComment());
       data.put("Author", txRecord.getAuthor());
-      IOseeBranch branch = getBranchFromId(txRecord.getBranch());
+      BranchToken branch = getBranchFromId(txRecord.getBranch());
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "branch")) {

@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.cm;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -62,7 +62,7 @@ public interface IOseeCmService {
       return false;
    }
 
-   default XResultData commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource, XResultData rd) {
+   default XResultData commitBranch(Artifact art, BranchToken branch, boolean isArchiveSource, XResultData rd) {
       return rd;
    }
 }

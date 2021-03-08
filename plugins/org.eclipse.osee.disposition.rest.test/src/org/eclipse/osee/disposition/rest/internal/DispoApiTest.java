@@ -40,7 +40,7 @@ import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.TmoImporter;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.LisFileParser;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.logger.Log;
@@ -62,7 +62,7 @@ public class DispoApiTest {
    @Mock
    private DispoResolutionValidator validator;
    @Mock
-   private IOseeBranch mockBranch;
+   private BranchToken mockBranch;
    @Mock
    private DispoSet dispoSet;
    @Mock
@@ -148,7 +148,7 @@ public class DispoApiTest {
    public void testGetDispoPrograms() {
       List<BranchId> programsSet = Collections.singletonList(mockBranch);
       when(storage.getDispoBranches()).thenAnswer(newAnswer(programsSet));
-      List<IOseeBranch> actual = dispoApi.getDispoPrograms();
+      List<BranchToken> actual = dispoApi.getDispoPrograms();
       assertEquals(programsSet.iterator().next(), actual.iterator().next());
    }
 

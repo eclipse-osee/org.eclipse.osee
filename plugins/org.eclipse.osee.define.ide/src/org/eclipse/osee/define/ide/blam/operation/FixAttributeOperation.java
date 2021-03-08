@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -48,11 +48,11 @@ public class FixAttributeOperation extends AbstractOperation {
 
    }
 
-   private final IOseeBranch branch;
+   private final BranchToken branch;
    private final boolean commitChangesBool;
    private final Display display;
 
-   public FixAttributeOperation(OperationLogger logger, Display display, IOseeBranch branch, boolean commitChangesBool) {
+   public FixAttributeOperation(OperationLogger logger, Display display, BranchToken branch, boolean commitChangesBool) {
       super("FixAttributes", Activator.PLUGIN_ID, logger);
       this.branch = branch;
       this.commitChangesBool = commitChangesBool;

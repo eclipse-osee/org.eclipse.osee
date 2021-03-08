@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.branch.graph;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
@@ -41,7 +41,7 @@ public class OpenBranchGraph extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       try {
-         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(selection);
          if (!branches.isEmpty()) {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
                new BranchGraphEditorInput(branches.iterator().next()), BranchGraphEditor.EDITOR_ID);

@@ -22,7 +22,7 @@ import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -45,7 +45,7 @@ public interface DispoQuery {
 
    boolean isUniqueItemName(BranchId branch, String setId, String name);
 
-   IOseeBranch findDispoProgramIdByName(String branchName);
+   BranchToken findDispoProgramIdByName(String branchName);
 
    String findDispoSetIdByName(BranchId branch, String setName);
 
@@ -61,7 +61,7 @@ public interface DispoQuery {
 
    List<String> getCheckedReruns(HashMap<String, DispoItem> items, String setId);
 
-   List<IOseeBranch> getDispoBranches();
+   List<BranchToken> getDispoBranches();
 
    Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword, boolean isDetailed);
 

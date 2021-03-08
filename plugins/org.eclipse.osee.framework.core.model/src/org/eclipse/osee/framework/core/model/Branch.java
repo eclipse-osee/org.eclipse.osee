@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
+public class Branch extends NamedIdBase implements BranchToken, Adaptable {
 
    private final Set<Branch> childBranches = new HashSet<>();
    private BranchType branchType;
@@ -152,13 +152,13 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
     * @return all child branches. It is equivalent to calling getChildBranches with new BranchFilter() (.i.e no child
     * branches are excluded)
     */
-   public Collection<IOseeBranch> getAllChildBranches(boolean recurse) {
-      Set<IOseeBranch> children = new HashSet<>();
+   public Collection<BranchToken> getAllChildBranches(boolean recurse) {
+      Set<BranchToken> children = new HashSet<>();
       getChildBranches(children, recurse, b -> true);
       return children;
    }
 
-   public void getChildBranches(Collection<IOseeBranch> children, boolean recurse, Predicate<Branch> filter) {
+   public void getChildBranches(Collection<BranchToken> children, boolean recurse, Predicate<Branch> filter) {
       for (Branch branch : getChildren()) {
          if (filter.test(branch)) {
             children.add(branch);

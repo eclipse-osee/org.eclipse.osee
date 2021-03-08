@@ -19,7 +19,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
@@ -173,7 +173,7 @@ public class ChangeReportTable implements EditorSection.IWidget, IOseeTreeReport
          } else if (!changeData.getChanges().isEmpty()) {
             BranchId branchId = changeData.getChanges().iterator().next().getBranch();
             if (branchId != null) {
-               IOseeBranch branch = BranchManager.getBranch(branchId);
+               BranchToken branch = BranchManager.getBranch(branchId);
                return String.format("Table Report - Change Report - %s", branch.getName());
             }
          }

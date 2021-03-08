@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class RelationConflict extends Conflict {
 
-   public RelationConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionRecord toTransactionId, IOseeBranch mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   public RelationConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionRecord toTransactionId, BranchToken mergeBranch, BranchToken sourceBranch, BranchToken destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
    }
 

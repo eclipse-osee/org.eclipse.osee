@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.RendererOption;
@@ -60,7 +60,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       this(new HashMap<RendererOption, Object>());
    }
 
-   public IFile renderToFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType) {
+   public IFile renderToFile(Artifact artifact, BranchToken branch, PresentationType presentationType) {
       List<Artifact> artifacts;
       if (artifact == null) {
          artifacts = Collections.emptyList();
@@ -70,7 +70,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFile(artifacts, branch, presentationType, null);
    }
 
-   public IFile copyToNewFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType, IFile file) {
+   public IFile copyToNewFile(Artifact artifact, BranchToken branch, PresentationType presentationType, IFile file) {
       List<Artifact> artifacts;
       if (artifact == null) {
          artifacts = Collections.emptyList();
@@ -87,7 +87,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType) {
-      IOseeBranch initialBranch = null;
+      BranchToken initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
             initialBranch = artifact.getBranchToken();
@@ -101,7 +101,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFile(artifacts, initialBranch, presentationType, null);
    }
 
-   public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType, InputStream renderInputStream) {
+   public IFile renderToFile(List<Artifact> artifacts, BranchToken branch, PresentationType presentationType, InputStream renderInputStream) {
       if (renderInputStream == null) {
          renderInputStream = getRenderInputStream(presentationType, branch, artifacts);
       }
@@ -119,7 +119,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
    public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts);
 
-   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts) {
+   public InputStream getRenderInputStream(PresentationType presentationType, BranchToken branch, List<Artifact> artifacts) {
       return getRenderInputStream(presentationType, artifacts);
    }
 

@@ -17,7 +17,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.access.AccessDetail;
 import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -48,7 +48,7 @@ public final class MockDataFactory {
       if (value == 0) {
          value++;
       }
-      IOseeBranch branch = IOseeBranch.create(branchUuid, "fake test branch");
+      BranchToken branch = BranchToken.create(branchUuid, "fake test branch");
       return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), DemoUsers.Joe_Smith,
          ArtifactId.valueOf(value * 42), type, 0L);
    }

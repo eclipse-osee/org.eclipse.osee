@@ -33,7 +33,7 @@ import org.eclipse.osee.define.api.ParagraphNumberComparator;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -52,7 +52,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final QueryFactory queryApi;
    private final OrcsTokenService tokenService;
-   private final IOseeBranch branch;
+   private final BranchToken branch;
    private final ActivityLog activityLog;
    private final Map<String, Integer> summarySubsystemCounter = new HashMap<>();
    private final Map<String, Integer> summaryTraceCounter = new HashMap<>();

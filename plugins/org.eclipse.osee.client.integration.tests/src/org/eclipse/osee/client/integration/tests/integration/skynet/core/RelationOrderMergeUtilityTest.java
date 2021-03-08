@@ -23,7 +23,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -65,7 +65,7 @@ public class RelationOrderMergeUtilityTest {
    private RelationTypeToken hierType;
    private RelationSide hierSide;
 
-   private IOseeBranch destBranch;
+   private BranchToken destBranch;
 
    @Before
    public void createBranch() {
@@ -108,7 +108,7 @@ public class RelationOrderMergeUtilityTest {
       }
       destParent.persist(getClass().getSimpleName() + ".testOrderMerge()_1");
 
-      IOseeBranch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch");
+      BranchToken sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch");
       Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent, sourceBranch);
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4], sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);

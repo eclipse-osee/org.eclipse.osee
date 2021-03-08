@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -45,7 +45,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 public final class TemplateParser {
    private final OrcsApi orcsApi;
    private final QueryFactory queryApi;
-   private final IOseeBranch branch;
+   private final BranchToken branch;
    private final ArtifactId view;
    private final ArtifactId reportTemplateArt;
    private final XResultData results;

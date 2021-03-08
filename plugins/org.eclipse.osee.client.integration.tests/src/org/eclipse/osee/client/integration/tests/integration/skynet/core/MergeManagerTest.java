@@ -27,7 +27,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -62,7 +62,7 @@ public class MergeManagerTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private IOseeBranch workingBranch;
+   private BranchToken workingBranch;
    private static Artifact newArt;
    public static ArtifactToken NewArtifactToken =
       ArtifactToken.valueOf(3534859, "ART_NAME", CoreArtifactTypes.SoftwareRequirementMsWord);
@@ -189,7 +189,7 @@ public class MergeManagerTest {
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
 
-      IOseeBranch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch).getDestinationBranch(); // this will be future working branch
+      BranchToken branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch).getDestinationBranch(); // this will be future working branch
 
       // Shouldn't be allowed to commit working branch
       TransactionResult transactionResult =

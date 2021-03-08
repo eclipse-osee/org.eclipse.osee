@@ -24,7 +24,7 @@ import org.eclipse.nebula.widgets.ganttchart.GanttComposite;
 import org.eclipse.nebula.widgets.ganttchart.GanttEvent;
 import org.eclipse.osee.branch.gantt.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -132,7 +132,7 @@ public class BranchVisualizationView extends ViewPart {
          String branchUuid = UserManager.getUser().getSetting(BRANCH_KEY);
          if (Strings.isValid(branchUuid)) {
             try {
-               IOseeBranch branch = BranchManager.getBranchToken(Long.valueOf(branchUuid));
+               BranchToken branch = BranchManager.getBranchToken(Long.valueOf(branchUuid));
                xBranchSelectWidget.setSelection(branch);
             } catch (Exception ex) {
                // do nothing
@@ -176,12 +176,12 @@ public class BranchVisualizationView extends ViewPart {
       parent.layout();
    }
 
-   public GanttEvent createEvents(GanttEvent parentEvent, IOseeBranch branch, boolean recurse) {
+   public GanttEvent createEvents(GanttEvent parentEvent, BranchToken branch, boolean recurse) {
       GanttEvent gantEvent = createGantEvent(parentEvent, branch);
 
       // Create connections
       if (recurse) {
-         for (IOseeBranch childBranch : BranchManager.getChildBranches(branch, false)) {
+         for (BranchToken childBranch : BranchManager.getChildBranches(branch, false)) {
             if (BranchManager.getType(childBranch).isBaselineBranch()) {
                createEvents(gantEvent, childBranch, recurse);
             }
@@ -190,7 +190,7 @@ public class BranchVisualizationView extends ViewPart {
       return gantEvent;
    }
 
-   private GanttEvent createGantEvent(GanttEvent parentEvent, IOseeBranch branch) {
+   private GanttEvent createGantEvent(GanttEvent parentEvent, BranchToken branch) {
       Calendar creationDateCal = Calendar.getInstance();
       Date createDate = BranchManager.getBaseTransaction(branch).getTimeStamp();
       creationDateCal.setTime(createDate);

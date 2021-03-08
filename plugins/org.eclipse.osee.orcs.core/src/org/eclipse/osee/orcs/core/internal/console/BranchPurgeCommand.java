@@ -26,7 +26,7 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
@@ -219,9 +219,9 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          if (branchesToPurge.isEmpty()) {
             console.writeln("no branches matched specified criteria");
          } else {
-            List<? extends IOseeBranch> orderedBranches = BranchUtil.orderByParentReadable(branchesToPurge);
+            List<? extends BranchToken> orderedBranches = BranchUtil.orderByParentReadable(branchesToPurge);
 
-            for (IOseeBranch toPurge : orderedBranches) {
+            for (BranchToken toPurge : orderedBranches) {
                console.writeln("Branch [%s] will be purged!", toPurge);
             }
 

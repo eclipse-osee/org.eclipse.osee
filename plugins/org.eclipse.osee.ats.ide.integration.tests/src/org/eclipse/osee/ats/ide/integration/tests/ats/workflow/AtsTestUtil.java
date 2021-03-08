@@ -67,7 +67,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -481,7 +481,7 @@ public class AtsTestUtil {
       }
 
       if (teamWf != null) {
-         IOseeBranch branch = AtsApiService.get().getBranchService().getBranch(teamWf);
+         BranchToken branch = AtsApiService.get().getBranchService().getBranch(teamWf);
          if (branch.isValid()) {
             AtsApiService.get().getBranchService().setAssociatedArtId(branch, ArtifactId.SENTINEL);
             XResultData rd = AtsApiService.get().getBranchService().deleteBranch(branch);

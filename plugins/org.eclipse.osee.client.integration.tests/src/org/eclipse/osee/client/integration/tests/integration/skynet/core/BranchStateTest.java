@@ -29,7 +29,7 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -112,7 +112,7 @@ public class BranchStateTest {
    @Test
    public void testModifiedState() {
       String originalBranchName = "Modified State Branch";
-      IOseeBranch workingBranch = null;
+      BranchToken workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
@@ -136,7 +136,7 @@ public class BranchStateTest {
       OseeEventManager.addListener(branchEventListenerAsync);
 
       String originalBranchName = "Deleted State Branch";
-      IOseeBranch workingBranch = null;
+      BranchToken workingBranch = null;
       boolean pending = OseeEventManager.getPreferences().isPendRunning();
       try {
          OseeEventManager.getPreferences().setPendRunning(true);
@@ -169,7 +169,7 @@ public class BranchStateTest {
    @Test
    public void testPurgeState() throws InterruptedException {
       String originalBranchName = "Purged State Branch";
-      IOseeBranch workingBranch = null;
+      BranchToken workingBranch = null;
       boolean branchPurged = false;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
@@ -194,7 +194,7 @@ public class BranchStateTest {
    @Test
    public void testCommitState() throws InterruptedException {
       String originalBranchName = "Commit State Branch";
-      IOseeBranch workingBranch = null;
+      BranchToken workingBranch = null;
       Artifact change = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
@@ -233,7 +233,7 @@ public class BranchStateTest {
    @Test
    public void testRebaselineBranchNoChanges() throws Exception {
       String originalBranchName = "UpdateBranch No Changes Test";
-      IOseeBranch workingBranch = null;
+      BranchToken workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
@@ -254,7 +254,7 @@ public class BranchStateTest {
          Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
          Assert.assertEquals(Artifact.SENTINEL, BranchManager.getAssociatedArtifact(workingBranch));
 
-         IOseeBranch newWorkingBranch = operation.getNewBranch();
+         BranchToken newWorkingBranch = operation.getNewBranch();
          assertFalse(workingBranch.equals(newWorkingBranch));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch was not editable", BranchManager.isEditable(newWorkingBranch));
@@ -268,7 +268,7 @@ public class BranchStateTest {
    public void testRebaselineWithoutConflicts() throws Exception {
       String originalBranchName = "UpdateBranch Test 1";
       Artifact baseArtifact = null;
-      IOseeBranch workingBranch = null;
+      BranchToken workingBranch = null;
       Artifact change = null;
       try {
          baseArtifact =
@@ -314,10 +314,10 @@ public class BranchStateTest {
          // Check that the associated artifact remained unchanged
          assertEquals(BranchManager.getAssociatedArtifactId(workingBranch), ArtifactId.SENTINEL);
 
-         Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
+         Collection<BranchToken> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
 
-         IOseeBranch newWorkingBranch = operation.getNewBranch();
+         BranchToken newWorkingBranch = operation.getNewBranch();
          assertFalse(workingBranch.equals(newWorkingBranch));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
@@ -330,8 +330,8 @@ public class BranchStateTest {
    public void testRebaselineWithConflicts() throws Exception {
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
-      IOseeBranch workingBranch = null;
-      IOseeBranch mergeBranch = null;
+      BranchToken workingBranch = null;
+      BranchToken mergeBranch = null;
       Artifact sameArtifact = null;
       try {
          baseArtifact =
@@ -380,7 +380,7 @@ public class BranchStateTest {
             workingBranch.getName());
 
          // Check that a new destination branch exists
-         IOseeBranch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
+         BranchToken destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
          assertTrue("Branch name not set correctly",
             destinationBranch.getName().startsWith(String.format("%s - for update -", originalBranchName)));
          assertTrue("Branch was not editable", BranchManager.isEditable(destinationBranch));
@@ -398,10 +398,10 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
 
-         Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
+         Collection<BranchToken> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
 
-         IOseeBranch newWorkingBranch = branches.iterator().next();
+         BranchToken newWorkingBranch = branches.iterator().next();
          assertFalse(workingBranch.equals(newWorkingBranch));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
@@ -433,7 +433,7 @@ public class BranchStateTest {
    }
 
    private void purgeBranchAndChildren(BranchId branch) {
-      for (IOseeBranch child : BranchManager.getChildBranches(branch, true)) {
+      for (BranchToken child : BranchManager.getChildBranches(branch, true)) {
          BranchManager.purgeBranch(child);
       }
       BranchManager.purgeBranch(branch);

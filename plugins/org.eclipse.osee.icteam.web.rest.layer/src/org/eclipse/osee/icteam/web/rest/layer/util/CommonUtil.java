@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -129,7 +129,7 @@ public class CommonUtil {
     * data
     * @throws OseeCoreException
     */
-   public static ArtifactReadable getArtifactFromIdExcludingDeleted(final String guidOrHrid, final IOseeBranch branch) throws OseeCoreException {
+   public static ArtifactReadable getArtifactFromIdExcludingDeleted(final String guidOrHrid, final BranchToken branch) throws OseeCoreException {
 
       return getArtifactFromIdExcludingDeleted(guidOrHrid, branch, OseeCoreData.getOrcsApi());
    }

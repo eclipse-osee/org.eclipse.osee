@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -35,17 +35,17 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
  * @author Roberto E. Escobar
  */
 public class UpdateBranchOperation extends AbstractOperation {
-   private final IOseeBranch originalBranch;
+   private final BranchToken originalBranch;
    private final BranchId fromBranch;
    private final ConflictResolverOperation resolver;
-   private IOseeBranch newBranch;
+   private BranchToken newBranch;
    private UpdateBranchData branchData;
 
-   public UpdateBranchOperation(final IOseeBranch branch, final ConflictResolverOperation resolver) {
+   public UpdateBranchOperation(final BranchToken branch, final ConflictResolverOperation resolver) {
       this(branch, BranchManager.getParentBranch(branch), resolver);
    }
 
-   public UpdateBranchOperation(final IOseeBranch branch, final BranchId fromBranch, final ConflictResolverOperation resolver) {
+   public UpdateBranchOperation(final BranchToken branch, final BranchId fromBranch, final ConflictResolverOperation resolver) {
       super(String.format("Update Branch [%s]", branch.getShortName()), Activator.PLUGIN_ID);
       this.originalBranch = branch;
       this.fromBranch = fromBranch;
@@ -73,7 +73,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       }
    }
 
-   private void performUpdate(IProgressMonitor monitor, IOseeBranch originalBranch) throws Exception {
+   private void performUpdate(IProgressMonitor monitor, BranchToken originalBranch) throws Exception {
       boolean wasSuccessful = false;
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint branchEp = client.getBranchEndpoint();
@@ -121,7 +121,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       doSubWork(operation, monitor, workPercentage);
    }
 
-   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, IOseeBranch originalBranch, BranchId newWorkingBranch, double workPercentage) throws Exception {
+   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, BranchToken originalBranch, BranchId newWorkingBranch, double workPercentage) throws Exception {
       String originalBranchName = originalBranch.getName();
 
       BranchManager.setName(originalBranch, getUpdatedName(originalBranchName));
@@ -135,7 +135,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       monitor.worked(calculateWork(workPercentage));
    }
 
-   public IOseeBranch getNewBranch() {
+   public BranchToken getNewBranch() {
       return newBranch;
    }
 }

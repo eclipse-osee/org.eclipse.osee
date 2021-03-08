@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -176,7 +176,7 @@ public class CreateDemoBranches {
       }
    }
 
-   private void createDemoProgramBranch(IOseeBranch branch, UserId account) {
+   private void createDemoProgramBranch(BranchToken branch, UserId account) {
       branchOps.createProgramBranch(branch, account);
 
       TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create SAW Product Decomposition");

@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -359,7 +359,7 @@ public class AtsHealthCheckOperation {
                AtsAttributeTypes.BaselineBranchId, "-1");
             BranchId branch = BranchId.valueOf(branchId);
             if (branch.isValid()) {
-               IOseeBranch branch2 = atsApi.getBranchService().getBranch(branch);
+               BranchToken branch2 = atsApi.getBranchService().getBranch(branch);
                if (branch2 == null) {
                   results.log("TestTeamDefinitions",
                      String.format("Invalid Branch %s for Team Def %s", branch.getId(), teamDefArt.toStringWithId()));
@@ -412,7 +412,7 @@ public class AtsHealthCheckOperation {
                atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1");
             BranchId branch = BranchId.valueOf(branchId);
             if (branch.isValid()) {
-               IOseeBranch branch2 = atsApi.getBranchService().getBranch(branch);
+               BranchToken branch2 = atsApi.getBranchService().getBranch(branch);
                if (branch2 == null) {
                   results.log("TestTeamDefinitions",
                      String.format("Invalid Branch %s for Team Def %s", branch.getId(), verArt.toStringWithId()));

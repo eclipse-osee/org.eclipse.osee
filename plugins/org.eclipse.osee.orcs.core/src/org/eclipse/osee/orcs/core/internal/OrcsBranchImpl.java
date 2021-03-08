@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -103,14 +103,14 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public IOseeBranch createTopLevelBranch(IOseeBranch branch, ArtifactId account) {
+   public BranchToken createTopLevelBranch(BranchToken branch, ArtifactId account) {
       return createTopLevelBranch(new CreateBranchData(branch), ArtifactId.SENTINEL, account);
    }
 
-   private IOseeBranch createTopLevelBranch(CreateBranchData createData, ArtifactId associatedArtifact, ArtifactId account) {
+   private BranchToken createTopLevelBranch(CreateBranchData createData, ArtifactId associatedArtifact, ArtifactId account) {
       createData.setBranchType(BranchType.BASELINE);
 
-      IOseeBranch parentBranch = CoreBranches.SYSTEM_ROOT;
+      BranchToken parentBranch = CoreBranches.SYSTEM_ROOT;
       TransactionToken parentTx =
          orcsApi.getQueryFactory().transactionQuery().andIsHead(parentBranch).getTokens().getExactlyOne();
 
@@ -210,7 +210,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Branch createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
+   public Branch createBaselineBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       Branch newBranch = createBranch(branchData);
@@ -219,21 +219,21 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Branch createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
+   public Branch createWorkingBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Branch createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Branch createCopyTxBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Branch createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Branch createPortBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
@@ -245,8 +245,8 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public IOseeBranch createProgramBranch(IOseeBranch branch, UserId account) {
-      IOseeBranch newBranch = createTopLevelBranch(branch, account);
+   public BranchToken createProgramBranch(BranchToken branch, UserId account) {
+      BranchToken newBranch = createTopLevelBranch(branch, account);
       setBranchPermission(account, branch, PermissionEnum.FULLACCESS);
 
       TransactionBuilder tx =

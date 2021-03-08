@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.CompareData;
@@ -46,7 +46,7 @@ public class ArtifactDeltaToFileConverter {
       if (newerArtifact.getModType().isDeleted()) {
          newerArtifact = null;
       }
-      IOseeBranch branch = artifactDelta.getBranch();
+      BranchToken branch = artifactDelta.getBranch();
 
       IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
       IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
@@ -59,7 +59,7 @@ public class ArtifactDeltaToFileConverter {
       if (newerArtifact.getModType().isDeleted()) {
          newerArtifact = null;
       }
-      IOseeBranch branch = artifactDelta.getBranch();
+      BranchToken branch = artifactDelta.getBranch();
 
       IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
       IFile copiedFile = renderer.copyToNewFile(newerArtifact, branch, presentationType, baseFile);

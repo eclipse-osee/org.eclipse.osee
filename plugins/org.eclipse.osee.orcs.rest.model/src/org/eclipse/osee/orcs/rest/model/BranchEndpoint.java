@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -150,7 +150,7 @@ public interface BranchEndpoint {
    @Path("{branch}/program")
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
-   IOseeBranch createProgramBranch(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("branch") BranchId branchId, String branchName);
+   BranchToken createProgramBranch(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("branch") BranchId branchId, String branchName);
 
    @POST
    @Path("{branch}")

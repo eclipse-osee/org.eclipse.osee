@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -97,7 +97,7 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
-   public XResultData commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource, XResultData rd) {
+   public XResultData commitBranch(Artifact art, BranchToken branch, boolean isArchiveSource, XResultData rd) {
       if (art instanceof TeamWorkFlowArtifact) {
          AtsApiService.get().getBranchServiceIde().commitWorkingBranch((TeamWorkFlowArtifact) art, false, false, branch,
             isArchiveSource, rd);

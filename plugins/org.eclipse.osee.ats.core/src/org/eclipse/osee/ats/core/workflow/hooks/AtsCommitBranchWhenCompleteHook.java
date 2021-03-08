@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -45,7 +45,7 @@ public class AtsCommitBranchWhenCompleteHook implements IAtsTransitionHook {
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
       try {
          if (workItem instanceof IAtsTeamWorkflow && toState.getStateType().isCompleted()) {
-            IOseeBranch branch =
+            BranchToken branch =
                AtsApiService.get().getBranchService().getWorkingBranch((IAtsTeamWorkflow) workItem, true);
             if (branch != null && branch.isValid() && !AtsApiService.get().getBranchService().isArchived(branch)) {
                AtsApiService.get().getBranchService().archiveBranch(branch);

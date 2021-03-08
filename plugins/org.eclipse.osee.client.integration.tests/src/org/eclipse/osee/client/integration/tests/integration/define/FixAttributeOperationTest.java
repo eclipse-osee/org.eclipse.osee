@@ -25,7 +25,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.define.ide.blam.operation.FixAttributeOperation;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -62,7 +62,7 @@ public class FixAttributeOperationTest {
    public ExpectedException thrown = ExpectedException.none();
 
    private static final String WORKING_BRANCH_NAME = "BranchWorking";
-   private IOseeBranch branchWorking;
+   private BranchToken branchWorking;
    private String itemId;
    private List<String[]> data;
 
@@ -156,7 +156,7 @@ public class FixAttributeOperationTest {
       }
    }
 
-   private void executeOp(IOseeBranch branch, boolean commitChangesBool) {
+   private void executeOp(BranchToken branch, boolean commitChangesBool) {
       IOperation operation = new FixAttributeOperation(NullOperationLogger.getSingleton(),
          (String reportName, List<String[]> values) -> data = values, branch, commitChangesBool);
       Operations.executeWorkAndCheckStatus(operation);

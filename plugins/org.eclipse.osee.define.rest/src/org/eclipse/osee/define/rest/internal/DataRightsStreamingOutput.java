@@ -31,7 +31,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.api.ParagraphNumberComparator;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -48,7 +48,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public final class DataRightsStreamingOutput implements StreamingOutput {
    private final QueryFactory queryFactory;
-   private final IOseeBranch branch;
+   private final BranchToken branch;
    private final String codeRoot;
    private final TraceAccumulator traceAccumulator;
    private final Map<CaseInsensitiveString, ArtifactReadable> nameToReqMap = new LinkedHashMap<>();

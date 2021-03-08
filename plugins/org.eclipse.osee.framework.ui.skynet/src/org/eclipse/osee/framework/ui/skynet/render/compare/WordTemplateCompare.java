@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
@@ -60,7 +60,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
       if (artifact == null) {
          artifact = artifactDelta1.getEndArtifact();
       }
-      IOseeBranch branch = artifact.getBranchToken();
+      BranchToken branch = artifact.getBranchToken();
       List<Artifact> artifacts = Collections.emptyList();
 
       IVbaDiffGenerator diffGenerator = createGenerator(artifacts, branch, presentationType);

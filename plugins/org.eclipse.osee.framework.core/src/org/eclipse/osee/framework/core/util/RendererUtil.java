@@ -21,7 +21,7 @@ import java.util.Random;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -41,7 +41,7 @@ public class RendererUtil {
    private static final Random generator = new Random();
    private static final int FILENAME_LIMIT = 215;
 
-   public static String toFileName(IOseeBranch branch) {
+   public static String toFileName(BranchToken branch) {
       // replace invalid filename characters \/:"*?<>| and . and ' with _
       String shortName = Strings.saferReplace(branch.getShortName(), "[\\.\\/:\"*?<>|'\\\\]+", "_");
       return encode(shortName);
@@ -75,7 +75,7 @@ public class RendererUtil {
       return name.toString();
    }
 
-   public static IFile getRenderFile(IOseeBranch branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) {
+   public static IFile getRenderFile(BranchToken branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) {
       String subFolder = toFileName(branch);
       String fileNamePrefix = null;
       if (Strings.isValid(pathPrefix)) {

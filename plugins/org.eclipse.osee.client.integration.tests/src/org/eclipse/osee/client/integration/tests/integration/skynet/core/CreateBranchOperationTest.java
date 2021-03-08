@@ -23,7 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -62,10 +62,10 @@ public class CreateBranchOperationTest {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      IOseeBranch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
+      BranchToken workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
       BranchManager.setState(workingBranch, BranchState.DELETED);
 
-      IOseeBranch workingBranch2 =
+      BranchToken workingBranch2 =
          BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
@@ -79,10 +79,10 @@ public class CreateBranchOperationTest {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      IOseeBranch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
+      BranchToken workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
       BranchManager.setState(workingBranch, BranchState.REBASELINED);
 
-      IOseeBranch workingBranch2 =
+      BranchToken workingBranch2 =
          BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
@@ -106,7 +106,7 @@ public class CreateBranchOperationTest {
          Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
          folder.persist("");
 
-         IOseeBranch workingBranch =
+         BranchToken workingBranch =
             BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
          BranchManager.setState(workingBranch, state);
 
@@ -139,7 +139,7 @@ public class CreateBranchOperationTest {
       assertEquals(errorMessage, errorsCaught, subset.size());
    }
 
-   private String getName(IOseeBranch branch, String value) {
+   private String getName(BranchToken branch, String value) {
       return String.format("%s_%s", branch.getName(), value);
    }
 

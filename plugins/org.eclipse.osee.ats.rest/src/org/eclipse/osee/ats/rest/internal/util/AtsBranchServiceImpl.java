@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -63,7 +63,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
+   public BranchToken getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       return query.andIsOfType(BranchType.WORKING).andStateIs(
@@ -71,7 +71,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
+   public BranchToken getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
       BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
       if (negatedBranchStates.length > 0) {
          Collection<BranchState> statesToSearch = new LinkedList<>(Arrays.asList(BranchState.values()));
@@ -169,7 +169,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public void setBranchName(IOseeBranch branch, String name) {
+   public void setBranchName(BranchToken branch, String name) {
       try {
          orcsApi.getBranchOps().changeBranchName(branch, name).call();
       } catch (Exception ex) {

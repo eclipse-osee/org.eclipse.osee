@@ -13,15 +13,15 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class CoreBranches {
 
-   public static final IOseeBranch COMMON = IOseeBranch.create(570, "Common");
-   public static final IOseeBranch SYSTEM_ROOT = IOseeBranch.create(1, "System Root Branch");
+   public static final BranchToken COMMON = BranchToken.create(570, "Common");
+   public static final BranchToken SYSTEM_ROOT = BranchToken.create(1, "System Root Branch");
 
    private CoreBranches() {
       // Constants

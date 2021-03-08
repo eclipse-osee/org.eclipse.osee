@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
@@ -131,7 +131,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
                }
             }
          } else {
-            List<IOseeBranch> branches =
+            List<BranchToken> branches =
                BranchManager.getBranches(branchState, branchTypes.toArray(new BranchType[branchTypes.size()]));
             branchesToReturn.addAll(branches);
          }

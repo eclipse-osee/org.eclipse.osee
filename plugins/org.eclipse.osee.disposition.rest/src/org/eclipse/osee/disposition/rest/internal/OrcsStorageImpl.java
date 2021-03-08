@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -66,7 +66,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  */
 public class OrcsStorageImpl implements Storage {
    private final OrcsApi orcsApi;
-   public static final IOseeBranch dispoParent = IOseeBranch.create(5781701693103907161L, "Dispo Parent");
+   public static final BranchToken dispoParent = BranchToken.create(5781701693103907161L, "Dispo Parent");
 
    public OrcsStorageImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -124,12 +124,12 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public IOseeBranch findDispoProgramIdByName(String branchName) {
-      List<IOseeBranch> dispoPrograms = getDispoBranches();
-      IOseeBranch branchId = null;
+   public BranchToken findDispoProgramIdByName(String branchName) {
+      List<BranchToken> dispoPrograms = getDispoBranches();
+      BranchToken branchId = null;
       String allItems = "";
       int count = 0;
-      for (IOseeBranch branch : dispoPrograms) {
+      for (BranchToken branch : dispoPrograms) {
          if (branch.getName().equals(branchName)) {
             allItems += branch.getIdString() + '\n';
             count++;
@@ -201,7 +201,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public Long createDispoProgram(UserId author, String name) {
-      IOseeBranch branch = IOseeBranch.create(name);
+      BranchToken branch = BranchToken.create(name);
 
       getBranchFactory().createWorkingBranch(branch, author, dispoParent, ArtifactId.SENTINEL);
 
@@ -473,14 +473,14 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public List<IOseeBranch> getDispoBranches() {
-      List<IOseeBranch> dispoBranchesNormalized = new ArrayList<>();
+   public List<BranchToken> getDispoBranches() {
+      List<BranchToken> dispoBranchesNormalized = new ArrayList<>();
 
-      ResultSet<IOseeBranch> dispoBranches =
+      ResultSet<BranchToken> dispoBranches =
          getQuery().branchQuery().andIsOfType(BranchType.WORKING).andIsChildOf(dispoParent).getResultsAsId();
 
-      for (IOseeBranch branch : dispoBranches) {
-         IOseeBranch newName = IOseeBranch.create(branch, branch.getName().replaceFirst("\\(DISPO\\)", ""));
+      for (BranchToken branch : dispoBranches) {
+         BranchToken newName = BranchToken.create(branch, branch.getName().replaceFirst("\\(DISPO\\)", ""));
 
          dispoBranchesNormalized.add(newName);
       }

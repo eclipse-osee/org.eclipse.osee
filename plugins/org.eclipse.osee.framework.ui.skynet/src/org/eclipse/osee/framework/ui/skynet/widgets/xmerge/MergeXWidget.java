@@ -29,7 +29,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -101,8 +101,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private Label extraInfoLabel;
    private String displayLabelText;
    private Action openAssociatedArtifactAction;
-   private IOseeBranch sourceBranch;
-   private IOseeBranch destBranch;
+   private BranchToken sourceBranch;
+   private BranchToken destBranch;
    private TransactionToken commitTrans;
    private TransactionToken tranId;
    private MergeView mergeView;
@@ -230,7 +230,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       return toolBarManager;
    }
 
-   private void applyPreviousMerge(final IOseeBranch destinationBranch) {
+   private void applyPreviousMerge(final BranchToken destinationBranch) {
       Job job = new Job("Apply Previous Merge") {
 
          @Override
@@ -240,7 +240,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
-                  IOseeBranch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
+                  BranchToken mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
                   conflict.applyPreviousMerge(mergeBranch, destinationBranch);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -382,11 +382,11 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       this.editor = editor;
    }
 
-   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTrans, boolean showConflicts) {
+   public void setInputData(final BranchToken sourceBranch, final BranchToken destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTrans, boolean showConflicts) {
       setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
-   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTx, String loadingText, final boolean showConflicts) {
+   public void setInputData(final BranchToken sourceBranch, final BranchToken destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTx, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
@@ -707,11 +707,11 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
                ArrayList<String> selections = new ArrayList<>();
-               ArrayList<IOseeBranch> branches = new ArrayList<>();
+               ArrayList<BranchToken> branches = new ArrayList<>();
                try {
-                  Collection<IOseeBranch> destBranches =
+                  Collection<BranchToken> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch);
-                  for (IOseeBranch branch : destBranches) {
+                  for (BranchToken branch : destBranches) {
                      if (destBranch.notEqual(branch)) {
                         selections.add(branch.getName());
                         branches.add(branch);

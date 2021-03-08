@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,9 +35,9 @@ public class CommitOverrideAction extends Action {
 
    private final AtsApi atsApi;
    private final IAtsTeamWorkflow teamWf;
-   private final IOseeBranch branch;
+   private final BranchToken branch;
 
-   public CommitOverrideAction(IAtsTeamWorkflow teamWf, IOseeBranch branch, AtsApi atsApi) {
+   public CommitOverrideAction(IAtsTeamWorkflow teamWf, BranchToken branch, AtsApi atsApi) {
       super(String.format("Override Commit for [%s]", branch.getName()));
       this.teamWf = teamWf;
       this.branch = branch;

@@ -29,7 +29,7 @@ import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.define.ide.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -90,13 +90,13 @@ public final class ImportTraceUnitsOperationTest {
    private static final List<String> expectedReqs = Arrays.asList("Robot Object", "Haptic Constraints",
       "Robot Interfaces", "Individual robot events", "Collaborative Robot");
 
-   private IOseeBranch branch;
+   private BranchToken branch;
    private BranchId importToBranch;
    private File testFile;
 
    @Before
    public void setup() throws Exception {
-      branch = IOseeBranch.create(testInfo.getQualifiedTestName());
+      branch = BranchToken.create(testInfo.getQualifiedTestName());
       importToBranch = BranchManager.createWorkingBranch(SAW_Bld_1, branch);
 
       setupDirectoryStructure();

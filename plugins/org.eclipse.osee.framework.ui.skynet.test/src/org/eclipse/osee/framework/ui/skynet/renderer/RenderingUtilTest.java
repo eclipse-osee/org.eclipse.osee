@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.renderer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -25,11 +25,11 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RenderingUtilTest {
-   private static IOseeBranch branch;
+   private static BranchToken branch;
 
    @BeforeClass
    public static void setUpOnce() {
-      branch = IOseeBranch.create("Test 1");
+      branch = BranchToken.create("Test 1");
    }
 
    @Test
@@ -42,46 +42,46 @@ public class RenderingUtilTest {
    public void test_branchToFileName_notAllowedCharsInName() {
       String branchShortName = "";
 
-      branch = IOseeBranch.create("0123455789012345578901234557890123.5");
+      branch = BranchToken.create("0123455789012345578901234557890123.5");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "0123455789012345578901234557890123_",
          branchShortName);
 
-      branch = IOseeBranch.create("Dev>>>>>Branch");
+      branch = BranchToken.create("Dev>>>>>Branch");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "Dev_Branch", branchShortName);
 
-      branch = IOseeBranch.create("Dev/Branch");
+      branch = BranchToken.create("Dev/Branch");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "Dev_Branch", branchShortName);
 
-      branch = IOseeBranch.create("DevBranch?");
+      branch = BranchToken.create("DevBranch?");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "DevBranch_", branchShortName);
 
-      branch = IOseeBranch.create("1234-changes:software");
+      branch = BranchToken.create("1234-changes:software");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "1234-changes_software", branchShortName);
 
-      branch = IOseeBranch.create("1234-changes:software*");
+      branch = BranchToken.create("1234-changes:software*");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "1234-changes_software_", branchShortName);
 
-      branch = IOseeBranch.create("newchanges|software<<<<hardware");
+      branch = BranchToken.create("newchanges|software<<<<hardware");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "newchanges_software_hardware",
          branchShortName);
 
-      branch = IOseeBranch.create("someRequirementChangeCalled\"My\"Changes");
+      branch = BranchToken.create("someRequirementChangeCalled\"My\"Changes");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "someRequirementChangeCalled_My_Chan",
          branchShortName);
 
-      branch = IOseeBranch.create("aBranchName\\here");
+      branch = BranchToken.create("aBranchName\\here");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "aBranchName_here", branchShortName);
 
-      branch = IOseeBranch.create("aDifferent'Name'here");
+      branch = BranchToken.create("aDifferent'Name'here");
       branchShortName = RenderingUtil.toFileName(branch);
       Assert.assertEquals("Not safe character found at end of branch name.", "aDifferent_Name_here", branchShortName);
 

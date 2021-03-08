@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -143,7 +143,7 @@ public final class ChangeUiUtil {
       Jobs.startJob(job, true);
    }
 
-   public static void open(IOseeBranch workingBranch, BranchId parentBranch, boolean b) {
+   public static void open(BranchToken workingBranch, BranchId parentBranch, boolean b) {
       Branch branch = BranchManager.getBranch(workingBranch);
       if (branch.isInvalid() || permissionsDeniedWithDialog(workingBranch)) {
          return;

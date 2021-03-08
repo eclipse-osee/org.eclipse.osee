@@ -59,7 +59,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -71,7 +71,7 @@ import org.osgi.service.event.EventAdmin;
  */
 public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWorkItemServiceProvider {
 
-   IOseeBranch getAtsBranch();
+   BranchToken getAtsBranch();
 
    IRelationResolver getRelationResolver();
 

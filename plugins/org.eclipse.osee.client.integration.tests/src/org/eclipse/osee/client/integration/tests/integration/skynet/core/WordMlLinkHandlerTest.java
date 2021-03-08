@@ -28,7 +28,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -120,7 +120,7 @@ public class WordMlLinkHandlerTest {
 
    @Test
    public void testDetectMissingGuids() throws IOException {
-      IOseeBranch workingBranch = IOseeBranch.create(method.getQualifiedTestName());
+      BranchToken workingBranch = BranchToken.create(method.getQualifiedTestName());
       try {
          BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
          Artifact addArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);

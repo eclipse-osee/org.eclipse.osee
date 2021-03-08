@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,15 +31,15 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class OseeDslSegmentParser {
 
-   public String getStartTag(ArtifactToken artifact, IOseeBranch branch) {
+   public String getStartTag(ArtifactToken artifact, BranchToken branch) {
       return getSegmentTag("start", artifact, branch);
    }
 
-   public String getEndTag(ArtifactToken artifact, IOseeBranch branch) {
+   public String getEndTag(ArtifactToken artifact, BranchToken branch) {
       return getSegmentTag("end", artifact, branch);
    }
 
-   private static String getSegmentTag(String tagPrefix, ArtifactToken artifact, IOseeBranch branch) {
+   private static String getSegmentTag(String tagPrefix, ArtifactToken artifact, BranchToken branch) {
       Conditions.checkNotNull(artifact, "artifact");
       Conditions.checkNotNull(branch, "branch");
       return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getId(),

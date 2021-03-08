@@ -27,7 +27,7 @@ import org.eclipse.osee.define.ide.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -59,7 +59,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       this.viewId = viewId;
    }
 
-   public BranchTraceabilityOperation(IOseeBranch branch, ArtifactId viewId) {
+   public BranchTraceabilityOperation(BranchToken branch, ArtifactId viewId) {
       this(new RequirementData(branch, viewId), branch,
          Collections.singleton(CoreArtifactTypes.AbstractSoftwareRequirement), true, viewId);
    }

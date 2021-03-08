@@ -24,7 +24,7 @@ import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxData;
@@ -81,13 +81,13 @@ public class FigureFactory {
 
    public static IFigure createTxNoteFigure(TxModel txModel) {
       TxData txData = txModel.getTxData();
-      IOseeBranch branch = BranchManager.getBranchToken(txData.getBranch());
+      BranchToken branch = BranchManager.getBranchToken(txData.getBranch());
       String title = String.format("Tx: %s Name: %s", txData.getTxId(), branch.getShortName());
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());
    }
 
    public static IFigure createBranchNoteFigure(BranchModel branchModel) {
-      IOseeBranch branch = BranchManager.getBranchToken(branchModel.getBranch());
+      BranchToken branch = BranchManager.getBranchToken(branchModel.getBranch());
       String title = String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
       TxData txData = branchModel.getFirstTx().getTxData();
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());

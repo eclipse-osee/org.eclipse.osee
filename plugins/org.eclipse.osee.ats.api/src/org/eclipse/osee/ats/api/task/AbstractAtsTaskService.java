@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -171,7 +171,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
             IAtsTeamWorkflow derivedTeamWf = (IAtsTeamWorkflow) derivedArt;
             // First, attempt to get from Working Branch if still exists
             if (atsApi.getBranchService().isWorkingBranchInWork(derivedTeamWf)) {
-               IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(derivedTeamWf);
+               BranchToken workingBranch = atsApi.getBranchService().getWorkingBranch(derivedTeamWf);
                relatedArt = atsApi.getQueryService().getArtifact(relatedArt, BranchId.valueOf(workingBranch.getId()),
                   DeletionFlag.INCLUDE_DELETED);
             } else {

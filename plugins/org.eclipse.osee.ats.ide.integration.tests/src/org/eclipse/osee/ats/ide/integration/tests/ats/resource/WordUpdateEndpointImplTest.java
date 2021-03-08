@@ -26,7 +26,7 @@ import org.eclipse.osee.define.api.WordArtifactChange;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -129,7 +129,7 @@ public class WordUpdateEndpointImplTest {
    private BranchId getWorkingBranch() {
       BranchId branchReturn = null;
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
-      for (IOseeBranch branch : BranchManager.getBranches(branchFilter)) {
+      for (BranchToken branch : BranchManager.getBranches(branchFilter)) {
          if (branch.getName().contains("More Reqt")) {
             branchReturn = branch;
             break;

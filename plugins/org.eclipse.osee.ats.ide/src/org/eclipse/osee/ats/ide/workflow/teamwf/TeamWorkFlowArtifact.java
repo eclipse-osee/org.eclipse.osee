@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -215,11 +215,11 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return 0.0;
    }
 
-   public IOseeBranch getWorkingBranchForceCacheUpdate() {
+   public BranchToken getWorkingBranchForceCacheUpdate() {
       return AtsApiService.get().getBranchService().getWorkingBranch(this, true);
    }
 
-   public IOseeBranch getWorkingBranch() {
+   public BranchToken getWorkingBranch() {
       return AtsApiService.get().getBranchService().getWorkingBranch(this);
    }
 

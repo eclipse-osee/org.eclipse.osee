@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
@@ -63,7 +63,7 @@ public class ChangeReportTasksUtil {
       List<ChangeItem> changeItems = null;
       BranchId workOrParentBranch = null;
       if (atsApi.getBranchService().isWorkingBranchInWork(chgRptTeamWf)) {
-         IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(chgRptTeamWf);
+         BranchToken workingBranch = atsApi.getBranchService().getWorkingBranch(chgRptTeamWf);
          workOrParentBranch = workingBranch;
          changeItems = atsApi.getBranchService().getChangeData(BranchId.valueOf(workingBranch.getId()));
          crtd.getResults().logf("Using Working Branch %s\n", workingBranch.toStringWithId());

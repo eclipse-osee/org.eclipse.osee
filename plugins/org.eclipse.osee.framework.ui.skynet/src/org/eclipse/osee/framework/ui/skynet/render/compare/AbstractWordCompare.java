@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
@@ -114,7 +114,7 @@ public abstract class AbstractWordCompare implements IComparator {
          if (artifact == null) {
             artifact = artifactDelta.getEndArtifact();
          }
-         IOseeBranch branch = artifact.getBranchToken();
+         BranchToken branch = artifact.getBranchToken();
 
          IVbaDiffGenerator diffGenerator =
             createGenerator(Collections.singletonList(artifact), branch, presentationType);
@@ -142,7 +142,7 @@ public abstract class AbstractWordCompare implements IComparator {
 
    @Override
    public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) {
-      IOseeBranch branch = (baseVersion != null ? baseVersion : newerVersion).getBranchToken();
+      BranchToken branch = (baseVersion != null ? baseVersion : newerVersion).getBranchToken();
 
       String resultPath = getDiffPath(baseVersion, newerVersion, presentationType, pathPrefix);
       String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");

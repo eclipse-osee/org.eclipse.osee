@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -43,7 +43,7 @@ public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<BranchId> {
 
    @Override
    public FilteredCheckboxTreeDialog<BranchId> createDialog() {
-      List<? extends IOseeBranch> branches =
+      List<? extends BranchToken> branches =
          BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
       Collections.sort(branches);
       return new FilteredCheckboxBranchDialog(getLabel(), "Select from the items below", branches);

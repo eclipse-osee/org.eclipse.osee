@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -38,8 +38,8 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
    }
 
    @Override
-   public IOseeBranch getBranch() {
-      final IOseeBranch[] selectedBranch = new IOseeBranch[1];
+   public BranchToken getBranch() {
+      final BranchToken[] selectedBranch = new BranchToken[1];
       final Collection<? extends BranchId> selectable = BranchManager.getBaselineBranches();
       selectable.remove(uiData.getTxDelta().getStartTx().getBranch());
       executeInUiThread(selectable, selectedBranch);

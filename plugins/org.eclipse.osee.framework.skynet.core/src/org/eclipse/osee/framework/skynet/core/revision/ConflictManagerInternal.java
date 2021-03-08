@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -89,7 +89,7 @@ public class ConflictManagerInternal {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
             commitTransaction.getId());
          while (chStmt.next()) {
-            IOseeBranch sourceBranch = BranchManager.getBranchToken(chStmt.getLong("source_branch_id"));
+            BranchToken sourceBranch = BranchManager.getBranchToken(chStmt.getLong("source_branch_id"));
             if (BranchManager.isArchived(sourceBranch)) {
                sourceBranch = null;
             }
@@ -110,7 +110,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public static List<Conflict> getConflictsPerBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, IProgressMonitor monitor) {
+   public static List<Conflict> getConflictsPerBranch(BranchToken sourceBranch, BranchToken destinationBranch, TransactionToken baselineTransaction, IProgressMonitor monitor) {
       List<ConflictBuilder> conflictBuilders = new ArrayList<>();
       List<Conflict> conflicts = new ArrayList<>();
       Set<ArtifactId> artIdSet = new HashSet<>();
@@ -152,7 +152,7 @@ public class ConflictManagerInternal {
       }
 
       monitor.subTask("Creating and/or maintaining the Merge Branch");
-      IOseeBranch mergeBranch =
+      BranchToken mergeBranch =
          BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<>(artIdSet));
 
       if (mergeBranch == null) {
@@ -174,7 +174,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   private static Conflict getConflict(ConflictBuilder conflictBuilder, IOseeBranch mergeBranch, Set<ArtifactId> artIdSetDontShow) {
+   private static Conflict getConflict(ConflictBuilder conflictBuilder, BranchToken mergeBranch, Set<ArtifactId> artIdSetDontShow) {
       Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
       if (conflict != null) {
          conflict.computeStatus();
@@ -182,7 +182,7 @@ public class ConflictManagerInternal {
       return conflict;
    }
 
-   private static Collection<Artifact> preloadConflictArtifacts(BranchId sourceBranch, BranchId destBranch, IOseeBranch mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
+   private static Collection<Artifact> preloadConflictArtifacts(BranchId sourceBranch, BranchId destBranch, BranchToken mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
 
       Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(artIdSet, sourceBranch, INCLUDE_DELETED);
@@ -220,7 +220,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, Set<ArtifactId> artIdSetDontShow, Set<ArtifactId> artIdSetDontAdd, IProgressMonitor monitor, TransactionToken commonTransaction) {
+   private static void loadArtifactVersionConflicts(String sql, BranchToken sourceBranch, BranchToken destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, Set<ArtifactId> artIdSetDontShow, Set<ArtifactId> artIdSetDontAdd, IProgressMonitor monitor, TransactionToken commonTransaction) {
       boolean hadEntries = false;
 
       monitor.subTask("Finding Artifact Version Conflicts");
@@ -268,7 +268,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, IProgressMonitor monitor, TransactionToken commonTransaction) {
+   private static void loadAttributeConflictsNew(BranchToken sourceBranch, BranchToken destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, IProgressMonitor monitor, TransactionToken commonTransaction) {
       monitor.subTask("Finding the Attribute Conflicts");
 
       AttributeConflictBuilder attributeConflictBuilder;
@@ -352,8 +352,8 @@ public class ConflictManagerInternal {
       monitor.worked(10);
    }
 
-   public static Collection<IOseeBranch> getDestinationBranchesMerged(BranchId sourceBranch) {
-      List<IOseeBranch> destinationBranches = new LinkedList<>();
+   public static Collection<BranchToken> getDestinationBranchesMerged(BranchId sourceBranch) {
+      List<BranchToken> destinationBranches = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranch);
@@ -369,7 +369,7 @@ public class ConflictManagerInternal {
       return destinationBranches;
    }
 
-   private static TransactionToken getCommitTransaction(IOseeBranch sourceBranch, BranchId destBranch) {
+   private static TransactionToken getCommitTransaction(BranchToken sourceBranch, BranchId destBranch) {
       TransactionToken transactionId = TransactionToken.SENTINEL;
       try (JdbcStatement stmt = ConnectionHandler.getStatement()) {
          stmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch, destBranch);

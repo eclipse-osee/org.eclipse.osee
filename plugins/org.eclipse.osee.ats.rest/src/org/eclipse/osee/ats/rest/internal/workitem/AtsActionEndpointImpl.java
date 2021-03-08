@@ -79,7 +79,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -596,10 +596,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          changes.execute();
 
          BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
-         IOseeBranch parentBranchToken =
+         BranchToken parentBranchToken =
             orcsApi.getQueryFactory().branchQuery().andId(parentBranch).getResultsAsId().getExactlyOne();
          Branch workingBranch = orcsApi.getBranchOps().createWorkingBranch(
-            IOseeBranch.create(teamWf.getAtsId() + " " + newActionData.getTitle()), asUser.getArtifactId(),
+            BranchToken.create(teamWf.getAtsId() + " " + newActionData.getTitle()), asUser.getArtifactId(),
             parentBranchToken, teamWf.getArtifactId());
          result.setWorkingBranchId(workingBranch);
       } catch (Exception ex) {

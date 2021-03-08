@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
  */
 @JsonSerialize(as = Branch.class)
 @JsonDeserialize(as = Branch.class)
-public class Branch extends BranchViewToken implements IOseeBranch {
+public class Branch extends BranchViewToken implements BranchToken {
    public static final Branch SENTINEL = new Branch(Id.SENTINEL, Named.SENTINEL, ArtifactId.SENTINEL,
       TransactionId.SENTINEL, TransactionId.SENTINEL, BranchId.SENTINEL, false, null, null, false, ArtifactId.SENTINEL);
 

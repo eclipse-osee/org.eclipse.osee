@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -267,7 +267,7 @@ public abstract class BranchRegressionTest {
    protected static void purgeWorkingBranches(Collection<String> branchNamesContain) {
       try {
          // Delete working branches
-         for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
+         for (BranchToken workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
             for (String branchName : branchNamesContain) {
                if (workingBranch.getName().contains(branchName)) {
                   ArtifactCache.deCache(workingBranch);

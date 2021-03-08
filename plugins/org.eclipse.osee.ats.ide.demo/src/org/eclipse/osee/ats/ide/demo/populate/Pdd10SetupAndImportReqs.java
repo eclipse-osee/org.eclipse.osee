@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -191,7 +191,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
    }
 
-   private BranchId createNewBaselineBranch(IOseeBranch srcBranch, IOseeBranch destBranch) {
+   private BranchId createNewBaselineBranch(BranchToken srcBranch, BranchToken destBranch) {
       BranchId childBranch = BranchId.SENTINEL;
       try {
          childBranch = BranchManager.createBaselineBranch(srcBranch, destBranch);

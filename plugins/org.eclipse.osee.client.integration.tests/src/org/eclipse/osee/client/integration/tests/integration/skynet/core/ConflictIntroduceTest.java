@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -59,9 +59,9 @@ public class ConflictIntroduceTest {
    @Rule
    public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
-   private static IOseeBranch sourceBranch;
-   private static IOseeBranch destinationBranch;
-   private static IOseeBranch updateBranch;
+   private static BranchToken sourceBranch;
+   private static BranchToken destinationBranch;
+   private static BranchToken updateBranch;
 
    private static Artifact artifactToDelete;
 
@@ -169,7 +169,7 @@ public class ConflictIntroduceTest {
    @AfterClass
    public static void tearDown() throws Exception {
       BranchManager.refreshBranches();
-      IOseeBranch mBranch = null;
+      BranchToken mBranch = null;
       if (sourceBranch != null && destinationBranch != null) {
          mBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
       }
@@ -180,9 +180,9 @@ public class ConflictIntroduceTest {
       BranchManager.purgeBranch(destinationBranch);
    }
 
-   private static IOseeBranch createBranchToken(String name) {
+   private static BranchToken createBranchToken(String name) {
       String branchName = String.format("%s__%s", TESTNAME, name);
-      return IOseeBranch.create(branchName);
+      return BranchToken.create(branchName);
    }
 
 }

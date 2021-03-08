@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.OseeDslSegment;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.TagLocation;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -67,7 +67,7 @@ public class OseeDslSegmentParserTest {
 
    @Test
    public void testGetStartEndTag() {
-      IOseeBranch branch = CoreBranches.COMMON;
+      BranchToken branch = CoreBranches.COMMON;
       final String artifactName = artifact.getName();
       final String branchName = branch.getName();
 

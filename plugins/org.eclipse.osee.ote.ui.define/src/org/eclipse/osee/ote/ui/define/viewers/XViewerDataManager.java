@@ -23,7 +23,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewerFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -131,7 +131,7 @@ public class XViewerDataManager {
    }
 
    private DataItem getBranchItem(Artifact artifact) {
-      IOseeBranch branch = artifact.getBranchToken();
+      BranchToken branch = artifact.getBranchToken();
       DataItem toReturn = branchMap.get(branch);
       if (toReturn == null) {
          toReturn = new BranchItem(branch, null);

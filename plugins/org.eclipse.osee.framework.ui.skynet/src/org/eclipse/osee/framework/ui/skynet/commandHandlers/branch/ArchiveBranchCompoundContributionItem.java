@@ -21,7 +21,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -54,10 +54,10 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<BranchToken> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
-            IOseeBranch selectedBranch = branches.iterator().next();
+            BranchToken selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch";
                Command command = commandService.getCommand(commandId);

@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * Default sorter for branch. Sorts on descriptive name
@@ -32,8 +32,8 @@ public class BranchNameSorter extends ViewerSorter {
 
    @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
-      if (o1 instanceof IOseeBranch && o2 instanceof IOseeBranch) {
-         return getComparator().compare(((IOseeBranch) o1).getName(), ((IOseeBranch) o2).getName());
+      if (o1 instanceof BranchToken && o2 instanceof BranchToken) {
+         return getComparator().compare(((BranchToken) o1).getName(), ((BranchToken) o2).getName());
       }
       return super.compare(viewer, o1, o2);
    }

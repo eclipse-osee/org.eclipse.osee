@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -119,7 +119,7 @@ public class AccessDataQueryTest {
    @Test
    public void testArtifactMatchesAll() {
       AccessData data = new AccessData();
-      IOseeBranch branch = CoreBranches.COMMON;
+      BranchToken branch = CoreBranches.COMMON;
       ArtifactTypeToken artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
 
       ArtifactToken artifact1 = ArtifactToken.valueOf(1, "one", branch, artifactType);
@@ -151,7 +151,7 @@ public class AccessDataQueryTest {
 
    @Test
    public void testArtifactMatches() {
-      IOseeBranch branch = CoreBranches.COMMON;
+      BranchToken branch = CoreBranches.COMMON;
       ArtifactToken accessArtifact = ArtifactToken.valueOf(45, "test1", branch, Folder);
       ArtifactToken typeAccessArtifact = ArtifactToken.valueOf(46, "test2", branch, Folder);
       ArtifactToken noAccessArtifact = ArtifactToken.valueOf(47, "test3", branch, Folder);
@@ -185,7 +185,7 @@ public class AccessDataQueryTest {
    }
 
    private TestObject getTestData() {
-      IOseeBranch branchToCheck = CoreBranches.SYSTEM_ROOT;
+      BranchToken branchToCheck = CoreBranches.SYSTEM_ROOT;
       ArtifactTypeToken artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       ArtifactToken artifactToCheck = ArtifactToken.valueOf(12, "Hello", branchToCheck, artifactType);
       AccessData data = new AccessData();

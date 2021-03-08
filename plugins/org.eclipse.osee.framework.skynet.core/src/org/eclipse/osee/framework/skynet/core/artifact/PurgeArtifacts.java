@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -156,7 +156,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private void checkPurgeValid(JdbcConnection connection) {
       try (Id4JoinQuery artJoin = JoinUtility.createId4JoinQuery(getJdbcClient(), connection)) {
          for (Artifact art : artifactsToPurge) {
-            for (IOseeBranch branch : BranchManager.getChildBranches(art.getBranch(), true)) {
+            for (BranchToken branch : BranchManager.getChildBranches(art.getBranch(), true)) {
                artJoin.add(branch, art, TransactionId.SENTINEL, branch.getViewId());
             }
          }

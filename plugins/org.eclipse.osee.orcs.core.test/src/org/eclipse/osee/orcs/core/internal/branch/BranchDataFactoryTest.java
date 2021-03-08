@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -80,7 +80,7 @@ public class BranchDataFactoryTest {
 
    @Test
    public void testDataForBaselineBranch() {
-      IOseeBranch branch = IOseeBranch.create("testDataForBaselineBranch");
+      BranchToken branch = BranchToken.create("testDataForBaselineBranch");
       CreateBranchData result = factory.createBaselineBranchData(branch, author, parentBranch, associatedArtifact);
 
       verify(txQuery).andIsHead(parentBranch);
@@ -92,7 +92,7 @@ public class BranchDataFactoryTest {
 
    @Test
    public void testDataForWorkingBranch() {
-      IOseeBranch branch = IOseeBranch.create("testDataForWorkingBranch");
+      BranchToken branch = BranchToken.create("testDataForWorkingBranch");
 
       CreateBranchData result = factory.createWorkingBranchData(branch, author, parentBranch, associatedArtifact);
       verify(txQuery).andIsHead(parentBranch);
@@ -104,7 +104,7 @@ public class BranchDataFactoryTest {
 
    @Test
    public void testDataForCopyTxBranch() {
-      IOseeBranch branch = IOseeBranch.create("testDataForCopyTxBranch");
+      BranchToken branch = BranchToken.create("testDataForCopyTxBranch");
 
       CreateBranchData result = factory.createCopyTxBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
 
@@ -119,7 +119,7 @@ public class BranchDataFactoryTest {
 
    @Test
    public void testDataForPortBranch() {
-      IOseeBranch branch = IOseeBranch.create("testDataForPortBranch");
+      BranchToken branch = BranchToken.create("testDataForPortBranch");
 
       CreateBranchData result = factory.createPortBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
 

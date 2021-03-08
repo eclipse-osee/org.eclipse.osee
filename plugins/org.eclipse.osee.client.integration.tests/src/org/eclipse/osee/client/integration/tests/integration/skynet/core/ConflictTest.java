@@ -28,7 +28,7 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -90,7 +90,7 @@ public class ConflictTest {
    @org.junit.Test
    public void test01GetMergeBranchNotCreated() throws Exception {
       try {
-         IOseeBranch mergeBranch =
+         BranchToken mergeBranch =
             BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
@@ -131,7 +131,7 @@ public class ConflictTest {
    @Ignore
    public void test03GetMergeBranchCreated() throws Exception {
       try {
-         IOseeBranch mergeBranch =
+         BranchToken mergeBranch =
             BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
@@ -209,7 +209,7 @@ public class ConflictTest {
       rootArtifact.persist(getClass().getSimpleName());
 
       BranchId child1 = BranchManager.createWorkingBranch(parent, "Child1");
-      IOseeBranch child2 = BranchManager.createWorkingBranch(parent, "Child2");
+      BranchToken child2 = BranchManager.createWorkingBranch(parent, "Child2");
 
       Artifact onChild1 = ArtifactQuery.getArtifactFromId(testArt, child1);
       onChild1.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1");

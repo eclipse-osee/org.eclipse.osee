@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -72,8 +72,8 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
    private final Display display;
    private final Collection<? extends IAtsTask> tasks;
-   private final Set<IOseeBranch> savedBranches = new LinkedHashSet<>();
-   private static final IOseeBranch BASELINE_ROOT = IOseeBranch.create("Use root version branch (default)");
+   private final Set<BranchToken> savedBranches = new LinkedHashSet<>();
+   private static final BranchToken BASELINE_ROOT = BranchToken.create("Use root version branch (default)");
 
    public ShowRequirementDifferencesOperation(Display display, Collection<? extends IAtsTask> tasks, boolean useDefault) {
       super("Show Requirement Differences", Activator.PLUGIN_ID);
@@ -228,9 +228,9 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          if (savedBranches.contains(BASELINE_ROOT)) {
             toReturn = min;
          } else {
-            final Map<IOseeBranch, TransactionRecord> branchToTx = new LinkedHashMap<>();
+            final Map<BranchToken, TransactionRecord> branchToTx = new LinkedHashMap<>();
             for (TransactionRecord record : records) {
-               IOseeBranch branch = BranchManager.getBranchToken(record.getBranch());
+               BranchToken branch = BranchManager.getBranchToken(record.getBranch());
                branchToTx.put(branch, record);
             }
             toReturn = getTransactionFromSavedOrUser(branchToTx, taskName, versionName, dialogResult);
@@ -241,7 +241,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       return toReturn;
    }
 
-   private TransactionRecord getTransactionFromSavedOrUser(Map<IOseeBranch, TransactionRecord> branchToTx, String taskName, String versionName, final MutableInteger dialogResult) {
+   private TransactionRecord getTransactionFromSavedOrUser(Map<BranchToken, TransactionRecord> branchToTx, String taskName, String versionName, final MutableInteger dialogResult) {
       TransactionRecord toReturn = null;
       Set<BranchId> branchesInMap = new LinkedHashSet<>(branchToTx.keySet());
       // remove everything but the user saved branches
@@ -265,7 +265,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
          // user hit OK
          if (dialogResult.getValue() == 0) {
-            IOseeBranch branch = bldr.getSelectedBranch();
+            BranchToken branch = bldr.getSelectedBranch();
             toReturn = branchToTx.get(branch);
             if (bldr.getApplyToAll()) {
                savedBranches.add(branch);
@@ -281,12 +281,12 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
       private final String title;
       private final String message;
-      private final Collection<IOseeBranch> branchChoices;
+      private final Collection<BranchToken> branchChoices;
       private int result;
-      private IOseeBranch selectedBranch;
+      private BranchToken selectedBranch;
       private Boolean applyToAll;
 
-      public BranchListDialogRunnable(String title, String message, Collection<IOseeBranch> branchChoices) {
+      public BranchListDialogRunnable(String title, String message, Collection<BranchToken> branchChoices) {
          this.title = title;
          this.message = message;
          this.branchChoices = branchChoices;
@@ -307,7 +307,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          return result;
       }
 
-      public IOseeBranch getSelectedBranch() {
+      public BranchToken getSelectedBranch() {
          return selectedBranch;
       }
 
@@ -321,7 +321,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
       XCheckBox applyToAll;
 
-      public BranchListDialog(String title, String message, Collection<IOseeBranch> branchChoices) {
+      public BranchListDialog(String title, String message, Collection<BranchToken> branchChoices) {
          super(title, message, branchChoices);
          setInput(branchChoices);
       }

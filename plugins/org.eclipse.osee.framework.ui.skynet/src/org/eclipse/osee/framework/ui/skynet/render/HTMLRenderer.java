@@ -25,7 +25,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -76,7 +76,7 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts) {
+   public InputStream getRenderInputStream(PresentationType presentationType, BranchToken branch, List<Artifact> artifacts) {
       InputStream stream = null;
       StringBuilder content = new StringBuilder("");
       try {
@@ -147,7 +147,7 @@ public class HTMLRenderer extends FileSystemRenderer {
       return comparator;
    }
 
-   private void renderHtmlArtifact(StringBuilder output, IOseeBranch branch, Artifact artifact) throws Exception {
+   private void renderHtmlArtifact(StringBuilder output, BranchToken branch, Artifact artifact) throws Exception {
       Map<String, String> fileNameReplace = new HashMap<>();
       String htmlContent = "";
       String blankLine = "<br /><br />";

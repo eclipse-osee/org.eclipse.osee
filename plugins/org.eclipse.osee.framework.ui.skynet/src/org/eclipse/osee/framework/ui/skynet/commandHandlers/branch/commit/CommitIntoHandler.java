@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -53,7 +53,7 @@ public class CommitIntoHandler extends CommitHandler {
          allowedTypes = new BranchType[] {BranchType.WORKING};
       }
 
-      List<? extends IOseeBranch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, allowedTypes);
+      List<? extends BranchToken> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, allowedTypes);
       Collections.sort(branches);
       branches.remove(sourceBranch);
 

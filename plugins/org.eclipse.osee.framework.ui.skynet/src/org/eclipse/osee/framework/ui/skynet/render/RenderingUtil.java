@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -111,28 +111,28 @@ public final class RenderingUtil {
       return arePopupsAllowed;
    }
 
-   public static IFile getRenderFile(FileSystemRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
+   public static IFile getRenderFile(FileSystemRenderer renderer, List<Artifact> artifacts, BranchToken branch, PresentationType presentationType) {
       Artifact artifact = artifacts.isEmpty() ? null : artifacts.get(0);
       String extension = renderer.getAssociatedExtension(artifact);
       return getRenderFile(renderer, artifacts, branch, presentationType, null, "." + extension);
    }
 
-   public static IFile getRenderFile(IRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String extension) {
+   public static IFile getRenderFile(IRenderer renderer, List<Artifact> artifacts, BranchToken branch, PresentationType presentationType, String pathPrefix, String extension) {
       String mainName = getNameFromArtifacts(artifacts, presentationType);
       return getRenderFile(renderer, branch, presentationType, pathPrefix, mainName, extension);
    }
 
-   public static String getRenderPath(IRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String extension) {
+   public static String getRenderPath(IRenderer renderer, List<Artifact> artifacts, BranchToken branch, PresentationType presentationType, String pathPrefix, String extension) {
       return getRenderFile(renderer, artifacts, branch, presentationType, pathPrefix,
          extension).getLocation().toOSString();
    }
 
-   public static String getRenderPath(IRenderer renderer, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) {
+   public static String getRenderPath(IRenderer renderer, BranchToken branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) {
       return getRenderFile(renderer, branch, presentationType, pathPrefix, mainName,
          extension).getLocation().toOSString();
    }
 
-   public static IFile getRenderFile(IRenderer renderer, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) {
+   public static IFile getRenderFile(IRenderer renderer, BranchToken branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) {
       String subFolder = toFileName(branch);
       String fileNamePrefix = null;
       if (Strings.isValid(pathPrefix)) {
@@ -204,7 +204,7 @@ public final class RenderingUtil {
       return name.toString();
    }
 
-   public static String toFileName(IOseeBranch branch) {
+   public static String toFileName(BranchToken branch) {
       return makeNameSafer(branch.getShortName());
    }
 

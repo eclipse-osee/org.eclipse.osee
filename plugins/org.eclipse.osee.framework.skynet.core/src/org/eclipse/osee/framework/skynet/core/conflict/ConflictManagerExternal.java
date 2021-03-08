@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
@@ -30,8 +30,8 @@ public class ConflictManagerExternal {
 
    private static final IProgressMonitor monitor = new NullProgressMonitor();
 
-   private final IOseeBranch destinationBranch;
-   private final IOseeBranch sourceBranch;
+   private final BranchToken destinationBranch;
+   private final BranchToken sourceBranch;
    private List<Conflict> originalConflicts;
 
    public ConflictManagerExternal(BranchId destinationBranch, BranchId sourceBranch) {
@@ -66,11 +66,11 @@ public class ConflictManagerExternal {
       return !getRemainingConflicts().isEmpty();
    }
 
-   public IOseeBranch getDestinationBranch() {
+   public BranchToken getDestinationBranch() {
       return destinationBranch;
    }
 
-   public IOseeBranch getSourceBranch() {
+   public BranchToken getSourceBranch() {
       return sourceBranch;
    }
 }

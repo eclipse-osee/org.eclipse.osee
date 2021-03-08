@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,7 +51,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    private boolean workingBranchInWork = false;
    private boolean committedBranchExists = false;
    protected boolean disableAll = false;
-   private IOseeBranch workingBranch = null;
+   private BranchToken workingBranch = null;
 
    public XWorkingBranchWidgetAbstract() {
       OseeEventManager.addListener(this);
@@ -174,7 +174,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
       return teamArt;
    }
 
-   public IOseeBranch getWorkingBranch() {
+   public BranchToken getWorkingBranch() {
       return workingBranch;
    }
 
