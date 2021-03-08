@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
    OrcsWriterEndpointTest.class,
    AtsActionEndpointImplTest.class,
    AtsActionEndpointImplOptionsTest.class,
+   AtsProductLineEndpointTest.class,
    AtsAttributeEndpointImplTest.class,
    AtsActionUiEndpointTest.class,
    ConvertResourceTest.class,
