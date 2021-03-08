@@ -268,8 +268,11 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          return branch;
       } else {
          IAtsTeamDefinition parentTeamDef = getParentTeamDef(teamDef);
-         return getTeamBranchId(parentTeamDef);
+         if (parentTeamDef != null) {
+            return getTeamBranchId(parentTeamDef);
+         }
       }
+      return BranchId.SENTINEL;
    }
 
    @Override

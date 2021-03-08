@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -232,6 +233,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getConfigItem(ArtifactId artId) {
+      Conditions.assertTrue(artId.getId() > 0, "Art Id must be > 0, not %s", artId);
       T atsObject = null;
       ArtifactToken artifact = getArtifact(artId);
       if (artifact != null) {

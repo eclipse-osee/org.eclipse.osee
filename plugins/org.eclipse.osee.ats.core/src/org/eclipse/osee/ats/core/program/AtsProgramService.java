@@ -314,9 +314,11 @@ public class AtsProgramService implements IAtsProgramService {
       IAtsTeamDefinition teamDefinition = null;
       ArtifactId artId = atsApi.getAttributeResolver().getSoleArtifactIdReference(program,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
-      teamDefinition = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(artId.getId());
-      if (teamDefinition == null) {
-         teamDefinition = atsApi.getQueryService().getConfigItem(artId);
+      if (artId.isValid()) {
+         teamDefinition = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(artId.getId());
+         if (teamDefinition == null) {
+            teamDefinition = atsApi.getQueryService().getConfigItem(artId);
+         }
       }
       return teamDefinition;
    }
