@@ -1065,6 +1065,18 @@ public class MSWordTemplatePublisher {
    protected String getWordMlBookmark(ArtifactReadable artifact) {
       String bookmark = linkBuilder.getWordMlBookmark(artifact);
       bookmark = WordUtilities.reassignBookMarkID(bookmark);
+
+      String guid = artifact.getGuid();
+      bookmarkedIds.add(guid);
+      if (hyperlinkedIds.containsKey(guid)) {
+         hyperlinkedIds.remove(guid);
+      }
+
       return bookmark;
+   }
+
+   protected void startOutlineSubSectionAndBookmark(WordMLWriter wordMl, ArtifactReadable artifact) {
+      wordMl.startOutlineSubSection(FONT, artifact.getName(), null);
+      wordMl.addWordMl(getWordMlBookmark(artifact));
    }
 }
