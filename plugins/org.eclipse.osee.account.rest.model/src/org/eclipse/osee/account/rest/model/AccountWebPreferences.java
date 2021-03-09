@@ -39,36 +39,37 @@ public class AccountWebPreferences {
 
    private void initPreferences(String string, String team) {
       try {
-         HashMap jsonMap = new HashMap();
          ObjectMapper OM = new ObjectMapper();
 
          JsonNode jObject = OM.readTree(string);
-         JsonNode linkJsonObject = OM.readTree(jObject.get("links").toString());
-         Iterator<String> keys = linkJsonObject.fieldNames();
+         JsonNode jsonNode = jObject.get("links");
+         if (jsonNode != null) {
+            JsonNode linkJsonObject = OM.readTree(jsonNode.toString());
+            Iterator<String> keys = linkJsonObject.fieldNames();
 
-         while (keys.hasNext()) {
+            while (keys.hasNext()) {
 
-            String next = keys.next();
-            JsonNode lk = linkJsonObject.get(next);
-            JsonNode linkJObject = OM.readTree(linkJsonObject.get(next).toString());
-            Link link = new Link();
-            if (linkJObject.has("name")) {
-               link.setName(linkJObject.get("name").asText());
+               String next = keys.next();
+               JsonNode linkJObject = OM.readTree(linkJsonObject.get(next).toString());
+               Link link = new Link();
+               if (linkJObject.has("name")) {
+                  link.setName(linkJObject.get("name").asText());
 
-            }
-
-            if (linkJObject.has("url")) {
-               link.setUrl(linkJObject.get("url").asText());
-            }
-            if (linkJObject.has("tags")) {
-               List<String> array = linkJObject.findValuesAsText("tags");
-               for (int x = 0; x < array.size(); x++) {
-                  link.getTags().add(array.get(x));
                }
+
+               if (linkJObject.has("url")) {
+                  link.setUrl(linkJObject.get("url").asText());
+               }
+               if (linkJObject.has("tags")) {
+                  List<String> array = linkJObject.findValuesAsText("tags");
+                  for (int x = 0; x < array.size(); x++) {
+                     link.getTags().add(array.get(x));
+                  }
+               }
+               link.setTeam(team);
+               link.setId(linkJObject.get("id").asText());
+               linksMap.put(next, link);
             }
-            link.setTeam(team);
-            link.setId(linkJObject.get("id").asText());
-            linksMap.put(next, link);
          }
 
       } catch (Exception ex) {
