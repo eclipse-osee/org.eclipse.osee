@@ -56,6 +56,7 @@ import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager.TraceH
 import org.eclipse.osee.define.ide.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.ide.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -76,6 +77,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -124,7 +126,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private XCombo branchViewWidget;
    private XBranchSelectWidget branchWidget;
 
-   private BranchId selectedBranch;
+   private BranchToken selectedBranch;
    private IAtsProgram selectedProgram;
    private static final int MAX_EXCEL_COLUMNS = 256;
 
@@ -160,7 +162,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
             try {
                if (version != null) {
-                  selectedBranch = AtsApiService.get().getVersionService().getBaselineBranchIdInherited(version);
+                  selectedBranch = BranchManager.getBranchToken(
+                     AtsApiService.get().getVersionService().getBaselineBranchIdInherited(version));
                   requirementsBranchWidget.setSelection(selectedBranch);
                   testProcedureBranchWidget.setSelection(selectedBranch);
                }
@@ -589,8 +592,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
                reqTaskMap.put(requirementName, legacyId, requirementStatus);
             }
 
-            int percentComplete =
-               PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsApiService.get());
+            int percentComplete = PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsApiService.get());
             requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
                task.getStateMgr().getCurrentStateName());
             requirementStatus.setTestPocs(task.getImplementers());

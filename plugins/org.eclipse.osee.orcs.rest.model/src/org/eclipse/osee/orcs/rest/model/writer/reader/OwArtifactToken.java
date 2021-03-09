@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
@@ -40,7 +40,7 @@ public class OwArtifactToken extends OwBase implements ArtifactToken {
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return null;
    }
 

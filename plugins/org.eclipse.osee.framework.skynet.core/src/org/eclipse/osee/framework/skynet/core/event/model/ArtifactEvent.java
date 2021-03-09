@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranch {
+public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranchId {
 
    public static enum ArtifactEventType {
       RELOAD_ARTIFACTS,

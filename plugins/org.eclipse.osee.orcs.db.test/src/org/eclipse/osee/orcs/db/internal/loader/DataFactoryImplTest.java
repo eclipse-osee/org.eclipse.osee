@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -65,7 +65,7 @@ import org.mockito.MockitoAnnotations;
  * @author Roberto E. Escobar
  */
 public class DataFactoryImplTest {
-   private static final BranchId BRANCH = CoreBranches.SYSTEM_ROOT;
+   private static final BranchToken BRANCH = CoreBranches.SYSTEM_ROOT;
    private static final TransactionId tx333 = TransactionId.valueOf(333);
    private static final TransactionId tx444 = TransactionId.valueOf(444);
    private static final GammaId gamma222 = GammaId.valueOf(222);

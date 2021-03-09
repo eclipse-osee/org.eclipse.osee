@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -66,7 +67,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
          throw new OseeArgumentException("Invalid arguments");
       }
       BranchId sourceBranch = sourceArtifacts.iterator().next().getBranchToken();
-      final BranchId destinationBranch = destinationParentArtifact.getBranchToken();
+      final BranchToken destinationBranch = destinationParentArtifact.getBranchToken();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
          Displays.ensureInDisplayThread(new Runnable() {

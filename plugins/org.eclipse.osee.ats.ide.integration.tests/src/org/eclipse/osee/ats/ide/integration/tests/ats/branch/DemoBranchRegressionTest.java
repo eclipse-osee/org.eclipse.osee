@@ -47,7 +47,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -192,7 +192,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   public BranchId getProgramBranch() {
+   public BranchToken getProgramBranch() {
       return DemoBranches.SAW_Bld_2;
    }
 

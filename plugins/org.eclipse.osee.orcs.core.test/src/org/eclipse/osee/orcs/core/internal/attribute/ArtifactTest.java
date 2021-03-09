@@ -102,6 +102,9 @@ public class ArtifactTest {
 
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
+      when(version.getBranch()).thenReturn(branch);
+      when(branch.getId()).thenReturn(24234L);
+      when(branch.getName()).thenReturn("branch");
       when(artifactData.getType()).thenReturn(artifactType);
       when(artifactData.getLocalId()).thenReturn(0);
 

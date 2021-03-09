@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -40,7 +40,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) {
+   public Artifact resolve(RoughArtifact roughArtifact, BranchToken branch, Artifact realParent, Artifact root) {
       List<Artifact> descendants = root.getDescendants();
       Artifact realArtifact = null;
 

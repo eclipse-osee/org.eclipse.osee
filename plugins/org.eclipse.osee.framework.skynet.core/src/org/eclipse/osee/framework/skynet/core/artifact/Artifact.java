@@ -40,10 +40,9 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -109,7 +108,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    private final HashCollection<AttributeTypeId, Attribute<?>> attributes = new HashCollection<>(true);
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords = new HashSet<>();
-   private final BranchId branch;
+   private final BranchToken branch;
    private TransactionToken transaction = TransactionToken.SENTINEL;
    private GammaId gammaId;
    private boolean linksLoaded;
@@ -123,15 +122,15 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    private final String guid;
 
-   public Artifact(String guid, BranchId branch, ArtifactTypeToken artifactTypeId) {
+   public Artifact(String guid, BranchToken branch, ArtifactTypeToken artifactTypeId) {
       this(Lib.generateArtifactIdAsInt(), guid, branch, artifactTypeId);
    }
 
-   public Artifact(Long id, BranchId branch, ArtifactTypeToken artifactTypeId) {
+   public Artifact(Long id, BranchToken branch, ArtifactTypeToken artifactTypeId) {
       this(id, null, branch, artifactTypeId);
    }
 
-   public Artifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
+   public Artifact(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType) {
       super(id, null);
       this.guid = GUID.checkOrCreate(guid);
       this.artifactType = artifactType;
@@ -141,24 +140,24 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       this.branch = branch;
    }
 
-   public Artifact(BranchId branch, ArtifactTypeToken artifactType, String name) {
+   public Artifact(BranchToken branch, ArtifactTypeToken artifactType, String name) {
       this((String) null, branch, artifactType);
       setName(name);
    }
 
-   public Artifact(BranchId branch) {
+   public Artifact(BranchToken branch) {
       this(branch, Artifact);
    }
 
-   public Artifact(BranchId branch, String name) {
+   public Artifact(BranchToken branch, String name) {
       this(branch, Artifact, name);
    }
 
-   public Artifact(BranchId branch, ArtifactTypeToken artifactType) {
+   public Artifact(BranchToken branch, ArtifactTypeToken artifactType) {
       this((String) null, branch, artifactType);
    }
 
-   public Artifact(Long id, BranchId branch) {
+   public Artifact(Long id, BranchToken branch) {
       this(id, null, branch, Artifact);
    }
 
@@ -268,7 +267,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    @Override
-   public final BranchId getBranch() {
+   public final BranchToken getBranch() {
       return branch;
    }
 
@@ -1485,15 +1484,15 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * Creates a new artifact and duplicates all of its attribute data.
     */
-   public final Artifact duplicate(BranchId branch) {
+   public final Artifact duplicate(BranchToken branch) {
       return duplicate(branch, new ArrayList<AttributeTypeId>());
    }
 
-   public final Artifact duplicate(BranchId branch, Collection<AttributeTypeId> excludeAttributeTypes) {
+   public final Artifact duplicate(BranchToken branch, Collection<AttributeTypeId> excludeAttributeTypes) {
       return duplicate(branch, getArtifactType(), excludeAttributeTypes);
    }
 
-   public final Artifact duplicate(BranchId branch, ArtifactTypeToken newType, Collection<AttributeTypeId> excludeAttributeTypes) {
+   public final Artifact duplicate(BranchToken branch, ArtifactTypeToken newType, Collection<AttributeTypeId> excludeAttributeTypes) {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(newType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
@@ -1525,11 +1524,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     *
     * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
     */
-   public final Artifact reflect(BranchId destinationBranch) {
+   public final Artifact reflect(BranchToken destinationBranch) {
       return new IntroduceArtifactOperation(destinationBranch).introduce(this);
    }
 
-   Artifact introduceShallowArtifact(BranchId destinationBranch) {
+   Artifact introduceShallowArtifact(BranchToken destinationBranch) {
       Artifact shallowArt = ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(this, getGuid(),
          getArtifactType(), gammaId, destinationBranch, modType, applicabilityId);
       return shallowArt;

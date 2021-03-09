@@ -13,16 +13,16 @@
 
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
 /**
  * Used during imports that ask for artifact re-use to resolve the Artifact to be used for a particular RoughArtifact
- * 
+ *
  * @author Robert A. Fisher
  */
 public interface IArtifactImportResolver {
 
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root);
+   public Artifact resolve(RoughArtifact roughArtifact, BranchToken branch, Artifact realParent, Artifact root);
 }

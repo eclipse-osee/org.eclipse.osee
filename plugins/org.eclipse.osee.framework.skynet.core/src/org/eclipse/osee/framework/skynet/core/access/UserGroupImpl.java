@@ -18,7 +18,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -107,7 +107,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       return getArtifact();
    }
 
-   private Artifact getOrCreateUserGroupsFolder(BranchId branch) {
+   private Artifact getOrCreateUserGroupsFolder(BranchToken branch) {
       SkynetTransaction tx = TransactionManager.createTransaction(CoreBranches.COMMON, "Create UserGroups Folder");
       Artifact usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups, branch);
       if (usersGroupFolder == null) {
@@ -142,7 +142,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return groupArtifact.getBranch();
    }
 

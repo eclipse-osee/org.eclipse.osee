@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -61,7 +61,7 @@ public class TransactionFactoryImplTest {
    @Mock private BranchQuery branchQuery;
    // @formatter:on
 
-   private final BranchId expectedBranch = CoreBranches.COMMON;
+   private final BranchToken expectedBranch = CoreBranches.COMMON;
    private TransactionFactoryImpl factory;
 
    @Before

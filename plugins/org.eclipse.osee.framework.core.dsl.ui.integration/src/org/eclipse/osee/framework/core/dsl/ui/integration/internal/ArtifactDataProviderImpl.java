@@ -123,7 +123,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public BranchId getBranch() {
+      public BranchToken getBranch() {
          return self.getBranch();
       }
 

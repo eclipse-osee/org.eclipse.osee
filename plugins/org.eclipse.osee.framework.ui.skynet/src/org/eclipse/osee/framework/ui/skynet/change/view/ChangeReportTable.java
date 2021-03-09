@@ -173,7 +173,7 @@ public class ChangeReportTable implements EditorSection.IWidget, IOseeTreeReport
          } else if (!changeData.getChanges().isEmpty()) {
             BranchId branchId = changeData.getChanges().iterator().next().getBranch();
             if (branchId != null) {
-               BranchToken branch = BranchManager.getBranch(branchId);
+               BranchToken branch = BranchManager.getBranchToken(branchId);
                return String.format("Table Report - Change Report - %s", branch.getName());
             }
          }

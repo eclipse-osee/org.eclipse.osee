@@ -23,7 +23,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -64,7 +64,7 @@ public class HtmlRendererTest {
    private static String EXPECTED_HTML;
    private final static String LEGACY_ID = "ABC-123,ABC-234";
    private final static String PARAGRAPH_NUMBER = "1.2.3.4";
-   private BranchId rootBranch;
+   private BranchToken rootBranch;
 
    private List<Artifact> theArtifacts = null;
 

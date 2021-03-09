@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -56,7 +55,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<>();
    private IAtsTeamDefinition teamDef;
 
-   public TeamWorkFlowArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
+   public TeamWorkFlowArtifact(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
    }
 

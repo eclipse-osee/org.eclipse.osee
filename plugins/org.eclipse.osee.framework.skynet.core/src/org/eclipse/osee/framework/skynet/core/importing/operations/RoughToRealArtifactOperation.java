@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
@@ -113,7 +114,8 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          return realArtifact;
       }
 
-      realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent, destinationArtifact);
+      realArtifact = artifactResolver.resolve(roughArtifact, BranchManager.getBranchToken(transaction.getBranch()),
+         realParent, destinationArtifact);
       unmatchedArtifacts.remove(realArtifact);
 
       for (RoughArtifact childRoughArtifact : roughArtifact.getDescendants()) {

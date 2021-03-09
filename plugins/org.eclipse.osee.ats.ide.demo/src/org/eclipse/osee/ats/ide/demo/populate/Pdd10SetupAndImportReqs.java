@@ -208,7 +208,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       return childBranch;
    }
 
-   private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchId branch) {
+   private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchToken branch) {
       try {
          Collection<Artifact> systemArts =
             DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SystemRequirementMsWord, "Robot", branch);
@@ -330,7 +330,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       }
    }
 
-   private void createApplicabilityArtifacts(SkynetTransaction transaction, BranchId branch) {
+   private void createApplicabilityArtifacts(SkynetTransaction transaction, BranchToken branch) {
       Artifact applicabilityFolder =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Applicability Tests", branch);
       if (applicabilityFolder == null) {

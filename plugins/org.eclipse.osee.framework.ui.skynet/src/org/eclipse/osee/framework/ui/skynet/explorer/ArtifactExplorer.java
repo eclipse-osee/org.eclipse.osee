@@ -94,7 +94,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private Artifact explorerRoot;
    private TreeEditor myTreeEditor;
    private XBranchSelectWidget branchSelect;
-   private BranchId branch = BranchId.SENTINEL;
+   private BranchToken branch = BranchToken.SENTINEL;
    private IGlobalMenuHelper globalMenuHelper;
 
    private ArtifactExplorerDragAndDrop dragAndDropWorker;
@@ -157,7 +157,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                @Override
                public void handleEvent(Event event) {
                   try {
-                     BranchId selectedBranch = branchSelect.getData();
+                     BranchToken selectedBranch = branchSelect.getData();
                      if (selectedBranch != null && !BranchId.SENTINEL.equals(selectedBranch)) {
                         branch = selectedBranch;
                         dragAndDropWorker.updateBranch(branch);

@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,24 +43,24 @@ public final class OseeSystemArtifacts {
     * @return the artifact specified by type, name, and branch from the cache if available otherwise the datastore is
     * accessed, and finally a new artifact is created if it can not be found
     */
-   public static Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchId branch) {
+   public static Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch) {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, true);
    }
 
-   public static Artifact getOrCreateArtifact(ArtifactToken artifactToken, BranchId branch) {
+   public static Artifact getOrCreateArtifact(ArtifactToken artifactToken, BranchToken branch) {
       return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
          artifactToken.getGuid(), artifactToken.getUuid(), true);
    }
 
-   public static Artifact getCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchId branch) {
+   public static Artifact getCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch) {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, false);
    }
 
-   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchId branch, String guid, boolean create) {
+   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, String guid, boolean create) {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, guid, null, create);
    }
 
-   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchId branch, String guid, Long uuid, boolean create) {
+   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, String guid, Long uuid, boolean create) {
       Artifact artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
       if (artifact == null && create) {
          if (Strings.isValid(guid) && uuid != null && uuid > 0) {

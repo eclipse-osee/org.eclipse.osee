@@ -1,5 +1,5 @@
-/*********************************************************************
- * Copyright (c) 2010 Boeing
+/*******************************************************************************
+ * Copyright (c) 2021 Boeing.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,28 +9,24 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
- **********************************************************************/
-
+ *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
 /**
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public interface HasBranch extends HasBranchId {
+public interface HasBranchId {
 
-   @Override
-   BranchToken getBranch();
+   BranchId getBranch();
 
-   @Override
    default String getBranchIdString() {
       return getBranch().getIdString();
    }
 
-   default boolean isOnSameBranch(HasBranch other) {
+   default boolean isOnSameBranch(HasBranchId other) {
       return other == null ? false : getBranch().equals(other.getBranch());
    }
 
-   @Override
    default boolean isOnBranch(BranchId branch) {
       return getBranch().equals(branch);
    }

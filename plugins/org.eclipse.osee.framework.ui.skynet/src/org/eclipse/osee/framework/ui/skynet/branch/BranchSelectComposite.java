@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +41,7 @@ public class BranchSelectComposite extends Composite {
 
    private Button branchSelectButton;
    private Text branchSelectTextWidget;
-   private BranchId selectedBranch;
+   private BranchToken selectedBranch;
    private final Set<Listener> listeners;
    private final boolean allowOnlyWorkingBranches;
 
@@ -110,7 +110,7 @@ public class BranchSelectComposite extends Composite {
       });
    }
 
-   public BranchId getSelectedBranch() {
+   public BranchToken getSelectedBranch() {
       return selectedBranch;
    }
 
@@ -121,12 +121,12 @@ public class BranchSelectComposite extends Composite {
    private void handleSelectedBranch(Event event) {
       if (event.widget == branchSelectButton || event.widget == branchSelectTextWidget && branchSelectTextWidget.getDoubleClickEnabled()) {
          if (areOnlyWorkingBranchesAllowed()) {
-            BranchId newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
+            BranchToken newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
             if (newBranch != null) {
                setSelected(newBranch);
             }
          } else {
-            BranchId newBranch = BranchSelectionDialog.getBranchFromUser();
+            BranchToken newBranch = BranchSelectionDialog.getBranchFromUser();
             if (newBranch != null) {
                setSelected(newBranch);
             }
@@ -134,7 +134,7 @@ public class BranchSelectComposite extends Composite {
       }
    }
 
-   public void setSelected(BranchId branch) {
+   public void setSelected(BranchToken branch) {
       selectedBranch = branch;
       if (branch.isInvalid()) {
          branchSelectTextWidget.setText(" -- Select A Branch -- ");
@@ -166,7 +166,7 @@ public class BranchSelectComposite extends Composite {
    /**
     * @param defaultSelectedBranch the defaultSelectedBranch to set
     */
-   public void setDefaultSelectedBranch(BranchId defaultSelectedBranch) {
+   public void setDefaultSelectedBranch(BranchToken defaultSelectedBranch) {
       setSelected(defaultSelectedBranch);
    }
 

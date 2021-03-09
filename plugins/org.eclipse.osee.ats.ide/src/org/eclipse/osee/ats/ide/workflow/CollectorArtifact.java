@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.HasMembers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
@@ -28,7 +28,7 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
 
    private final RelationTypeSide membersRelationType;
 
-   public CollectorArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType, RelationTypeSide membersRelationType) {
+   public CollectorArtifact(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType, RelationTypeSide membersRelationType) {
       super(id, guid, branch, artifactType);
       this.membersRelationType = membersRelationType;
    }
@@ -36,8 +36,7 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
    @Override
    public void addMember(ArtifactId artifact) {
       if (!getMembers().contains(artifact)) {
-         addRelation(USER_DEFINED, membersRelationType,
-            AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
+         addRelation(USER_DEFINED, membersRelationType, AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
       }
    }
 

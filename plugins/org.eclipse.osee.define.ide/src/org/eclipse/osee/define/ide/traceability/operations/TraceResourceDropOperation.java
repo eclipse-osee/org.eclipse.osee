@@ -33,6 +33,7 @@ import org.eclipse.osee.define.ide.traceability.HierarchyHandler;
 import org.eclipse.osee.define.ide.traceability.TestUnitTagger;
 import org.eclipse.osee.define.ide.utility.IResourceLocator;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -120,7 +121,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
       TestUnitTagger tagger = TestUnitTagger.getInstance();
       String tag = tagger.getSourceTag(fileUri);
       Artifact testUnitArtifact = null;
-      BranchId branch = requirement.getBranch();
+      BranchToken branch = requirement.getBranch();
       boolean tagSource = false;
       if (GUID.isValid(tag)) {
          try {

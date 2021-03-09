@@ -200,7 +200,7 @@ public class ConflictTest {
 
    @Test
    public void testMultiplicityCommit() {
-      BranchId parent = SAW_Bld_1;
+      BranchToken parent = SAW_Bld_1;
       Artifact testArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, parent, "Multiplicity Test");
       testArt.persist("Save testArt on parent");

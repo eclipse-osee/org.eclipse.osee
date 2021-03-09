@@ -130,8 +130,8 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       }
 
       @Override
-      public BranchId getBranch() {
-         return branch;
+      public BranchToken getBranch() {
+         return BranchToken.create(branch, "unknown");
       }
 
       @Override

@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -36,9 +36,9 @@ import org.eclipse.swt.widgets.Shell;
 public class ImportOutfileUIOperation {
 
    private final URI[] fileSystemObjects;
-   private final BranchId selectedBranch;
+   private final BranchToken selectedBranch;
 
-   public ImportOutfileUIOperation(BranchId selectedBranch, URI... fileSystemObjects) {
+   public ImportOutfileUIOperation(BranchToken selectedBranch, URI... fileSystemObjects) {
       this.fileSystemObjects = fileSystemObjects;
       this.selectedBranch = selectedBranch;
    }

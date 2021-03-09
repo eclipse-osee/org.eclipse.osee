@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
@@ -38,11 +38,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class IntroduceArtifactOperation {
    private final Artifact fosterParent;
-   private final BranchId destinationBranch;
+   private final BranchToken destinationBranch;
    private Collection<Artifact> sourceArtifacts;
    private List<Artifact> destinationArtifacts;
 
-   public IntroduceArtifactOperation(BranchId destinationBranch) {
+   public IntroduceArtifactOperation(BranchToken destinationBranch) {
       this(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch));
    }
 

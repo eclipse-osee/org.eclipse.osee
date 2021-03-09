@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlServiceImpl;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -79,7 +80,8 @@ public final class AccessEventListener implements IBranchEventListener, IArtifac
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       try {
          if (branchEvent.getEventType() == BranchEventType.Deleted) {
-            accessControlCacheHandler.updateAccessListForBranchObject(service, branchEvent.getSourceBranch());
+            accessControlCacheHandler.updateAccessListForBranchObject(service,
+               BranchToken.create(branchEvent.getSourceBranch(), "unknown"));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);

@@ -18,7 +18,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.OteArtifactTypes;
@@ -63,7 +63,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       }
    }
 
-   public static ArtifactTestRunOperator getNewArtifactWithOperator(BranchId branch) {
+   public static ArtifactTestRunOperator getNewArtifactWithOperator(BranchToken branch) {
       return new ArtifactTestRunOperator(TEST_RUN_ARTIFACT_FETCHER.getNewArtifact(branch));
    }
 

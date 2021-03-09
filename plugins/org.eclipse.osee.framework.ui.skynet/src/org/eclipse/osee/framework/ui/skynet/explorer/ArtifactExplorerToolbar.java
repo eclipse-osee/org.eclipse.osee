@@ -23,7 +23,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
@@ -158,7 +159,7 @@ public class ArtifactExplorerToolbar {
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
                               QuickSearchView.VIEW_ID);
                         if (viewPart != null) {
-                           BranchId branch = artifactExplorer.getBranch();
+                           BranchToken branch = BranchManager.getBranchToken(artifactExplorer.getBranch());
                            if (branch != null) {
                               ((QuickSearchView) viewPart).setBranch(branch);
                            }

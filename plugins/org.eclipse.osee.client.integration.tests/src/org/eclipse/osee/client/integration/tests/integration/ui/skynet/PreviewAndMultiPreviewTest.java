@@ -23,7 +23,7 @@ import java.util.Map;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -191,7 +191,7 @@ public class PreviewAndMultiPreviewTest {
       RendererManager.openInJob(art, PresentationType.PREVIEW);
    }
 
-   private Artifact createArtifact(ArtifactTypeToken type, BranchId branch, String name) {
+   private Artifact createArtifact(ArtifactTypeToken type, BranchToken branch, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(type, branch, name);
       Assert.assertNotNull(artifact);
       testArtifacts.add(artifact);

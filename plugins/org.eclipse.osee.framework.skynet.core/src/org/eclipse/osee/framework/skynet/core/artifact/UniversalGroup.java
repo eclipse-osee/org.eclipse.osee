@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -66,7 +67,7 @@ public class UniversalGroup {
       return new ArrayList<>();
    }
 
-   public static Artifact getGroupOrNull(ArtifactToken groupToken, BranchId branch) {
+   public static Artifact getGroupOrNull(ArtifactToken groupToken, BranchToken branch) {
       try {
          return ArtifactQuery.getArtifactFromId(groupToken, branch);
       } catch (ArtifactDoesNotExist ex) {
@@ -75,7 +76,7 @@ public class UniversalGroup {
       return null;
    }
 
-   public static Artifact addGroup(String name, BranchId branch, SkynetTransaction transaction) {
+   public static Artifact addGroup(String name, BranchToken branch, SkynetTransaction transaction) {
       if (!getGroups(name, branch).isEmpty()) {
          throw new OseeArgumentException("Group Already Exists");
       }
@@ -90,7 +91,7 @@ public class UniversalGroup {
       return groupArt;
    }
 
-   public static Artifact addGroup(ArtifactToken groupToken, BranchId branch, SkynetTransaction transaction) {
+   public static Artifact addGroup(ArtifactToken groupToken, BranchToken branch, SkynetTransaction transaction) {
       if (getGroupOrNull(groupToken, branch) != null) {
          throw new OseeArgumentException("Group Already Exists");
       }

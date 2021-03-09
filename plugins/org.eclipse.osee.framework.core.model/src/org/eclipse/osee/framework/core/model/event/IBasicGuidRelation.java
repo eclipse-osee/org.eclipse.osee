@@ -14,12 +14,12 @@
 package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IBasicGuidRelation extends HasBranch {
+public interface IBasicGuidRelation extends HasBranchId {
 
    DefaultBasicGuidArtifact getArtA();
 

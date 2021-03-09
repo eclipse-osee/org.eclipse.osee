@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.internal.Activator;
 import org.eclipse.osee.ote.define.operations.LinkTestRunToTestScriptOperation;
@@ -33,9 +33,9 @@ public class OutfileToArtifactJob extends Job {
    private final URI[] filesToImport;
    private Artifact[] results;
    private URI[] filesWithErrors;
-   private final BranchId branch;
+   private final BranchToken branch;
 
-   public OutfileToArtifactJob(BranchId branch, URI... filesToImport) {
+   public OutfileToArtifactJob(BranchToken branch, URI... filesToImport) {
       super(JOB_NAME);
       setUser(true);
       setPriority(Job.LONG);

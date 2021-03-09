@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.access.internal.data;
 
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 public class ArtifactAccessObject extends AccessObject implements ArtifactId {
 
    private final ArtifactId artId;
-   private final BranchId branch;
-   private static final DoubleKeyHashMap<Long, BranchId, ArtifactAccessObject> cache = new DoubleKeyHashMap<>();
+   private final BranchToken branch;
+   private static final DoubleKeyHashMap<Long, BranchToken, ArtifactAccessObject> cache = new DoubleKeyHashMap<>();
 
-   public ArtifactAccessObject(ArtifactId artId, BranchId branch) {
+   public ArtifactAccessObject(ArtifactId artId, BranchToken branch) {
       this.artId = artId;
       this.branch = branch;
    }
@@ -43,7 +43,7 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 
@@ -63,7 +63,7 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
       return getArtifactAccessObject(artifact, artifact.getBranch());
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(ArtifactId artifact, BranchId branch) {
+   public static ArtifactAccessObject getArtifactAccessObject(ArtifactId artifact, BranchToken branch) {
       ArtifactAccessObject accessObject = cache.get(artifact.getId(), branch);
 
       if (accessObject == null) {

@@ -14,7 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +30,7 @@ public class UserArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType, boolean inDataStore) {
+   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType, boolean inDataStore) {
       return new User(id, guid, branch);
    }
 

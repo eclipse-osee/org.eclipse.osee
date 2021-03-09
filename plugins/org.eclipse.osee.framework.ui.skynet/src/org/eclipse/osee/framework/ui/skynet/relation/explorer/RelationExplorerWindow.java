@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -57,7 +57,7 @@ public class RelationExplorerWindow {
    private final ArrayList<Artifact> validArtifacts;
    private final ArrayList<String> urls;
    private final ArrayList<String> names;
-   private BranchId branch;
+   private BranchToken branch;
 
    // Private arrays for invalid drops
    private final ArrayList<String> invalidName;

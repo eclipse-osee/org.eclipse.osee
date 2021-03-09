@@ -24,7 +24,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -156,7 +157,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
    private void handleCreateRelated(Artifact existingArtifact, RelationTypeToken relationType, RelationTypeSide relationTypeSide, RelationSide relationSide) {
       // get valid artifact types for this relation
       List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
-      BranchId branch = artifactExplorer.getBranch();
+      BranchToken branch = BranchManager.getBranchToken(artifactExplorer.getBranch());
       for (ArtifactTypeToken artifactType : tokenService.getConcreteArtifactTypes()) {
          if (relationType.isArtifactTypeAllowed(relationSide,
             artifactType) && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
@@ -188,7 +189,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
    }
 
-   private void createRelatedArtifact(Artifact existingArtifact, RelationTypeSide relationTypeSide, BranchId branch, ArtifactTypeToken type, String name) {
+   private void createRelatedArtifact(Artifact existingArtifact, RelationTypeSide relationTypeSide, BranchToken branch, ArtifactTypeToken type, String name) {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch,
          String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
       Artifact newArtifact = ArtifactTypeManager.addArtifact(type, branch, name);

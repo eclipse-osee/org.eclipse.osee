@@ -40,9 +40,9 @@ import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
 public class ImportOutfileOperation {
 
    private final URI[] fileSystemObjects;
-   private final BranchId selectedBranch;
+   private final BranchToken selectedBranch;
 
-   public ImportOutfileOperation(BranchId selectedBranch, URI... fileSystemObjects) {
+   public ImportOutfileOperation(BranchToken selectedBranch, URI... fileSystemObjects) {
       checkForNull(selectedBranch);
       checkForNull(fileSystemObjects);
       checkForEmpty(fileSystemObjects);

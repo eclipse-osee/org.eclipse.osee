@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
@@ -41,7 +40,7 @@ import org.junit.Test;
 public class ArtifactMatchInterpreterTest {
 
    private final ArtifactMatchInterpreter interpreter = new ArtifactMatchInterpreter();
-   private static final BranchId randomBranch = BranchId.create();
+   private static final BranchToken randomBranch = BranchToken.create("Random Branch");
 
    @Test
    public void testMatchNoConditions() {
@@ -135,20 +134,6 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactBranchUuidEq() {
-      BranchId branch = randomBranch;
-      XArtifactMatcher matcher =
-         MockModel.createMatcher("artifactMatcher \"Test\" where branchUuid EQ \"" + branch + "\";");
-
-      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_UUID, CompareOp.EQ,
-         branch.getIdString());
-
-      ArtifactProxy proxy = createProxy(GUID.create(), "art1", branch, "");
-      boolean actual = interpreter.matches(matcher, proxy);
-      Assert.assertEquals(true, actual);
-   }
-
-   @Test
    public void testArtifactBranchUuidLike() {
       XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where branchUuid LIKE \"\\w+\";");
 
@@ -218,16 +203,16 @@ public class ArtifactMatchInterpreterTest {
       Assert.assertEquals(2, compoundCondition.getConditions().size());
 
       String badArtGuid = "1BCDEFGHIJK123456789";
-      BranchId badBranch = BranchId.valueOf(333333333123456789L);
+      BranchToken badBranch = BranchToken.create(333333333123456789L, "Bad Branch");
       String badBranchName = "xArtifact";
 
       String goodArtGuid = "ABCDEFGHIJK123456789";
-      BranchId goodBranch = BranchId.valueOf(3456789101112131415L);
+      BranchToken goodBranch = BranchToken.create(3456789101112131415L, "Good Branch");
       String goodBranchName = "myArtifact";
 
       Iterator<SimpleCondition> iterator2 = compoundCondition.getConditions().iterator();
       DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_NAME, CompareOp.EQ, "myArtifact");
-      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ, String.valueOf(goodBranch));
+      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ, goodBranch.getIdString());
 
       Assert.assertEquals(1, compoundCondition.getOperators().size());
       Assert.assertEquals(XLogicOperator.OR, compoundCondition.getOperators().iterator().next());
@@ -256,11 +241,11 @@ public class ArtifactMatchInterpreterTest {
       return createProxy(artGuid, artifactName, randomBranch, "dummy");
    }
 
-   private static ArtifactProxy createProxy(final String artGuid, final String artifactName, BranchId branch, final String branchName) {
+   private static ArtifactProxy createProxy(final String artGuid, final String artifactName, BranchToken branch, final String branchName) {
       return new ArtifactProxy() {
 
          @Override
-         public BranchId getBranch() {
+         public BranchToken getBranch() {
             return branch;
          }
 

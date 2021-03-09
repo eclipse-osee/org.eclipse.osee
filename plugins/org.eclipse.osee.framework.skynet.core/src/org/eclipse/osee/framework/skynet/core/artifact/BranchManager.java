@@ -92,7 +92,7 @@ public final class BranchManager {
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranchUuid";
    public static final String COMMIT_COMMENT = "Commit Branch ";
    private static final String SELECT_BRANCH_BY_NAME = "select * from osee_branch where branch_name = ?";
-   private static BranchId lastBranch;
+   private static BranchToken lastBranch;
 
    private BranchManager() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
@@ -519,20 +519,20 @@ public final class BranchManager {
       return createBranch(BranchType.WORKING, parentTransaction, BranchToken.create(branchName), associatedArtifact);
    }
 
-   public static BranchId createBaselineBranch(BranchId parentBranch, BranchToken childBranch) {
+   public static BranchToken createBaselineBranch(BranchToken parentBranch, BranchToken childBranch) {
       return createBaselineBranch(parentBranch, childBranch, ArtifactId.SENTINEL);
    }
 
-   public static BranchId createTopLevelBranch(BranchToken branch) {
+   public static BranchToken createTopLevelBranch(BranchToken branch) {
       return createBaselineBranch(SYSTEM_ROOT, branch, ArtifactId.SENTINEL);
    }
 
-   private static BranchId createBaselineBranch(BranchId parentBranch, BranchToken childBranch, ArtifactId associatedArtifact) {
+   private static BranchToken createBaselineBranch(BranchToken parentBranch, BranchToken childBranch, ArtifactId associatedArtifact) {
       TransactionToken parentTransaction = TransactionManager.getHeadTransaction(parentBranch);
       return createBranch(BranchType.BASELINE, parentTransaction, childBranch, associatedArtifact);
    }
 
-   public static BranchId createTopLevelBranch(final String branchName) {
+   public static BranchToken createTopLevelBranch(final String branchName) {
       return createTopLevelBranch(BranchToken.create(branchName));
    }
 
@@ -581,7 +581,7 @@ public final class BranchManager {
       return COMMON;
    }
 
-   public static BranchId getLastBranch() {
+   public static BranchToken getLastBranch() {
       if (lastBranch == null) {
          try {
             lastBranch = getBranchToken(BranchId.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH)));
@@ -597,7 +597,7 @@ public final class BranchManager {
       return lastBranch;
    }
 
-   public static void setLastBranch(BranchId branch) {
+   public static void setLastBranch(BranchToken branch) {
       lastBranch = branch;
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -194,7 +194,7 @@ public class ArtifactDragDropSupport {
 
    public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) {
       Artifact artifact = null;
-      BranchId branch = BranchSelectionDialog.getBranchFromUser();
+      BranchToken branch = BranchSelectionDialog.getBranchFromUser();
       if (branch != null) {
          try {
             artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentUrl, location, branch);

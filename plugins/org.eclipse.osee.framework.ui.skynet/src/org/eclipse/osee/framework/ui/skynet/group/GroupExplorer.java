@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -82,7 +83,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    private Collection<GroupExplorerItem> selected;
    private Object[] expanded = new Object[] {};
    private XBranchSelectWidget branchSelect;
-   private BranchId branch;
+   private BranchToken branch;
    private GroupExplorerDragAndDrop groupExpDnd;
 
    private NeedProjectMenuListener needProjectListener;
@@ -468,7 +469,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               branch = BranchId.valueOf(memento.getString(BRANCH_ID));
+               branch = BranchManager.getBranchToken(BranchId.valueOf(memento.getString(BRANCH_ID)));
                if (BranchManager.getState(branch).isDeleted() || BranchManager.isArchived(branch)) {
                   branch = null;
                }

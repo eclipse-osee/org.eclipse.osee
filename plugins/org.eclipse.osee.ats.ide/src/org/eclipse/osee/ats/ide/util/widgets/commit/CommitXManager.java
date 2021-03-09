@@ -73,7 +73,7 @@ public class CommitXManager extends XViewer {
          CommitConfigItem configItem = null;
          if (firstSelectedArt instanceof CommitConfigItem) {
             configItem = (CommitConfigItem) firstSelectedArt;
-            branch = BranchManager.getBranch(AtsApiService.get().getBranchService().getBranch(configItem));
+            branch = BranchManager.getBranchToken(AtsApiService.get().getBranchService().getBranch(configItem));
          }
 
          CommitOverride override =

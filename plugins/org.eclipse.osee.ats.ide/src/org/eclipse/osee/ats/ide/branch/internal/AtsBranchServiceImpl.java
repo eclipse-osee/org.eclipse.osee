@@ -202,7 +202,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchToken getBranch(BranchId branch) {
-      return BranchManager.getBranch(branch);
+      return BranchManager.getBranchToken(branch);
    }
 
    @Override

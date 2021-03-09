@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -76,7 +76,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
-public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
+public final class QueryData implements QueryBuilder, HasOptions, HasBranchId {
    private final List<List<Criteria>> criterias;
    private final SelectData selectData;
    private final Options options;

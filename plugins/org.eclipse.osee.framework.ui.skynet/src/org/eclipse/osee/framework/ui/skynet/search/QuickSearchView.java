@@ -27,6 +27,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -272,7 +273,7 @@ public class QuickSearchView extends GenericViewPart {
       }
    }
 
-   public void setBranch(BranchId branch) {
+   public void setBranch(BranchToken branch) {
       if (branchSelect != null) {
          branchSelect.setSelection(branch);
          // branch has been selected; allow user to set up search string

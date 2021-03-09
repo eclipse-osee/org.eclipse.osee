@@ -20,8 +20,8 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -65,8 +65,8 @@ public class RelationIntegrityCheckTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private final DoubleKeyHashMap<Long, Long, LocalRelationLink> map = new DoubleKeyHashMap<>();
-   private BranchId parentBranch;
-   private BranchId workingBranch;
+   private BranchToken parentBranch;
+   private BranchToken workingBranch;
 
    @Before
    public void setUp() throws Exception {

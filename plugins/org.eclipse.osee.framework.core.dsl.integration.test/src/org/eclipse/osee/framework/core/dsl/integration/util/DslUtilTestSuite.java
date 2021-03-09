@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ModelUtilTest.class, OseeDslSegmentParserTest.class})
+@Suite.SuiteClasses({OseeDslSegmentParserTest.class})
 public class DslUtilTestSuite {
    // Test Suite
 }

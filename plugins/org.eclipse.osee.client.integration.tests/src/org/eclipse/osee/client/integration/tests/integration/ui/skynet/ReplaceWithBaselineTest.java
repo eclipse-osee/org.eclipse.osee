@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -121,8 +122,8 @@ public final class ReplaceWithBaselineTest {
    private static enum ChangeItem { NEW, DELETED, MODIFIED, MOVED, INTRODUCED, RELATION_ORDER_ATTR };
    //@formatter:on
 
-   private BranchId workingBranch;
-   private BranchId baselineBranch;
+   private BranchToken workingBranch;
+   private BranchToken baselineBranch;
 
    private final String testName;
    private final int expectedChangesLeft;
@@ -313,7 +314,7 @@ public final class ReplaceWithBaselineTest {
                      testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()));
                      break;
                   case INTRODUCED:
-                     BranchId anotherBranch =
+                     BranchToken anotherBranch =
                         BranchManager.createWorkingBranch(workingBranch, "another working branch", ArtifactId.SENTINEL);
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
@@ -443,7 +444,7 @@ public final class ReplaceWithBaselineTest {
 
    }
 
-   private Artifact createNewArtifact(BranchId branch, String name) throws Exception {
+   private Artifact createNewArtifact(BranchToken branch, String name) throws Exception {
       Artifact artifact = ArtifactTypeManager.addArtifact(DOC, branch, name);
       artifact.persist(testName + name);
       return artifact;

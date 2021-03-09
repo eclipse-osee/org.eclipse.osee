@@ -119,7 +119,7 @@ public abstract class BranchRegressionTest {
    protected Artifact createAndDeleteArt;
    protected Artifact subsystemArt;
    protected Artifact preBranchArt;
-   protected BranchId workingBranch;
+   protected BranchToken workingBranch;
 
    /**
     * Test creation of Action (rpcrNum), creation of workingBranch, modification of some artifacts, commit of
@@ -427,7 +427,7 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   protected Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchId branch, Artifact parent, boolean persist) {
+   protected Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, Artifact parent, boolean persist) {
       Artifact art;
 
       try {
@@ -754,7 +754,7 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchId branch) throws MultipleAttributesExist {
+   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchToken branch) throws MultipleAttributesExist {
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + artifactToken.getName());
       Artifact newArt = ArtifactTypeManager.addArtifact(artifactToken, branch);
       Artifact parentArt = setParent(parent, partitions, newArt, tx);
@@ -772,7 +772,7 @@ public abstract class BranchRegressionTest {
       return art1;
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchId branch) {
+   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchToken branch) {
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + title);
       Artifact newArt = ArtifactTypeManager.addArtifact(artifactType, branch, title);
       Artifact parentArt = setParent(parent, partitions, newArt, tx);
@@ -849,7 +849,7 @@ public abstract class BranchRegressionTest {
 
    public abstract AttributeTypeId getCsciAttribute();
 
-   public abstract BranchId getProgramBranch();
+   public abstract BranchToken getProgramBranch();
 
    public abstract ArtifactTypeToken getCodeTeamWfArtType();
 

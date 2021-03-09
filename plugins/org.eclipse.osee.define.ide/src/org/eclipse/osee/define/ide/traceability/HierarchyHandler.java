@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -36,12 +37,12 @@ public final class HierarchyHandler {
    private static final Matcher subsystemMatcher = Pattern.compile("(\\w*)\\.ss").matcher("");
    private final Map<String, Artifact> folderNameToArtifact = new HashMap<>(50);
    private final SkynetTransaction transaction;
-   private final BranchId branch;
+   private final BranchToken branch;
    private Artifact root;
 
    public HierarchyHandler(SkynetTransaction transaction) {
       this.transaction = transaction;
-      this.branch = transaction.getBranch();
+      this.branch = BranchManager.getBranchToken(transaction.getBranch());
    }
 
    public void addArtifact(Artifact testUnit) {

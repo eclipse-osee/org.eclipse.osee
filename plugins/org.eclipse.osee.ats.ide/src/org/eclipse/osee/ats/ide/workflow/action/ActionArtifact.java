@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -47,7 +48,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IAtsAction {
       this(AtsArtifactTypes.Action);
    }
 
-   public ActionArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
+   public ActionArtifact(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
    }
 

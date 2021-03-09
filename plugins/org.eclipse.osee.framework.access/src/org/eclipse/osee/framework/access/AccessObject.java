@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -32,7 +33,7 @@ public abstract class AccessObject implements HasBranch {
       if (object instanceof Artifact) {
          return ArtifactAccessObject.getArtifactAccessObject((Artifact) object);
       } else if (object instanceof BranchId) {
-         return BranchAccessObject.getBranchAccessObject((BranchId) object);
+         return BranchAccessObject.getBranchAccessObject(BranchToken.create((BranchId) object, "unknown"));
       } else {
          return null;
       }

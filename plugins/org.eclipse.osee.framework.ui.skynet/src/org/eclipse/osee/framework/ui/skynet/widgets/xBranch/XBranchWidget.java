@@ -351,8 +351,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       }
    }
 
-   public ArrayList<BranchId> getSelectedBranches() {
-      ArrayList<BranchId> items = new ArrayList<>();
+   public ArrayList<BranchToken> getSelectedBranches() {
+      ArrayList<BranchToken> items = new ArrayList<>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }
@@ -360,8 +360,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       while (i.hasNext()) {
          Object obj = i.next();
 
-         if (obj instanceof BranchId) {
-            items.add((BranchId) obj);
+         if (obj instanceof BranchToken) {
+            items.add((BranchToken) obj);
          }
       }
       return items;
@@ -499,7 +499,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    @Override
    public String getEditorTitle() {
       if (selectedBranch != null) {
-         BranchToken branch = BranchManager.getBranch(selectedBranch);
+         BranchToken branch = BranchManager.getBranchToken(selectedBranch);
          return String.format("Table Report - Branch View %s", branch.getName());
       }
       return "Table Report - Branch View";

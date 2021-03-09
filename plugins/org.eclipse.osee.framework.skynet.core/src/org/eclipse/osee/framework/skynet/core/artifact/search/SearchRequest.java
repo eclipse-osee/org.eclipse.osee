@@ -14,12 +14,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchRequest implements HasBranch {
+public class SearchRequest implements HasBranchId {
 
    private final BranchId branch;
    private final String rawSearch;

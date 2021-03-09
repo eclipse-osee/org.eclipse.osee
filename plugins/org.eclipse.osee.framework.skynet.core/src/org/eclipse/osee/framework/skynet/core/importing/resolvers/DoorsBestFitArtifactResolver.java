@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +37,7 @@ public class DoorsBestFitArtifactResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) {
+   public Artifact resolve(RoughArtifact roughArtifact, BranchToken branch, Artifact realParent, Artifact root) {
       Artifact realArtifact = null;
 
       if (roughArtifact.getGuid() != null) {

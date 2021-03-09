@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -303,7 +304,8 @@ public final class ArtifactLoader {
     */
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) {
       ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("id2"));
-      BranchId branch = BranchId.create(chStmt.getLong("branch_id"), ArtifactId.valueOf(chStmt.getLong("id4")));
+      BranchId branchId = BranchId.create(chStmt.getLong("branch_id"), ArtifactId.valueOf(chStmt.getLong("id4")));
+      BranchToken branch = BranchManager.getBranchToken(branchId);
 
       TransactionToken transactionId = TransactionToken.SENTINEL;
       ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));

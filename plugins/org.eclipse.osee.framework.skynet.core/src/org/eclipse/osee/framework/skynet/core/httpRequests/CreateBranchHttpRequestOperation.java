@@ -88,7 +88,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
    private BranchToken getBranchWithCacheWorkAround(BranchId branch) {
       // use this work around because some places assume branch will be cached such as getBranchesByName
-      return BranchManager.getBranch(branch);
+      return BranchManager.getBranchToken(branch);
    }
 
    public BranchToken getNewBranch() {

@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -218,7 +219,8 @@ public class AccessControlServiceImpl implements IAccessControlService {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
-         BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
+         BranchAccessObject branchAccessObject =
+            BranchAccessObject.getBranchAccessObject(BranchToken.create(branch, "unknown"));
 
          accessControlListCache.put(subjectId.getId(), branchAccessObject, permission);
          objectToSubjectCache.put(branchAccessObject, subjectId);
@@ -236,7 +238,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          ArtifactId objectId = ArtifactId.valueOf(stmt.getLong("art_id"));
-         BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
+         BranchToken branch = BranchManager.getBranchToken(BranchId.valueOf(stmt.getLong("branch_id")));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
 
          if (permission != null) {
@@ -323,8 +325,8 @@ public class AccessControlServiceImpl implements IAccessControlService {
       for (Object obj : objectsToCheck) {
          Artifact subject = getSubjectFromLockedObject(obj);
          if (subject != null && subject.notEqual(userArtifact)) {
-            accessData.add(obj,
-               new AccessDetail<ArtifactToken>((Artifact) obj, PermissionEnum.USER_LOCK, Scope.createArtifactLockScope()));
+            accessData.add(obj, new AccessDetail<ArtifactToken>((Artifact) obj, PermissionEnum.USER_LOCK,
+               Scope.createArtifactLockScope()));
          }
       }
    }
@@ -716,7 +718,8 @@ public class AccessControlServiceImpl implements IAccessControlService {
 
          if (artifactLockCache.containsKey(branch, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
-            removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.USER_LOCK, false));
+            removeAccessControlDataIf(true,
+               new AccessControlData(subject, accessObject, PermissionEnum.USER_LOCK, false));
             artifactLockCache.removeAndGet(branch, objectArtId);
             event.addArtifact(object.getUuid());
             lockedArts.add(object);

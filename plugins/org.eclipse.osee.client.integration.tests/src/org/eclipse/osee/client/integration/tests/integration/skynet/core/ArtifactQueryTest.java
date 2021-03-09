@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -190,7 +191,7 @@ public class ArtifactQueryTest {
    @Test
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
-      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
@@ -204,7 +205,7 @@ public class ArtifactQueryTest {
    @Test
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
-      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
@@ -219,7 +220,7 @@ public class ArtifactQueryTest {
       Assert.assertEquals(artifact1, artifacts.iterator().next());
    }
 
-   private TransactionToken createArtifactFortestQueryById(List<ArtifactId> newIdsInOrder, BranchId branch) {
+   private TransactionToken createArtifactFortestQueryById(List<ArtifactId> newIdsInOrder, BranchToken branch) {
       Artifact created = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch);
       created.persist(testInfo.getTestName());
       ArtifactCache.deCache(created);
@@ -229,7 +230,7 @@ public class ArtifactQueryTest {
 
    @Test
    public void testQueryById() {
-      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
       List<ArtifactId> newIdsInOrder = new LinkedList<>();

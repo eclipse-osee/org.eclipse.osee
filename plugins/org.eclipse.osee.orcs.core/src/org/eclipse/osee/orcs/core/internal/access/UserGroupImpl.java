@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
@@ -115,7 +115,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return getArtifact().getBranch();
    }
 }

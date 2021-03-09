@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -54,14 +54,14 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideA = new HashCollection<>();
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideB = new HashCollection<>();
    private final ArtifactTypeToken artifactType;
-   private final BranchId branch;
+   private final BranchToken branch;
    private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityId applicability;
    private final TransactionId txId;
    private final ModificationType modType;
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
@@ -81,7 +81,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 

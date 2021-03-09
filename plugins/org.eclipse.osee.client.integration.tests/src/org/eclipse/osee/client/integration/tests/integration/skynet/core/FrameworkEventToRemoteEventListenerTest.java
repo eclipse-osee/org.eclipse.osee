@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -54,7 +54,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final BranchId BRANCH = SAW_Bld_1;
+   private static final BranchToken BRANCH = SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
    private static final TransactionId newArtTx = TransactionId.valueOf(12345);
@@ -128,10 +128,11 @@ public class FrameworkEventToRemoteEventListenerTest {
       return remoteEvent;
    }
 
-   private static Artifact createArtifact(BranchId branch, String artifactName) {
+   private static Artifact createArtifact(BranchToken branch, String artifactName) {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
-      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, artifactName);
+      Artifact artifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, artifactName);
       Assert.assertNotNull(artifact);
       return artifact;
    }

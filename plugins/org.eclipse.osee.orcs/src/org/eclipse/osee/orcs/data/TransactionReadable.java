@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -74,7 +74,7 @@ public interface TransactionReadable extends TransactionToken {
          }
 
          @Override
-         public BranchId getBranch() {
+         public BranchToken getBranch() {
             return null;
          }
       }

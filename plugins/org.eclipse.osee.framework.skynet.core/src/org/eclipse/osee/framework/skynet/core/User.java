@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -41,11 +42,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class User extends Artifact implements UserToken {
    private PropertyStore userSettings;
 
-   public User(Long id, String guid, BranchId branch) {
+   public User(Long id, String guid, BranchToken branch) {
       super(id, guid, branch, CoreArtifactTypes.User);
    }
 
-   public User(BranchId branch) {
+   public User(BranchToken branch) {
       super(branch, CoreArtifactTypes.User);
    }
 

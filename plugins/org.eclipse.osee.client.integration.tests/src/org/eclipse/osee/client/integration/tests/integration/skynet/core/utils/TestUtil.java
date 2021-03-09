@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,7 +48,7 @@ public final class TestUtil {
    /**
     * Creates a simple artifact and adds it to the root artifact default hierarchical relation
     */
-   public static Artifact createSimpleArtifact(ArtifactTypeToken artifactType, String name, BranchId branch) {
+   public static Artifact createSimpleArtifact(ArtifactTypeToken artifactType, String name, BranchToken branch) {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
       if (softArt.isAttributeTypeValid(CoreAttributeTypes.Subsystem)) {
@@ -58,7 +59,7 @@ public final class TestUtil {
       return softArt;
    }
 
-   public static Collection<Artifact> createSimpleArtifacts(ArtifactTypeToken artifactType, int numArts, String name, BranchId branch) {
+   public static Collection<Artifact> createSimpleArtifacts(ArtifactTypeToken artifactType, int numArts, String name, BranchToken branch) {
       List<Artifact> arts = new ArrayList<>();
       for (int x = 1; x < numArts + 1; x++) {
          arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));

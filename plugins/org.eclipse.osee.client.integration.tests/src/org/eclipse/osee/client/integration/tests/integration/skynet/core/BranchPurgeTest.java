@@ -23,7 +23,6 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -81,7 +80,7 @@ public class BranchPurgeTest {
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      BranchId branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
+      BranchToken branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
       Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10,
          method.getQualifiedTestName(), branch);
       TransactionManager.persistInTransaction("Test purge branch", softArts);

@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 
 /**
@@ -76,7 +76,7 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl<ArtifactTypeToken>
    }
 
    @Override
-   public BranchId getBranch() {
-      return getVersion().getBranch();
+   public BranchToken getBranch() {
+      return BranchToken.create(getVersion().getBranch(), "unknown");
    }
 }

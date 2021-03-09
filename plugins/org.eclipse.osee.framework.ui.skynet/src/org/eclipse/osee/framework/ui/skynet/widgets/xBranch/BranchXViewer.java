@@ -19,7 +19,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -56,9 +55,9 @@ public class BranchXViewer extends XViewer {
    @Override
    public void handleDoubleClick() {
       XResultData rd = new XResultData();
-      ArrayList<BranchId> branches = xBranchViewer.getSelectedBranches();
+      ArrayList<BranchToken> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
-         for (BranchId branch : branches) {
+         for (BranchToken branch : branches) {
             boolean hasPermission = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
             if (hasPermission) {
                if (branch.notEqual(CoreBranches.SYSTEM_ROOT)) {

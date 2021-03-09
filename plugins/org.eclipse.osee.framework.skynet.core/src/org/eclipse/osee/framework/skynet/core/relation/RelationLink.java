@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public class RelationLink implements HasBranch, IRelationLink {
+public class RelationLink implements HasBranchId, IRelationLink {
    private long relationId;
    private GammaId gammaId;
    private String rationale;

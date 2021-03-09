@@ -19,9 +19,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -45,7 +46,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * Creates a new Artifact in the specified branch
     */
    @SuppressWarnings("unchecked")
-   public T getNewArtifact(BranchId branch) {
+   public T getNewArtifact(BranchToken branch) {
       checkForNull(branch);
       return (T) ArtifactTypeManager.addArtifact(oteArtifactType, branch);
    }

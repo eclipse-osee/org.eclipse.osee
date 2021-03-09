@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -578,7 +579,7 @@ public class ArtifactQuery {
       return reloadedArts;
    }
 
-   public static Artifact getOrCreate(String guid, ArtifactTypeToken type, BranchId branch) {
+   public static Artifact getOrCreate(String guid, ArtifactTypeToken type, BranchToken branch) {
       Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch, EXCLUDE_DELETED);
 
       if (artifact == null) {

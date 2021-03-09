@@ -87,7 +87,7 @@ public class UpdateBranchOperation extends AbstractOperation {
          branchData.setFromBranch(fromBranch);
          branchData = branchEp.updateBranch(fromBranch, branchData); // Creates a branch server-side
          branchData.setNeedsMerge(BranchManager.hasChanges(originalBranch));
-         newBranch = BranchManager.getBranch(branchData.getNewBranchId());
+         newBranch = BranchManager.getBranchToken(branchData.getNewBranchId());
          monitor.worked(calculateWork(0.40));
 
          if (branchData.isNeedsMerge()) {

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.access.AccessControlServiceImpl;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Jeff C. Phillips
@@ -26,7 +27,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 public class AccessControlCacheHandler {
 
    public void updateAccessListForBranchObject(AccessControlServiceImpl service, BranchId branch) {
-      BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
+      BranchAccessObject branchAccessObject =
+         BranchAccessObject.getBranchAccessObject(BranchToken.create(branch, "unknown"));
       if (branchAccessObject != null) {
          updateAccessList(service, branchAccessObject);
       }

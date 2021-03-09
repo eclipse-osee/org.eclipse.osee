@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -37,7 +37,7 @@ import org.eclipse.osee.orcs.data.HasSession;
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
-public class TxData implements HasSession, HasBranch {
+public class TxData implements HasSession, HasBranchId {
 
    public static enum TxState {
       NEW_TX,

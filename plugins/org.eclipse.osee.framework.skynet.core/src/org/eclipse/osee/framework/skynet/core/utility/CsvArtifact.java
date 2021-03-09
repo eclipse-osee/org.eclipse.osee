@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -67,7 +67,7 @@ public class CsvArtifact {
    /**
     * Creates a new un-persisted CsvArtifact
     */
-   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, BranchId branch) {
+   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, BranchToken branch) {
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch);
       artifact.setName(artifactName);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Extension, "csv");
@@ -76,7 +76,7 @@ public class CsvArtifact {
       return new CsvArtifact(artifact);
    }
 
-   public static CsvArtifact getCsvArtifact(String staticId, BranchId branch, boolean create) {
+   public static CsvArtifact getCsvArtifact(String staticId, BranchToken branch, boolean create) {
       Artifact art = null;
       try {
          art = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.GeneralDocument,

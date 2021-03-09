@@ -20,8 +20,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -150,7 +150,7 @@ public class OseeDslSegmentParser {
 
    }
 
-   public static final class OseeDslSegment implements HasBranch {
+   public static final class OseeDslSegment implements HasBranchId {
       private final BranchId branch;
       private final String artifactGuid;
       private final int start;

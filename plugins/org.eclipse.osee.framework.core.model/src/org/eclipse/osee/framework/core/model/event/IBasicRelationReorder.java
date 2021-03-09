@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.framework.core.model.event;
 
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IBasicRelationReorder extends HasBranch {
+public interface IBasicRelationReorder extends HasBranchId {
 
    DefaultBasicGuidArtifact getParentArt();
 

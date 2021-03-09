@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -50,7 +50,7 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
          AWorkbench.popup("Must enter Artifact Type");
          return;
       }
-      BranchId branch = variableMap.getBranch("Branch");
+      BranchToken branch = BranchManager.getBranchToken(variableMap.getBranch("Branch"));
       Long artId = null;
       if (branch == null) {
          AWorkbench.popup("Must enter Branch");

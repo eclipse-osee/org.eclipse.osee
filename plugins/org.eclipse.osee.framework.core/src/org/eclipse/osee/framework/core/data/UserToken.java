@@ -120,7 +120,7 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public BranchId getBranch() {
+      public BranchToken getBranch() {
          return CoreBranches.COMMON;
       }
 

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -36,7 +36,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
       addXModifiedListener(new DirtyListener());
    }
 
-   public List<BranchId> getStored() {
+   public List<BranchToken> getStored() {
       return artifact.getAttributeValues(attributeType);
    }
 
@@ -59,8 +59,8 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    public Result isDirty() {
       if (isEditable()) {
          try {
-            Collection<BranchId> storedValues = getStored();
-            Collection<BranchId> widgetInput = Arrays.asList(getSelection());
+            Collection<BranchToken> storedValues = getStored();
+            Collection<BranchToken> widgetInput = Arrays.asList(getSelection());
             if (!Collections.isEqual(widgetInput, storedValues)) {
                return new Result(true, getAttributeType() + " is dirty");
             }
@@ -80,7 +80,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      List<BranchId> storedBranchReference = getStored();
+      List<BranchToken> storedBranchReference = getStored();
       if (!storedBranchReference.isEmpty()) {
          setSelection(storedBranchReference.get(0));
       }

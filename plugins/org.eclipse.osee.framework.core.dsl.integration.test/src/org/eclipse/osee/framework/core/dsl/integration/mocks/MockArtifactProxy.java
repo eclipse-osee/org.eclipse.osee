@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
@@ -81,7 +80,7 @@ public class MockArtifactProxy implements ArtifactProxy {
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return artifactObject.getBranch();
    }
 

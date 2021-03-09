@@ -40,6 +40,7 @@ import org.eclipse.osee.define.ide.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -191,8 +193,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          traceUnitArtifact = getArtifactFromCache(monitor, traceUnit.getTraceUnitType(), traceUnit.getName());
       }
       if (traceUnitArtifact == null) {
-         traceUnitArtifact =
-            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), null, guid);
+         BranchToken branch = BranchManager.getBranchToken(transaction.getBranch());
+         traceUnitArtifact = ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), branch, null, guid);
          traceUnitArtifact.setName(traceUnit.getName());
          artifactWasCreated = true;
       }

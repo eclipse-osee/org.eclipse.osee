@@ -83,7 +83,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
                            String.format(
                               "Are you sure you want to update [%s]\n branch from Targeted Version or Team Configured branch [%s]?",
-                              branchToUpdate.getName(), BranchManager.getBranch(targetedBranch).getName()));
+                              branchToUpdate.getName(), BranchManager.getBranchToken(targetedBranch).getName()));
                         if (isUserSure) {
                            UpdateBranchData branchData =
                               BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());

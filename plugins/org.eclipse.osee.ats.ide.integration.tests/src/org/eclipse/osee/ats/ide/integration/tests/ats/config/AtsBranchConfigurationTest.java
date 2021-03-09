@@ -184,7 +184,7 @@ public class AtsBranchConfigurationTest {
       WorkflowEditor.edit(teamWf);
 
       // create branch
-      BranchId workingBranch = createBranch(namespace, teamWf);
+      BranchToken workingBranch = createBranch(namespace, teamWf);
 
       // make changes
       if (DEBUG) {
@@ -287,7 +287,7 @@ public class AtsBranchConfigurationTest {
       changes.execute();
 
       // create branch
-      BranchId workingBranch = createBranch(namespace, teamWf);
+      BranchToken workingBranch = createBranch(namespace, teamWf);
 
       // make changes
       if (DEBUG) {
@@ -405,16 +405,16 @@ public class AtsBranchConfigurationTest {
       Assert.assertTrue(rd.isSuccess());
    }
 
-   public static BranchId createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {
+   public static BranchToken createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {
       Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(
          (TeamWorkFlowArtifact) teamWf.getStoreObject());
       if (result.isFalse()) {
          AWorkbench.popup(result);
-         return BranchId.SENTINEL;
+         return BranchToken.SENTINEL;
       }
       AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamWf, true);
 
-      BranchId workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf, true);
+      BranchToken workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf, true);
       Assert.assertTrue("No working branch created", workingBranch.isValid());
       return workingBranch;
    }

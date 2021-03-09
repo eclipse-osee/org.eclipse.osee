@@ -24,7 +24,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -57,7 +57,7 @@ public class ChangeDataTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private BranchId workingBranch;
+   private BranchToken workingBranch;
    private ChangeData theData;
 
    @Before

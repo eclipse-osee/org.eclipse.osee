@@ -18,7 +18,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -95,8 +95,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public BranchId getBranch() {
-      return artifactData.getVersion().getBranch();
+   public BranchToken getBranch() {
+      return BranchToken.create(artifactData.getVersion().getBranch(), "unknown");
    }
 
    @Override

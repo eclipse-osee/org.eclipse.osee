@@ -16,14 +16,14 @@ package org.eclipse.osee.framework.core.model.event;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements HasBranch {
+public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements HasBranchId {
    private final BranchId branch;
    private ArtifactTypeToken artifactType;
 

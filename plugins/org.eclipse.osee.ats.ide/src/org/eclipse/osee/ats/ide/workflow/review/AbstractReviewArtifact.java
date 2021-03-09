@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsAbstractReview {
 
-   public AbstractReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
+   public AbstractReviewArtifact(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
    }
 

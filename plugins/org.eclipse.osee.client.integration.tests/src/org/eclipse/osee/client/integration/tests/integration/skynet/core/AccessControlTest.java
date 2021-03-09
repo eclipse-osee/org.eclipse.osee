@@ -18,7 +18,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -49,7 +49,7 @@ public class AccessControlTest {
    private static Artifact artifact4;
    private static Artifact artifact5;
 
-   private static BranchId branch;
+   private static BranchToken branch;
 
    @Test(expected = OseeStateException.class)
    public void testNoWriteOnReadAccessOnBranch() {
@@ -81,7 +81,7 @@ public class AccessControlTest {
 
    @Test(expected = OseeStateException.class)
    public void testNoWriteOnDenyAccessOnBranch() {
-      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.DENY);
       artifact5 = new Artifact(branch, "New Name");
       artifact5.persist(testInfo.getTestName());

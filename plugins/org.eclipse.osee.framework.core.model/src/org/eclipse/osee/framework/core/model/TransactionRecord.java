@@ -17,6 +17,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Jeff C. Phillips
  */
 public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
-   public static TransactionRecord SENTINEL = new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null,
+   public static TransactionRecord SENTINEL = new TransactionRecord(Id.SENTINEL, BranchToken.SENTINEL, null, null,
       UserId.SENTINEL, ArtifactId.SENTINEL, TransactionDetailsType.INVALID, 0L);
    private final TransactionDetailsType txType;
    private final BranchId branch;

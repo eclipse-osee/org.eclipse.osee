@@ -18,13 +18,14 @@ import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Jeff C. Phillips
  */
 public class BranchAccessObject extends AccessObject {
-   private final BranchId branch;
+   private final BranchToken branch;
    private static final Map<BranchId, BranchAccessObject> cache = new HashMap<>();
 
    @Override
@@ -34,12 +35,12 @@ public class BranchAccessObject extends AccessObject {
       return result;
    }
 
-   public BranchAccessObject(BranchId branch) {
+   public BranchAccessObject(BranchToken branch) {
       this.branch = branch;
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 
@@ -54,7 +55,7 @@ public class BranchAccessObject extends AccessObject {
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branch);
    }
 
-   public static BranchAccessObject getBranchAccessObject(BranchId branch) {
+   public static BranchAccessObject getBranchAccessObject(BranchToken branch) {
       BranchAccessObject branchAccessObject;
       if (cache.containsKey(branch)) {
          branchAccessObject = cache.get(branch);

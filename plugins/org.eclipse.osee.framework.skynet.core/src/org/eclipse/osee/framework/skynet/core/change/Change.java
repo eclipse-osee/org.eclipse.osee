@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class Change implements IAdaptable, Comparable<Change>, HasBranch {
+public abstract class Change implements IAdaptable, Comparable<Change>, HasBranchId {
    private final GammaId sourceGamma;
    private final ArtifactId artId;
    private final TransactionDelta txDelta;
