@@ -52,11 +52,11 @@ public class PolicyTableViewer {
    private PermissionEnum maxModificationLevel = PermissionEnum.FULLACCESS;
 
    private PolicyTableXviewer tableXViewer;
+   private boolean readonly;
 
    public PolicyTableViewer(Composite parent, Object object) {
       this.parent = parent;
       this.object = object;
-
       createControl();
    }
 
@@ -83,6 +83,7 @@ public class PolicyTableViewer {
 
       tableXViewer = new PolicyTableXviewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI,
          new PolicyTableXViewerFactory(), true, true);
+      tableXViewer.setReadonly(readonly);
       tableXViewer.setUseHashlookup(true);
       tableXViewer.setColumnProperties(PolicyTableColumns.getNames());
       tableXViewer.getTree().setLayoutData(gd);
@@ -178,6 +179,10 @@ public class PolicyTableViewer {
          result = (Artifact) object;
       }
       return result;
+   }
+
+   public void setReadonly(boolean readonly) {
+      this.readonly = readonly;
    }
 
 }

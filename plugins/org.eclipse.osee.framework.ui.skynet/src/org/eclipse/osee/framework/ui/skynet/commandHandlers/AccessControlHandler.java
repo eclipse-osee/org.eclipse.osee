@@ -16,10 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -28,29 +27,38 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Jeff C. Phillips
  */
 public class AccessControlHandler extends CommandHandler {
-   private Object object;
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), object);
-      pd.open();
+      Object object = getSelection(selection);
+      if (object != null) {
+         PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), object);
+         pd.open();
+      } else {
+         AWorkbench.popup("Selection can not be determined");
+      }
       return null;
    }
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+      return getSelection(structuredSelection) != null;
+   }
+
+   /**
+    * @return selected object or null if invalid selection
+    */
+   private Object getSelection(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
       boolean hasArtifacts = artifacts.size() == 1;
-      boolean enabled = hasArtifacts || branches.size() == 1;
+      boolean hasSelection = hasArtifacts || branches.size() == 1;
 
-      if (enabled) {
+      Object object = null;
+      if (hasSelection) {
          object = hasArtifacts ? artifacts.iterator().next() : branches.iterator().next();
-         enabled &=
-            AccessControlManager.isOseeAdmin() || AccessControlManager.hasPermission(object, PermissionEnum.FULLACCESS);
       }
-
-      return enabled;
+      return object;
    }
 }

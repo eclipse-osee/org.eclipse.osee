@@ -87,6 +87,7 @@ public class PolicyDialog extends Dialog {
       mainComposite.setLayout(new GridLayout(1, false));
 
       accessLabel = new Label(mainComposite, SWT.NONE);
+      accessLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
       Group group = new Group(mainComposite, SWT.NULL);
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -108,6 +109,11 @@ public class PolicyDialog extends Dialog {
       userCombo = new Combo(composite, SWT.NONE);
       addButton = new Button(composite, SWT.PUSH);
       addButton.setText("Add");
+
+      boolean accessEnabled = isAccessEnabled();
+      addButton.setEnabled(accessEnabled);
+      policyTableViewer.setReadonly(!accessEnabled);
+
       chkChildrenPermission = new Button(composite, SWT.CHECK);
       chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
 
@@ -229,6 +235,10 @@ public class PolicyDialog extends Dialog {
       chkChildrenPermission.setEnabled(isArtifact);
    }
 
+   private boolean isAccessEnabled() {
+      return isModifyAccessEnabled() || isAddAccessEnabled();
+   }
+
    private boolean isModifyAccessEnabled() {
       return isAccessEnabled(PermissionEnum.USER_LOCK);
    }
@@ -302,4 +312,5 @@ public class PolicyDialog extends Dialog {
          return 0;
       }
    }
+
 }

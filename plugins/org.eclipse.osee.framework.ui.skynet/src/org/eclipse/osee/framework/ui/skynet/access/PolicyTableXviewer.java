@@ -45,6 +45,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvider {
    private PermissionEnum maxPermission = PermissionEnum.FULLACCESS;
    private PolicyTableViewer tableViewer = null;
+   private boolean readonly = false;
 
    public PolicyTableXviewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
@@ -81,6 +82,10 @@ public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvi
    }
 
    public boolean updateAccess() {
+      if (readonly) {
+         AWorkbench.popup("You do not have permissions to edit access");
+         return false;
+      }
       boolean toReturn = false;
       if (tableViewer == null || !PermissionEnum.getMostRestrictive(maxPermission, PermissionEnum.USER_LOCK).equals(
          PermissionEnum.USER_LOCK)) {
@@ -162,5 +167,9 @@ public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvi
       public void run() {
          tableViewer.updateAccess();
       }
+   }
+
+   public void setReadonly(boolean readonly) {
+      this.readonly = readonly;
    }
 }
