@@ -17,11 +17,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.eclipse.osee.framework.core.util.JsonUtil;
+import java.io.IOException;
 
 /**
  * @author Dominic A. Guss
  */
+@SuppressWarnings("serial")
 public class DispoSummarySeverityDeserializer extends StdDeserializer<DispoSummarySeverity> {
 
    public DispoSummarySeverityDeserializer() {
@@ -33,8 +34,8 @@ public class DispoSummarySeverityDeserializer extends StdDeserializer<DispoSumma
    }
 
    @Override
-   public DispoSummarySeverity deserialize(JsonParser jp, DeserializationContext ctxt) {
-      JsonNode readTree = JsonUtil.getJsonParserTree(jp);
+   public DispoSummarySeverity deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+      JsonNode readTree = jp.getCodec().readTree(jp);
       return DispoSummarySeverity.forVal(readTree.asText());
    }
 }

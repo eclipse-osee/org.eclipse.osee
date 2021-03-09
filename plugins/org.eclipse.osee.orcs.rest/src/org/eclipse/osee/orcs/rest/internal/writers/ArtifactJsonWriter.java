@@ -27,7 +27,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -48,7 +47,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
    }
 
    public void start() {
-      jsonFactory = JsonUtil.getMapper().getFactory();
+      jsonFactory = orcsApi.jaxRsApi().getFactory();
    }
 
    public void stop() {

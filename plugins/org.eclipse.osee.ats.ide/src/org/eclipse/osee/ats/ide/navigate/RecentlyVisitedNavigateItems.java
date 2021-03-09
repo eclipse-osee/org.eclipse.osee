@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -142,8 +141,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
       try {
          if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
-            ObjectMapper mapper = JsonUtil.getMapper();
-            String toStoreJson = mapper.writeValueAsString(visitedItems);
+            String toStoreJson = JsonUtil.toJson(visitedItems);
             String fromStoreJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (!toStoreJson.equals(fromStoreJson)) {
                AtsApiService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);

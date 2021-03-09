@@ -131,7 +131,7 @@ public class DispoApiImpl implements DispoApi {
    public void start(Map<String, Object> props) {
       logger.trace("Starting DispoApiImpl...");
       update(props);
-      importerFactory = new DispoImporterFactory(dataFactory, executor, config, logger);
+      importerFactory = new DispoImporterFactory(dataFactory, executor, config, logger, orcsApi.jaxRsApi());
       storage = new OrcsStorageImpl(orcsApi);
    }
 

@@ -130,6 +130,6 @@ public class ClientStorage {
    }
 
    public OAuthClient newClient(ArtifactReadable artifact, OAuthClientCredential credential) {
-      return new ClientArtifact(artifact, credential);
+      return new ClientArtifact(artifact, credential, orcsApi.jaxRsApi());
    }
 }

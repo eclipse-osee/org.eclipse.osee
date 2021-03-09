@@ -23,6 +23,8 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.TmzImporter;
+import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,17 +42,20 @@ public class TmzImporterTest {
 
    private final DispoDataFactory factory = new DispoDataFactory();
 
+   private JaxRsApi jaxRsApi;
+
    @Before
    public void setUp() {
       DispoConnector connector = new DispoConnector();
       factory.setDispoConnector(connector);
+      jaxRsApi = OsgiUtil.getService(getClass(), JaxRsApi.class);
    }
 
    @Test
    public void testImportWithCheckGroups() throws IOException {
       File tmzFile = folder.newFile("CheckGroup.tmz");
       Lib.inputStreamToFile(getClass().getResourceAsStream("CheckGroup.tmz"), tmzFile);
-      TmzImporter importer = new TmzImporter(null, factory);
+      TmzImporter importer = new TmzImporter(null, factory, jaxRsApi);
       OperationReport report = new OperationReport();
       List<DispoItem> results = importer.importDirectory(new HashMap<String, DispoItem>(), folder.getRoot(), report);
       Assert.assertEquals(1, results.size());
@@ -81,7 +86,7 @@ public class TmzImporterTest {
    public void testImportNoCheckGroups() throws IOException {
       File tmzFile = folder.newFile("NoCheckGroup.tmz");
       Lib.inputStreamToFile(getClass().getResourceAsStream("NoCheckGroup.tmz"), tmzFile);
-      TmzImporter importer = new TmzImporter(null, factory);
+      TmzImporter importer = new TmzImporter(null, factory, jaxRsApi);
       OperationReport report = new OperationReport();
       List<DispoItem> results = importer.importDirectory(new HashMap<String, DispoItem>(), folder.getRoot(), report);
       Assert.assertEquals(1, results.size());

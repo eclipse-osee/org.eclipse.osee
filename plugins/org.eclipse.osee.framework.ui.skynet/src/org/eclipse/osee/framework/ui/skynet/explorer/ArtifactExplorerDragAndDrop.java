@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -24,6 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -73,19 +72,15 @@ import org.eclipse.ui.IViewPart;
 public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private final TreeViewer treeViewer;
    private final IViewPart viewPart;
-
+   private final JaxRsApi jaxRsApi;
    private BranchId selectedBranch;
 
    public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart, BranchId selectedBranch) {
-      this(treeViewer, viewId, viewPart);
-      this.selectedBranch = selectedBranch;
-   }
-
-   public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart) {
       super(treeViewer.getTree(), treeViewer.getTree(), viewId);
-
       this.treeViewer = treeViewer;
       this.viewPart = viewPart;
+      this.selectedBranch = selectedBranch;
+      jaxRsApi = ServiceUtil.getOseeClient().jaxRsApi();
    }
 
    public void updateBranch(BranchId branch) {
@@ -330,8 +325,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
       try {
-         List<JsonArtifact> reqts = JsonUtil.getMapper().readValue(fromJson, new TypeReference<List<JsonArtifact>>() { //
-         });
+         List<JsonArtifact> reqts = jaxRsApi.readCollectionValue(fromJson, List.class, JsonArtifact.class);
          for (JsonArtifact item : reqts) {
             Artifact art = ArtifactTypeManager.addArtifact(item.getType(), parentArtifact.getBranch(), item.getName());
             List<JsonAttribute> attrs = item.getAttrs();

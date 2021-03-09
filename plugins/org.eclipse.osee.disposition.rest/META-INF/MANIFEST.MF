@@ -17,6 +17,7 @@ Import-Package:
  javax.ws.rs.ext,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.disposition.model,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.enums.token,

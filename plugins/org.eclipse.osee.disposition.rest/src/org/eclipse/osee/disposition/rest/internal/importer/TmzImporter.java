@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.disposition.rest.internal.importer;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +31,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
-import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -49,10 +47,12 @@ public class TmzImporter implements DispoImporterApi {
 
    private final Log logger;
    private final DispoDataFactory dataFactory;
+   private final JaxRsApi jaxRsApi;
 
-   public TmzImporter(Log logger, DispoDataFactory dataFactory) {
+   public TmzImporter(Log logger, DispoDataFactory dataFactory, JaxRsApi jaxRsApi) {
       this.logger = logger;
       this.dataFactory = dataFactory;
+      this.jaxRsApi = jaxRsApi;
    }
 
    @Override
@@ -130,7 +130,7 @@ public class TmzImporter implements DispoImporterApi {
 
    private void processOverview(String json, DispoItemData dispoItem) {
       try {
-         TmzProperties properties = JsonUtil.getMapper().readValue(json, TmzProperties.class);
+         TmzProperties properties = jaxRsApi.readValue(json, TmzProperties.class);
          dispoItem.setVersion(properties.getVersion_revision());
          Date date = DATE_FORMAT.parse(properties.getVersion_lastModificationDate());
          dispoItem.setCreationDate(date);
@@ -140,11 +140,9 @@ public class TmzImporter implements DispoImporterApi {
       }
    }
 
-   private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) throws IOException {
-      List<TmzChildRecord> childRecords = new LinkedList<>();
-      String node = JsonUtil.getMapper().readTree(json).get("childRecords").toString();
-      childRecords = JsonUtil.getMapper().readValue(node, new TypeReference<List<TmzChildRecord>>() { //
-      });
+   private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) {
+      String node = jaxRsApi.readTree(json).get("childRecords").toString();
+      List<TmzChildRecord> childRecords = jaxRsApi.readCollectionValue(node, List.class, TmzChildRecord.class);
 
       for (TmzChildRecord record : childRecords) {
          int number = record.getNumber();

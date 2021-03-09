@@ -13,15 +13,14 @@
 
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.ByteSource;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.OAuthOseeTypes;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
@@ -34,12 +33,14 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient 
 
    private final ArtifactReadable artifact;
    private final OAuthClientCredential credential;
+   private final JaxRsApi jaxRsApi;
    private ByteSource logoSupplier;
 
-   public ClientArtifact(ArtifactReadable artifact, OAuthClientCredential credential) {
+   public ClientArtifact(ArtifactReadable artifact, OAuthClientCredential credential, JaxRsApi jaxRsApi) {
       super(artifact.getGuid());
       this.credential = credential;
       this.artifact = artifact;
+      this.jaxRsApi = jaxRsApi;
    }
 
    @Override
@@ -101,8 +102,7 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient 
    public Map<String, String> getProperties() {
       String data = artifact.getSoleAttributeValue(OAuthOseeTypes.OAuthClientProperties, null);
       if (Strings.isValid(data)) {
-         return JsonUtil.readValue(data, new TypeReference<Map<String, String>>() {// used to avoid type erasure
-         });
+         return jaxRsApi.readMapValue(data, String.class, String.class);
       }
       return Collections.emptyMap();
    }
