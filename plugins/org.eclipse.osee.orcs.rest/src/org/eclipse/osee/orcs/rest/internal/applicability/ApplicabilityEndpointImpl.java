@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -278,17 +279,17 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData deleteView(@PathParam("view") String view) {
+   public XResultData deleteView(@PathParam("id") String id) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.deleteView(view, branch, account);
+      return ops.deleteView(id, branch, account);
    }
 
    @Override
-   public ViewDefinition getView(String viewNameOrId) {
-      return ops.getView(viewNameOrId, branch);
+   public ViewDefinition getView(String id) {
+      return ops.getView(id, branch);
    }
 
    @Override
@@ -316,39 +317,39 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData relateCfgGroupToView(String groupName, String viewName) {
+   public XResultData relateCfgGroupToView(String groupId, String viewId) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.relateCfgGroupToView(groupName, viewName, branch, account);
+      return ops.relateCfgGroupToView(groupId, viewId, branch, account);
    }
 
    @Override
-   public XResultData unrelateCfgGroupToView(String groupName, String viewName) {
+   public XResultData unrelateCfgGroupToView(String groupId, String viewId) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.unrelateCfgGroupToView(groupName, viewName, branch, account);
+      return ops.unrelateCfgGroupToView(groupId, viewId, branch, account);
    }
 
    @Override
-   public XResultData deleteCfgGroup(String groupName) {
+   public XResultData deleteCfgGroup(String id) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.deleteCfgGroup(groupName, branch, account);
+      return ops.deleteCfgGroup(id, branch, account);
    }
 
    @Override
-   public XResultData updateCfgGroup(String cfgGroup) {
+   public XResultData updateCfgGroup(String id) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.updateConfigGroup(branch, cfgGroup, account, null);
+      return ops.updateConfigGroup(branch, id, account, null);
 
    }
 
@@ -373,5 +374,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public String applyBlockVisibility(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath) {
       return ops.applyApplicabilityToFiles(branch, view, commentNonApplicableBlocks, sourcePath);
+   }
+
+   @Override
+   public ConfigurationGroupDefinition getConfigurationGroup(String id) {
+      return ops.getConfigurationGroup(id, branch);
    }
 }

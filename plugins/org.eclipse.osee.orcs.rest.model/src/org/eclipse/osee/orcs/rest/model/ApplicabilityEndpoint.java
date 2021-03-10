@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.ViewDefinition;
@@ -92,15 +93,20 @@ public interface ApplicabilityEndpoint {
    XResultData createView(ViewDefinition view);
 
    @DELETE
-   @Path("view/{viewName}")
+   @Path("view/{id}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData deleteView(@PathParam("viewName") String viewName);
+   XResultData deleteView(@PathParam("id") String id);
 
    @GET
    @Path("cfggroup")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getCfgGroup();
+
+   @GET
+   @Path("cfggroup/def/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   ConfigurationGroupDefinition getConfigurationGroup(@PathParam("id") String id);
 
    @POST
    @Path("cfggroup")
@@ -109,28 +115,28 @@ public interface ApplicabilityEndpoint {
    XResultData createCfgGroup(String grpName);
 
    @PUT
-   @Path("cfggroup/{groupName}/relate/{viewName}")
+   @Path("cfggroup/{groupId}/relate/{viewId}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData relateCfgGroupToView(@PathParam("groupName") String groupName, @PathParam("viewName") String viewName);
+   XResultData relateCfgGroupToView(@PathParam("groupId") String groupId, @PathParam("viewId") String viewId);
 
    @PUT
-   @Path("cfggroup/{groupName}/unrelate/{viewName}")
+   @Path("cfggroup/{groupId}/unrelate/{viewId}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData unrelateCfgGroupToView(@PathParam("groupName") String groupName, @PathParam("viewName") String viewName);
+   XResultData unrelateCfgGroupToView(@PathParam("groupId") String groupId, @PathParam("viewId") String viewId);
 
    @DELETE
-   @Path("cfggroup/{groupName}")
+   @Path("cfggroup/{id}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData deleteCfgGroup(@PathParam("groupName") String viewName);
+   XResultData deleteCfgGroup(@PathParam("id") String groupId);
 
    @PUT
-   @Path("cfggroup/{cfgGroup}")
+   @Path("cfggroup/{id}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData updateCfgGroup(@PathParam("cfgGroup") String cfgGroup);
+   XResultData updateCfgGroup(@PathParam("id") String id);
 
    @PUT
    @Path("cfggroup")
@@ -145,9 +151,9 @@ public interface ApplicabilityEndpoint {
    List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id);
 
    @GET
-   @Path("view/def/{viewNameOrId}")
+   @Path("view/def/{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   ViewDefinition getView(@PathParam("viewNameOrId") String viewNameOrId);
+   ViewDefinition getView(@PathParam("id") String id);
 
    @GET
    @Path("views")

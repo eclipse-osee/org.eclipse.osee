@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
@@ -70,13 +71,13 @@ public interface OrcsApplicability {
 
    XResultData createCfgGroup(String groupName, BranchId branch, UserId account);
 
-   XResultData relateCfgGroupToView(String groupName, String viewName, BranchId branch, UserId account);
+   XResultData relateCfgGroupToView(String groupId, String viewId, BranchId branch, UserId account);
 
-   XResultData unrelateCfgGroupToView(String groupName, String viewName, BranchId branch, UserId account);
+   XResultData unrelateCfgGroupToView(String groupId, String viewId, BranchId branch, UserId account);
 
    ArtifactToken getPlConfigurationGroupsFolder(BranchId branch);
 
-   XResultData deleteCfgGroup(String groupName, BranchId branch, UserId account);
+   XResultData deleteCfgGroup(String id, BranchId branch, UserId account);
 
    XResultData updateConfigGroup(BranchId branch, String cfgGroup, UserId account, XResultData results);
 
@@ -87,4 +88,7 @@ public interface OrcsApplicability {
    String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic);
 
    String applyApplicabilityToFiles(BranchId branch, ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath);
+
+   ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch);
+
 }

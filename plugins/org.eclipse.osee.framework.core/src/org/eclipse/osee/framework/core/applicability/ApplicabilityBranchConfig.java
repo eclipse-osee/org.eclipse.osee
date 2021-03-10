@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +33,7 @@ public class ApplicabilityBranchConfig {
    Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
    List<String> featuresOrdered = new LinkedList<>();
    List<ArtifactToken> views = new LinkedList<>();
-   private List<ArtifactToken> groups = new LinkedList<>();
+   List<ConfigurationGroupDefinition> groups = new LinkedList<>();
    List<String> viewsOrdered = new LinkedList<>();
    List<Map<String, String>> featureToValueMaps = new LinkedList<>();
    List<FeatureDefinition> features = new LinkedList<>();
@@ -49,7 +50,7 @@ public class ApplicabilityBranchConfig {
       viewsOrdered.add(view.getName());
    }
 
-   public void addGroup(ArtifactToken group) {
+   public void addGroup(ConfigurationGroupDefinition group) {
       groups.add(group);
    }
 
@@ -134,11 +135,11 @@ public class ApplicabilityBranchConfig {
       this.editable = editable;
    }
 
-   public List<ArtifactToken> getGroups() {
+   public List<ConfigurationGroupDefinition> getGroups() {
       return groups;
    }
 
-   public void setGroups(List<ArtifactToken> groups) {
+   public void setGroups(List<ConfigurationGroupDefinition> groups) {
       this.groups = groups;
    }
 
