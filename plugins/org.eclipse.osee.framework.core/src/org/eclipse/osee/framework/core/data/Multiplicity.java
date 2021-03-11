@@ -14,11 +14,13 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Ryan D. Brooks
  */
 public class Multiplicity extends BaseId {
+   public static final Multiplicity SENTINEL = Multiplicity.valueOf(Id.SENTINEL);
    public static final Multiplicity ANY = Multiplicity.valueOf(1);
    public static final Multiplicity EXACTLY_ONE = Multiplicity.valueOf(2);
    public static final Multiplicity ZERO_OR_ONE = Multiplicity.valueOf(3);

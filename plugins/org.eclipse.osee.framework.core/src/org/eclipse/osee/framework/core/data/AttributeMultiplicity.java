@@ -99,16 +99,20 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    }
 
    public Integer getMinimum(AttributeTypeToken attributeType) {
-      return get(attributeType).getMultiplicity().matches(Multiplicity.ANY, Multiplicity.ZERO_OR_ONE) ? 0 : 1;
+      return getMultiplicity(attributeType).matches(Multiplicity.ANY, Multiplicity.ZERO_OR_ONE) ? 0 : 1;
    }
 
    public Integer getMaximum(AttributeTypeToken attributeType) {
-      return get(attributeType).getMultiplicity().matches(Multiplicity.EXACTLY_ONE,
+      return getMultiplicity(attributeType).matches(Multiplicity.EXACTLY_ONE,
          Multiplicity.ZERO_OR_ONE) ? 1 : Integer.MAX_VALUE;
    }
 
    public Multiplicity getMultiplicity(AttributeTypeToken attributeType) {
-      return get(attributeType).getMultiplicity();
+      ArtifactTypeAttributeTypeMetaData<?> typeMetaData = get(attributeType);
+      if (typeMetaData == null) {
+         return Multiplicity.SENTINEL;
+      }
+      return typeMetaData.getMultiplicity();
    }
 
    public <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType) {
