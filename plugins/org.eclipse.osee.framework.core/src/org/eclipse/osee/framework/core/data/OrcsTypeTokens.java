@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.QuinFunction;
+import org.eclipse.osee.framework.jdk.core.type.SexFunction;
 
 /**
  * OSEE type token providers should instantiate a static instance of this class and call the add methods for each type
@@ -35,6 +37,8 @@ public class OrcsTypeTokens {
    private final List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    private final ChainingArrayList<@NonNull AttributeTypeGeneric<?>> attributeTypes = new ChainingArrayList<>();
    private final ChainingArrayList<@NonNull RelationTypeToken> relationTypes = new ChainingArrayList<>();
+   private final ChainingArrayList<@NonNull ComputedCharacteristic<?>> computedCharacteristics =
+      new ChainingArrayList<>();
    private final List<OrcsTypeJoin<?, ?>> orcsTypeJoins = new ArrayList<>();
    private final NamespaceToken namespace;
 
@@ -288,6 +292,20 @@ public class OrcsTypeTokens {
 
    public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description, String fileExtension) {
       return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension);
+   }
+
+   /**
+    * Methods for creating Computed Characteristics
+    */
+
+   public <T, U extends ComputedCharacteristic<T>> U createComp(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
+      return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
+         TaggerTypeToken.PlainTextTagger, namespace, description, Arrays.asList(typesToCompute)));
+   }
+
+   public <T, U extends ComputedCharacteristic<T>> U createCompNoTag(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
+      return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
+         TaggerTypeToken.SENTINEL, namespace, description, Arrays.asList(typesToCompute)));
    }
 
    /**

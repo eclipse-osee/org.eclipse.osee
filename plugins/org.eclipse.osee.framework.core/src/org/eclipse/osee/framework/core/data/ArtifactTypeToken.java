@@ -48,6 +48,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType);
 
+   List<ComputedCharacteristicToken<?>> getValidComputedCharacteristics();
+
+   <T> boolean isComputedCharacteristicValid(ComputedCharacteristicToken<T> computedCharacteristic);
+
    default boolean inheritsFromAny(Collection<ArtifactTypeToken> artTypes) {
       for (ArtifactTypeToken inheritType : artTypes) {
          if (this.inheritsFrom(inheritType)) {
@@ -190,6 +194,23 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          @Override
          public void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
             attributeTypes.getSingletonAttributeTypes(attributeTypeTokens);
+         }
+
+         @Override
+         public List<ComputedCharacteristicToken<?>> getValidComputedCharacteristics() {
+            List<ComputedCharacteristicToken<?>> validCharacteristics = new ArrayList<>();
+            for (ComputedCharacteristicToken<?> computedCharacteristic : attributeTypes.getComputedCharacteristics()) {
+               if (isComputedCharacteristicValid(computedCharacteristic)) {
+                  validCharacteristics.add(computedCharacteristic);
+               }
+            }
+            return validCharacteristics;
+         }
+
+         @Override
+         public <T> boolean isComputedCharacteristicValid(ComputedCharacteristicToken<T> computedCharacteristic) {
+            return attributeTypes.getComputedCharacteristics().contains(
+               computedCharacteristic) && computedCharacteristic.isMultiplicityValid(this);
          }
 
          @Override

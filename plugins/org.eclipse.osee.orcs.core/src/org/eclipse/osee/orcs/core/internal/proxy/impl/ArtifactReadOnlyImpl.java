@@ -23,9 +23,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
@@ -216,6 +219,20 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
       Attribute<Object> attribute = getProxiedObject().getAttributeById(attributeId);
       return getProxyManager().asExternalAttribute(getSession(), attribute);
+   }
+
+   @Override
+   public <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic) {
+      List<T> attributeValues = new ArrayList<T>();
+      if (!artifactType.isComputedCharacteristicValid(computedCharacteristic)) {
+         throw new OseeCoreException(
+            "Attribute Types on Artifact Type %s do not have valid multiplicity for computed characteristic %s",
+            artifactType.getName(), computedCharacteristic.getName());
+      }
+      for (AttributeTypeGeneric<T> attributeType : computedCharacteristic.getAttributeTypes()) {
+         attributeValues.addAll(getAttributeValues(attributeType));
+      }
+      return computedCharacteristic.calculate(attributeValues);
    }
 
    @Override

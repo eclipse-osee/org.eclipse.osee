@@ -91,10 +91,6 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return false;
    }
 
-   default boolean isObject() {
-      return false;
-   }
-
    default boolean isInputStream() {
       return false;
    }

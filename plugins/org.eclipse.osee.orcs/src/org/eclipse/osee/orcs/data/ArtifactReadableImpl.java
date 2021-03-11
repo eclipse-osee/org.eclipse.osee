@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -41,6 +43,7 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
@@ -262,6 +265,20 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic) {
+      List<T> attributeValues = new ArrayList<T>();
+      if (!artifactType.isComputedCharacteristicValid(computedCharacteristic)) {
+         throw new OseeCoreException(
+            "Attribute Types on Artifact Type %s do not have valid multiplicity for computed characteristic %s",
+            artifactType.getName(), computedCharacteristic.getName());
+      }
+      for (AttributeTypeGeneric<T> attributeType : computedCharacteristic.getAttributeTypes()) {
+         attributeValues.addAll(getAttributeValues(attributeType));
+      }
+      return computedCharacteristic.calculate(attributeValues);
    }
 
    @Override

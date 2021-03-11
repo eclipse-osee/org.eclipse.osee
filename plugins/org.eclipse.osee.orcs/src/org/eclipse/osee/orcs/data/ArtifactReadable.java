@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -96,6 +97,11 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    }
 
    ////////////////////
+
+   <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic);
+
+   ////////////////////
+
    int getMaximumRelationAllowed(RelationTypeSide relationTypeSide);
 
    Collection<RelationTypeToken> getValidRelationTypes();
@@ -168,4 +174,5 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide);
 
    <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
+
 }

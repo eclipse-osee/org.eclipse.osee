@@ -23,9 +23,9 @@ Must support arbitrarily complex calculations.
 
 The computed characteristic value shall not be directly modifiable (cannot be set through functionality like setSoleAttribute()). The only method to setting this value will be through calculations done using the relevant attribute types. The computed Characteristic will be recalculated every time it is obtained via the API.
 
-Compile time checking will be used to ensure the compatability of the attribute type's parameterized type (e.g. Integer, String).
+Compile time checking will be used to ensure the compatibility of the attribute type's parameterized type (e.g. Integer, String).
 
-At runtime, during token definition, the multiplicity of the supplied attribute type(s) will be checked for compatability with the predefined calculation. Examples for the predefined calculations as follows:
+At runtime, during token definition, the multiplicity of the supplied attribute type(s) will be checked for compatibility with the predefined calculation. Examples for the predefined calculations as follows:
 	Rate, Ratio, Delta, Quotient - Provided attribute types must have max 1 multiplicity
 	Product, Sum, Average - Provided attributes types can have any multiplicity
 
@@ -35,7 +35,7 @@ An invalid value shall not be displayed to the user to avoid returning false/mis
 
 == Computed Characteristic Details/Design
 
-Computed Characteristic is a interface that extends NamedId. Contains a calculate function for doing arbitrarily complex calculations. Results can be obtained through a getComputedCharacteristic(ComputedCharacteristicToken<T>) method in ArtifactReadable. Generics will be used in order to ensure supplied attribute types have compatible parameterized types. (Generic <T> represents the specific calculation object being utilized (e.g. LengthCharacteristic)). This will be done by utilizing a validity check method .isComputedCharacteristicValid() on ArtifaceReadable.
+Computed Characteristic is a interface that extends NamedId. Contains a calculate function for doing arbitrarily complex calculations. Results can be obtained through a getComputedCharacteristic(ComputedCharacteristicToken<T>) method in ArtifactReadable. Generics will be used in order to ensure supplied attribute types have compatible parameterized types. (Generic <T> represents the specific calculation object being utilized (e.g. LengthCharacteristic)). This will be done by utilizing a validity check method .isComputedCharacteristicValid() in ArtifaceReadable.
 
 == Declaring a Computed Characteristic
 
@@ -55,7 +55,9 @@ You declare a computed characteristic on an artifact just as you would an artifa
 
 == Additional Tasks
 
-Update new search mechanism for computed characteristics
+	Update new search mechanism for computed characteristics
+	Adding engineering units to attribute types
+	CompoundComputedCharacteristic
 
 == Considerations for the future
 

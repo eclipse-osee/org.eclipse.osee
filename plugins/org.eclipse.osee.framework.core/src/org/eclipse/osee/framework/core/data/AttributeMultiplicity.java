@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
 public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeTypeToken, ArtifactTypeAttributeTypeMetaData<?>> {
    private static final long serialVersionUID = 1L;
    private final ArtifactTypeToken artifactType;
+   private final List<ComputedCharacteristicToken<?>> computedCharacteristics = new ArrayList<>();
 
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType = ArtifactTypeToken.create(id, namespace, name, isAbstract, this, superTypes);
@@ -96,6 +97,15 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue, enumeratedValues));
       return this;
+   }
+
+   public <T> AttributeMultiplicity computed(ComputedCharacteristic<T> computedCharacteristic) {
+      computedCharacteristics.add(computedCharacteristic);
+      return this;
+   }
+
+   public List<ComputedCharacteristicToken<?>> getComputedCharacteristics() {
+      return computedCharacteristics;
    }
 
    public Integer getMinimum(AttributeTypeToken attributeType) {

@@ -103,7 +103,7 @@ public class AttributeFactory {
          attribute = new ArtifactReferenceAttribute(id);
       } else if (attributeType.isBranchId()) {
          attribute = new BranchReferenceAttribute(id);
-      } else if (attributeType.isObject()) {
+      } else if (attributeType.isJavaObject()) {
          attribute = new JavaObjectAttribute(id);
       } else if (attributeType.isInputStream()) {
          attribute = new CompressedContentAttribute(id);

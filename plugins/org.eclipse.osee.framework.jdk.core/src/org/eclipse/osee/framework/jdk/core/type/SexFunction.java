@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2021 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -18,7 +18,7 @@ package org.eclipse.osee.framework.jdk.core.type;
  */
 
 @FunctionalInterface
-public interface QuinFunction<T, U, V, W, X, R> {
+public interface SexFunction<T, U, V, W, X, Y, R> {
 
    /**
     * Applies this function to the given arguments.
@@ -28,8 +28,9 @@ public interface QuinFunction<T, U, V, W, X, R> {
     * @param v the third function argument
     * @param w the fourth function argument
     * @param x the fifth function argument
+    * @param y the sixth function argument
     * @return the function result
     */
-   R apply(T t, U u, V v, W w, X x);
+   R apply(T t, U u, V v, W w, X x, Y y);
 
 }
