@@ -186,6 +186,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    private void createMenuActions() {
 
+      /** This is admin only because it does not support all attribute types */
       if (UserManager.getUser().isOseeAdmin()) {
          addAttributeValueAction = new Action("Add Attribute Value If Missing (Admin Only)", IAction.AS_PUSH_BUTTON) {
             @Override
@@ -320,8 +321,10 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
-      mm.insertBefore(XViewer.MENU_GROUP_PRE, addAttributeValueAction);
-      addAttributeValueAction.setEnabled(!getSelectedArtifacts().isEmpty());
+      if (addAttributeValueAction != null) {
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, addAttributeValueAction);
+         addAttributeValueAction.setEnabled(!getSelectedArtifacts().isEmpty());
+      }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
@@ -336,7 +339,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          purgeArtifactAction.setEnabled(!getSelectedArtifacts().isEmpty());
 
       }
-
    }
 
    private void setupDragAndDropSupport() {
