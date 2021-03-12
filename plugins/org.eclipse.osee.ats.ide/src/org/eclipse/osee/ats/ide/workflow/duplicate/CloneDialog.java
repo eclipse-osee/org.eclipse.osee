@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.workflow.duplicate;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
@@ -87,10 +88,15 @@ public class CloneDialog extends XWidgetsDialog {
 
       // Target Version
       builder.append("<XWidget xwidgetType=\"XTargetedVersionHyperlinkWidget\" displayName=\"Targeted Version\" />");
-      // Features
-      builder.append("<XWidget xwidgetType=\"XAgileFeatureHyperlinkWidget\" displayName=\"Agile Feature(s)\" />");
-      // Agile Sprint
-      builder.append("<XWidget xwidgetType=\"XSprintHyperlinkWidget\" displayName=\"Agile Sprint\" />");
+
+      IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
+
+      if (agileTeam != null) {
+         // Features
+         builder.append("<XWidget xwidgetType=\"XAgileFeatureHyperlinkWidget\" displayName=\"Agile Feature(s)\" />");
+         // Agile Sprint
+         builder.append("<XWidget xwidgetType=\"XSprintHyperlinkWidget\" displayName=\"Agile Sprint\" />");
+      }
 
       builder.append("</XWidgets>");
       return builder.toString();

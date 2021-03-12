@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.agile.AgileFactory;
 import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -58,10 +57,13 @@ public class XAgileFeatureHyperlinkWidget extends XHyperlinkLabelCmdValueSelecti
 
       if (dialog != null) {
          for (JaxAgileFeatureGroup grp : dialog.getChecked()) {
-            features.add(AgileFactory.createAgileFeatureGroup(atsApi.getLogger(), atsApi, grp));
+            for (IAgileFeatureGroup feature : atsApi.getAgileService().getAgileFeatureGroups(agileTeam)) {
+               if (grp.getId().equals(feature.getId())) {
+                  features.add(feature);
+               }
+            }
          }
       }
-
       return dialog != null;
    }
 
