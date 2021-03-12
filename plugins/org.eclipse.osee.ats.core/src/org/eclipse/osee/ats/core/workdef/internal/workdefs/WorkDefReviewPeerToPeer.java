@@ -13,11 +13,17 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
+import static org.eclipse.osee.ats.api.review.ReviewRole.Author;
+import static org.eclipse.osee.ats.api.review.ReviewRole.Moderator;
+import static org.eclipse.osee.ats.api.review.ReviewRole.ModeratorReviewer;
+import static org.eclipse.osee.ats.api.review.ReviewRole.Quality;
+import static org.eclipse.osee.ats.api.review.ReviewRole.Reviewer;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -52,6 +58,12 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
    @Override
    public WorkDefinition build() {
       bld = new WorkDefBuilder(workDefToken, AtsArtifactTypes.PeerToPeerReview);
+      bld.andReviewRole(Author, 1)//
+         .andReviewRole(Moderator)//
+         .andReviewRole(ModeratorReviewer)//
+         .andReviewRole(Quality)//
+         .andReviewRole(Reviewer);//
+      bld.andReviewRoleTypeMinimum(ReviewRoleType.Reviewer, 1);
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Review) //

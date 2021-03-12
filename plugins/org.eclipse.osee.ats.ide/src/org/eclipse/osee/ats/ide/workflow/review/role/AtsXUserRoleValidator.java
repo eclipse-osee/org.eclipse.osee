@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.UserRoleError;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -34,9 +35,8 @@ public class AtsXUserRoleValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
-         // ReviewDefectValidation converted to provider IValueProvider
-         IAtsPeerReviewRoleManager mgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
-         UserRoleError error = UserRoleValidator.isValid(mgr, fromStateDef, toStateDef);
+         IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
+         UserRoleError error = roleMgr.validateRoleTypeMinimums(fromStateDef, roleMgr);
          return error.toWidgetResult(widgetDef);
       }
       return result;

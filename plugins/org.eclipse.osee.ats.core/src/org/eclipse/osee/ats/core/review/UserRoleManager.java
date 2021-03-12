@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -26,13 +28,20 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.api.review.ReviewRole;
+import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.review.UserRoleError;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 
@@ -42,20 +51,36 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 public class UserRoleManager implements IAtsPeerReviewRoleManager {
 
    protected final static String ROLE_ITEM_TAG = "Role";
+
    private final Matcher roleMatcher =
       java.util.regex.Pattern.compile("<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">",
          Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private List<UserRole> roles;
    protected final IAtsUserService userService;
    protected final IAttributeResolver attrResolver;
    protected final IAtsPeerToPeerReview peerRev;
    protected final AtsApi atsApi;
+   private final CountingMap<ReviewRole> actualCountMap;
+   private final CountingMap<ReviewRoleType> actualTypeCountMap;
+   private final Map<ReviewRoleType, Integer> expectedRoleTypeMap;
+   private final Map<ReviewRole, Integer> expectedRoleMap;
+
+   private List<UserRole> roles;
 
    public UserRoleManager(IAtsPeerToPeerReview peerRev, AtsApi atsApi) {
       this.atsApi = atsApi;
       this.attrResolver = atsApi.getAttributeResolver();
       this.userService = atsApi.getUserService();
       this.peerRev = peerRev;
+      expectedRoleTypeMap = peerRev.getWorkDefinition().getReviewRoleTypeMap();
+      expectedRoleMap = peerRev.getWorkDefinition().getReviewRoleMap();
+      actualTypeCountMap = new CountingMap<>();
+      for (UserRole userRole : getUserRoles()) {
+         actualTypeCountMap.put(userRole.getRole().getReviewRoleType());
+      }
+      actualCountMap = new CountingMap<>();
+      for (UserRole userRole : getUserRoles()) {
+         actualCountMap.put((userRole.getRole()));
+      }
    }
 
    public void ensureLoaded() {
@@ -65,7 +90,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
             for (String xml : attrResolver.getAttributesToStringList(peerRev, AtsAttributeTypes.Role)) {
                roleMatcher.reset(xml);
                while (roleMatcher.find()) {
-                  UserRole item = new UserRole(roleMatcher.group());
+                  UserRole item = new UserRole(roleMatcher.group(), peerRev.getWorkDefinition());
                   roles.add(item);
                }
             }
@@ -80,10 +105,10 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public List<UserRole> getUserRoles(Role role) {
+   public List<UserRole> getUserRoles(ReviewRole role) {
       List<UserRole> roles = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
-         if (uRole.getRole() == role) {
+         if (uRole.getRole().equals(role)) {
             roles.add(uRole);
          }
       }
@@ -91,10 +116,10 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public List<AtsUser> getRoleUsers(Role role) {
+   public List<AtsUser> getRoleUsers(ReviewRole role) {
       List<AtsUser> users = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
-         if (uRole.getRole() == role && !users.contains(userService.getUserByUserId(uRole.getUserId()))) {
+         if ((uRole.getRole().equals(role)) && !users.contains(userService.getUserByUserId(uRole.getUserId()))) {
             users.add(userService.getUserByUserId(uRole.getUserId()));
          }
       }
@@ -113,12 +138,57 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
+   public UserRoleError validateRoleTypeMinimums(IAtsStateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr) {
+      for (Entry<ReviewRoleType, Integer> expectedEntry : expectedRoleTypeMap.entrySet()) {
+         int actualCount = actualTypeCountMap.get(expectedEntry.getKey());
+         int expectedCount = expectedEntry.getValue();
+         if (actualCount < expectedCount) {
+            return new UserRoleError("MustMeetMinimumRoleType",
+               "Must have minimum of " + expectedCount + " not " + actualCount + " " + "\'" + expectedEntry.getKey() + "\'.",
+               WidgetStatus.Invalid_Incompleted);
+         }
+      }
+
+      // If in review state, all roles must have hours spent entered
+      if (fromStateDef.getName().equals(PeerToPeerReviewState.Review.getName()) || fromStateDef.getName().equals(
+         PeerToPeerReviewState.Meeting.getName())) {
+         for (UserRole uRole : roleMgr.getUserRoles()) {
+            if (uRole.getHoursSpent() == null) {
+               return UserRoleError.HoursSpentMustBeEnteredForEachRole;
+            }
+         }
+      }
+      return validateRoleMinimums();
+   }
+
+   private UserRoleError validateRoleMinimums() {
+      for (Entry<ReviewRole, Integer> expectedEntry : expectedRoleMap.entrySet()) {
+         int actualCount = actualCountMap.get(expectedEntry.getKey());
+         int expectedCount = expectedEntry.getValue();
+         if (actualCount < expectedCount) {
+            return new UserRoleError("MustMeetMinimumRole",
+               "Must have minimum of " + expectedCount + " not " + actualCount + " " + "\'" + expectedEntry.getKey() + "\'.",
+               WidgetStatus.Invalid_Incompleted);
+         }
+      }
+      return UserRoleError.None;
+   }
+
+   @Override
+   public boolean validateMinimumForRoleType(ReviewRoleType reviewType) {
+      if (actualTypeCountMap.get(reviewType) < expectedRoleTypeMap.get(reviewType)) {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
    public void addOrUpdateUserRole(UserRole userRole) {
       List<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
          if (userRole.equals(uRole)) {
-            uRole.update(userRole);
+            uRole.update(userRole, peerRev.getWorkDefinition());
             found = true;
          }
       }
@@ -140,7 +210,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<UserRole> storedUserRoles = new ArrayList<>();
       for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.Role)) {
-         UserRole storedRole = new UserRole((String) attr.getValue());
+         UserRole storedRole = new UserRole((String) attr.getValue(), peerRev.getWorkDefinition());
          storedUserRoles.add(storedRole);
       }
       return storedUserRoles;
@@ -153,7 +223,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
 
          // Change existing ones
          for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.Role)) {
-            UserRole storedRole = new UserRole((String) attr.getValue());
+            UserRole storedRole = new UserRole((String) attr.getValue(), peerRev.getWorkDefinition());
             for (UserRole pItem : getUserRoles()) {
                if (pItem.equals(storedRole)) {
                   changes.setAttribute(peerRev, attr, AXml.addTagData(ROLE_ITEM_TAG, pItem.toXml()));
@@ -167,7 +237,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
             updatedStoredUserRoles, userRoles)) {
             for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev,
                AtsAttributeTypes.Role)) {
-               UserRole storedRole = new UserRole((String) attr.getValue());
+               UserRole storedRole = new UserRole((String) attr.getValue(), peerRev.getWorkDefinition());
                if (storedRole.equals(delUserRole)) {
                   changes.deleteAttribute(peerRev, attr);
                }
@@ -198,7 +268,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       //all reviewers are complete; send notification to author/moderator
       int numCurrentCompleted = 0, numNewCompleted = 0;
       for (UserRole role : newUserRoles) {
-         if (role.getRole() == Role.Reviewer) {
+         if (role.getRole().getReviewRoleType().equals(ReviewRoleType.Reviewer)) {
             if (!role.isCompleted()) {
                return;
             } else {
@@ -207,7 +277,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          }
       }
       for (UserRole role : currentUserRoles) {
-         if (role.getRole() == Role.Reviewer) {
+         if (role.getRole().getReviewRoleType().equals(ReviewRoleType.Reviewer)) {
             if (role.isCompleted()) {
                numCurrentCompleted++;
             }
@@ -228,4 +298,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       return atsApi.getUserService().getUserByUserId(item.getUserId());
    }
 
+   @Override
+   public IAtsWorkDefinition getWorkDefinition() {
+      return peerRev.getWorkDefinition();
+   }
 }

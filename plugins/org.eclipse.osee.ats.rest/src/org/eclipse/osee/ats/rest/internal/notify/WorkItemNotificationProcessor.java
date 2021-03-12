@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -188,7 +188,7 @@ public class WorkItemNotificationProcessor {
                IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
                Collection<AtsUser> authorModerator = new ArrayList<>();
                for (UserRole role : roleMgr.getUserRoles()) {
-                  if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
+                  if (role.getRole().getReviewRoleType().matches(ReviewRoleType.Author, ReviewRoleType.Moderator)) {
                      authorModerator.add(userService.getUserByUserId(role.getUserId()));
                   }
                }

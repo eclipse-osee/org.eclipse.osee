@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.workflow.review.role;
+package org.eclipse.osee.ats.api.review;
 
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -27,11 +27,9 @@ public class UserRoleError extends OseeEnum {
 
    // @formatter:off
    public static final UserRoleError None = new UserRoleError("None", "", WidgetStatus.Success);
-   public static final UserRoleError OneRoleEntryRequired = new UserRoleError("OneRoleEntryRequired", "At least one role entry is required.", WidgetStatus.Invalid_Incompleted);
    public static final UserRoleError ExceptionValidatingRoles = new UserRoleError("ExceptionValidatingRoles", "Exception validating roles. See log for details.", WidgetStatus.Exception);
-   public static final UserRoleError MustHaveAtLeastOneAuthor = new UserRoleError("MustHaveAtLeastOneAuthor", "Must have at least one Author.", WidgetStatus.Invalid_Incompleted);
-   public static final UserRoleError MustHaveAtLeastOneReviewer = new UserRoleError("MustHaveAtLeastOneReviewer", "Must have at least one Reviewer (a ModeratorReviewer can fulfill this requirement).", WidgetStatus.Invalid_Incompleted);
    public static final UserRoleError HoursSpentMustBeEnteredForEachRole = new UserRoleError("HoursSpentMustBeEnteredForEachRole", "Hours spent must be entered for each role.", WidgetStatus.Invalid_Incompleted);
+   public static final UserRoleError MustMeetMinimumRole = new UserRoleError("MustMeetMinimumRole", "Must meet Minimum Role", WidgetStatus.Invalid_Incompleted);
    // @formatter:on
 
    private final String error;

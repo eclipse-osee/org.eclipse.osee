@@ -18,7 +18,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -74,11 +74,11 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
          peerRevArt.getStateMgr().getAssignees().iterator().next());
 
       // set roles
-      UserRole userRole = new UserRole(Role.Author,
+      UserRole userRole = new UserRole(ReviewRole.Author,
          AtsApiService.get().getUserService().getUserByName(DemoUsers.Joe_Smith.getName()));
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerRevArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(userRole);
-      userRole = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByName("Alex Kay"));
+      userRole = new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByName("Alex Kay"));
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("test transition");
       roleMgr.addOrUpdateUserRole(userRole);
       roleMgr.saveToArtifact(changes);

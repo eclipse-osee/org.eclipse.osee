@@ -24,10 +24,11 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -51,10 +52,12 @@ import org.eclipse.swt.widgets.TreeItem;
 public class UserRoleXViewer extends XViewer {
 
    private final XUserRoleViewer xUserRoleViewer;
+   private final IAtsWorkDefinition workDefinition;
 
-   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer) {
+   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer, IAtsWorkDefinition workDefinition) {
       super(parent, style, new UserRoleXViewerFactory());
       this.xUserRoleViewer = xUserRoleViewer;
+      this.workDefinition = workDefinition;
    }
 
    @Override
@@ -210,7 +213,7 @@ public class UserRoleXViewer extends XViewer {
    private boolean setRole(Collection<UserRole> userRoles, String role) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         userRole.setRole(Role.valueOf(role));
+         userRole.setRole(workDefinition.fromName(role));
          if (!modified) {
             modified = true;
          }
@@ -240,8 +243,12 @@ public class UserRoleXViewer extends XViewer {
                modified = setUser(userRoles, ld.getSelection());
             }
          } else if (xCol.equals(UserRoleXViewerFactory.Role_Col)) {
+            Collection<String> roleStrValues = new ArrayList<>();
+            for (ReviewRole role : xUserRoleViewer.getArtifact().getWorkDefinition().getReviewRoles()) {
+               roleStrValues.add(role.toString());
+            }
             EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(
-               xCol.getName(), Role.strValues(), columnMultiEdit ? null : userRole.getRole().name());
+               xCol.getName(), roleStrValues, columnMultiEdit ? null : userRole.getRole().getName());
             if (enumDialog != null && enumDialog.getResult()[0] != null) {
                modified = setRole(userRoles, (String) enumDialog.getResult()[0]);
             }

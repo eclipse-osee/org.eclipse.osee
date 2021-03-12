@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.review.ReviewRole;
+import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
@@ -185,4 +187,18 @@ public class WorkDefBuilder {
       return null;
    }
 
+   public WorkDefBuilder andReviewRole(ReviewRole role, int minimum) {
+      workDef.addReviewRole(role, minimum);
+      return this;
+   }
+
+   // Default to 0 if minimum is not provided
+   public WorkDefBuilder andReviewRole(ReviewRole role) {
+      return andReviewRole(role, 0);
+   }
+
+   public WorkDefBuilder andReviewRoleTypeMinimum(ReviewRoleType reviewRoleType, int minimum) {
+      workDef.andReviewRoleTypeMinimum(reviewRoleType, minimum);
+      return this;
+   }
 }

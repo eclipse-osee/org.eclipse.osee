@@ -86,7 +86,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
          return userRole.getHoursSpent() == null ? "" : AtsUtil.doubleToI18nString(userRole.getHoursSpent(), false);
       } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
-         return userRole.getRole().name();
+         return userRole.getRole().getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
          return String.valueOf(userRole.isCompleted());
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.review;
 
 import java.text.NumberFormat;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -24,43 +25,42 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 public class UserRole {
-
-   private Role role = Role.Reviewer;
+   private ReviewRole role;
    private String userId;
    private Double hoursSpent = null;
    private String guid = GUID.create();
    private Boolean completed = false;
 
-   public UserRole(Role role, AtsUser user) {
+   public UserRole(ReviewRole role, AtsUser user) {
       this(role, user.getUserId());
    }
 
-   public UserRole(Role role, String userId) {
+   public UserRole(ReviewRole role, String userId) {
       this(role, userId, 0.0, false);
    }
 
-   public UserRole(Role role, AtsUser user, Double hoursSpent, Boolean completed) {
+   public UserRole(ReviewRole role, AtsUser user, Double hoursSpent, Boolean completed) {
       this(role, user.getUserId(), hoursSpent, completed);
    }
 
-   public UserRole(Role role, String userId, Double hoursSpent, Boolean completed) {
+   public UserRole(ReviewRole role, String userId, Double hoursSpent, Boolean completed) {
       this.role = role;
       this.userId = userId;
       this.hoursSpent = hoursSpent;
       this.completed = completed;
    }
 
-   public UserRole(String xml) {
-      fromXml(xml);
+   public UserRole(String xml, IAtsWorkDefinition workDefinition) {
+      fromXml(xml, workDefinition);
    }
 
-   public void update(UserRole dItem) {
-      fromXml(dItem.toXml());
+   public void update(UserRole dItem, IAtsWorkDefinition workDefinition) {
+      fromXml(dItem.toXml(), workDefinition);
    }
 
    public String toXml() {
       StringBuffer sb = new StringBuffer();
-      sb.append(AXml.addTagData("role", role.name()));
+      sb.append(AXml.addTagData("role", role.getName()));
       sb.append(AXml.addTagData("userId", userId));
       sb.append(AXml.addTagData("hoursSpent", hoursSpent == null ? "" : String.valueOf(hoursSpent)));
       sb.append(AXml.addTagData("completed", String.valueOf(completed)));
@@ -68,9 +68,9 @@ public class UserRole {
       return sb.toString();
    }
 
-   public void fromXml(String xml) {
+   private void fromXml(String xml, IAtsWorkDefinition workDefinition) {
       try {
-         this.role = Role.valueOf(AXml.getTagData(xml, "role"));
+         this.role = workDefinition.fromName(AXml.getTagData(xml, "role"));
          this.userId = AXml.getTagData(xml, "userId");
          String hoursSpent = AXml.getTagData(xml, "hoursSpent");
          if (Strings.isValid(hoursSpent)) {
@@ -109,11 +109,11 @@ public class UserRole {
       return role + " - " + userId + " - " + hoursSpent + " - " + (completed ? "Completed" : "InWork");
    }
 
-   public Role getRole() {
+   public ReviewRole getRole() {
       return role;
    }
 
-   public void setRole(Role role) {
+   public void setRole(ReviewRole role) {
       this.role = role;
    }
 

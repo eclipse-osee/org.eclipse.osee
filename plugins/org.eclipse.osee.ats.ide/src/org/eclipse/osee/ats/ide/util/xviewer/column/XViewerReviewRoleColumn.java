@@ -69,7 +69,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       IAtsPeerReviewRoleManager roleMgr = ((PeerToPeerReviewArtifact) reviewArt).getRoleManager();
       for (UserRole role : roleMgr.getUserRoles()) {
          if (role.getUserId().equals(user.getUserId())) {
-            builder.append(role.getRole().name());
+            builder.append(role.getRole().getName());
             builder.append(", ");
          }
       }

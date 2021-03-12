@@ -15,14 +15,13 @@ package org.eclipse.osee.ats.ide.util.widgets.role;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -45,15 +44,17 @@ import org.eclipse.swt.widgets.Control;
  * @author Donald G. Dunne
  */
 public class NewRoleDialog extends MessageDialog {
+   private final IAtsWorkDefinition workDefinition;
 
    private XComboViewer roleCombo;
    private XHyperlabelMemberSelection usersLink;
    private PeerToPeerReviewArtifact reviewArt;
    private Button okButton;
 
-   public NewRoleDialog() {
+   public NewRoleDialog(IAtsWorkDefinition workDefinition) {
       super(Displays.getActiveShell(), "New Role", null, "Enter New Roles", MessageDialog.QUESTION,
          new String[] {"OK", "Cancel"}, 0);
+      this.workDefinition = workDefinition;
    }
 
    @Override
@@ -64,7 +65,7 @@ public class NewRoleDialog extends MessageDialog {
       return c;
    }
 
-   //both usersLink and role is selected --> enable button
+   // Both usersLink and role is selected --> enable button
    private void updateButtons() {
       if (roleCombo.getSelected() != null && usersLink != null && (!usersLink.isEmpty())) {
          okButton.setEnabled(true);
@@ -80,12 +81,13 @@ public class NewRoleDialog extends MessageDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1));
 
-      //dropdown selection
+      // Dropdown selection
       roleCombo = new XComboViewer("Select Role", SWT.NONE);
-      Set<Object> roles = new HashSet<>();
-      for (Enum<Role> e : Role.values()) {
-         roles.add(e);
+      List<Object> roles = new ArrayList<>();
+      for (ReviewRole role : workDefinition.getReviewRoles()) {
+         roles.add(role.getName() + " (" + role.getReviewRoleType() + " Type)");
       }
+
       roleCombo.setInput(roles);
       roleCombo.createWidgets(comp, 2);
 
@@ -140,14 +142,10 @@ public class NewRoleDialog extends MessageDialog {
       return customArea;
    }
 
-   public Role getRole() {
-      Role role = null;
-      try {
-         role = (Role) roleCombo.getSelected();
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return role;
+   public ReviewRole getRole() {
+      String roleName = (String) roleCombo.getSelected();
+      roleName = roleName.substring(0, roleName.indexOf(" ("));
+      return workDefinition.fromName(roleName);
    }
 
    public Collection<AtsUser> getUsers() {
@@ -164,5 +162,4 @@ public class NewRoleDialog extends MessageDialog {
    public void setReview(PeerToPeerReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
    }
-
 }

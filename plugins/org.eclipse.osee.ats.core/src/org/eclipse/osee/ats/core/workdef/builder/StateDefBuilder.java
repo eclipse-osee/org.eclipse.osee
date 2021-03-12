@@ -246,5 +246,4 @@ public class StateDefBuilder {
       }
       return this;
    }
-
 }

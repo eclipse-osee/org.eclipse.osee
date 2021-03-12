@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.review.UserRoleError;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.role.UserRoleError;
 import org.eclipse.osee.ats.ide.workflow.review.role.UserRoleValidator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -54,8 +54,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -98,7 +98,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    }
 
    @Override
-   public Artifact getArtifact() {
+   public PeerToPeerReviewArtifact getArtifact() {
       return reviewArt;
    }
 
@@ -121,8 +121,8 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       }
 
       createTaskActionBar(mainComp);
-
-      xViewer = new UserRoleXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xViewer = new UserRoleXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this,
+         getArtifact().getWorkDefinition());
       xViewer.setContentProvider(new UserRoleContentProvider(xViewer));
       xViewer.setLabelProvider(new UserRoleLabelProvider(xViewer));
       xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -318,7 +318,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
 
    public void handleNewUserRole() {
 
-      NewRoleDialog dialog = new NewRoleDialog();
+      NewRoleDialog dialog = new NewRoleDialog(reviewArt.getWorkDefinition());
       dialog.setReview(reviewArt);
       if (dialog.open() == Window.OK) {
          try {
@@ -380,7 +380,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    public IStatus isValid() {
       try {
          UserRoleError error = UserRoleValidator.isValid(reviewArt.getArtifact());
-         if (error == UserRoleError.OneRoleEntryRequired) {
+         if (error.equals(UserRoleError.MustMeetMinimumRole)) {
             extraInfoLabel.setText("At least one role entry is required. Select \"New Role\" to add.");
             extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one role entry is required");
@@ -418,7 +418,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          for (UserRole item : roleMgr.getUserRoles()) {
             AtsUser atsUser = UserRoleManager.getUser(item, AtsApiService.get());
             html.append(AHTML.addRowMultiColumnTable(new String[] {
-               item.getRole().name(),
+               item.getRole().getName(),
                atsUser.getName(),
                AtsUtil.doubleToI18nString(item.getHoursSpent()),
                defectMgr.getNumMajor(atsUser) + "",

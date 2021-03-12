@@ -15,12 +15,18 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.review.ReviewRole;
+import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -29,11 +35,14 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefinition {
 
    private final List<IAtsStateDefinition> states = new ArrayList<>(5);
+   private final CountingMap<String> labelCount = new CountingMap<String>();
+   private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
+   private final Map<ReviewRole, Integer> reviewRoleMap = new ConcurrentHashMap<>();
+   private final Map<ReviewRoleType, Integer> reviewRoleTypeMap = new ConcurrentHashMap<>();
+
    private IAtsStateDefinition startState;
    private HeaderDefinition headerDef;
    private boolean showStateMetrics = false;
-   private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
-   private final CountingMap<String> labelCount = new CountingMap<String>();
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
@@ -137,4 +146,36 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       this.reviewDefectColumns = reviewDefectColumns;
    }
 
+   public void addReviewRole(ReviewRole role, int minimum) {
+      reviewRoleMap.put(role, minimum);
+   }
+
+   @Override
+   public Set<ReviewRole> getReviewRoles() {
+      return reviewRoleMap.keySet();
+   }
+
+   public void andReviewRoleTypeMinimum(ReviewRoleType reviewRoleType, int minimum) {
+      reviewRoleTypeMap.put(reviewRoleType, minimum);
+   }
+
+   @Override
+   public Map<ReviewRoleType, Integer> getReviewRoleTypeMap() {
+      return reviewRoleTypeMap;
+   }
+
+   @Override
+   public Map<ReviewRole, Integer> getReviewRoleMap() {
+      return reviewRoleMap;
+   }
+
+   @Override
+   public ReviewRole fromName(String name) {
+      for (ReviewRole role : reviewRoleMap.keySet()) {
+         if (role.getName().equals(name)) {
+            return role;
+         }
+      }
+      throw new OseeArgumentException("Review role with name [%s] does not exist", name);
+   }
 }

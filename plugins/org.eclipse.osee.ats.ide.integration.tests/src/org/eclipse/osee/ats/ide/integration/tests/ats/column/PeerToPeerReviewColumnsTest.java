@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
@@ -107,16 +107,19 @@ public class PeerToPeerReviewColumnsTest {
       defectManager.saveToArtifact(peerArt, changes);
 
       UserRole role =
-         new UserRole(Role.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
+         new UserRole(ReviewRole.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Moderator, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
+      role = new UserRole(ReviewRole.Moderator,
+         AtsApiService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
+      role =
+         new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       roleMgr.addOrUpdateUserRole(role);
-      role = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
+      role =
+         new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
       roleMgr.addOrUpdateUserRole(role);
       roleMgr.saveToArtifact(changes);
       changes.add(peerArt);

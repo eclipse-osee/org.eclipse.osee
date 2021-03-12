@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -57,7 +57,7 @@ public class ReviewReviewerColumn extends XViewerAtsColumn implements IXViewerVa
       try {
          if (element instanceof PeerToPeerReviewArtifact) {
             return AtsObjects.toString("; ",
-               ((PeerToPeerReviewArtifact) element).getRoleManager().getRoleUsers(Role.Reviewer));
+               ((PeerToPeerReviewArtifact) element).getRoleManager().getRoleUsers(ReviewRole.Reviewer));
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);

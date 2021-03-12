@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.role;
 
-import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.junit.Assert;
 
 /**
@@ -26,9 +28,11 @@ public class UserRoleTest {
 
    @org.junit.Test
    public void testToXmlFromXml() {
-      UserRole item = new UserRole(Role.Author, "1233", 23.3, true);
+      IAtsWorkDefinition workDefinition =
+         AtsApiService.get().getWorkDefinitionService().getDefaultPeerToPeerWorkflowDefinition();
 
-      UserRole fromItem = new UserRole(item.toXml());
+      UserRole item = new UserRole(ReviewRole.Author, "1233", 23.3, true);
+      UserRole fromItem = new UserRole(item.toXml(), workDefinition);
       Assert.assertEquals("1233", fromItem.getUserId());
       Assert.assertEquals(item.getRole(), fromItem.getRole());
       Assert.assertEquals(item.getHoursSpent(), fromItem.getHoursSpent());
