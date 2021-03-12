@@ -126,6 +126,9 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog = openSelectionDialog(agileEp, teamId, awas);
 
       JaxAgileItem updateItem = new JaxAgileItem();
+      if (dialog == null) {
+         return false;
+      }
       if (dialog.getResult().length == 0) {
          updateItem.setRemoveFeatures(true);
       } else {
