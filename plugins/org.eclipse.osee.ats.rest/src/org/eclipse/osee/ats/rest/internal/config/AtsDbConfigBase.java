@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.OseeInfo;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -135,7 +134,7 @@ public class AtsDbConfigBase {
       AtsAttachments checklists = new AtsAttachments();
       checklists.addAttachment(new AtsAttachment("Document_Checklist", "osee", DemoBranches.Processes));
       checklists.addAttachment(new AtsAttachment("Process_Checklist", "osee", DemoBranches.Processes));
-      String jsonToStore = JsonUtil.toJson(checklists);
+      String jsonToStore = atsApi.jaxRsApi().toJson(checklists);
       atsApi.setConfigValue("PeerReviewChecklist", jsonToStore);
 
       // Create Processes Branch
@@ -164,7 +163,7 @@ public class AtsDbConfigBase {
       AtsAttachments checklists = new AtsAttachments();
       checklists.addAttachment(new AtsAttachment("W_Document_Checklist", "osee", DemoBranches.Processes));
       checklists.addAttachment(new AtsAttachment("W_Process_Checklist", "osee", DemoBranches.Processes));
-      String jsonToStore = JsonUtil.toJson(checklists);
+      String jsonToStore = atsApi.jaxRsApi().toJson(checklists);
       atsApi.setConfigValue("WalkthroughChecklist", jsonToStore);
 
       // Create Top Folder on Processes Branch

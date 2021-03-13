@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -132,7 +131,8 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
 
    protected Map<String, BranchId> getNameToLocationMap() {
       String locationList = getFileListString();
-      AtsAttachments allAttachments = JsonUtil.readValue(locationList, AtsAttachments.class);
+
+      AtsAttachments allAttachments = AtsApiService.get().jaxRsApi().readValue(locationList, AtsAttachments.class);
       for (AtsAttachment attachment : allAttachments.getAttachments()) {
          nameBranchMap.put(attachment.getName(), attachment.getBranch());
          location = attachment.getlocation();

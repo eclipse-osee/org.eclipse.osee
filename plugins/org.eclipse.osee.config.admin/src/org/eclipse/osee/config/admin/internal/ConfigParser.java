@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.Constants;
 
@@ -33,10 +33,15 @@ import org.osgi.framework.Constants;
  * @author Roberto E. Escobar
  */
 public class ConfigParser {
+   private final JaxRsApi jaxRsApi;
+
+   public ConfigParser(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
+   }
 
    public void process(ConfigWriter writer, String source) {
       if (Strings.isValid(source)) {
-         JsonNode services = JsonUtil.readTree(source).get("config");
+         JsonNode services = jaxRsApi.readTree(source).get("config");
 
          for (JsonNode serviceNode : services) {
             Hashtable<String, Object> properties = new Hashtable<>();

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
@@ -91,7 +90,7 @@ public class AtsActionEndpointImplOptionsTest extends AbstractRestTest {
 
    private JsonNode testActionRestCall(WebTarget target, int size) {
       String json = getJson(target);
-      JsonNode arrayNode = JsonUtil.readTree(json);
+      JsonNode arrayNode = jaxRsApi.readTree(json);
       Assert.assertEquals(size, arrayNode.size());
       return arrayNode.get(0);
    }

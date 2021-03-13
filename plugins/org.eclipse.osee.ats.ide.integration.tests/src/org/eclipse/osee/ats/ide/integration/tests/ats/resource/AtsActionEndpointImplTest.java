@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -72,8 +71,8 @@ import org.junit.Test;
 public class AtsActionEndpointImplTest extends AbstractRestTest {
    private static final String committedCodeWfId = DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString();
    private static final String codeWfId = DemoArtifactToken.SAW_Code.getIdString();
-   private TeamWorkFlowArtifact teamWfArt;
    private final JaxRsApi jaxRsApi = AtsApiService.get().jaxRsApi();
+   private TeamWorkFlowArtifact teamWfArt;
 
    @Test
    public void testUnreleasedVersions() {
@@ -212,7 +211,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    private JsonNode testActionRestCall(WebTarget target, int size) {
       String json = target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
-      JsonNode arrayNode = JsonUtil.readTree(json);
+      JsonNode arrayNode = jaxRsApi.readTree(json);
       Assert.assertEquals(size, arrayNode.size());
 
       arrayNode.forEach(this::testAction);
@@ -696,7 +695,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       String newAction = AtsApiService.get().getServerEndpoints().getActionEndpoint().createEmptyAction(
          AtsApiService.get().getUserService().getCurrentUserId(), aiStr, "New Action");
 
-      JsonNode root = JsonUtil.readTree(newAction);
+      JsonNode root = jaxRsApi.readTree(newAction);
       Long id = root.path("id").asLong();
 
       TeamWorkFlowArtifact teamArt =

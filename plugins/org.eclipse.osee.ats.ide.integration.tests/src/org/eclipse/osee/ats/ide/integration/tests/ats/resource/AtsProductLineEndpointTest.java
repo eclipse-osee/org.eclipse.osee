@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,12 +34,12 @@ public class AtsProductLineEndpointTest extends AbstractRestTest {
       String path = "ats/ple/branches/";
       WebTarget target = jaxRsApi.newTargetQuery(path + "/baseline");
 
-      JsonNode action = testActionRestCall(target, 1);
+      testActionRestCall(target, 1);
    }
 
    private JsonNode testActionRestCall(WebTarget target, int size) {
       String json = getJson(target);
-      JsonNode arrayNode = JsonUtil.readTree(json);
+      JsonNode arrayNode = jaxRsApi.readTree(json);
       Assert.assertEquals(size, arrayNode.size());
       return arrayNode.get(0);
    }

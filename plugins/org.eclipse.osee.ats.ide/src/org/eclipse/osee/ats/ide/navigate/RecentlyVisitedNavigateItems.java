@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -141,7 +140,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
       try {
          if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
-            String toStoreJson = JsonUtil.toJson(visitedItems);
+            String toStoreJson = AtsApiService.get().jaxRsApi().toJson(visitedItems);
             String fromStoreJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (!toStoreJson.equals(fromStoreJson)) {
                AtsApiService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);

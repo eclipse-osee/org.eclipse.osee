@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.util.ColorTeams;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -110,7 +109,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       String colorTeamStr = atsApi.getConfigValue(COLOR_TEAM_KEY);
       ColorTeams teams = null;
       if (Strings.isValid(colorTeamStr)) {
-         teams = JsonUtil.readValue(colorTeamStr, ColorTeams.class);
+         teams = atsApi.jaxRsApi().readValue(colorTeamStr, ColorTeams.class);
       } else {
          teams = new ColorTeams();
       }

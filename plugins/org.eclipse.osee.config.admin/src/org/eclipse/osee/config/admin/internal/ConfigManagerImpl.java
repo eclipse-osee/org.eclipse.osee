@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.UriWatcher;
@@ -36,14 +37,18 @@ import org.osgi.service.cm.ConfigurationAdmin;
  */
 public class ConfigManagerImpl implements UriWatcherListener {
 
-   private final ConfigParser parser = new ConfigParser();
-
-   private Log logger;
-   private ConfigurationAdmin configAdmin;
-
-   private ConfigManagerConfiguration config;
    private final AtomicReference<UriWatcher> watcherRef = new AtomicReference<>();
    private final Map<String, ServiceConfig> services = new HashMap<>();
+
+   private ConfigParser parser;
+   private JaxRsApi jaxRsApi;
+   private Log logger;
+   private ConfigurationAdmin configAdmin;
+   private ConfigManagerConfiguration config;
+
+   public void bindJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
+   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -55,7 +60,7 @@ public class ConfigManagerImpl implements UriWatcherListener {
 
    public void start(Map<String, Object> properties) {
       logger.trace("Starting ConfigurationManagerImpl...");
-
+      parser = new ConfigParser(jaxRsApi);
       update(properties);
    }
 

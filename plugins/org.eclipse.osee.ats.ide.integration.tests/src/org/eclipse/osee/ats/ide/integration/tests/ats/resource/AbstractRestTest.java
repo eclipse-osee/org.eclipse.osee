@@ -19,6 +19,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
@@ -27,6 +28,7 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public abstract class AbstractRestTest {
+   private final JaxRsApi jaxRsApi = AtsApiService.get().jaxRsApi();
 
    protected void getAndCountWorkItems(WebTarget target, int expected) {
       String json = getJson(target);
@@ -41,7 +43,7 @@ public abstract class AbstractRestTest {
    protected Object getFirstAndCount(WebTarget target, int count) {
       String json = getJson(target);
 
-      Object[] objs = JsonUtil.readValue(json, Object[].class);
+      Object[] objs = jaxRsApi.readValue(json, Object[].class);
       Assert.assertEquals(count, objs.length);
       return objs[0];
    }
@@ -49,14 +51,14 @@ public abstract class AbstractRestTest {
    protected Object getFirstAndCount(String url, int count) {
       String json = getJson(url);
 
-      Object[] objs = JsonUtil.readValue(json, Object[].class);
+      Object[] objs = jaxRsApi.readValue(json, Object[].class);
       Assert.assertEquals(count, objs.length);
       return objs[0];
    }
 
    protected Object getFirstAndCountGreater(String url, int count) {
       String json = getJson(url);
-      Object[] objs = JsonUtil.readValue(json, Object[].class);
+      Object[] objs = jaxRsApi.readValue(json, Object[].class);
       boolean countGE = objs.length >= count;
       Assert.assertTrue(String.format("Length %d expected to be greater than or equal to %d", objs.length, count),
          countGE);
@@ -64,7 +66,7 @@ public abstract class AbstractRestTest {
    }
 
    private JsonNode readTree(String url) {
-      return JsonUtil.readTree(getJson(url));
+      return jaxRsApi.readTree(getJson(url));
    }
 
    protected String getHtml(String url) {
@@ -80,7 +82,7 @@ public abstract class AbstractRestTest {
    }
 
    private String getAndCheckResponseCode(String path, MediaType mediaType) {
-      return AtsApiService.get().jaxRsApi().newTarget(path).request(mediaType).get().readEntity(String.class);
+      return jaxRsApi.newTarget(path).request(mediaType).get().readEntity(String.class);
    }
 
    protected JsonNode testUrl(String url, int size, String expectedName, String key, boolean keyExists) {
