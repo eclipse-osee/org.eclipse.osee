@@ -327,9 +327,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   @POST
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
    public XResultData createBranchValidation(NewBranch data) {
       CreateBranchData branchData = new CreateBranchData();
       createBranchData(branchData, data);

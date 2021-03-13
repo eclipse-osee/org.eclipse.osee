@@ -136,6 +136,7 @@ public interface BranchEndpoint {
    BranchId createBranch(NewBranch data);
 
    @POST
+   @Path("validation")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    XResultData createBranchValidation(NewBranch data);
