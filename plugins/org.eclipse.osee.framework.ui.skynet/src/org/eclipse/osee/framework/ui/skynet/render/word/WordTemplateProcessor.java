@@ -661,11 +661,13 @@ public class WordTemplateProcessor {
             RendererOption.RECURSE_ON_LOAD) && !((boolean) renderer.getRendererOptionValue(
                RendererOption.ORIG_PUBLISH_AS_DIFF))) {
             for (Artifact art : artifacts) {
-               allArtifacts.add(art);
+               if (!allArtifacts.contains(art)) {
+                  allArtifacts.add(art);
+               }
                if (!art.isHistorical()) {
                   for (Artifact descendant : art.getDescendants()) {
-                     if (!descendant.isHistorical() && isWordTemplateContentValid(descendant) && isArtifactIncluded(
-                        descendant)) {
+                     if (!allArtifacts.contains(descendant) && !descendant.isHistorical() && isWordTemplateContentValid(
+                        descendant) && isArtifactIncluded(descendant)) {
                         allArtifacts.add(descendant);
                      }
                   }
