@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api.report;
+package org.eclipse.osee.orcs.rest.model;
 
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
