@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -51,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 public class SortAgileBacklog extends XNavigateItemAction {
 
    private AtsApiIde atsApi;
+   private final boolean debug = false;
 
    public SortAgileBacklog(XNavigateItem parent) {
       super(parent, "Sort Agile Backlog", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
@@ -69,15 +72,14 @@ public class SortAgileBacklog extends XNavigateItemAction {
       }
       FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
-      dialog.addCheckbox("Persist Changes?", false);
       if (dialog.open() == 0) {
          Artifact agileTeamArt = dialog.getSelectedFirst();
          Artifact backlog = agileTeamArt.getRelatedArtifactOrNull(AtsRelationTypes.AgileTeamToBacklog_Backlog);
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Sort Agile Team",
+            String.format("Sort Agile Team Backlog\n\n%s\n\nAre you sure?", backlog.toStringWithId()))) {
 
-         List<IAgileItem> aItems = sort(backlog);
+            List<IAgileItem> aItems = sort(backlog);
 
-         boolean persist = dialog.isChecked();
-         if (persist) {
             List<Artifact> arts = new ArrayList<>();
             for (IAgileItem aItem : aItems) {
                arts.add((Artifact) atsApi.getQueryService().getArtifact(aItem.getArtifactId()));
@@ -101,10 +103,12 @@ public class SortAgileBacklog extends XNavigateItemAction {
          ));
       String ordered = print("Ordered Backlog", sItems);
 
-      CompareHandler compareHandler =
-         new CompareHandler(null, new CompareItem("Un-Ordered", unOrdered, System.currentTimeMillis(), null),
-            new CompareItem("Ordered", ordered, System.currentTimeMillis(), null), null);
-      compareHandler.compare();
+      if (debug) {
+         CompareHandler compareHandler =
+            new CompareHandler(null, new CompareItem("Un-Ordered", unOrdered, System.currentTimeMillis(), null),
+               new CompareItem("Ordered", ordered, System.currentTimeMillis(), null), null);
+         compareHandler.compare();
+      }
 
       return sItems;
    }
@@ -181,6 +185,9 @@ public class SortAgileBacklog extends XNavigateItemAction {
    };
 
    private String print(String title, List<IAgileItem> sItems) {
+      if (!debug) {
+         return "";
+      }
       XResultData rows = new XResultData();
 
       XResultData results = new XResultData();
