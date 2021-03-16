@@ -54,8 +54,6 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean AllowWebExport = ats.createBoolean(1244831604424847172L, "ats.Allow Web Export", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean ApplicabilityWorkflow = ats.createBoolean(1152922022510067882L, "ats.Applicability Workflow", MediaType.TEXT_PLAIN, "");
    ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(new ApplicableToProgramAttributeType());
-   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
-   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ApproveRequestedHoursDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString AtsConfiguredBranch = ats.createString(72063456936722683L, "ats.ATS Configured Branch", MediaType.TEXT_PLAIN, "ATS Configured Branch");
@@ -64,7 +62,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString AtsIdSequenceName = ats.createString(1163054603768431493L, "ats.ATS Id Sequence Name", MediaType.TEXT_PLAIN, "ATS Id Sequence Name");
    AttributeTypeString BaselineBranchId = ats.createString(1152932018686787753L, "ats.Baseline Branch Id", MediaType.TEXT_PLAIN, "Baseline branch associated with ATS object.");
    AttributeTypeString BlockedReason = ats.createString(7797797474874870503L, "ats.Blocked Reason", MediaType.TEXT_PLAIN, "Reason for action being blocked");
-   AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", MediaType.TEXT_PLAIN, "Reason for action being held");
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", MediaType.TEXT_PLAIN, "CSCI this Team is reponsible for.");
@@ -103,6 +100,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes will be made available to the users.");
    AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", MediaType.TEXT_PLAIN, "Expanded and descriptive name.");
    AttributeTypeString GoalOrderVote = ats.createString(1152921504606847211L, "ats.Goal Order Vote", MediaType.TEXT_PLAIN, "Vote for order item belongs to within goal.");
+   AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", MediaType.TEXT_PLAIN, "Reason for action being held");
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", MediaType.TEXT_PLAIN, "Is Direct Commercial Sale");
@@ -140,6 +138,8 @@ public interface AtsAttributeTypes {
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", MediaType.TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.");
    PriorityAttributeType Priority = ats.createEnum(new PriorityAttributeType());
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", MediaType.TEXT_PLAIN, "Problem found during analysis.");
+   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", MediaType.TEXT_PLAIN, "Recommended resolution.");
    AttributeTypeString Rationale = ats.createString(1152922093379715242L, "ats.Rationale", MediaType.TEXT_PLAIN, "");
@@ -187,18 +187,18 @@ public interface AtsAttributeTypes {
    AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", MediaType.TEXT_PLAIN, "");
    AttributeTypeArtifactId WorkPackageReference = ats.createArtifactId(473096133909456789L, "ats.Work Package Reference", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
    WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(new WorkPackageTypeAttributeType());
-   AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", MediaType.TEXT_PLAIN, "Work Type of this Team.");
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Workflow Notes", MediaType.TEXT_PLAIN, "Notes applicable to ATS Workflow");
+   AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", MediaType.TEXT_PLAIN, "Work Type of this Team.");
 
-   //icTeam Types
+   // IcTeam Types
+   AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(new AgileChangeTypeAttributeType());
+   AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", MediaType.TEXT_PLAIN, "Stores the prerequsite data for workflow");
+   AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", MediaType.TEXT_PLAIN, "Guid of the task");
+   AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", MediaType.TEXT_PLAIN, "Addition of tags to workflow");
    AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", MediaType.TEXT_PLAIN, "Holds the Rank of workflow for prioritization");
    AttributeTypeString Shortname = ats.createStringNoTag(1152921504606847340L, "Shortname", MediaType.TEXT_PLAIN, "Shorter name of project");
    AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", MediaType.TEXT_PLAIN, "Count value to hold the number of tasks under a project");
-   AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", MediaType.TEXT_PLAIN, "Guid of the task");
-   AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(new AgileChangeTypeAttributeType());
-   AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", MediaType.TEXT_PLAIN, "Addition of tags to workflow");
-   AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", MediaType.TEXT_PLAIN, "Stores the prerequsite data for workflow");
 
    // Remove static after 25.0
    AttributeTypeString ActionableItem = ats.createString(1152921504606847200L, "ats.Actionable Item", MediaType.TEXT_PLAIN, "Actionable Items that are impacted by this change.");
