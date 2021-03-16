@@ -24,17 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -92,7 +82,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -100,7 +89,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G. Dunne
  */
-@Path("action")
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private final OrcsApi orcsApi;
@@ -116,8 +104,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @GET
-   @Produces(MediaType.TEXT_HTML)
    public String get() {
       try {
          return RestUtil.simplePageHtml("Action Resource");
@@ -131,11 +117,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return html representation of the action
     */
    @Override
-   @Path("{ids}")
-   @IdentityView
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) {
+   public List<IAtsWorkItem> getAction(String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return workItems;
    }
@@ -145,10 +127,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return html representation of the action
     */
    @Override
-   @Path("{ids}/details")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) {
+   public List<IAtsWorkItem> getActionDetails(String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return workItems;
    }
@@ -158,12 +137,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return html representation of the action
     */
    @Override
-   @Path("{ids}/child")
-   @IdentityView
    @TargetedVersion
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> getActionChildren(@PathParam("ids") String ids) {
+   public List<IAtsWorkItem> getActionChildren(String ids) {
       List<IAtsWorkItem> children = new LinkedList<>();
       for (ArtifactToken action : atsApi.getQueryService().getArtifactsByIds(ids)) {
          for (ArtifactToken childWf : atsApi.getRelationResolver().getRelated(action,
@@ -178,11 +153,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{ids}/sibling")
    @TargetedVersion
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> getSiblings(@PathParam("ids") String ids) {
+   public List<IAtsWorkItem> getSiblings(String ids) {
       List<IAtsWorkItem> siblings = new LinkedList<>();
       for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactsByIds(ids)) {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
@@ -199,10 +171,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return valid unreleased versions to select
     */
    @Override
-   @GET
-   @Path("{id}/UnreleasedVersions")
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getUnreleasedVersionNames(@PathParam("id") String id) {
+   public List<String> getUnreleasedVersionNames(String id) {
       List<String> versions = new LinkedList<>();
       IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
       IAtsTeamDefinition targedVersionsTeamDef =
@@ -221,10 +190,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return valid transition-to states in order of default state, other states and return states
     */
    @Override
-   @GET
-   @Path("{id}/TransitionToStates")
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getTransitionToStateNames(@PathParam("id") String id) {
+   public List<String> getTransitionToStateNames(String id) {
       List<String> states = new LinkedList<>();
       IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
       states.add(teamWf.getStateDefinition().getDefaultToState().getName());
@@ -250,10 +216,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return list of json objects containing artifact ids and names for a related set of requirements
     */
    @Override
-   @GET
-   @Path("{id}/assocArt/{attrTypeId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getRelatedRequirements(@PathParam("id") ArtifactId workflowId, @PathParam("relatedReqs") AttributeTypeToken relatedReqs, @QueryParam("versionType") AttributeTypeToken versionType) {
+   public List<String> getRelatedRequirements(ArtifactId workflowId, AttributeTypeToken relatedReqs, AttributeTypeToken versionType) {
       List<String> requirements = new LinkedList<>();
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(COMMON);
       ArtifactReadable workflow = query.andId(workflowId).getArtifact();
@@ -277,21 +240,14 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{id}/attributeType/{attrTypeId}")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public Attribute getActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeId") AttributeTypeToken attributeType) {
+   public Attribute getActionAttributeByType(String id, AttributeTypeToken attributeType) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
       return ops.getActionAttributeValues(attributeType, workItem);
    }
 
    @Override
-   @Path("{id}/attributeType/{attrTypeIdOrKey}")
-   @PUT
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   public Attribute setActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
+   public Attribute setActionAttributeByType(String id, String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
       IAtsChangeSet changes = atsApi.createChangeSet("Set attr by type/key [" + attrTypeIdOrKey + "]");
@@ -409,10 +365,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{id}/cancel")
-   @GET
-   @Produces({MediaType.TEXT_HTML})
-   public Response cancelAction(@PathParam("id") String id) {
+   public Response cancelAction(String id) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       if (workItem.isInWork()) {
          Conditions.assertNotNull(workItem, "workItem can not be found");
@@ -429,11 +382,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{workItemId}/changeType/{changeType}")
-   @PUT
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId, @PathParam("changeType") String changeType, Collection<ArtifactToken> artifacts) {
+   public Collection<ArtifactToken> setByArtifactToken(String workItemId, String changeType, Collection<ArtifactToken> artifacts) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
       AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
       ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
@@ -446,10 +395,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return json representation of the matching workItem(s)
     */
    @Override
-   @Path("{ids}/legacy/state")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public String getActionStateFromLegacyPcrId(@PathParam("ids") String ids) {
+   public String getActionStateFromLegacyPcrId(String ids) {
       List<IAtsWorkItem> workItems = new ArrayList<>();
       for (String id : atsApi.getQueryService().getIdsFromStr(ids)) {
          ArtifactToken action = atsApi.getQueryService().getArtifactByLegacyPcrId(id);
@@ -462,10 +408,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{ids}/state")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public String getActionState(@PathParam("ids") String ids) {
+   public String getActionState(String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return atsApi.getActionFactory().getActionStateJson(workItems);
    }
@@ -475,10 +418,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return json representation of the matching workItem(s)
     */
    @Override
-   @Path("query")
-   @GET
-   @Produces({MediaType.APPLICATION_JSON})
-   public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) {
+   public Set<IAtsWorkItem> query(UriInfo uriInfo) {
       Set<IAtsWorkItem> workItems = new HashSet<>();
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
@@ -556,17 +496,11 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @POST
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createAction(NewActionData newActionData) {
       return createNewAction(newActionData);
    }
 
    @Override
-   @Path("branch")
-   @POST
-   @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData) {
 
       NewActionResult result = new NewActionResult();
@@ -640,10 +574,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("createEmpty")
-   @POST
-   @Produces(MediaType.APPLICATION_JSON)
-   public String createEmptyAction(@QueryParam("userId") String userId, @QueryParam("ai") String actionItem, @QueryParam("title") String title) {
+   public String createEmptyAction(String userId, String actionItem, String title) {
       String newActionId = "";
       NewActionData newActionData = getNewActionData(userId, actionItem, title);
       NewActionResult newAction = createNewAction(newActionData);
@@ -676,8 +607,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return html representation of action created
     */
    @Override
-   @POST
-   @Consumes("application/x-www-form-urlencoded")
    public Response createAction(MultivaluedMap<String, String> form) {
       // validate title
       String title = form.getFirst("ats_title");
@@ -743,11 +672,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, atsApi);
    }
 
-   @Path("query/legacyId")
-   @GET
    @Override
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsWorkItem> query(@QueryParam("ids") String idsStr) {
+   public List<IAtsWorkItem> query(String idsStr) {
       List<IAtsWorkItem> results = new LinkedList<>();
       List<String> ids = new LinkedList<>();
       for (String id : idsStr.split(",")) {
@@ -774,11 +700,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return atsApi.getBranchService().getChangeData(transactionId);
    }
 
-   @Path("transition")
-   @POST
    @Override
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
    public TransitionResults transition(TransitionData transData) {
       if (transData.getTransitionUser() == null && transData.getTransitionUserArtId().isValid()) {
          transData.setTransitionUser(atsApi.getUserService().getUserById(transData.getTransitionUserArtId()));
@@ -787,11 +709,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return results;
    }
 
-   @Path("transitionValidate")
-   @POST
    @Override
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
    public TransitionResults transitionValidate(TransitionData transData) {
       if (transData.getTransitionUser() == null && transData.getTransitionUserArtId().isValid()) {
          transData.setTransitionUser(atsApi.getUserService().getUserById(transData.getTransitionUserArtId()));
@@ -800,31 +718,21 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return results;
    }
 
-   @Path("sync/jira")
-   @GET
    @Override
-   @Produces({MediaType.APPLICATION_JSON})
    public XResultData syncJira() {
       SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), true);
       XResultData results = op.run();
       return results;
    }
 
-   @Path("sync/jira/persist")
-   @GET
    @Override
-   @Produces({MediaType.APPLICATION_JSON})
    public XResultData syncJiraAndPersist() {
       SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false);
       XResultData results = op.run();
       return results;
    }
 
-   @Path("jira/report/epic")
-   @POST
    @Override
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
    public JiraByEpicData reportEpicDiffs(JiraByEpicData data) {
       JiraReportEpicDiffsOperation op = new JiraReportEpicDiffsOperation(data, atsApi);
       op.run();

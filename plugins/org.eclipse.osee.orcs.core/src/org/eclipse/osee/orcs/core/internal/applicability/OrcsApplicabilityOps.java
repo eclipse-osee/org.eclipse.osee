@@ -1095,6 +1095,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             tx2.createApplicabilityForView(newGrp, feature.getName() + " = " + feature.getDefaultValue());
          }
          tx2.commit();
+         results.getIds().add(newGrp.getIdString());
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
@@ -1251,7 +1252,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user, "Delete Cfg Group");
          tx.deleteArtifact(cfgGroupArtToken);
          tx.commit();
-
+         results.getIds().add(id);
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }

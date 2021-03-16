@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
@@ -364,7 +363,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter) {
+   public Response getFeatureMatrixExcel(BranchId branchId, String filter) {
       StreamingOutput streamingOutput = new ApplicabilityFeatureMatrixStreamingOutput(orcsApi, branchId, filter);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "FeatureMatrix.xml");

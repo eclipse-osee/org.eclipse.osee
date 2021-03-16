@@ -25,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
 /**
  * @author Donald G. Dunne
@@ -57,6 +59,7 @@ public interface AtsActionEndpointApi {
     */
    @Path("{ids}")
    @GET
+   @IdentityView
    @Produces({MediaType.APPLICATION_JSON})
    List<IAtsWorkItem> getAction(@PathParam("ids") String ids);
 
@@ -75,6 +78,7 @@ public interface AtsActionEndpointApi {
     */
    @Path("{ids}/child")
    @GET
+   @IdentityView
    @Produces({MediaType.APPLICATION_JSON})
    List<IAtsWorkItem> getActionChildren(@PathParam("ids") String ids);
 
@@ -106,7 +110,7 @@ public interface AtsActionEndpointApi {
    @Path("query")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   Set<IAtsWorkItem> query(UriInfo uriInfo);
+   Set<IAtsWorkItem> query(@Context UriInfo uriInfo);
 
    /**
     * @param ids - comma delimited legacy id attribute values

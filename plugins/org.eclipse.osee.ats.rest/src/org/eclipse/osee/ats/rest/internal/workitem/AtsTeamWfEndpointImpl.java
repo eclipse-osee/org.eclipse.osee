@@ -13,21 +13,13 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -65,10 +57,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("{id}/changedata")
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<ChangeItem> getChangeData(@PathParam("id") String id) {
+   public List<ChangeItem> getChangeData(String id) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
       if (!workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
@@ -86,22 +75,16 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("{id}")
-   @Produces({MediaType.APPLICATION_JSON})
-   public IAtsTeamWorkflow getTeamWorkflow(@PathParam("id") String id) {
+   public IAtsTeamWorkflow getTeamWorkflow(String id) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
-      if (!workItem.isTeamWorkflow()) {
+      if (workItem == null || !workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
       }
       return (IAtsTeamWorkflow) workItem;
    }
 
    @Override
-   @GET
-   @Path("{aiId}/version")
-   @Produces({MediaType.APPLICATION_JSON})
-   public Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId) {
+   public Collection<IAtsVersion> getVersionsbyTeamDefinition(String aiId) {
       IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(aiId);
       IAtsTeamDefinition impactedTeamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
       IAtsTeamDefinition teamDefHoldingVersions =
@@ -111,11 +94,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   @PUT
-   @Path("{id}/addchangeids/{teamId}")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   public XResultData addChangeIds(@PathParam("id") String workItemId, @PathParam("teamId") String teamId, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds) {
+   public XResultData addChangeIds(String workItemId, String teamId, UserId userId, List<String> changeIds) {
       XResultData rd = new XResultData();
       rd.setTitle("Add Change Ids: " + changeIds);
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(workItemId);
@@ -167,10 +146,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("{id}/goal")
-   @Produces({MediaType.APPLICATION_JSON})
-   public List<IAtsGoal> getGoals(@PathParam("id") String id) {
+   public List<IAtsGoal> getGoals(String id) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
       if (!workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
@@ -185,11 +161,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   @PUT
-   @Path("build/{build}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   public XResultData setReleases(@PathParam("build") String build, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds) {
+   public XResultData setReleases(String build, UserId userId, List<String> changeIds) {
       XResultData rd = new XResultData();
       try {
          rd.setTitle("Add Workflow to Release Relations");

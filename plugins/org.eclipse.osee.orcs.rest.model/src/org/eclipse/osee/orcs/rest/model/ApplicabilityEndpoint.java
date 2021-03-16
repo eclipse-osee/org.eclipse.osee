@@ -64,111 +64,64 @@ public interface ApplicabilityEndpoint {
 
    @GET
    @Path("artifact/{artId}")
-   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    ApplicabilityToken getApplicabilityToken(@PathParam("artId") ArtifactId artId);
 
    @GET
    @Path("artifact/reference/{artId}")
-   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityId> getApplicabilitiesReferenced(@PathParam("artId") ArtifactId artifact);
 
    @GET
    @Path("artifact/reference/token/{artId}")
-   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityToken> getApplicabilityReferenceTokens(@PathParam("artId") ArtifactId artifact);
-
-   @PUT
-   @Path("view")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData updateView(ViewDefinition view);
-
-   @POST
-   @Path("view")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData createView(ViewDefinition view);
-
-   @DELETE
-   @Path("view/{id}")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData deleteView(@PathParam("id") String id);
 
    @GET
    @Path("cfggroup")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getCfgGroup();
 
-   @GET
-   @Path("cfggroup/def/{id}")
-   @Produces({MediaType.APPLICATION_JSON})
-   ConfigurationGroupDefinition getConfigurationGroup(@PathParam("id") String id);
-
    @POST
    @Path("cfggroup")
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.TEXT_PLAIN})
    XResultData createCfgGroup(String grpName);
 
    @PUT
-   @Path("cfggroup/{groupId}/relate/{viewId}")
+   @Path("cfggroup")
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData relateCfgGroupToView(@PathParam("groupId") String groupId, @PathParam("viewId") String viewId);
-
-   @PUT
-   @Path("cfggroup/{groupId}/unrelate/{viewId}")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData unrelateCfgGroupToView(@PathParam("groupId") String groupId, @PathParam("viewId") String viewId);
+   XResultData updateCfgGroup();
 
    @DELETE
    @Path("cfggroup/{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
    XResultData deleteCfgGroup(@PathParam("id") String groupId);
 
    @PUT
    @Path("cfggroup/{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
    XResultData updateCfgGroup(@PathParam("id") String id);
 
+   @GET
+   @Path("cfggroup/def/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   ConfigurationGroupDefinition getConfigurationGroup(@PathParam("id") String id);
+
    @PUT
-   @Path("cfggroup")
+   @Path("cfggroup/{groupId}/relate/{viewId}")
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData updateCfgGroup();
+   XResultData relateCfgGroupToView(@PathParam("groupId") String groupId, @PathParam("viewId") String viewId);
 
-   @GET
-   @Path("view/{id}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id);
-
-   @GET
-   @Path("view/def/{id}")
+   @PUT
+   @Path("cfggroup/{groupId}/unrelate/{viewId}")
    @Produces({MediaType.APPLICATION_JSON})
-   ViewDefinition getView(@PathParam("id") String id);
+   XResultData unrelateCfgGroupToView(@PathParam("groupId") String groupId, @PathParam("viewId") String viewId);
 
    @GET
-   @Path("views")
-   @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getViews();
-
-   @GET
-   @Path("feature-data")
+   @Path("features")
    @Produces(MediaType.APPLICATION_JSON)
    List<FeatureDefinition> getFeatureDefinitionData();
-
-   @GET
-   @Path("feature/{featureNameOrId}")
-   @Produces({MediaType.APPLICATION_JSON})
-   FeatureDefinition getFeature(@PathParam("featureNameOrId") String featureNameOrId);
 
    @PUT
    @Path("feature")
@@ -178,15 +131,63 @@ public interface ApplicabilityEndpoint {
 
    @POST
    @Path("feature")
-   @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
    XResultData createFeature(FeatureDefinition feature);
+
+   @GET
+   @Path("feature/{featureNameOrId}")
+   @Produces({MediaType.APPLICATION_JSON})
+   FeatureDefinition getFeature(@PathParam("featureNameOrId") String featureNameOrId);
 
    @DELETE
    @Path("feature/{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
    XResultData deleteFeature(@PathParam("id") ArtifactId id);
+
+   @GET
+   @Path("views")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getViews();
+
+   @PUT
+   @Path("view")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData updateView(ViewDefinition view);
+
+   @POST
+   @Path("view")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData createView(ViewDefinition view);
+
+   @GET
+   @Path("view/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id);
+
+   @DELETE
+   @Path("view/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData deleteView(@PathParam("id") String id);
+
+   @PUT
+   @Path("view/{id}/applic")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData createApplicabilityForView(@PathParam("id") ArtifactId id, String applicability);
+
+   @DELETE
+   @Path("view/{id}/applic")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData removeApplicabilityFromView(@PathParam("id") ArtifactId viewId, String applicability);
+
+   @GET
+   @Path("view/def/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   ViewDefinition getView(@PathParam("id") String id);
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)
@@ -250,14 +251,7 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("versionConfig/{version}")
    @Produces(MediaType.APPLICATION_JSON)
-   @Consumes(MediaType.APPLICATION_JSON)
    ArtifactId getVersionConfig(@PathParam("version") ArtifactId version);
-
-   @PUT
-   @Path("view/{id}/applic")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   XResultData createApplicabilityForView(@PathParam("id") ArtifactId id, String applicability);
 
    /**
     * Copy missing tuples of type CoreTupleTypes.ViewApplicability from parent branch onto this branch
@@ -273,19 +267,12 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("access")
    @Produces(MediaType.APPLICATION_JSON)
-   @Consumes(MediaType.APPLICATION_JSON)
    XResultData isAccess();
 
    @GET
    @Path("featureMatrix")
    @Produces(MediaType.APPLICATION_XML)
    public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter);
-
-   @DELETE
-   @Path("view/{id}/applic")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   XResultData removeApplicabilityFromView(@PathParam("id") ArtifactId viewId, String applicability);
 
    @POST
    @Path("blockVisibility/{view}")

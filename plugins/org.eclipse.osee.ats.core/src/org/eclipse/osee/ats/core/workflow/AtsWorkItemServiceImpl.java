@@ -253,7 +253,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public IAtsWorkItem getWorkItemByAnyId(String actionId) {
       IAtsWorkItem workItem = null;
-      ArtifactToken artifact = null;
+      ArtifactToken artifact = ArtifactToken.SENTINEL;
       if (GUID.isValid(actionId)) {
          artifact = atsApi.getQueryService().getArtifactByGuidOrSentinel(actionId);
       } else if (Strings.isNumeric(actionId)) {

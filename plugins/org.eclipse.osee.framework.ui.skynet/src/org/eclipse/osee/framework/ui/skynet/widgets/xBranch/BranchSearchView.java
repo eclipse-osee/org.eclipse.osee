@@ -86,14 +86,14 @@ public class BranchSearchView extends BranchView {
                   idBranchData.setIncludeDeleted(true);
                }
                showBranchData = idBranchData;
-               branches = endpoint.getFromQuery(idBranchData);
+               branches = endpoint.getBranches(idBranchData);
             } else {
                xBranchWidget.setExtraInfoLabel("Must enter ID to search");
                return;
             }
          } else {
             showBranchData = branchData;
-            branches = endpoint.getFromQuery(branchData);
+            branches = endpoint.getBranches(branchData);
          }
       } catch (Exception ex) {
          OseeLog.log(BranchSearchView.class, Level.SEVERE, ex);

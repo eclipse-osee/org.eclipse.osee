@@ -48,7 +48,7 @@ public interface AtsTeamWfEndpointApi {
    @GET
    @Path("{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   IAtsTeamWorkflow getTeamWorkflow(String id);
+   IAtsTeamWorkflow getTeamWorkflow(@PathParam("id") String id);
 
    @PUT
    @Path("{id}/addchangeids/{teamId}")

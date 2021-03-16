@@ -31,14 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -168,16 +162,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public List<Branch> getBranches(BranchQueryData options) {
       ResultSet<Branch> results = searchBranches(options);
       return results.getList();
-   }
-
-   @Override
-   public List<Branch> getFromQuery(BranchQueryData options) {
-      ResultSet<Branch> results = searchBranches(options);
-      Set<Branch> branches = new HashSet<>();
-      branches.addAll(results.getList());
-      List<Branch> branchList = new ArrayList<>();
-      branchList.addAll(branches);
-      return branchList;
    }
 
    @Override
@@ -334,11 +318,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   @POST
-   @Path("{branch}/update")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   public UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData) {
+   public UpdateBranchData updateBranch(BranchId branch, UpdateBranchData branchData) {
       UpdateBranchOperation op = new UpdateBranchOperation(branchData, orcsApi);
       return op.run();
    }
@@ -818,59 +798,62 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private ResultSet<Branch> searchBranches(BranchQueryData options) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
 
-      Collection<BranchId> branchIds = options.getBranchIds();
-      if (Conditions.hasValues(branchIds)) {
-         query.andIds(branchIds);
+      if (options != null) {
+         Collection<BranchId> branchIds = options.getBranchIds();
+         if (Conditions.hasValues(branchIds)) {
+            query.andIds(branchIds);
+         }
+
+         Collection<BranchState> branchStates = options.getBranchStates();
+         if (Conditions.hasValues(branchStates)) {
+            query.andStateIs(branchStates.toArray(new BranchState[branchStates.size()]));
+         }
+
+         Collection<BranchType> branchTypes = options.getBranchTypes();
+         if (Conditions.hasValues(branchTypes)) {
+            query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
+         }
+
+         if (options.isIncludeArchived()) {
+            query.includeArchived();
+         } else {
+            query.excludeArchived();
+         }
+
+         if (options.isIncludeDeleted()) {
+            query.includeDeleted();
+         } else {
+            query.excludeDeleted();
+         }
+
+         String nameEquals = options.getNameEquals();
+         if (Strings.isValid(nameEquals)) {
+            query.andNameEquals(nameEquals);
+         }
+
+         String namePattern = options.getNamePattern();
+         if (Strings.isValid(namePattern)) {
+            query.andNamePattern(namePattern);
+         }
+
+         String namePatternIgnoreCase = options.getNamePatternIgnoreCase();
+         if (Strings.isValid(namePatternIgnoreCase)) {
+            query.andNamePatternIgnoreCase(namePatternIgnoreCase);
+         }
+
+         Long ancestorOf = options.getIsAncestorOf();
+         if (ancestorOf > 0) {
+            BranchId ancestorOfToken = BranchId.valueOf(ancestorOf);
+            query.andIsAncestorOf(ancestorOfToken);
+         }
+
+         Long childOf = options.getIsChildOf();
+         if (childOf > 0) {
+            BranchId childOfToken = BranchId.valueOf(ancestorOf);
+            query.andIsAncestorOf(childOfToken);
+         }
       }
 
-      Collection<BranchState> branchStates = options.getBranchStates();
-      if (Conditions.hasValues(branchStates)) {
-         query.andStateIs(branchStates.toArray(new BranchState[branchStates.size()]));
-      }
-
-      Collection<BranchType> branchTypes = options.getBranchTypes();
-      if (Conditions.hasValues(branchTypes)) {
-         query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
-      }
-
-      if (options.isIncludeArchived()) {
-         query.includeArchived();
-      } else {
-         query.excludeArchived();
-      }
-
-      if (options.isIncludeDeleted()) {
-         query.includeDeleted();
-      } else {
-         query.excludeDeleted();
-      }
-
-      String nameEquals = options.getNameEquals();
-      if (Strings.isValid(nameEquals)) {
-         query.andNameEquals(nameEquals);
-      }
-
-      String namePattern = options.getNamePattern();
-      if (Strings.isValid(namePattern)) {
-         query.andNamePattern(namePattern);
-      }
-
-      String namePatternIgnoreCase = options.getNamePatternIgnoreCase();
-      if (Strings.isValid(namePatternIgnoreCase)) {
-         query.andNamePatternIgnoreCase(namePatternIgnoreCase);
-      }
-
-      Long ancestorOf = options.getIsAncestorOf();
-      if (ancestorOf > 0) {
-         BranchId ancestorOfToken = BranchId.valueOf(ancestorOf);
-         query.andIsAncestorOf(ancestorOfToken);
-      }
-
-      Long childOf = options.getIsChildOf();
-      if (childOf > 0) {
-         BranchId childOfToken = BranchId.valueOf(ancestorOf);
-         query.andIsAncestorOf(childOfToken);
-      }
       return query.getResults();
    }
 

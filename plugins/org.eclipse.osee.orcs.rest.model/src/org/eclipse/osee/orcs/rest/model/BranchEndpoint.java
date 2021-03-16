@@ -50,16 +50,22 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 @Path("branches")
 public interface BranchEndpoint {
 
-   @POST
+   @GET
+   @Path("query")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    List<Branch> getBranches(BranchQueryData query);
 
    @POST
-   @Path("query")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   List<Branch> getFromQuery(BranchQueryData query);
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   BranchId createBranch(NewBranch data);
+
+   @POST
+   @Path("validation")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData createBranchValidation(NewBranch data);
 
    /**
     * Perform a branch query based on query parameter input
@@ -100,59 +106,6 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    Branch getBranchById(@PathParam("branch") BranchId branch);
 
-   @GET
-   @Path("{branch1}/diff/{branch2}")
-   @Produces({MediaType.APPLICATION_JSON})
-   List<ChangeItem> compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
-
-   @GET
-   @Path("{branch}/txs")
-   @Produces({MediaType.APPLICATION_JSON})
-   List<Transaction> getAllBranchTxs(@PathParam("branch") BranchId branch);
-
-   @GET
-   @Path("{branch}/txs/{tx-id}")
-   @Produces({MediaType.APPLICATION_JSON})
-   Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") TransactionId txId);
-
-   @GET
-   @Path("{branch}/view/{viewId}/artifact/type/{artifactTypes}/attributes")
-   @Produces(MediaType.APPLICATION_JSON)
-   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("artifactTypes") String artifactTypes);
-
-   @GET
-   @Path("{branch}/artifact/type/{artifactTypes}/attributes")
-   @Produces(MediaType.APPLICATION_JSON)
-   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("artifactTypes") String artifactTypes);
-
-   @GET
-   @Path("{branch}/relation/type/{relationTypes}")
-   @Produces(MediaType.APPLICATION_JSON)
-   JsonRelations getRelationsByType(@PathParam("branch") BranchId branch, @PathParam("relationTypes") String relationTypes);
-
-   @POST
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   BranchId createBranch(NewBranch data);
-
-   @POST
-   @Path("validation")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   XResultData createBranchValidation(NewBranch data);
-
-   @POST
-   @Path("{branch}/update")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData);
-
-   @POST
-   @Path("{branch}/program")
-   @Consumes({MediaType.TEXT_PLAIN})
-   @Produces({MediaType.APPLICATION_JSON})
-   BranchToken createProgramBranch(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("branch") BranchId branchId, String branchName);
-
    @POST
    @Path("{branch}")
    @Consumes({MediaType.APPLICATION_JSON})
@@ -160,14 +113,49 @@ public interface BranchEndpoint {
    BranchId createBranchWithId(@PathParam("branch") BranchId branch, NewBranch data);
 
    @POST
+   @Path("{branch}/archive")
+   Response archiveBranch(@PathParam("branch") BranchId branch);
+
+   @GET
+   @Path("{branch}/artifact/type/{artifactTypes}/attributes")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("artifactTypes") String artifactTypes);
+
+   @POST
    @Path("{branch}/commit/{destination-branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    TransactionResult commitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
 
+   @GET
+   @Path("{branch1}/diff/{branch2}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ChangeItem> compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
+
+   @PUT
+   @Path("{branch}/name")
+   @Consumes({MediaType.TEXT_PLAIN})
+   Response setBranchName(@PathParam("branch") BranchId branch, String newName);
+
    @POST
-   @Path("{branch}/archive")
-   Response archiveBranch(@PathParam("branch") BranchId branch);
+   @Path("{branch}/program")
+   @Consumes({MediaType.TEXT_PLAIN})
+   @Produces({MediaType.APPLICATION_JSON})
+   BranchToken createProgramBranch(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("branch") BranchId branchId, String branchName);
+
+   @GET
+   @Path("{branch}/relation/type/{relationTypes}")
+   @Produces(MediaType.APPLICATION_JSON)
+   JsonRelations getRelationsByType(@PathParam("branch") BranchId branch, @PathParam("relationTypes") String relationTypes);
+
+   @PUT
+   @Path("{branch}/state/{branch-state}")
+   Response setBranchState(@PathParam("branch") BranchId branch, @PathParam("branch-state") BranchState newState);
+
+   @GET
+   @Path("{branch}/txs")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<Transaction> getAllBranchTxs(@PathParam("branch") BranchId branch);
 
    @POST
    @Path("{branch}/txs")
@@ -175,9 +163,29 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    Response writeTx(@PathParam("branch") BranchId branch, NewTransaction data);
 
+   @GET
+   @Path("{branch}/txs/{tx-id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") TransactionId txId);
+
+   @PUT
+   @Path("{branch}/type/{branch-type}")
+   Response setBranchType(@PathParam("branch") BranchId branch, @PathParam("branch-type") BranchType newType);
+
+   @GET
+   @Path("{branch}/view/{viewId}/artifact/type/{artifactTypes}/attributes")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("artifactTypes") String artifactTypes);
+
    @POST
-   @Path("exchange/validation")
-   Response validateExchange(@QueryParam("path") String path);
+   @Path("{branch}/update")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData);
+
+   @DELETE
+   @Path("exchange")
+   Response deleteBranchExchange(@QueryParam("path") String path);
 
    @POST
    @Path("exchange/export")
@@ -189,22 +197,9 @@ public interface BranchEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    Response importBranches(BranchImportOptions options);
 
-   @DELETE
-   @Path("exchange")
-   Response deleteBranchExchange(@QueryParam("path") String path);
-
-   @PUT
-   @Path("{branch}/name")
-   @Consumes({MediaType.TEXT_PLAIN})
-   Response setBranchName(@PathParam("branch") BranchId branch, String newName);
-
-   @PUT
-   @Path("{branch}/type/{branch-type}")
-   Response setBranchType(@PathParam("branch") BranchId branch, @PathParam("branch-type") BranchType newType);
-
-   @PUT
-   @Path("{branch}/state/{branch-state}")
-   Response setBranchState(@PathParam("branch") BranchId branch, @PathParam("branch-state") BranchState newState);
+   @POST
+   @Path("exchange/validation")
+   Response validateExchange(@QueryParam("path") String path);
 
    @POST
    @Path("{branch}/permission/{permission}/{subject}")

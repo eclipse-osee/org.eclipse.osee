@@ -432,6 +432,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    @Override
    public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds, BranchId branch) {
       ArrayList<BranchId> toReturn = new ArrayList<>();
+      if (injectDateMs == null || removalDateMs == null || applicabilityIds == null) {
+         return toReturn;
+      }
       Date injection = new Date(injectDateMs);
       Date removal = new Date(removalDateMs);
       List<Branch> branchList =

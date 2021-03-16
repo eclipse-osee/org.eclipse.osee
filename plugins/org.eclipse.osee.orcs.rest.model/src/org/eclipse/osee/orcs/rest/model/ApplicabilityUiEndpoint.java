@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,6 +37,11 @@ public interface ApplicabilityUiEndpoint {
    @Produces({MediaType.TEXT_HTML})
    Response get();
 
+   @GET
+   @Path("ro")
+   @Produces({MediaType.TEXT_HTML})
+   Response getRO();
+
    /**
     * @return Un-archived baseline and working branches available for Product Line configuration
     */
@@ -48,24 +52,17 @@ public interface ApplicabilityUiEndpoint {
 
    @GET
    @Path("branches/{branchQueryType}")
-   @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   List<BranchId> getApplicabilityBranchesByType(String branchQueryType);
+   List<BranchId> getApplicabilityBranchesByType(@PathParam("branchQueryType") String branchQueryType);
 
    @GET
    @Path("branch/{branch}")
-   @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch, @QueryParam("showAll") @DefaultValue("false") Boolean showAll);
 
    @POST
    @Path("branch/{branch}/convert")
-   @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.TEXT_HTML})
    public XResultData convertConfigToArtifact(@PathParam("branch") BranchId branch);
-
-   @GET
-   @Produces({MediaType.TEXT_HTML})
-   Response getRO();
 
 }
