@@ -21,20 +21,18 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -55,15 +53,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       if (element instanceof AbstractWorkflowArtifact) {
-         try {
-            Result result = isPointsNumericValid(element);
-            if (result.isFalse()) {
-               return result.getText();
-            }
-            return AtsUtil.doubleToI18nString(getRemainingPoints(element));
-         } catch (OseeCoreException ex) {
-            LogUtil.getCellExceptionString(ex);
-         }
+         return AtsUtil.doubleToI18nString(getRemainingPoints(element));
       } else if (element instanceof IAtsWorkItem) {
          return getColumnText(((IAtsWorkItem) element).getStoreObject(), column, columnIndex);
       }
@@ -91,35 +81,6 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       return false;
    }
 
-   public Result isPointsNumericValid(Object object) {
-      if (object instanceof AbstractWorkflowArtifact) {
-         AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) object;
-         if (!aba.isAttributeTypeValid(pointsAttrType)) {
-            return Result.TrueResult;
-         }
-         try {
-            Double value = aba.getSoleAttributeValue(pointsAttrType, null);
-            if (aba.isCancelled()) {
-               return Result.TrueResult;
-            }
-            if (value == null) {
-               return new Result(pointsAttrType.getName() + " is not set.");
-            }
-            return Result.TrueResult;
-         } catch (Exception ex) {
-            return new Result(
-               ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
-         }
-      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
-            if (!isPointsNumericValid(team).isFalse()) {
-               return Result.FalseResult;
-            }
-         }
-      }
-      return Result.FalseResult;
-   }
-
    private double getRemainingPoints(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
          return getRemainPointsFromArtifact((IAtsWorkItem) object);
@@ -138,10 +99,21 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
          return 0;
       }
-      double est = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem, pointsAttrType, 0.0);
+      double est = getTotalPoints(workItem);
       if (est > 0) {
          int percentComplete = getPercentComplete(workItem);
          est = est - est * percentComplete / 100.0;
+      }
+      return est;
+   }
+
+   private double getTotalPoints(IAtsWorkItem workItem) {
+      IAttributeResolver attributeResolver = AtsApiService.get().getAttributeResolver();
+      double est;
+      if (pointsAttrType.isDouble()) {
+         est = attributeResolver.getSoleAttributeValue(workItem, pointsAttrType, 0.0);
+      } else {
+         est = Double.valueOf(attributeResolver.getSoleAttributeValue(workItem, pointsAttrType, "0"));
       }
       return est;
    }

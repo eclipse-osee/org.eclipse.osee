@@ -645,7 +645,7 @@ public class AgileService implements IAgileService {
       IAgileTeam agileTeam = null;
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
       if (teamWf != null) {
-         // attempt to get from team definitions relation to agile team
+         // Attempt to get from team definitions relation to agile team
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          if (teamDef != null) {
             ArtifactId agileTeamArt = atsApi.getRelationResolver().getRelatedOrSentinel(teamDef,
@@ -654,7 +654,7 @@ public class AgileService implements IAgileService {
                agileTeam = atsApi.getAgileService().getAgileTeam(agileTeamArt);
             }
          }
-         // attempt to get from workitem relation to sprint
+         // Attempt to get from workitem relation to sprint
          if (agileTeam == null) {
             ArtifactId sprintArt = atsApi.getRelationResolver().getRelatedOrSentinel(workItem,
                AtsRelationTypes.AgileSprintToItem_AgileSprint);
@@ -665,7 +665,7 @@ public class AgileService implements IAgileService {
                }
             }
          }
-         // attemp to get from workitem relation to backlog
+         // Attempt to get from workitem relation to backlog
          if (agileTeam == null) {
             ArtifactId backlogArt =
                atsApi.getRelationResolver().getRelatedOrSentinel(workItem, AtsRelationTypes.Goal_Goal);
