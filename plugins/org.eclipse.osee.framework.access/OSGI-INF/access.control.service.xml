@@ -10,4 +10,5 @@
    <reference bind="setLifecycleService" cardinality="1..1" interface="org.eclipse.osee.framework.lifecycle.ILifecycleService" name="ILifecycleService" policy="static"/>
    <reference bind="addAccessProvider" cardinality="1..n" interface="org.eclipse.osee.framework.access.IAccessProvider" name="IAccessProvider" policy="dynamic" unbind="removeAccessProvider"/>
    <reference cardinality="1..1" interface="org.eclipse.core.resources.IWorkspace" name="IWorkspace" policy="static"/>
+   <reference bind="addArtifactCheck" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.ArtifactCheck" name="ArtifactCheck" policy="dynamic"/>
 </scr:component>
