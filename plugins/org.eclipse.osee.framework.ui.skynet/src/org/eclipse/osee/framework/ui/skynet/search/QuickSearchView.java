@@ -247,14 +247,15 @@ public class QuickSearchView extends GenericViewPart {
          panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
          if (AccessControlManager.isOseeAdmin()) {
-            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this);
+            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
             idSearchComposite.addListener(idSearchListener);
          }
 
          Group attrSearchGroup = new Group(panel, SWT.NONE);
          attrSearchGroup.setLayout(new GridLayout());
          attrSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null, this);
+         attrSearchGroup.setToolTipText("Search by attributes, artifact types, or applicability parameters");
+         attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null, this, true);
          attrSearchComposite.addListener(attrSearchListener);
 
          optionsComposite = new QuickSearchOptionComposite(attrSearchGroup, SWT.NONE);
@@ -274,7 +275,7 @@ public class QuickSearchView extends GenericViewPart {
          applicability = new QuickSearchApplicabilityToken(appSearchGroup, this);
          applicability.create();
          if (!AccessControlManager.isOseeAdmin()) {
-            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this);
+            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
             idSearchComposite.addListener(idSearchListener);
          }
 
@@ -329,6 +330,8 @@ public class QuickSearchView extends GenericViewPart {
          this.branch = branchSelect.getData();
          // branch has been selected; allow user to set up search string
          compositeEnablement(attrSearchComposite, true);
+         refreshView();
+         refreshApplicability();
       }
    }
 

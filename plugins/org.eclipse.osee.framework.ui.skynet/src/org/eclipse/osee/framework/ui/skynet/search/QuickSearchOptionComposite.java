@@ -229,7 +229,7 @@ public class QuickSearchOptionComposite extends Composite {
          if (option.equals(SearchOption.Attribute_Types)) {
             attributeSearchText = searchText;
          } else if (option.equals(SearchOption.Artifact_Types)) {
-            attributeSearchText = searchText;
+            artifactSearchText = searchText;
          }
          textAreas.put(option, searchText);
 
@@ -255,7 +255,7 @@ public class QuickSearchOptionComposite extends Composite {
             attributeSearchText.setText(configHandler.toString());
 
          } else if (option.equals(SearchOption.Artifact_Types)) {
-            attributeSearchText.setText(configHandler.toString());
+            artifactSearchText.setText(configHandler.toString());
          }
          updateSearchEnablement();
       }

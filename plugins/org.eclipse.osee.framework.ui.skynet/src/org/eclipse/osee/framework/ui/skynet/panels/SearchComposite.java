@@ -63,14 +63,16 @@ public class SearchComposite extends Composite implements Listener {
    private final String buttonText, groupBoxText;
    private QuickSearchOptionComposite optionsComposite;
    private final QuickSearchView quickSearch;
+   private final boolean isAttributeComposite;
 
-   public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText, QuickSearchView quickSearch) {
+   public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText, QuickSearchView quickSearch, boolean isAttributeComposite) {
       super(parent, style);
       this.listeners = new HashSet<>();
       this.entryChanged = false;
       this.buttonText = buttonText;
       this.groupBoxText = groupBoxText;
       this.quickSearch = quickSearch;
+      this.isAttributeComposite = isAttributeComposite;
       createControl(this);
    }
 
@@ -207,7 +209,7 @@ public class SearchComposite extends Composite implements Listener {
             value = value.trim();
          }
          if (Widgets.isAccessible(this.executeSearch)) {
-            if (isAttributeComposite() && !Strings.isValid(value) && artTypeSelected && !attrTypeSelected) {
+            if (isAttributeComposite && !Strings.isValid(value) && artTypeSelected && !attrTypeSelected) {
                this.executeSearch.setEnabled(true);
             } else {
                this.executeSearch.setEnabled(Strings.isValid(value));
@@ -221,13 +223,6 @@ public class SearchComposite extends Composite implements Listener {
             this.clear.setEnabled(this.searchArea.getItemCount() > 0);
          }
       }
-   }
-
-   private boolean isAttributeComposite() {
-      Composite parent = getParent();
-      boolean isAttribute =
-         parent != null && parent instanceof Group && ((Group) parent).getText().contains("Attribute");
-      return isAttribute;
    }
 
    @Override
