@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsAttachment;
 import org.eclipse.osee.ats.api.workflow.AtsAttachments;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeEditorAddSupportingFiles;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite.OpenType;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -52,7 +50,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
@@ -64,16 +61,14 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 
 public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget {
 
-   protected IAtsWorkItem workItem;
-   HashMap<String, BranchId> nameBranchMap = new HashMap<>();
    private final String configKey;
-   boolean inOsee = false;
-   private String location;
-   private Composite parent;
+   private final HashMap<String, BranchId> nameLocationBranchMap = new HashMap<>();
+
    private Hyperlink readHyperlink;
    private Hyperlink editHyperlink;
    private Hyperlink deleteHyperlink;
-   private boolean listenerEnabled = false;
+   protected IAtsWorkItem workItem;
+   private Composite parent;
 
    public XAttachmentCombo(String displayLabel, String configKey) {
       super(displayLabel);
@@ -82,8 +77,8 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-      this.parent = parent;
       super.createControls(parent, horizontalSpan);
+      this.parent = parent;
       fillCombo();
    }
 
@@ -134,13 +129,9 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
 
       AtsAttachments allAttachments = AtsApiService.get().jaxRsApi().readValue(locationList, AtsAttachments.class);
       for (AtsAttachment attachment : allAttachments.getAttachments()) {
-         nameBranchMap.put(attachment.getName(), attachment.getBranch());
-         location = attachment.getlocation();
-         if (location.equals("osee")) {
-            inOsee = true;
-         }
+         nameLocationBranchMap.put(attachment.getName() + ";" + attachment.getlocation(), attachment.getBranch());
       }
-      return nameBranchMap;
+      return nameLocationBranchMap;
    }
 
    private void deletePreviouslySelectedArtifact() {
@@ -150,21 +141,23 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
       changes.execute();
    }
 
+   private Collection<String> getComboAttachments() {
+      List<String> comboAttachments = new ArrayList<>();
+      for (Entry<String, BranchId> entry : nameLocationBranchMap.entrySet()) {
+         String[] nameLocation = entry.getKey().split(";");
+         comboAttachments.add(nameLocation[0]);
+      }
+      return comboAttachments;
+   }
+
    private void fillCombo() {
 
       getNameToLocationMap();
-
       // Add to fileNames
-      setDataStrings(nameBranchMap.keySet().toArray(new String[nameBranchMap.size()]));
-
+      setDataStrings(getComboAttachments());
       addXModifiedListener(new XModifiedListener() {
-
          @Override
          public void widgetModified(XWidget widget) {
-
-            if (!listenerEnabled) {
-               return;
-            }
             // Determine if file is already attached and ask if want to replace
             if (isAttachmentAttached()) {
                if (getData().equals("--select--")) {
@@ -180,12 +173,15 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
             }
 
             // Check if these files are stored in OSEE
-            if (inOsee) {
-               String selection = (String) getData();
-               for (Entry<String, BranchId> entry : nameBranchMap.entrySet()) {
-                  if (entry.getKey().equals(selection)) {
-                     String attachmentName = entry.getKey();
-                     BranchId branchId = entry.getValue();
+            String selection = (String) getData();
+            String[] nameLocation;
+            for (Entry<String, BranchId> entry : nameLocationBranchMap.entrySet()) {
+               if (entry.getKey().contains(selection)) {
+                  nameLocation = entry.getKey().split(";");
+                  String attachmentName = nameLocation[0];
+                  String location = nameLocation[1];
+                  BranchId branchId = entry.getValue();
+                  if (location.equals("osee")) {
                      try {
                         Artifact art = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralDocument,
                            attachmentName, branchId);
@@ -201,24 +197,23 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
                         AWorkbench.popup("Selected attachment does not exist");
                      }
                      return;
+                  } else {
+                     File file = new File(location);
+                     if (!file.exists()) {
+                        AWorkbench.popup("Error Attaching Attachment",
+                           String.format("Select file [%s] does not exist.  Aborting.", file.getAbsolutePath()));
+                        return;
+                     }
+                     List<File> selectedFile = new ArrayList<>();
+                     selectedFile.add(file);
+
+                     Jobs.startJob(new WfeEditorAddSupportingFiles(workItem, selectedFile, getAttachmentStaticId()),
+                        true);
                   }
                }
-
-            } else {
-               File file = new File(location);
-               if (!file.exists()) {
-                  AWorkbench.popup("Error Attaching Attachment",
-                     String.format("Select file [%s] does not exist.  Aborting.", file.getAbsolutePath()));
-                  return;
-               }
-               List<File> selectedFile = new ArrayList<>();
-               selectedFile.add(file);
-
-               Jobs.startJob(new WfeEditorAddSupportingFiles(workItem, selectedFile, getAttachmentStaticId()), true);
             }
          }
       });
-
    }
 
    @Override
@@ -249,28 +244,26 @@ public abstract class XAttachmentCombo extends XCombo implements ArtifactWidget 
    }
 
    @Override
-   public void refresh() {
-      super.refresh();
-      listenerEnabled = false;
+   public void reSet() {
       Pair<Artifact, RelationLink> entry = getSelectedAttachment();
       Artifact attachmentArt = entry.getFirst();
-      if (attachmentArt != null && !Widgets.isAccessible(readHyperlink)) {
-         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
-         readHyperlink = WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
-            attachmentArt, parent, editor, OpenType.Read.name());
-         editHyperlink = WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
-         deleteHyperlink = WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
-            attachmentArt, entry.getSecond(), parent, editor);
+      if (attachmentArt != null) {
+         // TODO: Once Dom fixes refresh, this will be uncommented and will test the checklist again
+         // if !Widgets.isAccessible(readHyperlink)
+         //         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
+         //         readHyperlink = WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
+         //            attachmentArt, parent, editor, OpenType.Read.name());
+         //         editHyperlink = WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
+         //         deleteHyperlink = WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
+         //            attachmentArt, entry.getSecond(), parent, editor);
          set(attachmentArt.toString());
       } else {
-         if (Widgets.isAccessible(readHyperlink)) {
-            readHyperlink.dispose();
-            editHyperlink.dispose();
-            deleteHyperlink.dispose();
-         }
+         //         if (Widgets.isAccessible(readHyperlink)) {
+         //            readHyperlink.dispose();
+         //            editHyperlink.dispose();
+         //            deleteHyperlink.dispose();
+         //         }
          set("");
       }
-      listenerEnabled = true;
    }
-
 }
