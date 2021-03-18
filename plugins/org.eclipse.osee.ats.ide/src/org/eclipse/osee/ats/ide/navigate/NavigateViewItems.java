@@ -108,6 +108,7 @@ import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.action.XWidgetsDialogExampleAction;
 import org.eclipse.osee.framework.ui.skynet.change.OpenChangeReportByTransactionIdAction;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
+import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataDialogExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
@@ -366,6 +367,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new CompareEditorExample(exampleItems);
          new XViewerExample(exampleItems);
          new XResultDataExample(exampleItems);
+         new XResultDataDialogExample(exampleItems);
          new XResultDataTableExample(exampleItems);
          new FilteredTreeDialogExample(exampleItems);
          new FilteredTreeDialogSingleExample(exampleItems);
