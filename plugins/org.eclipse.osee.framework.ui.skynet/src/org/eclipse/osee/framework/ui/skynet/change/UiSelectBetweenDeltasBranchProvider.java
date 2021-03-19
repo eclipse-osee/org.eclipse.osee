@@ -21,9 +21,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
@@ -38,12 +40,12 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
    }
 
    @Override
-   public BranchId getBranch() {
-      final BranchId[] selectedBranch = new BranchId[1];
+   public BranchToken getBranch() {
+      final BranchToken[] selectedBranch = new BranchToken[1];
 
       TransactionDelta txDelta = uiData.getTxDelta();
       if (txDelta.areOnTheSameBranch()) {
-         selectedBranch[0] = txDelta.getStartTx().getBranch();
+         selectedBranch[0] = BranchManager.getBranch(txDelta.getStartTx().getBranch());
       } else {
          final Collection<BranchId> selectable = new ArrayList<>();
          selectable.add(uiData.getTxDelta().getStartTx().getBranch());

@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.change;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 
@@ -25,7 +26,7 @@ public final class ParentBranchProvider implements IBranchProvider {
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       BranchId childBranch = uiData.getTxDelta().getStartTx().getBranch();
       return BranchManager.getParentBranch(childBranch);
    }

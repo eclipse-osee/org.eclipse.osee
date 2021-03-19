@@ -430,7 +430,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 

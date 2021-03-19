@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Theron Virgin
  */
 public interface IBranchProvider {
 
-   public BranchId getBranch();
+   public BranchToken getBranch();
 }
