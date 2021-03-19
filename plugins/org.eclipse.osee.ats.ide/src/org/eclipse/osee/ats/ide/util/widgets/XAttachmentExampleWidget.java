@@ -29,14 +29,14 @@ import org.eclipse.osee.framework.ui.ws.AWorkspace;
  *
  * @author Donald G. Dunne
  */
-public class XPeerChecklistAttachmentExampleCombo extends XAttachmentCombo {
+public class XAttachmentExampleWidget extends XAttachmentWidget {
 
    private static final String LABEL = "Select Peer Review Checklist to Attach";
-   public static final Object WIDGET_ID = XPeerChecklistAttachmentExampleCombo.class.getSimpleName();
+   public static final Object WIDGET_ID = XAttachmentExampleWidget.class.getSimpleName();
    private static String PEER_REVIEW_CHECKLIST_STATIC_ID = "7244494692772089382";
 
-   public XPeerChecklistAttachmentExampleCombo() {
-      super(LABEL, "DemoPeerReviewChecklist");
+   public XAttachmentExampleWidget() {
+      super(LABEL, "");
    }
 
    /**
@@ -61,8 +61,7 @@ public class XPeerChecklistAttachmentExampleCombo extends XAttachmentCombo {
             String checklistName = filename;
             checklistName = checklistName.replaceFirst("\\..*$", "");
             checklistName = checklistName.replaceFirst("_", " ");
-            File file =
-               OseeInf.getResourceAsFile("demoPeerChecklists/" + filename, XPeerChecklistAttachmentExampleCombo.class);
+            File file = OseeInf.getResourceAsFile("demoPeerChecklists/" + filename, XAttachmentExampleWidget.class);
             String filePath = file.getAbsolutePath();
             checklists.addAttachment(new AtsAttachment(checklistName, filePath, BranchToken.SENTINEL));
          } catch (Exception ex) {

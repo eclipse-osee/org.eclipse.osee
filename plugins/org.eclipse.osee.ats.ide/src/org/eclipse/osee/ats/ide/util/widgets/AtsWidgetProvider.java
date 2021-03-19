@@ -188,8 +188,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XCreateChangeReportTasksXButton(name, atsTaskDefToken);
       } else if (widgetName.equals(XAssigneesHyperlinkWidget.WIDGET_ID)) {
          return new XAssigneesHyperlinkWidget(null);
-      } else if (widgetName.equals(XPeerChecklistAttachmentExampleCombo.WIDGET_ID)) {
-         return new XPeerChecklistAttachmentExampleCombo();
+      } else if (widgetName.equals(XAttachmentExampleWidget.WIDGET_ID)) {
+         return new XAttachmentExampleWidget();
       } else if (widgetName.equals(XAgileFeatureHyperlinkWidget.WIDGET_ID)) {
          return new XAgileFeatureHyperlinkWidget();
       } else if (widgetName.equals(XTargetedVersionHyperlinkWidget.WIDGET_ID)) {

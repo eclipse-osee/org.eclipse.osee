@@ -36,7 +36,7 @@ public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
       StateDefBuilder stateBld = bld.getStateDefBuilder(StateToken.Prepare);
       stateBld.insertLayoutAfter(AtsAttributeTypes.Description, //
          new CompositeLayoutItem(5, //
-            new WidgetDefinition("Select Peer Review Checklist to Attach", "XPeerChecklistAttachmentExampleCombo")) //
+            new WidgetDefinition("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
       );
 
       return bld.getWorkDefinition();
