@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -136,21 +137,15 @@ public class SqlTable extends NamedBase {
    public static final SqlColumn TX_DETAILS_TX_TYPE = TX_DETAILS_TABLE.addColumn("TX_TYPE", JDBCType.SMALLINT);
    public static final SqlColumn TX_DETAILS_TX_COMMIT_ART_ID =
       TX_DETAILS_TABLE.addColumn("COMMIT_ART_ID", JDBCType.BIGINT, true);
+   public static final SqlColumn TX_DETAILS_BUILD_ID = TX_DETAILS_TABLE.addColumn("BUILD_ID", JDBCType.BIGINT);
    static {
       TX_DETAILS_TABLE.setPrimaryKeyConstraint(TX_DETAILS_TRANSACTION_ID);
       TX_DETAILS_TABLE.setForeignKeyConstraint("BRANCH_ID_FK1", TX_DETAILS_TX_BRANCH_ID, BRANCH_TABLE, BRANCH_ID);
       TX_DETAILS_TABLE.createIndex("OSEE_TX_DETAILS_B_TX_IDX", true, TX_DETAILS_TX_BRANCH_ID.getName(),
          TX_DETAILS_TRANSACTION_ID.getName());
       TX_DETAILS_TABLE.addStatement("INSERT INTO OSEE_TX_DETAILS (" + Collections.toString(",",
-         (TX_DETAILS_TABLE.columns)) + ") VALUES (1,1,-1,CURRENT_TIMESTAMP,'" + CoreBranches.SYSTEM_ROOT.getName() + " Creation',1,NULL)");
-
-      TX_DETAILS_TABLE.addStatement(
-         "ALTER TABLE " + BRANCH_TABLE.getName() + " ADD CONSTRAINT PARENT_TX_ID_FK1 FOREIGN KEY(" + BRANCH_PARENT_TRANSACTION_ID.getName() + ") REFERENCES " + TX_DETAILS_TABLE.getName() + "(" + TX_DETAILS_TRANSACTION_ID.getName() + ")");
-      TX_DETAILS_TABLE.addStatement(
-         "ALTER TABLE " + BRANCH_TABLE.getName() + " ADD CONSTRAINT BASELINE_TX_ID_FK1 FOREIGN KEY(" + BRANCH_BASELINE_TRANSACTION_ID.getName() + ") REFERENCES " + TX_DETAILS_TABLE.getName() + "(" + TX_DETAILS_TRANSACTION_ID.getName() + ")");
-
+         (TX_DETAILS_TABLE.columns)) + ") VALUES (1,1,-1,CURRENT_TIMESTAMP,'" + CoreBranches.SYSTEM_ROOT.getName() + " Creation',1,NULL," + OseeCodeVersion.getVersionId() + ")");
    }
-   public static final SqlColumn TX_DETAILS_BUILD_ID = TX_DETAILS_TABLE.addColumn("BUILD_ID", JDBCType.BIGINT);
 
    public static final SqlTable OSEE_PERMISSION_TABLE = new SqlTable("osee_permission", "per");
    public static final SqlColumn OSEE_PERMISSION_PERMISSION_NAME =
@@ -187,8 +182,8 @@ public class SqlTable extends NamedBase {
       OSEE_BRANCH_ACL_TABLE.addColumn("PERMISSION_ID", JDBCType.INTEGER);
    static {
       OSEE_BRANCH_ACL_TABLE.setPrimaryKeyConstraint(OSEE_BRANCH_ACL_BRANCH_ID, OSEE_BRANCH_ACL_PRIVILEGE_ENTITY_ID);
-      OSEE_BRANCH_ACL_TABLE.setForeignKeyConstraint("BRANCH_ACL_FK", OSEE_BRANCH_ACL_BRANCH_ID, BRANCH_TABLE, BRANCH_ID,
-         "ON DELETE CASCADE");
+      OSEE_BRANCH_ACL_TABLE.setForeignKeyConstraintCascadeDelete("BRANCH_ACL_FK", OSEE_BRANCH_ACL_BRANCH_ID,
+         BRANCH_TABLE, BRANCH_ID);
       OSEE_BRANCH_ACL_TABLE.setForeignKeyConstraint("BRANCH_ACL_PERM_FK", OSEE_BRANCH_ACL_PERMISSION_ID,
          OSEE_PERMISSION_TABLE, OSEE_PERMISSION_PERMISSION_ID);
 
@@ -631,9 +626,9 @@ public class SqlTable extends NamedBase {
       OSEE_OAUTH_AUTHORIZATION_TABLE.addVarCharColumn("CODE", 512, true);
    static {
       OSEE_OAUTH_AUTHORIZATION_TABLE.setPrimaryKeyConstraint(OSEE_OAUTH_AUTHORIZATION_ID);
-      OSEE_OAUTH_AUTHORIZATION_TABLE.setForeignKeyConstraint("OSEE_OAUTH_AUTH__CI_FK",
-         OSEE_OAUTH_AUTHORIZATION_CLIENT_ID, OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE, OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID,
-         "ON DELETE CASCADE");
+      OSEE_OAUTH_AUTHORIZATION_TABLE.setForeignKeyConstraintCascadeDelete("OSEE_OAUTH_AUTH__CI_FK",
+         OSEE_OAUTH_AUTHORIZATION_CLIENT_ID, OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE,
+         OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID);
       OSEE_OAUTH_AUTHORIZATION_TABLE.createIndex("OSEE_OAUTH_AUTH__C_IDX", false,
          OSEE_OAUTH_AUTHORIZATION_CODE.getName());
    }
@@ -662,8 +657,8 @@ public class SqlTable extends NamedBase {
       OSEE_OAUTH_TOKEN_TABLE.addVarCharColumn("TOKEN_TYPE", 255, true);
    static {
       OSEE_OAUTH_TOKEN_TABLE.setPrimaryKeyConstraint(OSEE_OAUTH_TOKEN_ID);
-      OSEE_OAUTH_TOKEN_TABLE.setForeignKeyConstraint("OSEE_OAUTH_TOKEN__CI_FK", OSEE_OAUTH_TOKEN_CLIENT_ID,
-         OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE, OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID, "ON DELETE CASCADE");
+      OSEE_OAUTH_TOKEN_TABLE.setForeignKeyConstraintCascadeDelete("OSEE_OAUTH_TOKEN__CI_FK", OSEE_OAUTH_TOKEN_CLIENT_ID,
+         OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE, OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID);
       OSEE_OAUTH_TOKEN_TABLE.createIndex("OSEE_OAUTH_TOKEN__TK_IDX", false, OSEE_OAUTH_TOKEN_TOKEN_KEY.getName());
    }
 
@@ -673,7 +668,7 @@ public class SqlTable extends NamedBase {
    private final ArrayList<String> constraints;
    private final ArrayList<String> statements;
    private final int indexLevel;
-   private boolean hasJoinTblSp = false;
+   private final boolean hasJoinTblSp;
    private String tableExtras;
 
    private SqlTable(String tableName, String aliasPrefix) {
@@ -689,13 +684,7 @@ public class SqlTable extends NamedBase {
    }
 
    private SqlTable(String tableName, String aliasPrefix, ObjectType objectType, int indexLevel) {
-      super(tableName);
-      this.aliasPrefix = aliasPrefix;
-      this.objectType = objectType;
-      columns = new ChainingArrayList<>();
-      constraints = new ArrayList<>();
-      statements = new ArrayList<>();
-      this.indexLevel = indexLevel;
+      this(tableName, aliasPrefix, objectType, indexLevel, false);
    }
 
    private SqlTable(String tableName, String aliasPrefix, ObjectType objectType, int indexLevel, boolean hasJoinTblSp) {
@@ -768,14 +757,9 @@ public class SqlTable extends NamedBase {
          "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ")");
    }
 
-   public void setForeignKeyConstraint(String constraintName, SqlColumn column, SqlTable refTable, SqlColumn refColumn, String extras) {
+   public void setForeignKeyConstraintCascadeDelete(String constraintName, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
       constraints.add(
-         "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ") " + extras);
-   }
-
-   public void setForeignKeyConstraint(SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
-      constraints.add(
-         "CONSTRAINT " + getName() + "FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ")");
+         "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ") ON DELETE CASCADE");
    }
 
    public void setUniqueKeyConstraint(String constraintName, String columnName) {
@@ -784,10 +768,10 @@ public class SqlTable extends NamedBase {
 
    public void createIndex(String indexName, boolean hasIndexTablespace, String... columns) {
       if (hasIndexTablespace) {
-         statements.add("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
+         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
             Arrays.asList(columns)) + ")");
       } else {
-         statements.add("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
+         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
             Arrays.asList(columns)) + ")");
       }
    }
