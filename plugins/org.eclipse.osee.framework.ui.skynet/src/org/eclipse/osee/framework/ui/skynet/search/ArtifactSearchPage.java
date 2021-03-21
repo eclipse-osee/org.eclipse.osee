@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -167,8 +168,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       }
    }
 
-   private BranchId getSelectedBranch() {
-      BranchId branch = branchSelect.getData();
+   private BranchToken getSelectedBranch() {
+      BranchToken branch = branchSelect.getData();
       if (branch == null) {
          branch = BranchManager.getLastBranch();
       }
@@ -493,7 +494,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    @Override
    public boolean performAction() {
 
-      BranchId searchBranch = getSelectedBranch();
+      BranchToken searchBranch = getSelectedBranch();
       if (ChangeUiUtil.permissionsDeniedWithDialog(searchBranch)) {
          return false;
       }
@@ -509,7 +510,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    @Override
    public boolean performReplace() {
-      BranchId searchBranch = getSelectedBranch();
+      BranchToken searchBranch = getSelectedBranch();
       if (ChangeUiUtil.permissionsDeniedWithDialog(searchBranch)) {
          return false;
       }

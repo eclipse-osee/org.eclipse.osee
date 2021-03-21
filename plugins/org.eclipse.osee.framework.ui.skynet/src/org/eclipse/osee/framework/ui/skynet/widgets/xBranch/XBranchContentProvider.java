@@ -62,7 +62,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof BranchId) {
          if (showChildBranchesUnderParents) {
-            if (!ChangeUiUtil.permissionsDeniedWithDialog((BranchId) parentElement)) {
+            BranchToken branch = BranchManager.getBranch((BranchId) parentElement);
+            if (!ChangeUiUtil.permissionsDeniedWithDialog(branch)) {
                return getBranchChildren((BranchId) parentElement);
             }
          }

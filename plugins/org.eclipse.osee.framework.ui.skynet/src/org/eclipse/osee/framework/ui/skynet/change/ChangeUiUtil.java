@@ -43,7 +43,8 @@ public final class ChangeUiUtil {
 
    public static void open(BranchId branch, boolean showTransactionTab) {
       Conditions.checkNotNull(branch, "Branch");
-      if (permissionsDeniedWithDialog(branch)) {
+      Branch brch = BranchManager.getBranch(branch);
+      if (permissionsDeniedWithDialog(brch)) {
          return;
       }
 
@@ -57,7 +58,7 @@ public final class ChangeUiUtil {
     *
     * @return true if permissions denied
     */
-   public static boolean permissionsDeniedWithDialog(BranchId branch) {
+   public static boolean permissionsDeniedWithDialog(BranchToken branch) {
       boolean hasPermission = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
       if (!hasPermission) {
          AWorkbench.popup("Access Denied",
@@ -70,7 +71,7 @@ public final class ChangeUiUtil {
    public static void open(TransactionToken transaction) {
       Conditions.checkNotNull(transaction, "TransactionId");
       Branch branch = BranchManager.getBranch(transaction);
-      if (branch.isInvalid() || permissionsDeniedWithDialog(transaction.getBranch())) {
+      if (branch.isInvalid() || permissionsDeniedWithDialog(branch)) {
          return;
       }
       open(createInput(transaction, true));
@@ -84,7 +85,7 @@ public final class ChangeUiUtil {
          throw new OseeArgumentException("Invalid selection - transactions art not on the same branch.", txDelta);
       }
       Branch branch = BranchManager.getBranch(startTx);
-      if (branch.isInvalid() || permissionsDeniedWithDialog(startTx.getBranch())) {
+      if (branch.isInvalid() || permissionsDeniedWithDialog(branch)) {
          return;
       }
       open(createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, true));
@@ -149,7 +150,7 @@ public final class ChangeUiUtil {
          return;
       }
       branch = BranchManager.getBranch(parentBranch);
-      if (branch.isInvalid() || permissionsDeniedWithDialog(parentBranch)) {
+      if (branch.isInvalid() || permissionsDeniedWithDialog(branch)) {
          return;
       }
       ChangeReportEditorInput input = createInput(workingBranch, parentBranch, true);
