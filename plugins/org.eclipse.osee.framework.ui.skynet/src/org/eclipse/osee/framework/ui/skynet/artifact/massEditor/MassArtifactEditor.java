@@ -193,6 +193,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
    public void dispose() {
       super.dispose();
 
+      // Reload artifacts that are dirty cause user chose to close editor without save
       for (Artifact artifact : xViewer.getArtifacts()) {
          try {
             if (artifact != null && !artifact.isDeleted() && artifact.hasDirtyAttributes()) {
@@ -291,6 +292,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
          xViewer);
       getSite().setSelectionProvider(xViewer);
    }
+
    private static final class MassEditorMenuListener implements IMenuListener {
 
       private final MassXViewer xviewer;
@@ -337,9 +339,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       return true;
    }
 
-   /**
-    * @return the artifacts
-    */
    public Collection<? extends Artifact> getArtifacts() {
       return xViewer.getArtifacts();
    }
