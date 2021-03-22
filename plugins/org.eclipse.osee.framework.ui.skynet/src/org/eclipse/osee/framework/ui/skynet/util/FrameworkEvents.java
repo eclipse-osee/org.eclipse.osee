@@ -20,7 +20,6 @@ public class FrameworkEvents {
 
    public static final String PERSONAL_WEB_PREFERENCES = "framework/web/prefs/modified/links/personal";
    public static final String GLOBAL_WEB_PREFERENCES = "framework/web/prefs/modified/links/global";
-   public static final String FRAMEWORK_LINK_EDIT = "framework/link/edit";
 
    private FrameworkEvents() {
       // utility class

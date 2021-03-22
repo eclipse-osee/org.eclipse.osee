@@ -103,7 +103,7 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(NavigateViewLinksTopicEventHandler.class, Level.WARNING, "Error populating searches", ex);
+         OseeLog.log(SavedActionSearchNavigateItem.class, Level.WARNING, "Error populating searches", ex);
       }
    }
 
