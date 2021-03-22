@@ -6,7 +6,7 @@
                 {
                     "service.id": "1001",
                     "jdbc.client.driver": "org.postgresql.Driver",
-                    "jdbc.client.db.uri": "jdbc:postgresql://localhost:5432/OSEE",
+                    "jdbc.client.db.uri": "jdbc:postgresql://localhost:5432/osee",
                     "jdbc.client.db.username": "osee",
                     "jdbc.client.db.password": "osee",
                     "jdbc.client.connection.pool.enabled": "true"
