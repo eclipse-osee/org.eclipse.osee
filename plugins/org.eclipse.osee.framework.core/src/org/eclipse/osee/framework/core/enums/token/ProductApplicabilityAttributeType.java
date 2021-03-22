@@ -25,7 +25,11 @@ import org.eclipse.osee.framework.core.enums.token.ProductApplicabilityAttribute
  */
 public class ProductApplicabilityAttributeType extends AttributeTypeEnum<ProductApplicabilityEnum> {
 
-   public final ProductApplicabilityEnum String = new ProductApplicabilityEnum(0, "OFP");
+   public final ProductApplicabilityEnum Unspecified = new ProductApplicabilityEnum(0, "Unspecified");
+   public final ProductApplicabilityEnum Code = new ProductApplicabilityEnum(1, "Code");
+   public final ProductApplicabilityEnum Documentation = new ProductApplicabilityEnum(2, "Documentation");
+   public final ProductApplicabilityEnum Requirements = new ProductApplicabilityEnum(3, "Requirements");
+   public final ProductApplicabilityEnum Test = new ProductApplicabilityEnum(4, "Test");
 
    public ProductApplicabilityAttributeType(NamespaceToken namespace, int enumCount) {
       super(4522673803793808650L, namespace, "Product Applicability", MediaType.TEXT_PLAIN, "",

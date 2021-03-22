@@ -69,7 +69,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Artifact));
    ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, Artifact)
       .zeroOrOne(DefaultValue)
-      .any(ProductApplicability, ProductApplicability.String)
+      .any(ProductApplicability, ProductApplicability.Unspecified)
       .exactlyOne(FeatureMultivalued)
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
