@@ -67,16 +67,16 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements Attri
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      checkState = getStoredCheckState();
+      updateCheckWidget();
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      checkState = getStoredCheckState();
-      updateCheckWidget();
+      refresh();
    }
 
    private CheckState getStoredCheckState() {

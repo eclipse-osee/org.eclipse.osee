@@ -72,18 +72,18 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      List<BranchToken> storedBranchReference = getStored();
+      if (!storedBranchReference.isEmpty()) {
+         setSelection(storedBranchReference.get(0));
+      }
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      List<BranchToken> storedBranchReference = getStored();
-      if (!storedBranchReference.isEmpty()) {
-         setSelection(storedBranchReference.get(0));
-      }
+      refresh();
    }
 
    @Override

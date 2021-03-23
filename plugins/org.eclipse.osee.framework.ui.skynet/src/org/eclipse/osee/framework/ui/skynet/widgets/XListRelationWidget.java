@@ -41,7 +41,7 @@ public class XListRelationWidget extends XList implements RelationWidget {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
-      reSet();
+      refresh();
    }
 
    private Collection<String> getRelateditems() {
@@ -75,7 +75,8 @@ public class XListRelationWidget extends XList implements RelationWidget {
    }
 
    @Override
-   public void reSet() {
+   public void refresh() {
+      removeAll();
       add(getRelateditems());
       updateListWidget();
    }

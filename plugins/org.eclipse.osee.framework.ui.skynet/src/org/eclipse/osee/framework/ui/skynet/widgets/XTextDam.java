@@ -77,15 +77,11 @@ public class XTextDam extends XText implements AttributeWidget {
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.attributeType = attributeType;
       setArtifact(artifact);
-      onAttributeTypeSet();
+      refresh();
    }
 
    @Override
-   public void reSet() {
-      onAttributeTypeSet();
-   }
-
-   public void onAttributeTypeSet() {
+   public void refresh() {
       super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
    }
 

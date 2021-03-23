@@ -46,7 +46,7 @@ public interface ArtifactStoredWidget {
    /**
     * Reload widget from current attribute value
     */
-   default void reSet() {
+   default void refresh() {
       // if necessary reload the bound data
    }
 }

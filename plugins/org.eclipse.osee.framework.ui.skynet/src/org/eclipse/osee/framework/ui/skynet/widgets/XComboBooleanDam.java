@@ -48,20 +48,20 @@ public class XComboBooleanDam extends XCombo implements AttributeWidget {
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
-   }
-
-   @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
-      this.artifact = artifact;
-      this.attributeType = attributeType;
+   public void refresh() {
       Boolean result = artifact.getSoleAttributeValue(this.attributeType, null);
       if (result == null) {
          super.set("");
       } else {
          super.set(result ? "true" : "false");
       }
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+      this.artifact = artifact;
+      this.attributeType = attributeType;
+      refresh();
    }
 
    @Override

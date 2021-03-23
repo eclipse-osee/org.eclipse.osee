@@ -470,7 +470,7 @@ public class WfeWorkflowSection extends SectionPart {
          for (XWidget xWidget : allXWidgets) {
             if (xWidget instanceof ArtifactStoredWidget) {
                // Reload with with current artifact/attribute/relation
-               ((ArtifactStoredWidget) xWidget).reSet();
+               ((ArtifactStoredWidget) xWidget).refresh();
             } else {
                xWidget.refresh();
             }

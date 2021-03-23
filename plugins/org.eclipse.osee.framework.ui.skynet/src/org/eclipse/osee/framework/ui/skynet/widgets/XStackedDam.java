@@ -53,6 +53,7 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
    private AttributeTypeToken attributeType;
    private final XModifiedListener xModifiedListener;
    private List<BranchIdEventFilter> eventFilters;
+   private Composite parent;
 
    public XStackedDam(String displayLabel) {
       super(displayLabel);
@@ -84,11 +85,6 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
-   }
-
-   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
@@ -103,10 +99,12 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
       }
       setPageRange(minOccurrence, maxOccurrence);
       OseeEventManager.addListener(this);
+      refresh();
    }
 
    @Override
    protected void createPages(Composite parent, int horizontalSpan) {
+      this.parent = parent;
       try {
          setNotificationsAllowed(false);
          loadPageValues = false;
@@ -189,10 +187,12 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
 
    @Override
    public void refresh() {
-      stackedControl.removeAllPages();
-      stackedControl.clearCurrentPage();
-      createPages();
-      validate();
+      if (Widgets.isAccessible(parent)) {
+         stackedControl.removeAllPages();
+         stackedControl.clearCurrentPage();
+         createPages();
+         validate();
+      }
    }
 
    @Override

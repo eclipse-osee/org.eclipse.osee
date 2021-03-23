@@ -46,16 +46,16 @@ public class XFloatDam extends XFloat implements AttributeWidget {
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      Double value = artifact.getSoleAttributeValue(getAttributeType(), null);
+      super.set(value == null ? "" : NumberFormat.getInstance().format(value));
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
       this.artifact = artifact;
       this.attributeType = attrName;
-      Double value = artifact.getSoleAttributeValue(getAttributeType(), null);
-      super.set(value == null ? "" : NumberFormat.getInstance().format(value));
+      refresh();
    }
 
    @Override

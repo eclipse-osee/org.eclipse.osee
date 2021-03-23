@@ -52,16 +52,16 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      this.selectedUsers = getStoredUsers();
+      super.refresh();
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-
-      super.setSelectedUsers(getStoredUsers());
+      refresh();
    }
 
    public Set<User> getStoredUsers() {

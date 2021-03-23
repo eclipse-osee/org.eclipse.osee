@@ -19,13 +19,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public abstract class XRadionButtonsDam extends XRadioButtons implements AttributeWidget {
+public abstract class XRadioButtonsDam extends XRadioButtons implements AttributeWidget {
 
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;
 
-   public XRadionButtonsDam(String displayLabel) {
+   public XRadioButtonsDam(String displayLabel) {
       super(displayLabel, null);
+   }
+
+   public String getStoredString() {
+      return artifact.getSoleAttributeValueAsString(attributeType, null);
    }
 
    @Override
@@ -34,14 +38,18 @@ public abstract class XRadionButtonsDam extends XRadioButtons implements Attribu
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      String storedArt = getStoredString();
+      if (storedArt != null) {
+         setSelected(storedArt);
+      }
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
+      refresh();
    }
 
    @Override

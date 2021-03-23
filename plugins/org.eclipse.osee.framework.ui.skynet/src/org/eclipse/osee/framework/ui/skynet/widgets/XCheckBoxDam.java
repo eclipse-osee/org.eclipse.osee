@@ -38,15 +38,15 @@ public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      super.set(artifact.getSoleAttributeValue(this.attributeType, Boolean.FALSE));
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      super.set(artifact.getSoleAttributeValue(this.attributeType, Boolean.FALSE));
+      refresh();
    }
 
    @Override

@@ -105,6 +105,11 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          }
       }
 
+      refresh();
+   }
+
+   @Override
+   public void refresh() {
       if (Widgets.isAccessible(browser)) {
          try {
             FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
@@ -116,12 +121,6 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          }
          getManagedForm().reflow(true);
       }
-   }
-
-   @Override
-   public void refresh() {
-      super.refresh();
-      createSection();
    }
 
 }

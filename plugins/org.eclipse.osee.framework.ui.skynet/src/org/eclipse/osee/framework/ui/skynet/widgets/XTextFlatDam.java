@@ -77,15 +77,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements AttributeWidget
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
-   }
-
-   @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
-      this.artifact = artifact;
-      this.attributeType = attributeType;
-
+   public void refresh() {
       int minOccurrence = artifact.getArtifactType().getMin(attributeType);
       int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 
@@ -97,6 +89,13 @@ public class XTextFlatDam extends XFlatWidget<String> implements AttributeWidget
       }
 
       setPageRange(minOccurrence, maxOccurrence);
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+      this.artifact = artifact;
+      this.attributeType = attributeType;
+      refresh();
    }
 
    @Override

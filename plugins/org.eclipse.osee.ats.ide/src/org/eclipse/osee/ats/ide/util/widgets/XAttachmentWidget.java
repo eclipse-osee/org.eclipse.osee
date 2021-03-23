@@ -86,7 +86,7 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
       selectHyperlink = editor.getToolkit().createHyperlink(parent, SELECT, SWT.NONE);
       selectHyperlink.setToolTipText("Select to add/replace attachment");
       addListener(parent, editor);
-      reSet();
+      refresh();
    }
 
    public void addListener(Composite lComp, WorkflowEditor editor) {
@@ -268,7 +268,7 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
    }
 
    @Override
-   public void reSet() {
+   public void refresh() {
       Pair<Artifact, RelationLink> entry = getSelectedAttachment();
       Artifact attachmentArt = entry.getFirst();
       if (attachmentArt != null) {

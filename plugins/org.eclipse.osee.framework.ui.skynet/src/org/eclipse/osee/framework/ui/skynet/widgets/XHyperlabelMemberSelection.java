@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
  */
 public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection {
 
-   Set<User> selectedUsers = new HashSet<>();
+   protected Set<User> selectedUsers = new HashSet<>();
    private final Collection<User> users;
    private final Collection<User> teamMembers = new HashSet<>();
 

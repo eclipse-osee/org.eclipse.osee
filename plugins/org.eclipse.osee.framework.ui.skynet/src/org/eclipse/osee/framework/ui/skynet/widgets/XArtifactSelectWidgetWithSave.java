@@ -87,18 +87,18 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      Artifact storedArt = getStored();
+      if (storedArt != null) {
+         setSelection(storedArt);
+      }
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      Artifact storedArt = getStored();
-      if (storedArt != null) {
-         setSelection(storedArt);
-      }
+      refresh();
    }
 
    @Override

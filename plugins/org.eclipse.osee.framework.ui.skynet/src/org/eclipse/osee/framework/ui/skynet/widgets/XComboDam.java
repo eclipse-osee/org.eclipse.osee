@@ -50,20 +50,24 @@ public class XComboDam extends XCombo implements AttributeWidget {
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      if (attributeType != null) {
+         try {
+            String value = artifact.getSoleAttributeValue(this.attributeType);
+            super.set(value.toString());
+         } catch (AttributeDoesNotExist ex) {
+            super.set("");
+         }
+      } else {
+         super.set("");
+      }
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      try {
-         String value = artifact.getSoleAttributeValue(this.attributeType);
-         super.set(value.toString());
-      } catch (AttributeDoesNotExist ex) {
-         super.set("");
-      }
+      refresh();
    }
 
    @Override

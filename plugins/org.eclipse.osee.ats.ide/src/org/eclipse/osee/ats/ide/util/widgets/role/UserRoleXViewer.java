@@ -267,7 +267,7 @@ public class UserRoleXViewer extends XViewer {
          update(userRole, null);
       }
       xUserRoleViewer.getUserRoleMgr().saveToArtifact(changes);
-      changes.execute();
+      changes.execute(); // TODO: Check to ensure this implements refreshing.
       xUserRoleViewer.refresh();
       xUserRoleViewer.notifyXModifiedListeners();
       return true;

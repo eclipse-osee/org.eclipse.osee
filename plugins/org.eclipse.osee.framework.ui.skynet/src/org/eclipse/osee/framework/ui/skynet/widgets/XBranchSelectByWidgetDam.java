@@ -81,19 +81,19 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements Att
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
-   }
-
-   @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+   public void refresh() {
       setLabel(attributeType.getUnqualifiedName());
-      this.artifact = artifact;
-      this.attributeType = attributeType;
       Long storedUuid = getStoredUuid();
       if (storedUuid != null && getStoredUuid() > 0L) {
          setSelection(BranchManager.getBranchToken(storedUuid));
       }
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+      this.artifact = artifact;
+      this.attributeType = attributeType;
+      refresh();
    }
 
    @Override

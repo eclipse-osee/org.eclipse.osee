@@ -49,18 +49,18 @@ public class XDateDam extends XDate implements AttributeWidget {
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      Date value = artifact.getSoleAttributeValue(getAttributeType(), null);
+      if (value != null) {
+         super.setDate(value);
+      }
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken AttributeTypeId) {
       this.artifact = artifact;
       this.attributeType = AttributeTypeId;
-      Date value = artifact.getSoleAttributeValue(getAttributeType(), null);
-      if (value != null) {
-         super.setDate(value);
-      }
+      refresh();
    }
 
    @Override

@@ -160,7 +160,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          }
       });
 
-      reSet();
+      refresh();
    }
 
    private void refreshTableSize() {
@@ -246,7 +246,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            reSet();
+            refresh();
          }
       });
 
@@ -348,7 +348,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    }
 
    @Override
-   public void reSet() {
+   public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;
       }
@@ -428,7 +428,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       this.reviewArt = reviewArt;
       roleMgr = reviewArt.getRoleManager();
       if (xViewer != null) {
-         reSet();
+         refresh();
       }
    }
 
@@ -475,7 +475,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
                return;
             }
             if (artifactEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
-               reSet();
+               refresh();
             }
          }
       });

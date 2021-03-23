@@ -87,19 +87,19 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements Attri
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
-   }
-
-   @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+   public void refresh() {
       setLabel(attributeType.getUnqualifiedName());
-      this.artifact = artifact;
-      this.attributeType = attributeType;
       Long storedUuid = getStoredUuid();
       if (storedUuid != null && storedUuid > 0) {
          setSelection(BranchManager.getBranchToken(storedUuid));
       }
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+      this.artifact = artifact;
+      this.attributeType = attributeType;
+      refresh();
    }
 
    @Override

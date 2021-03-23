@@ -51,17 +51,16 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(artifact, attributeType);
+   public void refresh() {
+      setSelected(getStored());
+      setRequiredEntry(true);
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-
-      setSelected(getStored());
-      setRequiredEntry(true);
+      refresh();
    }
 
    @Override

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -65,6 +66,16 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
 
    public XAtsUserListDam(String displayLabel) {
       super(displayLabel);
+   }
+
+   public Artifact getStored() {
+      Object obj = awa.getSoleAttributeValue(attributeType, null);
+      if (obj instanceof Integer) {
+         return ArtifactQuery.getArtifactFromId((Integer) obj, awa.getBranch());
+      } else if (obj instanceof Artifact) {
+         return (Artifact) obj;
+      }
+      return null;
    }
 
    @Override
@@ -219,14 +230,19 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
    }
 
    @Override
-   public void reSet() {
-      setAttributeType(awa, attributeType);
+   public void refresh() {
+      // TODO: Should this be simplified to only return an Object?  See setSelected method below.
+      Artifact storedArt = getStored();
+      if (storedArt != null) {
+         setSelected(storedArt);
+      }
    }
 
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.awa = (AbstractWorkflowArtifact) artifact;
       this.attributeType = attributeType;
+      refresh();
    }
 
    @Override

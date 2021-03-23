@@ -33,12 +33,12 @@ import org.eclipse.swt.widgets.Composite;
  * @param optionToBoolean - map of radio button text to boolean to store
  * @param defaultValue - if null, buttons are un-selected, else select one matching defaultvalue
  */
-public class XRadionButtonsBooleanDam extends XRadionButtonsDam {
+public class XRadioButtonsBooleanDam extends XRadioButtonsDam {
 
    private final Map<String, Boolean> optionToBoolean;
    private Boolean defaultValue;
 
-   public XRadionButtonsBooleanDam(String displayLabel) {
+   public XRadioButtonsBooleanDam(String displayLabel) {
       super(displayLabel);
       this.optionToBoolean = new HashMap<>();
       this.optionToBoolean.put("No", false);
@@ -46,7 +46,7 @@ public class XRadionButtonsBooleanDam extends XRadionButtonsDam {
       this.defaultValue = false;
    }
 
-   public XRadionButtonsBooleanDam(String displayLabel, Map<String, Boolean> optionToBoolean, Boolean defaultValue) {
+   public XRadioButtonsBooleanDam(String displayLabel, Map<String, Boolean> optionToBoolean, Boolean defaultValue) {
       super(displayLabel);
       this.optionToBoolean = optionToBoolean;
       this.defaultValue = defaultValue;
