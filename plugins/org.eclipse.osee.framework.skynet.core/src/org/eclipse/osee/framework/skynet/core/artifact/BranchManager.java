@@ -766,4 +766,5 @@ public final class BranchManager {
    public static Branch getBranch(TransactionToken transaction) {
       return getBranch(transaction.getBranch());
    }
+
 }

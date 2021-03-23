@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.menu;
+package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;

@@ -56,8 +56,6 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.explorer.menu.ArtifactExplorerMenu;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -95,7 +93,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private TreeEditor myTreeEditor;
    private XBranchSelectWidget branchSelect;
    private BranchToken branch = BranchToken.SENTINEL;
-   private IGlobalMenuHelper globalMenuHelper;
 
    private ArtifactExplorerDragAndDrop dragAndDropWorker;
 
@@ -220,7 +217,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             treeViewer.setUseHashlookup(false);
 
             treeViewer.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
-            globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
 
             artifactExplorerToolbar = new ArtifactExplorerToolbar(this);
             artifactExplorerToolbar.createToolbar();
@@ -232,7 +228,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             addExploreSelection();
 
             artifactExplorerMenu = new ArtifactExplorerMenu(this);
-            artifactExplorerMenu.create();
             artifactExplorerMenu.setupPopupMenu();
 
             myTreeEditor = new TreeEditor(getTreeViewer().getTree());
@@ -262,8 +257,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    public void refreshBranchWarning() {
-      ArtifactExplorerUtil.refreshBranchWarning(this, treeViewer, globalMenuHelper, getBranch(),
-         branchWarningComposite);
+      ArtifactExplorerUtil.refreshBranchWarning(this, treeViewer, getBranch(), branchWarningComposite);
    }
 
    /**

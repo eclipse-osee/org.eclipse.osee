@@ -22,8 +22,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,8 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
-import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Control;
@@ -77,7 +77,7 @@ public class ArtifactExplorerUtil {
       }
    }
 
-   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, IGlobalMenuHelper globalMenuHelper, BranchId branch, BranchWarningComposite branchWarningComposite) {
+   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, BranchId branch, BranchWarningComposite branchWarningComposite) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -89,10 +89,10 @@ public class ArtifactExplorerUtil {
                Control control = treeViewer.getTree();
                if (branch.isValid()) {
                   String warningStr = null;
+                  boolean branchReadable = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
                   if (artifactExplorer.isRefreshing()) {
                      warningStr = "Refreshing Artifact Explorer";
-                  } else if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
-                     //                     !new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
+                  } else if (!branchReadable) {
                      warningStr = "Branch Read Access Denied.\nContact your administrator.\n\n" + //
                      "If you believe this is in error,\n" + //
                      "select refresh to reload access " + //

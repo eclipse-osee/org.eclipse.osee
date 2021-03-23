@@ -55,6 +55,8 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.action.DeleteAction;
+import org.eclipse.osee.framework.ui.skynet.action.PurgeAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
@@ -62,12 +64,9 @@ import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
+import org.eclipse.osee.framework.ui.skynet.explorer.MenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
-import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
@@ -116,20 +115,17 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    private MenuItem renameArtifactMenuItem;
    private MenuItem refreshMenuItem;
    private MenuItem findOnAnotherBranch;
-   private IGlobalMenuHelper globalMenuHelper;
    private static final ArtifactClipboard artifactClipboard = new ArtifactClipboard(ArtifactExplorer.VIEW_ID);
    private NeedArtifactMenuListener needArtifactListener;
    private NeedProjectMenuListener needProjectListener;
    private final ArtifactExplorer artifactExplorer;
    private Text myTextBeingRenamed;
+   private MenuItem deleteMenuItem;
+   private MenuItem purgeMenuItem;
 
    public ArtifactExplorerMenu(ArtifactExplorer artifactExplorer) {
       this.artifactExplorer = artifactExplorer;
       treeViewer = artifactExplorer.getTreeViewer();
-   }
-
-   public void create() {
-      globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
    }
 
    public void dispose() {
@@ -145,17 +141,19 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
          AccessPolicy service = ServiceUtil.getAccessPolicy();
          boolean canModifyDH = false;
          boolean isArtifact = false;
+         MenuPermissions permiss;
          if (obj instanceof Artifact) {
             isArtifact = true;
             Artifact art = (Artifact) obj;
             canModifyDH = service.canRelationBeModified(art, null, CoreRelationTypes.DefaultHierarchical_Child,
                Level.FINE).matched();
+            permiss = new MenuPermissions(art);
+         } else {
+            permiss = new MenuPermissions((Artifact) null);
          }
          boolean isBranchEditable =
             BranchManager.isEditable(getBranch()) && AccessControlManager.hasPermission(getBranch(),
                PermissionEnum.WRITE);
-
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
          boolean locked = permiss.isLocked();
          if (isArtifact) {
@@ -187,6 +185,10 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
          createRelatedMenuItem.setCreateRelatedEnabled(obj, service);
 
+         deleteMenuItem.setEnabled(isArtifact && permiss.isWritePermission());
+         purgeMenuItem.setEnabled(
+            isArtifact && permiss.isHasArtifacts() && permiss.isWritePermission() && AccessControlManager.isOseeAdmin());
+
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -214,7 +216,9 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
       createGoIntoMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
-      new GlobalMenu(popupMenu, globalMenuHelper);
+      deleteMenuItem = DeleteAction.createDeleteMenuItem(popupMenu);
+      purgeMenuItem = PurgeAction.createPurgeMenuItem(popupMenu);
+
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createRenameArtifactMenuItem(popupMenu);
@@ -606,7 +610,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
             while (iterator.hasNext()) {
                try {
                   Artifact object = (Artifact) iterator.next();
-                  if (new GlobalMenuPermissions(object).isLocked()) {
+                  if (new MenuPermissions(object).isLocked()) {
                      unlockArtifacts.add(object);
                   } else {
                      lockArtifacts.add(object);

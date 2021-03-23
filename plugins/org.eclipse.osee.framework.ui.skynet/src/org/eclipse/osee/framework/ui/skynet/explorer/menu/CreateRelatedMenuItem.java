@@ -43,9 +43,9 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
+import org.eclipse.osee.framework.ui.skynet.explorer.MenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeEntryDialog;
@@ -220,13 +220,13 @@ public class CreateRelatedMenuItem implements SelectionListener {
             relationSide = RelationTypeSide.create(relationType, RelationSide.SIDE_A);
          }
 
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(artifact);
+         MenuPermissions permiss = new MenuPermissions(artifact);
 
          boolean canModifyRelation = service.canRelationBeModified(artifact, null, relationSide, Level.FINE).matched();
          menuItem.setEnabled(permiss.isWritePermission() && canModifyRelation);
       } else if (obj instanceof Artifact) {
          Artifact artifact = (Artifact) obj;
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(artifact);
+         MenuPermissions permiss = new MenuPermissions(artifact);
          menuItem.setEnabled(permiss.isWritePermission());
       } else {
          menuItem.setEnabled(false);
