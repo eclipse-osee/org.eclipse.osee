@@ -160,7 +160,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          }
       });
 
-      loadTable();
+      reSet();
    }
 
    private void refreshTableSize() {
@@ -246,7 +246,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            loadTable();
+            reSet();
          }
       });
 
@@ -271,17 +271,6 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       }
    }
 
-   public void loadTable() {
-      try {
-         if (reviewArt != null && xViewer != null) {
-            xViewer.set(roleMgr.getUserRoles());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      refresh();
-   }
-
    public void handleDeleteUserRole(boolean persist) {
       final List<UserRole> items = getSelectedUserRoleItems();
       if (items.isEmpty()) {
@@ -298,7 +287,11 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       if (delete) {
          try {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Review Roles");
-            removeUserRoleHelper(items, changes);
+            for (UserRole userRole : items) {
+               roleMgr.removeUserRole(userRole);
+               roleMgr.saveToArtifact(changes);
+            }
+            notifyXModifiedListeners();
             changes.execute();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -306,18 +299,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items, IAtsChangeSet changes) {
-      for (UserRole userRole : items) {
-         roleMgr.removeUserRole(userRole);
-         roleMgr.saveToArtifact(changes);
-         xViewer.remove(userRole);
-      }
-      loadTable();
-      notifyXModifiedListeners();
-   }
-
    public void handleNewUserRole() {
-
       NewRoleDialog dialog = new NewRoleDialog(reviewArt.getWorkDefinition());
       dialog.setReview(reviewArt);
       if (dialog.open() == Window.OK) {
@@ -334,7 +316,6 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          notifyXModifiedListeners();
-         loadTable();
       }
    }
 
@@ -367,11 +348,12 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    }
 
    @Override
-   public void refresh() {
+   public void reSet() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;
       }
-      xViewer.refresh();
+      roleMgr = reviewArt.getRoleManager();
+      xViewer.set(roleMgr.getUserRoles());
       validate();
       refreshActionEnablement();
    }
@@ -446,7 +428,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
       this.reviewArt = reviewArt;
       roleMgr = reviewArt.getRoleManager();
       if (xViewer != null) {
-         loadTable();
+         reSet();
       }
    }
 
@@ -493,9 +475,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
                return;
             }
             if (artifactEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
-               loadTable();
-            } else {
-               refresh();
+               reSet();
             }
          }
       });
@@ -504,5 +484,4 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    public IAtsPeerReviewRoleManager getUserRoleMgr() {
       return roleMgr;
    }
-
 }
