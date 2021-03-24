@@ -55,4 +55,6 @@ public interface TransactionFactory {
    boolean purgeTxs(String txIds);
 
    boolean setTransactionCommitArtifact(TransactionId trans, ArtifactId commitArt);
+
+   List<ChangeItem> getArtifactHistory(ArtifactId artifact, BranchId branch);
 }

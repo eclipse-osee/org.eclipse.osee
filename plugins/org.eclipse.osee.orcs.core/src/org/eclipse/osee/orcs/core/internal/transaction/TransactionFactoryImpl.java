@@ -218,4 +218,13 @@ public class TransactionFactoryImpl implements TransactionFactory {
       return modified;
    }
 
+   @Override
+   public List<ChangeItem> getArtifactHistory(ArtifactId artifact, BranchId branch) {
+      try {
+         return txDataStore.getArtifactHistory(session, queryFactory, artifact, branch).call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
 }

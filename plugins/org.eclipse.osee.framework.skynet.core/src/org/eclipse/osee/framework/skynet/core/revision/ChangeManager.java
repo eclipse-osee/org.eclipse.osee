@@ -62,18 +62,27 @@ public final class ChangeManager {
    }
 
    /**
-    * Acquires changes for a particular artifact
+    * Gets all artifact, attribute, and relation changes for the given artifact
     */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) {
-      return revsionChangeLoader.getChangesPerArtifact(artifact, monitor);
+      return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, ChangeType.Artifact, ChangeType.Attribute,
+         ChangeType.Relation);
    }
 
+   /**
+    * Gets all requested change types for the given artifact
+    */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, ChangeType... loadChangeTypes) {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, loadChangeTypes);
    }
 
+   /**
+    * Gets the artifact, attribute, and relation changes for the specified number of transactions related to the given
+    * artifact
+    */
    public static Collection<? extends Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow, IProgressMonitor monitor) {
-      return revsionChangeLoader.getChangesPerArtifact(artifact, numberTransactionsToShow, monitor);
+      return revsionChangeLoader.getChangesPerArtifact(artifact, numberTransactionsToShow, monitor, ChangeType.Artifact,
+         ChangeType.Attribute, ChangeType.Relation);
    }
 
    /**
@@ -154,8 +163,7 @@ public final class ChangeManager {
    public static HashCollection<Artifact, BranchId> getModifingBranches(Collection<Artifact> artifacts) {
       HashCollection<Artifact, BranchId> branchMap = new HashCollection<>();
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
-         CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
-            new CompositeKeyHashMap<>();
+         CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
          for (Artifact artifact : artifacts) {
             artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
             // for each combination of artifact and all working branches in its hierarchy

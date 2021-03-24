@@ -68,8 +68,7 @@ public class DataModuleFactory {
       final OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, tokenService);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(tokenService, proxyFactory);
-      SqlObjectLoader sqlObjectLoader =
-         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, tokenService);
+      SqlObjectLoader sqlObjectLoader = loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, tokenService);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, tokenService, sqlObjectLoader,

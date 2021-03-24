@@ -55,9 +55,6 @@ public enum OseeSql {
    LOAD_CURRENT_ARCHIVED_ARTIFACTS(Strings.SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX + "= 1", Strings.HintsOrdered),
    LOAD_CURRENT_ARCHIVED_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX + "in (1, 2)", Strings.HintsOrdered),
 
-   LOAD_REVISION_HISTORY_TRANSACTION_ATTR("SELECT %s txs.transaction_id from osee_attribute arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?", Strings.HintsOrdered),
-   LOAD_REVISION_HISTORY_TRANSACTION_REL("SELECT %s txs.transaction_id from osee_relation_link rel, osee_txs txs where (rel.a_art_id = ? or rel.b_art_id = ?) and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?", Strings.HintsOrdered),
-
    LOAD_EXCLUDED_ARTIFACT_IDS("select art_id from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = 1 and not exists (select null from osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and e1 = ? and t2.gamma_id = txsP.gamma_id and txsP.branch_id = ? and txsP.tx_current = 1 and e2 = txs.app_id)"),
 
    CHANGE_BRANCH_ATTRIBUTE_WAS("SELECT%s attxs1.attr_id, attxs1.value as was_value, txs1.mod_type, attxs1.uri FROM osee_join_id4 ja1, osee_attribute attxs1, osee_txs txs1, WHERE txs1.branch_id = ? AND txs1.tx_type = 1 AND attxs1.gamma_id = txs1.gamma_id AND attxs1.art_id = ja1.id2 AND txs1.branch_id = ja1.id1 AND ja1.query_id = ?", Strings.HintsOrdered),

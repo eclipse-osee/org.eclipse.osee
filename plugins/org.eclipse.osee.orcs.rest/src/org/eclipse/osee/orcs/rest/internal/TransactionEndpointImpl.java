@@ -81,4 +81,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       return OrcsRestUtil.asResponse(
          orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId, txId, artId, comment));
    }
+
+   @Override
+   public List<ChangeItem> getArtifactHistory(ArtifactId artifact, BranchId branch) {
+      return orcsApi.getTransactionFactory().getArtifactHistory(artifact, branch);
+   }
 }

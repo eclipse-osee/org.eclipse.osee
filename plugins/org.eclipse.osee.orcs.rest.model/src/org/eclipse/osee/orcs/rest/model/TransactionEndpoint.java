@@ -62,4 +62,9 @@ public interface TransactionEndpoint {
    @PUT
    @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment")
    Response replaceWithBaselineTxVersion(@PathParam("user") UserId userId, @PathParam("branch-id") BranchId branchId, @PathParam("tx-id") TransactionId txId, @PathParam("art-id") ArtifactId artId, String comment);
+
+   @GET
+   @Path("{art-id}/{branch-id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ChangeItem> getArtifactHistory(@PathParam("art-id") ArtifactId artifact, @PathParam("branch-id") BranchId branch);
 }

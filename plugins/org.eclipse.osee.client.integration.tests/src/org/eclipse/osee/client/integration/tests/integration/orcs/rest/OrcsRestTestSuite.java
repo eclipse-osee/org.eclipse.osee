@@ -24,7 +24,8 @@ import org.junit.runners.Suite;
    ApplicabilityEndpointTest.class,
    ApplicabilityUiEndpointTest.class,
    ArtifactEndpointTest.class,
-   BranchEndpointTest.class})
+   BranchEndpointTest.class,
+   TransactionEndpointTest.class})
 public class OrcsRestTestSuite {
    // Test Suite
 }

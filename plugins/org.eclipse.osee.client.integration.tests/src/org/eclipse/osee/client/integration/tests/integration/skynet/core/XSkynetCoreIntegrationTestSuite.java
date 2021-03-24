@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
    BranchManagerTest.class,
    // BranchPurgeTest moved to LongRunningTestSuite
    // BranchStateTest moved to LongRunningTestSuite
+   ChangeDataTest.class,
    ChangeManagerTest.class,
    ConflictDeletionTest.class,
    ConflictIntroduceTest.class,
@@ -44,6 +45,7 @@ import org.junit.runners.Suite;
    CrossBranchRelationLinkTest.class,
    CsvArtifactTest.class,
    DoorsArtifactExtractorTest.class,
+   EnumAttributeMultiplicityTest.class,
    IntegerAttributeTest.class,
    FrameworkEventToRemoteEventListenerTest.class,
    LoadDeletedRelationTest.class,
@@ -57,15 +59,15 @@ import org.junit.runners.Suite;
    RelationFilterUtilTest.class,
    RelationOrderingTest.class,
    RelationOrderMergeUtilityTest.class,
+   RevisionChangeTest.class,
    SkynetTransactionTest.class,
    TransactionEventLocalTest.class,
    TransactionEventRemoteTest.class,
    TransactionManagerTest.class,
    UserManagerTest.class,
    WordMlLinkHandlerTest.class,
-   WordOutlineTest.class,
-   ChangeDataTest.class,
-   EnumAttributeMultiplicityTest.class})
+   WordOutlineTest.class})
+
 /**
  * @author Roberto E. Escobar
  */

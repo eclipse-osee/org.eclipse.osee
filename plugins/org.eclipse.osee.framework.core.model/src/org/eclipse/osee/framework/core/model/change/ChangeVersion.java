@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.model.change;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -22,10 +23,12 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author Roberto E. Escobar
  */
 public final class ChangeVersion {
+   private TransactionToken transactionToken;
    private GammaId gammaId;
    private ModificationType modType;
    private ApplicabilityToken appId;
    private String value;
+   private String uri;
 
    public ChangeVersion() {
       this(null, null, ModificationType.SENTINEL, null);
@@ -36,10 +39,20 @@ public final class ChangeVersion {
    }
 
    public ChangeVersion(String value, GammaId gammaId, ModificationType modType, ApplicabilityToken appId) {
+      this(TransactionToken.SENTINEL, value, gammaId, modType, appId, "");
+   }
+
+   public ChangeVersion(TransactionToken transactionToken, String value, GammaId gammaId, ModificationType modType, ApplicabilityToken appId, String uri) {
+      this.transactionToken = transactionToken;
       this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;
       this.appId = appId;
+      this.uri = uri;
+   }
+
+   public TransactionToken getTransactionToken() {
+      return transactionToken;
    }
 
    public GammaId getGammaId() {
@@ -58,8 +71,12 @@ public final class ChangeVersion {
       return value;
    }
 
-   public void setValue(String value) {
-      this.value = value;
+   public String getUri() {
+      return uri;
+   }
+
+   public void setTransactionToken(TransactionToken transactionToken) {
+      this.transactionToken = transactionToken;
    }
 
    public void setGammaId(GammaId gammaId) {
@@ -72,6 +89,14 @@ public final class ChangeVersion {
 
    public void setApplicabilityToken(ApplicabilityToken appId) {
       this.appId = appId;
+   }
+
+   public void setValue(String value) {
+      this.value = value;
+   }
+
+   public void setUri(String uri) {
+      this.uri = uri;
    }
 
    public boolean isValid() {
