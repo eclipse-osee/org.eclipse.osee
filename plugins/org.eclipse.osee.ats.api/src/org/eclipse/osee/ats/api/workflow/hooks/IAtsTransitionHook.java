@@ -32,18 +32,18 @@ public interface IAtsTransitionHook {
     * Allows subclass to add changes to transition before commit.
     */
    default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
-      // provided for subclass implementation
+      // Provided for subclass implementation
    }
 
    /**
-    * Allows subclass to to operation after transition and persist.
+    * Allows subclass to do operation after transition and persist.
     */
    default public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName) {
-      // provided for subclass implementation
+      // Provided for subclass implementation
    }
 
    default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
-      // provided for subclass implementation
+      // Provided for subclass implementation
    }
 
    default public String getOverrideTransitionToStateName(IAtsWorkItem workItem) {

@@ -2,4 +2,5 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
    <implementation class="org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl"/>
    <reference bind="addWorkItemHook" cardinality="0..n" interface="org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook" name="IAtsWorkItemHook" policy="dynamic"/>
+   <reference bind="addTransitionHook" cardinality="0..n" interface="org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook" name="IAtsTransitionHook" policy="dynamic"/>
 </scr:component>
