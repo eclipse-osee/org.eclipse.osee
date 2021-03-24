@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
+import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -49,7 +49,7 @@ public interface OrcsApplicability {
 
    XResultData convertConfigToArtifact(BranchId branch);
 
-   ViewDefinition getViewDefinition(ArtifactToken artifact);
+   CreateViewDefinition getViewDefinition(ArtifactToken artifact);
 
    XResultData createUpdateFeature(FeatureDefinition feature, String action, BranchId branch, UserId account);
 
@@ -57,9 +57,9 @@ public interface OrcsApplicability {
 
    XResultData deleteFeature(ArtifactId feature, BranchId branch, UserId account);
 
-   ViewDefinition getView(String view, BranchId branch);
+   CreateViewDefinition getView(String view, BranchId branch);
 
-   XResultData createUpdateView(ViewDefinition view, String action, BranchId branch, UserId account);
+   XResultData createUpdateView(CreateViewDefinition view, String action, BranchId branch, UserId account);
 
    XResultData deleteView(String view, BranchId branch, UserId account);
 
@@ -69,7 +69,7 @@ public interface OrcsApplicability {
 
    XResultData createApplicabilityForView(ArtifactId viewId, String applicability, UserId account, BranchId branch);
 
-   XResultData createCfgGroup(String groupName, BranchId branch, UserId account);
+   XResultData createCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account);
 
    XResultData relateCfgGroupToView(String groupId, String viewId, BranchId branch, UserId account);
 
@@ -79,9 +79,9 @@ public interface OrcsApplicability {
 
    XResultData deleteCfgGroup(String id, BranchId branch, UserId account);
 
-   XResultData updateConfigGroup(BranchId branch, String cfgGroup, UserId account, XResultData results);
+   XResultData syncConfigGroup(BranchId branch, String cfgGroup, UserId account, XResultData results);
 
-   XResultData updateConfigGroup(BranchId branch, UserId account);
+   XResultData syncConfigGroup(BranchId branch, UserId account);
 
    XResultData removeApplicabilityFromView(BranchId branch, ArtifactId viewId, String applicability, UserId account);
 
@@ -90,5 +90,7 @@ public interface OrcsApplicability {
    String applyApplicabilityToFiles(BranchId branch, ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath);
 
    ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch);
+
+   XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account);
 
 }

@@ -35,9 +35,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
+import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -84,24 +84,29 @@ public interface ApplicabilityEndpoint {
 
    @POST
    @Path("cfggroup")
+   @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.TEXT_PLAIN})
-   XResultData createCfgGroup(String grpName);
+   XResultData createCfgGroup(ConfigurationGroupDefinition group);
 
    @PUT
    @Path("cfggroup")
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData updateCfgGroup();
+   XResultData updateCfgGroup(ConfigurationGroupDefinition group);
+
+   @POST
+   @Path("cfggroup/sync")
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData syncCfgGroup();
 
    @DELETE
    @Path("cfggroup/{id}")
    @Produces({MediaType.APPLICATION_JSON})
    XResultData deleteCfgGroup(@PathParam("id") String groupId);
 
-   @PUT
-   @Path("cfggroup/{id}")
+   @POST
+   @Path("cfggroup/sync/{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData updateCfgGroup(@PathParam("id") String id);
+   XResultData syncCfgGroup(@PathParam("id") String id);
 
    @GET
    @Path("cfggroup/def/{id}")
@@ -154,13 +159,13 @@ public interface ApplicabilityEndpoint {
    @Path("view")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData updateView(ViewDefinition view);
+   XResultData updateView(CreateViewDefinition view);
 
    @POST
    @Path("view")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData createView(ViewDefinition view);
+   XResultData createView(CreateViewDefinition view);
 
    @GET
    @Path("view/{id}")
@@ -187,7 +192,7 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("view/def/{id}")
    @Produces({MediaType.APPLICATION_JSON})
-   ViewDefinition getView(@PathParam("id") String id);
+   CreateViewDefinition getView(@PathParam("id") String id);
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)

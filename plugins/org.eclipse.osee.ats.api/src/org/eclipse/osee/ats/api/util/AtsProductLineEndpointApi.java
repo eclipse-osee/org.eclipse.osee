@@ -19,7 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Audrey E Denk
@@ -30,6 +30,6 @@ public interface AtsProductLineEndpointApi {
    @GET
    @Path("branches/{branchQueryType}")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<BranchId> getBranches(@PathParam("branchQueryType") String branchQueryType);
+   public List<BranchToken> getBranches(@PathParam("branchQueryType") String branchQueryType);
 
 }

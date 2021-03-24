@@ -14,6 +14,7 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +25,8 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ViewDefinition;
+import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
+import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -95,31 +97,38 @@ public class ApplicabilityEndpointTest {
    public void testViewRestCalls() throws Exception {
       ApplicabilityEndpoint appl =
          ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
-
-      ViewDefinition updateView = appl.getView("Product A");
-      ViewDefinition copyFromView = appl.getView("Product B");
+      int viewCount = appl.getViews().size();
+      CreateViewDefinition updateView = appl.getView("Product A");
+      CreateViewDefinition copyFromView = appl.getView("Product B");
       updateView.setCopyFrom(ArtifactId.valueOf(copyFromView.getId()));
       appl.updateView(updateView);
 
-      ViewDefinition newView = new ViewDefinition();
+      CreateViewDefinition newView = new CreateViewDefinition();
       newView.setName("New View");
       newView.setCopyFrom(ArtifactId.valueOf(updateView.getId()));
+      List<String> pApps = new ArrayList<>();
+      pApps.add("Code");
+      pApps.add("Test");
+      newView.setProductApplicabilities(pApps);
       appl.createView(newView);
 
       appl.deleteView("Product D");
 
       List<ArtifactToken> viewList = appl.getViews();
-      Assert.assertEquals(5, viewList.size());
+      Assert.assertEquals(viewCount, viewList.size());
       String viewTable = appl.getViewTable(null);
       Assert.assertFalse("ApplicabilityEndpoint.deleteView failure", viewTable.contains("Product D"));
       Assert.assertTrue("ApplicabilityEndpoint.createView failure", viewTable.contains(newView.getName()));
 
-      appl.createCfgGroup("abGrp");
-      appl.relateCfgGroupToView("abGrp", "Product A");
-      appl.relateCfgGroupToView("abGrp", "Product B");
-      appl.updateCfgGroup();
+      ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
+      group.setName("abGrp");
+      List<String> cfgs = new ArrayList<>();
+      cfgs.add(updateView.getIdString());
+      cfgs.add(copyFromView.getIdString());
+      appl.createCfgGroup(group);
+      appl.syncCfgGroup();
       viewList = appl.getViews();
-      Assert.assertEquals(6, viewList.size());
+      Assert.assertEquals(viewCount + 1, viewList.size());
    }
 
    @Test
@@ -129,7 +138,7 @@ public class ApplicabilityEndpointTest {
       ArtifactEndpoint artifactEndpoint =
          ServiceUtil.getOseeClient().getArtifactEndpoint(DemoBranches.SAW_PL_Working_Branch);
 
-      ViewDefinition view = appl.getView("Product A");
+      CreateViewDefinition view = appl.getView("Product A");
       XResultData createNewApp =
          appl.createApplicabilityForView(ArtifactId.valueOf(view.getId()), "ROBOT_ARM_LIGHT = Included");
       Assert.assertEquals(createNewApp.getErrorCount(), 0);

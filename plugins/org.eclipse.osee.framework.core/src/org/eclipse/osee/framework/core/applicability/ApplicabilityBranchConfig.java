@@ -13,12 +13,9 @@
 
 package org.eclipse.osee.framework.core.applicability;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 
@@ -30,24 +27,17 @@ public class ApplicabilityBranchConfig {
    BranchViewToken branch;
    BranchViewToken parentBranch;
    Boolean editable;
-   Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
-   List<String> featuresOrdered = new LinkedList<>();
-   List<ArtifactToken> views = new LinkedList<>();
+   List<BranchViewDefinition> views = new LinkedList<>();
    List<ConfigurationGroupDefinition> groups = new LinkedList<>();
-   List<String> viewsOrdered = new LinkedList<>();
-   List<Map<String, String>> featureToValueMaps = new LinkedList<>();
-   List<FeatureDefinition> features = new LinkedList<>();
+   List<ExtendedFeatureDefinition> features = new LinkedList<>();
    ArtifactId associatedArtifactId;
 
-   public void addFeature(FeatureDefinition fDef) {
-      featureIdToFeature.put(fDef.getIdString(), fDef);
-      featuresOrdered.add(fDef.getName());
+   public void addFeature(ExtendedFeatureDefinition fDef) {
       features.add(fDef);
    }
 
-   public void addView(ArtifactToken view) {
+   public void addView(BranchViewDefinition view) {
       views.add(view);
-      viewsOrdered.add(view.getName());
    }
 
    public void addGroup(ConfigurationGroupDefinition group) {
@@ -63,51 +53,19 @@ public class ApplicabilityBranchConfig {
       this.branch = new BranchViewToken(branch.getId(), branch.getName(), branch.getViewId());
    }
 
-   public List<ArtifactToken> getViews() {
+   public List<BranchViewDefinition> getViews() {
       return views;
    }
 
-   public void setViews(List<ArtifactToken> views) {
+   public void setViews(List<BranchViewDefinition> views) {
       this.views = views;
    }
 
-   public void addFeatureToValueMap(Map<String, String> featureToValue) {
-      featureToValueMaps.add(featureToValue);
-   }
-
-   public Map<String, String> getFeatureToValues(int index) {
-      return featureToValueMaps.get(index);
-   }
-
-   public List<Map<String, String>> getFeatureToValueMaps() {
-      return featureToValueMaps;
-   }
-
-   public List<String> getFeaturesOrdered() {
-      return featuresOrdered;
-   }
-
-   public List<String> getViewsOrdered() {
-      return viewsOrdered;
-   }
-
-   public void setViewsOrdered(List<String> viewsOrdered) {
-      this.viewsOrdered = viewsOrdered;
-   }
-
-   public Map<String, FeatureDefinition> getFeatureIdToFeature() {
-      return featureIdToFeature;
-   }
-
-   public void setFeatureIdToFeature(Map<String, FeatureDefinition> featureIdToFeature) {
-      this.featureIdToFeature = featureIdToFeature;
-   }
-
-   public List<FeatureDefinition> getFeatures() {
+   public List<ExtendedFeatureDefinition> getFeatures() {
       return features;
    }
 
-   public void setFeatures(List<FeatureDefinition> features) {
+   public void setFeatures(List<ExtendedFeatureDefinition> features) {
       this.features = features;
    }
 

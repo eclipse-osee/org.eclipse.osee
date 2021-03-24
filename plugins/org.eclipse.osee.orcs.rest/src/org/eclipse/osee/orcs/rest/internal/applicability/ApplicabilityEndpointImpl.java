@@ -30,10 +30,10 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
+import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -260,7 +260,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData updateView(ViewDefinition view) {
+   public XResultData updateView(CreateViewDefinition view) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
@@ -269,7 +269,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData createView(ViewDefinition view) {
+   public XResultData createView(CreateViewDefinition view) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
@@ -287,7 +287,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public ViewDefinition getView(String id) {
+   public CreateViewDefinition getView(String id) {
       return ops.getView(id, branch);
    }
 
@@ -307,12 +307,21 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData createCfgGroup(String groupName) {
+   public XResultData createCfgGroup(ConfigurationGroupDefinition group) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.createCfgGroup(groupName, branch, account);
+      return ops.createCfgGroup(group, branch, account);
+   }
+
+   @Override
+   public XResultData updateCfgGroup(ConfigurationGroupDefinition group) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.updateCfgGroup(group, branch, account);
    }
 
    @Override
@@ -343,22 +352,22 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData updateCfgGroup(String id) {
+   public XResultData syncCfgGroup(String id) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.updateConfigGroup(branch, id, account, null);
+      return ops.syncConfigGroup(branch, id, account, null);
 
    }
 
    @Override
-   public XResultData updateCfgGroup() {
+   public XResultData syncCfgGroup() {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.updateConfigGroup(branch, account);
+      return ops.syncConfigGroup(branch, account);
 
    }
 
@@ -379,4 +388,5 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public ConfigurationGroupDefinition getConfigurationGroup(String id) {
       return ops.getConfigurationGroup(id, branch);
    }
+
 }

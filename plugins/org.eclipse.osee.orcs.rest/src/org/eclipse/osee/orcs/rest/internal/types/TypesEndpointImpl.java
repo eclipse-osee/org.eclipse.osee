@@ -16,7 +16,9 @@ package org.eclipse.osee.orcs.rest.internal.types;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -188,6 +190,14 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
       tx.commit();
       return Response.ok(version).build();
+   }
+
+   @Override
+   public List<String> getProductApplicabilityTypes() {
+      List<String> types = new ArrayList<String>();
+      types.addAll(CoreAttributeTypes.ProductApplicability.getEnumStrValues());
+      types.sort(Comparator.comparing(String::toString));
+      return types;
    }
 
 }

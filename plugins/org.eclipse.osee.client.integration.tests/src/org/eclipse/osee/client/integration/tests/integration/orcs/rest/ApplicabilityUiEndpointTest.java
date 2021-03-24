@@ -67,15 +67,11 @@ public class ApplicabilityUiEndpointTest {
       ApplicabilityBranchConfig config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()), false);
       Assert.assertNotNull(config);
 
-      Assert.assertEquals(4, config.getFeatureIdToFeature().size());
       Assert.assertEquals(4, config.getViews().size());
       Assert.assertEquals(DemoBranches.SAW_PL.getId(), config.getBranch().getId());
-      Assert.assertEquals(4, config.getFeatureToValueMaps().size());
-      Assert.assertEquals(null, config.getFeatureToValueMaps().get(0).get("valueType"));
 
       config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()), true);
       Assert.assertNotNull(config);
-      Assert.assertNotEquals(null, config.getFeatureToValueMaps().get(0).get("valueType"));
 
    }
 

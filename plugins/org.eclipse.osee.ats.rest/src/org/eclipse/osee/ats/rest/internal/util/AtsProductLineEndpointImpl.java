@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -21,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsProductLineEndpointApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -42,15 +43,13 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    }
 
    @Override
-   public List<BranchId> getBranches(String branchQueryType) {
+   public List<BranchToken> getBranches(String branchQueryType) {
 
-      List<BranchId> pleBranchList = new ArrayList<>();
-      List<Branch> branchList = new ArrayList<>();
-
+      List<BranchToken> pleBranchList = new ArrayList<>();
       if (branchQueryType.equals("baseline")) {
-         branchList = orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(false).andIsOfType(
-            BranchType.BASELINE).andStateIs(BranchState.CREATED, BranchState.MODIFIED).getResults().getList();
-         for (Branch branch : branchList) {
+         for (Branch branch : orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(
+            false).andIsOfType(BranchType.BASELINE).andStateIs(BranchState.CREATED,
+               BranchState.MODIFIED).getResults().getList()) {
             if (orcsApi.getQueryFactory().fromBranch(branch).andId(CoreArtifactTokens.ProductLineFolder).exists()) {
                pleBranchList.add(branch);
             }
@@ -72,6 +71,7 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
                      artifactId).getResults().getList());
          }
       }
+      Collections.sort(pleBranchList);
       return pleBranchList;
    }
 

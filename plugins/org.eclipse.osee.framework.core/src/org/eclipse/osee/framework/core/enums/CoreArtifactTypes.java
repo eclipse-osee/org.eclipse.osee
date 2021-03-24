@@ -44,7 +44,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(SubjectMatterExpert)
       .exactlyOne(Subsystem, Subsystem.Unspecified));
    ArtifactTypeToken AbstractTestResult = osee.add(osee.artifactType(38L, "Abstract Test Result", true, Artifact));
-   ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, Artifact));
+   ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, Artifact)
+      .any(ProductApplicability, ProductApplicability.Unspecified));
    ArtifactTypeToken Breaker = osee.add(osee.artifactType(188458869981236L, "Breaker", false, Artifact)
       .exactlyOne(CircuitBreakerId)
       .exactlyOne(DisplayText, "unset")

@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
+import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -31,8 +34,8 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
+import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -96,10 +99,17 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).getResults().getList();
       List<ArtifactToken> groups =
          orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branch);
+
       Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
       Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
-      for (ArtifactToken branchView : branchViews) {
-         config.addView(branchView);
+      for (ArtifactReadable branchView : branchViews) {
+         List<ApplicabilityToken> appTokens =
+            orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(branchView, branch);
+         appTokens.removeIf(n -> n.getName().startsWith("Config ="));
+
+         boolean hasFeatureApplicabilities = (appTokens.size() > 1);
+         config.addView(new BranchViewDefinition(branchView.getIdString(), branchView.getName(),
+            branchView.getAttributeValues(CoreAttributeTypes.ProductApplicability), hasFeatureApplicabilities));
          branchViewsMap.put(branchView,
             orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, branchView));
       }
@@ -113,50 +123,50 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       Collections.sort(featureArts, new NamedComparator(SortOrder.ASCENDING));
       for (ArtifactToken featureArt : featureArts) {
          FeatureDefinition fDef = getFeatureDefinition(featureArt);
-         config.addFeature(fDef);
-      }
-
-      // Setup Features column and add maps in order
-      for (FeatureDefinition fDef : config.getFeatureIdToFeature().values()) {
-         Map<String, String> viewToValue = new HashMap<>(config.getFeatureIdToFeature().values().size() + 1);
-         /**
-          * Note: Confusing, but Features is the header of the first column, so add it here. The rest of the columns
-          * headers will be the view names added below.
-          */
-         viewToValue.put("feature", fDef.getName());
-         viewToValue.put("id", fDef.getIdString());
-         viewToValue.put("description", fDef.getDescription());
-         if (showAll) {
-            viewToValue.put("valueType", fDef.getValueType());
-            viewToValue.put("values",
-               org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", fDef.getValues()));
-            viewToValue.put("defaultValue", fDef.getDefaultValue());
-            viewToValue.put("multiValued", String.valueOf(fDef.isMultiValued()));
+         ExtendedFeatureDefinition extfDef = new ExtendedFeatureDefinition(fDef);
+         List<List<NameValuePair>> groupingsList = new LinkedList<>();
+         for (ConfigurationGroupDefinition group : config.getGroups()) {
+            String groupToFeatureValue = getViewToFeatureValue(ArtifactId.valueOf(group.getId()), fDef, branchViewsMap);
+            List<NameValuePair> groupList = new LinkedList<>();
+            groupList.add(new NameValuePair(group.getName(), groupToFeatureValue));
+            //check if view is present in a specific group & add it to the groupings list to be added post views
+            for (BranchViewDefinition memberConfig : config.getViews()) {
+               if (group.getConfigurations().contains(memberConfig.getId())) {
+                  String viewToFeatureValue =
+                     getViewToFeatureValue(ArtifactId.valueOf(memberConfig.getId()), fDef, branchViewsMap);
+                  groupList.add(new NameValuePair(memberConfig.getName(), viewToFeatureValue));
+               }
+            }
+            groupingsList.add(groupList);
          }
-         config.addFeatureToValueMap(viewToValue);
-
-      }
-
-      // Add views and values
-      int count = 0;
-      for (FeatureDefinition fDef : config.getFeatureIdToFeature().values()) {
-         for (ArtifactToken view : config.getViews()) {
-            Map<String, String> viewToValue = config.getFeatureToValues(count);
-            String viewToFeatureValue = getViewToFeatureValue(view, fDef, branchViewsMap);
-            viewToValue.put(view.getName().toLowerCase(), viewToFeatureValue);
+         //check for view present in groupingsList, if not present add configuration
+         for (BranchViewDefinition view : config.getViews()) {
+            boolean viewPresent = false;
+            for (List<NameValuePair> groupList : groupingsList) {
+               for (NameValuePair configItem : groupList) {
+                  if (configItem.getName() == view.getName()) {
+                     viewPresent = true;
+                  }
+               }
+            }
+            if (!viewPresent) {
+               String viewToFeatureValue =
+                  getViewToFeatureValue(ArtifactId.valueOf(view.getId()), fDef, branchViewsMap);
+               extfDef.addConfiguration(new NameValuePair(view.getName(), viewToFeatureValue));
+            }
          }
-         for (ArtifactToken group : groups) {
-            Map<String, String> viewToValue = config.getFeatureToValues(count);
-            String viewToFeatureValue = getViewToFeatureValue(group, fDef, branchViewsMap);
-            viewToValue.put(group.getName().toLowerCase(), viewToFeatureValue);
+         for (List<NameValuePair> groupList : groupingsList) {
+            for (NameValuePair configItem : groupList) {
+               extfDef.addConfiguration(configItem);
+            }
          }
-         count++;
+         config.addFeature(extfDef);
       }
 
       return config;
    }
 
-   private String getViewToFeatureValue(ArtifactToken view, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
+   private String getViewToFeatureValue(ArtifactId view, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
       Map<String, List<String>> map = branchViewsMap.get(view);
       //
       List<String> list = map.get(fDef.getName());
@@ -167,9 +177,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public ViewDefinition getViewDefinition(ArtifactToken featureArt) {
+   public CreateViewDefinition getViewDefinition(ArtifactToken featureArt) {
       ArtifactReadable art = (ArtifactReadable) featureArt;
-      ViewDefinition view = new ViewDefinition();
+      CreateViewDefinition view = new CreateViewDefinition();
       view.setId(art.getId());
       view.setName(art.getName());
       view.setProductApplicabilities(art.getAttributeValues(CoreAttributeTypes.ProductApplicability));
@@ -457,8 +467,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
                "Set Defaults for Products/Views for New Feature");
 
-            List<ArtifactReadable> branchViews = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andIsOfType(
-               CoreArtifactTypes.BranchView).getResults().getList();
+            List<ArtifactToken> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
             Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
             for (ArtifactToken view : branchViews) {
                Iterable<String> appl = orcsApi.getQueryFactory().tupleQuery().getTuple2(
@@ -510,8 +519,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          ArtifactToken featureArt = (ArtifactToken) getFeature(feature.getIdString(), branch).getData();
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user, "Delete Feature");
-         List<ArtifactReadable> branchViews = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andIsOfType(
-            CoreArtifactTypes.BranchView).getResults().getList();
+         List<ArtifactToken> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
          Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
          for (ArtifactToken v : branchViews) {
             Iterable<String> appl =
@@ -538,7 +546,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          if (user == null) {
             user = SystemUser.OseeSystem;
          }
-         ViewDefinition view = getView(viewId.getIdString(), branch);
+         CreateViewDefinition view = getView(viewId.getIdString(), branch);
          if (orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
             applicability)) {
             TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
@@ -557,8 +565,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public ViewDefinition getView(String view, BranchId branch) {
-      ViewDefinition viewDef = new ViewDefinition();
+   public CreateViewDefinition getView(String view, BranchId branch) {
+      CreateViewDefinition viewDef = new CreateViewDefinition();
       if (Strings.isNumeric(view)) {
          ArtifactToken viewArt =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).andId(
@@ -604,7 +612,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData createUpdateView(ViewDefinition view, String action, BranchId branch, UserId account) {
+   public XResultData createUpdateView(CreateViewDefinition view, String action, BranchId branch, UserId account) {
       XResultData results = new XResultData();
       UserId user = account;
       if (user == null) {
@@ -613,12 +621,22 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       if ((action.equals("edit"))) {
          ArtifactToken editView =
             orcsApi.getQueryFactory().fromBranch(branch).andId(ArtifactId.valueOf(view.getId())).asArtifactToken();
-
+         if (editView.isInvalid()) {
+            results.errorf("Edit failed: invalid view");
+            return results;
+         }
          if (view.copyFrom.isValid()) {
             results = copyFromView(branch, editView, view.copyFrom, account);
          }
          if (results.isErrors()) {
             return results;
+         }
+         if (!view.getProductApplicabilities().isEmpty()) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
+               "Update Configuration Product Applicabilities");
+            tx.setAttributesFromValues(editView, CoreAttributeTypes.ProductApplicability,
+               view.getProductApplicabilities());
+            tx.commit();
          }
 
          if (!view.getName().equals(editView.getName())) {
@@ -634,6 +652,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                return results;
             }
          }
+
       } else {
          if ((action.equals("add"))) {
             if (!Strings.isValid(view.getName())) {
@@ -641,7 +660,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                return results;
             }
 
-            ViewDefinition xView = getView(view.getName(), branch);
+            CreateViewDefinition xView = getView(view.getName(), branch);
             if (xView.isValid()) {
                results.errorf("Product Name is already in use.");
                return results;
@@ -653,7 +672,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                      orcsApi.getTransactionFactory().createTransaction(branch, user, "Create View ");
                   createUpdateViewDefinition(view, tx);
                   tx.commit();
-                  ViewDefinition newView = getView(view.getName(), branch);
+                  CreateViewDefinition newView = getView(view.getName(), branch);
                   TransactionBuilder tx2 = orcsApi.getTransactionFactory().createTransaction(branch, user,
                      "Create Config and Base applicabilities on New View");
                   tx2.createApplicabilityForView(ArtifactId.valueOf(newView.getId()), "Base");
@@ -665,7 +684,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                }
             }
             if (view.getCopyFrom().isValid() || view.getConfigurationGroup().isValid()) {
-               ViewDefinition nView = getView(view.getName(), branch);
+               CreateViewDefinition nView = getView(view.getName(), branch);
 
                if (nView.isValid()) {
                   if (view.getCopyFrom().isValid()) {
@@ -690,7 +709,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   private ArtifactToken createUpdateViewDefinition(ViewDefinition view, TransactionBuilder tx) {
+   private ArtifactToken createUpdateViewDefinition(CreateViewDefinition view, TransactionBuilder tx) {
       ArtifactToken vDefArt = null;
       if (view.isValid()) {
          vDefArt = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(
@@ -705,6 +724,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             tx.createArtifact(getProductsFolder(tx.getBranch()), CoreArtifactTypes.BranchView, view.getName(), artId);
       }
       tx.setName(vDefArt, view.getName());
+      if (!view.getProductApplicabilities().isEmpty()) {
+         tx.setAttributesFromValues(vDefArt, CoreAttributeTypes.ProductApplicability, view.getProductApplicabilities());
+      }
       // reload artifact to return
 
       return orcsApi.getQueryFactory().fromBranch(vDefArt.getBranch()).andId(vDefArt).getArtifactOrSentinal();
@@ -718,7 +740,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          if (user == null) {
             user = SystemUser.OseeSystem;
          }
-         ViewDefinition viewDef = getView(view, branch);
+         CreateViewDefinition viewDef = getView(view, branch);
          Iterable<String> deleteApps = orcsApi.getQueryFactory().tupleQuery().getTuple2(
             CoreTupleTypes.ViewApplicability, branch, ArtifactId.valueOf(viewDef.getId()));
 
@@ -1060,17 +1082,17 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData createCfgGroup(String groupName, BranchId branch, UserId account) {
+   public XResultData createCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account) {
       XResultData results = new XResultData();
-      if (!Strings.isValid(groupName)) {
-         results.errorf("Name can not be empty for Configuration Group: %s", groupName);
+      if (!Strings.isValid(group.getName())) {
+         results.errorf("Name can not be empty for Configuration Group: %s", group.getName());
          return results;
       }
 
       //make sure the groupName does not exist already as a group
       if (orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
          CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).andNameEquals(
-            groupName).exists()) {
+            group.getName()).exists()) {
          results.errorf("Configuration Group Name already exists");
          return results;
       }
@@ -1081,21 +1103,32 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(branch, user, "Create PL Configuration Group");
-         createConfigurationGroup(groupName, tx);
+         ArtifactToken vDefArt = null;
+         Long artId = Lib.generateArtifactIdAsInt();
+
+         vDefArt = tx.createArtifact(getPlConfigurationGroupsFolder(tx.getBranch()), CoreArtifactTypes.GroupArtifact,
+            group.getName(), artId);
+         tx.setName(vDefArt, group.getName());
+         // reload artifact to return
          tx.commit();
          ArtifactId newGrp =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andNameEquals(
-               groupName).asArtifactId();
+               group.getName()).asArtifactId();
          TransactionBuilder tx2 = orcsApi.getTransactionFactory().createTransaction(branch, user,
             "Create Config and Base applicabilities on new view");
          tx2.createApplicabilityForView(newGrp, "Base");
-         tx2.createApplicabilityForView(newGrp, "ConfigurationGroup = " + groupName);
+         tx2.createApplicabilityForView(newGrp, "ConfigurationGroup = " + group.getName());
          for (FeatureDefinition feature : orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(
             branch)) {
             tx2.createApplicabilityForView(newGrp, feature.getName() + " = " + feature.getDefaultValue());
          }
          tx2.commit();
          results.getIds().add(newGrp.getIdString());
+         if (!group.getConfigurations().isEmpty()) {
+            for (String cfg : group.getConfigurations()) {
+               relateCfgGroupToView(newGrp.getIdString(), cfg, branch, user);
+            }
+         }
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
@@ -1103,16 +1136,42 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   private ArtifactToken createConfigurationGroup(String groupName, TransactionBuilder tx) {
-      ArtifactToken vDefArt = null;
-      Long artId = Lib.generateArtifactIdAsInt();
+   @Override
+   public XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account) {
+      XResultData results = new XResultData();
+      ConfigurationGroupDefinition currentGroup = getConfigurationGroup(group.getId(), branch);
+      if (!currentGroup.getName().equals(Strings.EMPTY_STRING)) {
+         try {
+            UserId user = account;
+            if (user == null) {
+               user = SystemUser.OseeSystem;
+            }
 
-      vDefArt = tx.createArtifact(getPlConfigurationGroupsFolder(tx.getBranch()), CoreArtifactTypes.GroupArtifact,
-         groupName, artId);
-      tx.setName(vDefArt, groupName);
-      // reload artifact to return
-
-      return orcsApi.getQueryFactory().fromBranch(vDefArt.getBranch()).andId(vDefArt).getArtifactOrSentinal();
+            if (!group.getName().equals(currentGroup.getName())) {
+               TransactionBuilder tx =
+                  orcsApi.getTransactionFactory().createTransaction(branch, user, "Update PL Configuration Group Name");
+               tx.setName(ArtifactId.valueOf(group.getId()), group.getName());
+               tx.commit();
+            }
+            if (!group.getConfigurations().toString().equals(currentGroup.getConfigurations().toString())) {
+               for (String cfg : currentGroup.getConfigurations()) {
+                  if (!group.getConfigurations().contains(cfg)) {
+                     results = unrelateCfgGroupToView(currentGroup.getId(), cfg, branch, user);
+                  }
+               }
+               for (String cfg : group.getConfigurations()) {
+                  if (!currentGroup.getConfigurations().contains(cfg)) {
+                     results = relateCfgGroupToView(currentGroup.getId(), cfg, branch, account);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            results.error(Lib.exceptionToString(ex));
+         }
+      } else {
+         results.errorf("Configuration Group does not exist");
+      }
+      return results;
    }
 
    @Override
@@ -1260,25 +1319,26 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData updateConfigGroup(BranchId branch, String id, UserId account, XResultData results) {
+   public XResultData syncConfigGroup(BranchId branch, String id, UserId account, XResultData results) {
       if (results == null) {
          results = new XResultData();
       }
-      ArtifactToken cfgGroupArtToken;
+      ArtifactReadable cfgGroup;
       if (Strings.isNumeric(id)) {
-         cfgGroupArtToken = orcsApi.getQueryFactory().fromBranch(branch).andId(ArtifactId.valueOf(id)).andIsOfType(
+         cfgGroup = orcsApi.getQueryFactory().fromBranch(branch).andId(ArtifactId.valueOf(id)).andIsOfType(
             CoreArtifactTypes.GroupArtifact).andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent,
-               CoreArtifactTokens.PlCfgGroupsFolder).asArtifactTokenOrSentinel();
+               CoreArtifactTokens.PlCfgGroupsFolder).getArtifact();
       } else {
-         cfgGroupArtToken =
+         cfgGroup =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
                CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).andNameEquals(
-                  id).asArtifactTokenOrSentinel();
+                  id).getArtifact();
       }
-      if (cfgGroupArtToken.isValid()) {
+
+      if (cfgGroup.isValid() & cfgGroup.getExistingRelationTypes().contains(CoreRelationTypes.PlConfigurationGroup)) {
          List<ArtifactToken> views =
             orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_Group,
-               cfgGroupArtToken).asArtifactTokens();
+               cfgGroup).asArtifactTokens();
 
          for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
             String resultApp = null;
@@ -1303,21 +1363,21 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                      if (!resultApp.equals(applicability)) {
                         //error
                         results.error(
-                           "Updating Group: " + cfgGroupArtToken.getName() + " (" + views.toString() + "). Applicabilities differ for non-binary feature: " + feature.getName());
+                           "Updating Group: " + cfgGroup.getName() + " (" + views.toString() + "). Applicabilities differ for non-binary feature: " + feature.getName());
                      }
                   }
                }
 
             }
             if (results.isSuccess()) {
-               createApplicabilityForView(cfgGroupArtToken, resultApp, account, branch);
+               createApplicabilityForView(cfgGroup, resultApp, account, branch);
             }
          }
          for (ArtifactId viewId : views) {
             for (ApplicabilityToken applicabilityToken : orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(
                viewId, branch)) {
                if (applicabilityToken.getName().contains("|") || applicabilityToken.getName().contains("&")) {
-                  createApplicabilityForView(cfgGroupArtToken, applicabilityToken.getName(), account, branch);
+                  createApplicabilityForView(cfgGroup, applicabilityToken.getName(), account, branch);
                }
             }
          }
@@ -1328,11 +1388,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData updateConfigGroup(BranchId branch, UserId account) {
+   public XResultData syncConfigGroup(BranchId branch, UserId account) {
       XResultData results = new XResultData();
       for (ArtifactToken group : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(
          branch)) {
-         updateConfigGroup(branch, group.getIdString(), account, results);
+         syncConfigGroup(branch, group.getIdString(), account, results);
       }
       return results;
    }

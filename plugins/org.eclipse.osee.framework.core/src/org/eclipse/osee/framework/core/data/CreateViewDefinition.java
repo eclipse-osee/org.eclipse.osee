@@ -19,18 +19,18 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Donald G. Dunne
  */
-public class ViewDefinition extends NamedIdBase {
+public class CreateViewDefinition extends NamedIdBase {
 
    public Object data;
    public ArtifactId copyFrom = ArtifactId.SENTINEL;
    private List<String> productApplicabilities;
    private ArtifactId configurationGroup = ArtifactId.SENTINEL;
 
-   public ViewDefinition() {
+   public CreateViewDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
    }
 
-   public ViewDefinition(Long id, String name, List<String> productApplicabilities) {
+   public CreateViewDefinition(Long id, String name, List<String> productApplicabilities) {
       super(id, name);
       this.productApplicabilities = productApplicabilities;
    }

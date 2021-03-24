@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -109,21 +110,24 @@ public class CreateDemoBranches {
       createLegacyFeatureConfig(featuresFolder, tx);
 
       tx.commit();
-      orcsApi.getApplicabilityOps().createCfgGroup("abGroup", branch, account);
+      ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
+      group.setName("abGroup");
+      orcsApi.getApplicabilityOps().createCfgGroup(group, branch, account);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch, account);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch, account);
-      orcsApi.getApplicabilityOps().updateConfigGroup(branch, account);
+      orcsApi.getApplicabilityOps().syncConfigGroup(branch, account);
 
    }
 
    private void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx) {
       XResultData results = new XResultData();
-      FeatureDefinition def1 =
-         new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_ARM_LIGHT.name(), "String",
-            Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability", Arrays.asList("OFP"));
+      FeatureDefinition def1 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ROBOT_ARM_LIGHT.name(),
+         "String", Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability",
+         Arrays.asList("Test"));
       ops.createUpdateFeatureDefinition(def1, "add", tx, results);
-      FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ENGINE_5.name(),
-         "String", Arrays.asList("A2543", "B5543"), "A2543", false, "Used select type of engine", Arrays.asList("OFP"));
+      FeatureDefinition def2 =
+         new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ENGINE_5.name(), "String",
+            Arrays.asList("A2543", "B5543"), "A2543", false, "Used select type of engine", Arrays.asList("Test"));
       ops.createUpdateFeatureDefinition(def2, "add", tx, results);
       FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.JHU_CONTROLLER.name(),
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation", null);
