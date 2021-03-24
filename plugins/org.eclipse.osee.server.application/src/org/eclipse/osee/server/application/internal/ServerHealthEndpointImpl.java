@@ -21,10 +21,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -57,6 +61,16 @@ public final class ServerHealthEndpointImpl {
       this.jdbcServices = jdbcServices;
       this.authManager = authManager;
       this.activityLog = activityLog;
+   }
+
+   @GET
+   @Path("headers")
+   @Produces(MediaType.TEXT_HTML)
+   public String getAllHeaders(@Context HttpHeaders headers) {
+      MultivaluedMap<String, String> rh = headers.getRequestHeaders();
+      String str =
+         rh.entrySet().stream().map(e -> e.getKey() + " = " + e.getValue()).collect(Collectors.joining("<br/>"));
+      return str;
    }
 
    @Path("top")
