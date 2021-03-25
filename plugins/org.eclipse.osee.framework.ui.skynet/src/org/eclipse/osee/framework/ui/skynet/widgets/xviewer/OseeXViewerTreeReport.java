@@ -57,7 +57,7 @@ public class OseeXViewerTreeReport extends XViewerTreeReport {
    }
 
    private String getUseTitle() {
-      if (Strings.isValid(provider.getEditorTitle())) {
+      if (provider != null && Strings.isValid(provider.getEditorTitle())) {
          return provider.getEditorTitle();
       } else if (Strings.isValid(title)) {
          return title;
