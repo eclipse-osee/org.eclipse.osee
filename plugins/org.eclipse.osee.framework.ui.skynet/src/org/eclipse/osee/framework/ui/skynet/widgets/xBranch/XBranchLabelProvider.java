@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -269,11 +268,11 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       if (xCol.getId().equals(BranchXViewerFactory.createdDate.getId())) {
          if (element instanceof BranchId) {
             TransactionRecord tx = BranchManager.getBaseTransaction((BranchId) element);
-            Date date = null;
             if (tx != null) {
-               date = tx.getTimeStamp();
+               return tx.getTimeStamp();
             }
-            return date;
+         } else if (element instanceof TransactionRecord) {
+            return ((TransactionRecord) element).getTimeStamp();
          }
       }
       return super.getBackingData(element, xCol, columnIndex);
