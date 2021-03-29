@@ -1,0 +1,99 @@
+= Interface Management Tool Requirements - DRAFT
+
+Ryan Brooks - <ryan.d.brooks@boeing.com> +
+Audrey Denk - <audrey.e.denk@boeing.com> +
+Branden Philips - <branden.w.phillips@boeing.com> +
+Rico Vaglienti - <rico.vaglienti@boeing.com> +
+
+
+[TIP]
+Use https://asciidoctor.org/docs/user-manual/#the-big-picture[AsciiDoctor] to edit this document +
+
+== Purpose and Use
+
+The purpose of the tool is to manage the software interfaces between subsystems for a Product Line.  It will  model the messages moving across the network in detail, including their source, destination and composition.    
+
+The tool will provide branch management capabilities, including automated change reporting and conflict detection.  It will allow the control many variants of a project and will retain full transactional history of software interfaces in the system including message and submessage details down to the element level. The tool will be used to produce the Interface Control Document (ICD) for each configuration of a Product Line.
+
+The tool will allow users to view approved versions of the data as well as working versions.  It will provide the ability to easily see differences between versions. The tool will also be able to export data as csv files to be used an input to other tools.
+
+== User Classes and Characteristics
+[square]
+* Interface Requirements engineer
+** Define message content and attributes
+** Manage variability among product line configurations
+** Perform ICD change management (i.e. change workflow)
+* Coder
+** Integrate auto-generated message code
+** Review ICD changes
+* Tester
+** Integrate auto-generated message code
+** Review ICD changes
+* Publisher
+** Publish configuration specific view of ICD for delivery to a supplier or customer
+
+== Software Requirements
+
+=== Version Control [1]
+* Fully transactional (can see a view of the ICD at any given time)
+* Multilevel version history
+* Fine grained - down to element/enumeration level
+* Able to lock branch for edit
+
+=== Data Management [2]
+* Subsystem details
+* Message Definition (i.e. Transmission Rate)
+* SubMessage Definition (i.e. Category)
+* Autogenerate header submessages (growth)
+* Element details
+** Enumeration Sets
+*** Support enumerating editing which impacts many elements and allow creation of new set if impact dictates
+** Physical quantity (i.e. length, mass, time)
+** Unit of Measure (i.e. meters, grams, seconds) 
+** Base Data Types (i.e. boolean, enumeration, float)
+** Default value
+* Automated spare management
+** Produce available spares report
+* Support calculated fields (e.g. word_start, byte_start, min bytes per second)
+
+=== Data Integrity [3]
+* Enforcement of data definition rules (ie. element min/max within valid range)
+* Validation before branch commit to ensure data integrity
+** No element data gaps
+** Insert spares as needed
+
+=== Change Management [4]
+* Manage Interface changes and corresponding software requirements within a unified change set 
+* Provide fine grained change reports
+* Support Peer Review in the workflow
+** Allow user to see fine grain changes during peer review in context 
+* Change Management data will be stored independently  of ICD model
+* Show easy listing of data history
+* Fine grained notification of concurrent editing (growth)
+
+=== Integrated Support for Product Line and Parallel Versions [5]
+* Support combination of concurrent editing of parallel versions
+* Support multiple configurations within product line
+
+=== Export Abilities [6]
+* Export csv files for use by down stream tooling
+* Publish deliverable human readable document represent Interface data
+
+=== Robustness [7]
+* Handle millions of elements
+* Support concurrent editing by large number of users
+
+=== Performance [8]
+* Be responsive to a user while managing millions of elements
+
+=== Reduce Redundancy [9]
+* Provide construct that replaces the use of enumerating a signals over an iteration range (e.g. SIG1, SIG2...SIG15)
+* Element re-use
+* Enumeration Set re-use
+* Repeated element sets
+
+=== Access Control [10]
+* Restrict modifications on a change set to authorized users/roles
+
+=== Import Existing data [11]
+* Import data from various tabular formats
