@@ -102,6 +102,12 @@ public class GenericReportBuilder implements GenericReport {
    }
 
    @Override
+   public GenericReport type(String columnName) {
+      currentLevel.type(columnName);
+      return this;
+   }
+
+   @Override
    public GenericReport filter(AttributeTypeToken type, String regex) {
       currentLevel.filter(type, regex);
       return this;

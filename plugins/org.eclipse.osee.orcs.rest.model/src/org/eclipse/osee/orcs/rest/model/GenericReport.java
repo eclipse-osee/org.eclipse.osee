@@ -33,6 +33,8 @@ public interface GenericReport {
 
    public GenericReport column(AttributeTypeToken type);
 
+   public GenericReport type(String columnName);
+
    public GenericReport filter(AttributeTypeToken type, String regex);
 
    public QueryBuilder query();

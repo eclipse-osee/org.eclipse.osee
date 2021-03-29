@@ -48,6 +48,11 @@ public class ReportLevel {
       return this;
    }
 
+   public ReportLevel type(String columnName) {
+      columns.add(new ArtifactTypeReportColumn(columnName));
+      return this;
+   }
+
    public void filter(AttributeTypeToken type, String filterRegex) {
       for (ReportColumn column : getColumnsOfType(type)) {
          column.addFilter(filterRegex);

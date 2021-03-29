@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.rest.model.GenericReport;
@@ -85,7 +86,6 @@ public class TemplateReflector {
             // the iterator contains the query
             String methodName = queryMethod.getName().getFullyQualifiedName();
             if (queryMethod.toString().startsWith("report.query")) {
-               // first figure out how to handle one
                MethodInvocation subQuery = iterator.next();
                String subMethodName = subQuery.getName().getFullyQualifiedName();
                results.logf("QueryMethodName: %s", subMethodName);
@@ -101,6 +101,11 @@ public class TemplateReflector {
                   toReturn = invoker.invoke(report.query());
                } else {
                   results.logf("failed to set method for %s", methodName);
+               }
+            } else if (queryMethod.toString().startsWith("ArtifactId.valueOf")) {
+               Object artIdArg = ((NumberLiteral) queryMethod.arguments().get(0)).resolveConstantExpressionValue();
+               if (artIdArg instanceof Number) {
+                  toReturn = ArtifactId.valueOf(((Number) artIdArg).longValue());
                }
             }
             break;

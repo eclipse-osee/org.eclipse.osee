@@ -58,7 +58,7 @@ public final class PublishTemplateReport implements StreamingOutput {
          if (reportTemplateArt.isValid()) {
             writeReport();
          } else {
-            writeReportFromGenericReportCode(); // default to basic subsystem code trace
+            results.errorf("Invalid Template Report artifact provided: %s", reportTemplateArt);
          }
          writer.endWorkbook();
       } catch (Exception ex) {
