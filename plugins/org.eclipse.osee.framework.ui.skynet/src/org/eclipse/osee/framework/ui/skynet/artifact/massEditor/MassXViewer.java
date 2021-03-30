@@ -83,7 +83,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    private final Composite parent;
    private Action deleteAttributeValuesAction, deleteArtifactAction;
    private Action purgeArtifactAction;
-   private Action addAttributeValueAction;
 
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
@@ -185,20 +184,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    private void createMenuActions() {
 
-      /** This is admin only because it does not support all attribute types */
-      if (UserManager.getUser().isOseeAdmin()) {
-         addAttributeValueAction = new Action("Add Attribute Value If Missing (Admin Only)", IAction.AS_PUSH_BUTTON) {
-            @Override
-            public void run() {
-               try {
-                  handleAddAttributeValueIfMissing();
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         };
-      }
-
       deleteAttributeValuesAction = new Action("Delete Attribute Value(s)", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -250,39 +235,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       }
    }
 
-   protected void handleAddAttributeValueIfMissing() {
-      ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
-      if (selectedArtifacts.isEmpty()) {
-         AWorkbench.popup("Must select items to delete");
-         return;
-      }
-      // get attributes that can be deleted (from artifact and validity)
-      Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
-      for (Artifact art : artifacts) {
-         // include attribute types that are used even if invalid
-         for (Attribute<?> attr : art.getAttributes()) {
-            attrTypesUsed.add(attr.getAttributeType());
-         }
-      }
-
-      // popup dialog
-      FilteredCheckboxAttributeTypeDialog dialog =
-         new FilteredCheckboxAttributeTypeDialog("Add Attribute (Admin Only)", "Select attribute type to add.");
-      dialog.setSelectable(attrTypesUsed);
-      if (dialog.open() == 0) {
-         // perform deletion
-         SkynetTransaction transaction = TransactionManager.createTransaction(
-            selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Attributes");
-         for (Artifact art : selectedArtifacts) {
-            for (AttributeTypeToken attributeType : dialog.getChecked()) {
-               art.deleteAttributes(attributeType);
-               art.persist(transaction);
-            }
-         }
-         transaction.execute();
-      }
-   }
-
    protected void handleDeleteAttributeValues() {
       ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
       if (selectedArtifacts.isEmpty()) {
@@ -319,11 +271,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
-
-      if (addAttributeValueAction != null) {
-         mm.insertBefore(XViewer.MENU_GROUP_PRE, addAttributeValueAction);
-         addAttributeValueAction.setEnabled(!getSelectedArtifacts().isEmpty());
-      }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
