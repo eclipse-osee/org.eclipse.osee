@@ -30,7 +30,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public final class ArtifactGuis {
 
    private static final String OTHER_EDIT_SQL =
-      "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?  AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
+      "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.branch_type = ?  AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
    private static final String ART_DELETED_ON_PARENT =
       "select txs.mod_type, br.branch_id from osee_artifact art, osee_txs txs, osee_branch br where art.art_id = ? and art.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and br.branch_id = ? and txs.tx_current in (2,3)";
 
@@ -141,7 +141,7 @@ public final class ArtifactGuis {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             BranchId branch = artifact.getBranch();
-            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact, branch, branch, BranchType.WORKING);
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact, branch, BranchType.WORKING);
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");
