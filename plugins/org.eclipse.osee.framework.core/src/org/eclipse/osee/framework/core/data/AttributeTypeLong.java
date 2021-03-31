@@ -27,6 +27,11 @@ public final class AttributeTypeLong extends AttributeTypeGeneric<Long> {
    }
 
    @Override
+   public Long valueFromDouble(double value) {
+      return Math.round(value);
+   }
+
+   @Override
    public Long valueFromStorageString(String storedValue) {
       return Long.valueOf(storedValue);
    }

@@ -27,6 +27,11 @@ public final class AttributeTypeInteger extends AttributeTypeGeneric<Integer> {
    }
 
    @Override
+   public Integer valueFromDouble(double value) {
+      return (int) Math.round(value);
+   }
+
+   @Override
    public Integer valueFromStorageString(String storedValue) {
       return Integer.valueOf(storedValue);
    }

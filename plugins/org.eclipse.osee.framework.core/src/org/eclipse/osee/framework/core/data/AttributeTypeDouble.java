@@ -27,6 +27,11 @@ public final class AttributeTypeDouble extends AttributeTypeGeneric<Double> {
    }
 
    @Override
+   public Double valueFromDouble(double value) {
+      return value;
+   }
+
+   @Override
    public Double valueFromStorageString(String storedValue) {
       return Double.valueOf(storedValue);
    }

@@ -41,9 +41,9 @@ public interface ComputedCharacteristicToken<T> extends FullyNamed, HasDescripti
 
    boolean isMultiplicityValid(ArtifactTypeToken artifactType);
 
-   T calculate(List<T> attributeValues);
+   T calculate(List<T> computingValues);
 
-   List<AttributeTypeGeneric<T>> getAttributeTypes();
+   List<AttributeTypeGeneric<T>> getAttributeTypesToCompute();
 
    String getMediaType();
 

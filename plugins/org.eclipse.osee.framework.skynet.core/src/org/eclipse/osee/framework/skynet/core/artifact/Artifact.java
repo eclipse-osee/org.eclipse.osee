@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -639,6 +640,19 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          attribute = initializeAttribute(attributeType, ModificationType.NEW, true, true);
       }
       return attribute;
+   }
+
+   public <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic) {
+      List<T> attributeValues = new ArrayList<T>();
+      if (!artifactType.isComputedCharacteristicValid(computedCharacteristic)) {
+         throw new OseeCoreException(
+            "Attribute Types on Artifact Type %s do not have valid multiplicity for computed characteristic %s",
+            artifactType.getName(), computedCharacteristic.getName());
+      }
+      for (AttributeTypeGeneric<T> attributeType : computedCharacteristic.getAttributeTypesToCompute()) {
+         attributeValues.addAll(getAttributeValues(attributeType));
+      }
+      return computedCharacteristic.calculate(attributeValues);
    }
 
    /**

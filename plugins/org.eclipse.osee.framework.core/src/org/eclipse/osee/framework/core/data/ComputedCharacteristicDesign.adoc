@@ -10,7 +10,9 @@ For example, given the two attribute types "Start Index" and "End Index", then "
 Can support arbitrarily complex (i.e. custom) calculations as well and predefined ones such as:
 
 	Rate		Numerator is delta of <type parameter>	Denominator is a duration
+		duration is the time delta
 	Ratio		Ratio of <type parameter>
+		A ratio is a quotient where the numerator and denominator have the same units.
 	Delta		Delta of <type parameter>
 	Quotient	numerator is a <type parameter>	denominator is a <type parameter> (not Duration)
 	Product		multiplicand is a <type parameter> and multiplier is a <type parameter>

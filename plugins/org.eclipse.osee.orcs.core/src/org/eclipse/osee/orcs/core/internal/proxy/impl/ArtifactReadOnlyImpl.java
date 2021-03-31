@@ -229,7 +229,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
             "Attribute Types on Artifact Type %s do not have valid multiplicity for computed characteristic %s",
             artifactType.getName(), computedCharacteristic.getName());
       }
-      for (AttributeTypeGeneric<T> attributeType : computedCharacteristic.getAttributeTypes()) {
+      for (AttributeTypeGeneric<T> attributeType : computedCharacteristic.getAttributeTypesToCompute()) {
          attributeValues.addAll(getAttributeValues(attributeType));
       }
       return computedCharacteristic.calculate(attributeValues);

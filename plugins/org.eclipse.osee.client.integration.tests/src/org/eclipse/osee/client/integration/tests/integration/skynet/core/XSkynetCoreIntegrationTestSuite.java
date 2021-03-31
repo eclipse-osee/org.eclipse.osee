@@ -38,6 +38,7 @@ import org.junit.runners.Suite;
    // BranchStateTest moved to LongRunningTestSuite
    ChangeDataTest.class,
    ChangeManagerTest.class,
+   ComputedCharacteristicTest.class,
    ConflictDeletionTest.class,
    ConflictIntroduceTest.class,
    ConflictTest.class,

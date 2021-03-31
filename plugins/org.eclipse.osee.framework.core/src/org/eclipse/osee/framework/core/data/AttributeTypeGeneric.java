@@ -67,6 +67,10 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
       return fileExtension;
    }
 
+   public T valueFromDouble(double value) {
+      return null;
+   }
+
    /**
     * @param storedValue is the raw String stored in the database
     * @return the attribute value in its native Java representation

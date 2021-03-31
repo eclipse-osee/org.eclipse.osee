@@ -22,19 +22,23 @@ import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 /**
  * @author Stephen J. Molaro
  */
-public final class ComputedCharacteristicSentinel extends ComputedCharacteristic<Object> {
+public final class ComputedCharacteristicProduct<T extends Number> extends ComputedCharacteristic<T> {
 
-   public ComputedCharacteristicSentinel(Long id, String name, TaggerTypeToken taggerType, NamespaceToken namespace, String description, List<AttributeTypeGeneric<Object>> typesToCompute) {
+   public ComputedCharacteristicProduct(Long id, String name, TaggerTypeToken taggerType, NamespaceToken namespace, String description, List<AttributeTypeGeneric<T>> typesToCompute) {
       super(id, name, taggerType, namespace, description, typesToCompute);
    }
 
    @Override
    public boolean isMultiplicityValid(ArtifactTypeToken artifactType) {
-      return true;
+      return atLeastTwoValues(artifactType);
    }
 
    @Override
-   public Object calculate(List<Object> computingValues) {
-      return 0;
+   public T calculate(List<T> computingValues) {
+      double product = computingValues.get(0).doubleValue();
+      for (T value : computingValues.subList(1, computingValues.size())) {
+         product *= value.doubleValue();
+      }
+      return typesToCompute.get(0).valueFromDouble(product);
    }
 }
