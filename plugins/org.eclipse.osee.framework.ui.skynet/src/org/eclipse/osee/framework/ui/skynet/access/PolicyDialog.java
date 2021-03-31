@@ -248,19 +248,23 @@ public class PolicyDialog extends Dialog {
    }
 
    private boolean isAccessEnabled(PermissionEnum permission) {
-      boolean returnValue = true;
+      boolean enabled;
       try {
          IUserGroup oseeAccessGroup = UserGroupService.getOseeAccessAdmin();
          boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
          boolean objectHasAccessSet = !policyTableViewer.getAccessControlList().isEmpty();
-         if (!isOseeAccessAdmin && objectHasAccessSet) {
-            returnValue = AccessControlManager.hasPermission(accessControlledObject, permission);
+         if (isOseeAccessAdmin) {
+            enabled = true;
+         } else if (objectHasAccessSet) {
+            enabled = AccessControlManager.hasPermission(accessControlledObject, permission);
+         } else {
+            enabled = false;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         returnValue = false;
+         enabled = false;
       }
-      return returnValue;
+      return enabled;
    }
 
    @Override
