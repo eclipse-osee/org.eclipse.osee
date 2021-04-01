@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
@@ -110,6 +110,7 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
                getNameToLocationMap();
                FilteredTreeDialog dialog = new FilteredTreeDialog("Select Attachment", "Select item to attach",
                   new ArrayTreeContentProvider(), new AtsConfigLabelProvider(null));
+               dialog.setComparator(new StringNameComparator());
                dialog.setInput(getAllAttachments());
 
                // Determine if file is already attached and ask if want to replace
@@ -230,7 +231,7 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
       changes.execute();
    }
 
-   private Collection<String> getAllAttachments() {
+   private List<String> getAllAttachments() {
       List<String> allAttachments = new ArrayList<>();
       for (Entry<String, BranchId> entry : nameLocationBranchMap.entrySet()) {
          String[] nameLocation = entry.getKey().split(";");
