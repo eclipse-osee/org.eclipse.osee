@@ -784,4 +784,8 @@ public class SqlTable extends NamedBase {
       tableExtras = extras;
    }
 
+   public static SqlTable getTxsTable(boolean isArchived) {
+      return isArchived ? TXS_ARCHIVED_TABLE : TXS_TABLE;
+   }
+
 }

@@ -27,12 +27,11 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -51,7 +50,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
 
   // @formatter:off
    private static final String SELECT_ITEMS_BETWEEN_TRANSACTIONS =
-      "with txsOuter as (select gamma_id, mod_type, app_id from osee_txs%s where branch_id = ? and transaction_id > ? and transaction_id <= ?) \n" +
+      "with txsOuter as (select gamma_id, mod_type, app_id from %s where branch_id = ? and transaction_id > ? and transaction_id <= ?) \n" +
       "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id \n" +
       "FROM osee_attribute item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
@@ -70,7 +69,6 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
       "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id";
    // @formatter:on
-   private static final String SELECT_IS_BRANCH_ARCHIVED = "select archived from osee_branch where branch_id = ?";
 
    private final OrcsTokenService tokenService;
    private final TransactionToken sourceTx;
@@ -81,6 +79,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
    private final HashMap<Long, ApplicabilityToken> applicTokens;
    private final JdbcClient jdbcClient;
    private final BranchId mergeBranch;
+   private final boolean isArchived;
 
    public LoadDeltasBetweenTxsOnTheSameBranch(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
@@ -92,6 +91,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       this.missingChangeItemFactory = missingChangeItemFactory;
       this.queryFactory = queryFactory;
       this.mergeBranch = mergeBranch;
+      isArchived = queryFactory.branchQuery().isArchived(destinationTx.getBranch());
    }
 
    private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {
@@ -106,16 +106,11 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       Conditions.checkExpressionFailOnTrue(!sourceTx.isOnSameBranch(destinationTx),
          "Unable to compute deltas between transactions on different branches");
 
-      Integer result = jdbcClient.fetchOrException(Integer.class,
-         () -> new OseeCoreException("Failed to get Branch archived state for %s", destinationTx.getBranch()),
-         SELECT_IS_BRANCH_ARCHIVED, destinationTx.getBranch());
-      boolean isArchived = BranchArchivedState.valueOf(result.intValue()).isArchived();
-
-      DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = loadChangesAtEndTx(isArchived);
-      return loadItemsByItemId(hashChangeData, isArchived);
+      DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = loadChangesAtEndTx();
+      return loadItemsByItemId(hashChangeData);
    }
 
-   private DoubleKeyHashMap<Integer, Long, ChangeItem> loadChangesAtEndTx(boolean isArchived) {
+   private DoubleKeyHashMap<Integer, Long, ChangeItem> loadChangesAtEndTx() {
       DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = new DoubleKeyHashMap<>();
       Consumer<JdbcStatement> consumer = stmt -> {
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
@@ -174,14 +169,14 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             }
          }
       };
-      String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, isArchived ? "_archived" : "");
+      String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, SqlTable.getTxsTable(isArchived));
       jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, destinationTx.getBranch(), sourceTx,
          destinationTx);
 
       return hashChangeData;
    }
 
-   private List<ChangeItem> loadItemsByItemId(DoubleKeyHashMap<Integer, Long, ChangeItem> changeData, boolean isArchived) {
+   private List<ChangeItem> loadItemsByItemId(DoubleKeyHashMap<Integer, Long, ChangeItem> changeData) {
       try (ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery()) {
          for (Integer i : changeData.getKeySetOne()) {
             for (ChangeItem item : changeData.get(i)) {
@@ -189,13 +184,13 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             }
          }
          idJoin.store();
-         loadCurrentVersionData(idJoin.getQueryId(), changeData, sourceTx, isArchived);
+         loadCurrentVersionData(idJoin.getQueryId(), changeData, sourceTx);
       }
       List<ChangeItem> list = new LinkedList<>(changeData.allValues());
       return list;
    }
 
-   private void loadCurrentVersionData(int queryId, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionToken transactionLimit, boolean isArchived) {
+   private void loadCurrentVersionData(int queryId, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionToken transactionLimit) {
 
       Consumer<JdbcStatement> consumer = stmt -> {
          Long itemId = stmt.getLong("item_id");

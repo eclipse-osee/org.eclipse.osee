@@ -29,8 +29,10 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -325,5 +327,14 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public ApplicabilityDsQuery createApplicabilityDsQuery() {
       return new ApplicabilityDsQueryImpl(jdbcClient, sqlJoinFactory);
+   }
+
+   @Override
+   public boolean isArchived(BranchId branchId) {
+      String SELECT_IS_BRANCH_ARCHIVED = "select archived from osee_branch where branch_id = ?";
+      Integer result = jdbcClient.fetchOrException(Integer.class,
+         () -> new OseeCoreException("Failed to get Branch archived state for %s", branchId), SELECT_IS_BRANCH_ARCHIVED,
+         branchId);
+      return BranchArchivedState.valueOf(result.intValue()).isArchived();
    }
 }

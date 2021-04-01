@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -59,4 +60,6 @@ public interface QueryEngine {
    Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory);
 
    List<ArtifactReadable> asArtifacts(QueryData queryData, QueryFactory queryFactory);
+
+   boolean isArchived(BranchId branchId);
 }

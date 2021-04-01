@@ -1,16 +1,13 @@
-/*********************************************************************
- * Copyright (c) 2012 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
+/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Boeing - initial API and implementation
- **********************************************************************/
-
+ *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.HashMap;
@@ -29,6 +26,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -52,9 +50,9 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 public class LoadDeltasBetweenBranches {
    // @formatter:off
    private static final String SELECT_ALL_SOURCE_ADDRESSING =
-      "with\n" + "txsOuter as (select transaction_id, gamma_id, mod_type, app_id from osee_txs txs where \n" +
+      "with\n" + "txsOuter as (select transaction_id, gamma_id, mod_type, app_id from %s txs where \n" +
          "branch_id = ? and txs.tx_current <> ? and transaction_id <> ? AND \n" +
-         "NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? \n" +
+         "NOT EXISTS (SELECT 1 FROM %s txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? \n" +
          "AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type and txs1.app_id = txs.app_id)) \n" +
          "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id \n" +
          "FROM osee_attribute item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
@@ -78,17 +76,17 @@ public class LoadDeltasBetweenBranches {
    private static final String SELECT_BASE_TX = "select baseline_transaction_id from osee_branch where branch_id = ?";
 
    private final JdbcClient jdbcClient;
+   private final SqlJoinFactory joinFactory;
    private final OrcsTokenService tokenService;
    private final BranchId sourceBranch, destinationBranch;
-   private final BranchId mergeBranch;
-   private final TransactionId mergeTxId;
    private final TransactionToken sourceTx;
    private final TransactionToken destinationTx;
-   private final SqlJoinFactory joinFactory;
-   private final HashMap<Long, ApplicabilityToken> applicTokens;
+   private final BranchId mergeBranch;
    private final ApplicabilityQuery applicabilityQuery;
    private final MissingChangeItemFactory missingChangeItemFactory;
    private final QueryFactory queryFactory;
+   private final HashMap<Long, ApplicabilityToken> applicTokens;
+   private final TransactionId mergeTxId;
 
    public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
@@ -101,8 +99,8 @@ public class LoadDeltasBetweenBranches {
       this.mergeBranch = mergeBranch;
       this.applicabilityQuery = queryFactory.applicabilityQuery();
       this.missingChangeItemFactory = missingChangeItemFactory;
-      this.applicTokens = applicabilityQuery.getApplicabilityTokens(sourceBranch, destinationBranch);
       this.queryFactory = queryFactory;
+      this.applicTokens = applicabilityQuery.getApplicabilityTokens(sourceBranch, destinationBranch);
 
       if (mergeBranch.isValid()) {
          mergeTxId = queryFactory.transactionQuery().andIsHead(mergeBranch).getResults().getExactlyOne();
@@ -218,8 +216,12 @@ public class LoadDeltasBetweenBranches {
 
          }
       };
-      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ALL_SOURCE_ADDRESSING, sourceBranch,
-         TxCurrent.NOT_CURRENT, sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
+      SqlTable txsTable = SqlTable.getTxsTable(queryFactory.branchQuery().isArchived(sourceBranch));
+
+      String sql = String.format(SELECT_ALL_SOURCE_ADDRESSING, txsTable, txsTable);
+
+      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, sql, sourceBranch, TxCurrent.NOT_CURRENT,
+         sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
 
       return hashChangeData;
    }

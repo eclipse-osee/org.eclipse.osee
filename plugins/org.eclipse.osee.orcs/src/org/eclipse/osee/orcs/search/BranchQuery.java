@@ -28,14 +28,13 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Roberto E. Escobar
  */
 public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
+   BranchQuery SENTINEL = createSentinel();
 
    ResultSet<Branch> getResults();
 
    ResultSet<BranchToken> getResultsAsId();
-   BranchQuery SENTINEL = createSentinel();
 
-   @Override
-   int getCount();
+   boolean isArchived(BranchId branchId);
 
    public static BranchQuery createSentinel() {
       final class BranchQuerySentinel extends NamedIdBase implements BranchQuery {
@@ -155,8 +154,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
             return null;
          }
 
+         @Override
+         public boolean isArchived(BranchId branchId) {
+            return false;
+         }
       }
       return new BranchQuerySentinel();
    }
-
 }

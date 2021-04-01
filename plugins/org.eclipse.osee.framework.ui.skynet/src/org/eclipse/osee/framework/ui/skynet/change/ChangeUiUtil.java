@@ -108,17 +108,13 @@ public final class ChangeUiUtil {
          return input;
       } else {
          BranchId parentBranch = BranchManager.getParentBranch(branch);
-         return createInput(branch, parentBranch, loadOnOpen);
+         TransactionToken startTx = TransactionManager.getHeadTransaction(branch);
+         TransactionToken endTx = TransactionManager.getHeadTransaction(parentBranch);
+         TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
+         ChangeReportEditorInput input = createInput(CompareType.COMPARE_CURRENTS_AGAINST_PARENT, txDelta, loadOnOpen);
+         input.setBranch(branch);
+         return input;
       }
-   }
-
-   private static ChangeReportEditorInput createInput(BranchId branch, BranchId parentBranch, boolean loadOnOpen) {
-      TransactionToken startTx = TransactionManager.getHeadTransaction(branch);
-      TransactionToken endTx = TransactionManager.getHeadTransaction(parentBranch);
-      TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
-      ChangeReportEditorInput input = createInput(CompareType.COMPARE_CURRENTS_AGAINST_PARENT, txDelta, loadOnOpen);
-      input.setBranch(branch);
-      return input;
    }
 
    public static ChangeReportEditorInput createInput(CompareType compareType, TransactionDelta txDelta, boolean loadOnOpen) {
@@ -144,16 +140,16 @@ public final class ChangeUiUtil {
       Jobs.startJob(job, true);
    }
 
-   public static void open(BranchToken workingBranch, BranchId parentBranch, boolean b) {
-      Branch branch = BranchManager.getBranch(workingBranch);
-      if (branch.isInvalid() || permissionsDeniedWithDialog(workingBranch)) {
+   public static void open(BranchToken workingBranchId, BranchId parentBranchId, boolean b) {
+      Branch workingBranch = BranchManager.getBranch(workingBranchId);
+      if (workingBranch.isInvalid() || permissionsDeniedWithDialog(workingBranchId)) {
          return;
       }
-      branch = BranchManager.getBranch(parentBranch);
-      if (branch.isInvalid() || permissionsDeniedWithDialog(branch)) {
+      Branch parentBranch = BranchManager.getBranch(parentBranchId);
+      if (parentBranch.isInvalid() || permissionsDeniedWithDialog(parentBranch)) {
          return;
       }
-      ChangeReportEditorInput input = createInput(workingBranch, parentBranch, true);
+      ChangeReportEditorInput input = createInput(workingBranch, true);
       open(input);
    }
 }
