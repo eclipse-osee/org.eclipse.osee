@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -32,7 +33,7 @@ public class SqlTable extends NamedBase {
    private final ArrayList<String> constraints;
    private final ArrayList<String> statements;
    private final int indexLevel;
-   private final boolean hasJoinTblSp;
+   private String insertSql;
    private String tableExtras;
 
    public SqlTable(String tableName, String aliasPrefix) {
@@ -48,10 +49,6 @@ public class SqlTable extends NamedBase {
    }
 
    public SqlTable(String tableName, String aliasPrefix, ObjectType objectType, int indexLevel) {
-      this(tableName, aliasPrefix, objectType, indexLevel, false);
-   }
-
-   public SqlTable(String tableName, String aliasPrefix, ObjectType objectType, int indexLevel, boolean hasJoinTblSp) {
       super(tableName);
       this.aliasPrefix = aliasPrefix;
       this.objectType = objectType;
@@ -59,7 +56,6 @@ public class SqlTable extends NamedBase {
       constraints = new ArrayList<>();
       statements = new ArrayList<>();
       this.indexLevel = indexLevel;
-      this.hasJoinTblSp = hasJoinTblSp;
    }
 
    public String getPrefix() {
@@ -132,10 +128,10 @@ public class SqlTable extends NamedBase {
 
    public void createIndex(String indexName, boolean hasIndexTablespace, String... columns) {
       if (hasIndexTablespace) {
-         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
+         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(", ",
             Arrays.asList(columns)) + ")");
       } else {
-         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
+         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(", ",
             Arrays.asList(columns)) + ")");
       }
    }
@@ -146,5 +142,59 @@ public class SqlTable extends NamedBase {
 
    public void setTableExtras(String extras) {
       tableExtras = extras;
+   }
+
+   public String getInsertIntoSqlWithValues(Object... parameters) {
+      StringBuilder strB = getInsertIntoSqlStart();
+
+      for (int i = 0; i < parameters.length; i++) {
+         if (i != 0) {
+            strB.append(", ");
+         }
+
+         JDBCType type = columns.get(i).getType();
+         if (type.equals(JDBCType.VARCHAR)) {
+            strB.append("'");
+            strB.append(parameters[i]);
+            strB.append("'");
+         } else if (parameters[i] instanceof Id) {
+            strB.append(((Id) parameters[i]).getIdString());
+         } else {
+            strB.append(parameters[i].toString());
+         }
+      }
+
+      strB.append(")");
+      return strB.toString();
+   }
+
+   public String getInsertSql() {
+      if (insertSql == null) {
+         insertSql = generateInsertIntoSql();
+      }
+      return insertSql;
+   }
+
+   private String generateInsertIntoSql() {
+      StringBuilder strB = getInsertIntoSqlStart();
+
+      for (int i = 0; i < columns.size(); i++) {
+         if (i != 0) {
+            strB.append(", ");
+         }
+         strB.append("?");
+      }
+      strB.append(")");
+      return strB.toString();
+   }
+
+   private StringBuilder getInsertIntoSqlStart() {
+      StringBuilder strB = new StringBuilder("INSERT INTO ");
+      strB.append(getName());
+      strB.append(" (");
+
+      Collections.appendToBuilder(columns, ", ", strB);
+      strB.append(") VALUES (");
+      return strB;
    }
 }

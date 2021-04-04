@@ -16,10 +16,11 @@ package org.eclipse.osee.orcs;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.sql.JDBCType;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlColumn;
 import org.eclipse.osee.jdbc.SqlTable;
@@ -76,27 +77,26 @@ public class OseeDb {
       RELATION_TABLE.createIndex("OSEE_RELATION__B_IDX", true, RELATION_LINK_B_ART_ID.getName());
 
    }
-
    public static final SqlTable BRANCH_TABLE = new SqlTable("osee_branch", "br", ObjectType.BRANCH);
-   public static final SqlColumn BRANCH_NAME = BRANCH_TABLE.addVarCharColumn("BRANCH_NAME", 200, false);
+   public static final SqlColumn BRANCH_ID = BRANCH_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_TYPE = BRANCH_TABLE.addColumn("BRANCH_TYPE", JDBCType.SMALLINT);
+   public static final SqlColumn BRANCH_STATE = BRANCH_TABLE.addColumn("BRANCH_STATE", JDBCType.SMALLINT);
+   public static final SqlColumn BRANCH_NAME = BRANCH_TABLE.addVarCharColumn("BRANCH_NAME", 200, false);
+   public static final SqlColumn BRANCH_PARENT_BRANCH_ID = BRANCH_TABLE.addColumn("PARENT_BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn BRANCH_PARENT_TRANSACTION_ID =
+      BRANCH_TABLE.addColumn("PARENT_TRANSACTION_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_BASELINE_TRANSACTION_ID =
       BRANCH_TABLE.addColumn("BASELINE_TRANSACTION_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_ASSOCIATED_ART_ID =
       BRANCH_TABLE.addColumn("ASSOCIATED_ART_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_ARCHIVED = BRANCH_TABLE.addColumn("ARCHIVED", JDBCType.SMALLINT);
-   public static final SqlColumn BRANCH_ID = BRANCH_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
-   public static final SqlColumn BRANCH_STATE = BRANCH_TABLE.addColumn("BRANCH_STATE", JDBCType.SMALLINT);
-   public static final SqlColumn BRANCH_PARENT_BRANCH_ID = BRANCH_TABLE.addColumn("PARENT_BRANCH_ID", JDBCType.BIGINT);
-   public static final SqlColumn BRANCH_PARENT_TRANSACTION_ID =
-      BRANCH_TABLE.addColumn("PARENT_TRANSACTION_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_INHERIT_ACCESS_CONTROL =
       BRANCH_TABLE.addColumn("INHERIT_ACCESS_CONTROL", JDBCType.SMALLINT);
    static {
       BRANCH_TABLE.setPrimaryKeyConstraint(BRANCH_ID);
       BRANCH_TABLE.createIndex("OSEE_BRANCH_A_IDX", true, BRANCH_ARCHIVED.getName());
-      BRANCH_TABLE.addStatement("INSERT INTO OSEE_BRANCH (" + Collections.toString(", ",
-         BRANCH_TABLE.getColumns()) + ") VALUES ('" + CoreBranches.SYSTEM_ROOT.getName() + "'," + BranchType.SYSTEM_ROOT.getIdString() + ",1,-1,0," + SYSTEM_ROOT.getIdString() + "," + BranchState.MODIFIED.getIdString() + ",-1,1,0)");
+      BRANCH_TABLE.addStatement(BRANCH_TABLE.getInsertIntoSqlWithValues(SYSTEM_ROOT, BranchType.SYSTEM_ROOT,
+         BranchState.MODIFIED, SYSTEM_ROOT.getName(), -1, 1, 1, -1, BranchArchivedState.UNARCHIVED, 0));
    }
 
    public static final SqlTable TXS_TABLE = new SqlTable("osee_txs", "txs", 1);
@@ -131,7 +131,6 @@ public class OseeDb {
    public static final SqlColumn TX_DETAILS_TX_BRANCH_ID = TX_DETAILS_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn TX_DETAILS_TRANSACTION_ID =
       TX_DETAILS_TABLE.addColumn("TRANSACTION_ID", JDBCType.BIGINT);
-
    public static final SqlColumn TX_DETAILS_AUTHOR = TX_DETAILS_TABLE.addColumn("AUTHOR", JDBCType.BIGINT);
    public static final SqlColumn TX_DETAILS_TIME = TX_DETAILS_TABLE.addColumn("TIME", JDBCType.TIMESTAMP);
    public static final SqlColumn TX_DETAILS_OSEE_COMMENT = TX_DETAILS_TABLE.addVarCharColumn("OSEE_COMMENT", 1000);
@@ -144,8 +143,9 @@ public class OseeDb {
       TX_DETAILS_TABLE.setForeignKeyConstraint("BRANCH_ID_FK1", TX_DETAILS_TX_BRANCH_ID, BRANCH_TABLE, BRANCH_ID);
       TX_DETAILS_TABLE.createIndex("OSEE_TX_DETAILS_B_TX_IDX", true, TX_DETAILS_TX_BRANCH_ID.getName(),
          TX_DETAILS_TRANSACTION_ID.getName());
-      TX_DETAILS_TABLE.addStatement("INSERT INTO OSEE_TX_DETAILS (" + Collections.toString(",",
-         (TX_DETAILS_TABLE.getColumns())) + ") VALUES (1,1,-1,CURRENT_TIMESTAMP,'" + CoreBranches.SYSTEM_ROOT.getName() + " Creation',1,NULL," + OseeCodeVersion.getVersionId() + ")");
+      TX_DETAILS_TABLE.addStatement(TX_DETAILS_TABLE.getInsertIntoSqlWithValues(1, 1, -1, "CURRENT_TIMESTAMP",
+         CoreBranches.SYSTEM_ROOT.getName() + " Creation", TransactionDetailsType.Baselined, -1,
+         OseeCodeVersion.getVersionId()));
    }
 
    public static final SqlTable OSEE_PERMISSION_TABLE = new SqlTable("osee_permission", "per");
@@ -218,9 +218,7 @@ public class OseeDb {
       OSEE_SEQUENCE_TABLE.addColumn("LAST_SEQUENCE", JDBCType.BIGINT);
    static {
       OSEE_SEQUENCE_TABLE.setUniqueKeyConstraint("SEQUENCE_ID_UN", OSEE_SEQUENCE_SEQUENCE_NAME.getName());
-      OSEE_SEQUENCE_TABLE.addStatement("INSERT INTO OSEE_SEQUENCE (" + Collections.toString(",",
-         OSEE_SEQUENCE_TABLE.getColumns()) + ") VALUES ('SKYNET_TRANSACTION_ID_SEQ', 1)");
-
+      OSEE_SEQUENCE_TABLE.addStatement(OSEE_SEQUENCE_TABLE.getInsertIntoSqlWithValues("SKYNET_TRANSACTION_ID_SEQ", 1));
    }
 
    public static final SqlTable OSEE_INFO_TABLE = new SqlTable("osee_info", "inf");
