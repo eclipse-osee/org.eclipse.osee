@@ -75,10 +75,19 @@ public class Collections {
    }
 
    public static <T> String toString(Iterable<T> items, String prefix, String separator, String suffix, Function<T, String> function) {
-      if (items == null) {
-         return "";
-      }
       StringBuilder strB = new StringBuilder();
+      appendToBuilder(items, prefix, separator, suffix, function, strB);
+      return strB.toString();
+   }
+
+   public static <T> void appendToBuilder(Iterable<T> items, String separator, StringBuilder strB) {
+      appendToBuilder(items, null, separator, null, String::valueOf, strB);
+   }
+
+   public static <T> void appendToBuilder(Iterable<T> items, String prefix, String separator, String suffix, Function<T, String> function, StringBuilder strB) {
+      if (items == null) {
+         return;
+      }
 
       if (prefix != null) {
          strB.append(prefix);
@@ -97,8 +106,6 @@ public class Collections {
       if (suffix != null) {
          strB.append(suffix);
       }
-
-      return strB.toString();
    }
 
    public static String toString(String[] items, String separator) {
