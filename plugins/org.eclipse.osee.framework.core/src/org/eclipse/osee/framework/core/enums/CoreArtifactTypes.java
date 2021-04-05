@@ -192,7 +192,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(SoftwareControlCategoryRationale)
       .zeroOrOne(SwCI)
       .exactlyOne(Subsystem, Subsystem.Unspecified)
-      .zeroOrOne(TechnicalPerformanceParameter));
+      .zeroOrOne(TechnicalPerformanceParameter)
+      .computed(CoreAttributeTypes.SoftwareCriticalityIndex));
    ArtifactTypeToken AbstractSoftwareRequirement = osee.add(osee.artifactType(23L, "Abstract Software Requirement", true, AbstractSpecRequirement)
       .any(CSCI, CSCI.Unspecified)
       .zeroOrOne(Category)

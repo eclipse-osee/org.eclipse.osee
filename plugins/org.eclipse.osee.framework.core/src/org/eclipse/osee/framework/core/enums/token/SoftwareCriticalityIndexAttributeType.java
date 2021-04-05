@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.core.enums.token.SoftwareCriticalityIndexAttri
 public class SoftwareCriticalityIndexAttributeType extends AttributeTypeEnum<SoftwareCriticalityIndexEnum> {
 
    public final SoftwareCriticalityIndexEnum Unspecified = new SoftwareCriticalityIndexEnum(0, "Unspecified");
-   public final SoftwareCriticalityIndexEnum _1 = new SoftwareCriticalityIndexEnum(1, "SwCI 1");
-   public final SoftwareCriticalityIndexEnum _2 = new SoftwareCriticalityIndexEnum(2, "SwCI 2");
-   public final SoftwareCriticalityIndexEnum _3 = new SoftwareCriticalityIndexEnum(3, "SwCI 3");
-   public final SoftwareCriticalityIndexEnum _4 = new SoftwareCriticalityIndexEnum(4, "SwCI 4");
-   public final SoftwareCriticalityIndexEnum _5 = new SoftwareCriticalityIndexEnum(5, "SwCI 5");
+   public final SoftwareCriticalityIndexEnum SwCI1 = new SoftwareCriticalityIndexEnum(1, "SwCI 1");
+   public final SoftwareCriticalityIndexEnum SwCI2 = new SoftwareCriticalityIndexEnum(2, "SwCI 2");
+   public final SoftwareCriticalityIndexEnum SwCI3 = new SoftwareCriticalityIndexEnum(3, "SwCI 3");
+   public final SoftwareCriticalityIndexEnum SwCI4 = new SoftwareCriticalityIndexEnum(4, "SwCI 4");
+   public final SoftwareCriticalityIndexEnum SwCI5 = new SoftwareCriticalityIndexEnum(5, "SwCI 5");
 
    public SoftwareCriticalityIndexAttributeType(NamespaceToken namespace, int enumCount) {
       super(2078511098117892252L, namespace, "Software Criticality Index", MediaType.TEXT_PLAIN,

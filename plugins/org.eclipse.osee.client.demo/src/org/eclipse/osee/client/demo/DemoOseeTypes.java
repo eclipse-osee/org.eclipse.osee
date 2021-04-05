@@ -16,6 +16,9 @@ package org.eclipse.osee.client.demo;
 import static org.eclipse.osee.client.demo.ClientDemoTypeTokenProvider.clientDemo;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SafetySeverity;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SoftwareControlCategory;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SoftwareCriticalityIndex;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeDouble;
@@ -68,7 +71,10 @@ public interface DemoOseeTypes {
       .computed(ComputationQuotient)
       .computed(ComputationDelta)
       .computed(ComputationFailure)
-      .computed(ComputationDivideByZero));
+      .computed(ComputationDivideByZero)
+      .exactlyOne(SoftwareControlCategory, SoftwareControlCategory.Unspecified)
+      .exactlyOne(SafetySeverity, SafetySeverity.Unspecified)
+      .computed(SoftwareCriticalityIndex));
    // @formatter:on
 
 }

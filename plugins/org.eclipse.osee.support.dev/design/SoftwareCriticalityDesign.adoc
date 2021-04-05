@@ -1,0 +1,34 @@
+= Design
+David Miller <david.w.miller6@boeing.com>
+Stephen Molaro <stephen.j.molaro@boeing.com>
+
+== Software Safety Criticality Matrix:
+
+
+
+|===
+| |Severity Category (I-IV) | | |
+|Software Control Category |Catastrophic (I) |Critical (II) |Marginal (III) |Negligible(IV)
+|1	|SwCI 1 |SwCI 1 |SwCI 3 |SwCI 4
+|2	|SwCI 1 |SwCI 2 |SwCI 3 |SwCI 4
+|3	|SwCI 2 |SwCI 3 |SwCI 4 |SwCI 4
+|4	|SwCI 3 |SwCI 4 |SwCI 4 |SwCI 4
+|5(NSI) |SwCI 5 |SwCI 5 |SwCI 5 |SwCI 5
+|===
+
+== Table for unhandled inputs:
+
+If one opens a requirement artifact with the artifact explorer, and it has 0 Software Control Category attributes and 1 Software Severity attribute, I assume it has no SwCI computed attribute.
+
+To cover cases like above, here is a table:
+
+|===
+|Software Control Category |Safety Severity |Calculated SwCI
+|Does not exist |	Does not exist |Does not exist
+|Exists |Doesn’t |Doesn’t
+|Doesn’t |Exists |Doesn’t
+|Exists |Exists |Exists (as calculated)
+|Unspecified |Has value |Unspecified
+|Has Value |Unspecified |Unspecified
+|Unspecified |Unspecified |Unspecified
+|===

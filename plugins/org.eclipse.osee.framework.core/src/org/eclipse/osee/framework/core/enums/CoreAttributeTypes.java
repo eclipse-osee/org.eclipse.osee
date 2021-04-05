@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.DisplayHint;
+import org.eclipse.osee.framework.core.data.computed.ComputedSoftwareCriticalityIndex;
 import org.eclipse.osee.framework.core.enums.token.ComponentAttributeType;
 import org.eclipse.osee.framework.core.enums.token.CsciAttributeType;
 import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
@@ -177,6 +178,7 @@ public interface CoreAttributeTypes {
    SoftwareControlCategoryAttributeType SoftwareControlCategory = osee.createEnum(new SoftwareControlCategoryAttributeType());
    AttributeTypeString SoftwareControlCategoryRationale = osee.createStringNoTag(750929222178534710L, "Software Control Category Rationale", MediaType.TEXT_PLAIN, "");
    SoftwareCriticalityIndexAttributeType SwCI = osee.createEnum(new SoftwareCriticalityIndexAttributeType());
+   ComputedSoftwareCriticalityIndex SoftwareCriticalityIndex = osee.createComp(ComputedSoftwareCriticalityIndex::new, 1152921504606847725L, "Safety Criticality Index", "Calculation of SwCI using Safety Severity and Software Control Category", SoftwareControlCategory, SafetySeverity);
    AttributeTypeBoolean SoftwareSafetyImpact = osee.createBooleanNoTag(8318805403746485981L, "Software Safety Impact", MediaType.TEXT_PLAIN, "Software Safety Impact");
    AttributeTypeString StartPage = osee.createStringNoTag(1152921504606847135L, "osee.wi.Start Page", MediaType.TEXT_PLAIN, "");
    AttributeTypeString State = osee.createString(1152921504606847070L, "State", MediaType.TEXT_PLAIN, "");

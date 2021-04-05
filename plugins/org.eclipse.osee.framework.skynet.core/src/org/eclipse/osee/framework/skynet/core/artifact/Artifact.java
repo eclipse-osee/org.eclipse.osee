@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -641,6 +642,19 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return attribute;
    }
 
+   public <T> List<T> getEnumAttributeValues(AttributeTypeToken attributeType) {
+      List<T> attributeValues = new ArrayList<T>();
+      if (attributeType.isEnumerated()) {
+         List<String> enumAttributeValues = new ArrayList<String>();
+         AttributeTypeEnum<?> attributeTypeEnum = (AttributeTypeEnum<?>) attributeType;
+         enumAttributeValues.addAll(getAttributeValues(attributeType));
+         for (String s : enumAttributeValues) {
+            attributeValues.add((T) attributeTypeEnum.valueFromStorageString(s));
+         }
+      }
+      return attributeValues;
+   }
+
    public <T> T getComputedCharacteristicValue(ComputedCharacteristicToken<T> computedCharacteristic) {
       List<T> attributeValues = new ArrayList<T>();
       if (!artifactType.isComputedCharacteristicValid(computedCharacteristic)) {
@@ -649,7 +663,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
             artifactType.getName(), computedCharacteristic.getName());
       }
       for (AttributeTypeGeneric<T> attributeType : computedCharacteristic.getAttributeTypesToCompute()) {
-         attributeValues.addAll(getAttributeValues(attributeType));
+         if (attributeType.isEnumerated()) {
+            attributeValues.addAll(getEnumAttributeValues(attributeType));
+         } else {
+            attributeValues.addAll(getAttributeValues(attributeType));
+         }
       }
       return computedCharacteristic.calculate(attributeValues);
    }

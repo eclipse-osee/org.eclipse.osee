@@ -12,12 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SafetySeverity;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SoftwareControlCategory;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SoftwareCriticalityIndex;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.demo.DemoOseeTypes;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,28 +68,24 @@ public class ComputedCharacteristicTest {
       Assert.assertEquals(-1, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationDivideByZero));
    }
 
-   @Test
+   @Test(expected = OseeCoreException.class)
    public void testComputedCharacteristicsFailure() {
-      String resultMessage = null;
-      try {
-         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationFailure);
-      } catch (OseeCoreException ex) {
-         Assert.assertTrue(ex.getStackTrace().length > 0);
-         resultMessage = ex.getMessage();
-      }
-      Assert.assertNotNull(resultMessage);
+      newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationFailure);
+   }
+
+   @Test(expected = OseeCoreException.class)
+   public void testComputedCharacteristicsInvalid() {
+      newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationInvalid);
    }
 
    @Test
-   public void testComputedCharacteristicsInvalid() {
-      String resultMessage = null;
-      try {
-         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationInvalid);
-      } catch (OseeCoreException ex) {
-         Assert.assertTrue(ex.getStackTrace().length > 0);
-         resultMessage = ex.getMessage();
-      }
-      Assert.assertNotNull(resultMessage);
+   public void testSoftwareCriticalityIndex() {
+      Assert.assertEquals(SoftwareCriticalityIndex.Unspecified,
+         newArtifact.getComputedCharacteristicValue(SoftwareCriticalityIndex));
+      newArtifact.setSoleAttributeValue(SoftwareControlCategory, CoreAttributeTypes.SoftwareControlCategory._3Rft);
+      newArtifact.setSoleAttributeValue(SafetySeverity, SafetySeverity.Marginal);
+      Assert.assertEquals(SoftwareCriticalityIndex.SwCI4,
+         newArtifact.getComputedCharacteristicValue(SoftwareCriticalityIndex));
    }
 
    @After

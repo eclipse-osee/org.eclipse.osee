@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2021 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -23,23 +23,18 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
- * @author Ryan D. Brooks
+ * @author Stephen J Molaro
  */
-public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric<T> {
+public class ComputedCharacteristicEnum<T extends EnumToken> extends ComputedCharacteristic<T> {
    private List<T> enumTokens;
 
-   public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount) {
-      super(id, namespace, name, mediaType, description, taggerType, "", null);
+   public ComputedCharacteristicEnum(Long id, String name, TaggerTypeToken taggerType, NamespaceToken namespace, String description, List<AttributeTypeGeneric<T>> typesToCompute, int enumCount) {
+      super(id, name, taggerType, namespace, description, typesToCompute);
       this.enumTokens = new ArrayList<T>(enumCount);
    }
 
-   @Override
-   public boolean isEnumerated() {
-      return true;
-   }
-
-   public AttributeTypeEnum<EnumToken> getAsEnumToken() {
-      return (AttributeTypeEnum<EnumToken>) this;
+   public ComputedCharacteristicEnum<EnumToken> getAsEnumToken() {
+      return (ComputedCharacteristicEnum<EnumToken>) this;
    }
 
    public Collection<T> getEnumValues() {
@@ -72,28 +67,6 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       throw new OseeArgumentException("[%s] is not a valid enum name for [%s]", enumName, this);
    }
 
-   public boolean isValidEnum(ArtifactTypeToken artTypeToken, String enumName) {
-      for (EnumToken enumToken : artTypeToken.getValidEnumValues(this)) {
-         if (enumToken.getName().equals(enumName)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
-   public T valueFromStorageString(String storedValue) {
-      for (T enumToken : enumTokens) {
-         if (enumToken != null && enumToken.getName().equals(storedValue)) {
-            return enumToken;
-         }
-      }
-      T enumeration = enumTokens.get(0).clone(Long.valueOf(enumTokens.size()));
-      enumeration.setName(storedValue);
-      addEnum(enumeration);
-      return enumeration;
-   }
-
    protected void addEnum(T enumeration) {
       int ordinal = enumeration.getIdIntValue();
 
@@ -103,7 +76,17 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       enumTokens.set(ordinal, enumeration);
    }
 
-   <E extends T> void replaceEnumValues(AttributeTypeEnum<E> attributeType) {
+   <E extends T> void replaceEnumValues(ComputedCharacteristicEnum<E> attributeType) {
       enumTokens = org.eclipse.osee.framework.jdk.core.util.Collections.cast(attributeType.enumTokens);
+   }
+
+   @Override
+   public boolean isMultiplicityValid(ArtifactTypeToken artifactType) {
+      return false;
+   }
+
+   @Override
+   public T calculate(List<T> computingValues) {
+      return null;
    }
 }

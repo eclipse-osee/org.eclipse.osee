@@ -308,6 +308,24 @@ public class OrcsTypeTokens {
          TaggerTypeToken.SENTINEL, namespace, description, Arrays.asList(typesToCompute)));
    }
 
+   public <U extends ComputedCharacteristic<EnumToken>> U createComp(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
+      return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
+         TaggerTypeToken.PlainTextTagger, namespace, description, createEnumList(typesToCompute)));
+   }
+
+   public <U extends ComputedCharacteristic<EnumToken>> U createCompNoTag(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
+      return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
+         TaggerTypeToken.SENTINEL, namespace, description, createEnumList(typesToCompute)));
+   }
+
+   private List<AttributeTypeGeneric<EnumToken>> createEnumList(AttributeTypeEnum<?>[] typesToCompute) {
+      List<AttributeTypeGeneric<EnumToken>> enumsToCompute = new ArrayList<>();
+      for (AttributeTypeEnum<?> enumType : typesToCompute) {
+         enumsToCompute.add(enumType.getAsEnumToken());
+      }
+      return enumsToCompute;
+   }
+
    /**
     * return the default tagger for the given mediaType
     */
