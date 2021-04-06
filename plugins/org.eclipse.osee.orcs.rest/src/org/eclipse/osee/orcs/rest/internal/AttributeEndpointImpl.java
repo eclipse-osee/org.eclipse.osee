@@ -24,10 +24,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -51,7 +49,6 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    private final BranchId branch;
    private final ArtifactId artifactId;
    private final OrcsApi orcsApi;
-   private final OrcsTokenService tokenService;
 
    public AttributeEndpointImpl(ArtifactId artifactId, BranchId branch, OrcsApi orcsApi, QueryBuilder query, UriInfo uriInfo) {
       this.artifactId = artifactId;
@@ -59,7 +56,6 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
       this.uriInfo = uriInfo;
       this.branch = branch;
       this.orcsApi = orcsApi;
-      tokenService = orcsApi.tokenService();
    }
 
    @Override
@@ -139,18 +135,16 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    }
 
    @Override
-   public Response getAttributeTypeValues(AttributeTypeId attributeType) {
+   public Response getAttributeTypeValues(AttributeTypeToken attributeType) {
       return getAttributeTypeResponse(TransactionId.SENTINEL, attributeType);
    }
 
    @Override
-   public Response getAttributeTypeValuesForTransaction(AttributeTypeId attributeType, TransactionId transaction) {
+   public Response getAttributeTypeValuesForTransaction(AttributeTypeToken attributeType, TransactionId transaction) {
       return getAttributeTypeResponse(transaction, attributeType);
    }
 
-   private Response getAttributeTypeResponse(TransactionId transaction, AttributeTypeId attributeTypeId) {
-      AttributeTypeToken attributeType = tokenService.getAttributeType(attributeTypeId.getId());
-
+   private Response getAttributeTypeResponse(TransactionId transaction, AttributeTypeToken attributeType) {
       ResponseBuilder builder = Response.noContent();
       try {
          QueryBuilder queryBuilder = query.andId(artifactId);
@@ -208,7 +202,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
          sb.append(AHTML.addRowMultiColumnTable(""));
          for (AttributeTypeToken attrType : exactlyOne.getValidAttributeTypes()) {
             sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Name:"), attrType.getName()));
-            sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("AttributeTypeId:"),
+            sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Attribute Type:"),
                AHTML.getHyperlink(String.format("/orcs/branch/%s/artifact/%s/attribute/type/%s", branch, artifactId,
                   attrType.getIdString()), attrType.getIdString())));
             sb.append(AHTML.addRowMultiColumnTable(""));

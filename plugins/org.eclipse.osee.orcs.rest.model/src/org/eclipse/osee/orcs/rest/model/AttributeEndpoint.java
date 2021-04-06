@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
@@ -57,14 +57,14 @@ public interface AttributeEndpoint {
    Response getAttributeTypes();
 
    @GET
-   @Path("type/{attributeTypeId}")
+   @Path("type/{attributeType}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.TEXT_HTML)
-   Response getAttributeTypeValues(@PathParam("attributeTypeId") AttributeTypeId attributeType);
+   Response getAttributeTypeValues(@PathParam("attributeType") AttributeTypeToken attributeType);
 
    @GET
-   @Path("type/{attributeTypeId}/version/{transactionId}")
+   @Path("type/{attributeType}/version/{transactionId}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.TEXT_HTML)
-   Response getAttributeTypeValuesForTransaction(@PathParam("attributeTypeId") AttributeTypeId attributeType, @PathParam("transactionId") TransactionId transaction);
+   Response getAttributeTypeValuesForTransaction(@PathParam("attributeType") AttributeTypeToken attributeType, @PathParam("transactionId") TransactionId transaction);
 }

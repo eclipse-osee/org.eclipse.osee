@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -241,7 +240,7 @@ public class OrcsCollectorWriter {
       }
    }
 
-   private void logChange(ArtifactReadable artifact, AttributeTypeId attrType, String currValue, String newValue) {
+   private void logChange(ArtifactReadable artifact, AttributeTypeToken attrType, String currValue, String newValue) {
       results.log(String.format("Attribute Updated: Current [%s], New [%s] for attr type [%s] and artifact %s",
          currValue, newValue, attrType, artifact.toStringWithId()));
    }
