@@ -32,14 +32,6 @@ public interface MSWordOperations {
 
    public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
-   default public Response msWordTemplatePublish(BranchId branch, ArtifactId template, String document, ArtifactId view, String userEmail) {
-      return null;
-   }
-
-   default public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal) {
-      return null;
-   }
-
    public String renderPlainText(BranchId branchId, String data);
 
 }

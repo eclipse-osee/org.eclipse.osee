@@ -49,34 +49,4 @@ public interface RenderEndpoint {
    @Produces({MediaType.APPLICATION_XML})
    Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact, @PathParam("view") ArtifactId view);
 
-   @GET
-   @Path("msWordTemplatePublish/{branch}/{template}/{document}/{view}/{userEmail}")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_XML})
-   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("document") String document, @PathParam("view") ArtifactId view, @PathParam("userEmail") String userEmail);
-
-   @GET
-   @Path("goalWorkflowPublish/{template}/{goal}")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_XML})
-   Response goalWorkflowPublish(@PathParam("template") ArtifactId template, @PathParam("goal") ArtifactId goal);
-
-   @GET
-   @Path("getDocumentNames/{branchId}")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   String getDocumentNames(@PathParam("branchId") BranchId branchId);
-
-   @GET
-   @Path("getDesignBookNames/{branchId}")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   String getDesignBookNames(@PathParam("branchId") BranchId branchId);
-
-   @GET
-   @Path("getTemplateNames/{branchId}")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   String getTemplateNames(@PathParam("branchId") BranchId branchId);
-
 }
