@@ -97,7 +97,14 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return ((Artifact) atsApi.getQueryService().getArtifact(atsObject)).isDeleted();
+      if (atsObject.getStoreObject() instanceof Artifact) {
+         return ((Artifact) atsObject.getStoreObject()).isDeleted();
+      }
+      Artifact art = ((Artifact) atsApi.getQueryService().getArtifact(atsObject));
+      if (art != null) {
+         return art.isDeleted();
+      }
+      return true;
    }
 
    @Override
