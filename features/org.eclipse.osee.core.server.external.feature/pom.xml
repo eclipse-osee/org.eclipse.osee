@@ -63,7 +63,8 @@
 							   <plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 							   <plugin id="javax.xml.stream" />
 							   <plugin id="org.eclipse.osee.logback.config" />							
-							   <plugin id="org.eclipse.osee.web.ui" />					
+							   <plugin id="org.eclipse.osee.web.deploy" />	
+							   <plugin id="org.eclipse.osee.web.ui" />
 							   <plugin id="org.eclipse.oss.ajax" />
 							   <plugin id="org.eclipse.persistence.antlr" />
 							   <plugin id="org.eclipse.persistence.asm" />

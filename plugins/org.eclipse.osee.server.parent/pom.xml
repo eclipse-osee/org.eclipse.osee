@@ -121,6 +121,9 @@
 					../../plugins/org.eclipse.osee.server.p2
 				</module>
 				<module>
+					../../plugins/org.eclipse.osee.web.deploy
+				</module>
+				<module>
 					../../plugins/org.eclipse.osee.web.ui
 				</module>
 			</modules>
@@ -195,6 +198,9 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.server.p2
+				</module>
+				<module>
+					../../plugins/org.eclipse.osee.web.deploy
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.web.ui

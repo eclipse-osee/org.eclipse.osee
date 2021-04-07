@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Web Deploy (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.web.deploy;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
+Import-Package: javax.ws.rs,
+ javax.ws.rs.core,
+ org.eclipse.graphiti.ui.internal,
+ org.eclipse.osee.activity.api,
+ org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.jdbc,
+ org.osgi.service.event
+Osee-JaxRs-Resource: OSEE-INF/web/dist/*;path=/osee
+Automatic-Module-Name: org.eclipse.osee.web.deploy
