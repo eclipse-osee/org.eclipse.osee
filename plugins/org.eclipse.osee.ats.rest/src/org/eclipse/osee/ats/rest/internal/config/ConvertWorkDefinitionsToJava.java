@@ -38,7 +38,7 @@ public class ConvertWorkDefinitionsToJava implements IAtsDatabaseConversion {
    @Override
    public String getDescription() {
       StringBuffer data = new StringBuffer();
-      data.append("TBD");
+      data.append("Convert legacy xtext work definitions to the current java api.");
       return data.toString();
    }
 

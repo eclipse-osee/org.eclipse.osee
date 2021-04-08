@@ -74,7 +74,6 @@ public class OpenAgileTasksAction extends Action {
             }
             sb.append(AHTML.addRowMultiColumnTable(firstCard, secondCard));
          }
-         // TBD check for single last card and add
          sb.append(AHTML.endMultiColumnTable());
          ResultsEditor.open("Agile Tasks", "Agile Tasks", sb.toString());
       } catch (OseeCoreException ex) {
@@ -89,13 +88,13 @@ public class OpenAgileTasksAction extends Action {
          IAtsWorkItem workItem = (IAtsWorkItem) artifact;
          card = card.replaceFirst("PUT_TITLE_HERE", workItem.getName());
 
-         card = card.replaceFirst("PUT_POINTS_HERE",
-            AtsApiService.get().getAgileService().getAgileTeamPointsStr(workItem));
+         card =
+            card.replaceFirst("PUT_POINTS_HERE", AtsApiService.get().getAgileService().getAgileTeamPointsStr(workItem));
          card = card.replaceFirst("PUT_FEATURE_HERE",
             AtsApiService.get().getAgileService().getAgileFeatureGroupStr(workItem));
 
-         card = card.replaceFirst("PUT_CHANGE_TYPE_HERE",
-            ChangeTypeUtil.getChangeTypeStr(workItem, AtsApiService.get()));
+         card =
+            card.replaceFirst("PUT_CHANGE_TYPE_HERE", ChangeTypeUtil.getChangeTypeStr(workItem, AtsApiService.get()));
          card = card.replaceFirst("PUT_PRIORITY_HERE",
             AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Priority, workItem));
 

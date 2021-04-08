@@ -142,7 +142,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    public void setCurrentUser(AtsUser user) {
-      // TBD
+      // do nothing
    }
 
    @Override

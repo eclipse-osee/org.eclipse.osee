@@ -39,7 +39,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
 
    public XResultData convert(XResultData rd) {
 
-      rd.error("Code must be revived for conversion");
+      rd.error("Code must be revived for conversion.  Commented code is necessary due to class removal.");
       //      loadJavaStates();
       //
       //      String javaTemplate =
@@ -133,7 +133,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //               str = str.replaceFirst("PUT_LAYOUT_HERE", "");
       //            } else {
       //               String layoutStr = getLayoutStr(state, workDefArt);
-      //               str = str.replaceFirst("PUT_LAYOUT_HERE", ".andLayout ( //\n" + layoutStr + "\n);"); // TBD
+      //               str = str.replaceFirst("PUT_LAYOUT_HERE", ".andLayout ( //\n" + layoutStr + "\n);");
       //            }
       //
       //            str = str.replaceFirst(" //[\n ]+$", ";");

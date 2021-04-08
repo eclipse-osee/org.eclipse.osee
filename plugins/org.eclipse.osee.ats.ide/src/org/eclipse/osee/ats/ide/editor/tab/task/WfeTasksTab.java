@@ -386,7 +386,6 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
    public IToolBarManager createToolbar(IManagedForm managedForm) {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
-      // TBD Check that can add/delete when action selected
       toolBarMgr.add(new AddTaskAction(taskComposite));
       toolBarMgr.add(new DeleteTasksAction(this));
       toolBarMgr.add(new Separator());

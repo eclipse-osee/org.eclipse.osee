@@ -183,8 +183,9 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
-      healthChecks.add(new TestStateMgr()); // TBD Need duplicate state check
-      // TBD Need Work Definition attr check
+      healthChecks.add(new TestStateMgr());
+      // Add duplicate state check
+      // Add Work Definition attr check
       healthChecks.add(new TestCurrentStateIsInWorkDef());
       healthChecks.add(new TestWorkflowHasAction());
       healthChecks.add(new TestTeamDefinitions());
