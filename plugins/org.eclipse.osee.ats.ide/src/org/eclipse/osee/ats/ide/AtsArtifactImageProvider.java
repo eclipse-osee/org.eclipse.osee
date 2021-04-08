@@ -74,7 +74,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileBacklog);
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
-         for (ArtifactTypeToken artifactType : AtsApiService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+         for (ArtifactTypeToken artifactType : AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes()) {
             ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
          }
       }

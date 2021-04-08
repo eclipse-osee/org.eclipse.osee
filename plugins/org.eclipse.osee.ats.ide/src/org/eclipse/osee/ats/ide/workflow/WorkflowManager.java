@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -64,7 +65,7 @@ public class WorkflowManager {
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() {
       List<TeamWorkFlowArtifact> result = new ArrayList<>();
-      for (ArtifactTypeToken artType : AtsApiService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+      for (ArtifactTypeToken artType : AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes()) {
          List<TeamWorkFlowArtifact> teamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
             ArtifactQuery.getArtifactListFromType(artType, AtsApiService.get().getAtsBranch()));
          result.addAll(teamArts);

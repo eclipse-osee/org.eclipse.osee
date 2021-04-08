@@ -20,7 +20,6 @@ import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -51,13 +50,6 @@ public interface IAtsStoreService {
    boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeToken attributeType);
 
    boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeToken attributeType);
-
-   /**
-    * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
-    */
-   default List<ArtifactTypeToken> getTeamWorkflowArtifactTypes() {
-      return AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes();
-   }
 
    ArtifactTypeToken getArtifactType(ArtifactId artifact);
 

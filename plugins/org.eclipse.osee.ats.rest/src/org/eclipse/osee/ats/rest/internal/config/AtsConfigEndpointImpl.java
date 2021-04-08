@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
@@ -86,7 +87,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       if (images == null) {
          images = new LinkedList<>();
          images.addAll(AtsArtifactImages.getImages());
-         for (ArtifactTypeToken artifactType : atsApi.getStoreService().getTeamWorkflowArtifactTypes()) {
+         for (ArtifactTypeToken artifactType : AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes()) {
             images.add(ArtifactImage.construct(artifactType, AtsArtifactImages.AGILE_TASK.getImageName(),
                AtsArtifactImages.AGILE_TASK.getBaseUrl()));
          }

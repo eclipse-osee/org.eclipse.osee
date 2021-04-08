@@ -37,10 +37,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -70,10 +68,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
          supportedTypes = new LinkedList<>();
          supportedTypes.addAll(Arrays.asList(Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal,
             AgileSprint, AgileBacklog));
-         AtsApiIde atsClient = AtsApiService.get();
-         IAtsStoreService storeService = atsClient.getStoreService();
-         // TBD Get rid of this call, handled by inheritance
-         supportedTypes.addAll(storeService.getTeamWorkflowArtifactTypes());
+         supportedTypes.addAll(TeamWorkflow.getAllDescendantTypes());
       }
       return supportedTypes;
    }
