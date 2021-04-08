@@ -132,6 +132,7 @@ public class MSWordTemplatePublisher {
    protected final List<ArtifactReadable> headerArtifacts = new LinkedList<>();
    protected final Map<ArtifactTypeToken, List<ArtifactReadable>> oseeLinkedArtifactMap = new HashMap<>();
    protected List<ArtifactId> changedArtifacts = new LinkedList<>();
+   protected final Map<ArtifactId, String> wordContentMap = new HashMap<>();
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -858,6 +859,19 @@ public class MSWordTemplatePublisher {
    }
 
    /**
+    * This method is used for populated the artifact to word content map. This processes an individual artifact and
+    * calls getWordTemplateContentData to have those results put in the map. This is useful for pre-processing word data
+    * and storing it for later use
+    */
+   protected void populateArtifactWordContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter wordMl, String format, String label) {
+      String footer = getArtifactFooter(artifact);
+      String data =
+         getWordTemplateContentData(attributeType, artifact, presentationType, wordMl, format, label, footer);
+
+      wordContentMap.put(artifact, data);
+   }
+
+   /**
     * This method derives from the WordTemplateRenderer on the client, used to render word template content attribute.
     * Uses WordTemplateContentRendererHandler to render the word ml. Also handles OSEE_Link errors if there are
     * artifacts that are linking to artifacts that aren't included in the publish.
@@ -977,9 +991,11 @@ public class MSWordTemplatePublisher {
    }
 
    /**
-    * When rendering word template content, this method keeps track of OSEE links in artifacts and the artifacts that
-    * are linked to. After processing all artifacts, hyperlinkedIds will contain any artifact that has an OSEE link to
-    * an artifact that was not published in the document.
+    * While processing the Word Template Content of an artifact, this method is used for keeping track of OSEE links
+    * inside that content and how it relates to the other artifacts that are in this published document.<br/>
+    * BookmarkedIds tracks artifacts that have been seen and book marked in the published, these artifacts are capable
+    * of being linked to from other artifacts<br/>
+    * HyperlinkedIds tracks the artifacts that have been linked to from another artifact
     */
    protected void processLinkErrors(ArtifactReadable artifact, String data, Set<String> unknownIds) {
       Pattern bookmarkHyperlinkPattern = Pattern.compile(
@@ -1003,12 +1019,11 @@ public class MSWordTemplatePublisher {
             if (linkMatch.find()) {
                id = foundMatch.substring(linkMatch.start() + 6, linkMatch.end() - 1);
                if (foundMatch.contains("Bookmark")) {
-                  bookmarkedIds.add(id);
-                  if (hyperlinkedIds.containsKey(id)) {
-                     hyperlinkedIds.remove(id);
+                  if (!bookmarkedIds.contains(id)) {
+                     bookmarkedIds.add(id);
                   }
                } else if (foundMatch.contains("HYPERLINK")) {
-                  if (!bookmarkedIds.contains(id) && !hyperlinkedIds.containsKey(id)) {
+                  if (!hyperlinkedIds.containsKey(id)) {
                      hyperlinkedIds.put(id, artifact);
                   }
                }
@@ -1020,23 +1035,50 @@ public class MSWordTemplatePublisher {
    protected void addLinkNotInPublishErrors(WordMLWriter wordMl) {
       if (!hyperlinkedIds.isEmpty()) {
          for (Map.Entry<String, ArtifactReadable> link : hyperlinkedIds.entrySet()) {
-            String description;
-            ArtifactReadable artWithLink = link.getValue();
             String idString = link.getKey();
-            try {
-               ArtifactReadable linkedArt =
-                  orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andGuid(idString).getArtifact();
-               description = String.format(
-                  "Artifact is linking to the following Artifact Id that is not contained in this document: %s (Guid: %s)",
-                  linkedArt.getId(), idString);
-            } catch (Exception ex) {
-               description = String.format(
-                  "Artifact contains the following unknown GUID: %s (Delete or fix OSEE Link from Artifact)", idString);
+            if (!bookmarkedIds.contains(idString)) {
+               String description;
+               ArtifactReadable artWithLink = link.getValue();
+               try {
+                  ArtifactReadable linkedArt =
+                     orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andGuid(idString).getArtifact();
+                  description = String.format(
+                     "Artifact is linking to the following Artifact Id that is not contained in this document: %s (Guid: %s)",
+                     linkedArt.getId(), idString);
+               } catch (Exception ex) {
+                  description = String.format(
+                     "Artifact contains the following unknown GUID: %s (Delete or fix OSEE Link from Artifact)",
+                     idString);
+               }
+               errorLog.add(new PublishingArtifactError(artWithLink.getId(), artWithLink.getName(),
+                  artWithLink.getArtifactType(), description));
             }
-            errorLog.add(new PublishingArtifactError(artWithLink.getId(), artWithLink.getName(),
-               artWithLink.getArtifactType(), description));
          }
       }
+   }
+
+   protected String removeUnusedBookmark(String data) {
+      Pattern bookmarkHyperlinkPattern = Pattern.compile(
+         "^<aml:annotation[^<>]+w:name=\"OSEE\\.[^\"]*\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/><aml:annotation[^<>]+Word.Bookmark.End\\\"/>");
+      Pattern oseeLinkPattern = Pattern.compile("\"OSEE\\.[^\"]*\"");
+      Matcher match = bookmarkHyperlinkPattern.matcher(data);
+      Matcher linkMatch = null;
+      String id = "";
+
+      while (match.find()) {
+         String foundMatch = match.group(0);
+         if (Strings.isValid(foundMatch)) {
+            linkMatch = oseeLinkPattern.matcher(foundMatch);
+            if (linkMatch.find()) {
+               id = foundMatch.substring(linkMatch.start() + 6, linkMatch.end() - 1);
+               if (!hyperlinkedIds.containsKey(id)) {
+                  data = data.substring(match.end(0));
+               }
+            }
+         }
+      }
+
+      return data;
    }
 
    /**
