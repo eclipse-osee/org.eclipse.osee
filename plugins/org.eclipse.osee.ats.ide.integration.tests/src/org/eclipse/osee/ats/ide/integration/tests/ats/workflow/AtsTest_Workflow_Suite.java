@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
    TeamWorkflowProvidersTest.class,
    AtsRelationResolverServiceTest.class,
    AtsArtifactFactoryTest.class,
+   AtsTeamWfEndpointTest.class,
    WorkItemsJsonReaderWriterTest.class,
    ConvertWorkflowStatesOperationTest.class,
    // suites

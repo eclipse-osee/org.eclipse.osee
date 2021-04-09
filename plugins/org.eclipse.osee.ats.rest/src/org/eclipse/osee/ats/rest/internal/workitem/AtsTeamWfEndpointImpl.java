@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -161,7 +162,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   public XResultData setReleases(String build, UserId userId, List<String> changeIds) {
+   public XResultData relateReleaseToWorkflow(String build, UserId userId, List<String> changeIds) {
       XResultData rd = new XResultData();
       try {
          rd.setTitle("Add Workflow to Release Relations");
@@ -176,12 +177,14 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          }
 
          IAtsChangeSet changes = atsApi.createChangeSet("Add Build Incorporation(s)", asUser);
+         Collection<IAtsWorkItem> workItems = new ArrayList<>();
          for (IAtsWorkItem workItem : atsApi.getWorkItemService().getWorkItems(allWorkflows)) {
             if (!workItem.isTeamWorkflow()) {
                rd.errorf("%s is not a valid team workflow id.", workItem.toStringWithId());
                return rd;
             }
 
+            workItems.add(workItem);
             Set<String> distinctChangeIds = new HashSet<String>(
                atsApi.getAttributeResolver().getAttributesToStringList(workItem, CoreAttributeTypes.GitChangeId));
             boolean isBuildValid = false;
@@ -210,7 +213,8 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
                }
             }
          }
-         changes.executeIfNeeded();
+         TransactionId transId = changes.executeIfNeeded();
+         rd.setTxId(transId.getIdString());
       } catch (Exception Ex) {
          rd.errorf("Exception %s", Lib.exceptionToString(Ex));
       }

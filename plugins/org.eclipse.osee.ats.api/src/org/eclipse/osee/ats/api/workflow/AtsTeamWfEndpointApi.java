@@ -65,6 +65,6 @@ public interface AtsTeamWfEndpointApi {
    @Path("build/{build}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData setReleases(@PathParam("build") String build, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds);
+   XResultData relateReleaseToWorkflow(@PathParam("build") String build, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds);
 
 }

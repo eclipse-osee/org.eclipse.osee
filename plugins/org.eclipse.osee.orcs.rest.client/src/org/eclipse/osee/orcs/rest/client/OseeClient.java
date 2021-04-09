@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.client;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
+import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
@@ -78,8 +79,10 @@ public interface OseeClient extends OseeApi {
    MailEndpoint getMailEndpoint();
 
    SessionEndpoint getSessionEndpoint();
-   
+
    ImportEndpoint getImportEndpoint();
+
+   GitEndpoint getGitEndpoint();
 
    @Deprecated
    String loadAttributeValue(Integer attrId, TransactionId transactionId, ArtifactToken artifact);

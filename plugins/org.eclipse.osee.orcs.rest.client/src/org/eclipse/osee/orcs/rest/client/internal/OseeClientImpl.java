@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
+import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
@@ -212,6 +213,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public SessionEndpoint getSessionEndpoint() {
       return jaxRsApi().newProxy("ide", SessionEndpoint.class);
+   }
+
+   @Override
+   public GitEndpoint getGitEndpoint() {
+      return getDefineEndpoint(GitEndpoint.class);
    }
 
    @Override

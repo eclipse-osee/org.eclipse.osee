@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
@@ -44,6 +45,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private final JaxRsApi jaxRsApi;
    private WebTarget target;
    private AtsTaskEndpointApi taskEp;
+   private AtsTeamWfEndpointApi teamWfEp;
    private AtsConfigEndpointApi configEp;
    private AgileEndpointApi agileEp;
    private AtsWorkPackageEndpointApi workPackageEp;
@@ -118,6 +120,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          taskEp = jaxRsApi.newProxy("ats", AtsTaskEndpointApi.class);
       }
       return taskEp;
+   }
+
+   @Override
+   public AtsTeamWfEndpointApi getTeamWfEp() {
+      if (teamWfEp == null) {
+         teamWfEp = jaxRsApi.newProxy(getAtsTarget(), AtsTeamWfEndpointApi.class);
+      }
+      return teamWfEp;
    }
 
    /**
