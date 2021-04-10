@@ -202,7 +202,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     * Provides XViewerColumn for non-attribute based columns like Type and State
     */
    public static XViewerColumn getColumnServiceColumn(AtsColumnIdValueColumn columnToken) {
-      return new AtsColumnIdUI(columnToken, AtsApiService.get());
+      return new AtsColumnIdUi(columnToken, AtsApiService.get());
    }
 
    /**

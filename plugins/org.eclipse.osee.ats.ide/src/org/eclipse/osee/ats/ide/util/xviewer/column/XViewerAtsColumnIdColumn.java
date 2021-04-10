@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
-import org.eclipse.osee.ats.ide.column.AtsColumnIdUI;
+import org.eclipse.osee.ats.ide.column.AtsColumnIdUi;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -31,7 +31,7 @@ public class XViewerAtsColumnIdColumn extends XViewerAtsColumn implements IXView
    private final AtsColumnIdValueColumn column;
 
    public XViewerAtsColumnIdColumn(AtsColumnIdValueColumn column) {
-      super(column.getId(), column.getName(), column.getWidth(), AtsColumnIdUI.getXViewerAlign(column.getAlign()),
+      super(column.getId(), column.getName(), column.getWidth(), AtsColumnIdUi.getXViewerAlign(column.getAlign()),
          column.isVisible(), SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(),
          column.getDescription());
       this.column = column;

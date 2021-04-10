@@ -29,12 +29,12 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
  *
  * @author Donald G. Dunne
  */
-public class AtsColumnIdUI extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
+public class AtsColumnIdUi extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    private final AtsColumnIdValueColumn columnIdColumn;
    private final AtsApi atsApi;
 
-   public AtsColumnIdUI(AtsColumnIdValueColumn columnIdColumn, AtsApi atsApi) {
+   public AtsColumnIdUi(AtsColumnIdValueColumn columnIdColumn, AtsApi atsApi) {
       super(columnIdColumn.getId(), columnIdColumn.getName(), columnIdColumn.getWidth(),
          getXViewerAlign(columnIdColumn.getAlign()), columnIdColumn.isVisible(),
          SortDataType.valueOf(columnIdColumn.getSortDataType()), columnIdColumn.isColumnMultiEdit(),
@@ -50,8 +50,8 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IAtsXViewerPreCom
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public AtsColumnIdUI copy() {
-      AtsColumnIdUI newXCol = new AtsColumnIdUI(columnIdColumn, atsApi);
+   public AtsColumnIdUi copy() {
+      AtsColumnIdUi newXCol = new AtsColumnIdUi(columnIdColumn, atsApi);
       super.copy(this, newXCol);
       return newXCol;
    }
