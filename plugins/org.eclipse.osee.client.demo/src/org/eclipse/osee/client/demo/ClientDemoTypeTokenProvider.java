@@ -28,8 +28,7 @@ public final class ClientDemoTypeTokenProvider extends OrcsTypeTokenProviderBase
 
    public ClientDemoTypeTokenProvider() {
       super(clientDemo);
-
-      loadClasses(DemoOseeTypes.DemoArtifactWithSelectivePartition);
+      loadClasses(DemoOseeTypes.MeasurementOne);
       registerTokenClasses(DemoOseeTypes.class);
    }
 }

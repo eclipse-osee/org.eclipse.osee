@@ -16,7 +16,6 @@ package org.eclipse.osee.client.demo;
 import static org.eclipse.osee.client.demo.ClientDemoTypeTokenProvider.clientDemo;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
-import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeDouble;
@@ -34,27 +33,27 @@ import org.eclipse.osee.framework.core.data.computed.ComputedCharacteristicSum;
 public interface DemoOseeTypes {
 
    // @formatter:off
-   AttributeTypeInteger MeasurementOne = osee.createInteger(8927304985723049571L, "Measurement One", MediaType.TEXT_PLAIN, "");
-   AttributeTypeInteger MeasurementTwo = osee.createInteger(8927304985723049572L, "Measurement Two", MediaType.TEXT_PLAIN, "");
-   AttributeTypeDouble MeasurementThree = osee.createDouble(8927304985723049573L, "Measurement Three", MediaType.TEXT_PLAIN, "");
-   AttributeTypeDouble MeasurementFour = osee.createDouble(8927304985723049574L, "Measurement Four", MediaType.TEXT_PLAIN, "");
-   AttributeTypeLong MeasurementFive = osee.createLong(8927304985723049575L, "Measurement Five", MediaType.TEXT_PLAIN, "");
-   AttributeTypeLong MeasurementSix = osee.createLong(8927304985723049576L, "Measurement Six", MediaType.TEXT_PLAIN, "");
-   AttributeTypeInteger MeasurementSeven = osee.createInteger(8927304985723049577L, "Measurement Seven", MediaType.TEXT_PLAIN, "");
-   AttributeTypeInteger MeasurementEight = osee.createInteger(8927304985723049578L, "Measurement Eight", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger MeasurementOne = clientDemo.createInteger(8927304985723049571L, "Measurement One", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger MeasurementTwo = clientDemo.createInteger(8927304985723049572L, "Measurement Two", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDouble MeasurementThree = clientDemo.createDouble(8927304985723049573L, "Measurement Three", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDouble MeasurementFour = clientDemo.createDouble(8927304985723049574L, "Measurement Four", MediaType.TEXT_PLAIN, "");
+   AttributeTypeLong MeasurementFive = clientDemo.createLong(8927304985723049575L, "Measurement Five", MediaType.TEXT_PLAIN, "");
+   AttributeTypeLong MeasurementSix = clientDemo.createLong(8927304985723049576L, "Measurement Six", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger MeasurementSeven = clientDemo.createInteger(8927304985723049577L, "Measurement Seven", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger MeasurementEight = clientDemo.createInteger(8927304985723049578L, "Measurement Eight", MediaType.TEXT_PLAIN, "");
 
-   ComputedCharacteristicSum ComputationSum = osee.createComp(ComputedCharacteristicSum::new, 8927304985723049579L, "Sum Computation", "", MeasurementOne, MeasurementTwo);
-   ComputedCharacteristicProduct ComputationProduct = osee.createComp(ComputedCharacteristicProduct::new, 8927304985723049580L, "Product Computation", "", MeasurementThree, MeasurementFour);
-   ComputedCharacteristicAverage ComputationAverage = osee.createComp(ComputedCharacteristicAverage::new, 8927304985723049581L, "Average Computation", "", MeasurementFive, MeasurementSix);
-   ComputedCharacteristicQuotient ComputationQuotient = osee.createComp(ComputedCharacteristicQuotient::new, 8927304985723049582L, "Quotient Computation", "", MeasurementOne, MeasurementTwo);
-   ComputedCharacteristicDelta ComputationDelta = osee.createComp(ComputedCharacteristicDelta::new, 8927304985723049583L, "Delta Computation", "", MeasurementThree, MeasurementFour);
-   ComputedCharacteristicDelta ComputationFailure = osee.createComp(ComputedCharacteristicDelta::new, 8927304985723049584L, "Failed Computation", "This computation has too many inputs", MeasurementOne, MeasurementTwo, MeasurementSeven);
-   ComputedCharacteristicDelta ComputationInvalid = osee.createComp(ComputedCharacteristicDelta::new, 8927304985723049585L, "Invalid Computation", "This computation should not be valid for any artifact type", MeasurementOne, MeasurementTwo);
-   ComputedCharacteristicQuotient ComputationDivideByZero = osee.createComp(ComputedCharacteristicQuotient::new, 8927304985723049586L, "Dividing by Zero", "", MeasurementOne, MeasurementEight);
+   ComputedCharacteristicSum ComputationSum = clientDemo.createComp(ComputedCharacteristicSum::new, 8927304985723049579L, "Sum Computation", "", MeasurementOne, MeasurementTwo);
+   ComputedCharacteristicProduct ComputationProduct = clientDemo.createComp(ComputedCharacteristicProduct::new, 8927304985723049580L, "Product Computation", "", MeasurementThree, MeasurementFour);
+   ComputedCharacteristicAverage ComputationAverage = clientDemo.createComp(ComputedCharacteristicAverage::new, 8927304985723049581L, "Average Computation", "", MeasurementFive, MeasurementSix);
+   ComputedCharacteristicQuotient ComputationQuotient = clientDemo.createComp(ComputedCharacteristicQuotient::new, 8927304985723049582L, "Quotient Computation", "", MeasurementOne, MeasurementTwo);
+   ComputedCharacteristicDelta ComputationDelta = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049583L, "Delta Computation", "", MeasurementThree, MeasurementFour);
+   ComputedCharacteristicDelta ComputationFailure = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049584L, "Failed Computation", "This computation has too many inputs", MeasurementOne, MeasurementTwo, MeasurementSeven);
+   ComputedCharacteristicDelta ComputationInvalid = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049585L, "Invalid Computation", "This computation should not be valid for any artifact type", MeasurementOne, MeasurementTwo);
+   ComputedCharacteristicQuotient ComputationDivideByZero = clientDemo.createComp(ComputedCharacteristicQuotient::new, 8927304985723049586L, "Dividing by Zero", "", MeasurementOne, MeasurementEight);
 
    ArtifactTypeToken DemoArtifactWithSelectivePartition = clientDemo.add(clientDemo.artifactType(86L, "Demo Artifact With Selective Partition", false, Artifact)
       .atLeastOne(Partition, Partition.Unspecified));
-   ArtifactTypeToken DemoArtifactWithComputedCharacteristics = clientDemo.add(clientDemo.artifactType(86L, "Demo Artifact With Computed Characteristics", false, Artifact)
+   ArtifactTypeToken DemoArtifactWithComputedCharacteristics = clientDemo.add(clientDemo.artifactType(836365L, "Demo Artifact With Computed Characteristics", false, Artifact)
       .exactlyOne(MeasurementOne, 100)
       .exactlyOne(MeasurementTwo, 25)
       .exactlyOne(MeasurementThree, 3.6)
