@@ -14,7 +14,6 @@
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="OSEE-INF/extensionPts/DatabaseHealthOperation.exsd"/>
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="OSEE-INF/extensionPts/ArtifactImageProvider.exsd"/>
   <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="OSEE-INF/extensionPts/UserNavigateItem.exsd"/>
-  <extension-point id="DslGrammar" name="DslGrammar" schema="OSEE-INF/extensionPts/DslGrammar.exsd"/>
   <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="OSEE-INF/extensionPts/ArtifactEditorProvider.exsd"/>
 
  	<extension point="org.eclipse.ui.importWizards">
