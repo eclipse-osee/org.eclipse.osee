@@ -25,19 +25,19 @@ import javax.ws.rs.core.MediaType;
 @Path("")
 public class OseeWebEndpoint {
 
-   private final String html = "../../../../../../OSEE-INF/web/dist/index.html";
+   private final String path = "/OSEE-INF/web/dist/index.html";
 
    @GET
    @Produces({MediaType.TEXT_HTML})
    public InputStream get() {
-      return getClass().getResourceAsStream(html);
+      return getClass().getResourceAsStream(path);
    }
 
    @GET
    @Path("{var:.+}")
    @Produces({MediaType.TEXT_HTML})
    public InputStream getPle() {
-      return getClass().getResourceAsStream(html);
+      return getClass().getResourceAsStream(path);
    }
 
 }
