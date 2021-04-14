@@ -64,9 +64,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       manager.add(new Separator());
       manager.add(new AccessControlAction());
       manager.add(new Separator());
-      if (CopyArtifactURLAction.isApplicable(artifact)) {
-         manager.add(new CopyArtifactURLAction(artifact));
-      }
+      manager.add(new CopyArtifactURLAction(artifact));
       manager.add(new OpenArtifactInBrowserAction(artifact));
       manager.add(new Separator());
       if (AccessControlManager.isOseeAdmin()) {
