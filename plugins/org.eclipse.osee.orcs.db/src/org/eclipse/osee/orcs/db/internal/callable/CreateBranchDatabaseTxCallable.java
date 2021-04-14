@@ -117,25 +117,27 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
          if (associatedArtifactId.isValid() && ArtifactId.SENTINEL.notEqual(associatedArtifactId)) {
-            int count = jdbcClient.fetch(connection, 0,
-               "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
-               newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED);
-            if (count > 0) {
-               // the PORT branch type is a special case, a PORT branch can have the same associated artifact
-               // as its related RPCR branch. We need to check to see if there is already a
-               // port branch with the same artifact ID - if the type is port type, then we need an additional check
-               if (newBranchData.getBranchType().equals(BranchType.PORT)) {
+            if (newBranchData.getBranchType().isWorkingBranch()) {
+               int count = jdbcClient.fetch(connection, 0,
+                  "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
+                  newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED);
+               if (count > 0) {
+                  // the PORT branch type is a special case, a PORT branch can have the same associated artifact
+                  // as its related RPCR branch. We need to check to see if there is already a
+                  // port branch with the same artifact ID - if the type is port type, then we need an additional check
+                  if (newBranchData.getBranchType().equals(BranchType.PORT)) {
 
-                  int portcount = jdbcClient.fetch(connection, 0,
-                     "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
-                     newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED,
-                     BranchType.PORT);
-                  if (portcount > 0) {
-                     rd.errorf("Existing port branch creation detected for [%s]", newBranchData.getName());
+                     int portcount = jdbcClient.fetch(connection, 0,
+                        "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
+                        newBranchData.getAssociatedArtifact(), BranchState.DELETED, BranchState.REBASELINED,
+                        BranchType.PORT);
+                     if (portcount > 0) {
+                        rd.errorf("Existing port branch creation detected for [%s]", newBranchData.getName());
+                     }
+                  } else {
+                     rd.errorf("Existing branch creation detected for [%s]-[%s]", newBranchData.getBranch().getId(),
+                        newBranchData.getName());
                   }
-               } else {
-                  rd.errorf("Existing branch creation detected for [%s]-[%s]", newBranchData.getBranch().getId(),
-                     newBranchData.getName());
                }
             }
          }

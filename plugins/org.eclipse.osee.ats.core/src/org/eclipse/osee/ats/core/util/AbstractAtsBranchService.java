@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
@@ -692,6 +693,24 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return true;
       }
       return false;
+   }
+
+   @Override
+   public BranchData validate(BranchData bd, AtsApi atsApi) {
+      if (bd.getParent().isInvalid()) {
+         bd.getResults().errorf("Invalid Parent Branch %s", bd.getParent().getIdString());
+         return bd;
+      }
+      if (Strings.isInValid(bd.getBranchName())) {
+         bd.getResults().errorf("Invalid new Branch Name", bd.getBranchName());
+         return bd;
+      }
+      BranchType type = bd.getBranchType();
+      if (!type.equals(BranchType.WORKING) && !type.equals(BranchType.BASELINE)) {
+         bd.getResults().errorf("Invalid Branch Type [%s] to create", bd.getBranchType());
+         return bd;
+      }
+      return bd;
    }
 
 }

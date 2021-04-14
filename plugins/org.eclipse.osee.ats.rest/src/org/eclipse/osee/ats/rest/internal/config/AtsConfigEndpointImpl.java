@@ -18,9 +18,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -30,6 +36,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -272,6 +279,16 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public XResultData getResultTableTest() {
       return ExampleTableData.getResultTable();
+   }
+
+   @Override
+   @POST
+   @Path("branch")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public BranchData createBranch(BranchData branchData) {
+      AtsConfigOperations ops = new AtsConfigOperations(atsApi);
+      return ops.createBranch(branchData);
    }
 
 }

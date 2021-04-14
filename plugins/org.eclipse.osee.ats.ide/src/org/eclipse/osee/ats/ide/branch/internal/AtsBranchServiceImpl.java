@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.branch.internal;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -214,6 +215,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          rd.errorf("Exception deleting branch %s", branch.toString());
       }
       return rd;
+   }
+
+   @Override
+   public BranchData createBranch(BranchData branchData) {
+      return atsApi.getServerEndpoints().getConfigEndpoint().createBranch(branchData);
    }
 
 }

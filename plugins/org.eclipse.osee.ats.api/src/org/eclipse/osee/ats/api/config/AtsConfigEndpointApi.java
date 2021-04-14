@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.config;
 
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -22,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.Version;
@@ -137,5 +139,11 @@ public interface AtsConfigEndpointApi {
    @Path("test/result")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData getResultTableTest();
+
+   @POST
+   @Path("branch")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public BranchData createBranch(BranchData branchData);
 
 }

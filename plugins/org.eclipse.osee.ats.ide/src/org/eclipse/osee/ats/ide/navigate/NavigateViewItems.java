@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprintReports;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileStoredSprintReports;
 import org.eclipse.osee.ats.ide.agile.navigate.SortAgileBacklog;
 import org.eclipse.osee.ats.ide.agile.navigate.SyncJiraAndOseeByEpicBlam;
+import org.eclipse.osee.ats.ide.branch.CreateAtsBaselineBranchBlam;
 import org.eclipse.osee.ats.ide.config.AtsConfig2ExampleNavigateItem;
 import org.eclipse.osee.ats.ide.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
@@ -303,6 +304,8 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new CreateActionUsingAllActionableItems(demoItems);
 
          new AtsConfig2ExampleNavigateItem(demoItems);
+
+         new XNavigateItemBlam(adminItems, new CreateAtsBaselineBranchBlam());
          new XNavigateItemAction(adminItems, new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE);
          new XNavigateItemAction(adminItems, new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR);
          new XNavigateItemAction(adminItems, new PurgeTransactionAction(), FrameworkImage.PURGE);

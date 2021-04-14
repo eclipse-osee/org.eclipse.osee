@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
@@ -178,5 +180,9 @@ public interface IAtsBranchService {
    boolean isAtsBranch(BranchId branchId);
 
    XResultData deleteBranch(BranchId branch);
+
+   BranchData createBranch(BranchData branchData);
+
+   BranchData validate(BranchData branchData, AtsApi atsApi);
 
 }

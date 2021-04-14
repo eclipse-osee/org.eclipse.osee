@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.rest.internal.util;
+package org.eclipse.osee.ats.rest.internal.branch;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -240,6 +241,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public XResultData deleteBranch(BranchId branch) {
       throw new UnsupportedOperationException("Not supported on server");
+   }
+
+   @Override
+   public BranchData createBranch(BranchData branchData) {
+      AtsBranchOperations ops = new AtsBranchOperations(atsApi, orcsApi);
+      return ops.createBranch(branchData);
    }
 
 }

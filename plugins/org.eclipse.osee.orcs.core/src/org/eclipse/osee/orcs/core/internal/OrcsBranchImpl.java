@@ -84,8 +84,15 @@ public class OrcsBranchImpl implements OrcsBranch {
       Conditions.checkNotNull(branchData.getName(), "branchName");
       Conditions.checkNotNull(branchData.getBranchType(), "branchType");
 
-      TransactionId txData = branchData.getFromTransaction();
+      TransactionToken txData = null;
+      if (branchData.getParentBranch().isValid()) {
+         txData = orcsApi.getQueryFactory().transactionQuery().andIsHead(
+            branchData.getParentBranch()).getTokens().getExactlyOne();
+      } else {
+         txData = branchData.getFromTransaction();
+      }
       Conditions.checkNotNull(txData, "sourceTransaction");
+      branchData.setFromTransaction(txData);
 
       if (branchData.isTxCopyBranchType()) {
          TransactionQuery txQuery = queryFactory.transactionQuery();
