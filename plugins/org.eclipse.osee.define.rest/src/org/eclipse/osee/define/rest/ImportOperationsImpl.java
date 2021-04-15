@@ -24,6 +24,7 @@ import org.eclipse.osee.define.rest.importing.operations.RoughToRealArtifactOper
 import org.eclipse.osee.define.rest.importing.operations.SourceToRoughArtifactOperation;
 import org.eclipse.osee.define.rest.importing.parsers.WordOutlineExtractor;
 import org.eclipse.osee.define.rest.importing.parsers.WordOutlineExtractorDelegate;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateAttributeUpdater;
 import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory;
 import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
@@ -44,6 +45,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class ImportOperationsImpl implements ImportOperations {
    private final OrcsApi orcsApi;
    private final ActivityLog activityLog;
+   private static final Integer GRAPHICS_UPDATE = 100;
 
    public ImportOperationsImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.orcsApi = orcsApi;
@@ -56,26 +58,32 @@ public class ImportOperationsImpl implements ImportOperations {
       Conditions.checkNotNull(branch, "branch query param");
       Conditions.checkNotNull(wordURI, "selected_types query param");
       Conditions.checkNotNull(parent, "parent Artifact");
-      IArtifactExtractor extractor = new WordOutlineExtractor();
-      extractor.setDelegate(new WordOutlineExtractorDelegate());
-      RoughArtifactCollector collector =
-         new RoughArtifactCollector(new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY));
-      SourceToRoughArtifactOperation sourceOp =
-         new SourceToRoughArtifactOperation(orcsApi, results, extractor, new File(wordURI), collector);
-      sourceOp.importFiles();
-      TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Server word import");
-      ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
-      IArtifactImportResolver resolver = ArtifactResolverFactory.createResolver(transaction,
-         ArtifactCreationStrategy.CREATE_NEW_ALWAYS, CoreArtifactTypes.SubsystemRequirementMsWord, null, true, false);
-      RoughToRealArtifactOperation roughToReal = new RoughToRealArtifactOperation(orcsApi, results, transaction,
-         parentArtifact, collector, resolver, false, extractor);
-      roughToReal.doWork();
+      if (tier.equals(GRAPHICS_UPDATE)) {
+         WordTemplateAttributeUpdater updater = new WordTemplateAttributeUpdater();
+         results = updater.replaceAttribute(orcsApi, branch, results, wordURI, parent);
+      } else {
+         IArtifactExtractor extractor = new WordOutlineExtractor();
+         extractor.setDelegate(new WordOutlineExtractorDelegate());
+         RoughArtifactCollector collector =
+            new RoughArtifactCollector(new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY));
+         SourceToRoughArtifactOperation sourceOp =
+            new SourceToRoughArtifactOperation(orcsApi, results, extractor, new File(wordURI), collector);
+         sourceOp.importFiles();
+         TransactionBuilder transaction =
+            orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Server word import");
+         ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
+         IArtifactImportResolver resolver =
+            ArtifactResolverFactory.createResolver(transaction, ArtifactCreationStrategy.CREATE_NEW_ALWAYS,
+               CoreArtifactTypes.SubsystemRequirementMsWord, null, true, false);
+         RoughToRealArtifactOperation roughToReal = new RoughToRealArtifactOperation(orcsApi, results, transaction,
+            parentArtifact, collector, resolver, false, extractor);
+         roughToReal.doWork();
 
-      ArtifactValidationCheckOperation validator =
-         new ArtifactValidationCheckOperation(orcsApi, results, parentArtifact, true);
-      results = validator.validate(); // TODO combine results from SourceToRoughArtifactOperation
-      transaction.commit();
+         ArtifactValidationCheckOperation validator =
+            new ArtifactValidationCheckOperation(orcsApi, results, parentArtifact, true);
+         results = validator.validate(); // TODO combine results from SourceToRoughArtifactOperation
+         transaction.commit();
+      }
       return results;
    }
 

@@ -29,7 +29,6 @@ public final class DoorsImportFieldTokens {
    private static final String TEXT_REGEX = "^Object Text.*";
    private static final String PLAIN_TEXT_REGEX = "^Object Plain Text.*";
    private static final String STATE_REGEX = "^Object State.*";
-   private static final String ADDED_REGEX = "^Object Added.*";
    private static final String MODIFIED_REGEX = "^Object Modified.*";
    private static final String DELETED_REGEX = "^Object Del.*";
    private static final String COMMENTS_REGEX = "^Comments.*";
@@ -50,7 +49,6 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrCaption =     BlockFieldToken.valueOf(13, "Caption", CAPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrText =        BlockFieldToken.valueOf(7, "Text", TEXT_REGEX, OBJECT_TEXT_REGEX, BlockFieldText::new, CoreAttributeTypes.WordTemplateContent);
    public static final BlockFieldToken blockAttrState =       BlockFieldToken.valueOf(8, "State", STATE_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
-   public static final BlockFieldToken blockAttrAdded =       BlockFieldToken.valueOf(9, "Added", ADDED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrModified =    BlockFieldToken.valueOf(10, "Modified", MODIFIED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrDeleted =     BlockFieldToken.valueOf(11, "Deleted", DELETED_REGEX, BLOCK_ATTR_REGEX, BlockField::new);
    public static final BlockFieldToken blockAttrComments =    BlockFieldToken.valueOf(12, "Comments", COMMENTS_REGEX, OBJECT_TEXT_REGEX, BlockField::new, CoreAttributeTypes.Annotation);

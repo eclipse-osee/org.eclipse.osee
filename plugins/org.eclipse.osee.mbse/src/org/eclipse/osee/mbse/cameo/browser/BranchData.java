@@ -26,6 +26,7 @@ public class BranchData {
    private ParentBranch parentBranch;
    private int branchState;
    private int branchType;
+   private boolean inheritAccessControl;
    private boolean archived;
    private String shortName;
    private int idIntValue;
@@ -100,6 +101,14 @@ public class BranchData {
 
    public void setBranchType(int branchType) {
       this.branchType = branchType;
+   }
+
+   public boolean isInheritAccessControl() {
+      return inheritAccessControl;
+   }
+
+   public void setInheritAccessControl(boolean inheritAccessControl) {
+      this.inheritAccessControl = inheritAccessControl;
    }
 
    public boolean isArchived() {

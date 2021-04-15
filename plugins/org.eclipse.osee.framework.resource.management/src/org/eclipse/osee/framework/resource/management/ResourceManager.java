@@ -136,7 +136,6 @@ public class ResourceManager implements IResourceManager {
 
       IResourceLocator locator = getResourceLocator(path);
       Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", path);
-
       IResource resource = acquire(locator, DEFAULT_OPTIONS);
       String mimeType = getContentType(resource);
 
