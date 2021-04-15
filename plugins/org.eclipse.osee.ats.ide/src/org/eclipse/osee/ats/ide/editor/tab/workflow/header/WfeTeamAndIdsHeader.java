@@ -52,8 +52,10 @@ public class WfeTeamAndIdsHeader extends Composite {
 
          if (workItem.isTeamWorkflow()) {
             teamWfIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Team: ", "").getSecond();
+            teamWfIdValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
             parentIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Parent Id: ", "").getSecond();
+            parentIdValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -62,6 +64,7 @@ public class WfeTeamAndIdsHeader extends Composite {
       try {
          idValue = FormsUtil.createLabelText(editor.getToolkit(), this, workItem.getArtifactTypeName() + " Id: ",
             "").getSecond();
+         idValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -70,6 +73,7 @@ public class WfeTeamAndIdsHeader extends Composite {
          IAtsAction action = workItem.getParentAction();
          if (action != null) {
             actionIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Action Id: ", "").getSecond();
+            actionIdValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

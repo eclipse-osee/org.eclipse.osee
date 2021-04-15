@@ -71,7 +71,7 @@ public class BlamOutputSection extends BaseBlamSection {
          contributionItem.fill(composite);
       }
 
-      formText = toolkit.createText(composite, "BLAM has not yet run\n", SWT.WRAP);
+      formText = toolkit.createText(composite, abstractBlam.getOutputMessage(), SWT.WRAP);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       gd.widthHint = 200;

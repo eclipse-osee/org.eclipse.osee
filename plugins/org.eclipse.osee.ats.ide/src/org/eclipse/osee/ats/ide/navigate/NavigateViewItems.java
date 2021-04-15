@@ -72,6 +72,7 @@ import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefinitionNavigateItem;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
+import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchGoalSearchItem;
@@ -107,6 +108,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.action.XWidgetsDialogExampleAction;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.change.OpenChangeReportByTransactionIdAction;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataDialogExample;
@@ -204,6 +207,11 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
          time2.start("NVI - addAtsSectionChildren - NewAction");
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
+         for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
+            if (blam instanceof CreateNewChangeRequestBlam) {
+               items.add(new XNavigateItemBlam(item, blam, AtsImage.NEW_ACTION));
+            }
+         }
          time2.end();
 
          time2.start("NVI - addAtsSectionChildren - agileUser");

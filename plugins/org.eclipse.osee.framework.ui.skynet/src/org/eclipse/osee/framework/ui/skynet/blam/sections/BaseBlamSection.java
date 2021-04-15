@@ -25,7 +25,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class BaseBlamSection extends SectionPart {
 
    private final FormEditor editor;
-   private final AbstractBlam abstractBlam;
+   protected final AbstractBlam abstractBlam;
 
    public BaseBlamSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style);

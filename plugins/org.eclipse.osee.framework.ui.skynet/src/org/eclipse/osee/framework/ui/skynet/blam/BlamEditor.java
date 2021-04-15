@@ -87,7 +87,8 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    public void executeBlam() {
       OperationLogger reporter = overviewPage.getReporter();
-      getEditorInput().getBlamOperation().execute(reporter, getBlamVariableMap(), new BlamEditorExecutionAdapter());
+      getEditorInput().getBlamOperation().execute(reporter, getBlamVariableMap(),
+         new BlamEditorExecutionAdapter(getEditorInput().getBlamOperation()));
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {
@@ -109,6 +110,11 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    private final class BlamEditorExecutionAdapter extends JobChangeAdapter {
       private long startTime = 0;
+      private final AbstractBlam blam;
+
+      public BlamEditorExecutionAdapter(AbstractBlam blam) {
+         this.blam = blam;
+      }
 
       @Override
       public void scheduled(IJobChangeEvent event) {
@@ -120,12 +126,22 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       public void aboutToRun(IJobChangeEvent event) {
          startTime = System.currentTimeMillis();
          Date date = new Date();
-         overviewPage.setOuputText(String.format("Starting BLAM at [%s]\n", date.toString()));
+         String useName = getUseName();
+         overviewPage.setOuputText(String.format("Starting [%s] at [%s]\n", useName, date.toString()));
+      }
+
+      private String getUseName() {
+         String useName = "BLAM";
+         if (!"Run BLAM".equals(blam.getRunText())) {
+            useName = blam.getRunText();
+         }
+         return useName;
       }
 
       @Override
       public void done(IJobChangeEvent event) {
-         overviewPage.appendOutput(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
+         String useName = getUseName();
+         overviewPage.appendOutput(String.format("[%s] completed in [%s]\n", useName, Lib.getElapseString(startTime)));
          showBusy(false);
          getActionBarContributor().getExecuteBlamAction().setEnabled(true);
          overviewPage.refreshTextSize();

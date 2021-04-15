@@ -53,6 +53,7 @@ public class XWidgetRendererItem implements Cloneable {
    private String doubleClickText;
    private ArtifactTypeId artifactType;
    private RelationTypeSide relationTypeSide;
+   private boolean horizontalLabel;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -314,5 +315,13 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setNoSelect(boolean noSelect) {
       this.noSelect = noSelect;
+   }
+
+   public void setHorizontalLabel(boolean set) {
+      this.horizontalLabel = set;
+   }
+
+   public boolean isHorizontalLabel() {
+      return horizontalLabel;
    }
 }

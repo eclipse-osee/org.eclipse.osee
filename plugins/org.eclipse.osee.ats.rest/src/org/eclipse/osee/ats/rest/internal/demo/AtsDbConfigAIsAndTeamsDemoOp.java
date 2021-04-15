@@ -197,6 +197,14 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
       // SAW PL Team Defs
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_CR_TeamDef) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.ChangeRequest) //
+         .andLeads(DemoUsers.Joe_Smith) //
+         .andMembers(DemoUsers.Joe_Smith) //
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request) //
+         .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow);
+
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Code_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Code) //
@@ -249,6 +257,12 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          topActionableItem.createChildActionableItem(DemoArtifactToken.SAW_PL_CSCI_AI) //
             .andProgram(DemoArtifactToken.SAW_PL_Program) //
             .andActionable(false);
+
+      sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_CR_AI) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.ChangeRequest) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_CR_TeamDef) //
+         .andActionable(false);
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Code_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //

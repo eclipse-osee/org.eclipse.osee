@@ -97,7 +97,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       time.end();
 
       for (AbstractBlam blamOperation : getBlamOperations()) {
-         if (!blamOperation.showBlam()) {
+         if (!blamOperation.showInBlamSection()) {
             continue;
          }
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
@@ -118,7 +118,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       }
       // Add BLAMs to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperations()) {
-         if (!blamOperation.showBlam()) {
+         if (!blamOperation.showInBlamSection()) {
             continue;
          }
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();

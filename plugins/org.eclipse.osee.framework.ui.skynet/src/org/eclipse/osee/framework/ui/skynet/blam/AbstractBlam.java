@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -91,7 +92,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public AbstractBlam(String name, String usageDescription, BlamUiSource source) {
-      this.name = Strings.isValid(name) ? name : generateNameFromClass();
+      this.name = name;
       this.description = Strings.isValid(usageDescription) ? usageDescription : DEFAULT_DESCRIPTION;
       this.source = source != null ? source : BlamUiSource.DEFAULT;
    }
@@ -124,6 +125,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public abstract Collection<String> getCategories();
 
+   /**
+    * Use WidgetBuilder
+    */
+   @Deprecated
    public String getXWidgetsXml() {
       switch (source) {
          case FILE:
@@ -137,6 +142,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
             sb.append("</xWidgets>");
             return sb.toString();
       }
+   }
+
+   public List<XWidgetRendererItem> getXWidgetItems() {
+      return Collections.emptyList();
    }
 
    /**
@@ -157,7 +166,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public String getName() {
-      return name;
+      return Strings.isValid(name) ? name : generateNameFromClass();
    }
 
    public void log(String... row) {
@@ -190,7 +199,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    @SuppressWarnings("unused")
    public List<XWidgetRendererItem> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
-      return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
+      List<XWidgetRendererItem> xWidgetItems = getXWidgetItems();
+      if (xWidgetItems.isEmpty()) {
+         return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
+      } else {
+         return xWidgetItems;
+      }
    }
 
    public String getRunText() {
@@ -248,7 +262,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       viewId = ArtifactToken.SENTINEL;
    }
 
-   public boolean showBlam() {
+   public boolean showInBlamSection() {
       return true;
    }
+
+   public String getOutputMessage() {
+      return "BLAM has not yet run";
+   }
+
 }

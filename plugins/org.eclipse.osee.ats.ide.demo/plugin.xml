@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension
+         id="CreateNewDemoChangeRequestBlam"
+         name="CreateNewDemoChangeRequestBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.demo.workflow.cr.CreateNewDemoChangeRequestBlam">
+      </Operation>
+   </extension>
     <extension
           id="AtsDbConfigDemoChoice"
           point="org.eclipse.osee.framework.database.init.DatabaseInitializationConfiguration">

@@ -27,12 +27,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -101,8 +104,23 @@ public class BlamInputSection extends BaseBlamSection {
          List<XWidgetRendererItem> layoutDatas = getDynamicXWidgetLayouts();
          XWidgetPage workPage = new XWidgetPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
          workPage.createBody(getManagedForm(), parent, null, null, true);
+         setLabelFonts(parent, FontManager.getCourierNew12Bold());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   public void setLabelFonts(Control parent, Font font) {
+      if (parent instanceof Label) {
+         Label label = (Label) parent;
+         label.setFont(font);
+      }
+      if (parent instanceof Composite) {
+         Composite container = (Composite) parent;
+         for (Control child : container.getChildren()) {
+            setLabelFonts(child, font);
+         }
+         container.layout();
       }
    }
 

@@ -33,12 +33,12 @@ public class ActionableItemResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsAisRestCall() {
-      testActionableItemUrl("/ats/ai", 70, false);
+      testActionableItemUrl("/ats/ai", 71, false);
    }
 
    @Test
    public void testAtsAisDetailsRestCall() {
-      testActionableItemUrl("/ats/ai/details", 70, true);
+      testActionableItemUrl("/ats/ai/details", 71, true);
    }
 
    @Test

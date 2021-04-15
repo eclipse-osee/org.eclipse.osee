@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -83,8 +84,9 @@ public class BlamOverviewPage extends FormPage {
          managedForm.getToolkit(), sectionStyle);
       managedForm.addPart(inputSection);
       if (getEditorInput().getBlamOperation().showExecuteSection()) {
+         Action executeBlamAction = getEditor().getActionBarContributor().getExecuteBlamAction();
          outputSection = new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-            managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
+            managedForm.getToolkit(), sectionStyle, executeBlamAction);
          managedForm.addPart(outputSection);
       }
 

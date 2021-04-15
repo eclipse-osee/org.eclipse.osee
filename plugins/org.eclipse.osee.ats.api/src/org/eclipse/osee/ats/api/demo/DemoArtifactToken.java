@@ -80,6 +80,7 @@ public final class DemoArtifactToken {
 
    // SAW PL Team Definitions
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(283478888L, "SAW PL");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_CR_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(35712349L, "SAW PL Change Request");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_HW_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123913578L, "SAW PL HW");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Code_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123413478L, "SAW PL Code");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Test_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(228828L, "SAW PL Test");
@@ -89,6 +90,7 @@ public final class DemoArtifactToken {
 
    // SAW PL Actionable Items
    public static final IAtsActionableItemArtifactToken SAW_PL_CSCI_AI = AtsActionableItemArtifactToken.valueOf(3234255L, "SAW PL CSCI");
+   public static final IAtsActionableItemArtifactToken SAW_PL_CR_AI = AtsActionableItemArtifactToken.valueOf(428487777L, "SAW PL Change Request");
    public static final IAtsActionableItemArtifactToken SAW_PL_HW_AI = AtsActionableItemArtifactToken.valueOf(95849383L, "SAW PL HW");
    public static final IAtsActionableItemArtifactToken PL_Adapter_AI = AtsActionableItemArtifactToken.valueOf(456465465L, "Adapter");
    public static final IAtsActionableItemArtifactToken SAW_PL_Test_AI = AtsActionableItemArtifactToken.valueOf(343434343L, "SAW PL Test");

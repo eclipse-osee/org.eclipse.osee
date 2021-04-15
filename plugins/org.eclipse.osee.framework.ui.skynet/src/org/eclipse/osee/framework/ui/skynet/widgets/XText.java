@@ -51,7 +51,6 @@ public class XText extends XWidget {
    private Composite parent;
    protected String text = ""; // Where actual text with xml tags is stored
    private int maxTextChars = 0;
-
    private boolean dragableArtifact = false;
    private boolean spellCheck = true;
    private int width = 0;

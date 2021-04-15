@@ -52,6 +52,7 @@ public class WorkType extends OseeEnum {
    public static final WorkType All = new WorkType("All");
    public static final WorkType Custom = new WorkType("Custom", "Custom Work Type that doesn't match a WorkType enum");
    public static final WorkType ARB = new WorkType("ARB", "Architecture Review Board");
+   public static final WorkType ChangeRequest = new WorkType("Top level Change Request to rule them all");
    public static final WorkType None = new WorkType("None");
 
    private String description;
