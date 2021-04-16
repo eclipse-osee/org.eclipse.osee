@@ -162,7 +162,7 @@ public class AtsBranchConfigurationTest {
          AtsApiService.get().getActionableItemService().getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
+      ActionResult result = AtsApiService.get().getActionService().createAction(null,
          BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeType.Problem, "1", false, null,
          selectedActionableItems, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
@@ -270,7 +270,7 @@ public class AtsBranchConfigurationTest {
       changes.reset("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       changes.clear();
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, actionTitle, "description",
+      ActionResult result = AtsApiService.get().getActionService().createAction(null, actionTitle, "description",
          ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();

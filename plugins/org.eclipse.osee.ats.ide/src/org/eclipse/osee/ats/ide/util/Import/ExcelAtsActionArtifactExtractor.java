@@ -226,7 +226,7 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionResult == null) {
                ChangeType changeType = getChangeType(aData);
                String priorityStr = getPriority(aData);
-               ActionResult aResult = AtsApiService.get().getActionFactory().createAction(null, aData.title, aData.desc,
+               ActionResult aResult = AtsApiService.get().getActionService().createAction(null, aData.title, aData.desc,
                   changeType, priorityStr, false, null,
                   AtsApiService.get().getActionableItemService().getActionableItems(aData.actionableItems), createdDate,
                   createdBy, null, changes);
@@ -250,7 +250,7 @@ public class ExcelAtsActionArtifactExtractor {
                }
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
-                  IAtsTeamWorkflow teamWf = AtsApiService.get().getActionFactory().createTeamWorkflow(
+                  IAtsTeamWorkflow teamWf = AtsApiService.get().getActionService().createTeamWorkflow(
                      actionResult.getAction(), entry.getKey(), entry.getValue(), aData.assignees, changes, createdDate,
                      createdBy, null, CreateTeamOption.Duplicate_If_Exists);
                   actionResult.getTeams().add(teamWf);

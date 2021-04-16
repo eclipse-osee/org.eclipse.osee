@@ -39,7 +39,7 @@ public class Pdd83CreateCantSeeTheGraphViewAction implements IPopulateDemoDataba
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Adapter_AI);
 
-      ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
+      ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.CantSeeTheGraphView_TeamWf.getName(), "Problem with the Graph View", ChangeType.Problem, "1",
          false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
          Arrays.asList(new ArtifactTokenActionListener()), changes);

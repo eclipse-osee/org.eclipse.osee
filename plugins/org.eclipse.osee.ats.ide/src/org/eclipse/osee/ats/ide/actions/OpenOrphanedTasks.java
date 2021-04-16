@@ -127,7 +127,7 @@ public class OpenOrphanedTasks extends Action {
                         AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
                         IAtsChangeSet changes =
                            AtsApiService.get().getStoreService().createAtsChangeSet(getName(), asUser);
-                        ActionResult results = AtsApiService.get().getActionFactory().createAction(asUser, getName(),
+                        ActionResult results = AtsApiService.get().getActionService().createAction(asUser, getName(),
                            getName(), ChangeType.Support, "3", false, null, Arrays.asList(fAi), new Date(), asUser,
                            null, changes);
                         IAtsTeamWorkflow teamWf = results.getFirstTeam();

@@ -60,7 +60,7 @@ public class FrameworkAccessTestUtil {
          AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
          String priority = "2";
 
-         ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
+         ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
             DemoArtifactToken.SAW_Access_Control_Req_TeamWf.getName(), "see title", ChangeType.Problem, priority, false,
             null, aias, createdDate, createdBy, Arrays.asList(new ArtifactTokenActionListener()), changes);
 

@@ -64,7 +64,7 @@ public class TaskRelatedToChangedArtifactTest {
       }
       assertNotNull(codeTask);
       TeamWorkFlowArtifact reqWf = null;
-      for (IAtsTeamWorkflow wf : AtsApiService.get().getActionFactory().getSiblingTeamWorkflows(codeWf)) {
+      for (IAtsTeamWorkflow wf : AtsApiService.get().getActionService().getSiblingTeamWorkflows(codeWf)) {
          if (wf.getTeamDefinition().getName().contains("Requirements")) {
             reqWf = (TeamWorkFlowArtifact) wf.getStoreObject();
             break;

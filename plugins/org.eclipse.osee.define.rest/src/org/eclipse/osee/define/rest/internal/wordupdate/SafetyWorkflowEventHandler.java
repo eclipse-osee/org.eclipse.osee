@@ -113,7 +113,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(workflowArt);
       IAtsActionableItem actionableItem =
          atsApi.getActionableItemService().getActionableItemById(safetyActionableItemArt);
-      for (IAtsTeamWorkflow sibling : atsApi.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
+      for (IAtsTeamWorkflow sibling : atsApi.getActionService().getSiblingTeamWorkflows(teamWf)) {
          if (sibling.getActionableItems().contains(actionableItem)) {
             safetyWorkflow = sibling;
             break;
@@ -138,8 +138,8 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create System Safety Workflow",
             atsApi.getUserService().getUserById(userArt));
-         IAtsAction action = atsApi.getActionFactory().getAction(teamWf);
-         teamWorkflow = atsApi.getActionFactory().createTeamWorkflow(action, teamDef,
+         IAtsAction action = atsApi.getActionService().getAction(teamWf);
+         teamWorkflow = atsApi.getActionService().createTeamWorkflow(action, teamDef,
             java.util.Collections.singleton(ai), Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(),
             createdBy, Arrays.asList(new INewActionListener() {
 

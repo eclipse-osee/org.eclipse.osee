@@ -66,7 +66,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      actionResult = AtsApiService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
+      actionResult = AtsApiService.get().getActionService().createAction(null, title, "Problem with the Diagram View",
          ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {

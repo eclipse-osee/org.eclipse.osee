@@ -75,7 +75,7 @@ public class NewActionJob extends Job {
             title += " " + AtsApiService.get().getRandomNum();
          }
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create New Action");
-         result = AtsApiService.get().getActionFactory().createAction(
+         result = AtsApiService.get().getActionService().createAction(
             AtsApiService.get().getUserService().getCurrentUser(), title, desc, changeType, priority,
             validationRequired, needByDate, actionableItems, new Date(),
             AtsApiService.get().getUserService().getCurrentUser(),

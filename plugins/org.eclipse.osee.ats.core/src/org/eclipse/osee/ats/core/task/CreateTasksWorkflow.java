@@ -122,7 +122,7 @@ public class CreateTasksWorkflow {
             IAtsActionableItem aia = getActionableItem();
             if (aia != null) {
                actionableItems.add(aia);
-               IAtsTeamWorkflow newTeamWf = atsApi.getActionFactory().createTeamWorkflow(action,
+               IAtsTeamWorkflow newTeamWf = atsApi.getActionService().createTeamWorkflow(action,
                   AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems).iterator().next(),
                   actionableItems, assignees, changes, createdDate, createdBy, getNewActionListeners(),
                   CreateTeamOption.Duplicate_If_Exists);

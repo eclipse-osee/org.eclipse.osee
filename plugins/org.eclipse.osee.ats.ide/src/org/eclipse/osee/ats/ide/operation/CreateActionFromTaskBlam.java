@@ -131,7 +131,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          if (!Strings.isValid(useTitle)) {
             useTitle = task.getName();
          }
-         ActionResult result = AtsApiService.get().getActionFactory().createAction(
+         ActionResult result = AtsApiService.get().getActionService().createAction(
             AtsApiService.get().getUserService().getCurrentUser(), useTitle, getDescription(task), changeType,
             priority, false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null,
             changes);

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.core.action;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
+import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -59,6 +59,7 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -77,14 +78,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class ActionFactory implements IAtsActionFactory {
+public class AtsActionService implements IAtsActionService {
    private final AtsApi atsApi;
 
    private IAtsTeamDefinition topTeamDefinition;
    private JsonFactory jsonFactory;
    private IWorkItemListener workItemListener;
 
-   public ActionFactory(AtsApi atsApi) {
+   public AtsActionService(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
@@ -346,7 +347,7 @@ public class ActionFactory implements IAtsActionFactory {
       ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
-      atsApi.getActionFactory().setAtsId(action, topTeamDefinition, workItemListener, changes);
+      atsApi.getActionService().setAtsId(action, topTeamDefinition, workItemListener, changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
       return action;
@@ -665,7 +666,7 @@ public class ActionFactory implements IAtsActionFactory {
    @Override
    public String getActionStateJson(Collection<IAtsWorkItem> workItems) {
       try {
-         ActionFactoryOperations ops = new ActionFactoryOperations(atsApi);
+         ActionServiceOperations ops = new ActionServiceOperations(atsApi);
          return ops.getActionStateJson(workItems, getJsonFactory());
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);

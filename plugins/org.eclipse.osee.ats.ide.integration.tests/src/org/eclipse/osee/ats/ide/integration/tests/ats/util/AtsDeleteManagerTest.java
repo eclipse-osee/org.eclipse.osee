@@ -190,7 +190,7 @@ public class AtsDeleteManagerTest {
 
       Date createdDate = new Date();
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, testName.name(), "Description",
+      ActionResult result = AtsApiService.get().getActionService().createAction(null, testName.name(), "Description",
          ChangeType.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
 
       IAtsTeamWorkflow teamWf = null;

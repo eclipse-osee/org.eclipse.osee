@@ -331,7 +331,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             if (originator == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
-            atsApi.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
+            atsApi.getActionService().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
          }
       } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
          List<AtsUser> assignees = new LinkedList<>();
@@ -404,13 +404,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             workItems.add(workItem);
          }
       }
-      return atsApi.getActionFactory().getActionStateJson(workItems);
+      return atsApi.getActionService().getActionStateJson(workItems);
    }
 
    @Override
    public String getActionState(String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
-      return atsApi.getActionFactory().getActionStateJson(workItems);
+      return atsApi.getActionService().getActionStateJson(workItems);
    }
 
    /**
@@ -519,7 +519,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
          IAtsVersion version =
             atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
-         ActionResult actionResult = atsApi.getActionFactory().createAction(asUser, newActionData.getTitle(),
+         ActionResult actionResult = atsApi.getActionService().createAction(asUser, newActionData.getTitle(),
             newActionData.getDescription(), ChangeType.Improvement, newActionData.getPriority(), false, null, ais,
             new Date(), atsApi.getUserService().getCurrentUser(), null, changes);
 
@@ -552,7 +552,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
 
-         ActionResult actionResult = atsApi.getActionFactory().createAction(newActionData, changes);
+         ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
 
          TransactionId transaction = changes.executeIfNeeded();
          if (transaction != null && transaction.isInvalid()) {
@@ -664,7 +664,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
 
       // create action
-      ActionResult action = atsApi.getActionFactory().createAction(atsUser, title, description, changeType, priority,
+      ActionResult action = atsApi.getActionService().createAction(atsUser, title, description, changeType, priority,
          false, null, aias, new Date(), atsUser, null, changes);
       changes.execute();
 

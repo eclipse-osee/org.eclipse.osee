@@ -281,7 +281,7 @@ public class CreateTasksOperation {
             IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
             atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
 
-            atsApi.getActionFactory().setAtsId(task, teamWf.getTeamDefinition(), null, changes);
+            atsApi.getActionService().setAtsId(task, teamWf.getTeamDefinition(), null, changes);
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
             List<AtsUser> assignees = new ArrayList<>();
@@ -296,7 +296,7 @@ public class CreateTasksOperation {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
             }
             AtsUser createdBy = atsApi.getUserService().getUserByUserId(jaxTask.getCreatedByUserId());
-            atsApi.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
+            atsApi.getActionService().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
                workDefinition, changes);
 
             // Set parent state task is related to if set

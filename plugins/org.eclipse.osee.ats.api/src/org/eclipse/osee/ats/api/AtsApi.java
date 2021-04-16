@@ -47,7 +47,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
-import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
+import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
@@ -119,7 +119,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    ISequenceProvider getSequenceProvider();
 
-   IAtsActionFactory getActionFactory();
+   IAtsActionService getActionService();
 
    /**
     * @param key - key of key/value config pair. equals sign not accepted

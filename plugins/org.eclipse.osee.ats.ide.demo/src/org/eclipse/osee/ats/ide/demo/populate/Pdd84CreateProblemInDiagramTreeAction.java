@@ -37,7 +37,7 @@ public class Pdd84CreateProblemInDiagramTreeAction implements IPopulateDemoDatab
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
-      AtsApiService.get().getActionFactory().createAction(null,
+      AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.ProblemInDiagramTree_TeamWf.getName(), "Problem with the Diagram Tree", ChangeType.Problem,
          "3", false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
          Arrays.asList(new ArtifactTokenActionListener()), changes);

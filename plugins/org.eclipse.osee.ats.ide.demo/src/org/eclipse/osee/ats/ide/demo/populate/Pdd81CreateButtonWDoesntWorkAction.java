@@ -39,7 +39,7 @@ public class Pdd81CreateButtonWDoesntWorkAction implements IPopulateDemoDatabase
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
-      ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
+      ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "Problem with the Situation Page",
          ChangeType.Problem, "3", false, null, aias, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),

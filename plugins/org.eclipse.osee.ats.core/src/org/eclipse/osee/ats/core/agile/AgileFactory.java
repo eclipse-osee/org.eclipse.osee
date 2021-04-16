@@ -198,7 +198,7 @@ public class AgileFactory {
       ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, id);
       IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
 
-      atsApi.getActionFactory().setAtsId(sprint, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
+      atsApi.getActionService().setAtsId(sprint, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
          null, changes);
 
       IAtsWorkDefinition workDefinition =
@@ -206,7 +206,7 @@ public class AgileFactory {
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(sprint, workDefinition, changes);
 
       // Initialize state machine
-      atsApi.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
+      atsApi.getActionService().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
          new Date(), atsApi.getUserService().getCurrentUser(), workDefinition, changes);
 
       changes.add(sprintArt);
@@ -233,7 +233,7 @@ public class AgileFactory {
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, id);
       IAgileBacklog backlog = atsApi.getWorkItemService().getAgileBacklog(backlogArt);
 
-      atsApi.getActionFactory().setAtsId(backlog, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
+      atsApi.getActionService().setAtsId(backlog, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
          null, changes);
 
       IAtsWorkDefinition workDefinition =
@@ -241,7 +241,7 @@ public class AgileFactory {
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(backlog, workDefinition, changes);
 
       // Initialize state machine
-      atsApi.getActionFactory().initializeNewStateMachine(backlog, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
+      atsApi.getActionService().initializeNewStateMachine(backlog, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
          new Date(), atsApi.getUserService().getCurrentUser(), workDefinition, changes);
 
       changes.add(backlogArt);

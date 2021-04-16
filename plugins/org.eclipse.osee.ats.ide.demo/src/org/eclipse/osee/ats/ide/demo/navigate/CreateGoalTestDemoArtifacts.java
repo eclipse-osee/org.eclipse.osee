@@ -105,7 +105,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private void createAction7(IAtsChangeSet changes, GoalArtifact facilitiesGoal) {
-      ActionResult action = AtsApiService.get().getActionFactory().createAction(null, "Add the Improvement",
+      ActionResult action = AtsApiService.get().getActionService().createAction(null, "Add the Improvement",
          "Description", ChangeType.Improvement, "4", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(Arrays.asList("Network")), createdDate,
          createdBy, null, changes);
@@ -117,7 +117,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
       NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
-         ActionResult action = AtsApiService.get().getActionFactory().createAction(null,
+         ActionResult action = AtsApiService.get().getActionService().createAction(null,
             "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4", false, null,
             AtsApiService.get().getActionableItemService().getActionableItems(Arrays.asList(msaTool)), createdDate,
             createdBy, null, changes);
@@ -147,7 +147,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    private void createAction3(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
       ActionResult action =
-         AtsApiService.get().getActionFactory().createAction(null, "Remove Workflow button", "Description",
+         AtsApiService.get().getActionService().createAction(null, "Remove Workflow button", "Description",
             ChangeType.Problem, "4", false, null, AtsApiService.get().getActionableItemService().getActionableItems(
                Arrays.asList("SAW Code", "CIS Requirements")),
             createdDate, createdBy, null, changes);
@@ -157,7 +157,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
       ActionResult action =
-         AtsApiService.get().getActionFactory().createAction(null, "Add CDB Check Signals", "Description",
+         AtsApiService.get().getActionService().createAction(null, "Add CDB Check Signals", "Description",
             ChangeType.Problem, "4", false, null, AtsApiService.get().getActionableItemService().getActionableItems(
                Arrays.asList("SAW Code", "CIS Requirements")),
             createdDate, createdBy, null, changes);
@@ -166,7 +166,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private IAtsTeamWorkflow createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) {
-      ActionResult action = AtsApiService.get().getActionFactory().createAction(null, "Fix this model",
+      ActionResult action = AtsApiService.get().getActionService().createAction(null, "Fix this model",
          "Description", ChangeType.Problem, "2", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(Arrays.asList("SAW Code")), createdDate,
          createdBy, null, changes);

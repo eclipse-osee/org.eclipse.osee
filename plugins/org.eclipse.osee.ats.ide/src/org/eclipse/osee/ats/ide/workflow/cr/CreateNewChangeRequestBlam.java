@@ -92,7 +92,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam {
          }
       }
 
-      ActionResult actionResult = atsApi.getActionFactory().createAction(atsApi.getUserService().getCurrentUser(),
+      ActionResult actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(),
          title, desc, cType, priority, false, needBy, Collections.singleton(ai), new Date(),
          atsApi.getUserService().getCurrentUser(), null, changes);
       changes.execute();

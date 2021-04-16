@@ -51,7 +51,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
-import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
+import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
+import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
@@ -107,7 +108,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsEarnedValueService earnedValueService;
    protected TeamWorkflowProviders teamWorkflowProvidersLazy;
    protected IAttributeResolver attributeResolverService;
-   protected IAtsActionFactory actionFactory;
+   protected IAtsActionService actionService;
    protected IAtsImplementerService implementerService;
    protected IAtsWorkItemService workItemService;
    protected ISequenceProvider sequenceProvider;
@@ -198,7 +199,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
       logFactory = new AtsLogFactory();
-      actionFactory = new ActionFactory(this);
+      actionService = new AtsActionService(this);
    }
 
    public void stop() {
@@ -383,8 +384,8 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    }
 
    @Override
-   public IAtsActionFactory getActionFactory() {
-      return actionFactory;
+   public IAtsActionService getActionService() {
+      return actionService;
    }
 
    @Override

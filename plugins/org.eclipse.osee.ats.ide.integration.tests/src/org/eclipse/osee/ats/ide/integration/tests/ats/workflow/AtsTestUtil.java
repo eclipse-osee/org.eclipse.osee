@@ -344,7 +344,7 @@ public class AtsTestUtil {
       verArt4.setTeamDefId(teamDef.getId());
       teamDef.getVersions().add(verArt4.getId());
 
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, getTitle("Team WF", postFixName),
+      ActionResult result = AtsApiService.get().getActionService().createAction(null, getTitle("Team WF", postFixName),
          "description", ChangeType.Improvement, "1", false, null, Arrays.asList(testAi), new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null, changes);
 
@@ -634,7 +634,7 @@ public class AtsTestUtil {
       ensureLoaded();
       if (teamArt2 == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
-         ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
+         ActionResult result = AtsApiService.get().getActionService().createAction(null,
             getTitle("Team WF2", postFixName), "description", ChangeType.Improvement, "1", false, null,
             Arrays.asList(testAi2), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt2 = (IAtsAction) result.getAction().getStoreObject();
@@ -653,7 +653,7 @@ public class AtsTestUtil {
       ensureLoaded();
       if (teamArt3 == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
-         ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
+         ActionResult result = AtsApiService.get().getActionService().createAction(null,
             getTitle("Team WF3", postFixName), "description", ChangeType.Improvement, "1", false, null,
             Arrays.asList(testAi3), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt3 = (IAtsAction) result.getAction().getStoreObject();
@@ -672,7 +672,7 @@ public class AtsTestUtil {
       ensureLoaded();
       if (teamArt4 == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
-         ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
+         ActionResult result = AtsApiService.get().getActionService().createAction(null,
             getTitle("Team WF4", postFixName), "description", ChangeType.Improvement, "1", false, null,
             Arrays.asList(testAi4), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt4 = (IAtsAction) result.getAction().getStoreObject();

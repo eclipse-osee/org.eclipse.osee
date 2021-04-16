@@ -366,7 +366,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
             IAtsTeamWorkflow newTeamWf =
-               AtsApiService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(), data.getTeamDef(),
+               AtsApiService.get().getActionService().createTeamWorkflow(teamWf.getParentAction(), data.getTeamDef(),
                   data.getActionableItems(), new LinkedList<AtsUser>(data.getAssignees()), changes, createdDate,
                   data.getCreatedBy(), null, data.getCreateTeamOption());
             newTeamWfs.add(newTeamWf);

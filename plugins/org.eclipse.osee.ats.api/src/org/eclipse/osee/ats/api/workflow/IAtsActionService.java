@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsActionFactory {
+public interface IAtsActionService {
 
    ActionResult createAction(AtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes);
 

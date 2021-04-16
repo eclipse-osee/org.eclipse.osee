@@ -66,7 +66,7 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
          }
 
          IAtsTeamWorkflow newTeamWf =
-            atsApi.getActionFactory().createTeamWorkflow(teamWf.getParentAction(), teamDef, teamWf.getActionableItems(),
+            atsApi.getActionService().createTeamWorkflow(teamWf.getParentAction(), teamDef, teamWf.getActionableItems(),
                assignees, changes, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
 
          String title = getTitle(teamWf);

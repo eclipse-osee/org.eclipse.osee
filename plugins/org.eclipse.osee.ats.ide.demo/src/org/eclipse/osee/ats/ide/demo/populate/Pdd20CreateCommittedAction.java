@@ -62,7 +62,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
+      ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "Problem with the Diagram View",
          ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);

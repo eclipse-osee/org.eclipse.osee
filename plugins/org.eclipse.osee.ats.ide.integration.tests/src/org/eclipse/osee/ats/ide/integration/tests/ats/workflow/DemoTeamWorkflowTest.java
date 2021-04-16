@@ -64,7 +64,7 @@ public class DemoTeamWorkflowTest {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create SAW Test Action title: " + title);
 
       ActionResult result =
-         AtsApiService.get().getActionFactory().createAction(null, title, title, ChangeType.Improvement, "1", false,
+         AtsApiService.get().getActionService().createAction(null, title, title, ChangeType.Improvement, "1", false,
             null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 

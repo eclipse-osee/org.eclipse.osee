@@ -58,7 +58,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      actionResult = AtsApiService.get().getActionFactory().createAction(null,
+      actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "Problem with the Diagram View",
          ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);

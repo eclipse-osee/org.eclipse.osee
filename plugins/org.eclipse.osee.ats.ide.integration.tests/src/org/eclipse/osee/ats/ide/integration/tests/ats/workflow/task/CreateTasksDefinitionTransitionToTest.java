@@ -88,7 +88,7 @@ public class CreateTasksDefinitionTransitionToTest {
       String priority = "3";
 
       ActionResult actionResult =
-         AtsApiService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
+         AtsApiService.get().getActionService().createAction(null, title, "Problem with the Diagram View",
             ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       teamWf = actionResult.getFirstTeam();
       boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");

@@ -77,7 +77,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
 
       IAtsTeamDefinition useTeamDef = teamDef;
       Conditions.assertNotNull(useTeamDef, "Team Definition can not be null for %s", goalArt.toStringWithId());
-      AtsApiService.get().getActionFactory().setAtsId(goalArt, useTeamDef, workItemListener, changes);
+      AtsApiService.get().getActionService().setAtsId(goalArt, useTeamDef, workItemListener, changes);
 
       IAtsWorkDefinition useWorkDefinition = workDefinition;
       if (useWorkDefinition == null) {
@@ -87,7 +87,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goalArt.toStringWithId());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(goalArt, workDefinition, changes);
 
-      AtsApiService.get().getActionFactory().initializeNewStateMachine(goalArt,
+      AtsApiService.get().getActionService().initializeNewStateMachine(goalArt,
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), workDefinition, changes);
 

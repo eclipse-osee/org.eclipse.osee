@@ -78,7 +78,7 @@ public class StateResourceTest extends AbstractRestTest {
       form.param("operation", "transition");
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(StateResourceTest.class.getName());
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, StateResourceTest.class.getName(),
+      ActionResult result = AtsApiService.get().getActionService().createAction(null, StateResourceTest.class.getName(),
          "description", ChangeType.Improvement, "1", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),

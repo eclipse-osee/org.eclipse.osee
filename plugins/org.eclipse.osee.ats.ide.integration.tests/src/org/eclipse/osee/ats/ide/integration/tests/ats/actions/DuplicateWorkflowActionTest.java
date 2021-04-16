@@ -61,7 +61,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
       // new workflow
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Duplicate Workflow");
-      newTeamWf = AtsApiService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(),
+      newTeamWf = AtsApiService.get().getActionService().createTeamWorkflow(teamWf.getParentAction(),
          teamWf.getTeamDefinition(), AtsApiService.get().getActionableItemService().getActionableItems(teamWf),
          assignees, changes, new Date(), originator, null, CreateTeamOption.Duplicate_If_Exists);
 
@@ -74,7 +74,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
          ((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(AtsApiService.get().getAtsBranch(),
             Arrays.asList(AtsAttributeTypes.AtsId)));
 
-      AtsApiService.get().getActionFactory().initializeNewStateMachine(dupTeamWf, assignees, new Date(),
+      AtsApiService.get().getActionService().initializeNewStateMachine(dupTeamWf, assignees, new Date(),
          AtsCoreUsers.SYSTEM_USER, dupTeamWf.getWorkDefinition(), changes);
 
       changes.add(dupTeamWf);

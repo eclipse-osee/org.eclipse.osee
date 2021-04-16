@@ -62,7 +62,7 @@ public class Pdd51CreateWorkaroundForGraphViewActions implements IPopulateDemoDa
       for (ArtifactToken version : getVersionToWorkflowToken().keySet()) {
          currentVersion = version;
          ArtifactToken teamWfArtToken = getVersionToWorkflowToken().get(version);
-         ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
+         ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
             teamWfArtToken.getName(), "Problem with the Graph View", ChangeType.Problem, "1", false, null, aias,
             createdDate, AtsApiService.get().getUserService().getCurrentUser(),
             Arrays.asList(new ArtifactTokenActionListener()), changes);

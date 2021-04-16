@@ -204,14 +204,14 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemService().getReview(decRevArt);
 
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
-      atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), null, changes);
+      atsApi.getActionService().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), null, changes);
 
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Review_Decision);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(decRev, workDefinition, changes);
 
       // Initialize state machine
-      atsApi.getActionFactory().initializeNewStateMachine(decRev, null, createdDate, createdBy, workDefinition,
+      atsApi.getActionService().initializeNewStateMachine(decRev, null, createdDate, createdBy, workDefinition,
          changes);
       decRev.getStateMgr().setAssignees(workDefinition.getStartState().getName(), StateType.Working, assignees);
 
@@ -366,9 +366,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, peerRev);
       }
 
-      atsApi.getActionFactory().setAtsId(peerRev, teamDef, null, changes);
+      atsApi.getActionService().setAtsId(peerRev, teamDef, null, changes);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(peerRev, workDefinition, changes);
-      atsApi.getActionFactory().initializeNewStateMachine(peerRev, null, createdDate, createdBy, workDefinition,
+      atsApi.getActionService().initializeNewStateMachine(peerRev, null, createdDate, createdBy, workDefinition,
          changes);
 
       if (teamWf != null && againstState != null) {

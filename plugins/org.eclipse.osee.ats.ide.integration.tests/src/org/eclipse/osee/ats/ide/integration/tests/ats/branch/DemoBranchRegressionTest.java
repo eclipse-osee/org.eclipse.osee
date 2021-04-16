@@ -100,7 +100,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      actionResult = AtsApiService.get().getActionFactory().createAction(null, getClass().getSimpleName(),
+      actionResult = AtsApiService.get().getActionService().createAction(null, getClass().getSimpleName(),
          "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new PcrNumberActionListener()), changes);
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.core.action;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public class ActionFactoryOperations {
+public class ActionServiceOperations {
 
    private final AtsApi atsApi;
 
-   public ActionFactoryOperations(AtsApi atsApi) {
+   public ActionServiceOperations(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 

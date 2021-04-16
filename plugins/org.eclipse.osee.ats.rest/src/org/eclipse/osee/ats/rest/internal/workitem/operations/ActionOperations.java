@@ -144,7 +144,7 @@ public class ActionOperations {
             if (originator == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
-            atsApi.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
+            atsApi.getActionService().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
          }
       } else if (attrTypeIdOrKey.equals(AttributeKey.assocArt.name())) {
          if (Strings.isNumeric(values.get(0))) {

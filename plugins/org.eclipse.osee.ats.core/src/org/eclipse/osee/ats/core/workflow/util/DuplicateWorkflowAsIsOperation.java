@@ -163,7 +163,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
                goal = listener.addToGoal((IAtsTeamWorkflow) newWorkItemArt, changes);
                listener.handleChanges((IAtsTeamWorkflow) newWorkItemArt, changes);
             }
-            atsApi.getActionFactory().addActionToConfiguredGoal(teamWf.getTeamDefinition(),
+            atsApi.getActionService().addActionToConfiguredGoal(teamWf.getTeamDefinition(),
                (IAtsTeamWorkflow) newWorkItemArt, teamWf.getActionableItems(), goal, changes);
          }
       }
@@ -218,12 +218,12 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             AtsAttributeTypes.ValidationRequired, false);
          Date needByDate =
             atsApi.getAttributeResolver().getSoleAttributeValue(origAction, AtsAttributeTypes.NeedBy, null);
-         IAtsAction newAction = atsApi.getActionFactory().createAction(comment, description, changeType, priority,
+         IAtsAction newAction = atsApi.getActionService().createAction(comment, description, changeType, priority,
             validationRequired, needByDate, changes);
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, newAction);
       }
 
-      atsApi.getActionFactory().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), null,
+      atsApi.getActionService().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), null,
          changes);
       return newWorkItem;
    }

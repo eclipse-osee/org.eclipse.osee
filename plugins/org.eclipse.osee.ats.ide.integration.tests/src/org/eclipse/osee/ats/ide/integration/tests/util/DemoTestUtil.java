@@ -65,7 +65,7 @@ public class DemoTestUtil {
     * Creates an action with the name title and demo code workflow
     */
    public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) {
-      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, title, "Description",
+      ActionResult result = AtsApiService.get().getActionService().createAction(null, title, "Description",
          ChangeType.Improvement, "2", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),
@@ -94,7 +94,7 @@ public class DemoTestUtil {
       Collection<IAtsTeamDefinition> teamDefs =
          AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
 
-      AtsApiService.get().getActionFactory().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
+      AtsApiService.get().getActionService().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), changes, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null);
 
