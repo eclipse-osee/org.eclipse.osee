@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.access;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -37,7 +38,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class UserServiceImpl implements UserService {
    private final OrcsApi orcsApi;
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
-   private final ConcurrentHashMap<String, UserToken> emailToUser = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
    private final QueryBuilder query;
 
    public UserServiceImpl(OrcsApi orcsApi) {
@@ -124,11 +125,13 @@ public class UserServiceImpl implements UserService {
    }
 
    private synchronized void ensureLoaded() {
-      if (emailToUser.isEmpty()) {
+      if (loginIdToUser.isEmpty()) {
          for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).asArtifacts()) {
             UserToken user = toUser(userArtifact);
-            if (Strings.isValid(user.getEmail())) {
-               emailToUser.put(user.getEmail(), user);
+            for (String loginId : user.getLoginIds()) {
+               if (Strings.isValid(loginId)) {
+                  loginIdToUser.put(loginId, user);
+               }
             }
          }
       }
@@ -143,14 +146,13 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public void setUserForCurrentThread(String userEmail) {
+   public void setUserForCurrentThread(String loginId) {
       ensureLoaded();
-      UserToken user = emailToUser.get(userEmail);
+      UserToken user = loginIdToUser.get(loginId);
       if (user == null) {
-         ArtifactReadable userArtifact =
-            query.andAttributeIs(CoreAttributeTypes.Email, userEmail).asArtifactOrSentinel();
-         if (userArtifact.isValid()) {
-            user = toUser(userArtifact);
+         List<ArtifactReadable> userArtifacts = query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
+         if (userArtifacts.size() == 1) {
+            user = toUser(userArtifacts.get(0));
          }
       }
       if (user != null) {

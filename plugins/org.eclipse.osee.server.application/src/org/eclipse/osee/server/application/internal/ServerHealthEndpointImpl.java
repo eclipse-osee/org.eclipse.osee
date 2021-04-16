@@ -68,9 +68,7 @@ public final class ServerHealthEndpointImpl {
    @Produces(MediaType.TEXT_HTML)
    public String getAllHeaders(@Context HttpHeaders headers) {
       MultivaluedMap<String, String> rh = headers.getRequestHeaders();
-      String str =
-         rh.entrySet().stream().map(e -> e.getKey() + " = " + e.getValue()).collect(Collectors.joining("<br/>"));
-      return str;
+      return rh.entrySet().stream().map(e -> e.getKey() + " = " + e.getValue()).collect(Collectors.joining("<br/>"));
    }
 
    @Path("top")

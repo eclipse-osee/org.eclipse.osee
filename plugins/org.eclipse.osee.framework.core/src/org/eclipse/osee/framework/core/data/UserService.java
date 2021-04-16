@@ -39,6 +39,6 @@ public interface UserService {
 
    UserToken getUser();
 
-   void setUserForCurrentThread(String userEmail);
+   void setUserForCurrentThread(String loginId);
 
 }

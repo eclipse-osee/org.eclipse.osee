@@ -32,6 +32,11 @@ public interface JaxRsApi {
    JsonNode readTree(String json);
 
    /**
+    * Extract from JSON content the string value for a top-level key
+    */
+   String readValue(String json, String key);
+
+   /**
     * Serialize any Java value as a String. Functionally equivalent to calling
     * {@link ObjectMapper#writeValueAsString(Object)}
     */

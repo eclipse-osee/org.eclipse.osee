@@ -141,7 +141,7 @@ public class TmzImporter implements DispoImporterApi {
    }
 
    private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) {
-      String node = jaxRsApi.readTree(json).get("childRecords").toString();
+      String node = jaxRsApi.readValue(json, "childRecords");
       List<TmzChildRecord> childRecords = jaxRsApi.readCollectionValue(node, List.class, TmzChildRecord.class);
 
       for (TmzChildRecord record : childRecords) {

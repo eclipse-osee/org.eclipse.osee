@@ -91,7 +91,11 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public JsonNode readTree(String json) {
-      return JsonUtil.readTree(mapper, json);
+      try {
+         return mapper.readTree(json);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    @Override
@@ -102,6 +106,15 @@ public final class JaxRsApiImpl implements JaxRsApi {
    @Override
    public <T> T readValue(String json, Class<T> valueType) {
       return JsonUtil.readValue(mapper, json, valueType);
+   }
+
+   @Override
+   public String readValue(String json, String key) {
+      JsonNode node = readTree(json).get(key);
+      if (node.isValueNode()) {
+         return node.textValue();
+      }
+      return node.toString();
    }
 
    @Override

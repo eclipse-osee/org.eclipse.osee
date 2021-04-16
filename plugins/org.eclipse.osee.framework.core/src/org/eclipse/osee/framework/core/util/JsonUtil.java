@@ -73,10 +73,6 @@ public class JsonUtil {
    }
 
    public static JsonNode readTree(String json) {
-      return readTree(mapper, json);
-   }
-
-   public static JsonNode readTree(ObjectMapper mapper, String json) {
       try {
          return mapper.readTree(json);
       } catch (IOException ex) {

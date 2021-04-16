@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public void setUserForCurrentThread(String userEmail) {
+   public void setUserForCurrentThread(String loginId) {
       throw new UnsupportedOperationException();
    }
 }
