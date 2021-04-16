@@ -19,10 +19,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.AnonymousCredentialProvider;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
-import org.eclipse.osee.framework.core.data.OseeClientInfo;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
@@ -31,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredExcep
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
@@ -43,21 +42,11 @@ public class InternalClientSessionManager {
    public static final String STATUS_ID = "Session Manager";
    private static final InternalClientSessionManager instance = new InternalClientSessionManager();
 
-   private final OseeClientInfo clientInfo;
    private OseeSessionGrant oseeSessionGrant;
    private IdeClientSession oseeSession;
 
    private InternalClientSessionManager() {
-      clearData();
-      this.clientInfo = new OseeClientInfo();
-      clientInfo.setClientAddress(HttpServer.getServerAddressForExternalCommunication(),
-         HttpServer.getDefaultServicePort());
-      clientInfo.setClientVersion(OseeCodeVersion.getVersion());
-      try {
-         clientInfo.setClientMachineName(InetAddress.getLocalHost().getHostName());
-      } catch (Exception ex) {
-         clientInfo.setClientMachineName(clientInfo.getClientAddress());
-      }
+      // do nothing
    }
 
    public static InternalClientSessionManager getInstance() {
@@ -95,11 +84,15 @@ public class InternalClientSessionManager {
    public IdeClientSession getSafeSession() {
       IdeClientSession session = new IdeClientSession();
       session.setId("Invalid");
-      session.setClientName(clientInfo.getClientMachineName());
-      session.setClientAddress(clientInfo.getClientAddress());
+      try {
+         session.setClientName(InetAddress.getLocalHost().getHostName());
+      } catch (Exception ex) {
+         session.setClientName(HttpServer.getServerAddressForExternalCommunication());
+      }
+      session.setClientAddress(HttpServer.getServerAddressForExternalCommunication());
       session.setUserId("N/A");
-      session.setClientPort(String.valueOf(clientInfo.getPort()));
-      session.setClientVersion(clientInfo.getVersion());
+      session.setClientPort(String.valueOf(HttpServer.getDefaultServicePort()));
+      session.setClientVersion(OseeCodeVersion.getVersion());
       session.setAuthenticationProtocol("N/A");
       return session;
    }
@@ -117,11 +110,11 @@ public class InternalClientSessionManager {
             }
             oseeSession = new IdeClientSession();
             oseeSession.setId(oseeSessionGrant.getSessionId());
-            oseeSession.setClientName(clientInfo.getClientMachineName());
-            oseeSession.setClientAddress(clientInfo.getClientAddress());
+            oseeSession.setClientName(InetAddress.getLocalHost().getHostName());
+            oseeSession.setClientAddress(HttpServer.getServerAddressForExternalCommunication());
             oseeSession.setUserId(oseeSessionGrant.getUserToken().getUserId());
-            oseeSession.setClientPort(String.valueOf(clientInfo.getPort()));
-            oseeSession.setClientVersion(clientInfo.getVersion());
+            oseeSession.setClientPort(String.valueOf(HttpServer.getDefaultServicePort()));
+            oseeSession.setClientVersion(OseeCodeVersion.getVersion());
             oseeSession.setAuthenticationProtocol(oseeSessionGrant.getAuthenticationProtocol());
             oseeSession.setUseOracleHints(String.valueOf(oseeSessionGrant.getUseOracleHints()));
          } catch (Exception ex) {
@@ -140,7 +133,7 @@ public class InternalClientSessionManager {
                public OseeCredential getCredential() {
                   OseeCredential credential = super.getCredential();
                   String userName;
-                  if (OseeClientProperties.isInDbInit()) {
+                  if (OseeProperties.isInDbInit()) {
                      userName = SystemUser.BootStrap.getName();
                   } else {
                      userName = System.getProperty("user.name", SystemUser.Anonymous.getName());
