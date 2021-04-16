@@ -58,7 +58,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             ), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORIZONTAL_LABEL));
 
-      bld.andState(2, "Analyze", StateType.Working).isStartState() //
+      bld.andState(2, "Analyze", StateType.Working) //
          .andToDefaultState(StateToken.Authorize) //
          .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Implement, StateToken.Endorse) //
          .andOverrideValidationStates(StateToken.Endorse) //

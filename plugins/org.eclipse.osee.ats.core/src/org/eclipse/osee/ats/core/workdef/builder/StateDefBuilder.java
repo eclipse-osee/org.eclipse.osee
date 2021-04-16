@@ -68,6 +68,10 @@ public class StateDefBuilder {
    }
 
    public StateDefBuilder isStartState() {
+      if (workDef.getStartState() != null) {
+         throw new OseeArgumentException("Duplicate Start States [%s] and [%s] for Work Def %s",
+            workDef.getStartState(), state, workDef.getName());
+      }
       workDef.setStartState(state);
       return this;
    }
