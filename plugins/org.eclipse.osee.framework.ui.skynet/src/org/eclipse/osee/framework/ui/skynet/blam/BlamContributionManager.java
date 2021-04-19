@@ -100,8 +100,9 @@ public class BlamContributionManager implements IXNavigateCommonItem {
          if (!blamOperation.showInBlamSection()) {
             continue;
          }
+         boolean isUserGroup = blamOperation.isOverrideAccess();
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
-         if (!Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
+         if (isUserGroup || !Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
             // Create categories first (so can have them up top)
             for (String category : blamOperation.getCategories()) {
                try {

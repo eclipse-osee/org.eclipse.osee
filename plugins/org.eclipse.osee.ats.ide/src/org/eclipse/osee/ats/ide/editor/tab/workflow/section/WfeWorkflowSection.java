@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
@@ -513,10 +512,6 @@ public class WfeWorkflowSection extends SectionPart {
 
    public WorkflowEditor getEditor() {
       return editor;
-   }
-
-   public Collection<XWidget> getXWidgets() {
-      return allXWidgets;
    }
 
 }

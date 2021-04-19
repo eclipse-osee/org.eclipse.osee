@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,9 +88,11 @@ import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.ide.world.search.SearchTeamWorkflowsByProgramSearchItem;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -209,7 +212,13 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
          for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
             if (blam instanceof CreateNewChangeRequestBlam) {
-               items.add(new XNavigateItemBlam(item, blam, AtsImage.NEW_ACTION));
+               boolean isOverrideAccess = blam.isOverrideAccess();
+               Collection<IUserGroupArtifactToken> myUserGroups =
+                  AtsApiService.get().getUserGroupService().getMyUserGroups();
+               Collection<IUserGroupArtifactToken> blamUserGroups = blam.getUserGroups();
+               if (isOverrideAccess || !Collections.setIntersection(blamUserGroups, myUserGroups).isEmpty()) {
+                  items.add(new XNavigateItemBlam(item, blam, AtsImage.NEW_ACTION));
+               }
             }
          }
          time2.end();

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -28,6 +29,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -38,7 +40,7 @@ import org.eclipse.swt.widgets.Label;
 public class XCombo extends XButtonCommon {
 
    public CCombo dataCombo;
-   private Composite parent;
+   private Composite parent, composite;
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
    private final Map<String, Integer> displayDataStrings = new LinkedHashMap<>();
@@ -93,28 +95,41 @@ public class XCombo extends XButtonCommon {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
-      GridData gd;
-      this.parent = parent;
-
       if (inDataStrings == null) {
          inDataStrings = new String[] {"DATA NOT FOUND"};
       }
       setDisplayDataStrings();
 
-      if (horizontalSpan < 2) {
+      if (!verticalLabel && horizontalSpan < 2) {
          horizontalSpan = 2;
+      }
+
+      this.parent = parent;
+      if (fillVertically) {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+         composite.setLayout(layout);
+         composite.setLayoutData(new GridData());
+      } else {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(horizontalSpan, false);
+         composite.setLayout(layout);
+         GridData gd = new GridData();
+         gd.horizontalSpan = horizontalSpan;
+         composite.setLayoutData(gd);
       }
 
       // Create Data Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {
-         labelWidget = new Label(parent, SWT.NONE);
+         labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());
          }
       }
 
-      dataCombo = new CCombo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL | SWT.FLAT | SWT.BORDER);
+      GridData gd;
+      dataCombo = new CCombo(composite, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL | SWT.FLAT | SWT.BORDER);
       dataCombo.setItems(displayArray);
       dataCombo.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
       dataCombo.setVisibleItemCount(Math.min(displayArray.length, 45));

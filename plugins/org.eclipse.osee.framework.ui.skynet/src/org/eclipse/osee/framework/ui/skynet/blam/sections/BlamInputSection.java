@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.blam.sections;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -45,9 +44,11 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  */
 public class BlamInputSection extends BaseBlamSection {
-   private final Collection<XWidgetRendererItem> dynamicInputLayouts = new ArrayList<>();
 
-   public BlamInputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
+   private final Collection<XWidgetRendererItem> dynamicInputLayouts = new ArrayList<>();
+   private XWidgetPage widgetPage;
+
+   public BlamInputSection(BlamEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
    }
 
@@ -85,12 +86,7 @@ public class BlamInputSection extends BaseBlamSection {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       createWidgets(sectionBody);
-
-      try {
-         getAbstractBlam().addWidgets(getManagedForm(), getEditor(), sectionBody);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      validate();
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
@@ -102,11 +98,18 @@ public class BlamInputSection extends BaseBlamSection {
    private void createWidgets(Composite parent) {
       try {
          List<XWidgetRendererItem> layoutDatas = getDynamicXWidgetLayouts();
-         XWidgetPage workPage = new XWidgetPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
-         workPage.createBody(getManagedForm(), parent, null, null, true);
+         DefaultXWidgetOptionResolver optionResolver = new DefaultXWidgetOptionResolver();
+         widgetPage = new XWidgetPage(layoutDatas, optionResolver, getAbstractBlam());
+         widgetPage.createBody(getManagedForm(), parent, null, null, true);
          setLabelFonts(parent, FontManager.getCourierNew12Bold());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private void validate() {
+      for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
+         widget.validate();
       }
    }
 
@@ -135,4 +138,5 @@ public class BlamInputSection extends BaseBlamSection {
    public void refresh() {
       super.refresh();
    }
+
 }

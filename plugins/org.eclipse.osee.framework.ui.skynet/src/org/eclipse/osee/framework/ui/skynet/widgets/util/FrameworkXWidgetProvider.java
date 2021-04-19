@@ -221,6 +221,7 @@ public final class FrameworkXWidgetProvider {
                xWidget = new XMembersCombo(name, true);
             } else if (xWidgetName.equals("XDate")) {
                xWidget = new XDate(name);
+               xWidget.setDefaultValueObj(xWidgetLayoutData.getDefaultValueObj());
             } else if (xWidgetName.equals("XFileSelectionDialog")) {
                xWidget = new XFileTextWithSelectionDialog(name);
             } else if (xWidgetName.equals("XDirectorySelectionDialog")) {

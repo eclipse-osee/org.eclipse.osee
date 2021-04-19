@@ -130,8 +130,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
             }
          });
          setControl(comp);
-         ((XText) getXWidget(WORKFLOW_ID)).setText(
-            "WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
+         ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

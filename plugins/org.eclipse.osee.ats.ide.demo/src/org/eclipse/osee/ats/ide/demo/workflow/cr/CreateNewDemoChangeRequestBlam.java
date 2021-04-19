@@ -52,4 +52,9 @@ public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
       return "Create Change Request";
    }
 
+   @Override
+   public boolean isOverrideAccess() {
+      return !AtsApiService.get().getStoreService().isProductionDb();
+   }
+
 }

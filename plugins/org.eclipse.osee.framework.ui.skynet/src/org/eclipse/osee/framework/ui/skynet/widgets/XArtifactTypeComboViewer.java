@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class XArtifactTypeComboViewer extends XComboViewer {
+   public static final String SELECT_STR = "--select--";
    public static final String WIDGET_ID = XArtifactTypeComboViewer.class.getSimpleName();
    private ArtifactTypeToken selectedArtifactType = null;
 
@@ -54,7 +55,7 @@ public class XArtifactTypeComboViewer extends XComboViewer {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       ArrayList<Object> defaultSelection = new ArrayList<>();
-      defaultSelection.add("--select--");
+      defaultSelection.add(SELECT_STR);
       setSelected(defaultSelection);
       addXModifiedListener(new XModifiedListener() {
 

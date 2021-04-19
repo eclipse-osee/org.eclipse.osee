@@ -135,7 +135,6 @@ public class XText extends XWidget {
             gd.horizontalSpan = horizontalSpan;
             composite.setLayoutData(gd);
          }
-         // composite = parent;
 
          // Create Text Widgets
          if (isDisplayLabel() && !getLabel().equals("")) {

@@ -68,6 +68,7 @@ public abstract class XWidget {
    private ILabelProvider labelProvider;
    private ArtifactTypeId artifactType;
    private String id;
+   protected Object defaultValueObj;
 
    public XWidget(String label) {
       this.label = label;
@@ -444,5 +445,13 @@ public abstract class XWidget {
 
    public void setNoSelect(boolean noSelect) {
       this.noSelect = noSelect;
+   }
+
+   public Object getDefaultValueObj() {
+      return defaultValueObj;
+   }
+
+   public void setDefaultValueObj(Object defaultValueObj) {
+      this.defaultValueObj = defaultValueObj;
    }
 }

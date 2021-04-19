@@ -26,10 +26,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget.CalendarListener;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -45,6 +47,7 @@ public class XDate extends XWidget {
    private CalendarWidget dateCombo;
    private Composite parent;
    protected Date date;
+   private Composite composite;
 
    public XDate(Date date) {
       super("");
@@ -86,26 +89,42 @@ public class XDate extends XWidget {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
-      // composite = new Composite(parent, parent.getStyle());
-      this.parent = parent;
-
-      if (horizontalSpan < 2) {
+      if (!verticalLabel && horizontalSpan < 2) {
          horizontalSpan = 2;
       }
 
-      labelWidget = new Label(parent, SWT.NONE);
+      this.parent = parent;
+      if (fillVertically) {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+         composite.setLayout(layout);
+         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+      } else {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(horizontalSpan, false);
+         composite.setLayout(layout);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         composite.setLayoutData(gd);
+      }
+
+      labelWidget = new Label(composite, SWT.NONE);
       labelWidget.setText(getLabel() + ": ");
 
       int style = SWT.BORDER;
       if (!Lib.isWindows()) {
          style |= SWT.FLAT;
       }
-      dateCombo = new CalendarWidget(parent, style);
+      dateCombo = new CalendarWidget(composite, style);
       dateCombo.setEnabled(isEditable());
       GridData gd = new GridData();
       gd.widthHint = 100;
       if (date != null) {
          dateCombo.setDate(date);
+      }
+      if (defaultValueObj instanceof Date) {
+         dateCombo.setDate((Date) defaultValueObj);
+         date = (Date) defaultValueObj;
       }
       dateCombo.addCalendarListener(new CalendarListener() {
          @Override

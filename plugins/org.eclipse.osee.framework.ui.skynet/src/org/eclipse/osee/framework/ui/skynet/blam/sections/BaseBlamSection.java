@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam.sections;
 
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -24,10 +25,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class BaseBlamSection extends SectionPart {
 
-   private final FormEditor editor;
+   protected final BlamEditor editor;
    protected final AbstractBlam abstractBlam;
 
-   public BaseBlamSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
+   public BaseBlamSection(BlamEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style);
       this.editor = editor;
       this.abstractBlam = abstractBlam;

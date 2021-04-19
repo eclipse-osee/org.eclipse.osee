@@ -71,7 +71,6 @@ public class BlamOverviewPage extends FormPage {
       updateTitle(form);
       updateImage(form);
       addToolBar(toolkit, form, true);
-      managedForm.getMessageManager().setAutoUpdate(false);
       HelpUtil.setHelp(form.getBody(), OseeHelpContext.BLAM_EDITOR);
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;

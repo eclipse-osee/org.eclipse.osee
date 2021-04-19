@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -32,6 +34,7 @@ public class XCheckBox extends XButtonCommon {
    protected Button checkButton;
    private Composite parent;
    private boolean labelAfter = true;
+   private Composite composite;
 
    public XCheckBox(String displayLabel) {
       super(displayLabel);
@@ -56,18 +59,32 @@ public class XCheckBox extends XButtonCommon {
     */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-      if (horizontalSpan < 2) {
+      if (!verticalLabel && horizontalSpan < 2) {
          horizontalSpan = 2;
       }
+
       this.parent = parent;
+      if (fillVertically) {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+         composite.setLayout(layout);
+         composite.setLayoutData(new GridData());
+      } else {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(horizontalSpan, false);
+         composite.setLayout(layout);
+         GridData gd = new GridData();
+         gd.horizontalSpan = horizontalSpan;
+         composite.setLayoutData(gd);
+      }
 
       // Create Text Widgets
       if (!labelAfter) {
-         labelWidget = new Label(parent, SWT.NONE);
+         labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
 
-      checkButton = new Button(parent, SWT.CHECK);
+      checkButton = new Button(composite, SWT.CHECK);
       GridData gd2 = new GridData(GridData.BEGINNING);
       checkButton.setLayoutData(gd2);
       checkButton.addSelectionListener(new SelectionAdapter() {
@@ -83,7 +100,7 @@ public class XCheckBox extends XButtonCommon {
       gd.horizontalSpan = horizontalSpan - 1;
 
       if (labelAfter) {
-         labelWidget = new Label(parent, SWT.NONE);
+         labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel());
       }
       if (getToolTip() != null) {

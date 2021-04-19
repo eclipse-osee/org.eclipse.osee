@@ -26,16 +26,20 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -52,7 +56,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CreateNewChangeRequestBlam extends AbstractBlam {
+public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements INewActionListener {
    private static final String BLAM_DESCRIPTION =
       "Create program top level Demo Change Request for any new feature or problem found.\n" //
          + "This will mature into all the work for all teams needed to resolve this request.";
@@ -62,26 +66,65 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam {
    protected static final String CHANGE_TYPE = "Change Type";
    protected static final String PRIORITY = "Priority";
    protected static final String NEED_BY = "Need By";
-   private XText titleWidget;
-   private XText descWidget;
-   private XCombo changeWidget;
-   private XCombo priorityWidget;
-   private final AtsApi atsApi;
+   protected XText titleWidget;
+   protected XText descWidget;
+   protected XCombo changeWidget;
+   protected XCombo priorityWidget;
+   protected final AtsApi atsApi;
+   protected XWidgetBuilder wb;
 
    public CreateNewChangeRequestBlam(String name) {
       super(name, BLAM_DESCRIPTION, null);
       this.atsApi = AtsApiService.get();
    }
 
+   // For subclass validation of widgets
+   protected boolean isValidEntry() {
+      return true;
+   }
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      this.variableMap = variableMap;
+      boolean valid = true;
       String title = variableMap.getString(TITLE);
+      if (Strings.isInValid(title)) {
+         log("Enter Title");
+         valid = false;
+      }
       String programAi = variableMap.getString(PROGRAM);
+      if (Strings.isInValid(programAi)) {
+         log("Select Program");
+         valid = false;
+      }
       String desc = variableMap.getString(DESCRIPTION);
+      if (Strings.isInValid(desc)) {
+         log("Enter Description");
+         valid = false;
+      }
       String changeType = variableMap.getString(CHANGE_TYPE);
-      ChangeType cType = (ChangeType.valueOf(changeType));
+      ChangeType cType = null;
+      if (Strings.isInValid(changeType) || XArtifactTypeComboViewer.SELECT_STR.equals(changeType)) {
+         log("Select Change type");
+         valid = false;
+      } else {
+         try {
+            cType = (ChangeType.valueOf(changeType));
+         } catch (Exception ex) {
+            valid = false;
+            log("Invalid Change Type");
+         }
+      }
       String priority = variableMap.getString(PRIORITY);
+      if (Strings.isInValid(priority) || "--select--".equals(priority)) {
+         log("Select Priority");
+         valid = false;
+      }
       Date needBy = (Date) variableMap.getValue(NEED_BY);
+
+      if (!isValidEntry() || !valid) {
+         return;
+      }
 
       IAtsChangeSet changes = atsApi.createChangeSet(getName());
       IAtsActionableItem ai = null;
@@ -94,7 +137,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam {
 
       ActionResult actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(),
          title, desc, cType, priority, false, needBy, Collections.singleton(ai), new Date(),
-         atsApi.getUserService().getCurrentUser(), null, changes);
+         atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
       changes.execute();
       if (actionResult.getResults().isErrors()) {
          log(actionResult.getResults().toString());
@@ -108,14 +151,27 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam {
 
    @Override
    public List<XWidgetRendererItem> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andXCombo(PROGRAM, Collections.emptyList()).andHorizLabel().andRequired().endWidget();
+      wb = new XWidgetBuilder();
+      wb.andXCombo(PROGRAM, Collections.emptyList()).andRequired().endWidget();
       wb.andXText(TITLE).andRequired().endWidget();
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
-      wb.andXCombo(AtsAttributeTypes.ChangeType).andComposite(6).andRequired().andHorizLabel().endWidget();
-      wb.andXCombo(AtsAttributeTypes.Priority).andHorizLabel().endWidget();
-      wb.andXDate(AtsAttributeTypes.NeedBy).andHorizLabel().endComposite().endWidget();
+      wb.andXCombo(AtsAttributeTypes.ChangeType).andComposite(getChangeTypeRowColumns()).andRequired().endWidget();
+      wb.andXCombo(getPriorityAttr()).andRequired().endWidget();
+      addWidgetAfterPriority();
+      wb.andXDate(AtsAttributeTypes.NeedBy).endComposite().endWidget();
       return wb.getItems();
+   }
+
+   protected void addWidgetAfterPriority() {
+      // For sub-class extension
+   }
+
+   protected int getChangeTypeRowColumns() {
+      return 6;
+   }
+
+   protected AttributeTypeToken getPriorityAttr() {
+      return AtsAttributeTypes.Priority;
    }
 
    @Override
@@ -155,7 +211,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam {
    /**
     * Method is used to quickly create a unique title for debug purposes
     */
-   private void handlePopulateWithDebugInfo() {
+   protected void handlePopulateWithDebugInfo() {
       try {
          titleWidget.set("New CR " + atsApi.getRandomNum());
          descWidget.set("Description...");

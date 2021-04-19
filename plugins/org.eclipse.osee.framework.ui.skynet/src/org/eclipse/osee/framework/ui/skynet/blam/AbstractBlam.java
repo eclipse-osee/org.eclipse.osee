@@ -48,9 +48,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.xml.sax.SAXException;
 
 /**
@@ -86,6 +83,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    private final String description;
    private final BlamUiSource source;
    private final String name;
+   protected VariableMap variableMap;
 
    public AbstractBlam() {
       this(null, DEFAULT_DESCRIPTION, BlamUiSource.DEFAULT);
@@ -111,6 +109,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      this.variableMap = variableMap;
       throw new OseeStateException(
          "either runOperation or createOperation but be overriden by subclesses of AbstractBlam");
    }
@@ -223,10 +222,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? getName() : getName() + titleEnd;
    }
 
-   public void addWidgets(IManagedForm managedForm, FormEditor editor, Composite sectionBody) {
-      // provided for subclass implementation
-   }
-
    public boolean showUsageSection() {
       return true;
    }
@@ -268,6 +263,13 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public String getOutputMessage() {
       return "BLAM has not yet run";
+   }
+
+   /**
+    * Override user groups check; eg: for runtime or demo use
+    */
+   public boolean isOverrideAccess() {
+      return false;
    }
 
 }

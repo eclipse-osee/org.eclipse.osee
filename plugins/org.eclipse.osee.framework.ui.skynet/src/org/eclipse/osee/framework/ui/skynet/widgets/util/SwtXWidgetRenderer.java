@@ -118,7 +118,9 @@ public class SwtXWidgetRenderer {
       XWidget xWidget = xWidgetLayoutData.getXWidget();
       xWidgets.add(xWidget);
 
-      setName(xWidget, xWidgetLayoutData.getName());
+      if (Strings.isInValid(xWidget.getLabel())) {
+         setName(xWidget, xWidgetLayoutData.getName());
+      }
 
       if (Strings.isValid(xWidgetLayoutData.getToolTip())) {
          xWidget.setToolTip(xWidgetLayoutData.getToolTip());
@@ -143,7 +145,7 @@ public class SwtXWidgetRenderer {
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
       Composite topLevelComp = createComposite(parent, toolkit);
-      GridLayout layout = new GridLayout(1, false);
+      GridLayout layout = new GridLayout();
       layout.marginWidth = 2;
       layout.marginHeight = 2;
       topLevelComp.setLayout(layout);
@@ -527,17 +529,12 @@ public class SwtXWidgetRenderer {
       }
    }
 
-   /**
-    * @return the optionResolver
-    */
    public IXWidgetOptionResolver getOptionResolver() {
       return optionResolver;
    }
 
-   /**
-    * @return the xWidgets
-    */
    public Collection<XWidget> getXWidgets() {
       return xWidgets;
    }
+
 }

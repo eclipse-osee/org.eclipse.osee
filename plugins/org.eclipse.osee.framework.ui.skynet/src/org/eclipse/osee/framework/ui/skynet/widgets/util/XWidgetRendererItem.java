@@ -54,6 +54,7 @@ public class XWidgetRendererItem implements Cloneable {
    private ArtifactTypeId artifactType;
    private RelationTypeSide relationTypeSide;
    private boolean horizontalLabel;
+   private Object defaultValueObj;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -324,4 +325,13 @@ public class XWidgetRendererItem implements Cloneable {
    public boolean isHorizontalLabel() {
       return horizontalLabel;
    }
+
+   public void setDefaultValueObj(Object value) {
+      this.defaultValueObj = value;
+   }
+
+   public Object getDefaultValueObj() {
+      return defaultValueObj;
+   }
+
 }

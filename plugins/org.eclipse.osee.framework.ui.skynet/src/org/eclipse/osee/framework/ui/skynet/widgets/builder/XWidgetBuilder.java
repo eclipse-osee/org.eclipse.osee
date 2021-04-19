@@ -16,9 +16,11 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
@@ -27,13 +29,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
  */
 public class XWidgetBuilder {
 
-   StringBuffer sb = new StringBuffer(2000);
    boolean ended = false;
    private final List<XWidgetRendererItem> datas = new LinkedList<XWidgetRendererItem>();
    private XWidgetRendererItem currItem;
 
    public XWidgetBuilder andRequired() {
-      sb.append(" required=\"%s\" ");
+      Conditions.assertNotNull(currItem, "currItem");
+      currItem.getXOptionHandler().add(XOption.REQUIRED);
       return this;
    }
 
@@ -54,7 +56,17 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andWidget(String widgetType) {
+      newXWidget();
+      currItem.setXWidgetName(widgetType);
+      return this;
+   }
+
    public List<XWidgetRendererItem> getItems() {
+      if (currItem != null) {
+         throw new OseeArgumentException("Can't get items without calling endWidget() on widget [%s]",
+            currItem.getName());
+      }
       return datas;
    }
 
@@ -143,12 +155,32 @@ public class XWidgetBuilder {
    public XWidgetBuilder andHorizLabel() {
       Conditions.assertNotNull(currItem, "currItem");
       currItem.setHorizontalLabel(true);
+      currItem.setFillVertically(false);
       return this;
    }
 
    public XWidgetBuilder endComposite() {
       Conditions.assertNotNull(currItem, "currItem");
       currItem.setEndComposite(true);
+      return this;
+   }
+
+   public XWidgetBuilder andDefault(Object value) {
+      Conditions.assertNotNull(currItem, "currItem");
+      currItem.setDefaultValueObj(value);
+      return this;
+   }
+
+   public XWidgetBuilder andCheckbox(AttributeTypeToken attrType) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setXWidgetName("XCheckBox");
+      return this;
+   }
+
+   public XWidgetBuilder andLabelAfter() {
+      Conditions.assertNotNull(currItem, "currItem");
+      currItem.getXOptionHandler().add(XOption.LABEL_AFTER);
       return this;
    }
 }
