@@ -197,7 +197,7 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
    public abstract String getAttachmentStaticId();
 
    /**
-    * @return json representation of Attachements/Attachment to be used.
+    * @return json representation of Attachments/Attachment to be used.
     */
    protected String getFileListString() {
       return AtsApiService.get().getConfigValue(configKey);

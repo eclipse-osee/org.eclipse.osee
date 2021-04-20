@@ -45,7 +45,7 @@ public class XListDam extends XList implements AttributeWidget {
    public void refresh() {
       removeAll();
       add(artifact.getAttributesToStringList(attributeType));
-      //if you want read-only widget with no selection
+      // If you want read-only widget with no selection
       if (!isNoSelect()) {
          super.setSelected(getStoredStrs());
       }

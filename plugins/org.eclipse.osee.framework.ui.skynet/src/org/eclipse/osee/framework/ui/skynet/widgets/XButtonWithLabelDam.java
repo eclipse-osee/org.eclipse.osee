@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public abstract class XButtonWithLabelDam extends XButton implements ArtifactWidget {
 
-   private Artifact artifact;
+   protected Artifact artifact;
    protected Label resultsLabelWidget;
 
    public XButtonWithLabelDam(String displayLabel, String toolTip, Image image) {

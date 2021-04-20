@@ -50,7 +50,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
    private final AttributeTypeId signDateAttrType;
    private final AttributeTypeId signByAttrType;
    private boolean isRequiredButton = false;
-   private boolean doSign = false;
+   protected boolean doSign = false;
 
    public XAbstractSignDateAndByButton(String label, String toolTip, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrUser, KeyedImage keyedImage) {
       super(label, toolTip, ImageManager.getImage(keyedImage));
