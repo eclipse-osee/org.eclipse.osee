@@ -20,6 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -45,6 +49,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
+import org.eclipse.osee.orcs.rest.internal.writer.IcdStreamingOutput;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -335,4 +340,11 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return getQueryBuilder(searchOptions).asArtifactTokens();
    }
 
+   @Override
+   public Response getIcd(@PathParam("branch") BranchId branchId, @PathParam("connection") String connection) {
+      StreamingOutput streamingOutput = new IcdStreamingOutput(orcsApi, branchId, connection);
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + "InterfaceWorkbook_" + connection + ".xml");
+      return builder.build();
+   }
 }

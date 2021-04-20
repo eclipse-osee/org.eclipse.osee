@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.CellData;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -75,7 +76,8 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          "<Style ss:ID=\"OseeItalicStyle\"><Font x:Family=\"Swiss\" ss:Italic=\"1\"/></Style>\n" + //
          "<Style ss:ID=\"OseeErrorStyle\"><Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/></Style>\n" + //
          "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n" + //
-         "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>";
+         "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeHyperlink\" ss:Name=\"Hyperlink\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"11\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/></Style>";
 
    private final BufferedWriter out;
    private boolean inSheet;
@@ -270,40 +272,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          previouslyWrittenCellIndex = cellIndex;
 
          if (cellData instanceof String) {
-            String cellDataStr = (String) cellData;
-            if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
-               String value = cellDataStr.replaceAll("\"", "&quot;");
-               sb.append(" ss:Formula=\"" + value + "\">");
-            } else {
-               boolean isRichText = richTextCell == cellIndex;
-               if (isRichText) {
-                  sb.append("><ss:Data ss:Type=\"String\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
-               } else {
-                  sb.append("><Data ss:Type=\"String\">");
-               }
-               if (cellDataStr.equals("")) {
-                  sb.append(emptyStringRepresentation);
-               } else {
-                  if (cellDataStr.length() > 32767) {
-                     sb.append(blobMessage);
-                  } else if (isRichText) {
-                     Xml.writeData(sb, cellDataStr);
-                  } else {
-                     Xml.writeWhileHandlingCdata(sb, cellDataStr);
-                  }
-               }
-               if (isRichText) {
-                  richTextCell = -1;
-                  sb.append("</ss:Data>");
-               } else {
-                  sb.append("</Data>");
-               }
-               if (cellDataStr.length() > 32767) {
-                  sb.append("<EmbeddedClob>");
-                  Xml.writeWhileHandlingCdata(sb, cellDataStr);
-                  sb.append("</EmbeddedClob>");
-               }
-            }
+            writeString(cellData, cellIndex, sb);
          } else if (cellData instanceof Number) {
             Number cellDataNum = (Number) cellData;
             sb.append("><Data ss:Type=\"Number\">");
@@ -315,6 +284,18 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
             String dateString = DateUtil.get(cellDataDate, "yyyy-MM-dd") + "T00:00:00.000";
             Xml.writeWhileHandlingCdata(sb, dateString);
             sb.append("</Data>");
+         } else if (cellData instanceof CellData) {
+            if (!((CellData) cellData).getHyperlink().isEmpty()) {
+               sb.append(
+                  " ss:StyleID=\"OseeHyperlink\" ss:HRef=\"#'" + ((CellData) cellData).getHyperlink() + "'!A1\"");
+            }
+            if (!((CellData) cellData).getMergeAcross().isEmpty()) {
+               sb.append(" ss:MergeAcross=\"" + ((CellData) cellData).getMergeAcross() + "\"");
+            }
+            if (!((CellData) cellData).getMergeDown().isEmpty()) {
+               sb.append(" ss:MergeDown=\"" + ((CellData) cellData).getMergeDown() + "\"");
+            }
+            writeString(((CellData) cellData).getText(), cellIndex, sb);
          } else {
             sb.append("><Data ss:Type=\"String\">");
             Xml.writeWhileHandlingCdata(sb, cellData.toString());
@@ -322,6 +303,43 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          }
          sb.append("</Cell>\n");
          rowBuffer[cellIndex] = sb.toString();
+      }
+   }
+
+   private void writeString(Object cellData, int cellIndex, StringBuilder sb) throws IOException {
+      String cellDataStr = (String) cellData;
+      if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
+         String value = cellDataStr.replaceAll("\"", "&quot;");
+         sb.append(" ss:Formula=\"" + value + "\">");
+      } else {
+         boolean isRichText = richTextCell == cellIndex;
+         if (isRichText) {
+            sb.append("><ss:Data ss:Type=\"String\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+         } else {
+            sb.append("><Data ss:Type=\"String\">");
+         }
+         if (cellDataStr.equals("")) {
+            sb.append(emptyStringRepresentation);
+         } else {
+            if (cellDataStr.length() > 32767) {
+               sb.append(blobMessage);
+            } else if (isRichText) {
+               Xml.writeData(sb, cellDataStr);
+            } else {
+               Xml.writeWhileHandlingCdata(sb, cellDataStr);
+            }
+         }
+         if (isRichText) {
+            richTextCell = -1;
+            sb.append("</ss:Data>");
+         } else {
+            sb.append("</Data>");
+         }
+         if (cellDataStr.length() > 32767) {
+            sb.append("<EmbeddedClob>");
+            Xml.writeWhileHandlingCdata(sb, cellDataStr);
+            sb.append("</EmbeddedClob>");
+         }
       }
    }
 
