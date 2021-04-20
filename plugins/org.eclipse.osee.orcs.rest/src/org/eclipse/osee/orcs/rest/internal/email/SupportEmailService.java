@@ -48,7 +48,7 @@ public class SupportEmailService {
 
    public List<MailStatus> sendSupportEmail(String subject, String msg) {
       List<String> recipients = new ArrayList<String>();
-      IUserGroup oseeSupportGroup = orcsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeSupport);
+      IUserGroup oseeSupportGroup = orcsApi.userService().getUserGroup(CoreUserGroups.OseeSupport);
       Collection<UserToken> members = oseeSupportGroup.getMembers();
 
       String email;

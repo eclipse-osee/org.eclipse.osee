@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -246,9 +246,9 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          boolean editOnOpen = editButton.getSelection();
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editOnOpen));
          if (editOnOpen) {
-            UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser(), true);
+            UserServiceImpl.get(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser(), true);
          } else {
-            UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+            UserServiceImpl.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
          }
          RendererManager.clearCaches();
 

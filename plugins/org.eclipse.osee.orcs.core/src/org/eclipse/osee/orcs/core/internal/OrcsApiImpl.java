@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -34,7 +35,7 @@ import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.access.AccessControlServiceImpl;
-import org.eclipse.osee.orcs.core.internal.access.UserGroupService;
+import org.eclipse.osee.orcs.core.internal.access.UserServiceImpl;
 import org.eclipse.osee.orcs.core.internal.applicability.OrcsApplicabilityOps;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -83,7 +84,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private OrcsApplicabilityOps applicability;
-   private UserGroupService userGroupService;
+   private UserServiceImpl userService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
    IAccessControlService accessControlService;
@@ -260,12 +261,12 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    }
 
    @Override
-   public UserGroupService getUserGroupService() {
-      if (userGroupService == null) {
-         userGroupService = new UserGroupService();
-         userGroupService.setOrcsApi(this);
+   public UserService userService() {
+      if (userService == null) {
+         userService = new UserServiceImpl();
+         userService.setOrcsApi(this);
       }
-      return userGroupService;
+      return userService;
    }
 
    @Override

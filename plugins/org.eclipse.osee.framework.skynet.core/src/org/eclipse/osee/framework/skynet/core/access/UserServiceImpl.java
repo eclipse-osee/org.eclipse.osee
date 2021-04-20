@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -34,13 +34,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Donald G. Dunne
  */
-public class UserGroupService implements IUserGroupService {
+public class UserServiceImpl implements UserService {
 
-   private static UserGroupService userGroupService;
+   private static UserServiceImpl userService;
    private static List<IUserGroupArtifactToken> userGrps;
 
-   public static IUserGroupService instance() {
-      return getUserGroupService();
+   public static UserService instance() {
+      return getUserService();
    }
 
    public static IUserGroup getOseeAdmin() {
@@ -52,7 +52,7 @@ public class UserGroupService implements IUserGroupService {
    }
 
    public static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
-      return getUserGroupService().getUserGroup(userGroupArtToken);
+      return getUserService().getUserGroup(userGroupArtToken);
    }
 
    @Override
@@ -76,11 +76,11 @@ public class UserGroupService implements IUserGroupService {
       return new UserGroupImpl(userGroupArt);
    }
 
-   private static IUserGroupService getUserGroupService() {
-      if (userGroupService == null) {
-         userGroupService = new UserGroupService();
+   private static UserService getUserService() {
+      if (userService == null) {
+         userService = new UserServiceImpl();
       }
-      return userGroupService;
+      return userService;
    }
 
    public static Collection<IUserGroupArtifactToken> getUserGrps() {
@@ -95,7 +95,7 @@ public class UserGroupService implements IUserGroupService {
 
    @Override
    public Collection<IUserGroupArtifactToken> getMyUserGroups() {
-      return UserGroupService.getUserGrps();
+      return UserServiceImpl.getUserGrps();
    }
 
    @Override
@@ -128,7 +128,7 @@ public class UserGroupService implements IUserGroupService {
    }
 
    public static boolean isInUserGrp(IUserGroupArtifactToken... userGroups) {
-      return getUserGroupService().isInUserGroup(userGroups);
+      return getUserService().isInUserGroup(userGroups);
    }
 
    @Override

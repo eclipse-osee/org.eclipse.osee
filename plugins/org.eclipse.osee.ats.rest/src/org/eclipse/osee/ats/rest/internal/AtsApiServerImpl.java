@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.server.OseeInfo;
@@ -285,8 +285,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    }
 
    @Override
-   public IUserGroupService getUserGroupService() {
-      return orcsApi.getUserGroupService();
+   public UserService getUserGroupService() {
+      return orcsApi.userService();
    }
 
    @Override

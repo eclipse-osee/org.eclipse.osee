@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
@@ -160,7 +160,7 @@ public class PolicyTableViewer {
       if (isArtifact()) {
          Artifact artifact = (Artifact) object;
 
-         IUserGroup oseeAccessGroup = UserGroupService.getOseeAccessAdmin();
+         IUserGroup oseeAccessGroup = UserServiceImpl.getOseeAccessAdmin();
          boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
 
          boolean canUnlockObject =

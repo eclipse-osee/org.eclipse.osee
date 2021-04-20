@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -93,7 +93,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
 
    @Override
    public boolean isOseeAdmin() {
-      return orcsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAdmin).isCurrentUserMember();
+      return orcsApi.userService().getUserGroup(CoreUserGroups.OseeAdmin).isCurrentUserMember();
    }
 
    @Override
@@ -107,8 +107,8 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
    }
 
    @Override
-   public IUserGroupService getUserGroupService() {
-      return orcsApi.getUserGroupService();
+   public UserService getUserGroupService() {
+      return orcsApi.userService();
    }
 
    @Override

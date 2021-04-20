@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -206,12 +206,12 @@ public class User extends Artifact implements UserToken {
 
    @Override
    public boolean isOseeAdmin() {
-      return UserGroupService.getOseeAdmin().isCurrentUserMember();
+      return UserServiceImpl.getOseeAdmin().isCurrentUserMember();
    }
 
    @Override
    public Collection<ArtifactToken> getRoles() {
-      return Collections.castAll(UserGroupService.getUserGrps());
+      return Collections.castAll(UserServiceImpl.getUserGrps());
    }
 
    @Override

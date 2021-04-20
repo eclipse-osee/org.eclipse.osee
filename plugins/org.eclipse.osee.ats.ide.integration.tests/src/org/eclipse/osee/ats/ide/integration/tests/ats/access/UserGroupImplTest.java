@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.access;
 
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,8 +28,8 @@ public class UserGroupImplTest {
    @Test
    public void test() {
       // Joe Smith is not admin by default, but is temp admin
-      Assert.assertFalse(UserGroupService.get(AtsUserGroups.AtsAdmin).isCurrentUserMember());
-      Assert.assertTrue(UserGroupService.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
+      Assert.assertFalse(UserServiceImpl.get(AtsUserGroups.AtsAdmin).isCurrentUserMember());
+      Assert.assertTrue(UserServiceImpl.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
    }
 
 }

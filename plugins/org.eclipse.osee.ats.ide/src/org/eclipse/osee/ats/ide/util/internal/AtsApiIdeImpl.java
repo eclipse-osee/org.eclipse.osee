@@ -61,10 +61,10 @@ import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -278,8 +278,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    }
 
    @Override
-   public IUserGroupService getUserGroupService() {
-      return UserGroupService.instance();
+   public UserService getUserGroupService() {
+      return UserServiceImpl.instance();
    }
 
    @Override

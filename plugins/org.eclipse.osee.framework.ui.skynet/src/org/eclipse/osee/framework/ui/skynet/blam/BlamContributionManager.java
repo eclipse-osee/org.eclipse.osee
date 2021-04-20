@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
@@ -93,7 +93,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
 
       ElapsedTime time = new ElapsedTime("NVI - BLAM loadUserGroups", XNavigateCommonItems.debug);
-      Collection<IUserGroupArtifactToken> userGroups = UserGroupService.getUserGrps();
+      Collection<IUserGroupArtifactToken> userGroups = UserServiceImpl.getUserGrps();
       time.end();
 
       for (AbstractBlam blamOperation : getBlamOperations()) {

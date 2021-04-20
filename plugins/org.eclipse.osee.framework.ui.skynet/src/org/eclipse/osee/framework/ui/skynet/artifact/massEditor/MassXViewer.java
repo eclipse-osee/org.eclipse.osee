@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -286,7 +286,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
 
-      if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
+      if (UserServiceImpl.getOseeAdmin().isCurrentUserMember()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteArtifactAction);
          deleteArtifactAction.setEnabled(!getSelectedArtifacts().isEmpty());
 

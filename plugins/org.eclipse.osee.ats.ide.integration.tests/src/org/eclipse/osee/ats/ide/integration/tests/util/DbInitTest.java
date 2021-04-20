@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -81,7 +81,7 @@ public class DbInitTest {
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
          UserManager.getUser().saveSettings();
 
-         UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+         UserServiceImpl.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
 
       }
 

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -51,7 +51,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
 
    public static void run() {
       try {
-         if (!UserGroupService.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
+         if (!UserServiceImpl.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
@@ -59,7 +59,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle Admin", message)) {
             if (!isAdmin) {
-               IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
+               IUserGroup atsAdminGroup = UserServiceImpl.get(AtsUserGroups.AtsAdmin);
                if (!atsAdminGroup.isCurrentUserMember()) {
                   atsAdminGroup.addMember(UserManager.getUser(), true);
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
@@ -67,21 +67,21 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                }
 
                IUserGroup oseeAdminGroup =
-                  org.eclipse.osee.framework.skynet.core.access.UserGroupService.getOseeAdmin();
+                  org.eclipse.osee.framework.skynet.core.access.UserServiceImpl.getOseeAdmin();
                if (!oseeAdminGroup.isCurrentUserMember()) {
                   oseeAdminGroup.addMember(UserManager.getUser(), true);
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
                }
             } else {
-               IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
+               IUserGroup atsAdminGroup = UserServiceImpl.get(AtsUserGroups.AtsAdmin);
                if (atsAdminGroup.isCurrentUserMember()) {
                   atsAdminGroup.removeMember(UserManager.getUser(), true);
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
                }
 
-               IUserGroup oseeAdminGroup = UserGroupService.get(CoreUserGroups.OseeAdmin);
+               IUserGroup oseeAdminGroup = UserServiceImpl.get(CoreUserGroups.OseeAdmin);
                if (oseeAdminGroup.isCurrentUserMember()) {
                   oseeAdminGroup.removeMember(UserManager.getUser(), true);
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");

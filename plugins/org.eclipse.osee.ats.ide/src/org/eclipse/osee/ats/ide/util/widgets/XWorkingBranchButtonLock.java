@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -127,7 +127,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             if (isLocked) {
                AtsApiService.get().getAccessControlService().removeAccessControlDataIf(true, datas.iterator().next());
             } else {
-               IUserGroup everyoneGroup = UserGroupService.get(CoreUserGroups.Everyone);
+               IUserGroup everyoneGroup = UserServiceImpl.get(CoreUserGroups.Everyone);
                Conditions.assertTrue(everyoneGroup.getArtifact() instanceof Artifact, "Must be Artifact");
                AtsApiService.get().getAccessControlService().setPermission(everyoneGroup.getArtifact(), branch,
                   PermissionEnum.READ);

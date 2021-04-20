@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
-   <implementation class="org.eclipse.osee.framework.skynet.core.access.UserGroupService"/>
+   <implementation class="org.eclipse.osee.framework.skynet.core.access.UserServiceImpl"/>
    <service>
-      <provide interface="org.eclipse.osee.framework.core.data.IUserGroupService"/>
+      <provide interface="org.eclipse.osee.framework.core.data.UserService"/>
    </service>
 </scr:component>

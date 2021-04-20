@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.WorkbenchTargetProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.INavigateItemRefresher;
@@ -92,7 +92,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    public void createPartControl(Composite parent) {
       // Start loading current user and user groups for improved performance
       AtsApiService.get().getUserService().getCurrentUser();
-      UserGroupService.getUserGrps();
+      UserServiceImpl.getUserGrps();
       this.parent = parent;
       NavigateView.navView = this;
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {

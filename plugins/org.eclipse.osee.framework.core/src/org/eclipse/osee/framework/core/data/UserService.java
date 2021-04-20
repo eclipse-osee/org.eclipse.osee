@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * @author Donald G. Dunne
  */
-public interface IUserGroupService {
+public interface UserService {
 
    IUserGroup getUserGroup(IUserGroupArtifactToken userGroup);
 

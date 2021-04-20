@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApi;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -47,7 +47,7 @@ public interface OrcsApi extends OseeApi {
 
    OrcsApplicability getApplicabilityOps();
 
-   IUserGroupService getUserGroupService();
+   UserService userService();
 
    JdbcService getJdbcService();
 

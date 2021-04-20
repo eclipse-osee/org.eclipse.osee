@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -296,7 +296,7 @@ public final class RendererManager {
 
    public static Boolean isDefaultArtifactEditor() {
       if (defaultArtifactEditor == null) {
-         defaultArtifactEditor = UserGroupService.isInUserGrp(CoreUserGroups.DefaultArtifactEditor);
+         defaultArtifactEditor = UserServiceImpl.isInUserGrp(CoreUserGroups.DefaultArtifactEditor);
       }
       return defaultArtifactEditor;
    }
