@@ -143,7 +143,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
 
       ArtifactId baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
       if (baselineCommit.isInvalid()) {
-         gitOps.updateGitTrackingBranch(branch, repoArtifact, account, null, true, password, false);
+         gitOps.updateGitTrackingBranch(branch, repoArtifact, account, null, true, password, false, false);
          baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
          if (baselineCommit.isInvalid()) {
             throw new OseeArgumentException("No commit with change id [%s] can be found", baselineData.changeId);

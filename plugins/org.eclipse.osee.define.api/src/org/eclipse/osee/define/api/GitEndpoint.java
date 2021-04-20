@@ -44,12 +44,11 @@ public interface GitEndpoint {
    @Path("{branch}/repo/{repositoryName}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("fetch") boolean fetch, String gitBranchName);
+   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("fetch") boolean fetch, @QueryParam("shallowImport") boolean shallowImport, String gitBranchName);
 
    @GET
    @Path("{branch}/repo/{repositoryName}/changeId/tags")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getChangeIdBetweenTags(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @QueryParam("startTag") String startTag, @QueryParam("endTag") String endTag);
-
 }

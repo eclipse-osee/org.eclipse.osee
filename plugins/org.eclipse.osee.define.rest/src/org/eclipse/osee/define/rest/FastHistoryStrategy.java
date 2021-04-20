@@ -34,16 +34,22 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
    private final TransactionBuilder tx;
    private final HashSet<String> changeIds = new HashSet<>();
    private final boolean initialImport;
+   private final boolean shallowImport;
 
-   public FastHistoryStrategy(ArtifactReadable repository, OrcsApi orcsApi, TransactionBuilder tx, boolean initialImport, Map<String, ArtifactId> pathToCodeunitReferenceMap) {
+   public FastHistoryStrategy(ArtifactReadable repository, OrcsApi orcsApi, TransactionBuilder tx, boolean initialImport, boolean shallowImport, Map<String, ArtifactId> pathToCodeunitReferenceMap) {
       super(repository, orcsApi, pathToCodeunitReferenceMap);
       this.tx = tx;
       this.initialImport = initialImport;
+      this.shallowImport = shallowImport;
    }
 
    @Override
-   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType) {
+   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType, String path) {
       codeunitToCommitMap.put(codeUnit, commit);
+      if (!pathToCodeunitMap.containsValue(
+         codeUnit) && (changeType == ChangeType.ADD || changeType == ChangeType.COPY || changeType == ChangeType.RENAME)) {
+         pathToCodeunitMap.put(path, codeUnit);
+      }
    }
 
    @Override
@@ -53,7 +59,9 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
 
    @Override
    public TransactionToken finishImport() {
-      if (codeunitToCommitMap.isEmpty()) {
+      if (shallowImport) {
+         return tx.commit();
+      } else if (codeunitToCommitMap.isEmpty()) {
          return TransactionToken.SENTINEL;
       }
       pathToCodeunitMap.forEach((path, codeUnit) -> tx.addTuple4(GitLatest, repoArtifact, codeUnit,

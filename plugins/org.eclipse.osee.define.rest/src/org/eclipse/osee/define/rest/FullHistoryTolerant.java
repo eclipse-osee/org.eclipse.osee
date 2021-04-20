@@ -112,7 +112,8 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
       return codeUnit;
    }
 
-   private ArtifactId findCodeUnit(ArtifactId repository, String path) {
+   @Override
+   public ArtifactId findCodeUnit(ArtifactId repository, String path) {
       ArtifactId codeUnit = ArtifactId.SENTINEL;
       if (pathToCodeunitMap.containsKey(path)) {
          codeUnit = pathToCodeunitMap.get(path);
@@ -190,7 +191,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    @Override
-   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType) {
+   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType, String path) {
       tx.addTuple4(GitCommitFile, repository, codeUnit, commit, changeType);
 
       ArtifactId[] commitWraper = new ArtifactId[] {ArtifactId.SENTINEL};

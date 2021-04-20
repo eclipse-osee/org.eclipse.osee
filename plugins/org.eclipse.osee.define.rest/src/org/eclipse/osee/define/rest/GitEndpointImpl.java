@@ -43,14 +43,13 @@ public class GitEndpointImpl implements GitEndpoint {
    }
 
    @Override
-   public ArtifactId updateGitTrackingBranch(BranchId branch, String repositoryName, UserId account, boolean fetch, String gitBranchName) {
+   public ArtifactId updateGitTrackingBranch(BranchId branch, String repositoryName, UserId account, boolean fetch, boolean shallowImport, String gitBranchName) {
       return gitOps.updateGitTrackingBranch(branch, gitOps.getRepoArtifact(branch, repositoryName), account,
-         gitBranchName, fetch, null, false);
+         gitBranchName, fetch, null, false, shallowImport);
    }
 
    @Override
    public List<String> getChangeIdBetweenTags(BranchId branch, String repositoryName, String startTag, String endTag) {
       return gitOps.getChangeIdBetweenTags(branch, gitOps.getRepoArtifact(branch, repositoryName), startTag, endTag);
    }
-
 }

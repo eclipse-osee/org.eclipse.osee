@@ -38,7 +38,9 @@ public interface HistoryImportStrategy {
 
    boolean hasChangeIdAlredyImported(String changeId);
 
-   void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType);
+   void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType, String path);
+
+   ArtifactId findCodeUnit(ArtifactId repository, String path);
 
    TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch, UserId account);
 
