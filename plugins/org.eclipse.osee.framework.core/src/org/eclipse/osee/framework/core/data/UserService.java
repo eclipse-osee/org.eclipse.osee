@@ -37,4 +37,8 @@ public interface UserService {
 
    IUserGroup getUserGroup(ArtifactToken userGroupArt);
 
+   UserToken getUser();
+
+   void setUserForCurrentThread(String userEmail);
+
 }

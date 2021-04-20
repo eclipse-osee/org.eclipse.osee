@@ -284,5 +284,4 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       }
       return accessControlService;
    }
-
 }

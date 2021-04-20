@@ -144,4 +144,14 @@ public class UserServiceImpl implements UserService {
    public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user) {
       return isUserMember(userGroup, user.getId());
    }
+
+   @Override
+   public UserToken getUser() {
+      return UserManager.getUser();
+   }
+
+   @Override
+   public void setUserForCurrentThread(String userEmail) {
+      throw new UnsupportedOperationException();
+   }
 }

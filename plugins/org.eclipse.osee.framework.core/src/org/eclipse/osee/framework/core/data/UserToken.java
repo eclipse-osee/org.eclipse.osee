@@ -25,6 +25,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -34,6 +36,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 @JsonSerialize(using = UserTokenSerializer.class)
 public interface UserToken extends ArtifactToken, UserId {
+
+   public static final UserToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, "", "-1", true);
 
    @JsonCreator
    public static UserToken create(@JsonProperty("name") String name, @JsonProperty("email") String email, @JsonProperty("userId") String userId) {
