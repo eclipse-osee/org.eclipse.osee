@@ -84,7 +84,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private OrcsApplicabilityOps applicability;
-   private UserServiceImpl userService;
+   private UserService userService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
    IAccessControlService accessControlService;
@@ -174,6 +174,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule.start(getSystemSession(), tokenService());
 
       applicability = new OrcsApplicabilityOps(this, logger);
+      userService = new UserServiceImpl(this);
    }
 
    public void stop() {
@@ -262,10 +263,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    @Override
    public UserService userService() {
-      if (userService == null) {
-         userService = new UserServiceImpl();
-         userService.setOrcsApi(this);
-      }
       return userService;
    }
 

@@ -31,34 +31,18 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class UserServiceImpl implements UserService {
 
-   private static UserServiceImpl userService;
-   private OrcsApi orcsApi;
+   private final OrcsApi orcsApi;
 
-   public void setOrcsApi(OrcsApi orcsApi) {
+   public UserServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
-   public static UserService instance() {
-      return userService;
+   public IUserGroup getOseeAdmin() {
+      return getUserGroup(CoreUserGroups.OseeAdmin);
    }
 
-   public static IUserGroup getOseeAdmin() {
-      return get(CoreUserGroups.OseeAdmin);
-   }
-
-   public static IUserGroup getOseeAccessAdmin() {
-      return get(CoreUserGroups.OseeAccessAdmin);
-   }
-
-   private static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
-      return getUserService().getUserGroup(userGroupArtToken);
-   }
-
-   private static UserService getUserService() {
-      if (userService == null) {
-         userService = new UserServiceImpl();
-      }
-      return userService;
+   public IUserGroup getOseeAccessAdmin() {
+      return getUserGroup(CoreUserGroups.OseeAccessAdmin);
    }
 
    @Override
@@ -88,12 +72,12 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public Collection<IUserGroupArtifactToken> getMyUserGroups() {
-      return getUserService().getMyUserGroups();
+      throw new UnsupportedOperationException();
    }
 
    @Override
    public boolean isInUserGroup(IUserGroupArtifactToken... userGroups) {
-      Collection<IUserGroupArtifactToken> myUserGroups = getUserService().getMyUserGroups();
+      Collection<IUserGroupArtifactToken> myUserGroups = getMyUserGroups();
       for (IUserGroupArtifactToken userGrp : userGroups) {
          if (myUserGroups.contains(userGrp)) {
             return true;
@@ -121,5 +105,4 @@ public class UserServiceImpl implements UserService {
    public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user) {
       return isUserMember(userGroup, user.getId());
    }
-
 }
