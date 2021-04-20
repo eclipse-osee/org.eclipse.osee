@@ -105,6 +105,7 @@ public class CreateSystemBranches {
 
       ArtifactId globalPreferences = tx.createArtifact(oseeConfig, CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
+      tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.ProductLinePreferences, JSON_PL_PREFERENCES);
 
       tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 
@@ -250,4 +251,12 @@ public class CreateSystemBranches {
       "{\"TypeId\" : 204509162766371, \"BranchId\" : 1, \"Range\" : [{\"Min\" : 400}]}," + //
       "{\"TypeId\" : 204509162766371, \"BranchId\" : 61, \"Range\" : [{\"Min\" : 400}]}," + //
       "{\"TypeId\" : 204509162766371, \"BranchId\" : 714, \"Range\" : [{\"Min\" : 1}]}]}";
+
+   private static final String JSON_PL_PREFERENCES = "{ \"FileExtensionCommentStyle\" : [" + //
+      "{ \"FileExtension\" : \"txt\", \"CommentPrefixRegex\" : \"/\\\\*\", \"CommentSuffixRegex\" : \"\\\\*/\", \"CommentPrefix\" : \"/* \", \"CommentSuffix\" : \" */\"}," + //
+      "{ \"FileExtension\" : \"java\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
+      "{ \"FileExtension\" : \"h\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
+      "{ \"FileExtension\" : \"cxx\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
+      "{ \"FileExtension\" : \"cpp\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
+      "{ \"FileExtension\" : \"xml\", \"CommentPrefixRegex\" : \"<!--\", \"CommentSuffixRegex\" : \"-->\", \"CommentPrefix\" : \"<!--\", \"CommentSuffix\" : \"-->\"}]}";
 }

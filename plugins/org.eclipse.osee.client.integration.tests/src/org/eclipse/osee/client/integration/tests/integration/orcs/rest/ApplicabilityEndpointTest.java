@@ -14,6 +14,8 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertTrue;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,12 +27,16 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -160,5 +166,113 @@ public class ApplicabilityEndpointTest {
       Assert.assertTrue(testAppToken.equals(robotIncluded));
       artifactEndpoint.deleteArtifact(DemoBranches.SAW_PL_Working_Branch, newArtifact);
 
+   }
+
+   /**
+    * This test runs the blockVisibility rest call on a set of files, some having applicability and some not. The files
+    * that have applicability need to be tested against their expected output, as the tags need to be removed from the
+    * new file. The files that do not have detected applicability changes need to be a link to the original location,
+    * which is just a check that the file is the same in each location.
+    *
+    * @throws Exception
+    */
+   @Test
+   public void testBlockVisibility() throws Exception {
+      ApplicabilityEndpoint appl = ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL);
+
+      // Get Starting Paths
+      String inputPath = OsgiUtil.getResourceAsUrl(ApplicabilityEndpointTest.class,
+         "/support/BlockApplicabilityTest/InputFiles").getPath();
+      String stagePath = OseeData.getPath().toString();
+      BlockApplicabilityStageRequest data =
+         new BlockApplicabilityStageRequest(ArtifactId.valueOf(200046L), false, inputPath, stagePath);
+
+      appl.applyBlockVisibility(data);
+
+      // Traversing the Staging Folders checking to see if each creation was successful
+      File stagingFolder = new File(stagePath, "Staging");
+      assertTrue(stagingFolder.exists());
+
+      File viewFolder = new File(stagingFolder.getPath(), "Product A");
+      assertTrue(viewFolder.exists());
+
+      File inputFolder = new File(viewFolder.getPath(), "InputFiles");
+      assertTrue(inputFolder.exists());
+
+      File codeFolder = new File(inputFolder.getPath(), "Code");
+      assertTrue(codeFolder.exists());
+
+      // Testing the Cpp file with applicability, delete when done
+      File cppFile = new File(codeFolder.getPath(), "TestCpp.cpp");
+      assertTrue(cppFile.exists());
+      String actualOutput = Lib.fileToString(cppFile);
+      String expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/TestCpp.cpp");
+      assertTrue(actualOutput.equals(expectedOutput));
+      cppFile.delete();
+
+      // Testing the Java file with applicability, delete when done along with code folder
+      File javaFile = new File(codeFolder.getPath(), "TestJava.java");
+      assertTrue(javaFile.exists());
+      actualOutput = Lib.fileToString(javaFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/TestJava.java");
+      assertTrue(actualOutput.equals(expectedOutput));
+      javaFile.delete();
+      codeFolder.delete();
+
+      File resourcesFolder = new File(inputFolder.getPath(), "Resources");
+      assertTrue(resourcesFolder.exists());
+
+      // Test that the icon exists and is equal to the input file, delete when done
+      File iconFile = new File(resourcesFolder.getPath(), "TestIcon.ico");
+      assertTrue(iconFile.exists());
+      actualOutput = Lib.fileToString(iconFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/InputFiles/Resources/TestIcon.ico");
+      assertTrue(actualOutput.equals(expectedOutput));
+      iconFile.delete();
+
+      // Test that the unchanged Xml file exists and is equal to the input file, delete when done
+      File noChangeXmlFile = new File(resourcesFolder.getPath(), "TestXmlNoChange.xml");
+      assertTrue(noChangeXmlFile.exists());
+      actualOutput = Lib.fileToString(noChangeXmlFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/InputFiles/Resources/TestXmlNoChange.xml");
+      assertTrue(actualOutput.equals(expectedOutput));
+      noChangeXmlFile.delete();
+
+      // Testing the Xml file with applicability, delete when done along with resources folder
+      File xmlFile = new File(resourcesFolder.getPath(), "TestXml.xml");
+      assertTrue(xmlFile.exists());
+      actualOutput = Lib.fileToString(xmlFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/TestXml.xml");
+      assertTrue(actualOutput.equals(expectedOutput));
+      xmlFile.delete();
+      resourcesFolder.delete();
+
+      // Test that the unchanged Txt file exists and is equal to the input file, delete when done
+      File noChangeTxtFile = new File(inputFolder.getPath(), "TestTxtNoChange.txt");
+      assertTrue(noChangeTxtFile.exists());
+      actualOutput = Lib.fileToString(noChangeTxtFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/InputFiles/TestTxtNoChange.txt");
+      assertTrue(actualOutput.equals(expectedOutput));
+      noChangeTxtFile.delete();
+
+      // Testing the Txt file with applicability, delete when done
+      File txtFile = new File(inputFolder.getPath(), "TestTxt.txt");
+      assertTrue(txtFile.exists());
+      actualOutput = Lib.fileToString(txtFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/TestTxt.txt");
+      assertTrue(actualOutput.equals(expectedOutput));
+      txtFile.delete();
+
+      // Cleaning up the remaining folders in the directory
+      inputFolder.delete();
+      viewFolder.delete();
+      stagingFolder.delete();
    }
 }

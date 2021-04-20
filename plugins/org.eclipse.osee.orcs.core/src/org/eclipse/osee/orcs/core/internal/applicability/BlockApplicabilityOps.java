@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityT
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
-import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -100,24 +99,33 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public String applyApplicabilityToFiles(String sourcePath, boolean commentNonApplicableBlocks) {
+   public String applyApplicabilityToFiles(boolean commentNonApplicableBlocks, String sourcePath, String stagePath) throws OseeCoreException {
       Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap();
       this.commentNonApplicableBlocks = commentNonApplicableBlocks;
 
-      Rule rule = new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap);
+      BlockApplicabilityRule rule = new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap);
 
       StringBuilder filePattern = new StringBuilder(".*\\.(");
       filePattern.append(Collections.toString("|", fileTypeApplicabilityDataMap.keySet()));
       filePattern.append(")");
       rule.setFileNamePattern(filePattern.toString());
 
-      rule.setSubdirectoryNameToPlaceResultFilesIn(view.getName());
-      try {
-         rule.process(new File(sourcePath));
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      stagePath = getOrCreateFullStagePath(stagePath);
+      rule.process(new File(sourcePath), stagePath);
+
       return "ruleWasApplicable: " + rule.ruleWasApplicable();
+   }
+
+   public String getOrCreateFullStagePath(String stagePath) throws OseeCoreException {
+      File stageDir = new File(stagePath, "Staging");
+      if (!stageDir.exists() && !stageDir.mkdir()) {
+         throw new OseeCoreException("Could not create stage directory " + stageDir.toString());
+      }
+      File stageViewDir = new File(stageDir.getPath(), view.getName());
+      if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
+         throw new OseeCoreException("Could not create stage directory " + stageViewDir.toString());
+      }
+      return stageViewDir.getPath();
    }
 
    public String evaluateApplicabilityExpression(ApplicabilityBlock applic) {

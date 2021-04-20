@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
@@ -380,8 +381,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String applyBlockVisibility(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath) {
-      return ops.applyApplicabilityToFiles(branch, view, commentNonApplicableBlocks, sourcePath);
+   public String applyBlockVisibility(BlockApplicabilityStageRequest data) {
+      String sourcePath = data.getSourcePath();
+      String stagePath = data.getStagePath();
+      if (sourcePath == null || stagePath == null) {
+         return "Both a source path and stage path are required";
+      }
+      return ops.applyApplicabilityToFiles(branch, data.getView(), data.isCommentNonApplicableBlocks(), sourcePath,
+         stagePath);
    }
 
    @Override

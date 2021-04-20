@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -40,6 +43,33 @@ public class BlockApplicabilityRule extends Rule {
 
       this.orcsApplicability = orcsApplicability;
       this.fileTypeApplicabilityDataMap = fileTypeApplicabilityData;
+   }
+
+   public void process(File inFile, String stagePath) throws OseeCoreException {
+      File stageFile = new File(stagePath, inFile.getName());
+      if (inFile.isDirectory()) {
+         if (!stageFile.exists() && !stageFile.mkdir()) {
+            throw new OseeCoreException("Could not create stage directory");
+         }
+         File[] children = inFile.listFiles();
+         for (File child : children) {
+            process(child, stageFile.getPath());
+         }
+      } else {
+         try {
+            boolean ruleWasApplicable = false;
+            if (fileNamePattern.matcher(inFile.getName()).matches()) {
+               inputFile = inFile;
+               process(inFile, stageFile);
+               ruleWasApplicable = this.ruleWasApplicable;
+            }
+            if (!ruleWasApplicable) {
+               Files.createLink(stageFile.toPath(), inFile.toPath());
+            }
+         } catch (IOException ex) {
+            OseeCoreException.wrap(ex);
+         }
+      }
    }
 
    @Override

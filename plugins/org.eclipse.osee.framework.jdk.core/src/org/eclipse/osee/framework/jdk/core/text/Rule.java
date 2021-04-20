@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public abstract class Rule {
    private final String outExtension;
    private String currentOutfileName;
-   private File inputFile;
+   protected File inputFile;
    private String subdirectoryName;
-   private Pattern fileNamePattern;
+   protected Pattern fileNamePattern;
    protected boolean ruleWasApplicable;
    protected Logger logger;
    private int modCount;

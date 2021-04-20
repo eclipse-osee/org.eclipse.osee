@@ -87,7 +87,7 @@ public interface OrcsApplicability {
 
    String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic);
 
-   String applyApplicabilityToFiles(BranchId branch, ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath);
+   String applyApplicabilityToFiles(BranchId branch, ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath);
 
    ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch);
 

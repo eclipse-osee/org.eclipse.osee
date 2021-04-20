@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
@@ -280,7 +281,9 @@ public interface ApplicabilityEndpoint {
    public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter);
 
    @POST
-   @Path("blockVisibility/{view}")
+   @Path("blockVisibility")
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   String applyBlockVisibility(@PathParam("view") ArtifactId view, @QueryParam("commentNonApplicableBlocks") boolean commentNonApplicableBlocks, String sourcePath);
+   String applyBlockVisibility(BlockApplicabilityStageRequest data);
+
 }

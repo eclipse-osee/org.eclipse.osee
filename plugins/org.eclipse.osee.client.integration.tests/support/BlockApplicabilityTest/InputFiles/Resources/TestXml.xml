@@ -1,0 +1,8 @@
+<Body>
+	<Header>This is a header</Header>
+	<p>This xml file is to test BlockApplicability</p>
+	<p>Most text is fine to see</p
+	<!-- Feature[JHU_CONTROLLER] -->
+	<p>But not this</p>
+	<!-- End Feature -->
+</Body> 
