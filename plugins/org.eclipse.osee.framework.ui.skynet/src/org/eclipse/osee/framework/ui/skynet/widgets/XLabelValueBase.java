@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -29,8 +30,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public abstract class XLabelValueBase extends GenericXWidget {
 
-   Label valueLabel;
    String valueText = "";
+   private Text valueTextWidget;
 
    public XLabelValueBase(String label) {
       super(label);
@@ -56,19 +57,16 @@ public abstract class XLabelValueBase extends GenericXWidget {
          }
       }
 
-      if (toolkit == null) {
-         valueLabel = new Label(comp, SWT.NONE);
-      } else {
-         valueLabel = toolkit.createLabel(comp, "", SWT.NONE);
-      }
+      valueTextWidget = new Text(comp, SWT.NONE);
+      valueTextWidget.setEditable(false);
       if (Strings.isValid(getToolTip())) {
-         valueLabel.setToolTipText(getToolTip());
+         valueTextWidget.setToolTipText(getToolTip());
       }
       if (isFillHorizontally()) {
          if (isFillHorizontally()) {
-            valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            valueTextWidget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          } else {
-            valueLabel.setLayoutData(new GridData());
+            valueTextWidget.setLayoutData(new GridData());
          }
       }
       refresh();
@@ -76,25 +74,25 @@ public abstract class XLabelValueBase extends GenericXWidget {
 
    @Override
    public void refresh() {
-      if (!Widgets.isAccessible(valueLabel)) {
+      if (!Widgets.isAccessible(valueTextWidget)) {
          return;
       }
-      valueLabel.setText(getValueText());
-      valueLabel.update();
-      valueLabel.getParent().update();
+      valueTextWidget.setText(getValueText());
+      valueTextWidget.update();
+      valueTextWidget.getParent().update();
       validate();
    }
 
    @Override
    public Control getControl() {
-      return valueLabel;
+      return valueTextWidget;
    }
 
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
-      toolkit.adapt(valueLabel, true, true);
-      valueLabel.update();
+      toolkit.adapt(valueTextWidget, true, true);
+      valueTextWidget.update();
    }
 
    @Override
@@ -108,10 +106,10 @@ public abstract class XLabelValueBase extends GenericXWidget {
 
    public void setValueText(String text) {
       valueText = text;
-      if (valueLabel != null && !valueLabel.isDisposed()) {
-         valueLabel.setText(valueText);
-         valueLabel.update();
-         valueLabel.getParent().update();
+      if (valueTextWidget != null && !valueTextWidget.isDisposed()) {
+         valueTextWidget.setText(valueText);
+         valueTextWidget.update();
+         valueTextWidget.getParent().update();
       }
    }
 }

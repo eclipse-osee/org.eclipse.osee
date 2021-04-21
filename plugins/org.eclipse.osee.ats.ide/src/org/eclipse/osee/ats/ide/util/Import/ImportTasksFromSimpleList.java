@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -26,6 +28,7 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -56,14 +59,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class ImportTasksFromSimpleList extends AbstractBlam {
 
    public final static String ASSIGNEES = "Assignees";
-   public final static String TASK_IMPORT_TITLES = "Task Import Titles";
    public final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   private TeamWorkFlowArtifact taskableStateMachineArtifact;
+   protected IAtsTeamWorkflow teamWf;
+   protected AtsWorkDefinitionToken taskWorkDef = AtsWorkDefinitionToken.SENTINEL;
    private XCombo stateCombo;
 
    @Override
    public String getName() {
       return "Import Tasks From Simple List";
+   }
+
+   protected String getTitlesLabel() {
+      return "Task Import Titles";
    }
 
    @Override
@@ -74,7 +81,11 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
          @Override
          public void run() {
             try {
-               List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
+               Set<Artifact> artifacts = new HashSet<>();
+               artifacts.addAll(variableMap.getArtifacts(TEAM_WORKFLOW));
+               if (teamWf != null) {
+                  artifacts.add((Artifact) teamWf);
+               }
                final List<AtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
@@ -83,7 +94,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   }
                }
                final List<String> titles = new ArrayList<>();
-               for (String title : variableMap.getString(TASK_IMPORT_TITLES).split("\n")) {
+               for (String title : variableMap.getString(getTitlesLabel()).split("\n")) {
                   title = title.replaceAll("\r", "");
                   if (!title.equals("")) {
                      titles.add(title);
@@ -114,6 +125,9 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifact);
                   NewTaskData newTaskData = NewTaskData.create(teamWf, titles, assignees, null,
                      atsApi.getUserService().getCurrentUser(), null, null, null);
+                  if (taskWorkDef.isValid()) {
+                     newTaskData.setTaskWorkDef(taskWorkDef);
+                  }
                   atsApi.getTaskService().createTasks(
                      NewTaskSet.create(newTaskData, commitComment, atsApi.getUserService().getCurrentUserId()));
                } catch (Exception ex) {
@@ -133,18 +147,18 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
+      if (xWidget.getLabel().equals(TEAM_WORKFLOW) && teamWf != null) {
          final XListDropViewer viewer = (XListDropViewer) xWidget;
-         viewer.setInput(Arrays.asList(taskableStateMachineArtifact));
+         viewer.setInput(Arrays.asList(teamWf));
          xWidget.addXModifiedListener(new XModifiedListener() {
 
             @Override
             public void widgetModified(XWidget widget) {
                List<Artifact> artifacts = viewer.getArtifacts();
-               if (artifacts.isEmpty() || !(artifacts.iterator().next() instanceof TeamWorkFlowArtifact)) {
-                  taskableStateMachineArtifact = null;
+               if (artifacts.isEmpty() || !(artifacts.iterator().next() instanceof IAtsTeamWorkflow)) {
+                  teamWf = null;
                } else {
-                  taskableStateMachineArtifact = (TeamWorkFlowArtifact) artifacts.iterator().next();
+                  teamWf = (IAtsTeamWorkflow) artifacts.iterator().next();
                }
                try {
                   refreshStateCombo();
@@ -161,8 +175,8 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    }
 
    private void refreshStateCombo() {
-      if (stateCombo != null && taskableStateMachineArtifact != null) {
-         List<String> names = RelatedToStateColumn.getValidInWorkStates(taskableStateMachineArtifact);
+      if (stateCombo != null && teamWf != null) {
+         List<String> names = RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf);
          stateCombo.setDataStrings(names.toArray(new String[names.size()]));
       }
    }
@@ -170,9 +184,9 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
-      buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
+      createTeamWfWidget(buffer);
       buffer.append(
-         "<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
+         "<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + getTitlesLabel() + "\" toolTip=\"Enter task titles one per line\"/>");
       buffer.append(
          "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"2\" labelAfter=\"true\" height=\"80\" displayName=\"" + RelatedToStateColumn.RELATED_TO_STATE_SELECTION + "\" />");
       buffer.append("<XWidget xwidgetType=\"XHyperlabelMemberSelection\" displayName=\"" + ASSIGNEES + "\" />");
@@ -180,13 +194,17 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       return buffer.toString();
    }
 
+   protected void createTeamWfWidget(StringBuffer buffer) {
+      buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Team Workflow\" />");
+   }
+
    @Override
    public String getDescriptionUsage() {
       return "Import tasks from spreadsheet into given Team Workflow.  Assignee for tasks will be current user unless otherwise specified.";
    }
 
-   public void setTaskableStateMachineArtifact(TeamWorkFlowArtifact taskableStateMachineArtifact) {
-      this.taskableStateMachineArtifact = taskableStateMachineArtifact;
+   public void setTeamWf(IAtsTeamWorkflow teamWf) {
+      this.teamWf = teamWf;
    }
 
    @Override
@@ -197,6 +215,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    @Override
    public Collection<IUserGroupArtifactToken> getUserGroups() {
       return Collections.singleton(CoreUserGroups.Everyone);
+   }
+
+   public void setTaskWorkDef(AtsWorkDefinitionToken taskWorkDef) {
+      this.taskWorkDef = taskWorkDef;
    }
 
 }

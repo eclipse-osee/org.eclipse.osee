@@ -29,11 +29,12 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * Generic label and radiobutton field object for use by single entry artifact attributes
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XRadioButton extends XWidget {
 
+   public static final Object WIDGET_ID = XRadioButton.class.getSimpleName();
    private Composite parent;
    private boolean selected = false;
    private Button button;

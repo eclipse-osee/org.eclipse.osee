@@ -39,4 +39,6 @@
 		fill="Vertically" />
 	<XWidget displayName="XSelectFromMultiChoiceBranch"
 		xwidgetType="XSelectFromMultiChoiceBranch" />
+	<XWidget displayName="XCheckBoxesExample"
+		xwidgetType="XCheckBoxesExample" />
 </xWidgets>

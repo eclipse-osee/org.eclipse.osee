@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -28,7 +29,8 @@ public class NewTaskSet {
    private List<NewTaskData> taskDatas = new LinkedList<>();
    private XResultData results;
    private String commitComment;
-   String asUserId;
+   private String asUserId;
+   private TransactionToken transaction;
 
    public NewTaskSet() {
       results = new XResultData();
@@ -130,6 +132,14 @@ public class NewTaskSet {
     */
    public static NewTaskSet createWithData(IAtsTeamWorkflow teamWf, String comment, AtsUser atsUser) {
       return createWithData(comment, teamWf.getId(), atsUser.getUserId());
+   }
+
+   public TransactionToken getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionToken transaction) {
+      this.transaction = transaction;
    }
 
 }

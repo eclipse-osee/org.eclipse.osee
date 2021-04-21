@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleList;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ImportTasksViaSimpleList extends AbstractAtsAction {
 
-   private final TeamWorkFlowArtifact taskableArt;
+   private final IAtsTeamWorkflow teamWf;
    private final ImportListener listener;
 
-   public ImportTasksViaSimpleList(TeamWorkFlowArtifact taskableArt, ImportListener listener) {
+   public ImportTasksViaSimpleList(IAtsTeamWorkflow teamWf, ImportListener listener) {
       super();
-      this.taskableArt = taskableArt;
+      this.teamWf = teamWf;
       this.listener = listener;
       setText("Import Tasks via simple list");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.IMPORT));
@@ -38,9 +38,9 @@ public class ImportTasksViaSimpleList extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      ImportTasksFromSimpleList blamOperation = new ImportTasksFromSimpleList();
-      blamOperation.setTaskableStateMachineArtifact(taskableArt);
-      BlamEditor.edit(blamOperation);
+      ImportTasksFromSimpleList operation = new ImportTasksFromSimpleList();
+      operation.setTeamWf(teamWf);
+      BlamEditor.edit(operation);
       if (listener != null) {
          listener.importCompleted(new XResultData());
       }

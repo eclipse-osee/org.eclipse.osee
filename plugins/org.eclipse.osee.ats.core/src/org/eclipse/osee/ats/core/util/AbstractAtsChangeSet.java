@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -200,7 +200,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public TransactionId executeIfNeeded() {
+   public TransactionToken executeIfNeeded() {
       execptionIfEmpty = false;
       return execute();
    }

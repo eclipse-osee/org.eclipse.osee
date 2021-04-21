@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2010 Boeing
+ * Copyright (c) 2021 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,18 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.ats.core.workdef.internal.workdefs;
+
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 
 /**
  * @author Donald G. Dunne
  */
-public class XLabelValue extends XLabelValueBase {
+public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
-   public static final String WIDGET_ID = XLabelValue.class.getSimpleName();
-
-   public XLabelValue(String label, String value) {
-      super(label);
-      setValueText(value);
+   public WorkDefTaskDemoForCrEstimating() {
+      super(DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating);
    }
 
 }

@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -45,7 +46,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -99,6 +100,17 @@ public class CreateTasksOperation {
             results.errorf("Team Workflow id %s does not exist", teamWfId);
             continue;
          }
+         IAtsWorkDefinition taskWorkDef = null;
+
+         // If task work def is defined in NewTaskData, get from there and validate
+         AtsWorkDefinitionToken taskWorkDefTok = newTaskData.getTaskWorkDef();
+         if (taskWorkDefTok.isValid()) {
+            taskWorkDef = atsApi.getWorkDefinitionService().getWorkDefinition(taskWorkDefTok);
+            if (taskWorkDef == null) {
+               results.errorf("Task Work Def Token %s is not defined", newTaskData.getTaskWorkDef());
+               continue;
+            }
+         }
          for (JaxAtsTask task : newTaskData.getTasks()) {
             Long taskId = task.getId();
             if (taskId != null && taskId > 0L) {
@@ -133,26 +145,27 @@ public class CreateTasksOperation {
                }
             }
 
-            IAtsWorkDefinition workDefinition = null;
-            if (Strings.isValid(task.getTaskWorkDef())) {
-               try {
-                  workDefinition =
-                     atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(task.getTaskWorkDef()));
-                  if (workDefinition == null) {
-                     results.errorf("Error finding Task Work Def [%s].\n", task.getTaskWorkDef());
+            // If task work def is defined in NewTaskData, get from there and validate
+            if (taskWorkDef == null) {
+               if (Strings.isValid(task.getTaskWorkDef())) {
+                  try {
+                     taskWorkDef =
+                        atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(task.getTaskWorkDef()));
+                     if (taskWorkDef == null) {
+                        results.errorf("Error finding Task Work Def [%s].\n", task.getTaskWorkDef());
+                     }
+                  } catch (Exception ex) {
+                     results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", task.getTaskWorkDef(),
+                        ex.getMessage());
                   }
-               } catch (Exception ex) {
-                  results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", task.getTaskWorkDef(),
-                     ex.getMessage());
                }
             }
-            if (workDefinition == null) {
-               workDefinition = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
+            if (taskWorkDef == null) {
+               taskWorkDef = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
             }
-            Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
-            task.addAttribute(AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
-            task.addAttribute(AtsAttributeTypes.WorkflowDefinitionReference,
-               ArtifactId.valueOf(workDefinition.getId()));
+            Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
+            task.addAttribute(AtsAttributeTypes.WorkflowDefinition, taskWorkDef.getName());
+            task.addAttribute(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.valueOf(taskWorkDef.getId()));
 
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = attribute.getAttrType();
@@ -219,9 +232,10 @@ public class CreateTasksOperation {
 
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(newTaskSet.getCommitComment(), asUser);
       run(changes);
-      TransactionId trans = changes.executeIfNeeded();
+      TransactionToken trans = changes.executeIfNeeded();
 
       if (trans != null && trans.isValid()) {
+         newTaskSet.setTransaction(trans);
          for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
             for (JaxAtsTask jaxTask : newTaskData.getTasks()) {
                JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsApi);

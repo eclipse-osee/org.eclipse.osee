@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.ats.ide.util.widgets.task.XCreateChangeReportTasksXButton;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.ide.workflow.review.role.AtsXUserRoleValidator;
+import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -198,6 +199,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XOriginatorHyperlinkWidget();
       } else if (widgetName.equals(XSprintHyperlinkWidget.WIDGET_ID)) {
          return new XSprintHyperlinkWidget();
+      } else if (widgetName.equals(XCheckBoxesWithTaskGenExample.WIDGET_ID)) {
+         return new XCheckBoxesWithTaskGenExample();
       }
 
       return toReturn;

@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -76,12 +77,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public TransactionId execute() {
+   public TransactionToken execute() {
       Conditions.checkNotNull(comment, "comment");
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      TransactionId transactionRecord;
+      TransactionToken transactionTok;
       if (branch == null) {
          branch = AtsApiService.get().getAtsBranch();
       }
@@ -121,7 +122,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          for (IAtsObject atsObject : deleteAtsObjects) {
             AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).deleteAndPersist(transaction);
          }
-         transactionRecord = transaction.execute();
+         transactionTok = transaction.execute();
       } catch (Exception ex) {
          transaction.cancel();
          throw OseeCoreException.wrap(ex);
@@ -136,7 +137,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
 
-      return transactionRecord;
+      return transactionTok;
    }
 
    private void execute(AtsRelationChange relChange, SkynetTransaction transaction) {

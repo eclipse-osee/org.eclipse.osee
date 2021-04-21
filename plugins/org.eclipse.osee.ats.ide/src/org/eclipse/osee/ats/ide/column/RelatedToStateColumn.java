@@ -53,7 +53,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    public static RelatedToStateColumn instance = new RelatedToStateColumn();
    public static String NONE = "<empty>";
-   public static String RELATED_TO_STATE_SELECTION = "State task must be completed or empty for completed state";
+   public static String RELATED_TO_STATE_SELECTION = "State that the task MUST be completed in if set";
 
    public static RelatedToStateColumn getInstance() {
       return instance;

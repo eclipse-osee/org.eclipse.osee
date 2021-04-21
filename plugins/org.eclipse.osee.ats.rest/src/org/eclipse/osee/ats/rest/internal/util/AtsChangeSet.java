@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -76,7 +75,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public TransactionId execute() {
+   public TransactionToken execute() {
       Conditions.checkNotNull(comment, "comment");
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");

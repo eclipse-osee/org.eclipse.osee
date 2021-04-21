@@ -26,8 +26,11 @@ public class DemoWorkDefinitions {
    public static AtsWorkDefinitionToken WorkDef_Team_Demo_SwDesign = new AtsWorkDefinitionToken(3625963L, "WorkDef_Team_Demo_SwDesign");
    public static AtsWorkDefinitionToken WorkDef_Team_Demo_Test = new AtsWorkDefinitionToken(2892554L, "WorkDef_Team_Demo_Test");
    public static AtsWorkDefinitionToken WorkDef_Team_Demo_Req = new AtsWorkDefinitionToken(46891154L, "WorkDef_Team_Demo_Req");
+
    public static AtsWorkDefinitionToken WorkDef_Review_Demo_Peer_SwDesign = new AtsWorkDefinitionToken(2342662L, "WorkDef_Review_Demo_Peer_SwDesign");
+
    public static AtsWorkDefinitionToken WorkDef_Task_Demo_SwDesign = new AtsWorkDefinitionToken(2234432L, "WorkDef_Task_Demo_SwDesign");
+   public static AtsWorkDefinitionToken WorkDef_Task_Demo_For_CR_Estimating = new AtsWorkDefinitionToken(32922123L, "WorkDef_Task_Demo_For_CR_Estimating");
    // @formatter:on
 
 }

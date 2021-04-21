@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -437,7 +437,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    //TODO this method needs to be removed
-   public TransactionId execute() {
+   public TransactionToken execute() {
       Operations.executeWorkAndCheckStatus(this);
       return transaction;
    }

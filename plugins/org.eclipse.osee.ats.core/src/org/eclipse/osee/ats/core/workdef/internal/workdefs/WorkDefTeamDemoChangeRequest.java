@@ -76,7 +76,8 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
                   REQUIRED_FOR_TRANSITION), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", REQUIRED_FOR_TRANSITION));
+            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", REQUIRED_FOR_TRANSITION), //
+            new WidgetDefinition("Generate Estimating Tasks", "XCheckBoxesWithTaskGenExample"));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToDefaultState(StateToken.Implement) //

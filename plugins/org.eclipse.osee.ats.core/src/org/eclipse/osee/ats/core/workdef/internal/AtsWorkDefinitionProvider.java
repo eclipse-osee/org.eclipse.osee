@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPe
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefSprint;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDemoForCrEstimating;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;
@@ -52,11 +53,15 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
       // @formatter:off
          ret.addAll(Arrays.asList(
             new WorkDefGoal().build(),
+            // Review
             new WorkDefReviewDecision().build(),
             new WorkDefReviewPeerToPeer().build(),
+            // Agile
             new WorkDefSprint().build(),
+            // Task
             new WorkDefTaskAtsConfig2Example().build(),
             new WorkDefTaskDefault().build(),
+            // Team Wf
             new WorkDefTeamAtsConfig2Example().build(),
             new WorkDefTeamDefault().build(),
             new WorkDefTeamProductLine().build(),
@@ -64,14 +69,18 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTeamSimple().build()));
          if (isDemoDb()) {
             ret.addAll(Arrays.asList(
-            new WorkDefReviewPeerToPeerDemo().build(),
+            // Team Wf
             new WorkDefTeamDemoChangeRequest().build(),
             new WorkDefTeamDemoCode().build(),
             new WorkDefTeamDemoReq().build(),
             new WorkDefTeamDemoSwDesign().build(),
             new WorkDefTeamDemoTest().build(),
+            // Review
+            new WorkDefReviewPeerToPeerDemo().build(),
+            new WorkDefReviewPeerDemoSwDesign().build(),
+            // Task
             new WorkDefTaskDemoSwDesign().build(),
-            new WorkDefReviewPeerDemoSwDesign().build()));
+            new WorkDefTaskDemoForCrEstimating().build()));
       }
       // @formatter:on
       return ret;

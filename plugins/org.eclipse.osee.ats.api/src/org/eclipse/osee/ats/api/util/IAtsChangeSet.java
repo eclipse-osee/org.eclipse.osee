@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +46,7 @@ public interface IAtsChangeSet {
    /**
     * Store changed items. if no items exist to store. Use executeIfNeeded to execute quietly.
     */
-   TransactionId execute();
+   TransactionToken execute();
 
    void clear();
 
@@ -129,7 +129,7 @@ public interface IAtsChangeSet {
    /**
     * Will check if anything is to be stored, else return quietly.
     */
-   TransactionId executeIfNeeded();
+   TransactionToken executeIfNeeded();
 
    /**
     * User making these changes

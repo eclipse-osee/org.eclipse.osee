@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -35,6 +37,8 @@ public class NewTaskData {
    Long teamWfId;
    List<JaxAtsTask> newTasks = new ArrayList<>();
    Boolean fixTitles = false;
+   TransactionToken transaction = TransactionToken.SENTINEL;
+   AtsWorkDefinitionToken taskWorkDef = AtsWorkDefinitionToken.SENTINEL;
 
    public NewTaskData() {
       // for jax-rs
@@ -50,6 +54,10 @@ public class NewTaskData {
 
    public List<JaxAtsTask> getTasks() {
       return newTasks;
+   }
+
+   public void add(JaxAtsTask jTask) {
+      this.newTasks.add(jTask);
    }
 
    public void setNewTasks(List<JaxAtsTask> newTasks) {
@@ -117,6 +125,22 @@ public class NewTaskData {
          }
       }
       return newTaskData;
+   }
+
+   public TransactionToken getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionToken transaction) {
+      this.transaction = transaction;
+   }
+
+   public AtsWorkDefinitionToken getTaskWorkDef() {
+      return taskWorkDef;
+   }
+
+   public void setTaskWorkDef(AtsWorkDefinitionToken taskWorkDef) {
+      this.taskWorkDef = taskWorkDef;
    }
 
 }

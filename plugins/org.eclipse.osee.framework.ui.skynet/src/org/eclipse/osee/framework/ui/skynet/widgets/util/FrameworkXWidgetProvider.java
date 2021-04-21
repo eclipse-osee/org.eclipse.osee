@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxThreeState;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxThreeStateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxesExample;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
@@ -71,6 +72,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewWithSave;
@@ -459,8 +461,13 @@ public final class FrameworkXWidgetProvider {
                   XHyperlinkLabel widget = (XHyperlinkLabel) xWidget;
                   widget.setUrl(xWidgetLayoutData.getDefaultValue());
                }
-            } else if (xWidgetName.equals("XRadioButton")) {
+            } else if (xWidgetName.equals(XRadioButton.WIDGET_ID)) {
                xWidget = new XRadioButton(name);
+            } else if (xWidgetName.equals(XCheckBoxesExample.WIDGET_ID)) {
+               xWidget = new XCheckBoxesExample();
+            } else if (xWidgetName.equals(XLabelValue.WIDGET_ID)) {
+               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               xWidget = new XLabelValue(name, defaultValue);
             } else {
                xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
             }
