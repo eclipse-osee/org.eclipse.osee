@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -36,9 +38,11 @@ import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.AfterClass;
@@ -210,9 +214,14 @@ public class AtsDeleteManagerTest {
 
       changes.execute();
 
-      AtsApiService.get().getTaskService().createTasks(teamWf,
-         Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), (List<AtsUser>) null, createdDate,
-         createdBy, null, null, null, getClass().getSimpleName());
+      NewTaskData newTaskData =
+         NewTaskData.create(teamWf, Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"),
+            (List<AtsUser>) null, createdDate, createdBy, null, null, null);
+      NewTaskSet newTaskSet = NewTaskSet.create(newTaskData, getClass().getSimpleName(), DemoUsers.Joe_Smith);
+      newTaskSet = AtsApiService.get().getTaskService().createTasks(newTaskSet);
+      if (newTaskSet.isErrors()) {
+         throw new OseeStateException("Exception creating tasks [%s]", newTaskSet.getResults().toString());
+      }
 
       return teamWf;
 

@@ -15,31 +15,24 @@ package org.eclipse.osee.ats.api.task;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -52,60 +45,6 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    public AbstractAtsTaskService(AtsApi atsApi) {
       this.atsApi = atsApi;
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, String commitComment) {
-      NewTaskData newTaskData = getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState,
-         taskWorkDef, attributes, commitComment);
-      return createTasks(newTaskData, new XResultData());
-   }
-
-   @Override
-   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes) {
-      return getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState, taskWorkDef, attributes,
-         null);
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, XResultData results) {
-      return createTasks(new NewTaskDatas(newTaskData));
-   }
-
-   @Override
-   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, String commitComment) {
-      NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Simple List", createdBy, teamWf);
-      if (createdDate == null) {
-         createdDate = new Date();
-      }
-
-      for (String title : titles) {
-         JaxAtsTask task = new JaxAtsTask();
-         task.setName(title);
-         if (assignees != null) {
-            for (AtsUser assignee : assignees) {
-               task.addAssigneeUserIds(assignee.getUserId());
-            }
-         } else {
-            task.addAssigneeUserIds(AtsCoreUsers.UNASSIGNED_USER.getUserId());
-         }
-         if (Strings.isValid(relatedToState)) {
-            task.setRelatedToState(relatedToState);
-         }
-         task.setCreatedByUserId(createdBy.getUserId());
-         task.setCreatedDate(createdDate);
-         if (Strings.isValid(taskWorkDef)) {
-            task.setTaskWorkDef(taskWorkDef);
-         }
-         newTaskData.getNewTasks().add(task);
-         if (attributes != null) {
-            for (Entry<AttributeTypeToken, List<Object>> entry : attributes.entrySet()) {
-               task.addAttributes(entry.getKey(), entry.getValue());
-            }
-         }
-         newTaskData.setCommitComment(commitComment);
-      }
-      return newTaskData;
    }
 
    @Override

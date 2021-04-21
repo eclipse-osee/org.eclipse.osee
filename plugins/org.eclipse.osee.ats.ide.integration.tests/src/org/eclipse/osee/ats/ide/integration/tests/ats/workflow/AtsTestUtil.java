@@ -31,6 +31,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -359,11 +361,14 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf1() {
       ensureLoaded();
       if (taskArtWf1 == null) {
-         Collection<IAtsTask> createTasks =
-            AtsApiService.get().getTaskService().createTasks(teamWf, Arrays.asList(getTitle("Task", postFixName)), null,
-               new Date(), AtsApiService.get().getUserService().getCurrentUser(), teamWf.getCurrentStateName(), null,
-               null, getName() + " Create Task");
-         taskArtWf1 = (TaskArtifact) createTasks.iterator().next().getStoreObject();
+         NewTaskData newTaskData =
+            NewTaskData.create(teamWf, Arrays.asList(getTitle("Task", postFixName)), null, new Date(),
+               AtsApiService.get().getUserService().getCurrentUser(), teamWf.getCurrentStateName(), null, null);
+         NewTaskSet newTaskSet = NewTaskSet.create(newTaskData, getName() + " Create Task",
+            AtsApiService.get().getUserService().getCurrentUserId());
+         newTaskSet = AtsApiService.get().getTaskService().createTasks(newTaskSet);
+
+         taskArtWf1 = (TaskArtifact) newTaskSet.getTaskData().getTasks().iterator().next().getStoreObject();
       }
       return taskArtWf1;
    }

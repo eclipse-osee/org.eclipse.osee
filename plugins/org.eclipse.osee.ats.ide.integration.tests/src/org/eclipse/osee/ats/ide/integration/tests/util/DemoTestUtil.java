@@ -27,12 +27,14 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -40,6 +42,7 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -115,11 +118,20 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      Collection<IAtsTask> createTasks = AtsApiService.get().getTaskService().createTasks(teamArt, names,
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), relatedToState, null, null,
-         "DemoTestUtil.creatSimpleTasks");
-      return Collections.castAll(createTasks);
+      NewTaskData newTaskData =
+         NewTaskData.create(teamArt, names, Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
+            new Date(), AtsApiService.get().getUserService().getCurrentUser(), relatedToState, null, null);
+      NewTaskSet newTaskSet = NewTaskSet.create(newTaskData, "DemoTestUtil.creatSimpleTasks",
+         AtsApiService.get().getUserService().getCurrentUserId());
+      newTaskSet = AtsApiService.get().getTaskService().createTasks(newTaskSet);
+      List<ArtifactToken> taskToks = new ArrayList<>();
+      for (NewTaskData ntd : newTaskSet.getNewTaskDatas()) {
+         for (JaxAtsTask task : ntd.getTasks()) {
+            taskToks.add(task.getToken());
+         }
+      }
+      Collection<? extends Artifact> arts = ArtifactQuery.reloadArtifacts(taskToks);
+      return Collections.castAll(arts);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() {

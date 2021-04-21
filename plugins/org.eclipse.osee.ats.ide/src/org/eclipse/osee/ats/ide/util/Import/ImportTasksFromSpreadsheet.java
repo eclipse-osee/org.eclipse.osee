@@ -21,10 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -63,13 +60,10 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public final static String FIX_TITLES = "Fix Titles (remove non-printable chars and truncate)";
    private TeamWorkFlowArtifact taskableStateMachineArtifact;
    public final static String INVALID_BLAM_CAUSE = "Invalid BLAM Spreadsheet";
-   public final static String BLAM_ERROR_TITLE = "BLAM_Errors";
-   private final XResultData rd;
+   private NewTaskSet newTaskSet;
 
    public ImportTasksFromSpreadsheet() {
       super();
-      this.rd = new XResultData();
-      this.rd.setTitle(BLAM_ERROR_TITLE);
    }
 
    @Override
@@ -133,6 +127,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      newTaskSet = NewTaskSet.create(getName(), AtsApiService.get().getUserService().getCurrentUserId());
+      newTaskSet.getResults().setTitle(getName());
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -181,9 +177,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                /**
                 * If spreadsheet has critical errors, display to user and don't update workflow
                 */
-               if (rd.isErrors()) {
-                  XResultDataUI.report(rd, "Error: " + getName());
-                  rd.clear();
+               if (newTaskSet.getResults().isErrors()) {
+                  XResultDataUI.report(newTaskSet.getResults(), "Error: " + getName());
                }
 
             } catch (Exception ex) {
@@ -194,29 +189,29 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       });
    }
 
-   public Collection<IAtsTask> performImport(boolean fixTitles, boolean emailPocs, IAtsTeamWorkflow teamWf, File file) {
+   public NewTaskSet performImport(boolean fixTitles, boolean emailPocs, IAtsTeamWorkflow teamWf, File file) {
       try {
-
          AtsUtilClient.setEmailEnabled(emailPocs);
-         NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Spreadsheet",
-            AtsApiService.get().getUserService().getCurrentUser(), teamWf);
-         newTaskData.setFixTitles(fixTitles);
+         NewTaskSet newTaskSet = NewTaskSet.createWithData(teamWf,
+            "Import Tasks from Spreadsheet", AtsApiService.get().getUserService().getCurrentUser());
+         newTaskSet.getTaskData().setFixTitles(fixTitles);
 
+         XResultData rd = new XResultData();
          Job job = Jobs.startJob(new TaskImportJob(file,
-            new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskData), rd));
+            new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskSet.getTaskData()),
+            rd));
          job.join();
 
          if (rd.isSuccess()) {
-            NewTaskDatas tasks = new NewTaskDatas(newTaskData);
-            return AtsApiService.get().getTaskService().createTasks(tasks);
+            return AtsApiService.get().getTaskService().createTasks(newTaskSet);
          }
 
       } catch (Exception ex) {
-         rd.errorf("Exception in %s: %s\n", getName(), Lib.exceptionToString(ex));
+         newTaskSet.getResults().errorf("Exception in %s: %s\n", getName(), Lib.exceptionToString(ex));
       } finally {
          AtsUtilClient.setEmailEnabled(true);
       }
-      return Collections.emptyList();
+      return newTaskSet;
    }
 
    @Override

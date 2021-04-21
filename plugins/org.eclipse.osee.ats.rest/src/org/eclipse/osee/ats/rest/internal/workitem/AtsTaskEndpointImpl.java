@@ -25,14 +25,12 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTasks;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.task.CreateTasksOperation;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -58,19 +56,14 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    @Override
-   public JaxAtsTasks create(NewTaskDatas newTaskDatas) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, new XResultData());
-      XResultData results = operation.validate();
-
-      if (results.isErrors()) {
-         JaxAtsTasks tasks = new JaxAtsTasks();
-         tasks.setResults(results);
+   public NewTaskSet create(NewTaskSet newTaskSet) {
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskSet, atsApi);
+      newTaskSet = operation.validate();
+      if (newTaskSet.isErrors()) {
+         return newTaskSet;
       }
-
       operation.run();
-      JaxAtsTasks tasks = new JaxAtsTasks();
-      tasks.getTasks().addAll(operation.getTasks());
-      return tasks;
+      return newTaskSet;
    }
 
    @GET

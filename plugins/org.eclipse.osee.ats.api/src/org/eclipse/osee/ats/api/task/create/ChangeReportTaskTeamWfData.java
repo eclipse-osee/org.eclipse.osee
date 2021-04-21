@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.config.WorkType;
-import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.related.AutoGenVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -38,13 +38,13 @@ public class ChangeReportTaskTeamWfData {
    String partition;
    String wcafeType;
    AutoGenVersion autoGenVersion;
+   NewTaskSet newTaskSet = new NewTaskSet();
 
    /**
     * Collection of task objects that are created for all tasks needed to be created and then later used to match any
     * tasks already created
     */
    Collection<ChangeReportTaskMatch> taskMatches = new ArrayList<ChangeReportTaskMatch>();
-   NewTaskData newTaskData = new NewTaskData();
 
    public ChangeReportTaskTeamWfData() {
       // for jax-rs
@@ -84,14 +84,6 @@ public class ChangeReportTaskTeamWfData {
 
    public boolean isPersist() {
       return !reportOnly;
-   }
-
-   public NewTaskData getNewTaskData() {
-      return newTaskData;
-   }
-
-   public void setNewTaskData(NewTaskData newTaskData) {
-      this.newTaskData = newTaskData;
    }
 
    public ArtifactToken getDestTeamWf() {
@@ -176,6 +168,14 @@ public class ChangeReportTaskTeamWfData {
 
    public void setAutoGenVersion(AutoGenVersion autoGenVersion) {
       this.autoGenVersion = autoGenVersion;
+   }
+
+   public NewTaskSet getNewTaskSet() {
+      return newTaskSet;
+   }
+
+   public void setNewTaskSet(NewTaskSet newTaskSet) {
+      this.newTaskSet = newTaskSet;
    }
 
 }

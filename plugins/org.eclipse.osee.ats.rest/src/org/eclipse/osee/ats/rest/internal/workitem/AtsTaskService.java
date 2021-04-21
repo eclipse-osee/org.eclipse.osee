@@ -13,23 +13,16 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -39,8 +32,6 @@ import org.eclipse.osee.ats.core.task.CreateChangeReportTasksOperation;
 import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
@@ -53,62 +44,45 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore {
       super(atsApi);
    }
 
-   @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, XResultData results) {
-      IAtsChangeSet changes =
-         atsApi.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), AtsCoreUsers.SYSTEM_USER);
-      return createTasks(newTaskData, changes, results);
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results) {
-      return createTasks(newTaskData, changes, results, new HashMap<Long, IAtsTeamWorkflow>());
-   }
-
    /**
     * @param idToTeamWf - Map of team workflows created during operation that may not be in database yet
     */
    @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
+   public NewTaskSet createTasks(NewTaskSet newTaskSet, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
       List<IAtsTask> tasks = new LinkedList<>();
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsApi, results);
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskSet, atsApi);
       operation.setIdToTeamWf(idToTeamWf);
-      operation.validate();
-      if (results.isSuccess()) {
+      NewTaskSet taskSet = operation.validate();
+      if (taskSet.getResults().isSuccess()) {
+
+         IAtsChangeSet changes = atsApi.createChangeSet(newTaskSet.getCommitComment());
          operation.run(changes);
-         if (results.isSuccess()) {
+         if (newTaskSet.getResults().isSuccess()) {
             for (JaxAtsTask task : operation.getTasks()) {
                tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(task.getId())));
             }
          }
       }
-      return tasks;
+      return taskSet;
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, new XResultData());
-      XResultData results = operation.validate();
+   public NewTaskSet createTasks(NewTaskSet newTaskSet) {
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskSet, atsApi);
+      operation.validate();
 
-      if (results.isErrors()) {
-         throw new OseeStateException("Error validating task creation - " + results.toString());
+      if (newTaskSet.getResults().isErrors()) {
+         throw new OseeStateException("Error validating task creation - " + newTaskSet.getResults().toString());
       }
       operation.run();
-      if (results.isErrors()) {
-         throw new OseeStateException("Error creating tasks - " + results.toString());
+      if (newTaskSet.getResults().isErrors()) {
+         throw new OseeStateException("Error creating tasks - " + newTaskSet.toString());
       }
       List<IAtsTask> tasks = new LinkedList<>();
       for (JaxAtsTask task : operation.getTasks()) {
          tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(task.getId())));
       }
-      return tasks;
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, IAtsChangeSet changes) {
-      NewTaskData tasks = atsApi.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
-         relatedToState, taskWorkDef, attributes, changes.getComment());
-      return createTasks(tasks, changes, new XResultData());
+      return newTaskSet;
    }
 
    @Override
@@ -116,23 +90,6 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore {
       CreateChangeReportTasksOperation operation =
          new CreateChangeReportTasksOperation(changeReportTaskData, atsApi, null);
       return operation.run();
-   }
-
-   @Override
-   public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData, IAtsChangeSet changes) {
-      CreateChangeReportTasksOperation operation =
-         new CreateChangeReportTasksOperation(changeReportTaskData, atsApi, changes);
-      return operation.run();
-   }
-
-   @Override
-   public ChangeReportTaskData createTasks(ArtifactToken hostTeamWf, AtsTaskDefToken taskDefToken, ArtifactToken asUser) {
-      ChangeReportTaskData data = new ChangeReportTaskData();
-      data.setTaskDefToken(taskDefToken);
-      data.setHostTeamWf(hostTeamWf);
-      AtsUser atsUser = atsApi.getUserService().getUserById(asUser);
-      data.setAsUser(atsUser);
-      return createTasks(data);
    }
 
    @Override

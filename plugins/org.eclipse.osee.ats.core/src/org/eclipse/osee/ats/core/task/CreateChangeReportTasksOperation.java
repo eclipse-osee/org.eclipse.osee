@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportOptionsToTeam;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
@@ -234,6 +235,7 @@ public class CreateChangeReportTasksOperation {
             // Get or create destTeamWf
             IAtsTeamWorkflow destTeamWf =
                ChangeReportTasksUtil.getDestTeamWfOrNull(crttwd, workType, atsApi, chgRptTeamWf, toTeamDef);
+            NewTaskData newTaskData = NewTaskData.create(crttwd.getNewTaskSet(), destTeamWf);
             if (destTeamWf == null) {
                if (changes != null) {
                   CreateTasksWorkflow workflowCreator =
@@ -333,18 +335,17 @@ public class CreateChangeReportTasksOperation {
                }
             }
 
-            if (!reportOnly && !crttwd.getNewTaskData().getNewTasks().isEmpty()) {
-               crttwd.getNewTaskData().setAsUserId(crtd.getAsUser().getUserId());
-               crttwd.getNewTaskData().setCommitComment("Create Change Report Tasks");
-               crttwd.getNewTaskData().setTeamWfId(destTeamWf.getId());
+            if (!reportOnly && !crttwd.getNewTaskSet().getNewTaskDatas().iterator().next().getTasks().isEmpty()) {
+               crttwd.getNewTaskSet().setAsUserId(crtd.getAsUser().getUserId());
+               crttwd.getNewTaskSet().setCommitComment("Create Change Report Tasks");
+               newTaskData.setTeamWfId(destTeamWf.getId());
 
                /**
                 * Until all transition is done on server, need to call to directly generate tasks so it can be part of
                 * the transition change set. Otherwise calling server to generate tasks will result in teamWf and tasks
                 * to be reloaded and thus lose transition data.
                 */
-               CreateTasksOperation operation =
-                  new CreateTasksOperation(crttwd.getNewTaskData(), atsApi, crtd.getResults());
+               CreateTasksOperation operation = new CreateTasksOperation(crttwd.getNewTaskSet(), atsApi);
                operation.setIdToTeamWf(crtd.getIdToTeamWf());
                operation.validate();
                if (crtd.getResults().isSuccess()) {
@@ -564,7 +565,7 @@ public class CreateChangeReportTasksOperation {
       for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {
          provider.addToAutoGeneratingTask(crtd, crttwd, taskMatch, task);
       }
-      crttwd.getNewTaskData().getNewTasks().add(task);
+      crttwd.getNewTaskSet().getNewTaskDatas().iterator().next().getTasks().add(task);
    }
 
    protected CreateTasksDefinition getTaskDefinition() {

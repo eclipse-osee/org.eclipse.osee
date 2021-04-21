@@ -22,11 +22,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
@@ -81,18 +79,18 @@ public class AtsTaskEndpointImplTest {
 
       String createdByUserId = DemoUsers.Joe_Smith.getUserId();
       Date createdDate = new Date();
-      NewTaskData data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(),
-         DemoUsers.Joe_Smith.getUserId(), codeTeamWfId);
+      NewTaskSet newTaskSet = NewTaskSet.createWithData("Create Tasks via - " + getClass().getSimpleName(),
+         codeTeamWfId, DemoUsers.Joe_Smith.getUserId());
+      NewTaskData newTaskData = newTaskSet.getTaskData();
 
       // Test add relation where task on A side
       JaxAtsTask newTask = createJaxAtsTask(taskId1, "Task 4", "description", createdByUserId, createdDate, null);
       newTask.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
-      data.getNewTasks().add(newTask);
+      newTaskData.getTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_IsSupportedBy, codeTeamWfId);
 
-      NewTaskDatas newTaskDatas = new NewTaskDatas(data);
-      JaxAtsTasks tasks = taskEp.create(newTaskDatas);
-      Assert.assertEquals(1, tasks.getTasks().size());
+      newTaskSet = taskEp.create(newTaskSet);
+      Assert.assertEquals(1, newTaskSet.getTaskData().getTasks().size());
 
       IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
          newTask.getId()).getResults().getExactlyOne();
@@ -111,16 +109,18 @@ public class AtsTaskEndpointImplTest {
       Assert.assertTrue(workItems.isEmpty());
 
       // Test add relation where task on B side
-      data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(), DemoUsers.Joe_Smith.getUserId(),
-         codeTeamWfId);
+      newTaskSet = NewTaskSet.createWithData("Create Tasks via - " + getClass().getSimpleName(), codeTeamWfId,
+         DemoUsers.Joe_Smith.getUserId());
+      newTaskData = newTaskSet.getTaskData();
       newTask = createJaxAtsTask(taskId4, "Task 4", "description", createdByUserId, createdDate, null);
       newTask.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
-      data.getNewTasks().add(newTask);
+      newTaskData.getTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfId);
 
-      newTaskDatas = new NewTaskDatas(data);
-      tasks = taskEp.create(newTaskDatas);
-      Assert.assertEquals(1, tasks.getTasks().size());
+      newTaskSet = NewTaskSet.create(newTaskData, "testCreateTaskAndRelate 2", DemoUsers.Joe_Smith.getUserId());
+      newTaskSet = taskEp.create(newTaskSet);
+      Assert.assertTrue(newTaskSet.getResults().toString(), newTaskSet.isSuccess());
+      Assert.assertEquals(1, newTaskSet.getTaskData().getTasks().size());
 
       task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
          newTask.getId()).getResults().getExactlyOne();
@@ -141,27 +141,28 @@ public class AtsTaskEndpointImplTest {
    }
 
    @Test
-   public void testTaskCRD() {
+   public void testTaskCrd() {
       // Test Create
       String createdByUserId = DemoUsers.Joe_Smith.getUserId();
       Date createdDate = new Date();
-      NewTaskData data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(),
-         DemoUsers.Joe_Smith.getUserId(), codeTeamWfId);
+      NewTaskSet newTaskSet = NewTaskSet.createWithData("Create Tasks via - " + getClass().getSimpleName(),
+         codeTeamWfId, DemoUsers.Joe_Smith.getUserId());
+      NewTaskData newTaskData = newTaskSet.getTaskData();
 
       JaxAtsTask task = createJaxAtsTask(taskId1, "Task 1", "description", createdByUserId, createdDate, null);
       task.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
-      data.getNewTasks().add(task);
+      newTaskData.getTasks().add(task);
 
       JaxAtsTask task2 = createJaxAtsTask(taskId2, "Task 2", "description", createdByUserId, createdDate, null);
-      data.getNewTasks().add(task2);
+      newTaskData.getTasks().add(task2);
 
       JaxAtsTask task3 = createJaxAtsTask(taskId3, "Task 3", null, createdByUserId, createdDate,
          Arrays.asList(DemoUsers.Alex_Kay.getUserId()));
       task3.addAttribute(CoreAttributeTypes.StaticId, "my static id");
-      data.getNewTasks().add(task3);
+      newTaskData.getTasks().add(task3);
 
-      JaxAtsTasks tasks = taskEp.create(new NewTaskDatas(data));
-      Assert.assertEquals(3, tasks.getTasks().size());
+      newTaskSet = taskEp.create(NewTaskSet.create(newTaskData, "testTaskCrd", DemoUsers.Joe_Smith));
+      Assert.assertEquals(3, newTaskSet.getTaskData().getTasks().size());
 
       // Test Get
       JaxAtsTask task1R = taskEp.get(taskId1);

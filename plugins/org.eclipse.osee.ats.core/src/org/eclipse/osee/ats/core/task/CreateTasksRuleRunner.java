@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -62,19 +63,18 @@ public class CreateTasksRuleRunner {
          }
          List<String> existingTaskNames = getExistingTaskNames();
          List<StaticTaskDefinition> missingTasks = getMissingTasks(tasksDef, existingTaskNames);
-         createMissingTasks(tasksDef, missingTasks, results);
+         createMissingTasks(teamWf, tasksDef, missingTasks, results);
       }
       return results;
    }
 
-   private void createMissingTasks(CreateTasksDefinition tasksDef, List<StaticTaskDefinition> missingTasks, XResultData results) {
-      NewTaskData newTaskData = new NewTaskData();
-      newTaskData.setTeamWfId(teamWf.getId());
-      newTaskData.setAsUserId(atsApi.getUserService().getCurrentUserId());
-      newTaskData.setCommitComment(tasksDef.getComment());
+   private void createMissingTasks(IAtsTeamWorkflow teamWf, CreateTasksDefinition tasksDef, List<StaticTaskDefinition> missingTasks, XResultData results) {
+      NewTaskSet newTaskSet = NewTaskSet.create("CreateTasksRuleRunner", atsApi.getUserService().getCurrentUserId());
+      NewTaskData newTaskData = NewTaskData.create(newTaskSet, teamWf);
       Date createdDate = new Date();
       for (StaticTaskDefinition createTaskDef : missingTasks) {
          JaxAtsTask jTask = new JaxAtsTask();
+         newTaskData.getTasks().add(jTask);
          jTask.setName(createTaskDef.getName());
          jTask.setCreatedByUserId(atsApi.getUserService().getCurrentUserId());
          jTask.setDescription(createTaskDef.getDescription());
@@ -90,10 +90,11 @@ public class CreateTasksRuleRunner {
                jTask.setTaskWorkDef(workDef.getIdString());
             }
          }
-         newTaskData.getNewTasks().add(jTask);
       }
-      for (IAtsTask task : atsApi.getTaskService().createTasks(newTaskData, results)) {
-         results.getIds().add(task.getIdString());
+      for (NewTaskData ntd : atsApi.getTaskService().createTasks(newTaskSet).getNewTaskDatas()) {
+         for (JaxAtsTask task : ntd.getTasks()) {
+            results.getIds().add(task.getIdString());
+         }
       }
    }
 

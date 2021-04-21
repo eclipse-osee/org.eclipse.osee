@@ -14,12 +14,13 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -63,12 +64,15 @@ public class EstimatedHoursColumnTest {
       changes.add(peerArt);
       changes.execute();
 
-      Collection<IAtsTask> createTasks = AtsApiService.get().getTaskService().createTasks(teamArt1,
-         Arrays.asList(getClass().getSimpleName(), getClass().getSimpleName() + " 2"), null, new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), null, null, null, getClass().getSimpleName());
+      NewTaskData newTaskData =
+         NewTaskData.create(teamArt1, Arrays.asList(getClass().getSimpleName(), getClass().getSimpleName() + " 2"),
+            null, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, null, null);
+      NewTaskSet newTaskSet = NewTaskSet.create(newTaskData, getClass().getSimpleName(),
+         AtsApiService.get().getUserService().getCurrentUserId());
+      newTaskSet = AtsApiService.get().getTaskService().createTasks(newTaskSet);
 
       Artifact taskArt1 = null, taskArt2 = null;
-      for (IAtsTask task : createTasks) {
+      for (JaxAtsTask task : newTaskSet.getTaskData().getTasks()) {
          if (task.getName().endsWith("2")) {
             taskArt2 = AtsApiService.get().getQueryServiceIde().getArtifact(task);
          } else {

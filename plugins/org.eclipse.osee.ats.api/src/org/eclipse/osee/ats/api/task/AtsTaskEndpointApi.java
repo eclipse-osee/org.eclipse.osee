@@ -32,7 +32,7 @@ public interface AtsTaskEndpointApi {
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsTasks create(NewTaskDatas newTaskDatas);
+   public NewTaskSet create(NewTaskSet newTaskSet);
 
    @GET
    @Path("{taskId}")

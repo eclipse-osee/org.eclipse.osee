@@ -23,9 +23,8 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -73,10 +72,9 @@ public class AtsWorkDefinitionServiceImplTest {
          peerReview.getWorkDefinition().getId());
 
       // Test Task Work Def
-      NewTaskData taskData = new NewTaskData();
-      taskData.setAsUserId(AtsApiService.get().getUserService().getCurrentUserId());
-      taskData.setTeamWfId(teamWf.getId());
-      taskData.setCommitComment(getClass().getSimpleName());
+      NewTaskSet newTaskSet = NewTaskSet.createWithData(teamWf, getClass().getSimpleName(),
+         AtsApiService.get().getUserService().getCurrentUser());
+      NewTaskData taskData = newTaskSet.getTaskData();
 
       JaxAtsTask jTask = new JaxAtsTask();
       jTask.setName(getClass().getSimpleName() + " - My Task");
@@ -84,13 +82,10 @@ public class AtsWorkDefinitionServiceImplTest {
       jTask.setCreatedByUserId(AtsApiService.get().getUserService().getCurrentUserId());
       jTask.setCreatedDate(new Date());
       jTask.setTaskWorkDef(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign.getIdString());
-      taskData.getNewTasks().add(jTask);
+      taskData.getTasks().add(jTask);
 
-      NewTaskDatas datas = new NewTaskDatas();
-      datas.add(taskData);
-
-      JaxAtsTasks tasks = AtsApiService.get().getServerEndpoints().getTaskEp().create(datas);
-      JaxAtsTask task = tasks.getTasks().iterator().next();
+      newTaskSet = AtsApiService.get().getServerEndpoints().getTaskEp().create(newTaskSet);
+      JaxAtsTask task = newTaskSet.getTaskData().getTasks().iterator().next();
       IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(task.getId());
 
       Assert.assertTrue(workItem.isTask());

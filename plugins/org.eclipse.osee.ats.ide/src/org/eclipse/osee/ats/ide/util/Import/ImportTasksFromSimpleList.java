@@ -20,7 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -65,6 +68,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
+      final AtsApi atsApi = AtsApiService.get();
       final String commitComment = getClass().getSimpleName();
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -74,7 +78,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                final List<AtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
-                     AtsUser atsUser = AtsApiService.get().getUserService().getUserById(art);
+                     AtsUser atsUser = atsApi.getUserService().getUserById(art);
                      assignees.add(atsUser);
                   }
                }
@@ -107,9 +111,11 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   if (assignees.isEmpty()) {
                      assignees.add(AtsCoreUsers.UNASSIGNED_USER);
                   }
-                  IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeamWf(artifact);
-                  AtsApiService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
-                     AtsApiService.get().getUserService().getCurrentUser(), null, null, null, commitComment);
+                  IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifact);
+                  NewTaskData newTaskData = NewTaskData.create(teamWf, titles, assignees, null,
+                     atsApi.getUserService().getCurrentUser(), null, null, null);
+                  atsApi.getTaskService().createTasks(
+                     NewTaskSet.create(newTaskData, commitComment, atsApi.getUserService().getCurrentUserId()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;

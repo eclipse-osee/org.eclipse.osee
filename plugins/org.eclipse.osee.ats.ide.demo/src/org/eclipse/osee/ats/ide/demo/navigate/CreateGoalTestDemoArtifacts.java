@@ -14,20 +14,17 @@
 package org.eclipse.osee.ats.ide.demo.navigate;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
-import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
@@ -36,6 +33,7 @@ import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -80,19 +78,20 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
       teamArt = createAction456(sawCodeGoal, facilitiesGoal, teamArt);
 
-      NewTaskData newTaskData = NewTaskDataFactory.get(getName(), createdBy, teamArt);
+      NewTaskSet newTaskSet = NewTaskSet.createWithData(teamArt, getName(), createdBy);
+      NewTaskData newTaskData = newTaskSet.getTaskData();
 
       for (String name : Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
          "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH", "II", "JJ",
          "KK", "LL", "MM", "NN", "OO", "PP", "QQ", "RR")) {
-         JaxAtsTaskFactory.get(newTaskData, "Task " + name, createdBy, createdDate);
+         JaxAtsTask.create(newTaskData, "Task " + name, createdBy, createdDate);
       }
 
-      Collection<IAtsTask> createTasks =
-         AtsApiService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
+      newTaskSet = AtsApiService.get().getTaskService().createTasks(
+         NewTaskSet.create(newTaskData, "CreateGoalTestDemoArtifacts", DemoUsers.Joe_Smith));
 
       changes = AtsApiService.get().createChangeSet(getName());
-      for (IAtsTask task : createTasks) {
+      for (JaxAtsTask task : newTaskSet.getNewTaskDatas().iterator().next().getTasks()) {
          Artifact taskArt = AtsApiService.get().getQueryServiceIde().getArtifact(task);
          toolsTeamGoal.addMember(taskArt);
          changes.relate(toolsTeamGoal, AtsRelationTypes.Goal_Member, taskArt);
@@ -115,30 +114,32 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    private IAtsTeamWorkflow createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, IAtsTeamWorkflow teamArt) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
-      NewTaskDatas newTaskDatas = new NewTaskDatas();
+      NewTaskSet newTaskSet = null;
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
-         ActionResult action = AtsApiService.get().getActionService().createAction(null,
-            "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4", false, null,
+         ActionResult action = AtsApiService.get().getActionService().createAction(null, "Fix " + msaTool + " button",
+            "Description", ChangeType.Problem, "4", false, null,
             AtsApiService.get().getActionableItemService().getActionableItems(Arrays.asList(msaTool)), createdDate,
             createdBy, null, changes);
          facilitiesGoal.addMember(AtsApiService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
          teamArt = AtsApiService.get().getWorkItemService().getFirstTeam(action);
-         NewTaskData newTaskData = NewTaskDataFactory.get("createAction456", createdBy, teamArt);
-         newTaskDatas.add(newTaskData);
-         JaxAtsTaskFactory.get(newTaskData, "Task 1", createdBy, createdDate);
-         JaxAtsTaskFactory.get(newTaskData, "Task 2", createdBy, createdDate);
+         newTaskSet = NewTaskSet.createWithData(teamArt, "createAction456", createdBy);
+         NewTaskData newTaskData = newTaskSet.getTaskData();
+         JaxAtsTask.create(newTaskData, "Task 1", createdBy, createdDate);
+         JaxAtsTask.create(newTaskData, "Task 2", createdBy, createdDate);
       }
       changes.add(facilitiesGoal);
       changes.add(sawCodeGoal);
       changes.execute();
 
-      Collection<IAtsTask> createTasks = AtsApiService.get().getTaskService().createTasks(newTaskDatas);
+      newTaskSet = AtsApiService.get().getTaskService().createTasks(newTaskSet);
 
       changes = AtsApiService.get().createChangeSet(getName());
-      for (IAtsTask task : createTasks) {
-         facilitiesGoal.addMember(task.getStoreObject());
-         sawCodeGoal.addMember(task.getStoreObject());
-         changes.add(task);
+      for (NewTaskData ntd : newTaskSet.getNewTaskDatas()) {
+         for (JaxAtsTask task : ntd.getTasks()) {
+            facilitiesGoal.addMember(task.getStoreObject());
+            sawCodeGoal.addMember(task.getStoreObject());
+            changes.add(task);
+         }
       }
       changes.execute();
 
@@ -166,8 +167,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private IAtsTeamWorkflow createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) {
-      ActionResult action = AtsApiService.get().getActionService().createAction(null, "Fix this model",
-         "Description", ChangeType.Problem, "2", false, null,
+      ActionResult action = AtsApiService.get().getActionService().createAction(null, "Fix this model", "Description",
+         ChangeType.Problem, "2", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(Arrays.asList("SAW Code")), createdDate,
          createdBy, null, changes);
       sawCodeGoal.addMember(AtsApiService.get().getWorkItemService().getFirstTeam(action).getStoreObject());

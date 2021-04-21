@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -174,7 +174,7 @@ public class ExcelAtsTaskArtifactExtractor {
          }
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
-         JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, "", createdBy, createdDate);
+         JaxAtsTask task = JaxAtsTask.create(newTaskData, "", createdBy, createdDate);
 
          monitor.subTask("Validating...");
          if (!"Title".equals(headerRow[0])) {
@@ -199,7 +199,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } else if (header.equalsIgnoreCase("Title")) {
                boolean validTitle = processTitle(row, task, i);
                if (!validTitle) {
-                  newTaskData.getNewTasks().remove(task);
+                  newTaskData.getTasks().remove(task);
                   skipRestOfRows = true;
                }
             } else if (header.equalsIgnoreCase("Assignees")) {
@@ -266,7 +266,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private boolean validRow(JaxAtsTask task) {
          boolean valid = Strings.isValid(task.getName());
          if (!valid) {
-            newTaskData.getNewTasks().remove(task);
+            newTaskData.getTasks().remove(task);
             skipRestOfRows = true;
          }
          return valid;

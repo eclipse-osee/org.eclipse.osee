@@ -16,25 +16,17 @@ package org.eclipse.osee.ats.ide.workflow.task.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
-import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
-import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -49,10 +41,6 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,13 +49,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboComboDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 
@@ -76,83 +57,30 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
  */
 public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTaskServiceIde {
 
-   private final AtsApiIde atsClient;
    private final AtsApi atsApi;
 
    public AtsTaskService(AtsApiIde atsClient) {
       super(atsClient);
-      this.atsClient = atsClient;
       this.atsApi = atsClient;
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
-      List<IAtsTask> tasks = new LinkedList<>();
-
+   public NewTaskSet createTasks(NewTaskSet newTaskSet) {
       AtsTaskEndpointApi taskEp = atsApi.getServerEndpoints().getTaskEp();
-      JaxAtsTasks jaxTasks = taskEp.create(newTaskDatas);
-      newTaskDatas.setResults(jaxTasks.getResults());
-      if (newTaskDatas.getResults().isErrors()) {
-         return tasks;
-      }
-
-      ArtifactEvent artifactEvent = new ArtifactEvent(atsApi.getAtsBranch());
-      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         processForEvents(newTaskData, jaxTasks, tasks, artifactEvent);
-      }
-
-      OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
-      return tasks;
-   }
-
-   private void processForEvents(NewTaskData newTaskData, JaxAtsTasks jaxTasks, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
-      Artifact teamWf = atsClient.getQueryServiceIde().getArtifact(newTaskData.getTeamWfId());
-
-      List<Long> artIds = new LinkedList<>();
-
-      teamWf.reloadAttributesAndRelations();
-
-      for (JaxAtsTask task : jaxTasks.getTasks()) {
-         String guid = ArtifactQuery.getGuidFromId(task.getId(), atsApi.getAtsBranch());
-         artifactEvent.addArtifact(
-            new EventBasicGuidArtifact(EventModType.Added, atsApi.getAtsBranch(), AtsArtifactTypes.Task, guid));
-         artIds.add(task.getId());
-
-         RelationLink relation = getRelation(teamWf, task);
-         if (relation != null) {
-            Artifact taskArt = atsClient.getQueryServiceIde().getArtifact(task.getId());
-
-            DefaultBasicIdRelation guidRelation = new DefaultBasicIdRelation(atsApi.getAtsBranch(),
-               AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
-               teamWf.getBasicGuidArtifact(), taskArt.getBasicGuidArtifact());
-
-            artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
-               ArtifactId.valueOf(newTaskData.getTeamWfId()), ArtifactId.valueOf(task.getId()), guidRelation));
+      newTaskSet = taskEp.create(newTaskSet);
+      List<Artifact> arts = new ArrayList<>();
+      for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
+         Long teamWfId = newTaskData.getTeamWfId();
+         Artifact art = ArtifactCache.getActive(teamWfId, atsApi.getAtsBranch());
+         if (art != null) {
+            arts.add(art);
+         }
+         for (JaxAtsTask task : newTaskData.getTasks()) {
+            task.setAtsApi(atsApi);
          }
       }
-
-      for (Long id : artIds) {
-         tasks.add(atsApi.getWorkItemService().getTask(atsApi.getQueryService().getArtifact(id)));
-      }
-   }
-
-   private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {
-      for (RelationLink relation : teamWf.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (relation.getArtifactB().equals(task.getId())) {
-            return relation;
-         }
-      }
-      return null;
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, IAtsChangeSet changes) {
-      throw new UnsupportedOperationException("Not Supported on Client");
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results) {
-      throw new UnsupportedOperationException("Not Supported on Client");
+      ArtifactQuery.reloadArtifacts(arts);
+      return newTaskSet;
    }
 
    @Override
@@ -164,14 +92,14 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
 
          // Determine if multiple work defs and/or miss-matched work defs
          Collection<IAtsWorkDefinition> taskWorkDefs = atsApi.getTaskService().calculateTaskWorkDefs(teamWf);
+         String comment = "Create New Task";
          if (taskWorkDefs.size() == 0 || taskWorkDefs.size() == 1) {
-            ed = new EntryComboDialog("Create New Task", "Enter Task Title",
-               RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
+            ed = new EntryComboDialog(comment, "Enter Task Title", RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
             List<String> validStates =
                RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
             ed.setOptions(validStates);
          } else {
-            ed2 = new EntryComboComboDialog("Create New Task", "Enter Task Title and Select Task Work Definition",
+            ed2 = new EntryComboComboDialog(comment, "Enter Task Title and Select Task Work Definition",
                RelatedToStateColumn.RELATED_TO_STATE_SELECTION, "Select Task Work Definition");
             ed = ed2;
             List<String> validStates =
@@ -182,11 +110,12 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          }
 
          if (ed.open() == 0) {
-            NewTaskData newTaskData = NewTaskDataFactory.get("Create New Task",
-               atsApi.getUserService().getCurrentUser().getUserId(), teamWf.getId());
+            NewTaskSet newTaskSet =
+               NewTaskSet.createWithData(comment, teamWf.getId(), atsApi.getUserService().getCurrentUser().getUserId());
+            NewTaskData newTaskData = newTaskSet.getTaskData();
             String title = ed.getEntry();
             JaxAtsTask task =
-               JaxAtsTaskFactory.get(newTaskData, title, atsApi.getUserService().getCurrentUser(), new Date());
+               JaxAtsTask.create(newTaskData, title, atsApi.getUserService().getCurrentUser(), new Date());
             task.setId(Lib.generateArtifactIdAsInt());
             if (ed2 != null) {
                task.setTaskWorkDef(((IAtsWorkDefinition) ed2.getSelection2()).getIdString());
@@ -196,7 +125,8 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
             if (Strings.isValid(ed.getSelection())) {
                task.setRelatedToState(ed.getSelection());
             }
-            atsApi.getTaskService().createTasks(new NewTaskDatas(newTaskData));
+            atsApi.getTaskService().createTasks(
+               NewTaskSet.create(newTaskData, atsApi.getUserService().getCurrentUserId(), comment));
 
             taskArt = (TaskArtifact) atsApi.getQueryService().getArtifact(task.getId());
          }
@@ -204,11 +134,6 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return taskArt;
-   }
-
-   @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData rd, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
-      throw new UnsupportedOperationException("Not supported on ide client");
    }
 
    @Override
@@ -234,22 +159,6 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
    }
 
    @Override
-   public ChangeReportTaskData createTasks(ArtifactToken hostTeamWf, AtsTaskDefToken taskDefToken, ArtifactToken asUser) {
-      ChangeReportTaskData data = new ChangeReportTaskData();
-      data.setTaskDefToken(taskDefToken);
-      data.setHostTeamWf(hostTeamWf);
-      data.setAsUser(atsApi.getUserService().getCurrentUser());
-      ChangeReportTaskData crtd = atsApi.getServerEndpoints().getTaskEp().create(data);
-      reloadTasksIfNecessary(crtd);
-      return crtd;
-   }
-
-   @Override
-   public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData, IAtsChangeSet changes) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
    public IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token) {
       return ChangeReportTaskNameProviderService.getChangeReportOptionNameProvider(token);
    }
@@ -265,6 +174,11 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          throw new OseeArgumentException("Artifact %s must be of type Task", artifact.toStringWithId());
       }
       return task;
+   }
+
+   @Override
+   public NewTaskSet createTasks(NewTaskSet newTaskSet, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
+      throw new UnsupportedOperationException("Not supported on IDE client");
    }
 
 }

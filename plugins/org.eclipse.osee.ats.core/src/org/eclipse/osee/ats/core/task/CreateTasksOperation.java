@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.JaxRelation;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -58,7 +58,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class CreateTasksOperation {
 
-   private final NewTaskDatas newTaskDatas;
+   private final NewTaskSet newTaskSet;
    private final AtsApi atsApi;
    private final List<JaxAtsTask> tasks = new ArrayList<>();
    private AtsUser asUser;
@@ -66,21 +66,29 @@ public class CreateTasksOperation {
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
 
-   public CreateTasksOperation(NewTaskData newTaskData, AtsApi atsApi, XResultData results) {
-      this(new NewTaskDatas(newTaskData), atsApi, results);
-   }
-
-   public CreateTasksOperation(NewTaskDatas newTaskDatas, AtsApi atsApi, XResultData results) {
-      this.newTaskDatas = newTaskDatas;
+   public CreateTasksOperation(NewTaskSet newTaskSet, AtsApi atsApi) {
+      this.newTaskSet = newTaskSet;
       this.atsApi = atsApi;
-      this.results = results;
    }
 
-   public XResultData validate() {
-      if (results == null) {
-         results = new XResultData(false);
+   public NewTaskSet validate() {
+      results = newTaskSet.getResults();
+      String asUserId = newTaskSet.getAsUserId();
+      if (asUserId == null) {
+         results.error("As User Id id not specified");
+         return newTaskSet;
       }
-      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
+      asUser = atsApi.getUserService().getUserByUserId(asUserId);
+      if (asUser == null) {
+         results.errorf("As User Id id [%s] does not exist\n", asUserId);
+         return newTaskSet;
+      }
+      if (!Strings.isValid(newTaskSet.getCommitComment())) {
+         results.errorf("Inavlidate Commit Comment [%s]\n", newTaskSet.getCommitComment());
+         return newTaskSet;
+      }
+
+      for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
          Long teamWfId = newTaskData.getTeamWfId();
          if (teamWfId == null) {
             results.error("Team Workflow id not specified");
@@ -91,22 +99,7 @@ public class CreateTasksOperation {
             results.errorf("Team Workflow id %s does not exist", teamWfId);
             continue;
          }
-         String asUserId = newTaskData.getAsUserId();
-         if (asUserId == null) {
-            results.error("As User Id id not specified");
-            continue;
-         }
-         asUser = atsApi.getUserService().getUserByUserId(asUserId);
-         if (asUser == null) {
-            results.errorf("As User Id id %d does not exist\n", asUserId);
-            continue;
-         }
-         if (!Strings.isValid(newTaskData.getCommitComment())) {
-            results.errorf("Inavlidate Commit Comment [%s]\n", newTaskData.getCommitComment());
-            continue;
-         }
-
-         for (JaxAtsTask task : newTaskData.getNewTasks()) {
+         for (JaxAtsTask task : newTaskData.getTasks()) {
             Long taskId = task.getId();
             if (taskId != null && taskId > 0L) {
                ArtifactToken taskArt = atsApi.getQueryService().getArtifact(taskId);
@@ -193,7 +186,7 @@ public class CreateTasksOperation {
             }
          }
       }
-      return results;
+      return newTaskSet;
    }
 
    private RelationTypeToken getRelationType(AtsApi atsApi, String relationTypeName) {
@@ -218,28 +211,28 @@ public class CreateTasksOperation {
       return tasks;
    }
 
-   public void run() {
-      XResultData results = validate();
-      if (results.isErrors()) {
-         return;
+   public NewTaskSet run() {
+      NewTaskSet taskSet = validate();
+      if (taskSet.getResults().isErrors()) {
+         return newTaskSet;
       }
 
-      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
-         newTaskDatas.getTaskDatas().iterator().next().getCommitComment(), asUser);
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(newTaskSet.getCommitComment(), asUser);
       run(changes);
       TransactionId trans = changes.executeIfNeeded();
 
       if (trans != null && trans.isValid()) {
-         for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-            for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
+         for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
+            for (JaxAtsTask jaxTask : newTaskData.getTasks()) {
                JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsApi);
                if (newJaxTask == null) {
-                  results.errorf("Unable to create return New Task for id %s\n" + jaxTask.getIdString());
+                  taskSet.getResults().errorf("Unable to create return New Task for id %s\n" + jaxTask.getIdString());
                }
                this.tasks.add(newJaxTask);
             }
          }
       }
+      return newTaskSet;
    }
 
    public void run(IAtsChangeSet changes) {
@@ -250,8 +243,8 @@ public class CreateTasksOperation {
    }
 
    private void createTasks(IAtsChangeSet changes) {
-      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
+      for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
+         for (JaxAtsTask jaxTask : newTaskData.getTasks()) {
 
             Long id = jaxTask.getId();
             if (id == null || id <= 0L) {
