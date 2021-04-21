@@ -14,11 +14,11 @@
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
@@ -27,8 +27,6 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
  */
 public class DropTargetAttributeBasedResolver extends AttributeBasedArtifactResolver {
    private final Artifact dropTarget;
-   public static final Pattern oseeFilePattern = Pattern.compile("([^_]+)_[^\\d]+[^_]+_[^-]+.*");
-   public static final Matcher oseeFileMatcher = oseeFilePattern.matcher("");
 
    public DropTargetAttributeBasedResolver(IRoughArtifactTranslator translator, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
       super(translator, primaryArtifactType, secondaryArtifactType, nonChangingAttributes, createNewIfNotExist,
@@ -38,15 +36,16 @@ public class DropTargetAttributeBasedResolver extends AttributeBasedArtifactReso
 
    @Override
    public Artifact resolve(RoughArtifact roughArtifact, BranchToken branch, Artifact realParent, Artifact root) {
-
-      oseeFileMatcher.reset(roughArtifact.getName());
-      if (oseeFileMatcher.find()) {
-         roughArtifact.setName(oseeFileMatcher.group(1));
+      if (dropTarget != null) {
+         String nameToCheck = dropTarget.getSafeName();
+         if (roughArtifact.getName().startsWith(nameToCheck)) {
+            getTranslator().translate(roughArtifact, dropTarget);
+         } else {
+            throw new OseeCoreException("Import name not matched");
+         }
+      } else {
+         throw new OseeArgumentException("Null drop target provided");
       }
-      if (dropTarget != null && attributeValuesMatch(roughArtifact, dropTarget)) {
-         getTranslator().translate(roughArtifact, dropTarget);
-      }
-
       return dropTarget;
    }
 }
