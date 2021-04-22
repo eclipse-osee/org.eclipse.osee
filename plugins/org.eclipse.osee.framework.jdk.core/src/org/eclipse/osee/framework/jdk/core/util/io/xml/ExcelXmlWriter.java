@@ -77,7 +77,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          "<Style ss:ID=\"OseeErrorStyle\"><Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/></Style>\n" + //
          "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n" + //
          "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>\n" + //
-         "<Style ss:ID=\"OseeHyperlink\" ss:Name=\"Hyperlink\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"11\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/></Style>";
+         "<Style ss:ID=\"OseeHyperlink\" ss:Name=\"Hyperlink\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/></Style>";
 
    private final BufferedWriter out;
    private boolean inSheet;

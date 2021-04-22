@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute.InterfaceSubMessageCategoryEnum;
+import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute.InterfaceStructureCategoryEnum;
 import org.eclipse.osee.framework.jdk.core.util.CellData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -48,12 +48,20 @@ public class IcdGenerator {
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andNameEquals(
             connectionName).getArtifact();
+      ArtifactReadable primaryNode =
+         conn.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+      ArtifactReadable secondaryNode =
+         conn.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL);
+
       List<ArtifactReadable> messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionContent_Message).getList();
       List<ArtifactReadable> subMessages = new ArrayList<>();
       List<ArtifactReadable> structures = new ArrayList<>();
       SortedMap<String, String> structureLinks = new TreeMap<String, String>();
       for (ArtifactReadable message : messages) {
-         subMessages.addAll(message.getRelated(CoreRelationTypes.InterfaceMessageContent_SubMessage).getList());
+         subMessages.addAll(
+            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList());
       }
       for (ArtifactReadable subMessage : subMessages) {
          structures.addAll(subMessage.getRelated(CoreRelationTypes.InterfaceSubMessageContent_Structure).getList());
@@ -68,7 +76,7 @@ public class IcdGenerator {
          structureLinks.put(structure.getName(), sheetName);
       }
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
-      createMessageSubMessageSummary(writer, branch, conn, messages);
+      createMessageSubMessageSummary(writer, branch, conn, primaryNode, secondaryNode, messages);
       createStructureNamesSheet(writer, branch, structureLinks);
       createMessageDetailSheet(writer, branch, subMessages, structureLinks);
       createSubMessageSheets(writer, branch, subMessages, structureLinks);
@@ -141,7 +149,6 @@ public class IcdGenerator {
       Object[] headings = headingsList.toArray();
       writer.startSheet("SubMessage Summary", columnCount);
       writer.writeRow(headings);
-
       for (ArtifactReadable artifact : subMessages) {
          for (ArtifactReadable struct : artifact.getRelated(
             CoreRelationTypes.InterfaceSubMessageContent_Structure).getList()) {
@@ -149,22 +156,51 @@ public class IcdGenerator {
 
             List<ArtifactReadable> elements =
                struct.getRelated(CoreRelationTypes.InterfaceStructureContent_DataElement).getList();
-            Integer sum =
-               elements.stream().map(x -> (x.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementByteSize,
-                  0) * (x.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd,
-                     0) - x.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0) + 1))).reduce(0,
-                        Integer::sum);
+            int sum = 0;
+            for (ArtifactReadable element : struct.getRelated(
+               CoreRelationTypes.InterfaceStructureContent_DataElement).getList()) {
+               ArtifactReadable platformType =
+                  element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
+                     ArtifactReadable.SENTINEL);
+               if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
+                  sum = sum + ((Integer.parseInt(
+                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeByteSize,
+                        "0")) * (Integer.parseInt(element.getSoleAttributeAsString(
+                           CoreAttributeTypes.InterfaceElementIndexEnd)) - Integer.parseInt(
+                              element.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementIndexStart)) + 1)));
+               } else {
+                  sum = sum + Integer.parseInt(
+                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeByteSize, "0"));
+
+               }
+            }
+
             ArtifactReadable message =
-               artifact.getRelated(CoreRelationTypes.InterfaceMessageContent_Message).getAtMostOneOrDefault(
+               artifact.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_Message).getAtMostOneOrDefault(
                   ArtifactReadable.SENTINEL);
+            String sendingNode =
+               message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL).getName();
             String msgNumber = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber, "0");
             String minSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMinSimultaneity, "n/a");
             String maxSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMaxSimultaneity, "n/a");
-            String msgRateText = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "n/a");
+            String msgRateText;
+            String msgPeriodicity =
+               message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePeriodicity, "Aperiodic");
+            if (msgPeriodicity.equals("Periodic")) {
+               msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
+            } else {
+               msgRateText = msgPeriodicity;
+            }
+            if (artifact.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfaceMessageRate)) {
+               msgRateText = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
+            }
+
             String minBps = Strings.EMPTY_STRING;
             String maxBps = Strings.EMPTY_STRING;
+
             try {
-               int msgRate = Integer.parseInt(msgRateText.replace("-A", ""));
+               int msgRate = Integer.parseInt(msgRateText);
                minBps = Integer.toString(Integer.parseInt(minSim) * sum * msgRate);
                maxBps = Integer.toString(Integer.parseInt(maxSim) * sum * msgRate);
             } catch (NumberFormatException nfe) {
@@ -172,7 +208,7 @@ public class IcdGenerator {
                maxBps = "Classified";
             }
             String cat = struct.getSoleAttributeValue(CoreAttributeTypes.InterfaceStructureCategory);
-            InterfaceSubMessageCategoryEnum catEnum =
+            InterfaceStructureCategoryEnum catEnum =
                CoreAttributeTypes.InterfaceStructureCategory.getEnumValues().stream().filter(
                   e -> cat.equals(e.getName())).findAny().orElse(null);
 
@@ -188,7 +224,7 @@ public class IcdGenerator {
             writer.writeCell(sum);
             writer.writeCell(minBps);
             writer.writeCell(maxBps);
-            writer.writeCell(artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceInitiator, "n/a"));
+            writer.writeCell(sendingNode);
             writer.writeCell(msgNumber);
             writer.writeCell(artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber, "n/a"));
             writer.writeCell(struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceTaskFileType, "n/a"));
@@ -228,9 +264,13 @@ public class IcdGenerator {
 
             for (ArtifactReadable element : struct.getRelated(
                CoreRelationTypes.InterfaceStructureContent_DataElement).getList()) {
+               ArtifactReadable platformType =
+                  element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
+                     ArtifactReadable.SENTINEL);
 
-               Integer byteSize = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementByteSize, 0);
-               printDataElementRow(writer, branch, element, byteLocation, byteSize);
+               Integer byteSize = Integer.valueOf(
+                  platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeByteSize, "0"));
+               printDataElementRow(writer, branch, element, byteLocation, byteSize, platformType);
                byteLocation = byteLocation + byteSize;
             }
             writer.endSheet();
@@ -239,17 +279,22 @@ public class IcdGenerator {
       }
    }
 
-   private void printDataElementRow(ISheetWriter writer, BranchId branch, ArtifactReadable artifact, Integer byteLocation, Integer byteSize) throws IOException {
-
+   private void printDataElementRow(ISheetWriter writer, BranchId branch, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
-      String enumLiterals = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumLiteral, "n/a");
+      String enumLiterals = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, "");
       String elementName = artifact.getSoleAttributeValue(CoreAttributeTypes.Name);
-      String dataType = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementDataType, "n/a");
-      String units = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementUnits, "n/a");
-      String validRange = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementValidRange, "n/a");
+      String dataType = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfaceLogicalType, "n/a");
+      String units = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeUnits, "");
+      String validRange;
+      if (platformType.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfacePlatformTypeMinval)) {
+         validRange = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMinval,
+            "n/a") + "-" + platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMaxval, "n/a");
+      } else {
+         validRange = "";
+      }
       String alterable = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementAlterable, "No");
 
       if (alterable.equalsIgnoreCase("true")) {
@@ -260,10 +305,11 @@ public class IcdGenerator {
       String description = artifact.getSoleAttributeAsString(CoreAttributeTypes.Description, "n/a");
       String notes = artifact.getSoleAttributeAsString(CoreAttributeTypes.Notes, "");
 
-      if (artifact.getExistingRelationTypes().contains(CoreRelationTypes.InterfaceElementEnumeration)) {
+      if (platformType.getExistingRelationTypes().contains(CoreRelationTypes.InterfacePlatformTypeEnumeration)) {
          enumLiterals = "";
-         ArtifactReadable enumDef =
-            artifact.getRelated(CoreRelationTypes.InterfaceElementEnumeration_EnumerationDef).getExactlyOne();
+         ArtifactReadable enumDef = platformType.getRelated(
+            CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
 
          for (ArtifactReadable enumState : enumDef.getRelated(
             CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
@@ -272,8 +318,7 @@ public class IcdGenerator {
          }
       }
 
-      if (artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementIsArray, "false").equalsIgnoreCase(
-         "true")) {
+      if (artifact.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
          int startIndex = artifact.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
          int endIndex = artifact.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
          for (int i = startIndex; i < endIndex + 1; i++) {
@@ -319,26 +364,23 @@ public class IcdGenerator {
 
    }
 
-   private void createMessageSubMessageSummary(ISheetWriter writer, BranchId branch, ArtifactReadable connection, List<ArtifactReadable> messages) throws IOException {
+   private void createMessageSubMessageSummary(ISheetWriter writer, BranchId branch, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) throws IOException {
       int columnCount = 10;
-      String primaryNode = connection.getSoleAttributeAsString(CoreAttributeTypes.InterfaceConnectionPrimaryNode);
-      String secondaryNode = connection.getSoleAttributeAsString(CoreAttributeTypes.InterfaceConnectionSecondaryNode);
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
             Collectors.toList());
       List<ArtifactReadable> primaryList = connectionMessages.stream().filter(
-         e -> primaryNode.equals(e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNode))).collect(
-            Collectors.toList());
+         e -> primaryNode.equals(e.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL))).collect(Collectors.toList());
 
-      List<ArtifactReadable> secondaryList = connectionMessages.stream().filter(
-         e -> secondaryNode.equals(e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNode))).collect(
-            Collectors.toList());
-
+      List<ArtifactReadable> secondaryList = connectionMessages.stream().filter(e -> secondaryNode.equals(
+         e.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL))).collect(Collectors.toList());
       writer.startSheet("Message and SubMessage Summary", columnCount);
       writer.writeCell(
-         new CellData(primaryNode + " Initiated Message", Strings.EMPTY_STRING, "4", Strings.EMPTY_STRING));
+         new CellData(primaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4", Strings.EMPTY_STRING));
       writer.writeCell(
-         new CellData(secondaryNode + " Initiated Message", Strings.EMPTY_STRING, "4", Strings.EMPTY_STRING));
+         new CellData(secondaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4", Strings.EMPTY_STRING));
       writer.endRow();
       writer.writeCell("No.");
       writer.writeCell("Rate");
@@ -363,7 +405,7 @@ public class IcdGenerator {
          try {
             primaryMessage = primaryList.get(i);
             primarySubMessages =
-               primaryMessage.getRelated(CoreRelationTypes.InterfaceMessageContent_SubMessage).getList();
+               primaryMessage.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
          } catch (IndexOutOfBoundsException e) {
             //do nothing leave primaryMessage and primarySubMessages empty
          }
@@ -371,7 +413,7 @@ public class IcdGenerator {
             secondaryMessage = secondaryList.get(i);
 
             secondarySubMessages =
-               secondaryMessage.getRelated(CoreRelationTypes.InterfaceMessageContent_SubMessage).getList();
+               secondaryMessage.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
          } catch (IndexOutOfBoundsException e) {
             //do nothing leave secondaryMessage and secondarySubMessages empty
          }

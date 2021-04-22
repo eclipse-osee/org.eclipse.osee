@@ -18,26 +18,26 @@ import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute.InterfaceSubMessageCategoryEnum;
+import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute.InterfaceStructureCategoryEnum;
 
 /**
  * @author Audrey Denk
  */
-public class InterfaceStructureCategoryAttribute extends AttributeTypeEnum<InterfaceSubMessageCategoryEnum> {
+public class InterfaceStructureCategoryAttribute extends AttributeTypeEnum<InterfaceStructureCategoryEnum> {
 
-   public final InterfaceSubMessageCategoryEnum spare_0 = new InterfaceSubMessageCategoryEnum(0, "spare");
-   public final InterfaceSubMessageCategoryEnum Miscellaneous = new InterfaceSubMessageCategoryEnum(1, "Miscellaneous");
-   public final InterfaceSubMessageCategoryEnum TacticalStatus =
-      new InterfaceSubMessageCategoryEnum(2, "Tactical Status");
-   public final InterfaceSubMessageCategoryEnum BitStatus = new InterfaceSubMessageCategoryEnum(3, "BIT Status");
-   public final InterfaceSubMessageCategoryEnum FlightTest = new InterfaceSubMessageCategoryEnum(4, "Flight Test");
-   public final InterfaceSubMessageCategoryEnum Trackfile = new InterfaceSubMessageCategoryEnum(5, "Trackfile");
-   public final InterfaceSubMessageCategoryEnum Taskfile = new InterfaceSubMessageCategoryEnum(6, "Taskfile");
-   public final InterfaceSubMessageCategoryEnum Network = new InterfaceSubMessageCategoryEnum(7, "Network");
-   public final InterfaceSubMessageCategoryEnum NotApplicable = new InterfaceSubMessageCategoryEnum(8, "N/A");
+   public final InterfaceStructureCategoryEnum spare_0 = new InterfaceStructureCategoryEnum(0, "spare");
+   public final InterfaceStructureCategoryEnum Miscellaneous = new InterfaceStructureCategoryEnum(1, "Miscellaneous");
+   public final InterfaceStructureCategoryEnum TacticalStatus =
+      new InterfaceStructureCategoryEnum(2, "Tactical Status");
+   public final InterfaceStructureCategoryEnum BitStatus = new InterfaceStructureCategoryEnum(3, "BIT Status");
+   public final InterfaceStructureCategoryEnum FlightTest = new InterfaceStructureCategoryEnum(4, "Flight Test");
+   public final InterfaceStructureCategoryEnum Trackfile = new InterfaceStructureCategoryEnum(5, "Trackfile");
+   public final InterfaceStructureCategoryEnum Taskfile = new InterfaceStructureCategoryEnum(6, "Taskfile");
+   public final InterfaceStructureCategoryEnum Network = new InterfaceStructureCategoryEnum(7, "Network");
+   public final InterfaceStructureCategoryEnum NotApplicable = new InterfaceStructureCategoryEnum(8, "N/A");
 
    public InterfaceStructureCategoryAttribute(NamespaceToken namespace, int enumCount) {
-      super(2455059983007225764L, namespace, "Interface SubMessage Category", MediaType.TEXT_PLAIN, "",
+      super(2455059983007225764L, namespace, "Interface Structure Category", MediaType.TEXT_PLAIN, "",
          TaggerTypeToken.PlainTextTagger, enumCount);
    }
 
@@ -45,8 +45,8 @@ public class InterfaceStructureCategoryAttribute extends AttributeTypeEnum<Inter
       this(NamespaceToken.OSEE, 9);
    }
 
-   public class InterfaceSubMessageCategoryEnum extends EnumToken {
-      public InterfaceSubMessageCategoryEnum(int ordinal, String name) {
+   public class InterfaceStructureCategoryEnum extends EnumToken {
+      public InterfaceStructureCategoryEnum(int ordinal, String name) {
          super(ordinal, name);
          addEnum(this);
       }

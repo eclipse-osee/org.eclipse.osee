@@ -26,15 +26,10 @@ import org.eclipse.osee.framework.core.enums.token.InterfaceMessageRateAttribute
 
 public class InterfaceMessageRateAttributeType extends AttributeTypeEnum<InterfaceMessageRateEnum> {
 
-   public final InterfaceMessageRateEnum Aperiodic = new InterfaceMessageRateEnum(0, "Aperiodic");
-   public final InterfaceMessageRateEnum one = new InterfaceMessageRateEnum(1, "1");
-   public final InterfaceMessageRateEnum five = new InterfaceMessageRateEnum(2, "5");
-   public final InterfaceMessageRateEnum ten = new InterfaceMessageRateEnum(3, "10");
-   public final InterfaceMessageRateEnum twenty = new InterfaceMessageRateEnum(4, "20");
-   public final InterfaceMessageRateEnum one_a = new InterfaceMessageRateEnum(5, "1-A");
-   public final InterfaceMessageRateEnum five_a = new InterfaceMessageRateEnum(6, "5-A");
-   public final InterfaceMessageRateEnum ten_a = new InterfaceMessageRateEnum(7, "10-A");
-   public final InterfaceMessageRateEnum twenty_a = new InterfaceMessageRateEnum(8, "20-A");
+   public final InterfaceMessageRateEnum one = new InterfaceMessageRateEnum(0, "1");
+   public final InterfaceMessageRateEnum five = new InterfaceMessageRateEnum(1, "5");
+   public final InterfaceMessageRateEnum ten = new InterfaceMessageRateEnum(2, "10");
+   public final InterfaceMessageRateEnum twenty = new InterfaceMessageRateEnum(3, "20");
 
    public InterfaceMessageRateAttributeType(NamespaceToken namespace, int enumCount) {
       super(2455059983007225763L, namespace, "Interface Message Rate", MediaType.TEXT_PLAIN, "",
@@ -42,7 +37,7 @@ public class InterfaceMessageRateAttributeType extends AttributeTypeEnum<Interfa
    }
 
    public InterfaceMessageRateAttributeType() {
-      this(NamespaceToken.OSEE, 9);
+      this(NamespaceToken.OSEE, 4);
    }
 
    public class InterfaceMessageRateEnum extends EnumToken {

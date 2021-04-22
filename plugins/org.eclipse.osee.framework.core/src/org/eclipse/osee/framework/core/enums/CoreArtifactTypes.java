@@ -215,51 +215,42 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken CustomerRequirementMsWord = osee.add(osee.artifactType(809L, "Customer Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken DirectSoftwareRequirement = osee.add(osee.artifactType(22L, "Direct Software Requirement", true, AbstractSoftwareRequirement));
    ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
-   ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, Artifact)
-      .exactlyOne(Name)
-      .zeroOrOne(Description)
-      .exactlyOne(InterfaceConnectionPrimaryNode)
-      .exactlyOne(InterfaceConnectionSecondaryNode));
+   ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, Artifact));
+   ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, Artifact));
    ArtifactTypeToken InterfaceMessage = osee.add(osee.artifactType(2455059983007225775L, "Interface Message", false, Artifact)
-      .exactlyOne(Name)
-      .zeroOrOne(Description)
       .exactlyOne(InterfaceMessageNumber)
-      .exactlyOne(InterfaceMessageNode)
-      .exactlyOne(InterfaceMessageRate)
+      .exactlyOne(InterfaceMessagePeriodicity)
+      .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceMessageWriteAccess)
       .exactlyOne(InterfaceMessageType));
-   ArtifactTypeToken InterfaceMessageHeader = osee.add(osee.artifactType(126164394421696909L, "Interface Message Header", false, Artifact)
-      .exactlyOne(Name)
-      .zeroOrOne(Description));
    ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, Artifact)
-      .exactlyOne(Name)
-      .zeroOrOne(Description)
-      .zeroOrOne(InterfaceInitiator)
+      .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceSubMessageNumber));
    ArtifactTypeToken InterfaceStructure = osee.add(osee.artifactType(2455059983007225776L, "Interface Structure", false, Artifact)
-      .exactlyOne(Name)
-      .zeroOrOne(Description)
-      .exactlyOne(InterfaceSequenceNo)
       .zeroOrOne(InterfaceStructureCategory)
-      .exactlyOne(InterfaceMessageRate)
       .zeroOrOne(InterfaceMinSimultaneity)
       .zeroOrOne(InterfaceMaxSimultaneity)
       .zeroOrOne(InterfaceTaskFileType));
-   ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "DataElement", false, Artifact)
-      .exactlyOne(Name)
-      .zeroOrOne(Description)
-      .exactlyOne(InterfaceSequenceNo)
-      .exactlyOne(InterfaceElementByteSize)
-      .exactlyOne(InterfaceElementDataType)
-      .zeroOrOne(InterfaceElementUnits)
-      .zeroOrOne(InterfaceElementValidRange)
-      .zeroOrOne(InterfaceElementDefaultValue)
+   ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, Artifact)
       .zeroOrOne(InterfaceElementAlterable)
-      .zeroOrOne(Notes)
-      .zeroOrOne(InterfaceElementIsArray)
-      .zeroOrOne(InterfaceElementIndexStart)
-      .zeroOrOne(InterfaceElementIndexEnd)
-      .zeroOrOne(InterfaceEnumLiteral));
+      .zeroOrOne(Notes));
+   ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement)
+      .exactlyOne(InterfaceElementIndexStart)
+      .exactlyOne(InterfaceElementIndexEnd));
+   ArtifactTypeToken InterfacePlatformType = osee.add(osee.artifactType(6360154518785980503L, "Interface PlatformType", false, Artifact)
+      .exactlyOne(InterfaceLogicalType)
+      .exactlyOne(InterfacePlatformTypeByteSize)
+      .exactlyOne(InterfacePlatform2sComplement)
+      .zeroOrOne(InterfacePlatformTypeMinval)
+      .zeroOrOne(InterfacePlatformTypeMaxval)
+      .zeroOrOne(InterfacePlatformTypeUnits)
+      .zeroOrOne(InterfacePlatformTypeDefaultValue)
+      .zeroOrOne(InterfacePlatformTypeMsbValue)
+      .zeroOrOne(InterfacePlatformTypeBitsResolution)
+      .zeroOrOne(InterfacePlatformTypeCompRate)
+      .zeroOrOne(InterfacePlatformTypeAnalogAccuracy)
+      .zeroOrOne(InterfacePlatformTypeValidRangeDescription)
+      .zeroOrOne(InterfacePlatformTypeEnumLiteral));
    ArtifactTypeToken InterfaceEnum = osee.add(osee.artifactType(2455059983007225793L, "Interface Enumeration", false, Artifact)
       .exactlyOne(InterfaceEnumOrdinal));
    ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, Artifact));
