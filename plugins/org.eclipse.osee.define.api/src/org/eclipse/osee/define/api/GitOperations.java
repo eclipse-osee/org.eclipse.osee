@@ -43,4 +43,5 @@ public interface GitOperations {
 
    List<String> getChangeIdBetweenTags(BranchId branch, ArtifactReadable repoArtifact, String startTag, String endTag);
 
+   List<String> getRemoteBranches(BranchId branch, ArtifactReadable repoArtifact);
 }

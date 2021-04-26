@@ -51,4 +51,11 @@ public interface GitEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getChangeIdBetweenTags(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @QueryParam("startTag") String startTag, @QueryParam("endTag") String endTag);
+
+   @GET
+   @Path("{branch}/repo/{repositoryName}/branches")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<String> getRemoteBranches(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName);
+
 }

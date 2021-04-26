@@ -107,6 +107,25 @@ public class GitEndpointTest {
    }
 
    @Test
+   public void testGetBranches() {
+      File fileToCommit;
+      try {
+         fileToCommit = repoFolder.newFile();
+
+         git.add().addFilepattern(fileToCommit.getName()).call();
+         RevCommit startCommit = git.commit().setMessage("getBranches commit one").call();
+
+         git.branchCreate().setName("newBranch").setStartPoint(startCommit).call();
+         git.commit().setMessage("creatingNewBranch").call();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+
+      List<String> branches = gitEp.getRemoteBranches(branch, Git_Repo.getName());
+      Assert.assertTrue(branches.contains("newBranch"));
+   }
+
+   @Test
    public void testGitChangeIdBetweenTags() {
 
       File fileToCommit;

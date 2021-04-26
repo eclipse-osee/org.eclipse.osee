@@ -52,4 +52,11 @@ public class GitEndpointImpl implements GitEndpoint {
    public List<String> getChangeIdBetweenTags(BranchId branch, String repositoryName, String startTag, String endTag) {
       return gitOps.getChangeIdBetweenTags(branch, gitOps.getRepoArtifact(branch, repositoryName), startTag, endTag);
    }
+
+   @Override
+   public List<String> getRemoteBranches(BranchId branch, String repositoryName) {
+      return gitOps.getRemoteBranches(branch, gitOps.getRepoArtifact(branch, repositoryName));
+
+   }
+
 }

@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -303,6 +305,23 @@ public final class GitOperationsImpl implements GitOperations {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   @Override
+   public List<String> getRemoteBranches(BranchId branch, ArtifactReadable repoArtifact) {
+      Repository jgitRepo = getLocalRepoReference(repoArtifact.getSoleAttributeValue(FileSystemPath));
+      Collection<Ref> refs;
+      List<String> allGitBranches = new ArrayList<>();
+      fetch(jgitRepo, "");
+      try {
+         refs = new Git(jgitRepo).branchList().setListMode(ListMode.ALL).call();
+         for (Ref ref : refs) {
+            allGitBranches.add(ref.getName().substring(ref.getName().lastIndexOf("/") + 1, ref.getName().length()));
+         }
+      } catch (GitAPIException ex) {
+         ex.printStackTrace();
+      }
+      return allGitBranches;
    }
 
    public ArtifactReadable clone(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String passphrase) {
