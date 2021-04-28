@@ -14,6 +14,7 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
@@ -211,7 +212,7 @@ public class ApplicabilityEndpointTest {
       assertTrue(actualOutput.equals(expectedOutput));
       cppFile.delete();
 
-      // Testing the Java file with applicability, delete when done along with code folder
+      // Testing the Java file with applicability
       File javaFile = new File(codeFolder.getPath(), "TestJava.java");
       assertTrue(javaFile.exists());
       actualOutput = Lib.fileToString(javaFile);
@@ -219,6 +220,10 @@ public class ApplicabilityEndpointTest {
          "support/BlockApplicabilityTest/ExpectedOutputs/TestJava.java");
       assertTrue(actualOutput.equals(expectedOutput));
       javaFile.delete();
+
+      // Testing that the java file included in a config file was properly excluded
+      File excludedJavaFile = new File(codeFolder.getPath(), "TestExcludedJava.java");
+      assertFalse(excludedJavaFile.exists());
       codeFolder.delete();
 
       File resourcesFolder = new File(inputFolder.getPath(), "Resources");
@@ -252,23 +257,10 @@ public class ApplicabilityEndpointTest {
       xmlFile.delete();
       resourcesFolder.delete();
 
-      // Test that the unchanged Txt file exists and is equal to the input file, delete when done
-      File noChangeTxtFile = new File(inputFolder.getPath(), "TestTxtNoChange.txt");
-      assertTrue(noChangeTxtFile.exists());
-      actualOutput = Lib.fileToString(noChangeTxtFile);
-      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
-         "support/BlockApplicabilityTest/InputFiles/TestTxtNoChange.txt");
-      assertTrue(actualOutput.equals(expectedOutput));
-      noChangeTxtFile.delete();
-
-      // Testing the Txt file with applicability, delete when done
-      File txtFile = new File(inputFolder.getPath(), "TestTxt.txt");
-      assertTrue(txtFile.exists());
-      actualOutput = Lib.fileToString(txtFile);
-      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
-         "support/BlockApplicabilityTest/ExpectedOutputs/TestTxt.txt");
-      assertTrue(actualOutput.equals(expectedOutput));
-      txtFile.delete();
+      // Checking that the readMe file still exists after processing. An out of scope config file tried to exclude this file.
+      File readMeFile = new File(inputFolder.getPath(), "readMeTest.txt");
+      assertTrue(readMeFile.exists());
+      readMeFile.delete();
 
       // Cleaning up the remaining folders in the directory
       inputFolder.delete();

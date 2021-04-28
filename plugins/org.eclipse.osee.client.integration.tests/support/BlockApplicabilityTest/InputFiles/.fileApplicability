@@ -1,0 +1,7 @@
+Feature[JHU_CONTROLLER]
+TestExcludedJava.java
+End Feature
+
+Feature[ROBOT_SPEAKER=SPKR_A]
+TestXml.xml
+End Feature

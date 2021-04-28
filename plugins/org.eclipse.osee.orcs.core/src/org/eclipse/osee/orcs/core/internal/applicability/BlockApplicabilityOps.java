@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +112,7 @@ public class BlockApplicabilityOps {
       rule.setFileNamePattern(filePattern.toString());
 
       stagePath = getOrCreateFullStagePath(stagePath);
-      rule.process(new File(sourcePath), stagePath);
+      rule.process(new File(sourcePath), stagePath, new HashSet<String>());
 
       return "ruleWasApplicable: " + rule.ruleWasApplicable();
    }

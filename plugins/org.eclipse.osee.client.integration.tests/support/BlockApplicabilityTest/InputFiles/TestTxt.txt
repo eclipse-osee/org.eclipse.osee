@@ -1,9 +1,0 @@
-This is a text file that is meant for testing. 
-
-/* Feature[JHU_CONTROLLER] */
-This line should not be seen
-/* End Feature */
-
-/* Feature[ROBOT_SPEAKER=SPKR_A] */
-This line should be seen
-/* End Feature */

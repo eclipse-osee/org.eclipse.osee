@@ -38,7 +38,7 @@ public abstract class Rule {
    protected boolean ruleWasApplicable;
    protected Logger logger;
    private int modCount;
-   private String charsetString = "UTF8";
+   protected String charsetString = "UTF8";
 
    public Rule() {
       this("done");

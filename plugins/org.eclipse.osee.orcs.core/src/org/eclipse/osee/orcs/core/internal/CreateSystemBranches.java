@@ -253,7 +253,8 @@ public class CreateSystemBranches {
       "{\"TypeId\" : 204509162766371, \"BranchId\" : 714, \"Range\" : [{\"Min\" : 1}]}]}";
 
    private static final String JSON_PL_PREFERENCES = "{ \"FileExtensionCommentStyle\" : [" + //
-      "{ \"FileExtension\" : \"txt\", \"CommentPrefixRegex\" : \"/\\\\*\", \"CommentSuffixRegex\" : \"\\\\*/\", \"CommentPrefix\" : \"/* \", \"CommentSuffix\" : \" */\"}," + //
+      "{ \"FileExtension\" : \"fileApplicability\", \"CommentPrefixRegex\" : \"\", \"CommentSuffixRegex\" : \"\", \"CommentPrefix\" : \"\", \"CommentSuffix\" : \"\"}," + //
+      "{ \"FileExtension\" : \"txt\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
       "{ \"FileExtension\" : \"java\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
       "{ \"FileExtension\" : \"h\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
       "{ \"FileExtension\" : \"cxx\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
