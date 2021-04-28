@@ -17,7 +17,9 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranchName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
@@ -208,6 +210,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Condition)
       .zeroOrOne(DuplicatedPcrId)
       .zeroOrOne(EstimateAssumptions)
+      .zeroOrOne(GitRepoName)
+      .zeroOrOne(GitBranchName)
       .zeroOrOne(Information)
       .zeroOrOne(LegacyPcrId)
       .zeroOrOne(NeedBy)
