@@ -84,7 +84,7 @@ public class CloneDialog extends XWidgetsDialog {
          "<XWidget beginComposite=\"6\" xwidgetType=\"XCombo(" + getChangeTypeOptions() + ")\" horizontalLabel=\"true\" displayName=\"Change Type\" />");
       builder.append(
          "<XWidget xwidgetType=\"XCombo(" + getPriorityOptions() + ")\" horizontalLabel=\"true\" displayName=\"Priority\" />");
-      builder.append("<XWidget endComposite=\"true\" xwidgetType=\"XFloatDam\" displayName=\"Agile Points\" />");
+      builder.append("<XWidget endComposite=\"true\" xwidgetType=\"XFloat\" displayName=\"Agile Points\" />");
 
       // Target Version
       builder.append("<XWidget xwidgetType=\"XTargetedVersionHyperlinkWidget\" displayName=\"Targeted Version\" />");
