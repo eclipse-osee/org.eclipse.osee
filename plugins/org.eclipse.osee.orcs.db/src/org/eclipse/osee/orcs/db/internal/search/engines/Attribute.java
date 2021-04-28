@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 
@@ -40,7 +41,7 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
       this.attributeType = attributeType;
       this.uri = uri;
       this.resourceManager = resourceManager;
-      if (uri == null && value != null) {
+      if (Strings.isValid(value)) {
          this.value = attributeType.valueFromStorageString(value);
       }
    }
@@ -73,7 +74,7 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
 
    @Override
    public T getValue() {
-      if (uri != null && value == null) {
+      if (Strings.isValid(uri) && value == null) {
          this.value = (T) loadBinaryAttribute();
       }
       return value;
