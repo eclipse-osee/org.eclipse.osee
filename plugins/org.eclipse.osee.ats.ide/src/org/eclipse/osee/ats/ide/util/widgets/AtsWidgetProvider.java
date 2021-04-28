@@ -193,6 +193,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XAttachmentExampleWidget();
       } else if (widgetName.equals(XAgileFeatureHyperlinkWidget.WIDGET_ID)) {
          return new XAgileFeatureHyperlinkWidget();
+      } else if (widgetName.equals(XGitFetchButton.WIDGET_ID)) {
+         return new XGitFetchButton();
       } else if (widgetName.equals(XTargetedVersionHyperlinkWidget.WIDGET_ID)) {
          return new XTargetedVersionHyperlinkWidget();
       } else if (widgetName.equals(XOriginatorHyperlinkWidget.WIDGET_ID)) {
