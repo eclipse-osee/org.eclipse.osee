@@ -671,6 +671,11 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranchId {
    }
 
    @Override
+   public ArtifactReadable asArtifactOrSentinel() {
+      return oneOrSentinel(asArtifacts(), ArtifactReadable.SENTINEL);
+   }
+
+   @Override
    public List<ArtifactId> asArtifactIds() {
       setQueryType(QueryType.ID);
       return queryEngine.asArtifactIds(this);

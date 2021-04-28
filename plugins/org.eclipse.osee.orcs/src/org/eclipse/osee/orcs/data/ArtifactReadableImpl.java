@@ -208,8 +208,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       if (attributes.isEmpty()) {
          throw new OseeStateException("attributes not loaded for artifact [%s]", getIdString());
       }
-      List<IAttribute<?>> values =
-         attributes.getValues(AttributeTypeToken.valueOf(attributeType.getId(), attributeType.getName()));
+      List<IAttribute<?>> values = attributes.getValues(attributeType);
       if (values == null) {
          return null;
       }
