@@ -269,25 +269,27 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
 
    @Override
    public void refresh() {
-      Pair<Artifact, RelationLink> entry = getSelectedAttachment();
-      Artifact attachmentArt = entry.getFirst();
-      if (attachmentArt != null) {
-         if (!Widgets.isAccessible(readHyperlink)) {
-            setValueText(attachmentArt.toString());
-            WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
-            readHyperlink = WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
-               attachmentArt, parent, editor, OpenType.Read.name());
-            editHyperlink = WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
-            deleteHyperlink = WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
-               attachmentArt, entry.getSecond(), parent, editor);
+      if (Widgets.isAccessible(parent)) {
+         Pair<Artifact, RelationLink> entry = getSelectedAttachment();
+         Artifact attachmentArt = entry.getFirst();
+         if (attachmentArt != null) {
+            if (!Widgets.isAccessible(readHyperlink)) {
+               setValueText(attachmentArt.toString());
+               WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
+               readHyperlink = WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
+                  attachmentArt, parent, editor, OpenType.Read.name());
+               editHyperlink = WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
+               deleteHyperlink = WfeRelationsHyperlinkComposite.createDeleteHyperlink(
+                  (AbstractWorkflowArtifact) workItem, attachmentArt, entry.getSecond(), parent, editor);
+            }
+         } else {
+            if (Widgets.isAccessible(readHyperlink)) {
+               readHyperlink.dispose();
+               editHyperlink.dispose();
+               deleteHyperlink.dispose();
+            }
+            setValueText("");
          }
-      } else {
-         if (Widgets.isAccessible(readHyperlink)) {
-            readHyperlink.dispose();
-            editHyperlink.dispose();
-            deleteHyperlink.dispose();
-         }
-         setValueText("");
       }
    }
 }
