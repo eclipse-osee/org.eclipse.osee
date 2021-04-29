@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;

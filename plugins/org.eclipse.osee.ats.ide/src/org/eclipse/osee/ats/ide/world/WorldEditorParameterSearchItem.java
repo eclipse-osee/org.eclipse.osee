@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -57,7 +58,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutLis
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -91,11 +91,11 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
 
-   public WorldEditorParameterSearchItem(String name, KeyedImage oseeImage) {
+   public WorldEditorParameterSearchItem(String name, AtsImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
    }
 
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) {
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, AtsImage oseeImage) {
       super(worldSearchItem, oseeImage);
    }
 

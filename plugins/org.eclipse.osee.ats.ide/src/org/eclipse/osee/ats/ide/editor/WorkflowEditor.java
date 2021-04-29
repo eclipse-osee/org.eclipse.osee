@@ -27,12 +27,12 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.IDirtyReportable;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.agile.SprintMemberProvider;
@@ -642,7 +642,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    public Image getTitleImage() {
       Image image = null;
       if (getWfeInput().isReload()) {
-         image = ImageManager.getImage(AtsImage.TEAM_WORKFLOW);
+         image = ImageManager.getImage(AtsImage.WORKFLOW);
       } else if (getWfeInput().isBacklog()) {
          image = ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
       } else {

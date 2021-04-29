@@ -16,13 +16,13 @@ package org.eclipse.osee.ats.ide.world.search;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -33,8 +33,8 @@ public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
    private final boolean showWorkflow;
    private final WorkItemType workItemType;
 
-   public ShowOpenWorkflowsByReviewType(String displayName, WorkItemType workItemType, boolean showFinished, boolean showWorkflow, KeyedImage oseeImage) {
-      super(displayName, oseeImage);
+   public ShowOpenWorkflowsByReviewType(String displayName, WorkItemType workItemType, boolean showFinished, boolean showWorkflow, AtsImage atsImage) {
+      super(displayName, atsImage);
       Conditions.checkNotNull(workItemType, "workItemType");
       this.workItemType = workItemType;
       this.showFinished = showFinished;

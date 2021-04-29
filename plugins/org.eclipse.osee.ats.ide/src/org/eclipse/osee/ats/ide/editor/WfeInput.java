@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -83,7 +83,7 @@ public class WfeInput extends ArtifactEditorInput {
          return ImageManager.getImageDescriptor(
             AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
       }
-      return ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW);
+      return ImageManager.getImageDescriptor(AtsImage.WORKFLOW);
    }
 
    /**

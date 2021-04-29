@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.operation.ModifyActionableItemsBlam;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.task;
 
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;

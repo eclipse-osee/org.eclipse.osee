@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
@@ -50,8 +51,8 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Workflow Editor", AtsImage.ACTION,
-         RendererOption.OPEN_OPTION.getKey(), Option_WORKFLOW_EDITOR));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Workflow Editor",
+         ImageManager.create(AtsImage.ACTION), RendererOption.OPEN_OPTION.getKey(), Option_WORKFLOW_EDITOR));
    }
 
    @Override

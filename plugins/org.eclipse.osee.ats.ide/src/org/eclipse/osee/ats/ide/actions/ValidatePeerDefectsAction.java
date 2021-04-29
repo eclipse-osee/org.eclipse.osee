@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

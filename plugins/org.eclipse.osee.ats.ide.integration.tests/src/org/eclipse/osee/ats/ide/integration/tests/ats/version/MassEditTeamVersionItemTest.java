@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoBranches;

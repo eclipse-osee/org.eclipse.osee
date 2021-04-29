@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

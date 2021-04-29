@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.agile;
 
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 

@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.CreateNewUsersByNameItem;

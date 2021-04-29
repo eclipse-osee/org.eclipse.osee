@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * @author Donald G. Dunne
@@ -48,14 +48,14 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
 
    public VersionTargetedForTeamSearchItem(String name, IAtsTeamDefinition teamDef, IAtsVersion versionArt, boolean returnAction, LoadView loadView) {
       super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView,
-         FrameworkImage.VERSION);
+         AtsImage.VERSION);
       this.teamDef = teamDef;
       this.versionArt = versionArt;
       this.returnAction = returnAction;
    }
 
    public VersionTargetedForTeamSearchItem(VersionTargetedForTeamSearchItem versionTargetedForTeamSearchItem) {
-      super(versionTargetedForTeamSearchItem, FrameworkImage.VERSION);
+      super(versionTargetedForTeamSearchItem, AtsImage.VERSION);
       this.versionArt = versionTargetedForTeamSearchItem.versionArt;
       this.returnAction = versionTargetedForTeamSearchItem.returnAction;
       this.teamDef = versionTargetedForTeamSearchItem.teamDef;
@@ -114,8 +114,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          IAtsTeamDefinition selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-            dialog.setInput(
-               AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both));
+            dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both));
             int result = dialog.open();
             if (result == 0) {
                selectedTeamDef = dialog.getSelectedFirst();

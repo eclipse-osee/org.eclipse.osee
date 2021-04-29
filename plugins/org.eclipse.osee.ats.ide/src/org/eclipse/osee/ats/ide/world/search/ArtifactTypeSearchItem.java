@@ -14,12 +14,12 @@
 package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * @author Donald G. Dunne
@@ -29,12 +29,12 @@ public class ArtifactTypeSearchItem extends WorldUISearchItem {
    private final ArtifactTypeToken artifactType;
 
    public ArtifactTypeSearchItem(String name, ArtifactTypeToken artifactType) {
-      super(name, FrameworkImage.FLASHLIGHT);
+      super(name, AtsImage.FLASHLIGHT);
       this.artifactType = artifactType;
    }
 
    public ArtifactTypeSearchItem(ArtifactTypeSearchItem artifactTypeSearchItem) {
-      super(artifactTypeSearchItem, FrameworkImage.FLASHLIGHT);
+      super(artifactTypeSearchItem, AtsImage.FLASHLIGHT);
       this.artifactType = artifactTypeSearchItem.artifactType;
    }
 

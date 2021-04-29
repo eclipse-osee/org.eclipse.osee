@@ -20,12 +20,14 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
@@ -44,12 +46,12 @@ public abstract class AbstractImageManagerTest {
 
    private static final String pluginId = "org.eclipse.osee.ats.ide";
 
-   private final KeyedImage[] oseeImages;
+   private final Collection<AtsImage> oseeImages;
    private final String imageClassName;
 
    private static SevereLoggingMonitor monitorLog;
 
-   public AbstractImageManagerTest(String imageClassName, KeyedImage[] oseeImages) {
+   public AbstractImageManagerTest(String imageClassName, Collection<AtsImage> oseeImages) {
       this.imageClassName = imageClassName;
       this.oseeImages = oseeImages;
    }
@@ -85,7 +87,7 @@ public abstract class AbstractImageManagerTest {
    @org.junit.Test
    public void testFrameworkImageEnums() throws Exception {
       StringBuffer sb = new StringBuffer();
-      for (KeyedImage oseeImage : oseeImages) {
+      for (OseeImage oseeImage : oseeImages) {
          if (oseeImage == ImageManager.MISSING) {
             continue;
          }

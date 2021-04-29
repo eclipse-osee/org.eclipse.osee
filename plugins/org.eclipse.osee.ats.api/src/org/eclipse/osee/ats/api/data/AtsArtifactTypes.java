@@ -15,6 +15,19 @@ package org.eclipse.osee.ats.api.data;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
+import static org.eclipse.osee.ats.api.util.AtsImage.ACTION;
+import static org.eclipse.osee.ats.api.util.AtsImage.ACTIONABLE_ITEM;
+import static org.eclipse.osee.ats.api.util.AtsImage.DECISION_REVIEW;
+import static org.eclipse.osee.ats.api.util.AtsImage.GOAL;
+import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION;
+import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION_ACTIVITY;
+import static org.eclipse.osee.ats.api.util.AtsImage.PEER_REVIEW;
+import static org.eclipse.osee.ats.api.util.AtsImage.PROGRAM;
+import static org.eclipse.osee.ats.api.util.AtsImage.TASK;
+import static org.eclipse.osee.ats.api.util.AtsImage.TEAM_DEFINITION;
+import static org.eclipse.osee.ats.api.util.AtsImage.VERSION;
+import static org.eclipse.osee.ats.api.util.AtsImage.WORKFLOW_DEFINITION;
+import static org.eclipse.osee.ats.api.util.AtsImage.WORK_PACKAGE;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranchName;
@@ -32,7 +45,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken AtsArtifact = ats.add(ats.artifactType(63L, "ats.Ats Artifact", true, Artifact)
       .zeroOrOne(Description)
       .zeroOrOne(GoalOrderVote));
-   ArtifactTypeToken Action = ats.add(ats.artifactType(67L, "Action", false, AtsArtifact)
+   ArtifactTypeToken Action = ats.add(ats.artifactType(67L, "Action", false, ACTION, AtsArtifact)
       .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
       .exactlyOne(AtsId, "0")
@@ -56,7 +69,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken AtsTeamDefinitionOrAi = ats.add(ats.artifactType(803L, "ats.Ats Team Definition or AI", true, AtsConfigArtifact)
       .zeroOrOne(Actionable, Boolean.TRUE)
       .any(AtsAttributeTypes.RuleDefinition));
-   ArtifactTypeToken ActionableItem = ats.add(ats.artifactType(69L, "Actionable Item", false, AbstractAccessControlled, AtsTeamDefinitionOrAi)
+   ArtifactTypeToken ActionableItem = ats.add(ats.artifactType(69L, "Actionable Item", false, ACTIONABLE_ITEM, AbstractAccessControlled, AtsTeamDefinitionOrAi)
       .zeroOrOne(AllowUserActionCreation)
       .any(CSCI)
       .zeroOrOne(ProgramId)
@@ -66,14 +79,14 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Default)
       .zeroOrOne(Description));
    ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, AtsConfigArtifact));
-   ArtifactTypeToken Insertion = ats.add(ats.artifactType(1735587136604728792L, "Insertion", false, AtsConfigArtifact)
+   ArtifactTypeToken Insertion = ats.add(ats.artifactType(1735587136604728792L, "Insertion", false, INSERTION,  AtsConfigArtifact)
       .zeroOrOne(Description)
       .zeroOrOne(EndDate)
       .zeroOrOne(PointsNumeric)
       .zeroOrOne(StartDate));
-   ArtifactTypeToken InsertionActivity = ats.add(ats.artifactType(3943415539127781884L, "Insertion Activity", false, AtsConfigArtifact)
+   ArtifactTypeToken InsertionActivity = ats.add(ats.artifactType(3943415539127781884L, "Insertion Activity", false, INSERTION_ACTIVITY, AtsConfigArtifact)
       .zeroOrOne(Description));
-   ArtifactTypeToken Program = ats.add(ats.artifactType(52374361342017540L, "Program", false, AtsConfigArtifact)
+   ArtifactTypeToken Program = ats.add(ats.artifactType(52374361342017540L, "Program", false, PROGRAM, AtsConfigArtifact)
       .any(CSCI)
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(Description)
@@ -81,7 +94,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AtsAttributeTypes.TeamDefinition)
       .zeroOrOne(TeamDefinitionReference));
    ArtifactTypeToken ResponsibleTeam = ats.add(ats.artifactType(8943243743202487405L, "Responsible Team", false, AtsTeamDefinitionOrAi));
-   ArtifactTypeToken RuleDefinition = ats.add(ats.artifactType(6370402109038303278L, "Rule Definition", false, Artifact)
+   ArtifactTypeToken RuleDefinition = ats.add(ats.artifactType(6370402109038303278L, "Rule Definition", false, WORKFLOW_DEFINITION, Artifact)
       .zeroOrOne(DslSheet));
    ArtifactTypeToken AbstractWorkflowArtifact = ats.add(ats.artifactType(71L, "ats.State Machine", true, AtsArtifact)
       .exactlyOne(AtsId, "0")
@@ -131,7 +144,7 @@ public interface AtsArtifactTypes {
       .any(KanbanStoryName)
       .zeroOrOne(PlannedPoints)
       .zeroOrOne(UnplannedPoints));
-   ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, AbstractWorkflowArtifact)
+   ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType, ChangeType.Improvement)
       .zeroOrOne(NeedBy)
       .zeroOrOne(Priority, Priority.Priority5));
@@ -141,10 +154,10 @@ public interface AtsArtifactTypes {
       .any(ActionableItemReference)
       .zeroOrOne(RelatedToState)
       .zeroOrOne(ReviewBlocks, ReviewBlocks.None));
-   ArtifactTypeToken DecisionReview = ats.add(ats.artifactType(66L, "Decision Review", false, AbstractReview)
+   ArtifactTypeToken DecisionReview = ats.add(ats.artifactType(66L, "Decision Review", false, DECISION_REVIEW, AbstractReview)
       .zeroOrOne(Decision)
       .zeroOrOne(DecisionReviewOptions));
-   ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "Peer-To-Peer Review", false, AbstractReview)
+   ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "Peer-To-Peer Review", false, PEER_REVIEW, AbstractReview)
       .zeroOrOne(ChangeType, null)
       .zeroOrOne(LocChanged)
       .zeroOrOne(LocReviewed)
@@ -161,7 +174,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(VerificationCodeInspection));
    ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", false, Artifact)
       .zeroOrOne(Released));
-   ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, AbstractWorkflowArtifact)
+   ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, TASK, AbstractWorkflowArtifact)
       .zeroOrOne(RelatedToState)
       .zeroOrOne(SignalImpact)
       .zeroOrOne(TaskToChangedArtifactReference)
@@ -171,7 +184,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TaskAutoGenVersion)
       .zeroOrOne(WcafeImpact)
       .zeroOrOne(UsesResolutionOptions));
-   ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, AbstractAccessControlled, ResponsibleTeam)
+   ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, TEAM_DEFINITION, AbstractAccessControlled, ResponsibleTeam)
       .zeroOrOne(ActionDetailsFormat)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
@@ -239,7 +252,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidationRequired)
       .zeroOrOne(WeeklyBenefit)
       .any(GitChangeId));
-   ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, AtsArtifact)
+   ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, VERSION, AtsArtifact)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
       .zeroOrOne(AllowWebExport)
@@ -255,9 +268,9 @@ public interface AtsArtifactTypes {
       .zeroOrOne(SignalDbSystemId)
       .zeroOrOne(IsDcs)
       .zeroOrOne(LegacyBuildId));
-   ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, Artifact)
+   ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, WORKFLOW_DEFINITION, Artifact)
       .zeroOrOne(DslSheet));
-   ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, Artifact)
+   ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, Artifact)
       .exactlyOne(Active, Boolean.TRUE)
       .zeroOrOne(ActivityId)
       .zeroOrOne(ActivityName)

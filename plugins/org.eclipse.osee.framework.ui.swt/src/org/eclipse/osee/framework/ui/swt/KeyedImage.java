@@ -19,7 +19,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * @author Ryan D. Brooks
  */
 public interface KeyedImage {
+
    public abstract ImageDescriptor createImageDescriptor();
 
    public abstract String getImageKey();
+
 }

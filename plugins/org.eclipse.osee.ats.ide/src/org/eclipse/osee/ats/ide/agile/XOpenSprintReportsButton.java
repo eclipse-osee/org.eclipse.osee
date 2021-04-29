@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.agile;
 
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.Result;

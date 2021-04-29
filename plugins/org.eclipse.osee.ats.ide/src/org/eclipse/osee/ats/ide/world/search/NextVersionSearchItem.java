@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * @author Donald G. Dunne
@@ -44,12 +44,12 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    public NextVersionSearchItem(String name, IAtsTeamDefinition teamDefHoldingVersions, LoadView loadView) {
-      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, FrameworkImage.VERSION_NEXT);
+      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, AtsImage.VERSION_NEXT);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
    public NextVersionSearchItem(NextVersionSearchItem nextVersionSearchItem) {
-      super(nextVersionSearchItem, FrameworkImage.VERSION);
+      super(nextVersionSearchItem, AtsImage.VERSION);
       this.teamDefHoldingVersions = nextVersionSearchItem.teamDefHoldingVersions;
       this.selectedTeamDef = nextVersionSearchItem.selectedTeamDef;
    }
@@ -88,9 +88,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          return EMPTY_SET;
       }
       List<Artifact> arts = new ArrayList<>();
-      List<Artifact> castAll =
-         Collections.castAll(AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(
-            AtsApiService.get().getVersionService().getNextReleaseVersion(getTeamDefinition())));
+      List<Artifact> castAll = Collections.castAll(AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(
+         AtsApiService.get().getVersionService().getNextReleaseVersion(getTeamDefinition())));
       arts.addAll(castAll);
       if (isCancelled()) {
          return EMPTY_SET;
@@ -109,8 +108,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       }
       try {
          TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-         dialog.setInput(
-            AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
+         dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
          int result = dialog.open();
          if (result == 0) {
             selectedTeamDef = dialog.getSelectedFirst();

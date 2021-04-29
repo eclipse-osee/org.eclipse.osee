@@ -27,8 +27,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.NewGoal;
 import org.eclipse.osee.ats.ide.actions.OpenArtifactEditorById;
@@ -160,7 +160,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new ValidateOseeTypes(utilItems);
          new CommaDelimitLines(utilItems);
          new ClearAtsConfigCache(utilItems);
-         new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
+         new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.WORKFLOW);
          new AtsConfigResultsEditorNavigateItem(utilItems);
          new ToggleAccessControlDebug(utilItems);
       } catch (Exception ex) {
@@ -276,8 +276,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       new XNavigateItemOperation(advancedSearchesItems, AtsImage.OPEN_BY_ID,
          "Search by ID(s) - Multi-Line - Open World Editor",
          new MultipleIdMultiLineSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor));
-      new XNavigateItemOperation(advancedSearchesItems, AtsImage.WORKFLOW_CONFIG,
-         "Search by ID(s) - Open Workflow Editor",
+      new XNavigateItemOperation(advancedSearchesItems, AtsImage.WORKFLOW, "Search by ID(s) - Open Workflow Editor",
          new MultipleIdSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor));
       new XNavigateItemOperation(advancedSearchesItems, AtsImage.GLOBE, "Action Quick Search",
          new AtsQuickSearchOperationFactory());

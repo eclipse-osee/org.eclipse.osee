@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;

@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -38,7 +39,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -157,7 +157,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       @Override
       public Image getImage(Object element) {
          if (element instanceof WorkDefinitionViewer) {
-            return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
+            return ImageManager.getImage(AtsImage.WORKFLOW);
          } else if (element instanceof WorkflowEditor) {
             return ((WorkflowEditor) element).getTitleImage();
          } else if (element instanceof AbstractWorkflowArtifact) {
@@ -167,7 +167,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
          } else if (element instanceof IAtsWorkDefinition) {
-            return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
+            return ImageManager.getImage(AtsImage.WORKFLOW);
          } else if (element instanceof IAtsWidgetDefinition) {
             return ImageManager.getImage(FrameworkImage.GEAR);
          } else if (element instanceof IAtsCompositeLayoutItem || element instanceof WrappedLayout) {
@@ -187,7 +187,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof IAtsDecisionReviewOption) {
             return ImageManager.getImage(FrameworkImage.QUESTION);
          } else if (element instanceof HeaderDefinition) {
-            return ImageManager.getImage(AtsImage.WORK_DEFINITION);
+            return ImageManager.getImage(AtsImage.WORKFLOW_DEFINITION);
          }
          return null;
       }

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -41,7 +41,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this.user = user;
    }
 
-   public UserSearchItem(String name, AtsUser user, KeyedImage oseeImage) {
+   public UserSearchItem(String name, AtsUser user, AtsImage oseeImage) {
       super(name, oseeImage);
       this.user = user;
    }
@@ -50,7 +50,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this(userSearchItem, null);
    }
 
-   public UserSearchItem(UserSearchItem userSearchItem, KeyedImage oseeImage) {
+   public UserSearchItem(UserSearchItem userSearchItem, AtsImage oseeImage) {
       super(userSearchItem, oseeImage);
       this.user = userSearchItem.user;
       this.selectedUser = userSearchItem.selectedUser;

@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.world;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;

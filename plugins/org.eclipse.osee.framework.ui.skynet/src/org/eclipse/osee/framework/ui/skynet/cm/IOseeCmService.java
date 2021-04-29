@@ -22,9 +22,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Roberto E. Escobar
@@ -52,10 +50,6 @@ public interface IOseeCmService {
 
    default boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch) {
       return true;
-   }
-
-   default KeyedImage getImage(ImageType imageType) {
-      return FrameworkImage.HEADING;
    }
 
    default boolean isWorkFlowBranch(BranchId branch) {

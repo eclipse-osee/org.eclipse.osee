@@ -21,8 +21,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -55,7 +54,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       setShortName(TITLE);
    }
 
-   public AtsSearchWorkflowSearchItem(String name, KeyedImage image) {
+   public AtsSearchWorkflowSearchItem(String name, AtsImage image) {
       super(name, image);
       setShortName(name);
    }
@@ -64,13 +63,13 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       this(searchItem, TITLE, IMAGE);
    }
 
-   public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem, String name, KeyedImage image) {
+   public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem, String name, AtsImage image) {
       super(searchItem, image);
       setShortName(name);
    }
 
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(getOseeImage());
+      return ImageManager.getImageDescriptor(IMAGE);
    }
 
    protected boolean showWorkItemWidgets() {

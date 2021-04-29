@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.ev;
 
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchWorkPackageSearchItem;

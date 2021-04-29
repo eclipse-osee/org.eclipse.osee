@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -30,7 +31,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  * @author Ryan D. Brooks
  */
 public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
+
    ArtifactTypeToken SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
+   OseeImage image = null;
 
    public static ArtifactTypeToken valueOf(long id, String name, ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, NamespaceToken.OSEE, name, false, Arrays.asList(superTypes)).get();
@@ -40,6 +43,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    default void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
       //This implementation should never be called
+   }
+
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, List<ArtifactTypeToken> superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, image, superTypes).get();
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
@@ -103,20 +110,28 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType);
 
+   public OseeImage getImage();
+
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
+      return create(id, namespace, name, isAbstract, attributeTypes, null, superTypes);
+   }
+
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
          private final List<ArtifactTypeToken> superTypes;
          private final List<ArtifactTypeToken> directDescendants = new ArrayList<>(4);
          private final AttributeMultiplicity attributeTypes;
          private final NamespaceToken namespace;
+         private final OseeImage image;
 
-         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
+         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, List<ArtifactTypeToken> superTypes) {
             super(id, name);
             this.isAbstract = isAbstract;
             this.superTypes = superTypes;
             this.attributeTypes = attributeTypes;
             this.namespace = namespace;
+            this.image = image;
             if (superTypes.size() > 1 && this.superTypes.contains(Artifact)) {
                throw new OseeArgumentException("Multiple super types for artifact type [%s] and and supertype Artifact",
                   name);
@@ -232,7 +247,12 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
             String name = getName();
             return name == null ? super.toString() : name;
          }
+
+         @Override
+         public OseeImage getImage() {
+            return image;
+         }
       }
-      return new ArtifactTypeTokenImpl(id, namespace, name, isAbstract, attributeTypes, superTypes);
+      return new ArtifactTypeTokenImpl(id, namespace, name, isAbstract, attributeTypes, image, superTypes);
    }
 }

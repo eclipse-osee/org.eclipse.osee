@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;

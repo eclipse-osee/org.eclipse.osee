@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.swt;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.swt.internal.Activator;
@@ -71,8 +72,16 @@ public final class ImageManager {
       return getImage(setupImage(imageEnum));
    }
 
+   public synchronized static Image getImage(OseeImage oseeImage) {
+      return getImage(setupImage(ImageManager.create(oseeImage)));
+   }
+
    public synchronized static ImageDescriptor getImageDescriptor(KeyedImage imageEnum) {
       return getImageDescriptor(setupImage(imageEnum));
+   }
+
+   public synchronized static ImageDescriptor getImageDescriptor(OseeImage oseeImage) {
+      return getImageDescriptor(setupImage(create(oseeImage)));
    }
 
    public synchronized static String setupImage(KeyedImage imageEnum) {
@@ -149,4 +158,20 @@ public final class ImageManager {
          return Activator.PLUGIN_ID + ".missing";
       }
    }
+
+   public static KeyedImage create(OseeImage oseeImage) {
+      return new KeyedImage() {
+
+         @Override
+         public String getImageKey() {
+            return oseeImage.name();
+         }
+
+         @Override
+         public ImageDescriptor createImageDescriptor() {
+            return ImageManager.createImageDescriptor(oseeImage.getPluginId(), oseeImage.name());
+         }
+      };
+   }
+
 }

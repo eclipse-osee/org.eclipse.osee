@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
@@ -51,6 +52,10 @@ public class OrcsTypeTokens {
 
    public NamespaceToken getNamespace() {
       return namespace;
+   }
+
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image, ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, image, superTypes);
    }
 
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {

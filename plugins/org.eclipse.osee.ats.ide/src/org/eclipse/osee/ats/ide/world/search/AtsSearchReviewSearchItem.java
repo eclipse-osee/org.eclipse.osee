@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.world.search;
 
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 
 /**

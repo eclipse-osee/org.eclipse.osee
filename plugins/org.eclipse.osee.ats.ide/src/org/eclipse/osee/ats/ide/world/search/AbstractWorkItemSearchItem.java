@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 
 /**

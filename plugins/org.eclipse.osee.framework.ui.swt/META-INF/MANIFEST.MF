@@ -13,4 +13,6 @@ Export-Package: org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.swt.styledText
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.osee.framework.logging
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.logging

@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import java.util.Arrays;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.swt.ImageManager;

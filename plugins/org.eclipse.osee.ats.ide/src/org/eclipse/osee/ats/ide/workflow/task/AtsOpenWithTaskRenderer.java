@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author John R. Misinco
@@ -88,20 +90,21 @@ public class AtsOpenWithTaskRenderer extends DefaultArtifactRenderer {
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Test Cases", AtsImage.TASK,
+      KeyedImage taskImage = ImageManager.create(AtsImage.TASK);
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Test Cases", taskImage,
          OPEN_OPTION.getKey(), Option_TRACEABILITY));
 
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Requirement", AtsImage.TASK,
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Requirement", taskImage,
          OPEN_OPTION.getKey(), Option_RELATED_REQ));
 
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Requirement in Artifact Explorer",
          FrameworkImage.ARTIFACT_EXPLORER, OPEN_OPTION.getKey(), Option_RELATED_REQ_ART_EXP));
 
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Requirement Diffs - F5", AtsImage.TASK,
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Requirement Diffs - F5", taskImage,
          OPEN_OPTION.getKey(), Option_REQ_DIFF));
 
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Tasks", AtsImage.TASK,
-         OPEN_OPTION.getKey(), Option_RELATED_TASK));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Tasks", taskImage, OPEN_OPTION.getKey(),
+         Option_RELATED_TASK));
 
    }
 

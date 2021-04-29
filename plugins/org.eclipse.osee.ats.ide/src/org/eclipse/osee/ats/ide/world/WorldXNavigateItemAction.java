@@ -13,18 +13,16 @@
 
 package org.eclipse.osee.ats.ide.world;
 
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorldXNavigateItemAction extends XNavigateItemAction {
 
-   public WorldXNavigateItemAction(XNavigateItem parent, String name, KeyedImage oseeImage) {
+   public WorldXNavigateItemAction(XNavigateItem parent, String name, AtsImage oseeImage) {
       super(parent, name, oseeImage == null ? determineImage(name) : oseeImage);
    }
 
@@ -32,15 +30,15 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
       super(parent, name, determineImage(name));
    }
 
-   private static KeyedImage determineImage(String name) {
+   private static AtsImage determineImage(String name) {
       if (name.contains("Report") || name.contains("Metrics")) {
          return AtsImage.REPORT;
       } else if (name.contains("Search")) {
-         return FrameworkImage.FLASHLIGHT;
+         return AtsImage.FLASHLIGHT;
       } else if (name.contains("Task")) {
          return AtsImage.TASK;
       } else if (name.contains("Sync")) {
-         return FrameworkImage.ARROW_LEFT_YELLOW;
+         return AtsImage.ARROW_LEFT_YELLOW;
       }
       return AtsImage.GLOBE;
    }

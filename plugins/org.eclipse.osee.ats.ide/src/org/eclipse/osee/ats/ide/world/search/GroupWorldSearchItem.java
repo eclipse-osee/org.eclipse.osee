@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 
 /**
@@ -37,13 +37,13 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    private final BranchId branch;
 
    public GroupWorldSearchItem(String displayName, String groupName, BranchId branch) {
-      super(displayName, FrameworkImage.GROUP);
+      super(displayName, AtsImage.GROUP);
       this.groupName = groupName;
       this.branch = branch;
    }
 
    public GroupWorldSearchItem(Artifact group) {
-      super("Group Search", FrameworkImage.GROUP);
+      super("Group Search", AtsImage.GROUP);
       this.groups.add(group);
       this.branch = group.getBranch();
    }
@@ -53,7 +53,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem) {
-      super(groupWorldSearchItem, FrameworkImage.GROUP);
+      super(groupWorldSearchItem, AtsImage.GROUP);
       this.groups = groupWorldSearchItem.groups;
       this.groupName = groupWorldSearchItem.groupName;
       this.selectedGroups = groupWorldSearchItem.selectedGroups;

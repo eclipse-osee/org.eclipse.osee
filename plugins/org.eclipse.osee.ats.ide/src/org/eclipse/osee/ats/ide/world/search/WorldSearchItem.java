@@ -16,12 +16,12 @@ package org.eclipse.osee.ats.ide.world.search;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -33,7 +33,7 @@ public abstract class WorldSearchItem {
    protected static final Set<Artifact> EMPTY_SET = new HashSet<>();
    protected boolean cancelled = false;
    private LoadView loadView;
-   private final KeyedImage oseeImage;
+   protected final AtsImage atsImage;
    public static enum LoadView {
       TaskEditor,
       WorldEditor,
@@ -44,20 +44,20 @@ public abstract class WorldSearchItem {
       ReSearch
    };
 
-   public WorldSearchItem(String name, LoadView loadView, boolean cancelled, KeyedImage oseeImage) {
+   public WorldSearchItem(String name, LoadView loadView, boolean cancelled, AtsImage atsImage) {
       super();
       this.name = name;
       this.loadView = loadView;
       this.cancelled = cancelled;
-      this.oseeImage = oseeImage;
+      this.atsImage = atsImage;
    }
 
-   public WorldSearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
-      this(name, loadView, false, oseeImage);
+   public WorldSearchItem(String name, LoadView loadView, AtsImage atsImage) {
+      this(name, loadView, false, atsImage);
    }
 
-   public WorldSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) {
-      this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, oseeImage);
+   public WorldSearchItem(WorldSearchItem worldSearchItem, AtsImage atsImage) {
+      this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, atsImage);
    }
 
    public abstract WorldSearchItem copy();
@@ -97,11 +97,11 @@ public abstract class WorldSearchItem {
    }
 
    public Image getImage() {
-      return oseeImage == null ? null : ImageManager.getImage(oseeImage);
+      return atsImage == null ? null : ImageManager.getImage(atsImage);
    }
 
-   public KeyedImage getOseeImage() {
-      return oseeImage;
+   public AtsImage getatsImage() {
+      return atsImage;
    }
 
 }

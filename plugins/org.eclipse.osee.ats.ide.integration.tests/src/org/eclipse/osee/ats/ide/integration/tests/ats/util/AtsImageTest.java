@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 public class AtsImageTest extends AbstractImageManagerTest {
 
    public AtsImageTest() {
-      super("AtsImage", AtsImage.values());
+      super("AtsImage", AtsImage.getValues());
    }
 
 }

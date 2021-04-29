@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 
 /**
  * @author Ryan D. Brooks
@@ -29,9 +30,19 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    private final ArtifactTypeToken artifactType;
    private final List<ComputedCharacteristicToken<?>> computedCharacteristics = new ArrayList<>();
 
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, List<ArtifactTypeToken> superTypes) {
+      ArtifactTypeToken artifactType =
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, superTypes);
+      this.artifactType = artifactType;
+   }
+
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType = ArtifactTypeToken.create(id, namespace, name, isAbstract, this, superTypes);
       this.artifactType = artifactType;
+   }
+
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, ArtifactTypeToken... superTypes) {
+      this(id, namespace, name, isAbstract, image, Arrays.asList(superTypes));
    }
 
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {

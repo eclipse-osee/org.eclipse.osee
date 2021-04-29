@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.world.search.ShowOpenWorkflowsByReviewType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

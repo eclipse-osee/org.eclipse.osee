@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -24,6 +26,10 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public final class XNavigateItemOperation extends XNavigateItem {
 
    private final IOperationFactory operationFactory;
+
+   public XNavigateItemOperation(XNavigateItem parent, OseeImage oseeImage, String name, IOperationFactory operationFactory) {
+      this(parent, ImageManager.create(oseeImage), name, operationFactory);
+   }
 
    public XNavigateItemOperation(XNavigateItem parent, KeyedImage oseeImage, String name, IOperationFactory operationFactory) {
       super(parent, name, oseeImage);

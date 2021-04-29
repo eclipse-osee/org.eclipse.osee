@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IWorkbenchPage;
@@ -38,7 +38,7 @@ public class ShowWorkDefinitionAction extends AbstractAtsAction {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.WORK_DEFINITION);
+      return ImageManager.getImageDescriptor(AtsImage.WORKFLOW_DEFINITION);
    }
 
 }

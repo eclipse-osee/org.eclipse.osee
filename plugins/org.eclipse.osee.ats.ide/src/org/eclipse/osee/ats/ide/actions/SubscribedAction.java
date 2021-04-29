@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.SubscribeManager;
 import org.eclipse.osee.ats.ide.util.SubscribeManagerUI;

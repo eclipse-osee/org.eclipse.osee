@@ -17,14 +17,15 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.agile.BacklogXViewerFactory;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -59,7 +60,7 @@ public class GoalMemberProvider extends AbstractMemberProvider {
       if (isBacklog()) {
          return AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG);
       }
-      return AtsImage.GOAL;
+      return ImageManager.create(AtsImage.GOAL);
    }
 
    @Override

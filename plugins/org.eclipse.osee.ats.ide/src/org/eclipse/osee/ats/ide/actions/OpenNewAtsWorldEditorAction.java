@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;

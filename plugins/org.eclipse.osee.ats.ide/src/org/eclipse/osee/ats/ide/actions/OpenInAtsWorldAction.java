@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.actions;
 
 import java.util.Arrays;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;

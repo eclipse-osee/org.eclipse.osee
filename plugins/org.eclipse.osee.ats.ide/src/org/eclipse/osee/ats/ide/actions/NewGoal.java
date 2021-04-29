@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;

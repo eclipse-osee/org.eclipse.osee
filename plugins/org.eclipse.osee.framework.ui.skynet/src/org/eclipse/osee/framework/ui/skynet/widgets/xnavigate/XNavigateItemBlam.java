@@ -13,11 +13,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -39,6 +41,22 @@ public class XNavigateItemBlam extends XNavigateItem {
             return blamOperation;
          }
       };
+   }
+
+   public XNavigateItemBlam(XNavigateItem parent, final AbstractBlam blamOperation, OseeImage oseeImage) {
+      super(parent, blamOperation.getName(), ImageManager.create(oseeImage));
+      blamProvider = new IBlamProvider() {
+
+         @Override
+         public AbstractBlam getBlam() {
+            return blamOperation;
+         }
+      };
+   }
+
+   public XNavigateItemBlam(XNavigateItem parent, IBlamProvider blamProvider, String name, OseeImage oseeImage) {
+      super(parent, name, ImageManager.create(oseeImage));
+      this.blamProvider = blamProvider;
    }
 
    public XNavigateItemBlam(XNavigateItem parent, IBlamProvider blamProvider, String name, KeyedImage keyedImage) {

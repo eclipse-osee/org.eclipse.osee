@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintReportsButton;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint.SprintArtifactLabelProvider;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint.SprintStateTypeComparator;

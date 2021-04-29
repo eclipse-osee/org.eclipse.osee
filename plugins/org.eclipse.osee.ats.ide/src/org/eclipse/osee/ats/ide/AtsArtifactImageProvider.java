@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
@@ -46,20 +46,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
    @Override
    public void init() {
       if (!initRan.getAndSet(true)) {
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.DECISION_REVIEW, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Task, AtsImage.TASK, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.ActionableItem, AtsImage.ACTIONABLE_ITEM, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamDefinition, AtsImage.TEAM_DEFINITION, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.InsertionActivity, AtsImage.INSERTION_ACTIVITY, this);
-         ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkPackage, AtsImage.WORK_PACKAGE, this);
 
          for (ArtifactImage artImage : AtsArtifactImages.getImages()) {
             CoreImage keyedImage = new CoreImage(Activator.PLUGIN_ID, artImage.getImageName());

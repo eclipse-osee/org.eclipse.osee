@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import java.util.Collection;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;

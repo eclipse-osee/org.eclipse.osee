@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.internal;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Roberto E. Escobar
@@ -67,16 +65,6 @@ public class AtsOseeCmService implements IOseeCmService {
          }
       }
       return toReturn;
-   }
-
-   @Override
-   public KeyedImage getImage(ImageType imageType) {
-      if (imageType == ImageType.Pcr) {
-         return AtsImage.TEAM_WORKFLOW;
-      } else if (imageType == ImageType.Task) {
-         return AtsImage.TASK;
-      }
-      return AtsImage.ACTION;
    }
 
    @Override

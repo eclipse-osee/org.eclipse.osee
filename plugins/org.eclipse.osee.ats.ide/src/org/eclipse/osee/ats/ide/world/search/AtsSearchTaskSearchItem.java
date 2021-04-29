@@ -16,8 +16,8 @@ package org.eclipse.osee.ats.ide.world.search;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.AtsImage;
 
 /**
  * @author Donald G. Dunne

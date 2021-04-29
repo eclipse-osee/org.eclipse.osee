@@ -15,12 +15,12 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -31,20 +31,20 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       this(name, LoadView.WorldEditor, null);
    }
 
-   public WorldUISearchItem(String name, KeyedImage oseeImage) {
-      this(name, LoadView.WorldEditor, oseeImage);
+   public WorldUISearchItem(String name, AtsImage atsImage) {
+      this(name, LoadView.WorldEditor, atsImage);
    }
 
-   public WorldUISearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
-      super(name, loadView, oseeImage);
+   public WorldUISearchItem(String name, LoadView loadView, AtsImage atsImage) {
+      super(name, loadView, atsImage);
    }
 
    public WorldUISearchItem(WorldUISearchItem worldUISearchItem) {
       this(worldUISearchItem, null);
    }
 
-   public WorldUISearchItem(WorldUISearchItem worldUISearchItem, KeyedImage oseeImage) {
-      super(worldUISearchItem, oseeImage);
+   public WorldUISearchItem(WorldUISearchItem worldUISearchItem, AtsImage atsImage) {
+      super(worldUISearchItem, atsImage);
    }
 
    /**

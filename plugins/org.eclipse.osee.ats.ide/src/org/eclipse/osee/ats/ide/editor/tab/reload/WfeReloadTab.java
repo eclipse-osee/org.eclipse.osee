@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -126,7 +126,7 @@ public class WfeReloadTab extends FormPage {
       String displayableTitle = Strings.escapeAmpersands(title);
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          managedForm.getForm().setText(displayableTitle);
-         managedForm.getForm().setImage(ImageManager.getImage(AtsImage.TEAM_WORKFLOW));
+         managedForm.getForm().setImage(ImageManager.getImage(AtsImage.WORKFLOW));
       }
       setPartName(displayableTitle);
    }

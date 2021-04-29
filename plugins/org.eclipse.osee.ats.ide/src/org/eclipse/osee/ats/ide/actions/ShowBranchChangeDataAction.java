@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -62,7 +62,7 @@ public class ShowBranchChangeDataAction extends AbstractAtsAction {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.WORKFLOW_CONFIG);
+      return ImageManager.getImageDescriptor(AtsImage.WORKFLOW);
    }
 
    public static boolean isApplicable(AbstractWorkflowArtifact awa) {

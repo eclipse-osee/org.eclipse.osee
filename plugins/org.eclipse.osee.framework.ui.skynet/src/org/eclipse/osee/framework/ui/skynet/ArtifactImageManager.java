@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -245,6 +246,11 @@ public final class ArtifactImageManager {
       return ImageManager.setupImage(imageEnum);
    }
 
+   public static String setupImage(Artifact artifact, OseeImage overlay, Location location) {
+      return ImageManager.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), ImageManager.create(overlay),
+         location).getImageKey();
+   }
+
    public static String setupImage(Artifact artifact, KeyedImage overlay, Location location) {
       return ImageManager.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location).getImageKey();
    }
@@ -255,6 +261,10 @@ public final class ArtifactImageManager {
 
    public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactTypeToken artifactType) {
       providersOverrideImageMap.put(artifactType, imageProvider);
+   }
+
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage, ArtifactImageProvider provider) {
+      registerBaseImage(artifactType, ImageManager.create(oseeImage), provider);
    }
 
    public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) {
@@ -284,10 +294,20 @@ public final class ArtifactImageManager {
    }
 
    public synchronized static Image getImage(Artifact artifact) {
+      ArtifactTypeToken type = artifact.getArtifactType();
+      OseeImage image = type.getImage();
+      if (image != null) {
+         return ImageManager.getImage(image);
+      }
       return ImageManager.getImage(setupImage(artifact));
    }
 
    public synchronized static ImageDescriptor getImageDescriptor(Artifact artifact) {
+      ArtifactTypeToken type = artifact.getArtifactType();
+      OseeImage image = type.getImage();
+      if (image != null) {
+         return ImageManager.getImageDescriptor(image);
+      }
       return ImageManager.getImageDescriptor(setupImage(artifact));
    }
 

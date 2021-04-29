@@ -14,8 +14,8 @@
 package org.eclipse.osee.ats.ide.editor.tab.task;
 
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.actions.ImportListener;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;

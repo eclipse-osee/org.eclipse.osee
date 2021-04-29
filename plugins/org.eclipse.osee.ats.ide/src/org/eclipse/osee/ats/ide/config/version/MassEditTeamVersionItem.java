@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.config.version;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -41,6 +42,10 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    private IAtsTeamDefinition selectedTeamDef;
 
    public MassEditTeamVersionItem(String name, XNavigateItem parent, KeyedImage oseeImage) {
+      super(parent, name, oseeImage);
+   }
+
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, AtsImage oseeImage) {
       super(parent, name, oseeImage);
    }
 

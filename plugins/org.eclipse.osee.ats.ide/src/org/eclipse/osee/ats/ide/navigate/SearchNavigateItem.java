@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItemProvider;
@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -42,8 +41,8 @@ public class SearchNavigateItem extends XNavigateItem {
       this.wsi = wsi;
    }
 
-   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi, KeyedImage oseeImage) {
-      super(parent, wsi.getName(), oseeImage);
+   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi, AtsImage atsImage) {
+      super(parent, wsi.getName(), atsImage);
       this.wsi = wsi;
    }
 

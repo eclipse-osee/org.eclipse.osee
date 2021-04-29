@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -35,6 +36,10 @@ public class XNavigateItem {
    private Object data;
    private long id = 0L;
    protected INavigateItemRefresher refresher;
+
+   public XNavigateItem(XNavigateItem parent, String name, OseeImage oseeImage) {
+      this(parent, name, ImageManager.create(oseeImage));
+   }
 
    public XNavigateItem(XNavigateItem parent, String name, KeyedImage oseeImage) {
       this.parent = parent;

@@ -13,9 +13,9 @@
 package org.eclipse.osee.ats.ide.workflow.task.widgets;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;

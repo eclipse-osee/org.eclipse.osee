@@ -14,8 +14,9 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.widget;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -26,12 +27,12 @@ public class XRequestedHoursApprovalWidget extends XAbstractSignDateAndByButton 
 
    public XRequestedHoursApprovalWidget() {
       super("Approve Requested Hours", "Sign or clear requesting hours.", AtsAttributeTypes.ApproveRequestedHoursDate,
-         AtsAttributeTypes.ApproveRequestedHoursBy, AtsImage.CHECK_CLIPBOARD);
+         AtsAttributeTypes.ApproveRequestedHoursBy, ImageManager.create(AtsImage.CHECK_CLIPBOARD));
    }
 
    public XRequestedHoursApprovalWidget(boolean isRequired) {
       super("Approve Requested Hours", "Sign or clear requesting hours.", AtsAttributeTypes.ApproveRequestedHoursDate,
-         AtsAttributeTypes.ApproveRequestedHoursBy, AtsImage.CHECK_CLIPBOARD, isRequired);
+         AtsAttributeTypes.ApproveRequestedHoursBy, ImageManager.create(AtsImage.CHECK_CLIPBOARD), isRequired);
 
    }
 
