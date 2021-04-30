@@ -42,30 +42,15 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public interface AtsArtifactTypes {
 
    // @formatter:off
+
+   // Base ATS type
    ArtifactTypeToken AtsArtifact = ats.add(ats.artifactType(63L, "ats.Ats Artifact", true, Artifact)
       .zeroOrOne(Description)
       .zeroOrOne(GoalOrderVote));
-   ArtifactTypeToken Action = ats.add(ats.artifactType(67L, "Action", false, ACTION, AtsArtifact)
-      .any(AtsAttributeTypes.ActionableItem)
-      .any(ActionableItemReference)
-      .exactlyOne(AtsId, "0")
-      .zeroOrOne(ChangeType, null)
-      .zeroOrOne(NeedBy)
-      .zeroOrOne(Priority, null)
-      .zeroOrOne(ValidationRequired));
+
+   // ATS Config Objects
    ArtifactTypeToken AtsConfigArtifact = ats.add(ats.artifactType(801L, "ats.Ats Config Artifact", true, Artifact)
       .exactlyOne(Active, Boolean.TRUE));
-   ArtifactTypeToken AgileFeatureGroup = ats.add(ats.artifactType(560322181883393633L, "Agile Feature Group", false, AtsConfigArtifact)
-      .zeroOrOne(Description));
-   ArtifactTypeToken AgileProgram = ats.add(ats.artifactType(7844993694062372L, "Agile Program", false, AtsConfigArtifact));
-   ArtifactTypeToken AgileProgramBacklog = ats.add(ats.artifactType(7844994687943135L, "Agile Program Backlog", false, AtsConfigArtifact));
-   ArtifactTypeToken AgileProgramBacklogItem = ats.add(ats.artifactType(11221316461321645L, "Agile Program Backlog Item", false, AtsConfigArtifact));
-   ArtifactTypeToken AgileProgramFeature = ats.add(ats.artifactType(99876313545914L, "Agile Program Feature", false, AtsConfigArtifact));
-   ArtifactTypeToken AgileStory = ats.add(ats.artifactType(33216462134454L, "Agile Story", false, AtsConfigArtifact));
-   ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, AtsConfigArtifact)
-      .zeroOrOne(Description)
-      .zeroOrOne(KanbanIgnoreStates)
-      .zeroOrOne(PointsAttributeType));
    ArtifactTypeToken AtsTeamDefinitionOrAi = ats.add(ats.artifactType(803L, "ats.Ats Team Definition or AI", true, AtsConfigArtifact)
       .zeroOrOne(Actionable, Boolean.TRUE)
       .any(AtsAttributeTypes.RuleDefinition));
@@ -96,6 +81,78 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken ResponsibleTeam = ats.add(ats.artifactType(8943243743202487405L, "Responsible Team", false, AtsTeamDefinitionOrAi));
    ArtifactTypeToken RuleDefinition = ats.add(ats.artifactType(6370402109038303278L, "Rule Definition", false, WORKFLOW_DEFINITION, Artifact)
       .zeroOrOne(DslSheet));
+   ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", false, Artifact)
+      .zeroOrOne(Released));
+   ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, TEAM_DEFINITION, AbstractAccessControlled, ResponsibleTeam)
+      .zeroOrOne(ActionDetailsFormat)
+      .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
+      .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
+      .zeroOrOne(AtsIdPrefix)
+      .zeroOrOne(AtsIdSequenceName)
+      .zeroOrOne(BaselineBranchId)
+      .any(CSCI)
+      .zeroOrOne(ClosureActive)
+      .zeroOrOne(FullName)
+      .zeroOrOne(HoursPerWorkDay)
+      .zeroOrOne(ProgramId)
+      .any(RelatedPeerWorkflowDefinition)
+      .any(RelatedPeerWorkflowDefinitionReference)
+      .any(RelatedTaskWorkflowDefinition)
+      .zeroOrOne(RelatedTaskWorkflowDefinitionOld)
+      .any(RelatedTaskWorkflowDefinitionReference)
+      .zeroOrOne(RequireTargetedVersion)
+      .any(TaskSetId)
+      .zeroOrOne(TeamUsesVersions)
+      .zeroOrOne(TeamWorkflowArtifactType)
+      .any(WorkType)
+      .zeroOrOne(WorkflowDefinition)
+      .zeroOrOne(WorkflowDefinitionReference));
+   ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, VERSION, AtsArtifact)
+      .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
+      .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
+      .zeroOrOne(AllowWebExport)
+      .zeroOrOne(BaselineBranchId)
+      .zeroOrOne(ClosureState, null)
+      .zeroOrOne(EstimatedReleaseDate)
+      .zeroOrOne(FullName)
+      .zeroOrOne(NextVersion)
+      .zeroOrOne(ReleaseDate)
+      .zeroOrOne(Released)
+      .zeroOrOne(TestRunToSourceLocator)
+      .zeroOrOne(VersionLocked)
+      .zeroOrOne(SignalDbSystemId)
+      .zeroOrOne(IsDcs)
+      .zeroOrOne(LegacyBuildId));
+   ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, WORKFLOW_DEFINITION, Artifact)
+      .zeroOrOne(DslSheet));
+   ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, Artifact)
+      .exactlyOne(Active, Boolean.TRUE)
+      .zeroOrOne(ActivityId)
+      .zeroOrOne(ActivityName)
+      .zeroOrOne(CAM)
+      .zeroOrOne(CognosUniqueId)
+      .zeroOrOne(ControlAccount)
+      .zeroOrOne(Description)
+      .zeroOrOne(EndDate)
+      .zeroOrOne(EstimatedHours)
+      .any(Notes)
+      .zeroOrOne(PercentComplete)
+      .zeroOrOne(PointsNumeric)
+      .zeroOrOne(StartDate)
+      .zeroOrOne(WorkPackageId)
+      .zeroOrOne(WorkPackageProgram)
+      .zeroOrOne(WorkPackageType, WorkPackageType.Discrete));
+
+
+   // ATS Workflows
+   ArtifactTypeToken Action = ats.add(ats.artifactType(67L, "Action", false, ACTION, AtsArtifact)
+      .any(AtsAttributeTypes.ActionableItem)
+      .any(ActionableItemReference)
+      .exactlyOne(AtsId, "0")
+      .zeroOrOne(ChangeType, null)
+      .zeroOrOne(NeedBy)
+      .zeroOrOne(Priority, null)
+      .zeroOrOne(ValidationRequired));
    ArtifactTypeToken AbstractWorkflowArtifact = ats.add(ats.artifactType(71L, "ats.State Machine", true, AtsArtifact)
       .exactlyOne(AtsId, "0")
       .zeroOrOne(BlockedReason)
@@ -139,75 +196,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(WorkflowDefinition)
       .zeroOrOne(WorkflowDefinitionReference)
       .zeroOrOne(WorkflowNotes));
-   ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, AbstractWorkflowArtifact)
-      .any(Holiday)
-      .any(KanbanStoryName)
-      .zeroOrOne(PlannedPoints)
-      .zeroOrOne(UnplannedPoints));
-   ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
-      .zeroOrOne(ChangeType, ChangeType.Improvement)
-      .zeroOrOne(NeedBy)
-      .zeroOrOne(Priority, Priority.Priority5));
-   ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, Goal));
-   ArtifactTypeToken AbstractReview = ats.add(ats.artifactType(64L, "ats.Review", true, AbstractWorkflowArtifact)
-      .any(AtsAttributeTypes.ActionableItem)
-      .any(ActionableItemReference)
-      .zeroOrOne(RelatedToState)
-      .zeroOrOne(ReviewBlocks, ReviewBlocks.None));
-   ArtifactTypeToken DecisionReview = ats.add(ats.artifactType(66L, "Decision Review", false, DECISION_REVIEW, AbstractReview)
-      .zeroOrOne(Decision)
-      .zeroOrOne(DecisionReviewOptions));
-   ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "Peer-To-Peer Review", false, PEER_REVIEW, AbstractReview)
-      .zeroOrOne(ChangeType, null)
-      .zeroOrOne(LocChanged)
-      .zeroOrOne(LocReviewed)
-      .zeroOrOne(Location)
-      .any(MeetingAttendee)
-      .zeroOrOne(MeetingDate)
-      .zeroOrOne(MeetingLength)
-      .zeroOrOne(MeetingLocation)
-      .zeroOrOne(PagesChanged)
-      .zeroOrOne(PagesReviewed)
-      .any(ReviewDefect)
-      .zeroOrOne(ReviewFormalType, ReviewFormalType.Formal)
-      .any(Role)
-      .zeroOrOne(VerificationCodeInspection));
-   ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", false, Artifact)
-      .zeroOrOne(Released));
-   ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, TASK, AbstractWorkflowArtifact)
-      .zeroOrOne(RelatedToState)
-      .zeroOrOne(SignalImpact)
-      .zeroOrOne(TaskToChangedArtifactReference)
-      .zeroOrOne(TaskToChangedArtifactName)
-      .zeroOrOne(TaskToChangedArtifactDeleted)
-      .zeroOrOne(TaskAutoGen)
-      .zeroOrOne(TaskAutoGenVersion)
-      .zeroOrOne(WcafeImpact)
-      .zeroOrOne(UsesResolutionOptions));
-   ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, TEAM_DEFINITION, AbstractAccessControlled, ResponsibleTeam)
-      .zeroOrOne(ActionDetailsFormat)
-      .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
-      .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
-      .zeroOrOne(AtsIdPrefix)
-      .zeroOrOne(AtsIdSequenceName)
-      .zeroOrOne(BaselineBranchId)
-      .any(CSCI)
-      .zeroOrOne(ClosureActive)
-      .zeroOrOne(FullName)
-      .zeroOrOne(HoursPerWorkDay)
-      .zeroOrOne(ProgramId)
-      .any(RelatedPeerWorkflowDefinition)
-      .any(RelatedPeerWorkflowDefinitionReference)
-      .any(RelatedTaskWorkflowDefinition)
-      .zeroOrOne(RelatedTaskWorkflowDefinitionOld)
-      .any(RelatedTaskWorkflowDefinitionReference)
-      .zeroOrOne(RequireTargetedVersion)
-      .any(TaskSetId)
-      .zeroOrOne(TeamUsesVersions)
-      .zeroOrOne(TeamWorkflowArtifactType)
-      .any(WorkType)
-      .zeroOrOne(WorkflowDefinition)
-      .zeroOrOne(WorkflowDefinitionReference));
    ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, AbstractAccessControlled, AbstractWorkflowArtifact)
       .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
@@ -252,41 +240,64 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidationRequired)
       .zeroOrOne(WeeklyBenefit)
       .any(GitChangeId));
-   ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, VERSION, AtsArtifact)
-      .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
-      .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
-      .zeroOrOne(AllowWebExport)
-      .zeroOrOne(BaselineBranchId)
-      .zeroOrOne(ClosureState, null)
-      .zeroOrOne(EstimatedReleaseDate)
-      .zeroOrOne(FullName)
-      .zeroOrOne(NextVersion)
-      .zeroOrOne(ReleaseDate)
-      .zeroOrOne(Released)
-      .zeroOrOne(TestRunToSourceLocator)
-      .zeroOrOne(VersionLocked)
-      .zeroOrOne(SignalDbSystemId)
-      .zeroOrOne(IsDcs)
-      .zeroOrOne(LegacyBuildId));
-   ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, WORKFLOW_DEFINITION, Artifact)
-      .zeroOrOne(DslSheet));
-   ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, Artifact)
-      .exactlyOne(Active, Boolean.TRUE)
-      .zeroOrOne(ActivityId)
-      .zeroOrOne(ActivityName)
-      .zeroOrOne(CAM)
-      .zeroOrOne(CognosUniqueId)
-      .zeroOrOne(ControlAccount)
+   ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
+      .zeroOrOne(ChangeType, ChangeType.Improvement)
+      .zeroOrOne(NeedBy)
+      .zeroOrOne(Priority, Priority.Priority5));
+   ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, TASK, AbstractWorkflowArtifact)
+      .zeroOrOne(RelatedToState)
+      .zeroOrOne(SignalImpact)
+      .zeroOrOne(TaskToChangedArtifactReference)
+      .zeroOrOne(TaskToChangedArtifactName)
+      .zeroOrOne(TaskToChangedArtifactDeleted)
+      .zeroOrOne(TaskAutoGen)
+      .zeroOrOne(TaskAutoGenVersion)
+      .zeroOrOne(WcafeImpact)
+      .zeroOrOne(UsesResolutionOptions));
+
+   // Reviews
+   ArtifactTypeToken AbstractReview = ats.add(ats.artifactType(64L, "ats.Review", true, AbstractWorkflowArtifact)
+      .any(AtsAttributeTypes.ActionableItem)
+      .any(ActionableItemReference)
+      .zeroOrOne(RelatedToState)
+      .zeroOrOne(ReviewBlocks, ReviewBlocks.None));
+   ArtifactTypeToken DecisionReview = ats.add(ats.artifactType(66L, "Decision Review", false, DECISION_REVIEW, AbstractReview)
+      .zeroOrOne(Decision)
+      .zeroOrOne(DecisionReviewOptions));
+   ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "Peer-To-Peer Review", false, PEER_REVIEW, AbstractReview)
+      .zeroOrOne(ChangeType, null)
+      .zeroOrOne(LocChanged)
+      .zeroOrOne(LocReviewed)
+      .zeroOrOne(Location)
+      .any(MeetingAttendee)
+      .zeroOrOne(MeetingDate)
+      .zeroOrOne(MeetingLength)
+      .zeroOrOne(MeetingLocation)
+      .zeroOrOne(PagesChanged)
+      .zeroOrOne(PagesReviewed)
+      .any(ReviewDefect)
+      .zeroOrOne(ReviewFormalType, ReviewFormalType.Formal)
+      .any(Role)
+      .zeroOrOne(VerificationCodeInspection));
+
+   // ATS Agile
+   ArtifactTypeToken AgileFeatureGroup = ats.add(ats.artifactType(560322181883393633L, "Agile Feature Group", false, AtsConfigArtifact)
+      .zeroOrOne(Description));
+   ArtifactTypeToken AgileProgram = ats.add(ats.artifactType(7844993694062372L, "Agile Program", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgramBacklog = ats.add(ats.artifactType(7844994687943135L, "Agile Program Backlog", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgramBacklogItem = ats.add(ats.artifactType(11221316461321645L, "Agile Program Backlog Item", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgramFeature = ats.add(ats.artifactType(99876313545914L, "Agile Program Feature", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileStory = ats.add(ats.artifactType(33216462134454L, "Agile Story", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, AtsConfigArtifact)
       .zeroOrOne(Description)
-      .zeroOrOne(EndDate)
-      .zeroOrOne(EstimatedHours)
-      .any(Notes)
-      .zeroOrOne(PercentComplete)
-      .zeroOrOne(PointsNumeric)
-      .zeroOrOne(StartDate)
-      .zeroOrOne(WorkPackageId)
-      .zeroOrOne(WorkPackageProgram)
-      .zeroOrOne(WorkPackageType, WorkPackageType.Discrete));
+      .zeroOrOne(KanbanIgnoreStates)
+      .zeroOrOne(PointsAttributeType));
+   ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, AbstractWorkflowArtifact)
+      .any(Holiday)
+      .any(KanbanStoryName)
+      .zeroOrOne(PlannedPoints)
+      .zeroOrOne(UnplannedPoints));
+   ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, Goal));
 
    //iCTeam Types
    ArtifactTypeToken Project = ats.add(ats.artifactType(250L, "Project", false, Artifact)
@@ -294,7 +305,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Shortname)
       .zeroOrOne(TaskCountForProject));
    ArtifactTypeToken AgileProject = ats.add(ats.artifactType(8517L, "Agile Project", false, Project));
-
 
    // @formatter:on
 }
