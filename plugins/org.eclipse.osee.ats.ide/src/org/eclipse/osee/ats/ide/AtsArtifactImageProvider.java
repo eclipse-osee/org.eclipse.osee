@@ -90,12 +90,12 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          }
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
-         if (SubscribeManager.isSubscribed(stateMachine, AtsApiService.get().getUserService().getCurrentUser())) {
+         AbstractWorkflowArtifact wfArt = (AbstractWorkflowArtifact) artifact;
+         if (SubscribeManager.isSubscribed(wfArt, AtsApiService.get().getUserService().getCurrentUser())) {
             // was 8,6
             return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
-         if (FavoritesManager.isFavorite(stateMachine, AtsApiService.get().getUserService().getCurrentUser())) {
+         if (FavoritesManager.isFavorite(wfArt, AtsApiService.get().getUserService().getCurrentUser())) {
             // was 7,0
             return ArtifactImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }

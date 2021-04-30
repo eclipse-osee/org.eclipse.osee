@@ -17,6 +17,7 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.ats.api.util.AtsImage.ACTION;
 import static org.eclipse.osee.ats.api.util.AtsImage.ACTIONABLE_ITEM;
+import static org.eclipse.osee.ats.api.util.AtsImage.CHANGE_REQUEST;
 import static org.eclipse.osee.ats.api.util.AtsImage.DECISION_REVIEW;
 import static org.eclipse.osee.ats.api.util.AtsImage.GOAL;
 import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION;
@@ -34,6 +35,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranch
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
@@ -254,6 +256,10 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TaskAutoGenVersion)
       .zeroOrOne(WcafeImpact)
       .zeroOrOne(UsesResolutionOptions));
+
+   // Change Request
+   ArtifactTypeToken AbstractChangeRequestWorkflow = osee.add(osee.artifactType(458278L, "Abstract Change Request", true, Artifact));
+   ArtifactTypeToken ChangeRequestTeamWorkflow = ats.add(ats.artifactType(4938L, "Change Request Workflow", false, CHANGE_REQUEST, TeamWorkflow, AbstractChangeRequestWorkflow));
 
    // Reviews
    ArtifactTypeToken AbstractReview = ats.add(ats.artifactType(64L, "ats.Review", true, AbstractWorkflowArtifact)

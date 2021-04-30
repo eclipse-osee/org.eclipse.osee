@@ -72,7 +72,12 @@ public abstract class WfeAbstractTab extends FormPage {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
          managedForm.getForm().setToolTipText(displayableTitle);
-         String artifactTypeName = workItem.isTeamWorkflow() ? "Team Workflow" : workItem.getArtifactTypeName();
+         String artifactTypeName = workItem.getArtifactTypeName();
+         if (workItem.isChangeRequest()) {
+            artifactTypeName = "CR";
+         } else if (workItem.isTeamWorkflow()) {
+            artifactTypeName = "Team Workflow";
+         }
          String formTitle = getFormTitle(managedForm, artifactTypeName);
          managedForm.getForm().setText(formTitle);
          if (AtsApiService.get().getAgileService().isBacklog(workItem)) {

@@ -247,12 +247,12 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(AtsImage.ACTION);
+      return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.ACTION);
+      return ImageManager.getImageDescriptor(AtsImage.CHANGE_REQUEST);
    }
 
 }

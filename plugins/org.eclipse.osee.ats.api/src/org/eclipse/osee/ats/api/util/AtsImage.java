@@ -36,6 +36,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage CENTER = new AtsImage("center.gif");
    public static AtsImage CHECK_BLUE = new AtsImage("check.gif");
    public static AtsImage CHECK_CLIPBOARD = new AtsImage("checkClipboard.gif");
+   public static AtsImage CHANGE_REQUEST = new AtsImage("changeRequest.gif");
    public static AtsImage COMPOSITE_STATE_ITEM = new AtsImage("compositeStateItem.gif");
    public static AtsImage CHECKBOX_ENABLED = new AtsImage("chkbox_enabled.gif");
    public static AtsImage CHECKBOX_DISABLED = new AtsImage("chkbox_disabled.gif");

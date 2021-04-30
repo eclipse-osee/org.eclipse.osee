@@ -217,7 +217,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
                   AtsApiService.get().getUserGroupService().getMyUserGroups();
                Collection<IUserGroupArtifactToken> blamUserGroups = blam.getUserGroups();
                if (isOverrideAccess || !Collections.setIntersection(blamUserGroups, myUserGroups).isEmpty()) {
-                  items.add(new XNavigateItemBlam(item, blam, AtsImage.NEW_ACTION));
+                  items.add(new XNavigateItemBlam(item, blam, AtsImage.CHANGE_REQUEST));
                }
             }
          }

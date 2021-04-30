@@ -15,8 +15,10 @@ package org.eclipse.osee.ats.api.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.atsDemo;
+import static org.eclipse.osee.ats.api.util.AtsImage.CHANGE_REQUEST;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeCategoryAttributeType;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeDefectCodeAttributeType;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeDetectionAttributeType;
@@ -68,7 +70,8 @@ public interface AtsDemoOseeTypes {
    AttributeTypeString ReworkLetter = atsDemo.createStringNoTag(1152921504606847276L, "demo.code.Rework Letter", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProblemNo = atsDemo.createStringNoTag(1152921504606847277L, "demo.code.Problem No", MediaType.TEXT_PLAIN, "");
 
-   ArtifactTypeToken DemoChangeRequestTeamWorkflow = atsDemo.add(atsDemo.artifactType(3456L, "Demo Change Request", false, TeamWorkflow));
+   ArtifactTypeToken DemoChangeRequestTeamWorkflow = atsDemo.add(atsDemo.artifactType(3456L, "Demo Change Request", false,
+      CHANGE_REQUEST, AtsArtifactTypes.ChangeRequestTeamWorkflow));
 
    ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow)
       .zeroOrOne(ChangeType)

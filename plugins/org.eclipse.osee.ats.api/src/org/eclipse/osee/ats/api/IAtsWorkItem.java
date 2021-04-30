@@ -144,6 +144,10 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    }
 
+   default boolean isChangeRequest() {
+      return getArtifactType().inheritsFrom(AtsArtifactTypes.AbstractChangeRequestWorkflow);
+   }
+
    public static IAtsWorkItem createSentinel() {
       final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsWorkItem {
 

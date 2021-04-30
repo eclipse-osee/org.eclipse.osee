@@ -78,7 +78,9 @@ public final class DemoArtifactToken {
 
    public static final IAtsProgramArtifactToken SAW_PL_Program = AtsProgramArtifactToken.valueOf(1917773L, "SAW PL Program");
 
+   //////////////////////////////////
    // SAW PL Team Definitions
+   //////////////////////////////////
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(283478888L, "SAW PL");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_CR_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(35712349L, "SAW PL Change Request");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_HW_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123913578L, "SAW PL HW");
@@ -88,7 +90,9 @@ public final class DemoArtifactToken {
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_Requirements_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(86758678L, "SAW PL Requirements");
    public static final IAtsTeamDefinitionArtifactToken SAW_PL_ARB_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(150338509L, "SAW PL ARB");
 
+   //////////////////////////////////
    // SAW PL Actionable Items
+   //////////////////////////////////
    public static final IAtsActionableItemArtifactToken SAW_PL_CSCI_AI = AtsActionableItemArtifactToken.valueOf(3234255L, "SAW PL CSCI");
    public static final IAtsActionableItemArtifactToken SAW_PL_CR_AI = AtsActionableItemArtifactToken.valueOf(428487777L, "SAW PL Change Request");
    public static final IAtsActionableItemArtifactToken SAW_PL_HW_AI = AtsActionableItemArtifactToken.valueOf(95849383L, "SAW PL HW");
@@ -105,10 +109,11 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    // SAW Leagacy Configuration
    //////////////////////////////////
-
    public static final IAtsProgramArtifactToken SAW_Program = AtsProgramArtifactToken.valueOf(19196003L, "SAW Program");
 
+   //////////////////////////////////
    // SAW Team Definitions
+   //////////////////////////////////
    public static final IAtsTeamDefinitionArtifactToken SAW_HW = AtsTeamDefinitionArtifactToken.valueOf(2876840L, "SAW HW");
    public static final IAtsTeamDefinitionArtifactToken SAW_Code = AtsTeamDefinitionArtifactToken.valueOf(30013695L, "SAW Code");
    public static final IAtsTeamDefinitionArtifactToken SAW_Test = AtsTeamDefinitionArtifactToken.valueOf(31608252L, "SAW Test");
@@ -118,7 +123,9 @@ public final class DemoArtifactToken {
    public static final IAtsTeamDefinitionArtifactToken SAW_SubSystems_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(4354624L, "SAW Sub-Systems");
    public static final IAtsTeamDefinitionArtifactToken SAW_SW = AtsTeamDefinitionArtifactToken.valueOf(3902389L, "SAW SW");
 
+   //////////////////////////////////
    // SAW Actionable Items
+   //////////////////////////////////
    public static final IAtsActionableItemArtifactToken SAW_HW_AI = AtsActionableItemArtifactToken.valueOf(4687946L, "SAW HW");
    public static final IAtsActionableItemArtifactToken SAW_CSCI_AI = AtsActionableItemArtifactToken.valueOf(1866L, "SAW CSCI");
    public static final IAtsActionableItemArtifactToken Adapter_AI = AtsActionableItemArtifactToken.valueOf(456465465L, "Adapter");
@@ -129,18 +136,24 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken SAW_SubSystems_AI = AtsActionableItemArtifactToken.valueOf(323423423L, "SAW Sub-Systems");
    public static final IAtsActionableItemArtifactToken SAW_SW_Design_AI = AtsActionableItemArtifactToken.valueOf(98129283L, "SAW SW Design");
 
+   //////////////////////////////////
    // SAW_SW Versions
+   //////////////////////////////////
    public static final IAtsVersionArtifactToken SAW_Bld_1 = AtsVersionArtifactToken.valueOf(2749182L, "SAW_Bld_1");
    public static final IAtsVersionArtifactToken SAW_Bld_2 = AtsVersionArtifactToken.valueOf(7632957L, "SAW_Bld_2");
    public static final IAtsVersionArtifactToken SAW_Bld_3 = AtsVersionArtifactToken.valueOf(577781L, "SAW_Bld_3");
 
+   //////////////////////////////////
    //SAW Agile
+   //////////////////////////////////
    public static final ArtifactToken SAW_Agile_Team = ArtifactToken.valueOf(111, "SAW Agile Team", COMMON, AtsArtifactTypes.AgileTeam);
    public static final ArtifactToken SAW_Sprint_1 = ArtifactToken.valueOf(222, "SAW Sprint 1", COMMON, AtsArtifactTypes.AgileSprint);
    public static final ArtifactToken SAW_Sprint_2 = ArtifactToken.valueOf(333, "SAW Sprint 2", COMMON, AtsArtifactTypes.AgileSprint);
    public static final ArtifactToken SAW_Backlog = ArtifactToken.valueOf(444, "SAW Backlog", COMMON, AtsArtifactTypes.AgileBacklog);
 
+   //////////////////////////////////
    // SAW Actions
+   //////////////////////////////////
    public static final ArtifactToken SAW_Code_Team_WorkPackage_01 = ArtifactToken.valueOf(38512616, "AZp8M1dPuESWYBPPbDgA", "Work Pkg 01", COMMON, AtsArtifactTypes.WorkPackage);
    public static final ArtifactToken SAW_Code_Team_WorkPackage_02 = ArtifactToken.valueOf(513994, "AZp8M1d7TCJiBw6A5bgA", "Work Pkg 02", COMMON, AtsArtifactTypes.WorkPackage);
    public static final ArtifactToken SAW_Code_Team_WorkPackage_03 = ArtifactToken.valueOf(304908, "AZp8M1em4EC1xE6bPEwA", "Work Pkg 03", COMMON, AtsArtifactTypes.WorkPackage);
