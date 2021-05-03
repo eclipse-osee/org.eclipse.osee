@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboComboDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 
@@ -125,10 +126,13 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
             if (Strings.isValid(ed.getSelection())) {
                task.setRelatedToState(ed.getSelection());
             }
-            atsApi.getTaskService().createTasks(
-               NewTaskSet.create(newTaskData, atsApi.getUserService().getCurrentUserId(), comment));
-
-            taskArt = (TaskArtifact) atsApi.getQueryService().getArtifact(task.getId());
+            atsApi.getTaskService().createTasks(newTaskSet);
+            if (newTaskSet.isErrors()) {
+               XResultDataUI.report(newTaskSet.getResults(), title);
+               return null;
+            } else {
+               taskArt = (TaskArtifact) atsApi.getQueryService().getArtifact(task.getId());
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
