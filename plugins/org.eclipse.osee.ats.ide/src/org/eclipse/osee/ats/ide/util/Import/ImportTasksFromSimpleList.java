@@ -195,7 +195,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    }
 
    protected void createTeamWfWidget(StringBuffer buffer) {
-      buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Team Workflow\" />");
+      buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
    }
 
    @Override
