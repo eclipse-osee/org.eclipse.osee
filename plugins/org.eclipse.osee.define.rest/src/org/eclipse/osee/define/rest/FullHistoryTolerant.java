@@ -93,6 +93,11 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
          ArtifactId newerCodeUnit = findCodeUnit(repoArtifact, newPath);
          codeUnit = findCodeUnit(repoArtifact, path);
          if (newerCodeUnit.isValid()) {
+            if (codeUnit.isValid()) {
+               tx.deleteArtifact(codeUnit);
+               pathToCodeunitReferenceMap.remove(path);
+               pathToCodeunitMap.remove(path);
+            }
             System.out.printf("commit [%s] renames code unit [%s] to [%s] but already found existing code unit [%s]\n",
                commitSHA, path, newPath, newerCodeUnit);
             return ArtifactId.SENTINEL;
