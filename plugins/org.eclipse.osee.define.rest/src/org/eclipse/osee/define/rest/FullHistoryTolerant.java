@@ -90,11 +90,21 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
             System.out.printf("didn't find %s for deletion in commit %s\n", path, commitSHA);
          }
       } else if (changeType == ChangeType.RENAME) {
+         ArtifactId newerCodeUnit = findCodeUnit(repoArtifact, newPath);
          codeUnit = findCodeUnit(repoArtifact, path);
-         if (codeUnit.isValid()) {
+         if (newerCodeUnit.isValid()) {
+            System.out.printf("commit [%s] renames code unit [%s] to [%s] but already found existing code unit [%s]\n",
+               commitSHA, path, newPath, newerCodeUnit);
+            return ArtifactId.SENTINEL;
+         } else if (codeUnit.isValid()) {
             if (Strings.isValid(newPath)) {
                tx.setName(codeUnit, getCodeUnitName(newPath));
                tx.setSoleAttributeValue(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
+               if (isPathRenamed(path, newPath)) {
+                  ArtifactId location = editCodeUnitPath(tx, newPath, false);
+                  tx.unrelateFromAll(CoreRelationTypes.DefaultHierarchical_Child, codeUnit);
+                  tx.relate(location, CoreRelationTypes.DefaultHierarchical_Child, codeUnit);
+               }
                pathToCodeunitReferenceMap.remove(path);
                pathToCodeunitMap.remove(path);
                pathToCodeunitMap.put(newPath, codeUnit);
@@ -177,7 +187,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    private boolean isPathRenamed(String path, String newPath) {
-      if (path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
+      if (!path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
          return true;
       }
       return false;
