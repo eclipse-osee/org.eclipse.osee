@@ -32,7 +32,16 @@ public final class SendEmailCall implements Callable<String> {
       XResultData results = emailMessage.sendLocalThread();
       results.log(description);
       if (results.isErrors()) {
-         XResultDataUI.report(results, description);
+         if (!results.toString().contains("User unknown")) {
+            XResultDataUI.report(results, description);
+         } else {
+            // Don't need full stack trace for User-unknown
+            try {
+               return String.format("User [%s] Unknown", String.valueOf(emailMessage.getAllRecipients()));
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
       }
       return results.toString();
    }

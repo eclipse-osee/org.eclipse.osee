@@ -33,8 +33,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.apache.commons.lang.RandomStringUtils;
-import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -46,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.swt.program.Program;
 
 /**
  * @author Michael A. Winston
@@ -318,15 +315,14 @@ public class OseeEmail extends MimeMessage {
          setContent(mainMessage);
          Transport.send(this);
       } catch (Exception ex) {
-         String extension = ".txt";
-         if (body.startsWith("<html>")) {
-            extension = ".html";
+         results.errorf("Exception sending message (contents below) [%s]", Lib.exceptionToString(ex));
+         /**
+          * Do not display exception for email address email service does not know since it is normal with user leaves
+          */
+         if (!results.toString().contains("User unknown")) {
+            results.logf("Contents are [%s]", body);
+            XResultDataUI.report(results, "OseeEmail Exception");
          }
-         String filename = "osee_email_backup_" + RandomStringUtils.randomAlphanumeric(8) + extension;
-         File file = OseeData.writeToFile(filename, body);
-         results.errorf("Exception sending message [%s] contents stored in [%s]", Lib.exceptionToString(ex),
-            file.getAbsolutePath());
-         Program.launch(file.getAbsolutePath());
       } finally {
          Thread.currentThread().setContextClassLoader(original);
       }
