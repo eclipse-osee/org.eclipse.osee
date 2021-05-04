@@ -22,6 +22,8 @@ import java.util.EnumSet;
 public enum XOption {
    NONE("", ""),
 
+   AUTO_SAVE("autoSave", "true"),
+   NOT_AUTO_SAVE("autoSave", "false"),
    REQUIRED("required", "true"),
    NOT_REQUIRED("required", "false"),
    REQUIRED_FOR_COMPLETION("requiredForCompletion", "true"),

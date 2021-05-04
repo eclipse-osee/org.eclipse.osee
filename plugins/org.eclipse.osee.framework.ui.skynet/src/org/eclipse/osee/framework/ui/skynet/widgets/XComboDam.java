@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -42,6 +43,25 @@ public class XComboDam extends XCombo implements AttributeWidget {
 
    public XComboDam(String displayLabel) {
       super(displayLabel);
+   }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      if (isAutoSave()) {
+         addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (artifact != null && artifact.isValid()) {
+                  saveToArtifact();
+                  if (artifact.isDirty()) {
+                     artifact.persist("XComboDam Auto-Save");
+                  }
+               }
+            }
+         });
+      }
    }
 
    @Override

@@ -54,6 +54,12 @@ public class XOptionHandler {
          case REQUIRED:
             xOptions.remove(XOption.NOT_REQUIRED);
             break;
+         case AUTO_SAVE:
+            xOptions.remove(XOption.NOT_AUTO_SAVE);
+            break;
+         case NOT_AUTO_SAVE:
+            xOptions.remove(XOption.AUTO_SAVE);
+            break;
          case NOT_REQUIRED_FOR_COMPLETION:
             xOptions.remove(XOption.REQUIRED_FOR_COMPLETION);
             break;

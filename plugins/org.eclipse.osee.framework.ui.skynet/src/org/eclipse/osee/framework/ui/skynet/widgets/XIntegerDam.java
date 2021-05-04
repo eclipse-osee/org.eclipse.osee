@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -33,6 +36,26 @@ public class XIntegerDam extends XInteger implements AttributeWidget {
 
    public XIntegerDam(String displayLabel) {
       super(displayLabel);
+   }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      if (isAutoSave()) {
+         getStyledText().addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+               if (artifact != null && artifact.isValid()) {
+                  saveToArtifact();
+                  if (artifact.isDirty()) {
+                     artifact.persist("XIntegerDam Auto-Save");
+                  }
+               }
+            }
+
+         });
+      }
    }
 
    @Override

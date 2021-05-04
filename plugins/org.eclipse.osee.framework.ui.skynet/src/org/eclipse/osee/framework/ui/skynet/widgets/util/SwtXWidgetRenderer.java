@@ -129,6 +129,7 @@ public class SwtXWidgetRenderer {
       xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
       xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
       xWidget.setNoSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_SELECT));
+      xWidget.setAutoSave(xWidgetLayoutData.getXOptionHandler().contains(XOption.AUTO_SAVE));
 
       xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
 

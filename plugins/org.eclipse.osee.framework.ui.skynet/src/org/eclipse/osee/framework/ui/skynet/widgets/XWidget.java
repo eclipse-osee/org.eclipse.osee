@@ -69,6 +69,7 @@ public abstract class XWidget {
    private ArtifactTypeId artifactType;
    private String id;
    protected Object defaultValueObj;
+   private boolean autoSave = false;
 
    public XWidget(String label) {
       this.label = label;
@@ -453,5 +454,13 @@ public abstract class XWidget {
 
    public void setDefaultValueObj(Object defaultValueObj) {
       this.defaultValueObj = defaultValueObj;
+   }
+
+   public boolean isAutoSave() {
+      return autoSave;
+   }
+
+   public void setAutoSave(boolean autoSave) {
+      this.autoSave = autoSave;
    }
 }

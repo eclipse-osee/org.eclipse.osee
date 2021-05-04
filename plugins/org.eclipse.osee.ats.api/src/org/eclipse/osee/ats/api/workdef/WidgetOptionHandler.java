@@ -62,6 +62,10 @@ public class WidgetOptionHandler implements IAtsWidgetOptionHandler {
          options.remove(WidgetOption.REQUIRED_FOR_TRANSITION);
       } else if (xOption == WidgetOption.REQUIRED_FOR_TRANSITION) {
          options.remove(WidgetOption.NOT_REQUIRED_FOR_TRANSITION);
+      } else if (xOption == WidgetOption.AUTO_SAVE) {
+         options.remove(WidgetOption.NOT_AUTO_SAVE);
+      } else if (xOption == WidgetOption.NOT_AUTO_SAVE) {
+         options.remove(WidgetOption.AUTO_SAVE);
       } else if (xOption == WidgetOption.NOT_ENABLED) {
          options.remove(WidgetOption.ENABLED);
       } else if (xOption == WidgetOption.ENABLED) {
