@@ -379,7 +379,7 @@ public final class FrameworkXWidgetProvider {
                   xWidget = new XListDropViewer(name);
                }
             } else if (xWidgetName.equals(XListRelationWidget.WIDGET_ID)) {
-               return new XListRelationWidget(artifact, xWidgetName, xWidgetLayoutData.getRelationTypeSide());
+               return new XListRelationWidget(artifact, name, xWidgetLayoutData.getRelationTypeSide());
             } else if (xWidgetName.startsWith("XList")) {
                String values[] =
                   xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
