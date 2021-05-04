@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -72,7 +74,7 @@ public class PurgeAction extends Action {
       }
    }
 
-   public static MenuItem createPurgeMenuItem(Menu parentMenu) {
+   public static MenuItem createPurgeMenuItem(Menu parentMenu, TreeViewer treeViewer) {
       MenuItem purgeMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       purgeMenuItem.setImage(ImageManager.getImage(FrameworkImage.TRASH));
       purgeMenuItem.setText("&Purge Artifact(s)");
@@ -80,10 +82,11 @@ public class PurgeAction extends Action {
          @Override
          public void widgetSelected(SelectionEvent e) {
             List<Artifact> arts = new ArrayList<>();
-            IStructuredSelection selection = (IStructuredSelection) e;
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             if (selection != null) {
-               while (selection.iterator().hasNext()) {
-                  Object obj = selection.iterator().next();
+               Iterator<?> iterator = selection.iterator();
+               while (iterator.hasNext()) {
+                  Object obj = iterator.next();
                   if (obj instanceof Artifact) {
                      arts.add((Artifact) obj);
                   }
@@ -102,7 +105,7 @@ public class PurgeAction extends Action {
          " Are you sure you want to purge this artifact and all history associated from the database? (cannot be undone)",
          "Purge selected artifact's children?", false, null, null);
 
-      if (dialog.getReturnCode() == Window.OK) {
+      if (dialog.open() == Window.OK) {
          final boolean recusivePurge =
             MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Recursive Purge", "Recurse and purge from child branches?");

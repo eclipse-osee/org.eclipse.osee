@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,6 +25,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,18 +58,20 @@ public class DeleteAction extends Action {
       deleteArtifactsMethod(artifacts);
    }
 
-   public static MenuItem createDeleteMenuItem(Menu parentMenu) {
-      MenuItem purgeMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      purgeMenuItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
-      purgeMenuItem.setText("&Delete Artifact(s)");
-      purgeMenuItem.addSelectionListener(new SelectionAdapter() {
+   public static MenuItem createDeleteMenuItem(Menu parentMenu, final TreeViewer treeViewer) {
+      MenuItem deleteMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      deleteMenuItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
+      deleteMenuItem.setText("&Delete Artifact(s)");
+      deleteMenuItem.addSelectionListener(new SelectionAdapter() {
+
          @Override
          public void widgetSelected(SelectionEvent e) {
             List<Artifact> arts = new ArrayList<>();
-            IStructuredSelection selection = (IStructuredSelection) e;
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             if (selection != null) {
-               while (selection.iterator().hasNext()) {
-                  Object obj = selection.iterator().next();
+               Iterator<?> iterator = selection.iterator();
+               while (iterator.hasNext()) {
+                  Object obj = iterator.next();
                   if (obj instanceof Artifact) {
                      arts.add((Artifact) obj);
                   }
@@ -76,7 +80,7 @@ public class DeleteAction extends Action {
             deleteArtifactsMethod(arts);
          };
       });
-      return purgeMenuItem;
+      return deleteMenuItem;
    }
 
    public static void deleteArtifactsMethod(Collection<Artifact> artifactsToBeDeleted) {
@@ -85,8 +89,8 @@ public class DeleteAction extends Action {
          " Are you sure you want to delete this artifact and all of the default hierarchy children?",
          MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
-      if (dialog.getReturnCode() == Window.OK) {
-         Job job = new Job("Purge artifact") {
+      if (dialog.open() == Window.OK) {
+         Job job = new Job("Delete artifact") {
 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {

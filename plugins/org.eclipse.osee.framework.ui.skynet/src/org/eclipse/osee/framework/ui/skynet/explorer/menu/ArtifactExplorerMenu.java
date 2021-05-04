@@ -222,8 +222,8 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
       createGoIntoMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
-      deleteMenuItem = DeleteAction.createDeleteMenuItem(popupMenu);
-      purgeMenuItem = PurgeAction.createPurgeMenuItem(popupMenu);
+      deleteMenuItem = DeleteAction.createDeleteMenuItem(popupMenu, treeViewer);
+      purgeMenuItem = PurgeAction.createPurgeMenuItem(popupMenu, treeViewer);
 
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
