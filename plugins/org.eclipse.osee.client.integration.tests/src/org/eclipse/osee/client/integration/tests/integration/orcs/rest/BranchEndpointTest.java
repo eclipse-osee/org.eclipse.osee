@@ -14,11 +14,13 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -57,6 +59,39 @@ public class BranchEndpointTest {
    public void getTxs() {
       List<Branch> baselineBranches = branchEndpoint.getBaselineBranches();
       Assert.assertFalse(baselineBranches.isEmpty());
+   }
+
+   @Test
+   public void getBranches() {
+      List<Branch> baselineBranches = branchEndpoint.getBranches("", "", "", false, false, "", "", null, null);
+      List<BranchId> branchIds = new ArrayList<>();
+      for (Branch branch : baselineBranches) {
+         branchIds.add(BranchId.valueOf(branch.getId()));
+      }
+      List<BranchId> originalBranches = new ArrayList<>();
+      //Selecting branches from CreateDemoBranches.java
+      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(DemoBranches.CIS_Bld_1);
+      originalBranches.add(DemoBranches.SAW_Bld_1);
+      originalBranches.add(DemoBranches.SAW_PL);
+      Assert.assertFalse(baselineBranches.isEmpty());
+      boolean allBranchesContained = true;
+      for (BranchId branchID : originalBranches) {
+
+         if (!branchIds.contains(branchID)) {
+            allBranchesContained = false;
+         }
+      }
+      Assert.assertTrue(allBranchesContained);
+      originalBranches.add(BranchId.SENTINEL);
+      for (BranchId branchID : originalBranches) {
+
+         if (!branchIds.contains(branchID)) {
+            allBranchesContained = false;
+         }
+      }
+      Assert.assertFalse(allBranchesContained);
+
    }
 
    @Test
