@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -86,24 +87,32 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
             @Override
             public void run() {
                try {
+                  int choice = Window.OK;
                   if (prompt) {
                      CheckBoxDialog confirm = new CheckBoxDialog(Displays.getActiveShell(), "Introduce Artifact(s)",
                         null, "Introduce " + sourceArtifacts.size() + " Artifact(s)", "Include Children",
                         MessageDialog.QUESTION, 0);
-                     if (confirm.open() == 0) {
+                     choice = confirm.open();
+                     if (choice == Window.OK) {
                         if (confirm.isChecked()) {
                            sourceArtifacts.addAll(getRecurseChildren());
                         }
                      }
                   }
-                  SkynetTransaction transaction = TransactionManager.createTransaction(destinationBranch,
-                     String.format("Introduce %d artifact(s)", sourceArtifacts.size()));
-                  List<Artifact> destinationArtifacts =
-                     new IntroduceArtifactOperation(destinationBranch).introduce(sourceArtifacts);
-                  for (Artifact destinationArtifact : destinationArtifacts) {
-                     transaction.addArtifact(destinationArtifact);
+                  /*
+                   * when prompt is true: if the cancel button is chosen, the variable 'choice' will be cancel (1); if
+                   * the dialog is dismissed with the 'x' button, the variable 'choice' will be -1
+                   */
+                  if (choice == Window.OK) {
+                     SkynetTransaction transaction = TransactionManager.createTransaction(destinationBranch,
+                        String.format("Introduce %d artifact(s)", sourceArtifacts.size()));
+                     List<Artifact> destinationArtifacts =
+                        new IntroduceArtifactOperation(destinationBranch).introduce(sourceArtifacts);
+                     for (Artifact destinationArtifact : destinationArtifacts) {
+                        transaction.addArtifact(destinationArtifact);
+                     }
+                     transaction.execute();
                   }
-                  transaction.execute();
                } catch (OseeCoreException ex) {
                   OseeLog.log(InterArtifactExplorerDropHandlerOperation.class, Level.WARNING, ex.getLocalizedMessage());
                }
