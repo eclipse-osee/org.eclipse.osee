@@ -91,6 +91,9 @@ public class WordCoreUtil {
       "(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIGGRP + ")|(" + ENDCONFIGGRP + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",
       Pattern.DOTALL | Pattern.MULTILINE);
 
+   public static Pattern LIST_PATTERN = Pattern.compile(
+      "<w:listPr>(<w:ilvl([^>]*?)/?>(</w:ilvl>)?)?(<w:ilfo([^>]*?)/?>(</w:ilfo>)?)?<wx:t wx:val=\"([^>]*?)\"/?>(</wx:t>)?<wx:font wx:val=\"[^\"]*?\"/?>(</wx:font>)?</w:listPr>");
+
    public static String EMPTY_LIST_REGEX =
       "<w:p wsp:rsidP=\"[^\"]*?\" wsp:rsidR=\"[^\"]*?\" wsp:rsidRDefault=\"[^\"]*?\"><w:pPr><w:pStyle w:val=\"[^\"]*?\"></w:pStyle><w:listPr><wx:t wx:val=\"([^>]*?)\"></wx:t><wx:font wx:val=\"[^\"]*?\"></wx:font></w:listPr></w:pPr><w:r><w:t></w:t></w:r></w:p>";
 
@@ -117,6 +120,10 @@ public class WordCoreUtil {
    public static boolean containsWordAnnotations(String wordml) {
       return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains(
          "w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
+   }
+
+   public static boolean containsLists(String wordMl) {
+      return LIST_PATTERN.matcher(wordMl).find();
    }
 
    public static String removeAnnotations(String wordml) {

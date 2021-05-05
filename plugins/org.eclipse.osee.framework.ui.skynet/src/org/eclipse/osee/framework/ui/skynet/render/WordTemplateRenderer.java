@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -226,7 +227,9 @@ public class WordTemplateRenderer extends WordRenderer {
          } else if (footer != null) {
             wordMl.addWordMl(footer);
          }
-         wordMl.resetListValue();
+         if (data != null && WordCoreUtil.containsLists(data)) {
+            wordMl.resetListValue();
+         }
       } else {
          super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, format, label,
             footer);

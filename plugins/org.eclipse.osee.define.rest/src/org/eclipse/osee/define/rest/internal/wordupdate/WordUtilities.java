@@ -162,5 +162,4 @@ public class WordUtilities {
       }
       return content;
    }
-
 }

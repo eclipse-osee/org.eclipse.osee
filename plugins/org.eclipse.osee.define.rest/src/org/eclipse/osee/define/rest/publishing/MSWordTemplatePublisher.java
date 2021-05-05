@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.model.type.LinkType;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLWriter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -887,7 +888,10 @@ public class MSWordTemplatePublisher {
       } else if (footer != null) {
          wordMl.addWordMl(footer);
       }
-      wordMl.resetListValue();
+
+      if (data != null && WordCoreUtil.containsLists(data)) {
+         wordMl.resetListValue();
+      }
    }
 
    protected String getWordTemplateContentData(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label, String footer) {
