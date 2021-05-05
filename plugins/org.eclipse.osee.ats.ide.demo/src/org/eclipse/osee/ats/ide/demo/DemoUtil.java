@@ -51,7 +51,7 @@ public class DemoUtil {
       // Utility class
    }
 
-   public static Result isDbPopulatedWithDemoData() throws Exception {
+   public static Result isDbPopulatedWithDemoData() {
       Collection<Artifact> robotArtifacts = ArtifactQuery.getArtifactListFromTypeAndName(
          CoreArtifactTypes.SoftwareRequirementMsWord, "Robot", SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
       if (robotArtifacts.size() < 6) {

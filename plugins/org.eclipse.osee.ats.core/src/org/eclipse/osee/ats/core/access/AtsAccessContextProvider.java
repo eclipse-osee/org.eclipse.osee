@@ -43,4 +43,9 @@ public class AtsAccessContextProvider extends AbstractAtsAccessContextProvider {
       throw new OseeArgumentException("Should never be called");
    }
 
+   @Override
+   public boolean isApplicableDb() {
+      return true;
+   }
+
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.access.IAtsAccessContextProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.access.AccessContextResult;
 import org.eclipse.osee.framework.core.access.AccessContextResults;
 import org.eclipse.osee.framework.core.access.AccessControlUtil;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,9 +61,33 @@ public abstract class AbstractAtsAccessContextProvider implements IAtsAccessCont
    }
 
    /**
+    * @return true if this Context Provider is valid fo rhtis db. This should be super fast method as it will be called
+    * frequently.
+    */
+   abstract public boolean isApplicableDb();
+
+   /**
     * Provide additional checks, over associated artifact being Team Workflow, that determines applicability
     */
-   public abstract boolean isAtsApplicable(BranchId branch, ArtifactToken assocArt);
+   public boolean isAtsApplicable(BranchId branch, ArtifactToken assocArt) {
+      boolean isApplicableDb = isApplicableDb();
+      if (!isApplicableDb) {
+         return false;
+      }
+      boolean applicable = false;
+      if (branch.isValid()) {
+         BranchType branchType = atsApi.getBranchService().getBranchType(branch);
+         if (branchType == BranchType.WORKING) {
+            applicable = isAtsApplicable(AtsApiService.get().getBranchService().getParentBranch(branch), assocArt);
+         } else if (branchType == BranchType.BASELINE) {
+            boolean isAtsBranch = assocArt.notEqual(AtsArtifactToken.AtsCmBranch);
+            if (isAtsBranch) {
+               applicable = true;
+            }
+         }
+      }
+      return applicable;
+   }
 
    /**
     * Default applicability or extend to add addditional checks.
