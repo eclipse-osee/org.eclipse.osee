@@ -234,7 +234,8 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public GitEndpoint getGitEndpoint() {
       if (gitEp == null) {
-         gitEp = jaxRsApi.newProxy(getAtsTarget(), GitEndpoint.class);
+         WebTarget target = jaxRsApi.newTarget(String.format("define"));
+         gitEp = jaxRsApi.newProxy(target, GitEndpoint.class);
       }
       return gitEp;
    }
