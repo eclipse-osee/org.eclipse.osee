@@ -43,8 +43,7 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Decision) //
-         .andToStates(StateToken.Cancelled, StateToken.Decision) //
+         .andToStates(StateToken.Decision, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -59,9 +58,7 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(2, "Decision", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Followup, StateToken.Cancelled, StateToken.Completed, StateToken.Prepare) //
-         .andOverrideValidationStates(StateToken.Prepare) //
+         .andToStates(StateToken.Completed, StateToken.Followup, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -72,17 +69,13 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(3, "Followup", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Decision) //
-         .andOverrideValidationStates(StateToken.Decision) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(4, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Decision, StateToken.Followup) //
-         .andOverrideValidationStates(StateToken.Decision, StateToken.Followup) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
@@ -92,8 +85,6 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(5, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Decision, StateToken.Followup, StateToken.Prepare) //
-         .andOverrideValidationStates(StateToken.Decision, StateToken.Followup, StateToken.Prepare) //
          .andColor(StateColor.DARK_GREEN);
 
       return bld.getWorkDefinition();

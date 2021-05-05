@@ -45,9 +45,7 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Completed) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andOverrideValidationStates(StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -63,8 +61,6 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
             ));
 
       bld.andState(2, "Completed", StateType.Completed) //
-         .andToStates(StateToken.InWork) //
-         .andOverrideValidationStates(StateToken.InWork) //
          .andColor(StateColor.BLACK);
 
       bld.andState(3, "Cancelled", StateType.Cancelled) //

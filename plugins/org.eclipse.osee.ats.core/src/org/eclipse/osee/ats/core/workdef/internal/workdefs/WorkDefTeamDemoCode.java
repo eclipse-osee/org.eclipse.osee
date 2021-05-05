@@ -48,7 +48,6 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsDemoOseeTypes.DemoCodeTeamWorkflow);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Analyze) //
          .andToStates(StateToken.Cancelled, StateToken.Analyze) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
@@ -66,9 +65,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"));
 
       bld.andState(2, "Analyze", StateType.Working) //
-         .andToDefaultState(StateToken.Authorize) //
-         .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Endorse) //
-         .andOverrideValidationStates(StateToken.Endorse) //
+         .andToStates(StateToken.Authorize, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -85,9 +82,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(3, "Authorize", StateType.Working) //
-         .andToDefaultState(StateToken.Implement) //
-         .andToStates(StateToken.Cancelled, StateToken.Implement, StateToken.Analyze) //
-         .andOverrideValidationStates(StateToken.Analyze) //
+         .andToStates(StateToken.Implement, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -97,9 +92,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          );
 
       bld.andState(4, "Implement", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Authorize, StateToken.Analyze) //
-         .andOverrideValidationStates(StateToken.Authorize, StateToken.Analyze) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -112,15 +105,10 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(5, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Implement) //
-         .andOverrideValidationStates(StateToken.Implement) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.BLACK);
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Authorize, StateToken.Analyze, StateToken.Implement, StateToken.Endorse) //
-         .andOverrideValidationStates(StateToken.Authorize, StateToken.Analyze, StateToken.Implement,
-            StateToken.Endorse) //
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();

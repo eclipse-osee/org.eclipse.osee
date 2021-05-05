@@ -39,20 +39,15 @@ public class WorkDefGoal extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(3, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.InWork) //
-         .andOverrideValidationStates(StateToken.InWork) //
          .andColor(StateColor.DARK_GREEN);
 
       bld.andState(2, "Completed", StateType.Completed) //
-         .andToStates(StateToken.InWork) //
-         .andOverrideValidationStates(StateToken.InWork) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN);
 

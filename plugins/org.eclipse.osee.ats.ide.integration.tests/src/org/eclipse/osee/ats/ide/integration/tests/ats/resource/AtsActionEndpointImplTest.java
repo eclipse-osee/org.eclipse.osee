@@ -82,7 +82,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testTransitionToStates() {
-      Object object = getFirstAndCount("ats/action/" + committedCodeWfId + "/TransitionToStates", 4);
+      Object object = getFirstAndCount("ats/action/" + committedCodeWfId + "/TransitionToStates", 5);
       Assert.assertEquals(TeamState.Completed.getName(), object);
    }
 

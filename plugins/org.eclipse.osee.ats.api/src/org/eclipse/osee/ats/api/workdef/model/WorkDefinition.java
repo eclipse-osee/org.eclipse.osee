@@ -27,8 +27,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -52,7 +50,9 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
 
    public WorkDefinition(Long id, String name, ArtifactTypeToken artType) {
       super(id, name, artType);
-      Conditions.assertNotNull(artType, "Artifact Type can no be null");
+      if (artType == null) {
+         results.errorf("Artifact Type can not be null Work Def [%s]", name);
+      }
       headerDef = new HeaderDefinition(this);
    }
 
@@ -76,10 +76,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    }
 
    public IAtsStateDefinition addState(IAtsStateDefinition state) {
-      IAtsStateDefinition currState = getStateByName(state.getName());
-      if (currState != null) {
-         throw new IllegalArgumentException("Can not add two states of same name");
-      }
       states.add(state);
       return state;
    }
@@ -177,9 +173,11 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
             return role;
          }
       }
-      throw new OseeArgumentException("Review role with name [%s] does not exist", name);
+      results.errorf("Review role with name [%s] does not exist for Work Def %s", name, getName());
+      return ReviewRole.Reviewer;
    }
 
+   @Override
    public XResultData getResults() {
       return results;
    }

@@ -41,7 +41,6 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Completed) //
          .andToStates(StateToken.Completed) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
@@ -54,8 +53,6 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
             ));
 
       bld.andState(2, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Analyze) //
-         .andOverrideValidationStates(StateToken.Analyze) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -67,8 +64,6 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
             ));
 
       bld.andState(3, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Analyze) //
-         .andOverrideValidationStates(StateToken.Analyze) //
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();

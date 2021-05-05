@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 
 /**
  * The class enables to create Work definitions for ICTeam
- * 
+ *
  * @author Ajay Chandrahasan
  */
 public class WorkDefiCTeam extends AbstractWorkDef {
@@ -38,29 +38,24 @@ public class WorkDefiCTeam extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "New", StateType.Working) //
-         .andToDefaultState(ICTeamStateToken.InProgress) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, ICTeamStateToken.InProgress) //
+         .andToStates(ICTeamStateToken.InProgress, StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLUE) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam"));
 
       bld.andState(2, "In Progress", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLUE) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam"));
 
       bld.andState(3, "Completed", StateType.Completed) //
-         .andToStates(ICTeamStateToken.InProgress) //
-         .andOverrideValidationStates(ICTeamStateToken.InProgress) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN);
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //
-         .andOverrideValidationStates(ICTeamStateToken.InProgress, ICTeamStateToken.New) //
          .andColor(StateColor.DARK_GREEN);
 
       return bld.getWorkDefinition();

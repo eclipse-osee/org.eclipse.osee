@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class WorkDefBuilder {
 
    WorkDefinition workDef;
+   XResultData rd;
    List<StateDefBuilder> stateDefBuilders = new ArrayList<>();
 
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken) {
@@ -47,11 +49,23 @@ public class WorkDefBuilder {
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken, ArtifactTypeToken artType) {
       workDef = new WorkDefinition(workDefToken.getId(), workDefToken.getName());
       workDef.setArtType(artType);
+      rd = workDef.getResults();
    }
 
-   public StateDefBuilder andState(int ordinal, String name, StateType type) {
-      Conditions.assertTrue(ordinal > 0, "ordinal must be > 1");
-      StateDefBuilder stateDefBuilder = new StateDefBuilder(ordinal, name, type, workDef);
+   public StateDefBuilder andState(int ordinal, String name, StateType type, WorkDefBuilderOption... builderOptions) {
+      if (ordinal <= 0) {
+         rd.errorf("Ordinal must be > 1 for state [%s]\n", name);
+      }
+      IAtsStateDefinition stateByName = workDef.getStateByName(name);
+      if (stateByName != null) {
+         rd.errorf("State with name [%s] already exists\n", name);
+      }
+      for (IAtsStateDefinition state : workDef.getStates()) {
+         if (state.getOrdinal() == ordinal) {
+            rd.errorf("Ordinal [%s] already exists in state [%s]\n", ordinal, name);
+         }
+      }
+      StateDefBuilder stateDefBuilder = new StateDefBuilder(ordinal, name, type, workDef, builderOptions);
       stateDefBuilders.add(stateDefBuilder);
       return stateDefBuilder;
    }
@@ -60,7 +74,7 @@ public class WorkDefBuilder {
       // Resolve all layouts formatted from getLayoutFromState
       // Resolve all state definitions from state tokens
       for (StateDefBuilder stateDefBuilder : stateDefBuilders) {
-         //getLayoutFromState
+         // getLayoutFromState
          StateToken fromLayoutStateToken = stateDefBuilder.getAndLayoutFromState();
          if (fromLayoutStateToken != null) {
             IAtsStateDefinition copyState = getStateDefinition(fromLayoutStateToken.getName());
@@ -71,7 +85,7 @@ public class WorkDefBuilder {
          }
          // defaultToState
          StateToken defaultToStateToken = stateDefBuilder.getToDefaultStateToken();
-         if (defaultToStateToken != null) {
+         if (defaultToStateToken != null && defaultToStateToken != StateToken.ANY) {
             IAtsStateDefinition defaultToState = getStateDefinition(defaultToStateToken.getName());
             Conditions.assertNotNull(defaultToState, "defaultToState [%s] not defined in workDef [%s]",
                defaultToState.getName(), workDef.getName());
@@ -79,19 +93,22 @@ public class WorkDefBuilder {
          }
          // toStates
          for (StateToken toStateToken : stateDefBuilder.getToStateTokens()) {
-            IAtsStateDefinition toState = getStateDefinition(toStateToken.getName());
-            Conditions.assertNotNull(toState,
-               String.format("toState [%s] can't be null in state [%s] and work def [%s]", toStateToken,
-                  stateDefBuilder.getName(), workDef.getName()));
-            stateDefBuilder.addToState(toState);
+            if (defaultToStateToken != StateToken.ANY) {
+               IAtsStateDefinition toState = getStateDefinition(toStateToken.getName());
+               Conditions.assertNotNull(toState,
+                  String.format("toState [%s] can't be null in state [%s] and work def [%s]", toStateToken,
+                     stateDefBuilder.getName(), workDef.getName()));
+               stateDefBuilder.addToState(toState);
+            }
          }
-         // overrideValidationStates
-         for (StateToken overrideStateToken : stateDefBuilder.getOverrideValidationStateTokens()) {
-            IAtsStateDefinition overrideState = getStateDefinition(overrideStateToken.getName());
-            Conditions.assertNotNull(overrideState,
-               String.format("overrideState [%s] can't be null in state [%s] and work def [%s]", overrideStateToken,
-                  stateDefBuilder.getName(), workDef.getName()));
-            stateDefBuilder.addOverrideState(overrideState);
+      }
+
+      // Resolve any states with StateToken.ANY as toStateToken
+      for (StateDefBuilder stateDefBuilder : stateDefBuilders) {
+         List<StateToken> states = stateDefBuilder.getToStateTokens();
+         if (states.size() == 1 && states.iterator().next() == StateToken.ANY) {
+            stateDefBuilder.state.getToStates().addAll(workDef.getStates());
+            stateDefBuilder.state.getToStates().remove(stateDefBuilder.state);
          }
       }
 

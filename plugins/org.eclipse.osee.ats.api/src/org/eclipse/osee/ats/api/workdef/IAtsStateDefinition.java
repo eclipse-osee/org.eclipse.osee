@@ -43,8 +43,6 @@ public interface IAtsStateDefinition extends IStateToken {
 
    void setLayoutItems(List<IAtsLayoutItem> layoutToSet);
 
-   List<IAtsStateDefinition> getOverrideAttributeValidationStates();
-
    @Override
    int hashCode();
 

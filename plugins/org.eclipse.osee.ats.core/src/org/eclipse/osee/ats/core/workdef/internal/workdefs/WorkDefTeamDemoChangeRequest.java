@@ -42,8 +42,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Analyze) //
-         .andToStates(StateToken.Cancelled, StateToken.Analyze) //
+         .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -59,9 +58,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORIZONTAL_LABEL));
 
       bld.andState(2, "Analyze", StateType.Working) //
-         .andToDefaultState(StateToken.Authorize) //
-         .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Implement, StateToken.Endorse) //
-         .andOverrideValidationStates(StateToken.Endorse) //
+         .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -80,9 +77,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition("Generate Estimating Tasks", "XCheckBoxesWithTaskGenExample"));
 
       bld.andState(3, "Authorize", StateType.Working) //
-         .andToDefaultState(StateToken.Implement) //
-         .andToStates(StateToken.Cancelled, StateToken.Implement, StateToken.Analyze) //
-         .andOverrideValidationStates(StateToken.Analyze) //
+         .andToStates(StateToken.Implement, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -90,9 +85,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL));
 
       bld.andState(4, "Implement", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Analyze, StateToken.Authorize) //
-         .andOverrideValidationStates(StateToken.Analyze, StateToken.Authorize) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -103,15 +96,10 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(5, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Implement) //
-         .andOverrideValidationStates(StateToken.Implement) //
          .andRules(RuleDefinitionOption.AllowEditToAll, RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN);
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Analyze, StateToken.Authorize, StateToken.Implement, StateToken.Endorse) //
-         .andOverrideValidationStates(StateToken.Analyze, StateToken.Authorize, StateToken.Implement,
-            StateToken.Endorse) //
          .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.DARK_GREEN);
 

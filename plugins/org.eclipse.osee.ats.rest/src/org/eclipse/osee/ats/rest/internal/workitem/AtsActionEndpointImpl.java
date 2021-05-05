@@ -199,14 +199,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             states.add(state.getName());
          }
       }
-      for (IAtsStateDefinition state : teamWf.getStateDefinition().getOverrideAttributeValidationStates()) {
+      for (IAtsStateDefinition state : atsApi.getWorkItemService().getToStatesWithReturnStates(teamWf)) {
          if (!states.contains(state.getName())) {
             states.add(state.getName());
-         }
-      }
-      for (IAtsVersion version : atsApi.getVersionService().getVersions(teamWf.getTeamDefinition())) {
-         if (!version.isReleased()) {
-            states.add(version.getName());
          }
       }
       return states;

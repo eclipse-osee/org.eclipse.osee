@@ -41,8 +41,7 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.InWork) //
-         .andToStates(StateToken.Cancelled, StateToken.InWork) //
+         .andToStates(StateToken.InWork, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -56,23 +55,17 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"));
 
       bld.andState(2, "InWork", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Endorse) //
-         .andOverrideValidationStates(StateToken.Endorse) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(3, "Completed", StateType.Completed) //
-         .andToStates(StateToken.InWork) //
-         .andOverrideValidationStates(StateToken.InWork) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.BLACK);
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.InWork, StateToken.Endorse) //
-         .andOverrideValidationStates(StateToken.InWork, StateToken.Endorse) //
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();

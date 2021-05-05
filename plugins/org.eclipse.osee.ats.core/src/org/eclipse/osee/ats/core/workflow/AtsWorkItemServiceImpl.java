@@ -504,4 +504,56 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return results;
    }
 
+   @Override
+   public List<IAtsStateDefinition> getToStatesWithReturnStates(IAtsWorkItem workItem) {
+      List<IAtsStateDefinition> allPages = new ArrayList<>();
+      IAtsStateDefinition currState = workItem.getStateDefinition();
+      if (currState == null) {
+         return allPages;
+      }
+
+      // Add default toState or complete/cancelled return states
+      if (currState.getToStates().isEmpty()) {
+         if (currState.getStateType().isCompletedState()) {
+            IAtsStateDefinition completedFromState =
+               workItem.getWorkDefinition().getStateByName(workItem.getCompletedFromState());
+            if (completedFromState != null && !allPages.contains(completedFromState)) {
+               allPages.add(completedFromState);
+            }
+         }
+         if (currState.getStateType().isCancelledState()) {
+            IAtsStateDefinition cancelledFromState =
+               workItem.getWorkDefinition().getStateByName(workItem.getCancelledFromState());
+            if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
+               allPages.add(cancelledFromState);
+            }
+         }
+      } else {
+         allPages.add(currState.getToStates().iterator().next());
+      }
+
+      // Add return-to states
+      for (String visitedStateName : workItem.getStateMgr().getVisitedStateNames()) {
+         for (IAtsStateDefinition state : workItem.getWorkDefinition().getStates()) {
+            if (state.getName().equals(visitedStateName)) {
+               if (!allPages.contains(state)) {
+                  allPages.add(state);
+               }
+               break;
+            }
+         }
+      }
+
+      // Add remaining toStates
+      for (IAtsStateDefinition toState : currState.getToStates()) {
+         if (!allPages.contains(toState)) {
+            allPages.add(toState);
+         }
+      }
+
+      // Remove current state
+      allPages.remove(currState);
+      return allPages;
+   }
+
 }

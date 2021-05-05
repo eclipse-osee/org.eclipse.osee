@@ -197,7 +197,8 @@ public class ActionPage {
 
    private String getToStateList() {
       StringBuilder sb = new StringBuilder("<datalist id=\"ToStateList\">\n");
-      for (IAtsStateDefinition state : workItem.getStateDefinition().getToStates()) {
+      for (IAtsStateDefinition state : atsApi.getWorkItemService().getToStatesWithReturnStates(
+         workItem)) {
          sb.append("<option value=\"");
          sb.append(state.getName());
          sb.append("\" id=\"");

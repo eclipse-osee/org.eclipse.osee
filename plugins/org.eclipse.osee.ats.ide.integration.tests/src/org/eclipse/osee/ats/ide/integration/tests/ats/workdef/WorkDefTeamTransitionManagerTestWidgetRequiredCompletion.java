@@ -41,9 +41,7 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Implement) //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andOverrideValidationStates(StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -54,9 +52,7 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Analyze, StateToken.Completed, StateToken.Cancelled) //
-         .andOverrideValidationStates(StateToken.Analyze, StateToken.Cancelled) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -67,13 +63,9 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Implement) //
-         .andOverrideValidationStates(StateToken.Implement) //
          .andColor(StateColor.BLACK);
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Analyze, StateToken.Implement) //
-         .andOverrideValidationStates(StateToken.Analyze, StateToken.Implement) //
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();

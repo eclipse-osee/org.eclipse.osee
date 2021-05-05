@@ -144,17 +144,6 @@ public class StateDefinitionTest {
    }
 
    @Test
-   public void testGetOverrideAttributeValidationStates() {
-      StateDefinition endorse = new StateDefinition("endorse");
-      StateDefinition analyze = new StateDefinition("endorse");
-      StateDefinition completed = new StateDefinition("endorse");
-      endorse.getOverrideAttributeValidationStates().add(analyze);
-      endorse.getOverrideAttributeValidationStates().add(completed);
-      Assert.assertTrue(endorse.getOverrideAttributeValidationStates().contains(analyze));
-      Assert.assertTrue(endorse.getOverrideAttributeValidationStates().contains(completed));
-   }
-
-   @Test
    public void testGetWidgetsFromStateItems() {
       StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());

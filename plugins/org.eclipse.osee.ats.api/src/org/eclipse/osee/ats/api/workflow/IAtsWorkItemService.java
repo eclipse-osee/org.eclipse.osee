@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -137,5 +138,7 @@ public interface IAtsWorkItemService {
    TransitionResults transition(ITransitionHelper helper);
 
    TransitionResults transitionValidate(TransitionData transData);
+
+   List<IAtsStateDefinition> getToStatesWithReturnStates(IAtsWorkItem workItem);
 
 }

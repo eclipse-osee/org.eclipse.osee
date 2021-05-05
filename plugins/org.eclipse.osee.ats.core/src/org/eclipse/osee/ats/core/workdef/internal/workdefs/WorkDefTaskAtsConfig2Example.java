@@ -40,9 +40,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "None", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.InWork) //
          .andToStates(StateToken.InWork, StateToken.InReview, StateToken.Complete, StateToken.Not_Required) //
-         .andOverrideValidationStates(StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
             RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
@@ -60,9 +58,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             ));
 
       bld.andState(2, "InWork", StateType.Working) //
-         .andToDefaultState(StateToken.InReview) //
-         .andToStates(StateToken.None, StateToken.InReview, StateToken.Complete, StateToken.Not_Required) //
-         .andOverrideValidationStates(StateToken.Not_Required) //
+         .andToStates(StateToken.InReview, StateToken.Complete, StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
             RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
@@ -80,9 +76,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             ));
 
       bld.andState(3, "InReview", StateType.Working) //
-         .andToDefaultState(StateToken.Complete) //
-         .andToStates(StateToken.None, StateToken.InWork, StateToken.Complete, StateToken.Not_Required) //
-         .andOverrideValidationStates(StateToken.Not_Required) //
+         .andToStates(StateToken.Complete, StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
             RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.DARK_RED) //
@@ -100,8 +94,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             ));
 
       bld.andState(4, "Complete", StateType.Completed) //
-         .andToStates(StateToken.None, StateToken.InWork, StateToken.InReview, StateToken.Not_Required) //
-         .andOverrideValidationStates(StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
             RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.DARK_GREEN) //
@@ -119,7 +111,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
             ));
 
       bld.andState(5, "Not_Required", StateType.Cancelled) //
-         .andToStates(StateToken.None, StateToken.InWork, StateToken.InReview, StateToken.Complete) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
             RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.DARK_GREEN) //

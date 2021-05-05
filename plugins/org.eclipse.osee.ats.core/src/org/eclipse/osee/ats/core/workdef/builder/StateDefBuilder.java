@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -39,14 +40,14 @@ public class StateDefBuilder {
 
    StateDefinition state;
    private final WorkDefinition workDef;
-   private StateToken toDefaultStateToken;
    private final List<StateToken> toStateTokens = new ArrayList<>();
-   private final List<StateToken> overrideValidationStateTokens = new ArrayList<>();
    private final List<DecisionReviewDefinitionBuilder> decRevBldrs = new LinkedList<>();
    private final List<PeerReviewDefinitionBuilder> peerRevBldrs = new LinkedList<>();
    private StateToken getLayoutFromState;
+   private final XResultData rd;
+   private final List<WorkDefBuilderOption> builderOptions;
 
-   public StateDefBuilder(int ordinal, String name, StateType type, WorkDefinition workDef) {
+   public StateDefBuilder(int ordinal, String name, StateType type, WorkDefinition workDef, WorkDefBuilderOption... builderOptions) {
       this.workDef = workDef;
       state = new StateDefinition(name);
       state.setStateType(type);
@@ -54,6 +55,11 @@ public class StateDefBuilder {
       state.setWorkDefinition(workDef);
       workDef.addState(state);
       this.getLayoutFromState = null;
+      this.rd = workDef.getResults();
+      this.builderOptions = new ArrayList<>();
+      for (WorkDefBuilderOption opt : builderOptions) {
+         this.builderOptions.add(opt);
+      }
    }
 
    public StateDefBuilder andDescription(String desc) {
@@ -68,8 +74,8 @@ public class StateDefBuilder {
 
    public StateDefBuilder isStartState() {
       if (workDef.getStartState() != null) {
-         workDef.getResults().errorf("Duplicate Start States [%s] and [%s] for Work Def %s", workDef.getStartState(),
-            state, workDef.getName());
+         rd.errorf("Duplicate Start States [%s] and [%s] for Work Def %s\n", workDef.getStartState(), state,
+            workDef.getName());
       }
       workDef.setStartState(state);
       return this;
@@ -80,26 +86,38 @@ public class StateDefBuilder {
       return this;
    }
 
-   public StateDefBuilder andOverrideValidationStates(StateToken... toStates) {
-      for (StateToken state : toStates) {
-         this.overrideValidationStateTokens.add(state);
-      }
-      return this;
-   }
-
    public StateDefBuilder andStateWeight(int percent) {
       state.setStateWeight(percent);
       return this;
    }
 
-   public StateDefBuilder andToDefaultState(StateToken stateToken) {
-      toDefaultStateToken = stateToken;
-      return this;
-   }
-
    public StateDefBuilder andToStates(StateToken... stateTokens) {
-      for (StateToken tok : stateTokens) {
-         this.toStateTokens.add(tok);
+      if (state.getStateType().isCompletedOrCancelled() && !hasOption(
+         WorkDefBuilderOption.OVERRIDE_COMP_CANC_TO_STATE_CHECK)) {
+         rd.errorf("Completed/Cancelled sate [%s] shouldn't have toStates for Work Def %s\n", state.getName(),
+            workDef.getName());
+      }
+      List<StateToken> processedStates = new ArrayList<>();
+      boolean foundAny = false;
+      for (StateToken stateTok : stateTokens) {
+         if (stateTok == StateToken.ANY) {
+            foundAny = true;
+         }
+         if (stateTok.getName().equals(state.getName())) {
+            rd.errorf("toState [%s] shouldn't match state name for Work Def %s\n", stateTok.getName(),
+               workDef.getName());
+         }
+         if (processedStates.contains(stateTok)) {
+            rd.errorf("Should not have duplicate [%s] states in andToState call for Work Def %s\n", stateTok.getName(),
+               workDef.getName());
+         }
+         processedStates.add(stateTok);
+         this.toStateTokens.add(stateTok);
+      }
+      if (foundAny && this.toStateTokens.size() > 1) {
+         rd.errorf(
+            "Should not use StateToken.ANY with other StateTokens for andToStates in state [%s] for Work Def %s\n",
+            state.getName(), workDef.getName());
       }
       return this;
    }
@@ -113,7 +131,8 @@ public class StateDefBuilder {
 
    public StateDefBuilder andLayout(IAtsLayoutItem... items) {
       if (this.getAndLayoutFromState() != null) {
-         workDef.getResults().errorf("Cannot add layout items when state already gets layout from other state.");
+         rd.errorf("Cannot add layout items when state already gets layout from other state for Work Def %s\n",
+            workDef.getName());
       }
       for (IAtsLayoutItem item : items) {
          state.getLayoutItems().add(item);
@@ -127,7 +146,7 @@ public class StateDefBuilder {
       state.getLayoutItems().clear();
       insertLayoutAfter(state.getLayoutItems(), attrTypeLocation, currLayoutItems, found, addLayoutItems);
       if (!found.get()) {
-         workDef.getResults().errorf("Can't find WidgetDef for [%s]", attrTypeLocation);
+         rd.errorf("Can't find WidgetDef for [%s] for Work Def %s\n", attrTypeLocation, workDef.getName());
       }
    }
 
@@ -167,24 +186,26 @@ public class StateDefBuilder {
    }
 
    public StateToken getToDefaultStateToken() {
-      return toDefaultStateToken;
+      if (toStateTokens.isEmpty()) {
+         return null;
+      }
+      return toStateTokens.iterator().next();
    }
 
    public List<StateToken> getToStateTokens() {
       return toStateTokens;
    }
 
-   public List<StateToken> getOverrideValidationStateTokens() {
-      return overrideValidationStateTokens;
-   }
-
    public StateDefBuilder andLayoutFromState(StateToken fromState) {
       if (state.getOrdinal() == 1) {
-         workDef.getResults().errorf("Cannot import layout from other state if current state is the start state.");
+         rd.errorf(
+            "State [%s] cannot import layout from other state if current state is the start state for Work Def %s\n",
+            state.getName(), workDef.getName());
       }
       if (!state.getLayoutItems().isEmpty()) {
-         workDef.getResults().errorf(
-            "Cannot import layout from other state if current state has already defined layout items.");
+         rd.errorf(
+            "State [%s] cannot import layout from other state if current state has already defined layout items for Work Def %s\n",
+            state.getName(), workDef.getName());
       }
       this.getLayoutFromState = fromState;
       return this;
@@ -201,11 +222,6 @@ public class StateDefBuilder {
 
    public StateDefBuilder addToState(IAtsStateDefinition toState) {
       state.getToStates().add(toState);
-      return this;
-   }
-
-   public StateDefBuilder addOverrideState(IAtsStateDefinition overrideState) {
-      state.getOverrideAttributeValidationStates().add(overrideState);
       return this;
    }
 
@@ -248,5 +264,9 @@ public class StateDefBuilder {
          state.getStateOptions().add(option);
       }
       return this;
+   }
+
+   public boolean hasOption(WorkDefBuilderOption option) {
+      return builderOptions.contains(option);
    }
 }

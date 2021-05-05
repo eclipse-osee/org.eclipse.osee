@@ -145,7 +145,8 @@ public class WfeTransitionHeader extends Composite {
    }
 
    public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
-      List<IAtsStateDefinition> states = awa.getToStatesWithCompleteCancelReturnStates();
+      List<IAtsStateDefinition> states =
+         AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(awa);
 
       Object[] stateArray = states.toArray();
       ListSelectionDialogNoSave dialog =

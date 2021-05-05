@@ -387,10 +387,27 @@ public class TransitionManager implements IExecuteListener {
       }
    }
 
+   /**
+    * @return true if toState is visited and is toState is earlier than current state
+    */
+   private boolean isOverrideAttributeValidationState(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+      List<String> visitedStateNames = workItem.getStateMgr().getVisitedStateNames();
+      if (visitedStateNames.contains(toStateDef.getName())) {
+         IAtsStateDefinition currState = workItem.getStateDefinition();
+         for (IAtsStateDefinition stateDef : toStateDef.getWorkDefinition().getStates()) {
+            if (stateDef.getName().equals(toStateDef.getName())) {
+               if (toStateDef.getOrdinal() < currState.getOrdinal()) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+
    private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
       boolean isOverrideAttributeValidationState =
-         helper.isOverrideTransitionValidityCheck() || workItem.getStateDefinition().getOverrideAttributeValidationStates().contains(
-            toStateDef);
+         helper.isOverrideTransitionValidityCheck() || isOverrideAttributeValidationState(workItem, toStateDef);
       if (toStateDef.getStateType().isCancelledState()) {
          validateTaskCompletion(results, workItem, toStateDef, taskService);
          validateReviewsCancelled(results, workItem, toStateDef);

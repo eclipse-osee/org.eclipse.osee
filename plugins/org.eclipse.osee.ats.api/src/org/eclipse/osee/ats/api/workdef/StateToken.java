@@ -25,6 +25,9 @@ public class StateToken extends NamedIdBase {
 
    private static Map<Long, StateToken> tokens = new HashMap<>();
 
+   // Special state that means any state can be transitioned to/from
+   public static StateToken ANY = StateToken.valueOf(438395388L, "ANY");
+
    public static StateToken Analyze = StateToken.valueOf(593820493L, "Analyze");
    public static StateToken Authorize = StateToken.valueOf(91727489234L, "Authorize");
    public static StateToken Awaiting_Code = StateToken.valueOf(1271780231L, "Awaiting_Code");

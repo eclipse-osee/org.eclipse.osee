@@ -66,7 +66,6 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
       bld.andReviewRoleTypeMinimum(ReviewRoleType.Reviewer, 1);
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Review) //
          .andToStates(StateToken.Cancelled, StateToken.Review, StateToken.Meeting) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
@@ -95,9 +94,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
             ));
 
       bld.andState(2, "Review", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Meeting, StateToken.Prepare) //
-         .andOverrideValidationStates(StateToken.Meeting, StateToken.Prepare) //
+         .andToStates(StateToken.Completed, StateToken.Meeting, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -125,9 +122,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(3, "Meeting", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Review, StateToken.Completed, StateToken.Prepare) //
-         .andOverrideValidationStates(StateToken.Review, StateToken.Prepare) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -152,14 +147,10 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(4, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Meeting, StateToken.Review) //
-         .andOverrideValidationStates(StateToken.Meeting, StateToken.Review) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN);
 
       bld.andState(5, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Prepare, StateToken.Review, StateToken.Meeting) //
-         .andOverrideValidationStates(StateToken.Prepare, StateToken.Review, StateToken.Meeting) //
          .andColor(StateColor.DARK_GREEN);
 
       return bld.getWorkDefinition();

@@ -131,8 +131,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
          stateDefinition.getName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
       try {
          for (IAtsStateDefinition page : stateDefinition.getToStates()) {
-            sb.append("-> " + page.getName() + (stateDefinition.getOverrideAttributeValidationStates().contains(
-               page) ? " (return)" : "") + "\n");
+            sb.append("-> " + page.getName() + "\n");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

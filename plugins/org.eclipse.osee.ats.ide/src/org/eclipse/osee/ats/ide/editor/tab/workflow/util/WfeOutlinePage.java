@@ -675,7 +675,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
          List<Object> items = new ArrayList<>();
          items.add(new WrappedStates("DefaultToState", defaultToStates));
          items.add(new WrappedStates("ToStates", stateDef.getToStates()));
-         items.add(new WrappedStates("OverrideAttrValidationStates", stateDef.getOverrideAttributeValidationStates()));
          return items;
       }
 

@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.ide.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -56,7 +57,8 @@ public class XTransitionToStateComboWidget extends XComboViewer implements Artif
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          awa = (AbstractWorkflowArtifact) artifact;
          List<Object> states = new ArrayList<>();
-         for (IAtsStateDefinition nextState : awa.getToStatesWithCompleteCancelReturnStates()) {
+         for (IAtsStateDefinition nextState : AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(
+            awa)) {
             if (!states.contains(nextState)) {
                states.add(nextState);
             }

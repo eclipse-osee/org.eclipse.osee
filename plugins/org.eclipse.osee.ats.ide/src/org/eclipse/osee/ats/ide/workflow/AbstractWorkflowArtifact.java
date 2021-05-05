@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.workflow;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -261,7 +260,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public boolean isAccessControlWrite() {
-      return AtsApiService.get().getAccessControlService().hasArtifactPermission(this, PermissionEnum.WRITE, null).isSuccess();
+      return AtsApiService.get().getAccessControlService().hasArtifactPermission(this, PermissionEnum.WRITE,
+         null).isSuccess();
    }
 
    /**
@@ -413,28 +413,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsStateManager getStateMgr() {
       return AtsApiService.get().getStateFactory().getStateManager(this);
-   }
-
-   public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() {
-      List<IAtsStateDefinition> allPages = new ArrayList<>();
-      IAtsStateDefinition currState = getStateDefinition();
-      if (currState == null) {
-         return allPages;
-      }
-      allPages.addAll(currState.getToStates());
-      if (currState.getStateType().isCompletedState()) {
-         IAtsStateDefinition completedFromState = getWorkDefinition().getStateByName(getCompletedFromState());
-         if (completedFromState != null && !allPages.contains(completedFromState)) {
-            allPages.add(completedFromState);
-         }
-      }
-      if (currState.getStateType().isCancelledState()) {
-         IAtsStateDefinition cancelledFromState = getWorkDefinition().getStateByName(getCancelledFromState());
-         if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
-            allPages.add(cancelledFromState);
-         }
-      }
-      return allPages;
    }
 
    public void clearImplementersCache() {

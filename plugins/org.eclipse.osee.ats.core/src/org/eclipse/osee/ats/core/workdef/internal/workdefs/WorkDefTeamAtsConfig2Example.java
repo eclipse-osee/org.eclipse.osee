@@ -41,8 +41,7 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
-         .andToDefaultState(StateToken.Implement) //
-         .andToStates(StateToken.Cancelled, StateToken.Implement) //
+         .andToStates(StateToken.Implement, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -56,9 +55,7 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(2, "Implement", StateType.Working) //
-         .andToDefaultState(StateToken.Completed) //
-         .andToStates(StateToken.Cancelled, StateToken.Completed, StateToken.Analyze) //
-         .andOverrideValidationStates(StateToken.Analyze) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -67,14 +64,10 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(3, "Completed", StateType.Completed) //
-         .andToStates(StateToken.Implement) //
-         .andOverrideValidationStates(StateToken.Implement) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.BLACK);
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //
-         .andToStates(StateToken.Analyze, StateToken.Implement) //
-         .andOverrideValidationStates(StateToken.Analyze, StateToken.Implement) //
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();

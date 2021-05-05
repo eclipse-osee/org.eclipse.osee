@@ -203,7 +203,6 @@ public class AtsMockitoTest {
          when(state.getDefaultToState()).thenReturn(defaultToState);
       }
       when(state.getToStates()).thenReturn(toStates);
-      when(state.getOverrideAttributeValidationStates()).thenReturn(overrideValidationStates);
    }
 
    private void initializeAi(IAtsActionableItem ai, String name, boolean active, boolean actionable) {

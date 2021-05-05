@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
+import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,7 +38,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    private final RuleManager ruleMgr = new RuleManager();
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private IAtsStateDefinition defaultToState;
-   private final List<IAtsStateDefinition> overrideAttributeValidationStates = new ArrayList<>(5);
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
    private IAtsWorkDefinition workDefinition;
@@ -81,6 +81,9 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
 
    @Override
    public List<IAtsStateDefinition> getToStates() {
+      if (toStates.size() == 1 && toStates.iterator().next() == StateToken.ANY) {
+         return workDefinition.getStates();
+      }
       return toStates;
    }
 
@@ -109,11 +112,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
          return workDefinition.getName() + "." + getName();
       }
       return getName();
-   }
-
-   @Override
-   public List<IAtsStateDefinition> getOverrideAttributeValidationStates() {
-      return overrideAttributeValidationStates;
    }
 
    @Override
