@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,11 +40,11 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
    private final Map<ReviewRole, Integer> reviewRoleMap = new ConcurrentHashMap<>();
    private final Map<ReviewRoleType, Integer> reviewRoleTypeMap = new ConcurrentHashMap<>();
-
    private IAtsStateDefinition startState;
    private HeaderDefinition headerDef;
    private boolean showStateMetrics = false;
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
+   private XResultData results = new XResultData();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -177,5 +178,13 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
          }
       }
       throw new OseeArgumentException("Review role with name [%s] does not exist", name);
+   }
+
+   public XResultData getResults() {
+      return results;
+   }
+
+   public void setResults(XResultData results) {
+      this.results = results;
    }
 }

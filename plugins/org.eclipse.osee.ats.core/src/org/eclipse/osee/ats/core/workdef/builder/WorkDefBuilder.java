@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -66,7 +65,7 @@ public class WorkDefBuilder {
          if (fromLayoutStateToken != null) {
             IAtsStateDefinition copyState = getStateDefinition(fromLayoutStateToken.getName());
             if (stateDefBuilder.state.getOrdinal() < copyState.getOrdinal()) {
-               throw new OseeStateException("Cannot import layout from undefined state.");
+               workDef.getResults().errorf("Cannot import layout from undefined state.");
             }
             stateDefBuilder.state.setLayoutItems(copyState.getLayoutItems());
          }

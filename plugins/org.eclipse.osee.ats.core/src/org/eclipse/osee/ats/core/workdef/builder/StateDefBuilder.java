@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -69,8 +68,8 @@ public class StateDefBuilder {
 
    public StateDefBuilder isStartState() {
       if (workDef.getStartState() != null) {
-         throw new OseeArgumentException("Duplicate Start States [%s] and [%s] for Work Def %s",
-            workDef.getStartState(), state, workDef.getName());
+         workDef.getResults().errorf("Duplicate Start States [%s] and [%s] for Work Def %s", workDef.getStartState(),
+            state, workDef.getName());
       }
       workDef.setStartState(state);
       return this;
@@ -114,7 +113,7 @@ public class StateDefBuilder {
 
    public StateDefBuilder andLayout(IAtsLayoutItem... items) {
       if (this.getAndLayoutFromState() != null) {
-         throw new OseeArgumentException("Cannot add layout items when state already gets layout from other state.");
+         workDef.getResults().errorf("Cannot add layout items when state already gets layout from other state.");
       }
       for (IAtsLayoutItem item : items) {
          state.getLayoutItems().add(item);
@@ -128,7 +127,7 @@ public class StateDefBuilder {
       state.getLayoutItems().clear();
       insertLayoutAfter(state.getLayoutItems(), attrTypeLocation, currLayoutItems, found, addLayoutItems);
       if (!found.get()) {
-         throw new OseeArgumentException("Can't find WidgetDef for [%s]", attrTypeLocation);
+         workDef.getResults().errorf("Can't find WidgetDef for [%s]", attrTypeLocation);
       }
    }
 
@@ -181,10 +180,10 @@ public class StateDefBuilder {
 
    public StateDefBuilder andLayoutFromState(StateToken fromState) {
       if (state.getOrdinal() == 1) {
-         throw new OseeArgumentException("Cannot import layout from other state if current state is the start state.");
+         workDef.getResults().errorf("Cannot import layout from other state if current state is the start state.");
       }
       if (!state.getLayoutItems().isEmpty()) {
-         throw new OseeArgumentException(
+         workDef.getResults().errorf(
             "Cannot import layout from other state if current state has already defined layout items.");
       }
       this.getLayoutFromState = fromState;

@@ -22,6 +22,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * Service to retrieve all work definitions that have been registered. Should not be used by applications, only by the
@@ -60,6 +62,15 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
       // Add any not processed
       for (IAtsWorkDefinitionProvider workDefProvider : new CopyOnWriteArrayList<>(workDefProviders)) {
          handleProvider(workDefProvider);
+      }
+      XResultData rd = new XResultData();
+      for (IAtsWorkDefinition workDef : idToWorkDef.values()) {
+         if (workDef.getResults().isErrors()) {
+            rd.merge(workDef.getResults());
+         }
+      }
+      if (rd.isErrors()) {
+         throw new OseeArgumentException("Exception Building WorkDef(s) %s", rd.toString());
       }
    }
 
