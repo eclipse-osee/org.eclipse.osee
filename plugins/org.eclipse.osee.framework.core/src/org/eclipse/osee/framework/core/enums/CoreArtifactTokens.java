@@ -56,6 +56,7 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken TestSupportUnitsFolder    = ArtifactToken.valueOf(34522345, "Test Support Units", Folder);
 
    public static final ArtifactToken InterfaceMessagesFolder = ArtifactToken.valueOf(2121138078, "Interface Messages", Folder);
+   public static final ArtifactToken InterfacePlatformTypesFolder = ArtifactToken.valueOf(2121138079, "Interface Platform Types", Folder);
    // @formatter:on
 
    private CoreArtifactTokens() {

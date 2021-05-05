@@ -22,6 +22,7 @@ public class CellData {
    private String hyperlink = Strings.EMPTY_STRING;
    private String mergeAcross = Strings.EMPTY_STRING;
    private String mergeDown = Strings.EMPTY_STRING;
+   private String style = Strings.EMPTY_STRING;
 
    public CellData() {
       //
@@ -32,6 +33,14 @@ public class CellData {
       this.setHyperlink(hyperlink);
       this.setMergeAcross(mergeAcross);
       this.setMergeDown(mergeDown);
+   }
+
+   public CellData(String text, String hyperlink, String mergeAcross, String mergeDown, String style) {
+      this.setText(text);
+      this.setHyperlink(hyperlink);
+      this.setMergeAcross(mergeAcross);
+      this.setMergeDown(mergeDown);
+      this.setStyle(style);
    }
 
    public String getText() {
@@ -64,6 +73,14 @@ public class CellData {
 
    public void setMergeDown(String mergeDown) {
       this.mergeDown = mergeDown;
+   }
+
+   public String getStyle() {
+      return style;
+   }
+
+   public void setStyle(String style) {
+      this.style = style;
    }
 
 }

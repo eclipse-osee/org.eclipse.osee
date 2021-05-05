@@ -264,6 +264,7 @@ public class OrcsBranchImpl implements OrcsBranch {
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolder);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.HardwareRequirementsFolder);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.InterfaceMessagesFolder);
+      tx.createArtifact(CoreArtifactTokens.InterfaceMessagesFolder, CoreArtifactTokens.InterfacePlatformTypesFolder);
 
       for (String name : new String[] {
          "Verification Tests",

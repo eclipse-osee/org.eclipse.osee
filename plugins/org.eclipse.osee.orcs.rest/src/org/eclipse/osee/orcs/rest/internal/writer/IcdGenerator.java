@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAtt
 import org.eclipse.osee.framework.jdk.core.util.CellData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -75,7 +74,7 @@ public class IcdGenerator {
          }
          structureLinks.put(structure.getName(), sheetName);
       }
-      ISheetWriter writer = new ExcelXmlWriter(providedWriter);
+      ExcelXmlWriter writer = new ExcelXmlWriter(providedWriter);
       createMessageSubMessageSummary(writer, branch, conn, primaryNode, secondaryNode, messages);
       createStructureNamesSheet(writer, branch, structureLinks);
       createMessageDetailSheet(writer, branch, subMessages, structureLinks);
@@ -83,9 +82,16 @@ public class IcdGenerator {
       writer.endWorkbook();
    }
 
-   private void createStructureNamesSheet(ISheetWriter writer, BranchId branch, SortedMap<String, String> structures) throws IOException {
+   private void createStructureNamesSheet(ExcelXmlWriter writer, BranchId branch, SortedMap<String, String> structures) throws IOException {
+
+      List<String> headingsList = new ArrayList<String>();
+      headingsList.add("Structure Name");
+      headingsList.add("Structure Name");
+      headingsList.add("Structure Name");
+      Object[] headings = headingsList.toArray();
       int columnCount = 3;
       writer.startSheet("Structures Names", columnCount);
+      writer.writeHeaderRow(headings);
       Iterator iterator = structures.keySet().iterator();
       int size = structures.size();
       int firstCol = Math.floorDiv(size, 3);
@@ -129,7 +135,7 @@ public class IcdGenerator {
       writer.endSheet();
    }
 
-   private void createMessageDetailSheet(ISheetWriter writer, BranchId branch, List<ArtifactReadable> subMessages, SortedMap<String, String> structureLinks) throws IOException {
+   private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, List<ArtifactReadable> subMessages, SortedMap<String, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 14;
       headingsList.add("Category");
@@ -148,7 +154,7 @@ public class IcdGenerator {
       headingsList.add("Description");
       Object[] headings = headingsList.toArray();
       writer.startSheet("SubMessage Summary", columnCount);
-      writer.writeRow(headings);
+      writer.writeHeaderRow(headings);
       for (ArtifactReadable artifact : subMessages) {
          for (ArtifactReadable struct : artifact.getRelated(
             CoreRelationTypes.InterfaceSubMessageContent_Structure).getList()) {
@@ -185,28 +191,46 @@ public class IcdGenerator {
             String minSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMinSimultaneity, "n/a");
             String maxSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMaxSimultaneity, "n/a");
             String msgRateText;
+            int msgRate = -1;
             String msgPeriodicity =
                message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePeriodicity, "Aperiodic");
             if (msgPeriodicity.equals("Periodic")) {
                msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
+               try {
+                  msgRate = Integer.parseInt(msgRateText);
+               } catch (NumberFormatException nfe) {
+                  //do nothing
+               }
             } else {
                msgRateText = msgPeriodicity;
             }
             if (artifact.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfaceMessageRate)) {
                msgRateText = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
+               try {
+                  msgRate = Integer.parseInt(msgRateText);
+               } catch (NumberFormatException nfe) {
+                  //do nothing
+               }
+               if (msgPeriodicity.equals("Aperiodic")) {
+                  msgRateText = msgRateText + "-A";
+               }
             }
 
-            String minBps = Strings.EMPTY_STRING;
-            String maxBps = Strings.EMPTY_STRING;
-
-            try {
-               int msgRate = Integer.parseInt(msgRateText);
-               minBps = Integer.toString(Integer.parseInt(minSim) * sum * msgRate);
-               maxBps = Integer.toString(Integer.parseInt(maxSim) * sum * msgRate);
-            } catch (NumberFormatException nfe) {
-               minBps = "Classified";
-               maxBps = "Classified";
+            String minBps = "Classified";
+            String maxBps = "Classified";
+            if (msgRate > 0) {
+               try {
+                  minBps = Integer.toString(Integer.parseInt(minSim) * sum * msgRate);
+               } catch (NumberFormatException nfe) {
+                  minBps = "Classified";
+               }
+               try {
+                  maxBps = Integer.toString(Integer.parseInt(maxSim) * sum * msgRate);
+               } catch (NumberFormatException nfe) {
+                  maxBps = "Classified";
+               }
             }
+
             String cat = struct.getSoleAttributeValue(CoreAttributeTypes.InterfaceStructureCategory);
             InterfaceStructureCategoryEnum catEnum =
                CoreAttributeTypes.InterfaceStructureCategory.getEnumValues().stream().filter(
@@ -220,7 +244,11 @@ public class IcdGenerator {
             writer.writeCell(msgRateText);
             writer.writeCell(minSim);
             writer.writeCell(maxSim);
-            writer.writeCell(elements.size());
+            int elementCount = 1;
+            if (elements.size() != 0) {
+               elementCount = elements.size();
+            }
+            writer.writeCell(elementCount);
             writer.writeCell(sum);
             writer.writeCell(minBps);
             writer.writeCell(maxBps);
@@ -237,7 +265,7 @@ public class IcdGenerator {
       writer.endSheet();
    }
 
-   private void createSubMessageSheets(ISheetWriter writer, BranchId branch, List<ArtifactReadable> subMessages, SortedMap<String, String> structureLinks) throws IOException {
+   private void createSubMessageSheets(ExcelXmlWriter writer, BranchId branch, List<ArtifactReadable> subMessages, SortedMap<String, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 13;
       headingsList.add("Begin Word");
@@ -245,8 +273,8 @@ public class IcdGenerator {
       headingsList.add("Number of Bytes");
       headingsList.add("Ending Word");
       headingsList.add("Ending Byte");
-      headingsList.add("Element Name");
       headingsList.add("Type");
+      headingsList.add("Element Name");
       headingsList.add("Units");
       headingsList.add("Valid Range");
       headingsList.add("Alterable After Creation");
@@ -260,7 +288,7 @@ public class IcdGenerator {
 
             int byteLocation = 0;
             writer.startSheet(structureLinks.get(struct.getName()), columnCount);
-            writer.writeRow(headings);
+            writer.writeHeaderRow(headings);
 
             for (ArtifactReadable element : struct.getRelated(
                CoreRelationTypes.InterfaceStructureContent_DataElement).getList()) {
@@ -279,7 +307,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printDataElementRow(ISheetWriter writer, BranchId branch, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
+   private void printDataElementRow(ExcelXmlWriter writer, BranchId branch, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -287,13 +315,14 @@ public class IcdGenerator {
       String enumLiterals = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, "");
       String elementName = artifact.getSoleAttributeValue(CoreAttributeTypes.Name);
       String dataType = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfaceLogicalType, "n/a");
-      String units = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeUnits, "");
+      String units = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeUnits, "n/a");
       String validRange;
       if (platformType.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfacePlatformTypeMinval)) {
          validRange = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMinval,
             "n/a") + "-" + platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMaxval, "n/a");
       } else {
-         validRange = "";
+         validRange =
+            platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, " ");
       }
       String alterable = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementAlterable, "No");
 
@@ -303,7 +332,7 @@ public class IcdGenerator {
          alterable = "No";
       }
       String description = artifact.getSoleAttributeAsString(CoreAttributeTypes.Description, "n/a");
-      String notes = artifact.getSoleAttributeAsString(CoreAttributeTypes.Notes, "");
+      String notes = artifact.getSoleAttributeAsString(CoreAttributeTypes.Notes, " ");
 
       if (platformType.getExistingRelationTypes().contains(CoreRelationTypes.InterfacePlatformTypeEnumeration)) {
          enumLiterals = "";
@@ -316,6 +345,8 @@ public class IcdGenerator {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "; ";
          }
+      } else {
+         enumLiterals = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, " ");
       }
 
       if (artifact.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
@@ -364,7 +395,7 @@ public class IcdGenerator {
 
    }
 
-   private void createMessageSubMessageSummary(ISheetWriter writer, BranchId branch, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) throws IOException {
+   private void createMessageSubMessageSummary(ExcelXmlWriter writer, BranchId branch, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) throws IOException {
       int columnCount = 10;
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
@@ -377,19 +408,25 @@ public class IcdGenerator {
          e.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL))).collect(Collectors.toList());
       writer.startSheet("Message and SubMessage Summary", columnCount);
-      writer.writeCell(
-         new CellData(primaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4", Strings.EMPTY_STRING));
-      writer.writeCell(
-         new CellData(secondaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4", Strings.EMPTY_STRING));
+      writer.writeCell(new CellData(primaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4",
+         Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(new CellData(secondaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4",
+         Strings.EMPTY_STRING, "OseeBoldStyle"));
       writer.endRow();
-      writer.writeCell("No.");
-      writer.writeCell("Rate");
-      writer.writeCell("Read/Write");
-      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING));
-      writer.writeCell("No.");
-      writer.writeCell("Rate");
-      writer.writeCell("Read/Write");
-      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING));
+      writer.writeCell(
+         new CellData("No.", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(
+         new CellData("Rate", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(
+         new CellData("Read/Write", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(
+         new CellData("No.", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(
+         new CellData("Rate", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(
+         new CellData("Read/Write", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING, "OseeBoldStyle"));
       writer.endRow();
       int lastMessageNumber = 0;
       if (primaryList.size() > secondaryList.size()) {
@@ -423,13 +460,14 @@ public class IcdGenerator {
             writer.writeCell(
                new CellData(primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber),
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(
-               new CellData(primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate),
-                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
+            writer.writeCell(new CellData(
+               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
+               Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
             writer.writeCell(
                new CellData(primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess),
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(new CellData(primaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING));
+            writer.writeCell(new CellData(primaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING,
+               "OseeBoldStyle"));
          } else {
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
@@ -440,13 +478,14 @@ public class IcdGenerator {
             writer.writeCell(
                new CellData(secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber),
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(
-               new CellData(secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate),
-                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
+            writer.writeCell(new CellData(
+               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
+               Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
             writer.writeCell(
                new CellData(secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess),
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(new CellData(secondaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING));
+            writer.writeCell(new CellData(secondaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING,
+               "OseeBoldStyle"));
          } else {
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));

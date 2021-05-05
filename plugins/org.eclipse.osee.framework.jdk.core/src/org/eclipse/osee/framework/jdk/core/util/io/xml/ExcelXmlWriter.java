@@ -295,6 +295,9 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
             if (!((CellData) cellData).getMergeDown().isEmpty()) {
                sb.append(" ss:MergeDown=\"" + ((CellData) cellData).getMergeDown() + "\"");
             }
+            if (!((CellData) cellData).getStyle().isEmpty()) {
+               sb.append(" ss:StyleID=\"" + ((CellData) cellData).getStyle() + "\"");
+            }
             writeString(((CellData) cellData).getText(), cellIndex, sb);
          } else {
             sb.append("><Data ss:Type=\"String\">");
@@ -416,4 +419,12 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       }
    }
 
+   public void writeHeaderRow(Object... row) throws IOException {
+      for (int i = 0; i < row.length; i++) {
+         writeCell(new CellData((String) row[i], Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING,
+            "OseeBoldStyle"));
+      }
+
+      endRow();
+   }
 }
