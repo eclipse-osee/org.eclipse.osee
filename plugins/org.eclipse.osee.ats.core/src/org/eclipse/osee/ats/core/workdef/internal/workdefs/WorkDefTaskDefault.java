@@ -61,10 +61,10 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
             ));
 
       bld.andState(2, "Completed", StateType.Completed) //
-         .andColor(StateColor.BLACK);
+         .andColor(StateColor.DARK_GREEN);
 
       bld.andState(3, "Cancelled", StateType.Cancelled) //
-         .andColor(StateColor.BLACK);
+         .andColor(StateColor.DARK_RED);
 
       return bld.getWorkDefinition();
    }
