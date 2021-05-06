@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.action.AtsTest_Workflow_Action_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr.AtsTest_Workflow_CR_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.AtsTest_Workflow_Review_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task.AtsTest_Workflow_Task_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.AtsTest_Workflow_Transition_Suite;
@@ -26,6 +27,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsTest_Workflow_CR_Suite.class,
    TeamWorkflowTest.class,
    WfePromptChangeStatusTest.class,
    TeamWorkflowProvidersTest.class,

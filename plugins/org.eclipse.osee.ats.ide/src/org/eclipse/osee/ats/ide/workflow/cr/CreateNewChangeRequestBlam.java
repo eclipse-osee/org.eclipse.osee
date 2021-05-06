@@ -72,6 +72,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    protected XCombo priorityWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
+   private ActionResult actionResult;
 
    public CreateNewChangeRequestBlam(String name) {
       super(name, BLAM_DESCRIPTION, null);
@@ -126,7 +127,6 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          return;
       }
 
-      IAtsChangeSet changes = atsApi.createChangeSet(getName());
       IAtsActionableItem ai = null;
       for (IAtsActionableItem ai2 : getProgramCrAis()) {
          if (ai2.getName().equals(programAi)) {
@@ -135,8 +135,9 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          }
       }
 
-      ActionResult actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(),
-         title, desc, cType, priority, false, needBy, Collections.singleton(ai), new Date(),
+      IAtsChangeSet changes = atsApi.createChangeSet(getName());
+      actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
+         cType, priority, false, needBy, Collections.singleton(ai), new Date(),
          atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
       changes.execute();
       if (actionResult.getResults().isErrors()) {
@@ -208,12 +209,17 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       }
    }
 
+   public void handlePopulateWithDebugInfo() {
+      String title = "New CR " + atsApi.getRandomNum();
+      handlePopulateWithDebugInfo(title);
+   }
+
    /**
-    * Method is used to quickly create a unique title for debug purposes
+    * Method is used to quickly create a unique title for debug purposes. Should only be used for tests.
     */
-   protected void handlePopulateWithDebugInfo() {
+   public void handlePopulateWithDebugInfo(String title) {
       try {
-         titleWidget.set("New CR " + atsApi.getRandomNum());
+         titleWidget.set(title);
          descWidget.set("Description...");
          changeWidget.getComboBox().select(1);
          priorityWidget.getComboBox().select(1);
@@ -253,6 +259,10 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(AtsImage.CHANGE_REQUEST);
+   }
+
+   public ActionResult getActionResult() {
+      return actionResult;
    }
 
 }

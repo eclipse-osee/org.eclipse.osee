@@ -88,7 +88,8 @@ Import-Package: javax.ws.rs.core,
 Export-Package: 
  org.eclipse.osee.ats.ide.demo,
  org.eclipse.osee.ats.ide.demo.config,
- org.eclipse.osee.ats.ide.demo.populate
+ org.eclipse.osee.ats.ide.demo.populate,
+ org.eclipse.osee.ats.ide.demo.workflow.cr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.eclipse.osee.ats.ide.demo.internal.Activator
 Service-Component: OSGI-INF/*.xml

@@ -87,8 +87,10 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    public void executeBlam() {
       OperationLogger reporter = overviewPage.getReporter();
-      getEditorInput().getBlamOperation().execute(reporter, getBlamVariableMap(),
-         new BlamEditorExecutionAdapter(getEditorInput().getBlamOperation()));
+      AbstractBlam blamOperation = getEditorInput().getBlamOperation();
+      BlamEditorExecutionAdapter jobChangeListener = new BlamEditorExecutionAdapter(blamOperation);
+      VariableMap blamVariableMap = getBlamVariableMap();
+      blamOperation.execute(reporter, blamVariableMap, jobChangeListener);
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {
