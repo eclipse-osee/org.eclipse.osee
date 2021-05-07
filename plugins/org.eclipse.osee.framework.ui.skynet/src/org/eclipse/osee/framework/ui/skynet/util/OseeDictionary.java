@@ -15,12 +15,13 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
 
 /**
  * Dictionary provided by OSEE that includes all dictionarys through the OseeDictionary extension point.
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class OseeDictionary {
@@ -40,7 +41,7 @@ public final class OseeDictionary {
       /**
        * Remove any junky characters and check for acronyms and other known non-word type stuff. Return valid word to
        * check in dictionary OR "" if there is no word in this string eg now) = now
-       * 
+       *
        * <pre>
        * a..b = ""
        * SQA = ""
@@ -49,9 +50,8 @@ public final class OseeDictionary {
        */
       private static final Pattern pattern = Pattern.compile("^[a-zA-Z]{1}[a-z]+$");
 
-      private final ExtensionDefinedObjects<IOseeDictionary> contributions =
-         new ExtensionDefinedObjects<>("org.eclipse.osee.framework.ui.skynet.OseeDictionary",
-            "OseeDictionary", "classname");
+      private final ExtensionDefinedObjects<IOseeDictionary> contributions = new ExtensionDefinedObjects<>(
+         "org.eclipse.osee.framework.ui.skynet.OseeDictionary", "OseeDictionary", "classname");
 
       public Iterable<IOseeDictionary> getDictionaries() {
          return contributions.getObjects();
@@ -59,6 +59,9 @@ public final class OseeDictionary {
 
       @Override
       public boolean isWord(String word) {
+         if (!OseeProperties.isInTest()) {
+            return true;
+         }
          String cleanWord = getCleanWord(word);
          if (cleanWord.equals("") || cleanWord.length() == 1) {
             return true;

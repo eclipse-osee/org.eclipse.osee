@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -38,6 +39,9 @@ public class OseeMainDictionary implements IOseeDictionary {
    }
 
    private synchronized void ensureDictionaryLoaded() {
+      if (OseeProperties.isInTest()) {
+         return;
+      }
       if (!wasLoaded) {
          // open OSEE english dictionary
          BufferedReader br = null;
