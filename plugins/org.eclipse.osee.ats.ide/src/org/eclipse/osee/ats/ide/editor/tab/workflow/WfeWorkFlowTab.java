@@ -194,15 +194,21 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    @Override
    public void setLoading(boolean set) {
-      if (set) {
-         loadingComposite = new LoadingComposite(bodyComp);
-         bodyComp.layout();
-      } else {
-         if (Widgets.isAccessible(loadingComposite)) {
-            loadingComposite.dispose();
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            if (set) {
+               loadingComposite = new LoadingComposite(bodyComp);
+               bodyComp.layout();
+            } else {
+               if (Widgets.isAccessible(loadingComposite)) {
+                  loadingComposite.dispose();
+               }
+            }
+            showBusy(set);
          }
-      }
-      showBusy(set);
+      });
    }
 
    private void createAtsBody() {

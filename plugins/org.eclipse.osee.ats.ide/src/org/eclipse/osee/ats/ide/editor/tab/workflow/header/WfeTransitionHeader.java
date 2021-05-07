@@ -145,8 +145,7 @@ public class WfeTransitionHeader extends Composite {
    }
 
    public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
-      List<IAtsStateDefinition> states =
-         AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(awa);
+      List<IAtsStateDefinition> states = AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(awa);
 
       Object[] stateArray = states.toArray();
       ListSelectionDialogNoSave dialog =
@@ -173,10 +172,11 @@ public class WfeTransitionHeader extends Composite {
       if (editor.isDirty()) {
          editor.doSave(null);
       }
-      handleTransitionButtonSelection(awa, isEditable, toStateDef, this);
+      editor.getWorkFlowTab().setLoading(true);
+      handleTransitionButtonSelection(awa, isEditable, toStateDef, editor, this);
    }
 
-   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WfeTransitionHeader wfeTransitionHeader) {
+   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
       ITransitionHelper helper = new TransitionHelperAdapter(AtsApiService.get()) {
 
          @Override
@@ -282,8 +282,9 @@ public class WfeTransitionHeader extends Composite {
             if (results.isErrors()) {
                TransitionResultsUi.reportDialog("Transition Failed", results);
                AtsUtilClient.logExceptions(results);
-               wfeTransitionHeader.refresh();
             }
+            editor.getWorkFlowTab().setLoading(false);
+            transitionHeader.refresh();
          }
 
       });
