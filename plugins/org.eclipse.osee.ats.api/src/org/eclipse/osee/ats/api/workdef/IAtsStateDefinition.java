@@ -35,8 +35,6 @@ public interface IAtsStateDefinition extends IStateToken {
 
    List<IAtsStateDefinition> getToStates();
 
-   IAtsStateDefinition getDefaultToState();
-
    IAtsWorkDefinition getWorkDefinition();
 
    void setWorkDefinition(IAtsWorkDefinition workDefinition);

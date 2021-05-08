@@ -184,7 +184,7 @@ public class ActionPage {
          html = html.replaceAll("PUT_ATS_ID_HERE", workItem.getAtsId());
          html = html.replaceFirst("PUT_TO_STATE_LIST_HERE", getToStateList());
          String defaultToStateValue = "";
-         IAtsStateDefinition defaultToState = workItem.getStateDefinition().getDefaultToState();
+         IAtsStateDefinition defaultToState = atsApi.getWorkItemService().getDefaultToState(workItem);
          if (defaultToState != null) {
             defaultToStateValue = "value=\"" + defaultToState.getName() + "\"";
          }
@@ -197,8 +197,7 @@ public class ActionPage {
 
    private String getToStateList() {
       StringBuilder sb = new StringBuilder("<datalist id=\"ToStateList\">\n");
-      for (IAtsStateDefinition state : atsApi.getWorkItemService().getToStatesWithReturnStates(
-         workItem)) {
+      for (IAtsStateDefinition state : atsApi.getWorkItemService().getAllToStates(workItem)) {
          sb.append("<option value=\"");
          sb.append(state.getName());
          sb.append("\" id=\"");

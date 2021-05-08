@@ -57,8 +57,7 @@ public class XTransitionToStateComboWidget extends XComboViewer implements Artif
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          awa = (AbstractWorkflowArtifact) artifact;
          List<Object> states = new ArrayList<>();
-         for (IAtsStateDefinition nextState : AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(
-            awa)) {
+         for (IAtsStateDefinition nextState : AtsApiService.get().getWorkItemService().getAllToStates(awa)) {
             if (!states.contains(nextState)) {
                states.add(nextState);
             }
@@ -70,7 +69,7 @@ public class XTransitionToStateComboWidget extends XComboViewer implements Artif
 
          super.createControls(parent, horizontalSpan);
 
-         IAtsStateDefinition defaultToState = awa.getStateDefinition().getDefaultToState();
+         IAtsStateDefinition defaultToState = AtsApiService.get().getWorkItemService().getDefaultToState(awa);
 
          // Set default page from workflow default
          ArrayList<Object> defaultPage = new ArrayList<>();

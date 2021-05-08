@@ -109,13 +109,13 @@ public class AtsMockitoTest {
       when(currentUser.getUserId()).thenReturn("1324");
       when(currentUser.isActive()).thenReturn(true);
 
-      initializeState(analyze, "Analyze", StateType.Working, 1, implement,
-         Arrays.asList(implement, completed, cancelled), Arrays.asList(cancelled));
-      initializeState(implement, "Implement", StateType.Working, 2, completed,
-         Arrays.asList(analyze, completed, cancelled), Arrays.asList(cancelled, analyze));
-      initializeState(completed, "Completed", StateType.Completed, 3, completed, Arrays.asList(implement),
+      initializeState(analyze, "Analyze", StateType.Working, 1, Arrays.asList(implement, completed, cancelled),
+         Arrays.asList(cancelled));
+      initializeState(implement, "Implement", StateType.Working, 2, Arrays.asList(analyze, completed, cancelled),
+         Arrays.asList(cancelled, analyze));
+      initializeState(completed, "Completed", StateType.Completed, 3, Arrays.asList(implement),
          Arrays.asList(implement));
-      initializeState(cancelled, "Cancelled", StateType.Cancelled, 4, null, Arrays.asList(analyze, implement),
+      initializeState(cancelled, "Cancelled", StateType.Cancelled, 4, Arrays.asList(analyze, implement),
          Arrays.asList(analyze, implement));
 
       when(workDef.getName()).thenReturn(WORK_DEF_NAME);
@@ -194,14 +194,11 @@ public class AtsMockitoTest {
       when(version.getId()).thenReturn(Lib.generateId());
    }
 
-   private void initializeState(IAtsStateDefinition state, String name, StateType type, int ordinal, IAtsStateDefinition defaultToState, List<IAtsStateDefinition> toStates, List<IAtsStateDefinition> overrideValidationStates) {
+   private void initializeState(IAtsStateDefinition state, String name, StateType type, int ordinal, List<IAtsStateDefinition> toStates, List<IAtsStateDefinition> overrideValidationStates) {
       when(state.getName()).thenReturn(name);
       when(state.getWorkDefinition()).thenReturn(workDef);
       when(state.getStateType()).thenReturn(type);
       when(state.getOrdinal()).thenReturn(ordinal);
-      if (defaultToState != null) {
-         when(state.getDefaultToState()).thenReturn(defaultToState);
-      }
       when(state.getToStates()).thenReturn(toStates);
    }
 

@@ -215,11 +215,6 @@ public class StateDefBuilder {
       return this.getLayoutFromState;
    }
 
-   public StateDefBuilder setDefaultToState(IAtsStateDefinition defaultToState) {
-      state.setDefaultToState(defaultToState);
-      return this;
-   }
-
    public StateDefBuilder addToState(IAtsStateDefinition toState) {
       state.getToStates().add(toState);
       return this;

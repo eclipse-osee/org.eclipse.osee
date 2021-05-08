@@ -17,9 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -318,39 +316,6 @@ public class AtsWorkDefinitionServiceImplTest {
    }
 
    @Test
-   public void testGetStatesOrderedByDefaultToState_startStateOrderedPages() {
-      StateDefinition endorse = new StateDefinition("endorse");
-      endorse.setStateType(StateType.Working);
-      StateDefinition analyze = new StateDefinition("analyze");
-      analyze.setStateType(StateType.Working);
-      StateDefinition completed = new StateDefinition("completed");
-      completed.setStateType(StateType.Completed);
-
-      IAtsWorkDefinition def = new WorkDefinition(15L, "this");
-      List<IAtsStateDefinition> states = new LinkedList<>();
-      states.addAll(Arrays.asList(endorse, analyze));
-      new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByDefaultToState(def, endorse, states);
-      Assert.assertEquals(2, states.size());
-   }
-
-   @Test
-   public void testGetStatesOrderedByDefaultToState_defaultPage() {
-      StateDefinition endorse = new StateDefinition("endorse");
-      endorse.setStateType(StateType.Working);
-      StateDefinition analyze = new StateDefinition("analyze");
-      analyze.setStateType(StateType.Working);
-      StateDefinition completed = new StateDefinition("completed");
-      completed.setStateType(StateType.Completed);
-
-      IAtsWorkDefinition def = new WorkDefinition(15L, "this");
-      endorse.setDefaultToState(endorse);
-      List<IAtsStateDefinition> states = new LinkedList<>();
-      states.addAll(Arrays.asList(analyze, completed));
-      new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByDefaultToState(def, endorse, states);
-      Assert.assertEquals(3, states.size());
-   }
-
-   @Test
    public void testGetStateNames() {
       WorkDefinition def = new WorkDefinition(15L, "this");
       def.addState(new StateDefinition("endorse"));
@@ -367,15 +332,6 @@ public class AtsWorkDefinitionServiceImplTest {
       def.addState(endorse);
       Assert.assertEquals(1, def.getStates().size());
       Assert.assertEquals(endorse, def.getStates().iterator().next());
-   }
-
-   @Test
-   public void testGetDefaultToState() {
-      StateDefinition endorse = new StateDefinition("endorse");
-      StateDefinition analyze = new StateDefinition("analyze");
-      Assert.assertNull(endorse.getDefaultToState());
-      endorse.setDefaultToState(analyze);
-      Assert.assertEquals(analyze, endorse.getDefaultToState());
    }
 
    @Test

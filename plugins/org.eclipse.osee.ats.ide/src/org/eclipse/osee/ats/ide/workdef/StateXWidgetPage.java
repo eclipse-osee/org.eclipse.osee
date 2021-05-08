@@ -161,13 +161,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return stateDefinition.getStateType();
    }
 
-   public IAtsStateDefinition getDefaultToPage() {
-      if (stateDefinition.getDefaultToState() != null) {
-         return stateDefinition.getDefaultToState();
-      }
-      return null;
-   }
-
    public IAtsStateDefinition getStateDefinition() {
       return stateDefinition;
    }

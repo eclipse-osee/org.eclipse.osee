@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -668,12 +669,13 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       public Collection<Object> getTransitions() {
-         List<IAtsStateDefinition> defaultToStates = new ArrayList<>();
-         if (stateDef.getDefaultToState() != null) {
-            defaultToStates.add(stateDef.getDefaultToState());
-         }
          List<Object> items = new ArrayList<>();
-         items.add(new WrappedStates("DefaultToState", defaultToStates));
+         if (!stateDef.getToStates().isEmpty()) {
+            items.add(new WrappedStates("DefaultToState", Collections.emptyList()));
+         } else {
+            items.add(
+               new WrappedStates("DefaultToState", Collections.singleton(stateDef.getToStates().iterator().next())));
+         }
          items.add(new WrappedStates("ToStates", stateDef.getToStates()));
          return items;
       }

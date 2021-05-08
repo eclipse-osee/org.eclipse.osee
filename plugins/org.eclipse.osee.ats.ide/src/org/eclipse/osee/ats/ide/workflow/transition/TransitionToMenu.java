@@ -81,7 +81,7 @@ public class TransitionToMenu {
                }
             }
             try {
-               for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(
+               for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkItemService().getAllToStates(
                   awa)) {
                   toStateDefs.add(stateDef);
                   stateNameToStateDef.put(stateDef.getName(), stateDef);

@@ -193,13 +193,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public List<String> getTransitionToStateNames(String id) {
       List<String> states = new LinkedList<>();
       IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
-      states.add(teamWf.getStateDefinition().getDefaultToState().getName());
+      states.add(atsApi.getWorkItemService().getDefaultToState(teamWf).getName());
       for (IAtsStateDefinition state : teamWf.getStateDefinition().getToStates()) {
          if (!states.contains(state.getName())) {
             states.add(state.getName());
          }
       }
-      for (IAtsStateDefinition state : atsApi.getWorkItemService().getToStatesWithReturnStates(teamWf)) {
+      for (IAtsStateDefinition state : atsApi.getWorkItemService().getAllToStates(teamWf)) {
          if (!states.contains(state.getName())) {
             states.add(state.getName());
          }

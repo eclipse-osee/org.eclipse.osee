@@ -380,26 +380,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return orderedPages;
    }
 
-   @Override
-   public void getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef, IAtsStateDefinition stateDefinition, List<IAtsStateDefinition> pages) {
-      if (pages.contains(stateDefinition)) {
-         return;
-      }
-      // Add this page first
-      pages.add(stateDefinition);
-      // Add default page
-      IAtsStateDefinition defaultToState = stateDefinition.getDefaultToState();
-      if (defaultToState != null && !defaultToState.getName().equals(stateDefinition.getName())) {
-         getStatesOrderedByDefaultToState(workDef, stateDefinition.getDefaultToState(), pages);
-      }
-      // Add remaining pages
-      for (IAtsStateDefinition stateDef : stateDefinition.getToStates()) {
-         if (!pages.contains(stateDef)) {
-            getStatesOrderedByDefaultToState(workDef, stateDef, pages);
-         }
-      }
-   }
-
    /**
     * Recursively decend StateItems and grab all widgetDefs.<br>
     * <br>

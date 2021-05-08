@@ -505,7 +505,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public List<IAtsStateDefinition> getToStatesWithReturnStates(IAtsWorkItem workItem) {
+   public List<IAtsStateDefinition> getAllToStates(IAtsWorkItem workItem) {
       List<IAtsStateDefinition> allPages = new ArrayList<>();
       IAtsStateDefinition currState = workItem.getStateDefinition();
       if (currState == null) {
@@ -554,6 +554,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       // Remove current state
       allPages.remove(currState);
       return allPages;
+   }
+
+   @Override
+   public IAtsStateDefinition getDefaultToState(IAtsWorkItem workItem) {
+      List<IAtsStateDefinition> states = getAllToStates(workItem);
+      if (!states.isEmpty()) {
+         return states.iterator().next();
+      }
+      return null;
    }
 
 }

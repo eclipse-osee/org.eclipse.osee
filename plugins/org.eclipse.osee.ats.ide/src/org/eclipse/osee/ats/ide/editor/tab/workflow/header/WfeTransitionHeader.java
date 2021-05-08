@@ -70,7 +70,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class WfeTransitionHeader extends Composite {
 
    private final Label transitionAssigneesLabel;
-   private final AbstractWorkflowArtifact awa;
+   private final AbstractWorkflowArtifact workItem;
    private final WorkflowEditor editor;
    private IAtsStateDefinition userSelectedTransitionToState;
    private final boolean isEditable;
@@ -82,7 +82,7 @@ public class WfeTransitionHeader extends Composite {
       this.editor = editor;
       this.isEditable = isEditable;
 
-      awa = editor.getWorkItem();
+      workItem = editor.getWorkItem();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       GridLayout layout = new GridLayout(editor.getWorkFlowTab().getHeader().isShowTargetedVersion() ? 7 : 5, false);
       layout.verticalSpacing = 0;
@@ -115,7 +115,7 @@ public class WfeTransitionHeader extends Composite {
          @Override
          public void linkActivated(HyperlinkEvent e) {
             try {
-               IAtsStateDefinition selState = handleChangeTransitionToState(awa, isEditable, getToState());
+               IAtsStateDefinition selState = handleChangeTransitionToState(workItem, isEditable, getToState());
                if (selState != null) {
                   userSelectedTransitionToState = selState;
                   handleTransitionButtonSelection();
@@ -131,21 +131,21 @@ public class WfeTransitionHeader extends Composite {
          @Override
          public void linkActivated(HyperlinkEvent e) {
             try {
-               handleChangeTransitionAssignees(awa);
+               handleChangeTransitionAssignees(workItem);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
       transitionAssigneesLabel =
-         editor.getToolkit().createLabel(this, Strings.truncate(awa.getTransitionAssigneesStr(), 100, true));
+         editor.getToolkit().createLabel(this, Strings.truncate(workItem.getTransitionAssigneesStr(), 100, true));
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       transitionAssigneesLabel.setToolTipText("Select to change assignee(s) upon transition to next state.");
 
    }
 
    public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
-      List<IAtsStateDefinition> states = AtsApiService.get().getWorkItemService().getToStatesWithReturnStates(awa);
+      List<IAtsStateDefinition> states = AtsApiService.get().getWorkItemService().getAllToStates(awa);
 
       Object[] stateArray = states.toArray();
       ListSelectionDialogNoSave dialog =
@@ -173,7 +173,7 @@ public class WfeTransitionHeader extends Composite {
          editor.doSave(null);
       }
       editor.getWorkFlowTab().setLoading(true);
-      handleTransitionButtonSelection(awa, isEditable, toStateDef, editor, this);
+      handleTransitionButtonSelection(workItem, isEditable, toStateDef, editor, this);
    }
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
@@ -295,7 +295,7 @@ public class WfeTransitionHeader extends Composite {
       // Determine if the is an override set of assignees
       for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
          String decisionValueIfApplicable = "";
-         if (awa.isOfType(
+         if (workItem.isOfType(
             AtsArtifactTypes.DecisionReview) && editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
                AtsAttributeTypes.Decision.getName()) != null) {
             XComboDam xWidget = (XComboDam) editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
@@ -304,20 +304,21 @@ public class WfeTransitionHeader extends Composite {
                decisionValueIfApplicable = xWidget.get();
             }
          }
-         assignees = item.getOverrideTransitionToAssignees(awa, decisionValueIfApplicable);
+         assignees = item.getOverrideTransitionToAssignees(workItem, decisionValueIfApplicable);
          if (assignees != null) {
             break;
          }
       }
       // If override set and isn't the same as already selected, update
-      if (assignees != null && !awa.getTransitionAssignees().equals(assignees)) {
-         awa.setTransitionAssignees(assignees);
+      if (assignees != null && !workItem.getTransitionAssignees().equals(assignees)) {
+         workItem.setTransitionAssignees(assignees);
          editor.onDirtied();
       }
       refresh();
    }
 
    public IAtsStateDefinition getToState() {
+      IAtsStateDefinition state = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
       if (userSelectedTransitionToState != null) {
          return userSelectedTransitionToState;
       }
@@ -331,17 +332,19 @@ public class WfeTransitionHeader extends Composite {
       }
       if (transitionStateOverride != null) {
          // Return if override state is same as selected
-         if (awa.getStateDefinition().getDefaultToState().getName().equals(transitionStateOverride)) {
-            return awa.getStateDefinition().getDefaultToState();
+         if (AtsApiService.get().getWorkItemService().getDefaultToState(workItem).getName().equals(
+            transitionStateOverride)) {
+            state = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
          }
          // Find page corresponding to override state name
-         for (IAtsStateDefinition toState : awa.getStateDefinition().getToStates()) {
+         for (IAtsStateDefinition toState : workItem.getStateDefinition().getToStates()) {
             if (toState.getName().equals(transitionStateOverride)) {
-               return toState;
+               state = toState;
+               break;
             }
          }
       }
-      return awa.getStateDefinition().getDefaultToState();
+      return state;
    }
 
    public void refresh() {
@@ -352,7 +355,7 @@ public class WfeTransitionHeader extends Composite {
             if (Widgets.isAccessible(transitionAssigneesLabel)) {
                IAtsStateDefinition toState = userSelectedTransitionToState;
                if (toState == null) {
-                  toState = awa.getStateDefinition().getDefaultToState();
+                  toState = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
                }
                if (toState == null) {
                   stateLabelLink.setText("<Not Set>");
@@ -363,7 +366,7 @@ public class WfeTransitionHeader extends Composite {
 
                transitionLabelLink.setEnabled(true);
 
-               transitionAssigneesLabel.setText(awa.getTransitionAssigneesStr());
+               transitionAssigneesLabel.setText(workItem.getTransitionAssigneesStr());
                transitionAssigneesLabel.getParent().layout();
             }
          }
@@ -382,9 +385,9 @@ public class WfeTransitionHeader extends Composite {
       }
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setInitialSelections(aba.getTransitionAssignees());
-      if (awa.getParentTeamWorkflow() != null) {
+      if (workItem.getParentTeamWorkflow() != null) {
          uld.setTeamMembers(AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(
-            awa.getParentTeamWorkflow().getTeamDefinition()));
+            workItem.getParentTeamWorkflow().getTeamDefinition()));
       }
       if (uld.open() != 0) {
          return;
@@ -394,7 +397,7 @@ public class WfeTransitionHeader extends Composite {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;
       }
-      awa.setTransitionAssignees(users);
+      workItem.setTransitionAssignees(users);
       refresh();
       editor.onDirtied();
    }

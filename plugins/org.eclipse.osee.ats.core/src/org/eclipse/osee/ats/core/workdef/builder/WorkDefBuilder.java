@@ -83,14 +83,7 @@ public class WorkDefBuilder {
             }
             stateDefBuilder.state.setLayoutItems(copyState.getLayoutItems());
          }
-         // defaultToState
          StateToken defaultToStateToken = stateDefBuilder.getToDefaultStateToken();
-         if (defaultToStateToken != null && defaultToStateToken != StateToken.ANY) {
-            IAtsStateDefinition defaultToState = getStateDefinition(defaultToStateToken.getName());
-            Conditions.assertNotNull(defaultToState, "defaultToState [%s] not defined in workDef [%s]",
-               defaultToState.getName(), workDef.getName());
-            stateDefBuilder.setDefaultToState(defaultToState);
-         }
          // toStates
          for (StateToken toStateToken : stateDefBuilder.getToStateTokens()) {
             if (defaultToStateToken != StateToken.ANY) {

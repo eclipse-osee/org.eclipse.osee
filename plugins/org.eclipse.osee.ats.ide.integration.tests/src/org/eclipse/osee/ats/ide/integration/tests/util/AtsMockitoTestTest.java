@@ -56,7 +56,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
       Assert.assertEquals("Analyze", analyze.getName());
       Assert.assertEquals(StateType.Working, analyze.getStateType());
       Assert.assertEquals(1, analyze.getOrdinal());
-      Assert.assertEquals(implement, analyze.getDefaultToState());
    }
 
    @Test
@@ -78,7 +77,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
       Assert.assertEquals("Implement", implement.getName());
       Assert.assertEquals(StateType.Working, implement.getStateType());
       Assert.assertEquals(2, implement.getOrdinal());
-      Assert.assertEquals(completed, implement.getDefaultToState());
    }
 
    @Test
@@ -86,7 +84,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
       Assert.assertEquals("Completed", completed.getName());
       Assert.assertEquals(StateType.Completed, completed.getStateType());
       Assert.assertEquals(3, completed.getOrdinal());
-      Assert.assertEquals(completed, completed.getDefaultToState());
    }
 
    @Test
@@ -94,7 +91,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
       Assert.assertEquals("Cancelled", cancelled.getName());
       Assert.assertEquals(StateType.Cancelled, cancelled.getStateType());
       Assert.assertEquals(4, cancelled.getOrdinal());
-      Assert.assertNull(cancelled.getDefaultToState());
    }
 
    @Test

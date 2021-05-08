@@ -139,6 +139,11 @@ public interface IAtsWorkItemService {
 
    TransitionResults transitionValidate(TransitionData transData);
 
-   List<IAtsStateDefinition> getToStatesWithReturnStates(IAtsWorkItem workItem);
+   /**
+    * @return Ordered list of states able to transition to with default, then return states, then toStates
+    */
+   List<IAtsStateDefinition> getAllToStates(IAtsWorkItem workItem);
+
+   IAtsStateDefinition getDefaultToState(IAtsWorkItem workItem);
 
 }

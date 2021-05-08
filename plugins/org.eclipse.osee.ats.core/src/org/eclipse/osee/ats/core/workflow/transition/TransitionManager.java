@@ -183,7 +183,9 @@ public class TransitionManager implements IExecuteListener {
                // Ignore transitions to the same state
                if (!fromStateDef.equals(toStateDef)) {
                   // Validate transition from fromState and toState
-                  if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(
+                  List<IAtsStateDefinition> toStatesWithReturnStates =
+                     workItemService.getAllToStates(workItem);
+                  if (!helper.isOverrideTransitionValidityCheck() && !toStatesWithReturnStates.contains(
                      toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
                      String errStr =
                         String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",

@@ -70,8 +70,6 @@ public interface IAtsWorkDefinitionService {
 
    Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
 
-   void getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef, IAtsStateDefinition stateDefinition, List<IAtsStateDefinition> pages);
-
    boolean hasWidgetNamed(IAtsStateDefinition stateDef, String name);
 
    boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption rule);

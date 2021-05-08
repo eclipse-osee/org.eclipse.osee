@@ -37,7 +37,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    private List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
    private final RuleManager ruleMgr = new RuleManager();
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
-   private IAtsStateDefinition defaultToState;
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
    private IAtsWorkDefinition workDefinition;
@@ -136,15 +135,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
          }
       }
       return equals;
-   }
-
-   @Override
-   public IAtsStateDefinition getDefaultToState() {
-      return defaultToState;
-   }
-
-   public void setDefaultToState(IAtsStateDefinition defaultToState) {
-      this.defaultToState = defaultToState;
    }
 
    @Override
