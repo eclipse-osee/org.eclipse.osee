@@ -38,8 +38,8 @@ public class MyWorldSearchItemTest {
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       MyWorldSearchItem search = new MyWorldSearchItem("Search", currentUser);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 14, IAtsWorkItem.class);
-      DemoTestUtil.assertTypes(results, 10, IAtsTeamWorkflow.class);
+      DemoTestUtil.assertTypes(results, 15, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 11, IAtsTeamWorkflow.class);
       DemoTestUtil.assertTypes(results, 2, IAtsDecisionReview.class);
       DemoTestUtil.assertTypes(results, 2, IAtsPeerToPeerReview.class);
 
