@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Server Message Interface Modeling (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.mim;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*.xml
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Export-Package: org.eclipse.osee.mim,
+ org.eclipse.osee.mim.internal,
+ org.eclipse.osee.mim.types
+Import-Package: com.fasterxml.jackson.annotation,
+ javax.ws.rs.core,javax.ws.rs,
+ org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.orcs
