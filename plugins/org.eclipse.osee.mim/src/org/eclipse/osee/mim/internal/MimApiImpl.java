@@ -87,4 +87,9 @@ public class MimApiImpl implements MimApi {
       return logicalTypes;
    }
 
+   @Override
+   public OrcsApi getOrcsApi() {
+      return this.orcsApi;
+   }
+
 }

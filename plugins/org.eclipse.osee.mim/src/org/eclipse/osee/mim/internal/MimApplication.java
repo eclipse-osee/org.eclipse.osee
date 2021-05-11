@@ -35,6 +35,7 @@ public class MimApplication extends Application {
    public void start() {
       int i = 1;
       resources.add(new LogicalTypeEndpointImpl(mimApi));
+      resources.add(new BranchAccessor(mimApi));
    }
 
    public void stop() {

@@ -15,10 +15,13 @@ package org.eclipse.osee.mim;
 
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeGeneric;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Audrey E Denk
  */
 public interface MimApi {
+   OrcsApi getOrcsApi();
+
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 }
