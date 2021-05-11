@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.rest.internal;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
 import java.util.concurrent.Callable;
@@ -25,13 +24,13 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
@@ -43,6 +42,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    private final ActivityLog activityLog;
    private final OrcsAdmin adminOps;
    private final TransactionFactory txFactory;
+   private final UserService userService;
 
    @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
    private UserId accountId;
@@ -51,6 +51,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       this.activityLog = activityLog;
       adminOps = orcsApi.getAdminOps();
       txFactory = orcsApi.getTransactionFactory();
+      userService = orcsApi.userService();
    }
 
    protected void setUriInfo(UriInfo uriInfo) {
@@ -103,10 +104,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
 
    @Override
    public TransactionId createUsers(UserTokens users) {
-      TransactionBuilder tx =
-         txFactory.createTransaction(COMMON, users.getAccount(), "DatastoreEndpointImpl.createUsers()");
-      adminOps.createUsers(tx, users.getUsers());
-      return tx.commit();
+      return userService.createUsers(users.getUsers(), "DatastoreEndpointImpl.createUsers()");
    }
 
    @Override

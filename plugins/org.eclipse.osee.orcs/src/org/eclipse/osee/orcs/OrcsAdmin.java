@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -38,10 +36,6 @@ public interface OrcsAdmin {
    void createDemoBranches();
 
    void requireRole(UserId user, ArtifactId role);
-
-   void createUsers(TransactionBuilder tx, Iterable<UserToken> users);
-
-   void createUser(TransactionBuilder tx, UserToken userToken);
 
    void createSynonymsAndGrants();
 

@@ -86,10 +86,7 @@ public class CreateSystemBranches {
 
       ArtifactReadable root = query.andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
 
-      ArtifactId oseeConfig = query.andId(CoreArtifactTokens.OseeConfiguration).getArtifactOrSentinal();
-      if (oseeConfig.isInvalid()) {
-         oseeConfig = tx.createArtifact(root, CoreArtifactTokens.OseeConfiguration);
-      }
+      ArtifactId oseeConfig = tx.createArtifact(root, CoreArtifactTokens.OseeConfiguration);
 
       ArtifactId userGroupsFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.UserGroups);
       ArtifactId everyOne = tx.createArtifact(userGroupsFolder, CoreUserGroups.Everyone);
@@ -97,11 +94,6 @@ public class CreateSystemBranches {
 
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAccessAdmin);
-      tx.commit();
-
-      oseeConfig = query.andId(CoreArtifactTokens.OseeConfiguration).getArtifactOrSentinal();
-      tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
-      orcsApi.getAdminOps().createUsers(tx, SystemUser.values());
 
       ArtifactId globalPreferences = tx.createArtifact(oseeConfig, CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
@@ -118,8 +110,9 @@ public class CreateSystemBranches {
       ArtifactId typesAccessFolder = createOrcsTypesArtifacts(typeModel, oseeConfig);
 
       addFrameworkAccessModel(tx, typesAccessFolder);
+      tx.commit();
 
-      return tx.commit();
+      return orcsApi.userService().createUsers(SystemUser.values(), "Create System Users");
    }
 
    private void createWordTemplates(TransactionBuilder tx, ArtifactId documentTemplateFolder) {

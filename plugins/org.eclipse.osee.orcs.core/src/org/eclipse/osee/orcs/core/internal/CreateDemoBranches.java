@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL;
@@ -64,9 +63,7 @@ public class CreateDemoBranches {
 
    public void populate() {
       UserId account = DemoUsers.Joe_Smith;
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, OseeSystem, "Create Demo Users");
-      orcsApi.getAdminOps().createUsers(tx, DemoUsers.values());
-      tx.commit();
+      orcsApi.userService().createUsers(DemoUsers.values(), "Create Demo Users");
 
       createDemoProgramBranch(SAW_Bld_1, account);
 

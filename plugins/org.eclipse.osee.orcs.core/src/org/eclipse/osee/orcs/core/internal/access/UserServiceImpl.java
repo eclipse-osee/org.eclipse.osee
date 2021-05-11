@@ -13,24 +13,32 @@
 
 package org.eclipse.osee.orcs.core.internal.access;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -158,5 +166,71 @@ public class UserServiceImpl implements UserService {
       if (user != null) {
          threadToUser.put(Thread.currentThread(), user);
       }
+   }
+
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, String comment) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, getUser(), comment);
+
+      ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         CoreArtifactTokens.UserGroups).asArtifactToken();
+
+      // Create users and relate to user groups
+      Map<ArtifactToken, ArtifactToken> userGroupToArtifact = new HashMap<>();
+      List<ArtifactReadable> defaultGroups =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(CoreAttributeTypes.DefaultGroup,
+            "true").getResults().getList();
+      List<ArtifactReadable> existingUsers = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
+         CoreArtifactTypes.User).getResults().getList();
+      for (UserToken userToken : users) {
+         if (existingUsers.contains(userToken)) {
+            throw new OseeStateException("User %s already exists", userToken);
+         }
+         ArtifactId user = tx.createArtifact(userToken);
+         tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
+         tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
+         tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
+
+         Collection<ArtifactToken> roles = userToken.getRoles();
+         for (ArtifactToken userGroup : roles) {
+            ArtifactToken userGroupArt = getOrCreate(userGroup, userGroupToArtifact, tx, userGroupHeader);
+            tx.relate(userGroupArt, CoreRelationTypes.Users_User, user);
+         }
+         for (ArtifactToken userGroup : defaultGroups) {
+            ArtifactToken userGroupArt = getOrCreate(userGroup, userGroupToArtifact, tx, userGroupHeader);
+            tx.relate(userGroupArt, CoreRelationTypes.Users_User, user);
+         }
+         setUserInfo(tx, userToken, defaultGroups);
+      }
+      return tx.commit();
+   }
+
+   private void setUserInfo(TransactionBuilder tx, UserToken userToken, List<? extends ArtifactId> defaultGroups) {
+      ArtifactId userId = tx.createArtifact(userToken);
+      tx.setSoleAttributeValue(userId, CoreAttributeTypes.Active, userToken.isActive());
+      tx.setSoleAttributeValue(userId, CoreAttributeTypes.UserId, userToken.getUserId());
+      tx.setSoleAttributeValue(userId, CoreAttributeTypes.Email, userToken.getEmail());
+      for (ArtifactToken userRole : userToken.getRoles()) {
+         tx.relate(userRole, CoreRelationTypes.Users_User, userId);
+      }
+      for (ArtifactId userGroup : defaultGroups) {
+         tx.relate(userGroup, CoreRelationTypes.Users_User, userId);
+      }
+      for (String loginId : userToken.getLoginIds()) {
+         tx.createAttribute(userToken, CoreAttributeTypes.LoginId, loginId);
+      }
+   }
+
+   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact, TransactionBuilder tx, ArtifactToken userGroupHeader) {
+      ArtifactToken userGroupArt = userGroupToArtifact.get(userGroup);
+      if (userGroupArt == null) {
+         userGroupArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrNull();
+      }
+      if (userGroupArt == null) {
+         userGroupArt = tx.createArtifact(userGroup);
+         tx.addChild(userGroupHeader, userGroupArt);
+      }
+      userGroupToArtifact.put(userGroup, userGroupArt);
+      return userGroupArt;
    }
 }

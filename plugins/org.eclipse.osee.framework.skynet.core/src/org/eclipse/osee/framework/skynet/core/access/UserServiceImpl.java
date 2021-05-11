@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -152,6 +153,11 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserForCurrentThread(String loginId) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, String comment) {
       throw new UnsupportedOperationException();
    }
 }

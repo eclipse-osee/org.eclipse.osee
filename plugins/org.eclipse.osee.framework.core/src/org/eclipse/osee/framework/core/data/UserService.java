@@ -39,6 +39,11 @@ public interface UserService {
 
    UserToken getUser();
 
+   /**
+    * Must ensure this is only called by legitimate ORCS system
+    */
    void setUserForCurrentThread(String loginId);
+
+   TransactionId createUsers(Iterable<UserToken> users, String comment);
 
 }
