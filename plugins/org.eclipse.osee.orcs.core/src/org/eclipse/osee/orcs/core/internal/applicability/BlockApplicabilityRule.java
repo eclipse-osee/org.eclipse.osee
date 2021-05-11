@@ -18,8 +18,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,41 +56,100 @@ public class BlockApplicabilityRule extends Rule {
    }
 
    /**
-    * Follows a similar pattern to the default process with a few differences. Those being, saving the processed file
-    * into a parallel staging directory, creating links if the file did not have applied applicability, and finally a
-    * system of handling a config file that defines entire files applicability. The scope of the configuration file is
-    * any siblings, or any descendants. They are removed from the excluded files set one the scope is complete.
+    * Similar format to Rule.process but with some special adjustments for BlockApplicability.<br/>
+    * If the inFile is an excluded file, the method returns null.<br/>
+    * <br/>
+    * When the file is a directory, the method handles special cases for the config file, along with situations where
+    * the staging directory already exists and is being refreshed instead of created from scratch. Any file still
+    * existing in the staging children, means that the file was once staged but now is not applicable for various
+    * reasons and is deleted. The filesInConfig list keeps track of the excluded files scope. Any sibling or descendant
+    * can be excluded by a config file.<br/>
+    * <br/>
+    * If a file is not a directory, to be processed it must have an accepted file extension via the GlobalPreferences
+    * artifact. If a former stage file existed, it is deleted before processing. If the file was not changed, a link is
+    * created. If it was changed, that new file is set as ReadOnly.<br/>
+    * <br/>
+    *
+    * @param inFile - File to process
+    * @param stagePath - Path to place the outfile in
+    * @param excludedFiles - A list of files that will not be included in the staging area
+    * @return File - The staged file, or null if the file was not included
+    * @throws OseeCoreException
     */
-   public void process(File inFile, String stagePath, Set<String> excludedFiles) throws OseeCoreException {
+   public File process(File inFile, String stagePath, Set<String> excludedFiles) throws OseeCoreException {
       if (!excludedFiles.contains(inFile.getName())) {
          File stageFile = new File(stagePath, inFile.getName());
          if (inFile.isDirectory()) {
             if (!stageFile.exists() && !stageFile.mkdir()) {
                throw new OseeCoreException("Could not create stage directory");
             }
+            // Get the children for the inFile
             List<File> children = new ArrayList<>();
             children.addAll(Arrays.asList(inFile.listFiles()));
-            Set<String> filesInCurrentScope = processConfig(children, stageFile);
-            excludedFiles.addAll(filesInCurrentScope);
+
+            // Get children of the potentially existing stageFile
+            List<File> stagedChildren = new ArrayList<>();
+            stagedChildren.addAll(Arrays.asList(stageFile.listFiles()));
+
+            Set<String> filesInConfig = processConfig(children, stagedChildren, stageFile);
+            excludedFiles.addAll(filesInConfig);
             for (File child : children) {
-               process(child, stageFile.getPath(), excludedFiles);
+               File stagedFile = process(child, stageFile.getPath(), excludedFiles);
+
+               /**
+                * Since the file was processed, it does not need to be removed. If null was returned, nothing is
+                * removed.
+                */
+               stagedChildren.remove(stagedFile);
             }
-            excludedFiles.removeAll(filesInCurrentScope);
+
+            // Any staged child that was not processed, is now deleted.
+            for (File fileToRemove : stagedChildren) {
+               try {
+                  /**
+                   * This line will go through a directory's tree and delete all the files. In order to delete a
+                   * directory, its' children must be deleted. If the file is not a directory, this will delete the file
+                   * anyway.
+                   */
+                  Files.walk(fileToRemove.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(
+                     File::delete);
+               } catch (IOException ex) {
+                  throw new OseeCoreException("Error when cleaning up leftover files during refresh");
+               }
+            }
+
+            // The excluded files from this scope are removed from the list
+            excludedFiles.removeAll(filesInConfig);
          } else {
             try {
                boolean ruleWasApplicable = false;
                if (fileNamePattern.matcher(inFile.getName()).matches()) {
+                  if (stageFile.exists()) {
+                     // In case this file has already been staged, we remove it before processing
+                     stageFile.delete();
+                  }
+
                   inputFile = inFile;
                   process(inFile, stageFile);
                   ruleWasApplicable = this.ruleWasApplicable;
                }
                if (!ruleWasApplicable) {
                   Files.createLink(stageFile.toPath(), inFile.toPath());
+               } else {
+                  // Only want to set new files to read only, otherwise the original will also be read only
+                  stageFile.setReadOnly();
                }
             } catch (IOException ex) {
                OseeCoreException.wrap(ex);
             }
          }
+         return stageFile;
+      } else {
+         /**
+          * By returning null, we signal to the parent call that this file was not processed and if a staged version
+          * exists, it should be deleted.
+          */
+         return null;
       }
    }
 
@@ -146,7 +207,7 @@ public class BlockApplicabilityRule extends Rule {
     * that file to find files that have applicability applied to them. Each entry into the text file should follow a
     * syntax of /FileName.ext/.
     */
-   private Set<String> processConfig(List<File> children, File stageFile) {
+   private Set<String> processConfig(List<File> children, List<File> stagedChildren, File stageFile) {
       Set<String> filesToExclude = new HashSet<>();
       BufferedReader reader;
       String readLine;
