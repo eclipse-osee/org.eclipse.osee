@@ -15,20 +15,15 @@ package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import java.io.IOException;
-import java.io.InputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.OseeInf;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -59,14 +54,14 @@ public class CreateSystemBranches {
       query = orcsApi.getQueryFactory().fromBranch(COMMON);
    }
 
-   public TransactionId create(String typeModel) {
+   public TransactionId create() {
       orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
 
       populateSystemBranch();
 
       orcsApi.getBranchOps().createTopLevelBranch(COMMON, SystemUser.OseeSystem);
 
-      return populateCommonBranch(typeModel);
+      return populateCommonBranch();
    }
 
    private void populateSystemBranch() {
@@ -77,7 +72,7 @@ public class CreateSystemBranches {
       tx.commit();
    }
 
-   private TransactionId populateCommonBranch(String typeModel) {
+   private TransactionId populateCommonBranch() {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
 
       orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
@@ -102,14 +97,8 @@ public class CreateSystemBranches {
       tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 
       ArtifactId documentTemplateFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.DocumentTemplates);
-
       createWordTemplates(tx, documentTemplateFolder);
-
       createDataRights(tx, documentTemplateFolder);
-
-      ArtifactId typesAccessFolder = createOrcsTypesArtifacts(typeModel, oseeConfig);
-
-      addFrameworkAccessModel(tx, typesAccessFolder);
       tx.commit();
 
       return orcsApi.userService().createUsers(SystemUser.values(), "Create System Users");
@@ -194,38 +183,6 @@ public class CreateSystemBranches {
          OseeInf.getResourceContents("GovernmentPurposeRights.xml", getClass()));
       tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
          OseeInf.getResourceContents("RestrictedRights.xml", getClass()));
-   }
-
-   private void addFrameworkAccessModel(TransactionBuilder tx, ArtifactId typesAccessFolder) {
-      try (InputStream stream = OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass())) {
-         ArtifactId accessModel = tx.createArtifact(typesAccessFolder, CoreArtifactTokens.FrameworkAccessModel);
-         tx.setSoleAttributeFromStream(accessModel, CoreAttributeTypes.GeneralStringData, stream);
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-   }
-
-   private ArtifactId createOrcsTypesArtifacts(String typeModel, ArtifactId oseeConfig) {
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Types to Common Branch");
-      ArtifactId typesFolder =
-         query.andId(CoreArtifactTokens.OseeTypesAndAccessFolder).getResults().getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL);
-      if (typesFolder.isInvalid()) {
-         typesFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.OseeTypesAndAccessFolder);
-      }
-      ArtifactId types = tx.createArtifact(typesFolder, CoreArtifactTypes.OseeTypeDefinition, "OSEE Types");
-      tx.setSoleAttributeValue(types, CoreAttributeTypes.Active, true);
-      tx.setSoleAttributeFromString(types, CoreAttributeTypes.UriGeneralStringData, typeModel);
-      tx.commit();
-
-      tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add OseeTypeDef Tuples to Common Branch");
-      for (ArtifactReadable artifact : query.andTypeEquals(CoreArtifactTypes.OseeTypeDefinition).getResults()) {
-         tx.addTuple2(CoreTupleTypes.OseeTypeDef, OrcsTypesData.OSEE_TYPE_VERSION,
-            artifact.getAttributes(CoreAttributeTypes.UriGeneralStringData).iterator().next());
-      }
-      tx.commit();
-
-      return typesFolder;
    }
 
    private static final String JSON_ATTR_VALUE = "{ \"WCAFE\" : [" + //

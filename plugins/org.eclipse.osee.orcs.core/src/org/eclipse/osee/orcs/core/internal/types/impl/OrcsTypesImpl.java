@@ -13,16 +13,11 @@
 
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.executor.CancellableCallable;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
@@ -38,24 +33,6 @@ public class OrcsTypesImpl implements OrcsTypes {
    public OrcsTypesImpl(OrcsSession session, OrcsTypesDataStore dataStore) {
       this.session = session;
       this.dataStore = dataStore;
-   }
-
-   @Override
-   public Callable<Void> writeTypes(final OutputStream outputStream) {
-      return new CancellableCallable<Void>() {
-         @Override
-         public Void call() throws Exception {
-            try (InputStream inputStream = dataStore.getAccessInputStream()) {
-               checkForCancelled();
-               Lib.inputStreamToOutputStream(inputStream, outputStream);
-            } catch (Exception ex) {
-               OseeCoreException.wrapAndThrow(ex);
-            } finally {
-               Lib.close(outputStream);
-            }
-            return null;
-         }
-      };
    }
 
    @Override

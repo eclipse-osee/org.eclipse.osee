@@ -14,14 +14,10 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.core.data.OrcsTypesVersion;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -29,26 +25,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 @Path("types")
 public interface TypesEndpoint {
-
-   @GET
-   @Produces({OrcsMediaType.APPLICATION_ORCS_TYPES, MediaType.TEXT_PLAIN})
-   Response getTypes();
-
-   @GET
-   @Path("config")
-   @Produces({MediaType.APPLICATION_JSON})
-   Response getConfig();
-
-   @GET
-   @Path("config/sheet")
-   @Produces({MediaType.APPLICATION_JSON})
-   Response getConfigSheets();
-
-   @POST
-   @Path("config/sheet")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   Response setConfigSheets(OrcsTypesVersion version);
 
    @GET
    @Path("health")

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
@@ -45,8 +44,6 @@ public final class CoreTupleTypes {
       Tuple2Type.valueOf(DefaultFamily, 1L, TupleFamilyId::valueOf, TupleTypeId::valueOf);
    public static final Tuple2Type<ArtifactId, String> ViewApplicability =
       Tuple2Type.valueOf(ProductLineFamily, 2L, ArtifactId::valueOf, KeyedString);
-   public static final Tuple2Type<Long, AttributeId> OseeTypeDef =
-      Tuple2Type.valueOf(DefaultFamily, 4L, Function.identity(), AttributeId::valueOf);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
       Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L, ArtifactId::valueOf, ApplicabilityId::valueOf);
    public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig =

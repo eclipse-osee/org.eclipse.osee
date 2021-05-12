@@ -81,7 +81,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       idManager = new IdentityManagerImpl(jdbcClient);
 
-      TypesModule typesModule = new TypesModule(logger, jdbcClient, joinFactory, resourceManager);
+      TypesModule typesModule = new TypesModule(logger, jdbcClient, joinFactory);
       typesDataStore = typesModule.createTypesDataStore();
 
       LoaderModule loaderModule = new LoaderModule(logger, jdbcClient, idManager, joinFactory, resourceManager);

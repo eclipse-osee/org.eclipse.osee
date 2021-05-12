@@ -14,13 +14,12 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
-import java.util.List;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
@@ -38,15 +37,10 @@ public class DbBootstrapTask implements IDbInitializationTask {
    @Override
    public void run() {
       Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
-      OseeClientProperties.setInDbInit(true);
+      OseeProperties.setInDbInit(true);
 
-      List<String> oseeTypeExtensions = configuration.getOseeTypeExtensionIds();
-      Conditions.checkExpressionFailOnTrue(oseeTypeExtensions.isEmpty(), "osee types cannot be empty");
-
-      String typeModel = OseeTypesSetup.getOseeTypeModelByExtensions(oseeTypeExtensions);
       DatastoreEndpoint datastoreEndpoint = OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint();
-      datastoreEndpoint.initialize(typeModel);
-      datastoreEndpoint.createDemoBranches();
+      datastoreEndpoint.initialize();
 
       Conditions.checkNotNull(BranchManager.getBranchToken(SYSTEM_ROOT), "System root was not created - ");
 

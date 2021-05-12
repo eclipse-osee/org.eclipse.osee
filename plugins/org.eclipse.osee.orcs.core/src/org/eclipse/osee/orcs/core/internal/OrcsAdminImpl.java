@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
-import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -68,14 +67,13 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public TransactionId createDatastoreAndSystemBranches(String typeModel) {
+   public TransactionId createDatastoreAndSystemBranches() {
       ActivityLog activityLog = orcsApi.getActivityLog();
       try {
          activityLog.setEnabled(false);
 
-         typeModel += OseeInf.getResourceContents("OseeTypes_Framework.osee", getClass());
          dataStoreAdmin.createDataStore();
-         return new CreateSystemBranches(orcsApi).create(typeModel);
+         return new CreateSystemBranches(orcsApi).create();
       } finally {
          activityLog.setEnabled(true);
       }

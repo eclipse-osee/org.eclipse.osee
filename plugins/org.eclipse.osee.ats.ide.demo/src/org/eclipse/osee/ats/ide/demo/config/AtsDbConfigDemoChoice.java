@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.demo.config;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.database.init.DatabaseInitConfiguration;
-import org.eclipse.osee.framework.database.init.DefaultOseeTypeDefinitions;
 import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
 import org.eclipse.osee.framework.database.init.IGroupSelector;
 
@@ -34,10 +33,6 @@ public class AtsDbConfigDemoChoice implements IAddDbInitChoice {
       System.setProperty("user.name", DemoUsers.Joe_Smith.getLoginIds().iterator().next());
       config.addTask("org.eclipse.osee.ats.ide.AtsDbConfigBaseIde");
       config.addTask("org.eclipse.osee.ats.ide.demo.AtsDbConfigDemoIde");
-
-      config.addOseeType(DefaultOseeTypeDefinitions.DEFINE_TYPES);
-      config.addOseeType(DefaultOseeTypeDefinitions.ATS_TYPES);
-      config.addOseeType("org.eclipse.osee.ats.ide.demo.OseeTypes_Demo");
       groupSelection.addChoice(DemoChoice.ATS_CLIENT_DEMO, config);
    }
 }

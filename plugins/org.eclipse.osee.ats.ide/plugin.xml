@@ -140,14 +140,6 @@
    	</DatabaseInitializationTask>
    </extension>
    <extension
-         id="OseeTypes_ATS"
-         name="OseeTypes_ATS"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            resource="OSEE-INF/orcsTypes/OseeTypes_ATS.osee">
-      </OseeTypes>
-   </extension>
-   <extension
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.ide.editor.renderer.AtsWfeRenderer"/>

@@ -31,14 +31,6 @@
       </AtsNavigateItem>
    </extension>
    <extension
-         id="OseeTypes_Demo"
-         name="OseeTypes_Demo"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            resource="OSEE-INF/orcsTypes/OseeTypes_Demo.osee">
-      </OseeTypes>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.ide.demo.artifact.DemoArtifactImageProvider">

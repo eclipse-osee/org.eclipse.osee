@@ -3,14 +3,6 @@
 <plugin>
    <extension-point id="OutfileParser" name="OutfileParser" schema="OSEE-INF/extensionPts/OutfileParser.exsd"/>
    <extension
-         id="OseeTypes_OTE"
-         name="OseeTypes_OTE"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            resource="OSEE-INF/orcsTypes/OseeTypes_OTE.osee">
-      </OseeTypes>
-   </extension>
-   <extension
          id="OteOutfileParser"
          point="org.eclipse.osee.ote.define.OutfileParser">
       <OutfileParser

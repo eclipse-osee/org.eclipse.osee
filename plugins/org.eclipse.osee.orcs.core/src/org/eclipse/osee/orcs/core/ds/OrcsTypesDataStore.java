@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.core.ds;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -31,7 +30,5 @@ public interface OrcsTypesDataStore {
    Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends AttributeTypeId> attributeTypes);
 
    Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends RelationTypeToken> relationTypes);
-
-   InputStream getAccessInputStream();
 
 }

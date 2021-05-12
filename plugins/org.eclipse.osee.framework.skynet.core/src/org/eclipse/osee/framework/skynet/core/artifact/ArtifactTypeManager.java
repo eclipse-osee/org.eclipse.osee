@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,17 +27,12 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.OseeTypesExportOperation;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
@@ -145,12 +139,6 @@ public class ArtifactTypeManager {
       return factoryManager.getFactory(artifactType);
    }
 
-   public static IOperation newExportTypesOp(OutputStream outputStream) {
-      OseeClient oseeClient = ServiceUtil.getOseeClient();
-      TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
-      return new OseeTypesExportOperation(typesEndpoint, outputStream);
-   }
-
    public static boolean isUserCreationAllowed(ArtifactTypeToken artifactType) {
       boolean userCreationoAllowed = false;
       ArtifactFactory factory = factoryManager.getFactory(artifactType);
@@ -161,5 +149,4 @@ public class ArtifactTypeManager {
       }
       return userCreationoAllowed;
    }
-
 }

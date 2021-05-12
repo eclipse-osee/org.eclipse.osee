@@ -2,13 +2,4 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="DWAConstants" name="DWAConstants" schema="OSEE-INF/extensionPts/DWAConstants.exsd"/>
-   <extension
-         id="id1"
-         name="name"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            resource="OSEE-INF/orcsTypes/DoorsReqTypes.osee">
-      </OseeTypes>
-   </extension>
-
 </plugin>

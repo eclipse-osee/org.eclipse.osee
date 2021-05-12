@@ -22,5 +22,4 @@ public interface IDatabaseInitConfiguration {
 
    List<String> getTaskExtensionIds();
 
-   List<String> getOseeTypeExtensionIds();
 }

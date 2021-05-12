@@ -31,7 +31,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
-import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +40,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    private UriInfo uriInfo;
    private final ActivityLog activityLog;
    private final OrcsAdmin adminOps;
-   private final TransactionFactory txFactory;
    private final UserService userService;
 
    @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
@@ -50,7 +48,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.activityLog = activityLog;
       adminOps = orcsApi.getAdminOps();
-      txFactory = orcsApi.getTransactionFactory();
       userService = orcsApi.userService();
    }
 
@@ -66,8 +63,10 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public TransactionId initialize(String typeModel) {
-      return adminOps.createDatastoreAndSystemBranches(typeModel);
+   public TransactionId initialize() {
+      TransactionId txId = adminOps.createDatastoreAndSystemBranches();
+      adminOps.createDemoBranches();
+      return txId;
    }
 
    @Override
@@ -95,11 +94,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       DatastoreInfo info = new DatastoreInfo();
       info.setProperties(metaData.getProperties());
       return info;
-   }
-
-   @Override
-   public void createDemoBranches() {
-      adminOps.createDemoBranches();
    }
 
    @Override

@@ -27,7 +27,7 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   TransactionId createDatastoreAndSystemBranches(String typeModel);
+   TransactionId createDatastoreAndSystemBranches();
 
    Callable<OrcsMetaData> migrateDatastore();
 

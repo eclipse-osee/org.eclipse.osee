@@ -23,11 +23,4 @@
             TraceUnitResourceLocator="org.eclipse.osee.client.demo.internal.traceability.DemoTraceUnitResourceLocator">
       </TraceUnitHandler>
    </extension>
-   <extension
-         id="OseeTypes_ClientDemo"
-         name="OseeTypes_ClientDemo"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes resource="OSEE-INF/orcsTypes/OseeTypes_ClientDemo.osee">
-      </OseeTypes>
-   </extension>
 </plugin>

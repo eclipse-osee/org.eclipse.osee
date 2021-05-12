@@ -15,32 +15,20 @@ package org.eclipse.osee.framework.database.init;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    private final List<String> dbInitTasks;
-   private final List<String> oseeTypeIds;
 
    public DatabaseInitConfiguration() {
       this.dbInitTasks = new ArrayList<>();
-      this.oseeTypeIds = new ArrayList<>();
    }
 
    public void addTask(String taskId) {
       dbInitTasks.add(taskId);
-   }
-
-   public void addOseeType(String oseeTypesExtensionIds) {
-      oseeTypeIds.add(oseeTypesExtensionIds);
-   }
-
-   public void addOseeType(DefaultOseeTypeDefinitions typeDef) {
-      addDefaultType(oseeTypeIds, typeDef);
    }
 
    @Override
@@ -53,18 +41,7 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
       return initTasks;
    }
 
-   @Override
-   public List<String> getOseeTypeExtensionIds() {
-      Set<String> oseeTypes = new LinkedHashSet<>();
-      oseeTypes.addAll(oseeTypeIds);
-      return new ArrayList<>(oseeTypes);
-   }
-
    private void addDefaultTask(Collection<String> initTasks, DefaultDbInitTasks task) {
       initTasks.add(task.getExtensionId());
-   }
-
-   private void addDefaultType(Collection<String> initTasks, DefaultOseeTypeDefinitions type) {
-      initTasks.add(type.getExtensionId());
    }
 }

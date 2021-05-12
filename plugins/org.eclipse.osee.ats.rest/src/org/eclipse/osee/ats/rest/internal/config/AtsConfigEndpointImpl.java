@@ -264,7 +264,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public TransactionId demoInitilize() {
-      TransactionId txId = orcsApi.getAdminOps().createDatastoreAndSystemBranches("");
+      TransactionId txId = orcsApi.getAdminOps().createDatastoreAndSystemBranches();
       orcsApi.getAdminOps().createDemoBranches();
       atsApi.getConfigService().configAtsDatabase(atsApi);
       return txId;
