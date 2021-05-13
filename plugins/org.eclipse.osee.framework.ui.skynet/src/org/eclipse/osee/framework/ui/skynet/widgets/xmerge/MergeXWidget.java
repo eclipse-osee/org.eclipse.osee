@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -64,6 +65,7 @@ import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
@@ -560,6 +562,9 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                   Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                   boolean isArchiveSourceBranch = cm.isBranchesAllCommittedExcept(art, destBranch);
                   XResultData rd = cm.commitBranch(art, destBranch, isArchiveSourceBranch, new XResultData());
+                  if (rd.isErrors()) {
+                     XResultDataUI.report(rd, "Commit Error(s)");
+                  }
                } else {
                   handleNonAtsCommit(sourceBranch, destBranch);
                }
@@ -706,29 +711,26 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          Conflict[] conflicts = getConflicts();
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
-               ArrayList<String> selections = new ArrayList<>();
                ArrayList<BranchToken> branches = new ArrayList<>();
                try {
                   Collection<BranchToken> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch);
                   for (BranchToken branch : destBranches) {
                      if (destBranch.notEqual(branch)) {
-                        selections.add(branch.getName());
                         branches.add(branch);
                      }
                   }
-                  if (selections.size() > 0) {
-                     ListSelectionDialogNoSave dialog = new ListSelectionDialogNoSave(selections.toArray(),
+                  if (branches.size() > 0) {
+                     ListSelectionDialogNoSave dialog = new ListSelectionDialogNoSave(Collections.castAll(branches),
                         Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
                         "Select the destination branch that the previous commit was appplied to", 2,
                         new String[] {"Apply", "Cancel"}, 1);
                      if (dialog.open() == 0) {
-                        System.out.print(
-                           "Applying the merge found for Branch " + branches.toArray()[dialog.getSelection()]);
-                        applyPreviousMerge(branches.get(dialog.getSelection()));
+                        Branch selected = (Branch) dialog.getSelected();
+                        applyPreviousMerge(selected);
                      }
                   }
-                  if (selections.isEmpty()) {
+                  if (branches.isEmpty()) {
                      new MessageDialog(Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
                         "This Source Branch has had No Prior Merges", 2, new String[] {"OK"}, 1).open();
                   }

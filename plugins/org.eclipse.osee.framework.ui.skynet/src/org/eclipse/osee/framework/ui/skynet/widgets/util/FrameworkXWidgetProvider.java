@@ -254,22 +254,22 @@ public final class FrameworkXWidgetProvider {
                } else {
                   xWidget = new XLabel(name);
                }
-            } else if (xWidgetName.equals("XCheckBox")) {
+            } else if (xWidgetName.equals(XCheckBox.WIDGET_ID)) {
                XCheckBox checkBox = new XCheckBox(name);
                checkBox.setLabelAfter(options.contains(XOption.LABEL_AFTER));
                if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
                   checkBox.set(Boolean.valueOf(xWidgetLayoutData.getDefaultValue()));
                }
                xWidget = checkBox;
-            } else if (xWidgetName.equals("XCheckBoxDam")) {
+            } else if (xWidgetName.equals(XCheckBoxDam.WIDGET_ID)) {
                XCheckBoxDam checkBox = new XCheckBoxDam(name);
                checkBox.setLabelAfter(options.contains(XOption.LABEL_AFTER));
                xWidget = checkBox;
-            } else if (xWidgetName.equals("XCheckBoxThreeState")) {
+            } else if (xWidgetName.equals(XCheckBoxThreeState.WIDGET_ID)) {
                XCheckBoxThreeState checkBox = new XCheckBoxThreeState(name);
                checkBox.setLabelAfter(options.contains(XOption.LABEL_AFTER));
                xWidget = checkBox;
-            } else if (xWidgetName.equals("XCheckBoxThreeStateDam")) {
+            } else if (xWidgetName.equals(XCheckBoxThreeStateDam.WIDGET_ID)) {
                XCheckBoxThreeStateDam checkBox = new XCheckBoxThreeStateDam(name);
                checkBox.setLabelAfter(options.contains(XOption.LABEL_AFTER));
                xWidget = checkBox;

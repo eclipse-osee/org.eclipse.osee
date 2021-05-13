@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
  */
 public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
 
+   public static String WIDGET_ID = XCheckBoxDam.class.getSimpleName();
    private Artifact artifact;
    private AttributeTypeToken attributeType;
 

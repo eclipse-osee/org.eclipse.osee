@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -45,6 +46,7 @@ import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -146,16 +148,15 @@ public class WfeTransitionHeader extends Composite {
 
    public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
       List<IAtsStateDefinition> states = AtsApiService.get().getWorkItemService().getAllToStates(awa);
-
-      Object[] stateArray = states.toArray();
       ListSelectionDialogNoSave dialog =
-         new ListSelectionDialogNoSave(stateArray, Displays.getActiveShell().getShell(), "Select Transition-To State",
-            null, "Select the state to transition to.\nTransition will happen upon selection and Transition button.\n" //
+         new ListSelectionDialogNoSave(Collections.castAll(states), Displays.getActiveShell().getShell(),
+            "Select Transition-To State", null, "Select the state to transition to.\n\n" //
+               + "Transition will happen upon selection and Transition button.\n\n" //
                + "Double-click will select, close and transition.",
             2, new String[] {"Transition", "Cancel"}, 0);
 
-      if (dialog.open() == 0) {
-         Object obj = stateArray[dialog.getSelection()];
+      if (dialog.open() == Window.OK) {
+         Object obj = dialog.getSelected();
          return (IAtsStateDefinition) obj;
       }
 

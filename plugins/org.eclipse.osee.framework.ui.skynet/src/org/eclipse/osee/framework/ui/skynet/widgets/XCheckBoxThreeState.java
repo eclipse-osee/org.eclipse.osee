@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XCheckBoxThreeState extends GenericXWidget {
 
+   public static String WIDGET_ID = XCheckBoxThreeState.class.getSimpleName();
    protected Label checkLabel;
    private Composite parent;
    private boolean labelAfter = true;
@@ -79,31 +80,16 @@ public class XCheckBoxThreeState extends GenericXWidget {
       checkLabel = new Label(parent, SWT.PUSH);
       GridData gd2 = new GridData(GridData.BEGINNING);
       checkLabel.setLayoutData(gd2);
-      checkLabel.addMouseListener(new MouseListener() {
+      checkLabel.addMouseListener(new MouseAdapter() {
 
          @Override
          public void mouseUp(MouseEvent e) {
-            if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE))) {
-               checkState = CheckState.UnChecked;
-            } else if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_FALSE))) {
-               checkState = CheckState.UnSet;
-            } else if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_UNSET))) {
-               checkState = CheckState.Checked;
-            }
+            handleSetCheckState();
             updateCheckWidget();
             validate();
             notifyXModifiedListeners();
          }
 
-         @Override
-         public void mouseDown(MouseEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void mouseDoubleClick(MouseEvent e) {
-            // do nothing
-         }
       });
 
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
@@ -119,6 +105,16 @@ public class XCheckBoxThreeState extends GenericXWidget {
       checkLabel.setLayoutData(gd);
       updateCheckWidget();
       checkLabel.setEnabled(isEditable());
+   }
+
+   protected void handleSetCheckState() {
+      if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE))) {
+         checkState = CheckState.UnChecked;
+      } else if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_FALSE))) {
+         checkState = CheckState.UnSet;
+      } else if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_UNSET))) {
+         checkState = CheckState.Checked;
+      }
    }
 
    @Override

@@ -266,7 +266,8 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    /**
-    * Override user groups check; eg: for runtime or demo use
+    * Checks if access is overridden. Currently ONLY used for automated placement in BLAMs section. Override user groups
+    * check; eg: for runtime or demo use.
     */
    public boolean isOverrideAccess() {
       return false;

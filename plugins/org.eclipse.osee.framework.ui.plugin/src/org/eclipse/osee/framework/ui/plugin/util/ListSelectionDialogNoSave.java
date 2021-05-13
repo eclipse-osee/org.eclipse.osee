@@ -14,61 +14,76 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ListSelectionDialogNoSave extends MessageDialog {
 
-   private List selections;
+   private List selectionList;
+   private final java.util.List<Object> options;
    private int selectionIndex;
-   private final Object[] choose;
 
-   public ListSelectionDialogNoSave(Object[] choose, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+   public ListSelectionDialogNoSave(java.util.List<Object> options, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
          defaultIndex);
-      this.choose = choose;
+      this.options = options;
    }
 
    @Override
    protected Control createCustomArea(Composite parent) {
-      selections = new List(parent, SWT.SINGLE | SWT.BORDER);
-      for (int i = 0; i < choose.length; i++) {
-         selections.add(choose[i].toString());
+
+      Composite comp = new Composite(parent, SWT.None);
+      comp.setLayout(ALayout.getZeroMarginLayout());
+      GridData gd = new GridData(SWT.CENTER, SWT.NONE, true, false);
+      comp.setLayoutData(gd);
+
+      selectionList = new List(comp, SWT.SINGLE | SWT.BORDER);
+      for (Object option : options) {
+         selectionList.add(option.toString());
       }
 
-      selections.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
+      selectionList.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
 
          @Override
          public void mouseDoubleClick(MouseEvent e) {
             super.mouseDoubleClick(e);
-            selectionIndex = selections.getSelectionIndex();
+            selectionIndex = selectionList.getSelectionIndex();
             setReturnCode(OK);
             close();
          }
 
       });
 
-      selections.addSelectionListener(new SelectionAdapter() {
+      selectionList.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            selectionIndex = selections.getSelectionIndex();
+            selectionIndex = selectionList.getSelectionIndex();
          }
 
       });
 
-      selections.select(0);
+      selectionList.select(0);
       return parent;
    }
 
-   public int getSelection() {
+   public Object getSelected() {
+      return options.get(getSelectionIndex());
+   }
+
+   public int getSelectionIndex() {
       return selectionIndex;
    }
 }

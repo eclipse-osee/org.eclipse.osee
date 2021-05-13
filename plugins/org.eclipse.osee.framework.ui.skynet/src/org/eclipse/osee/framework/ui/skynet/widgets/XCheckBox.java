@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XCheckBox extends XButtonCommon {
 
+   public static String WIDGET_ID = XCheckBox.class.getSimpleName();
    protected Button checkButton;
    private Composite parent;
    private boolean labelAfter = true;
