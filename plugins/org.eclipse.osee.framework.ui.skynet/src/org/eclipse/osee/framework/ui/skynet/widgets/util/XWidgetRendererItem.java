@@ -42,6 +42,7 @@ public class XWidgetRendererItem implements Cloneable {
    private int beginComposite = 0; // If >0, indicates new child composite with columns == value
    private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
    private boolean endComposite, endGroupComposite; // indicated end of child composite
+   private String groupName;
    private int height = DEFAULT_HEIGHT;
    private boolean noSelect;
    private String toolTip;
@@ -332,6 +333,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public Object getDefaultValueObj() {
       return defaultValueObj;
+   }
+
+   public String getGroupName() {
+      return groupName;
+   }
+
+   public void setGroupName(String groupName) {
+      this.groupName = groupName;
    }
 
 }

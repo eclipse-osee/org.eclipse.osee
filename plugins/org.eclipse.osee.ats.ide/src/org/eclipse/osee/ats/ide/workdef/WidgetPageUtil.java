@@ -120,28 +120,52 @@ public class WidgetPageUtil {
       }
    }
 
-   public static void processComposite(IAtsCompositeLayoutItem compositeStateItem, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static void processComposite(IAtsCompositeLayoutItem compositeLayoutItem, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
       boolean firstWidget = true;
-      List<IAtsLayoutItem> stateItems = compositeStateItem.getaLayoutItems();
+
+      // Group Comp is stand-alone renderer item
+      boolean inGroupComp = false;
+      if (compositeLayoutItem.isGroupComposite()) {
+         inGroupComp = true;
+         XWidgetRendererItem newCompItem = new XWidgetRendererItem(dynamicXWidgetLayout);
+         newCompItem.setName(compositeLayoutItem.getName());
+         newCompItem.setBeginGroupComposite(compositeLayoutItem.getNumColumns());
+         dynamicXWidgetLayout.addWorkLayoutData(newCompItem);
+
+      }
+
+      List<IAtsLayoutItem> stateItems = compositeLayoutItem.getaLayoutItems();
       for (int x = 0; x < stateItems.size(); x++) {
          boolean lastWidget = x == stateItems.size() - 1;
          IAtsLayoutItem stateItem = stateItems.get(x);
+         System.err.println("State Item " + stateItem);
          if (stateItem instanceof IAtsWidgetDefinition) {
-            XWidgetRendererItem data =
+            XWidgetRendererItem renderItem =
                processWidgetDefinition((IAtsWidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
             if (firstWidget) {
-               if (compositeStateItem.getNumColumns() > 0) {
-                  data.setBeginComposite(compositeStateItem.getNumColumns());
+               if (compositeLayoutItem.getNumColumns() > 0) {
+                  System.err.println(compositeLayoutItem.getName() + " - " + compositeLayoutItem.getName());
+                  if (!compositeLayoutItem.isGroupComposite()) {
+                     renderItem.setBeginComposite(compositeLayoutItem.getNumColumns());
+                  }
                }
             }
             if (lastWidget) {
-               data.setEndComposite(true);
+               renderItem.setEndComposite(true);
             }
          } else if (stateItem instanceof IAtsCompositeLayoutItem) {
-            processComposite((IAtsCompositeLayoutItem) stateItem, sma, dynamicXWidgetLayout);
+            IAtsCompositeLayoutItem compLayoutItem = (IAtsCompositeLayoutItem) stateItem;
+            processComposite(compLayoutItem, sma, dynamicXWidgetLayout);
          }
          firstWidget = false;
       }
+
+      if (inGroupComp) {
+         XWidgetRendererItem newCompItem = new XWidgetRendererItem(dynamicXWidgetLayout);
+         newCompItem.setEndGroupComposite(true);
+         dynamicXWidgetLayout.addWorkLayoutData(newCompItem);
+      }
+
    }
 
    /**

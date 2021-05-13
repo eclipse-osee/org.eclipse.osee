@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -88,21 +89,22 @@ public class SwtXWidgetRenderer {
       return toolkit != null ? toolkit.createComposite(parent, SWT.WRAP) : new Composite(parent, SWT.NONE);
    }
 
-   private Group buildGroupComposite(Composite given, String name, int numColumns, FormToolkit toolkit) {
-      Group groupComp = new Group(given, SWT.None);
+   private Group buildGroupComposite(Composite parent, String name, int numColumns, FormToolkit toolkit) {
+      Group groupComp = new Group(parent, SWT.None);
       if (Strings.isValid(name)) {
          groupComp.setText(name);
       }
-      groupComp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
+      groupComp.setLayout(new GridLayout(numColumns, false));
       groupComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      groupComp.setFont(FontManager.getCourierNew12Bold());
       if (toolkit != null) {
          toolkit.adapt(groupComp);
       }
       return groupComp;
    }
 
-   private Composite buildChildComposite(Composite given, int numColumns, FormToolkit toolkit) {
-      Composite outComp = createComposite(given, toolkit);
+   private Composite buildChildComposite(Composite parent, int numColumns, FormToolkit toolkit) {
+      Composite outComp = createComposite(parent, toolkit);
       GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(numColumns, false);
       zeroMarginLayout.marginWidth = 4;
       zeroMarginLayout.horizontalSpacing = 8;
@@ -161,25 +163,26 @@ public class SwtXWidgetRenderer {
       Composite childComp = null;
       Group groupComp = null;
       // Create Attributes
-      for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
+      Set<XWidgetRendererItem> layoutDatas = getLayoutDatas();
+      for (XWidgetRendererItem rendererItem : layoutDatas) {
          Composite currentComp = null;
 
          // first, check if this one is a group, if so, we set the group up and are done with this loop iteration
 
-         int i = xWidgetLayoutData.getBeginGroupComposite();
+         int i = rendererItem.getBeginGroupComposite();
          if (i > 0) {
             inGroupComposite = true;
-            groupComp = buildGroupComposite(topLevelComp, xWidgetLayoutData.getName(), i, toolkit);
+            groupComp = buildGroupComposite(topLevelComp, rendererItem.getName(), i, toolkit);
             continue;
          }
          if (inGroupComposite) {
             currentComp = groupComp;
-            if (xWidgetLayoutData.isEndGroupComposite()) {
+            if (rendererItem.isEndGroupComposite()) {
                inGroupComposite = false;
+               currentComp = topLevelComp;
                // No XWidget associated, so go to next one
                continue;
             }
-
          } else {
             currentComp = topLevelComp;
          }
@@ -188,11 +191,11 @@ public class SwtXWidgetRenderer {
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
          currentComp.setLayoutData(gd);
 
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+         if (rendererItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
             gd.grabExcessVerticalSpace = true;
          }
 
-         int j = xWidgetLayoutData.getBeginComposite();
+         int j = rendererItem.getBeginComposite();
          if (j > 0) {
             inChildComposite = true;
             childComp = buildChildComposite(currentComp, j, toolkit);
@@ -200,10 +203,10 @@ public class SwtXWidgetRenderer {
 
          if (inChildComposite) {
             currentComp = childComp;
-            if (xWidgetLayoutData.isEndComposite()) {
+            if (rendererItem.isEndComposite()) {
                inChildComposite = false;
             }
-         } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
+         } else if (rendererItem.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
             currentComp = createComposite(topLevelComp, toolkit);
             currentComp.setLayout(ALayout.getZeroMarginLayout(2, false));
             currentComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -212,48 +215,48 @@ public class SwtXWidgetRenderer {
             }
          }
 
-         XWidget xWidget = setupXWidget(xWidgetLayoutData, isEditable);
-         xWidget.setId(xWidgetLayoutData.getId());
-         if (xWidgetLayoutData.getObject() != null) {
-            xWidget.setObject(xWidgetLayoutData.getObject());
+         XWidget xWidget = setupXWidget(rendererItem, isEditable);
+         xWidget.setId(rendererItem.getId());
+         if (rendererItem.getObject() != null) {
+            xWidget.setObject(rendererItem.getObject());
          }
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
          }
 
-         setupArtifactInfo(artifact, xWidgetLayoutData, xWidget);
+         setupArtifactInfo(artifact, rendererItem, xWidget);
 
          if (xWidget instanceof XText) {
             XText xText = (XText) xWidget;
-            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
+            if (rendererItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
                xText.setFillHorizontally(true);
             }
-            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+            if (rendererItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
                xText.setFillVertically(true);
             }
-            if (xWidgetLayoutData.isHeightSet()) {
-               xText.setHeight(xWidgetLayoutData.getHeight());
+            if (rendererItem.isHeightSet()) {
+               xText.setHeight(rendererItem.getHeight());
             }
             xText.setDynamicallyCreated(true);
          }
 
          xWidget.createWidgets(managedForm, currentComp, 2);
-         setAttrToolTip(xWidget, xWidgetLayoutData);
+         setAttrToolTip(xWidget, rendererItem);
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
          }
          xWidget.addXModifiedListener(refreshRequiredModListener);
 
-         if (Strings.isValid(xWidgetLayoutData.getDoubleClickText())) {
+         if (Strings.isValid(rendererItem.getDoubleClickText())) {
             if (Widgets.isAccessible(xWidget.getLabelWidget())) {
                xWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
                   @Override
                   public void mouseDoubleClick(MouseEvent e) {
                      super.mouseDoubleClick(e);
                      ResultsEditor.open("Error", "Error: " + xWidget.getLabel(),
-                        AHTML.simplePage(xWidgetLayoutData.getDoubleClickText()));
+                        AHTML.simplePage(rendererItem.getDoubleClickText()));
                   }
                });
             }
@@ -261,8 +264,8 @@ public class SwtXWidgetRenderer {
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreated(xWidget, toolkit, artifact, this, xModListener, isEditable);
-            dynamicWidgetLayoutListener.createXWidgetLayoutData(xWidgetLayoutData, xWidget, toolkit, artifact,
-               xModListener, isEditable);
+            dynamicWidgetLayoutListener.createXWidgetLayoutData(rendererItem, xWidget, toolkit, artifact, xModListener,
+               isEditable);
          }
       }
       topLevelComp.layout();

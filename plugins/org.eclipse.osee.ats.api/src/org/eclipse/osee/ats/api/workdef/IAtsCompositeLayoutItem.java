@@ -28,6 +28,8 @@ public interface IAtsCompositeLayoutItem extends IAtsLayoutItem {
 
    List<IAtsLayoutItem> getaLayoutItems();
 
+   boolean isGroupComposite();
+
    @Override
    String toString();
 

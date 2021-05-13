@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayoutItem {
 
    private int numColumns;
-   private final List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
+   private final List<IAtsLayoutItem> childrenLayoutItems = new ArrayList<>(5);
 
    public CompositeLayoutItem() {
       this(2);
@@ -38,7 +38,7 @@ public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayo
    public CompositeLayoutItem(int numColumns, IAtsLayoutItem... layoutItems) {
       this(numColumns);
       for (IAtsLayoutItem item : layoutItems) {
-         stateItems.add(item);
+         childrenLayoutItems.add(item);
       }
    }
 
@@ -54,11 +54,17 @@ public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayo
 
    @Override
    public List<IAtsLayoutItem> getaLayoutItems() {
-      return stateItems;
+      return childrenLayoutItems;
    }
 
    @Override
    public String toString() {
       return "Composite " + numColumns;
    }
+
+   @Override
+   public boolean isGroupComposite() {
+      return false;
+   }
+
 }
