@@ -13,29 +13,32 @@
 
 package org.eclipse.osee.mim.types;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Audrey E Denk
  */
 public class InterfaceLogicalTypeField {
-   private AttributeTypeToken attributeType;
+   private String name;
+   private String attributeType;
    private boolean required;
+   private boolean editable;
    private String defaultValue = Strings.EMPTY_STRING;
 
    public InterfaceLogicalTypeField() {
       //
    }
 
-   public InterfaceLogicalTypeField(AttributeTypeToken type, boolean required, String defaultValue) {
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue) {
+      this.setName(name);
       this.setAttributeType(type);
       this.setRequired(required);
+      this.setEditable(editable);
       this.setDefaultValue(defaultValue);
    }
 
-   public InterfaceLogicalTypeField(AttributeTypeToken name, boolean required) {
-      this(name, required, Strings.EMPTY_STRING);
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable) {
+      this(name, type, required, editable, Strings.EMPTY_STRING);
    }
 
    public boolean isRequired() {
@@ -54,11 +57,27 @@ public class InterfaceLogicalTypeField {
       this.defaultValue = defaultValue;
    }
 
-   public AttributeTypeToken getAttributeType() {
+   public String getAttributeType() {
       return attributeType;
    }
 
-   public void setAttributeType(AttributeTypeToken attributeType) {
+   public void setAttributeType(String attributeType) {
       this.attributeType = attributeType;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public boolean isEditable() {
+      return editable;
+   }
+
+   public void setEditable(boolean editable) {
+      this.editable = editable;
    }
 }

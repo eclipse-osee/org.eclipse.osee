@@ -25,11 +25,16 @@ public class InterfaceLogicalTypeHex extends InterfaceLogicalTypeGeneric {
    public InterfaceLogicalTypeHex() {
       super(6L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.Name, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeByteSize, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.Description, false));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeMinval, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeMaxval, true));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true));
+      fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize",
+         true, true));
+      fields.add(new InterfaceLogicalTypeField("2s Complement",
+         "InterfacePlatformType2sComplement", true, false));
+      fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true));
+      fields.add(
+         new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true));
+      fields.add(
+         new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true));
       this.setFields(fields);
    }
 

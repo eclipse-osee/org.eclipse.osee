@@ -82,10 +82,12 @@ public class InterfacePlatformTypeUnitsAttribute extends AttributeTypeEnum<Inter
    }
 
    public class InterfacePlatformTypeUnitsEnum extends EnumToken {
+      public String description;
 
       public InterfacePlatformTypeUnitsEnum(int ordinal, String name, String desc) {
          super(ordinal, name);
          addEnum(this);
+         description = desc;
       }
    }
 }

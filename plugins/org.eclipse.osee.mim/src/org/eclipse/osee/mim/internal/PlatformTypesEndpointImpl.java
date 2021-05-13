@@ -178,10 +178,10 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
          tx.setSoleAttributeValue(token, CoreAttributeTypes.InterfacePlatformTypeBitsResolution,
             platformToken.getInterfacePlatformTypeBitsResolution());
       }
-      if (platformToken.getInterfacePlatformTypeByteSize() != null && !platformToken.getInterfacePlatformTypeByteSize().equals(
+      if (platformToken.getInterfacePlatformTypeBitSize() != null && !platformToken.getInterfacePlatformTypeBitSize().equals(
          "")) {
-         tx.setSoleAttributeValue(token, CoreAttributeTypes.InterfacePlatformTypeByteSize,
-            platformToken.getInterfacePlatformTypeByteSize());
+         tx.setSoleAttributeValue(token, CoreAttributeTypes.InterfacePlatformTypeBitSize,
+            platformToken.getInterfacePlatformTypeBitSize());
       }
       if (platformToken.getInterfacePlatformTypeCompRate() != null && !platformToken.getInterfacePlatformTypeCompRate().equals(
          "")) {
@@ -226,6 +226,11 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
       if (platformToken.getInterfaceLogicalType() != null && !platformToken.getInterfaceLogicalType().equals("")) {
          tx.setSoleAttributeValue(token, CoreAttributeTypes.InterfaceLogicalType,
             platformToken.getInterfaceLogicalType());
+      }
+      if (platformToken.getInterfacePlatformType2sComplement() != null && !platformToken.getInterfacePlatformType2sComplement().equals(
+         "")) {
+         tx.setSoleAttributeValue(token, CoreAttributeTypes.InterfacePlatformType2sComplement,
+            platformToken.getInterfacePlatformType2sComplement());
       }
    }
 

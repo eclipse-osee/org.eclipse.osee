@@ -162,21 +162,21 @@ public class IcdGenerator {
 
             List<ArtifactReadable> elements =
                struct.getRelated(CoreRelationTypes.InterfaceStructureContent_DataElement).getList();
-            int sum = 0;
+            Integer sum = 0;
             for (ArtifactReadable element : struct.getRelated(
                CoreRelationTypes.InterfaceStructureContent_DataElement).getList()) {
                ArtifactReadable platformType =
                   element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
                      ArtifactReadable.SENTINEL);
                if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
-                  sum = sum + ((Integer.parseInt(
-                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeByteSize,
-                        "0")) * (Integer.parseInt(element.getSoleAttributeAsString(
-                           CoreAttributeTypes.InterfaceElementIndexEnd)) - Integer.parseInt(
-                              element.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementIndexStart)) + 1)));
+                  sum = sum + (((Integer.parseInt(platformType.getSoleAttributeAsString(
+                     CoreAttributeTypes.InterfacePlatformTypeBitSize,
+                     "0")) * (Integer.parseInt(element.getSoleAttributeAsString(
+                        CoreAttributeTypes.InterfaceElementIndexEnd)) - Integer.parseInt(
+                           element.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementIndexStart)) + 1))) / 8);
                } else {
-                  sum = sum + Integer.parseInt(
-                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeByteSize, "0"));
+                  sum = sum + (Integer.parseInt(
+                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8);
 
                }
             }
@@ -297,7 +297,7 @@ public class IcdGenerator {
                      ArtifactReadable.SENTINEL);
 
                Integer byteSize = Integer.valueOf(
-                  platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeByteSize, "0"));
+                  platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
                printDataElementRow(writer, branch, element, byteLocation, byteSize, platformType);
                byteLocation = byteLocation + byteSize;
             }

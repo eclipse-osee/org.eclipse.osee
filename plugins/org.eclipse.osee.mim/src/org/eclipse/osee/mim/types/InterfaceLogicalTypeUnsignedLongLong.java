@@ -25,13 +25,20 @@ public class InterfaceLogicalTypeUnsignedLongLong extends InterfaceLogicalTypeGe
    public InterfaceLogicalTypeUnsignedLongLong() {
       super(15L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.Name, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeByteSize, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.Description, false));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeMinval, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeMaxval, true));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeUnits, false));
-      fields.add(new InterfaceLogicalTypeField(CoreAttributeTypes.InterfacePlatformTypeDefaultValue, false));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true));
+      fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize",
+         true, true));
+      fields.add(new InterfaceLogicalTypeField("2s Complement",
+         "InterfacePlatformType2sComplement", true, false));
+      fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true));
+      fields.add(
+         new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true));
+      fields.add(
+         new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true));
+      fields.add(
+         new InterfaceLogicalTypeField("Units", "InterfacePlatformTypeUnits", false, true));
+      fields.add(new InterfaceLogicalTypeField("Default Value",
+         "InterfacePlatformTypeDefaultValue", false, true));
       this.setFields(fields);
    }
 

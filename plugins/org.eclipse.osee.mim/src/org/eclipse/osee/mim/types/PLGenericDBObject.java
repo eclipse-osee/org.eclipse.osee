@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * Generic class object to make common operations (i.e. generic POST/PUT) operations easier
- * 
+ *
  * @author Luciano T. Vaglienti
  */
 public class PLGenericDBObject extends NamedIdBase {

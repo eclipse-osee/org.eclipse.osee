@@ -237,10 +237,10 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement)
       .exactlyOne(InterfaceElementIndexStart)
       .exactlyOne(InterfaceElementIndexEnd));
-   ArtifactTypeToken InterfacePlatformType = osee.add(osee.artifactType(6360154518785980503L, "Interface PlatformType", false, Artifact)
+   ArtifactTypeToken InterfacePlatformType = osee.add(osee.artifactType(6360154518785980503L, "Interface Platform Type", false, Artifact)
       .exactlyOne(InterfaceLogicalType)
-      .exactlyOne(InterfacePlatformTypeByteSize)
-      .exactlyOne(InterfacePlatform2sComplement)
+      .exactlyOne(InterfacePlatformTypeBitSize)
+      .exactlyOne(InterfacePlatformType2sComplement)
       .zeroOrOne(InterfacePlatformTypeMinval)
       .zeroOrOne(InterfacePlatformTypeMaxval)
       .zeroOrOne(InterfacePlatformTypeUnits)

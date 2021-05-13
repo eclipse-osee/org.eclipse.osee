@@ -24,18 +24,22 @@ import org.eclipse.osee.framework.core.enums.token.InterfaceLogicalTypeAttribute
  */
 public class InterfaceLogicalTypeAttribute extends AttributeTypeEnum<InterfaceLogicalTypeEnum> {
 
-   public final InterfaceLogicalTypeEnum Boolean = new InterfaceLogicalTypeEnum(0, "boolean", 1, "0", "1");
-   public final InterfaceLogicalTypeEnum Character = new InterfaceLogicalTypeEnum(1, "character", 1, "0", "255");
-   public final InterfaceLogicalTypeEnum uShort = new InterfaceLogicalTypeEnum(2, "uShort", 2, "0", "(2^16)-1");
-   public final InterfaceLogicalTypeEnum sShort = new InterfaceLogicalTypeEnum(3, "sShort", 2, "-(2^15)", "(2^15)-1");
-   public final InterfaceLogicalTypeEnum MiniEnum = new InterfaceLogicalTypeEnum(4, "minienum", 2, "", "");
-   public final InterfaceLogicalTypeEnum Enumeration = new InterfaceLogicalTypeEnum(5, "enumeration", 4, "", "");
-   public final InterfaceLogicalTypeEnum uInteger = new InterfaceLogicalTypeEnum(6, "uInteger", 4, "0", "(2^32)-1");
-   public final InterfaceLogicalTypeEnum sInteger =
-      new InterfaceLogicalTypeEnum(7, "sInteger", 4, "-(2^31)", "(2^31)-1");
-   public final InterfaceLogicalTypeEnum Float = new InterfaceLogicalTypeEnum(8, "float", 4, "-3.4e+38", "3.4e+38");
-   public final InterfaceLogicalTypeEnum Double = new InterfaceLogicalTypeEnum(9, "double", 8, "-1.8e+308", "1.8e+308");
-   public final InterfaceLogicalTypeEnum uLong = new InterfaceLogicalTypeEnum(10, "uLong", 8, "0", "(2^64)-1");
+   public final InterfaceLogicalTypeEnum Boolean = new InterfaceLogicalTypeEnum(0, "boolean");
+   public final InterfaceLogicalTypeEnum Character = new InterfaceLogicalTypeEnum(1, "character");
+   public final InterfaceLogicalTypeEnum Enumeration = new InterfaceLogicalTypeEnum(2, "enumeration");
+   public final InterfaceLogicalTypeEnum Octet = new InterfaceLogicalTypeEnum(3, "octet");
+   public final InterfaceLogicalTypeEnum Hex = new InterfaceLogicalTypeEnum(4, "hex");
+   public final InterfaceLogicalTypeEnum Integer = new InterfaceLogicalTypeEnum(5, "integer");
+   public final InterfaceLogicalTypeEnum UnsignedInteger = new InterfaceLogicalTypeEnum(6, "unsigned integer");
+   public final InterfaceLogicalTypeEnum Short = new InterfaceLogicalTypeEnum(7, "short");
+   public final InterfaceLogicalTypeEnum UnsignedShort = new InterfaceLogicalTypeEnum(8, "unsigned short");
+   public final InterfaceLogicalTypeEnum Long = new InterfaceLogicalTypeEnum(9, "long");
+   public final InterfaceLogicalTypeEnum UnsignedLong = new InterfaceLogicalTypeEnum(10, "unsigned long");
+   public final InterfaceLogicalTypeEnum LongLong = new InterfaceLogicalTypeEnum(11, "long long");
+   public final InterfaceLogicalTypeEnum UnsignedLongLong = new InterfaceLogicalTypeEnum(12, "unsigned long long");
+   public final InterfaceLogicalTypeEnum Double = new InterfaceLogicalTypeEnum(13, "double");
+   public final InterfaceLogicalTypeEnum LongDouble = new InterfaceLogicalTypeEnum(14, "long double");
+   public final InterfaceLogicalTypeEnum Float = new InterfaceLogicalTypeEnum(15, "float");
 
    public InterfaceLogicalTypeAttribute(NamespaceToken namespace, int enumCount) {
       super(2455059983007225762L, namespace, "Interface Logical Type", MediaType.TEXT_PLAIN, "",
@@ -43,12 +47,12 @@ public class InterfaceLogicalTypeAttribute extends AttributeTypeEnum<InterfaceLo
    }
 
    public InterfaceLogicalTypeAttribute() {
-      this(NamespaceToken.OSEE, 11);
+      this(NamespaceToken.OSEE, 16);
    }
 
    public class InterfaceLogicalTypeEnum extends EnumToken {
 
-      public InterfaceLogicalTypeEnum(int ordinal, String name, Integer byteSize, String min, String max) {
+      public InterfaceLogicalTypeEnum(int ordinal, String name) {
          super(ordinal, name);
          addEnum(this);
       }

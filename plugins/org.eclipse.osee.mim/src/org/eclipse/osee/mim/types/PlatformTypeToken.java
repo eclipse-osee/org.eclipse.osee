@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * Class used to represent a platform type, as well as internal operations for a platform type.
- * 
+ *
  * @author Luciano T. Vaglienti
  */
 public class PlatformTypeToken extends PLGenericDBObject {
@@ -37,13 +37,14 @@ public class PlatformTypeToken extends PLGenericDBObject {
    private String InterfacePlatformTypeValidRangeDescription;
    private String InterfacePlatformTypeMinval;
    private String InterfacePlatformTypeMaxval;
-   private String InterfacePlatformTypeByteSize;
+   private String InterfacePlatformTypeBitSize;
    private String InterfacePlatformTypeDefaultValue;
    private String InterfacePlatformTypeMsbValue;
    private String InterfacePlatformTypeBitsResolution;
    private String InterfacePlatformTypeCompRate;
    private String InterfacePlatformTypeAnalogAccuracy;
    private String InterfaceLogicalType;
+   private String InterfacePlatformType2sComplement;
 
    @JsonIgnore
    private static List<AttributeTypeId> attrType = Arrays.asList(new AttributeTypeId[] {
@@ -53,14 +54,14 @@ public class PlatformTypeToken extends PLGenericDBObject {
       CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription,
       CoreAttributeTypes.InterfacePlatformTypeMinval,
       CoreAttributeTypes.InterfacePlatformTypeMaxval,
-      CoreAttributeTypes.InterfacePlatformTypeByteSize,
-      CoreAttributeTypes.InterfacePlatform2sComplement,
+      CoreAttributeTypes.InterfacePlatformTypeBitSize,
       CoreAttributeTypes.InterfacePlatformTypeDefaultValue,
       CoreAttributeTypes.InterfacePlatformTypeMsbValue,
       CoreAttributeTypes.InterfacePlatformTypeBitsResolution,
       CoreAttributeTypes.InterfacePlatformTypeCompRate,
       CoreAttributeTypes.InterfacePlatformTypeAnalogAccuracy,
-      CoreAttributeTypes.InterfaceLogicalType});
+      CoreAttributeTypes.InterfaceLogicalType,
+      CoreAttributeTypes.InterfacePlatformType2sComplement});
 
    public PlatformTypeToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -76,32 +77,34 @@ public class PlatformTypeToken extends PLGenericDBObject {
       while (iterator.hasNext()) {
          AttributeReadable<Object> next = iterator.next();
          String idString = next.getAttributeType().getIdString();
-         if (idString.equals((PlatformTypeToken.getAttributeTypes().get(3).getIdString()))) {
-            this.setInterfacePlatformTypeValidRangeDescription(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(6).getIdString()))) {
-            this.setInterfacePlatformTypeByteSize(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(5).getIdString()))) {
-            this.setInterfacePlatformTypeMaxval(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(4).getIdString()))) {
-            this.setInterfacePlatformTypeMinval(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(0).getIdString()))) {
+         if (idString.equals((PlatformTypeToken.getAttributeTypes().get(0).getIdString()))) {
             this.setName(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(13).getIdString()))) {
-            this.setInterfaceLogicalType(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(9).getIdString()))) {
-            this.setInterfacePlatformTypeMsbValue(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(2).getIdString()))) {
-            this.setInterfacePlatformTypeUnits(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(11).getIdString()))) {
-            this.setInterfacePlatformTypeCompRate(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(10).getIdString()))) {
-            this.setInterfacePlatformTypeBitsResolution(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(12).getIdString()))) {
-            this.setInterfacePlatformTypeAnalogAccuracy(next.getDisplayableString());
          } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(1).getIdString()))) {
             this.setInterfacePlatformTypeEnumLiteral(next.getDisplayableString());
-         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(8).getIdString()))) {
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(2).getIdString()))) {
+            this.setInterfacePlatformTypeUnits(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(3).getIdString()))) {
+            this.setInterfacePlatformTypeValidRangeDescription(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(4).getIdString()))) {
+            this.setInterfacePlatformTypeMinval(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(5).getIdString()))) {
+            this.setInterfacePlatformTypeMaxval(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(6).getIdString()))) {
+            this.setinterfacePlatformTypeBitSize(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(7).getIdString()))) {
             this.setInterfacePlatformTypeDefaultValue(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(8).getIdString()))) {
+            this.setInterfacePlatformTypeMsbValue(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(9).getIdString()))) {
+            this.setInterfacePlatformTypeBitsResolution(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(10).getIdString()))) {
+            this.setInterfacePlatformTypeCompRate(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(11).getIdString()))) {
+            this.setInterfacePlatformTypeAnalogAccuracy(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(12).getIdString()))) {
+            this.setInterfaceLogicalType(next.getDisplayableString());
+         } else if (idString.equals((PlatformTypeToken.getAttributeTypes().get(13).getIdString()))) {
+            this.setInterfacePlatformType2sComplement(next.getDisplayableString());
          } else {
          }
       }
@@ -189,18 +192,18 @@ public class PlatformTypeToken extends PLGenericDBObject {
    }
 
    /**
-    * @return the interfacePlatformTypeByteSize
+    * @return the interfacePlatformTypeBitSize
     */
-   public String getInterfacePlatformTypeByteSize() {
-      return InterfacePlatformTypeByteSize;
+   public String getInterfacePlatformTypeBitSize() {
+      return InterfacePlatformTypeBitSize;
    }
 
    /**
-    * @param interfacePlatformTypeByteSize the interfacePlatformTypeByteSize to set
+    * @param interfacePlatformTypeBitSize the interfacePlatformTypeBitSize to set
     */
-   public void setInterfacePlatformTypeByteSize(String interfacePlatformTypeByteSize) {
-      InterfacePlatformTypeByteSize = interfacePlatformTypeByteSize;
-      this.attributeLookup.put(CoreAttributeTypes.InterfacePlatformTypeByteSize, interfacePlatformTypeByteSize);
+   public void setinterfacePlatformTypeBitSize(String interfacePlatformTypeBitSize) {
+      InterfacePlatformTypeBitSize = interfacePlatformTypeBitSize;
+      this.attributeLookup.put(CoreAttributeTypes.InterfacePlatformTypeBitSize, interfacePlatformTypeBitSize);
    }
 
    /**
@@ -280,6 +283,37 @@ public class PlatformTypeToken extends PLGenericDBObject {
          interfacePlatformTypeAnalogAccuracy);
    }
 
+   /**
+    * @return the interfacePlatformType2sComplement
+    */
+   public String getInterfacePlatformType2sComplement() {
+      return InterfacePlatformType2sComplement;
+   }
+
+   /**
+    * @param interfacePlatformType2sComplement the interfacePlatformType2sComplement to set
+    */
+   public void setInterfacePlatformType2sComplement(String interfacePlatformType2sComplement) {
+      InterfacePlatformType2sComplement = interfacePlatformType2sComplement;
+      this.attributeLookup.put(CoreAttributeTypes.InterfacePlatformType2sComplement, interfacePlatformType2sComplement);
+   }
+
+   /**
+    * @return the interfaceLogicalType
+    */
+   public String getInterfaceLogicalType() {
+      return InterfaceLogicalType;
+   }
+
+   /**
+    * @param interfaceLogicalType the InterfaceLogicalType to set
+    */
+   public void setInterfaceLogicalType(String interfaceLogicalType) {
+      InterfaceLogicalType = interfaceLogicalType;
+      this.attributeLookup.put(CoreAttributeTypes.InterfaceLogicalType, interfaceLogicalType);
+
+   }
+
    @Override
    @JsonIgnore
    /**
@@ -290,23 +324,18 @@ public class PlatformTypeToken extends PLGenericDBObject {
    public String getErrors() {
       String result = "";
       if (this.getInterfaceLogicalType() == "" || this.getInterfaceLogicalType() == null) {
-         result = "PlatformType must have a valid logical type.";
+         result = "PlatformType must have a valid logical type. ";
       }
       if (this.getName() == "" || this.getName() == null) {
-         result = "PlatformType must have a valid name.";
+         result = result + "PlatformType must have a valid name. ";
       }
-      if (this.getInterfacePlatformTypeByteSize() == "" || this.getInterfacePlatformTypeByteSize() == null) {
-         result = "PlatformType must have a valid byte size.";
+      if (this.getInterfacePlatformTypeBitSize() == "" || this.getInterfacePlatformTypeBitSize() == null) {
+         result = result + "PlatformType must have a valid bit size. ";
+      }
+      if (this.getInterfacePlatformType2sComplement() == "" || this.getInterfacePlatformType2sComplement() == null) {
+         result = result + "PlatformType must have a valid 2s Complement value. ";
       }
       return result;
-   }
-
-   public String getInterfaceLogicalType() {
-      return InterfaceLogicalType;
-   }
-
-   public void setInterfaceLogicalType(String interfaceLogicalType) {
-      InterfaceLogicalType = interfaceLogicalType;
    }
 
    @JsonIgnore
