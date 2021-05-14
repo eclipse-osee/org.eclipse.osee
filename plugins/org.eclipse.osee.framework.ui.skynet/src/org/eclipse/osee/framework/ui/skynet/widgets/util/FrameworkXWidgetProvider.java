@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxesExample;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboEnumDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
@@ -273,6 +274,9 @@ public final class FrameworkXWidgetProvider {
                XCheckBoxThreeStateDam checkBox = new XCheckBoxThreeStateDam(name);
                checkBox.setLabelAfter(options.contains(XOption.LABEL_AFTER));
                xWidget = checkBox;
+            } else if (xWidgetName.equals(XComboEnumDam.WIDGET_ID)) {
+               XComboEnumDam combo = new XComboEnumDam(name);
+               xWidget = combo;
             } else if (xWidgetName.startsWith("XComboDam")) {
                if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
                   String values[] = xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(

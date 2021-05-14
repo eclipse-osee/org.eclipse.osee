@@ -15,6 +15,8 @@ package org.eclipse.osee.ats.api.workdef.model;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 
 /**
+ * CompositeLayoutItem that creates box around layoutItems with name label on box
+ *
  * @author Donald G. Dunne
  */
 public class GroupCompositeLayoutItem extends CompositeLayoutItem {
