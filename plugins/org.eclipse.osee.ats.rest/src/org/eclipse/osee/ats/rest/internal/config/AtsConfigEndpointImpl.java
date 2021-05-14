@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -305,8 +306,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public TransactionId demoInitilize() {
-      TransactionId txId = orcsApi.getAdminOps().createDatastoreAndSystemBranches();
+   public TransactionId demoInitilize(UserToken superUser) {
+      TransactionId txId = orcsApi.getAdminOps().createDatastoreAndSystemBranches(superUser);
       orcsApi.getAdminOps().createDemoBranches();
       atsApi.getConfigService().configAtsDatabase(atsApi);
       return txId;
