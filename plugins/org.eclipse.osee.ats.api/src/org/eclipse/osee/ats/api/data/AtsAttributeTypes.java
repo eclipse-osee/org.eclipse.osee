@@ -98,6 +98,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate EstimatedCompletionDate = ats.createDate(1152921504606847165L, "ats.Estimated Completion Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes will be completed.");
    AttributeTypeDouble EstimatedHours = ats.createDouble(1152921504606847182L, "ats.Estimated Hours", MediaType.TEXT_PLAIN, "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.");
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes will be made available to the users.");
+   AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", MediaType.TEXT_PLAIN, "Associated External PCR Number");
    AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", MediaType.TEXT_PLAIN, "Expanded and descriptive name.");
    AttributeTypeString GoalOrderVote = ats.createString(1152921504606847211L, "ats.Goal Order Vote", MediaType.TEXT_PLAIN, "Vote for order item belongs to within goal.");
    AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", MediaType.TEXT_PLAIN, "Reason for action being held");
