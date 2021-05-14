@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
@@ -139,8 +140,9 @@ public interface AtsConfigEndpointApi {
 
    @POST
    @Path("initialize/demo")
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionId demoInitilize();
+   TransactionId demoInitilize(UserToken superUser);
 
    @GET
    @Path("validate")

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
  * @author Roberto E. Escobar
@@ -27,7 +28,7 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   TransactionId createDatastoreAndSystemBranches();
+   TransactionId createDatastoreAndSystemBranches(UserToken superUser);
 
    Callable<OrcsMetaData> migrateDatastore();
 
@@ -40,8 +41,6 @@ public interface OrcsAdmin {
    void createSynonymsAndGrants();
 
    void changeArtifactTypeOutsideofHistory(ArtifactTypeId artifactType, List<? extends ArtifactId> artifacts);
-
-   void updateBootstrapUser(UserId accountId);
 
    void registerMissingOrcsTypeJoins();
 

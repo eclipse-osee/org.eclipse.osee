@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
 
 /**
@@ -36,9 +37,9 @@ public interface DatastoreEndpoint {
 
    @POST
    @Path("initialize")
-   @Consumes(MediaType.TEXT_PLAIN)
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionId initialize();
+   TransactionId initialize(UserToken superUser);
 
    @POST
    @Path("synonyms")
@@ -55,10 +56,4 @@ public interface DatastoreEndpoint {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    TransactionId createUsers(UserTokens users);
-
-   @POST
-   @Path("user/bootstrap")
-   @Produces(MediaType.APPLICATION_JSON)
-   void updateBootstrapUser();
-
 }

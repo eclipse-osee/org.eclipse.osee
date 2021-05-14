@@ -18,8 +18,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -53,7 +54,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    }
 
    @Override
-   public void createDataStore() {
+   public void createDataStore(UserToken superUser) {
       Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
       JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
@@ -61,6 +62,9 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
          "Error - attempting to initialize a production datastore.");
 
       jdbcClient.createDataStore(options, schemaProvider.get());
+
+      jdbcClient.runPreparedUpdate("UPDATE osee_tx_details SET author = ? WHERE author <= 0 OR author = ?", superUser,
+         SystemUser.BootStrap);
 
       String attributeDataPath = ResourceConstants.getAttributeDataPath(properties);
       logger.info("Deleting application server binary data [%s]...", attributeDataPath);
@@ -98,10 +102,5 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    @Override
    public JdbcClient getJdbcClient() {
       return jdbcClient;
-   }
-
-   @Override
-   public void updateBootstrapUser(UserId accountId) {
-      jdbcClient.runPreparedUpdate("UPDATE osee_tx_details SET author = ? where author <= 0", accountId);
    }
 }

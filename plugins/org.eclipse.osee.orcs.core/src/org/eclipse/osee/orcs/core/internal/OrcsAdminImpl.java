@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -67,12 +67,12 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public TransactionId createDatastoreAndSystemBranches() {
+   public TransactionId createDatastoreAndSystemBranches(UserToken superUser) {
       ActivityLog activityLog = orcsApi.getActivityLog();
       try {
          activityLog.setEnabled(false);
 
-         dataStoreAdmin.createDataStore();
+         dataStoreAdmin.createDataStore(superUser);
          return new CreateSystemBranches(orcsApi).create();
       } finally {
          activityLog.setEnabled(true);
@@ -81,8 +81,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
    @Override
    public void registerMissingOrcsTypeJoins() {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON,
-         "Add missing orcs type joins.");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, "Add missing orcs type joins.");
 
       addMissingJoins(tx, CoreTupleTypes.ArtifactTypeJoin, orcsApi.tokenService().getArtifactTypeJoins());
       addMissingJoins(tx, CoreTupleTypes.AttributeTypeJoin, orcsApi.tokenService().getAttributeTypeJoins());
@@ -164,10 +163,5 @@ public class OrcsAdminImpl implements OrcsAdmin {
       OseePreparedStatement batchStatement = jdbcClient.getBatchStatement(sql);
       artifacts.forEach(art -> batchStatement.addToBatch(artifactType, art));
       batchStatement.execute();
-   }
-
-   @Override
-   public void updateBootstrapUser(UserId accountId) {
-      dataStoreAdmin.updateBootstrapUser(accountId);
    }
 }

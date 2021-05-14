@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.core.internal;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL;
-import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -61,25 +60,21 @@ public class CreateDemoBranches {
    }
 
    public void populate() {
-      UserId account = DemoUsers.Joe_Smith;
       orcsApi.userService().createUsers(DemoUsers.values(), "Create Demo Users");
 
-      UserId betterAccount = orcsApi.userService().getUser();
-
+      UserId account = DemoUsers.Joe_Smith;
       createDemoProgramBranch(SAW_Bld_1, account);
-
       createDemoProgramBranch(CIS_Bld_1, account);
 
-      branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, ArtifactId.SENTINEL);
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL, account, SAW_Bld_1, ArtifactId.SENTINEL);
 
       createProductLineConfig(DemoBranches.SAW_PL, account);
 
-      Branch hardeningBranch = branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith,
-         SAW_PL, ArtifactId.SENTINEL);
+      Branch hardeningBranch =
+         branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, account, SAW_PL, ArtifactId.SENTINEL);
       orcsApi.getAccessControlService().removePermissions(hardeningBranch);
 
-      branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, DemoUsers.Joe_Smith, SAW_PL,
-         ArtifactId.SENTINEL);
+      branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, account, SAW_PL, ArtifactId.SENTINEL);
    }
 
    private void createProductLineConfig(BranchId branch, UserId account) {

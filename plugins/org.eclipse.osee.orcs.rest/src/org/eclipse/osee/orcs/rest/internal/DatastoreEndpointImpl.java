@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -63,8 +64,8 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public TransactionId initialize() {
-      TransactionId txId = adminOps.createDatastoreAndSystemBranches();
+   public TransactionId initialize(UserToken superUser) {
+      TransactionId txId = adminOps.createDatastoreAndSystemBranches(superUser);
       adminOps.createDemoBranches();
       return txId;
    }
@@ -100,10 +101,5 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    @Override
    public TransactionId createUsers(UserTokens users) {
       return userService.createUsers(users.getUsers(), "DatastoreEndpointImpl.createUsers()");
-   }
-
-   @Override
-   public void updateBootstrapUser() {
-      adminOps.updateBootstrapUser(accountId);
    }
 }
