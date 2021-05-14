@@ -112,6 +112,10 @@ public class XWidgetRendererItem implements Cloneable {
       return xOptionHandler.contains(XOption.FILL_VERTICALLY);
    }
 
+   public boolean isFillHorizontally() {
+      return xOptionHandler.contains(XOption.FILL_HORIZONTALLY);
+   }
+
    public String getXWidgetName() {
       return xWidgetName;
    }

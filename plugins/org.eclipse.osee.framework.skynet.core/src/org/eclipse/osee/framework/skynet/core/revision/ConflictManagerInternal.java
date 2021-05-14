@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -369,7 +369,7 @@ public class ConflictManagerInternal {
       return destinationBranches;
    }
 
-   private static TransactionToken getCommitTransaction(BranchToken sourceBranch, BranchId destBranch) {
+   private static TransactionToken getCommitTransaction(BranchToken sourceBranch, BranchToken destBranch) {
       TransactionToken transactionId = TransactionToken.SENTINEL;
       try (JdbcStatement stmt = ConnectionHandler.getStatement()) {
          stmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch, destBranch);

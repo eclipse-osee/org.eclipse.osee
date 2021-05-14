@@ -34,7 +34,7 @@ public class AtsProductLineEndpointTest extends AbstractRestTest {
       String path = "ats/ple/branches/";
       WebTarget target = jaxRsApi.newTargetQuery(path + "/baseline");
 
-      testActionRestCall(target, 2);
+      testActionRestCall(target, 3);
    }
 
    private JsonNode testActionRestCall(WebTarget target, int size) {

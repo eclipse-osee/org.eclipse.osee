@@ -226,7 +226,7 @@ public class AtsHealthCheckOperation {
                if (workingBranch != null && workingBranch.isValid() && !atsApi.getBranchService().getBranchType(
                   workingBranch).isBaselineBranch()) {
                   if (!atsApi.getBranchService().getBranchState(workingBranch).isCommitted()) {
-                     Collection<BranchId> branchesCommittedTo =
+                     Collection<BranchToken> branchesCommittedTo =
                         atsApi.getBranchService().getBranchesCommittedTo(teamWf);
                      if (!branchesCommittedTo.isEmpty()) {
                         results.log(artifact, "testAtsBranchManagerA",

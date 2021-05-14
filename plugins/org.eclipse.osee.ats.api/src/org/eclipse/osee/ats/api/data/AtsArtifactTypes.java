@@ -214,6 +214,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Condition)
       .zeroOrOne(DuplicatedPcrId)
       .zeroOrOne(EstimateAssumptions)
+      .any(FeatureImpactReference)
       .zeroOrOne(GitRepoName)
       .zeroOrOne(GitBranchName)
       .zeroOrOne(Information)

@@ -56,7 +56,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
                   REQUIRED_FOR_TRANSITION), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORIZONTAL_LABEL));
+            new WidgetDefinition(AtsAttributeTypes.FeatureImpactReference, "XHyperlinkFeatureDam"));
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //

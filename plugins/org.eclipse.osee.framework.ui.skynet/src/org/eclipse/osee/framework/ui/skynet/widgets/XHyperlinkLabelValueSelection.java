@@ -34,6 +34,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    Hyperlink valueHyperlinkLabel;
    protected Label valueLabel;
+   protected Composite comp;
 
    public XHyperlinkLabelValueSelection(String label) {
       super(label);
@@ -47,10 +48,10 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
-      Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(ALayout.getZeroMarginLayout(5, false));
+      comp = new Composite(parent, SWT.NONE);
+      comp.setLayout(ALayout.getZeroMarginLayout(2, false));
       if (isFillHorizontally()) {
-         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
       } else {
          comp.setLayoutData(new GridData());
       }
@@ -67,6 +68,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
       GridData gd = new GridData();
       if (isFillHorizontally()) {
          gd.grabExcessHorizontalSpace = true;
+         gd.horizontalAlignment = SWT.FILL;
       }
 
       if (isEditable()) {

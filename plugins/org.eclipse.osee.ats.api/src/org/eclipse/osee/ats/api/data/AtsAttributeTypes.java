@@ -100,6 +100,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes will be made available to the users.");
    AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", MediaType.TEXT_PLAIN, "Associated External PCR Number");
    AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", MediaType.TEXT_PLAIN, "Expanded and descriptive name.");
+   AttributeTypeArtifactId FeatureImpactReference = ats.createArtifactId(1148992834242L, "ats.Feature Impacted", MediaType.TEXT_PLAIN, "");
    AttributeTypeString GoalOrderVote = ats.createString(1152921504606847211L, "ats.Goal Order Vote", MediaType.TEXT_PLAIN, "Vote for order item belongs to within goal.");
    AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", MediaType.TEXT_PLAIN, "Reason for action being held");
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");

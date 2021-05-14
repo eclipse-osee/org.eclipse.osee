@@ -132,6 +132,8 @@ public class SwtXWidgetRenderer {
       xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
       xWidget.setNoSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_SELECT));
       xWidget.setAutoSave(xWidgetLayoutData.getXOptionHandler().contains(XOption.AUTO_SAVE));
+      xWidget.setFillHorizontally(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
+      xWidget.setFillVertically(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
 
       xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
 

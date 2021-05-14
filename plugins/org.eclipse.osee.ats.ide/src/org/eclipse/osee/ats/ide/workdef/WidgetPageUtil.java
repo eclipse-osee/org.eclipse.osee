@@ -191,6 +191,11 @@ public class WidgetPageUtil {
          } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
             data.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
          }
+         if (widgetDef.is(WidgetOption.FILL_HORIZONTALLY)) {
+            data.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+         } else if (widgetDef.is(WidgetOption.FILL_VERTICALLY)) {
+            data.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+         }
          for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
             XOption option = null;
             try {

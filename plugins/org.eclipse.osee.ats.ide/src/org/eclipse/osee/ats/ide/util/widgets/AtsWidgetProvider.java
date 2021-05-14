@@ -206,6 +206,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XCheckBoxesWithTaskGenExample();
       } else if (widgetName.equals(XCreateEscapementDemoWfXButton.WIDGET_ID)) {
          return new XCreateEscapementDemoWfXButton();
+      } else if (widgetName.equals(XHyperlinkFeatureDam.WIDGET_ID)) {
+         return new XHyperlinkFeatureDam(name);
       }
 
       return toReturn;

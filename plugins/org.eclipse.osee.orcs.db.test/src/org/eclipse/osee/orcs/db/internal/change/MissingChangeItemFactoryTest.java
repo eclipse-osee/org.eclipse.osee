@@ -234,8 +234,8 @@ public class MissingChangeItemFactoryTest {
       ArtifactId artB = ArtifactId.valueOf(2);
       ArtifactId artC = ArtifactId.valueOf(artB.getId() + 1);
       GammaId srcGamma = GammaId.valueOf(7L);
-      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, RelationTypeToken.SENTINEL, srcGamma, ModificationType.NEW,
-         artA, artB, "", ApplicabilityToken.BASE);
+      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, RelationTypeToken.SENTINEL, srcGamma,
+         ModificationType.NEW, artA, artB, "", ApplicabilityToken.BASE);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();

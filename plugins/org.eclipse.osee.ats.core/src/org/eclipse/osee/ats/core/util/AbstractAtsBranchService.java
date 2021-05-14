@@ -190,7 +190,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude) {
-      Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
+      Collection<BranchToken> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
          if (destBranch.notEqual(branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf,
             destBranch) && !isCommitOverridden(teamWf, destBranch)) {
@@ -201,10 +201,11 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public Collection<BranchId> getBranchesCommittedTo(IAtsTeamWorkflow teamWf) {
-      Set<BranchId> branches = new HashSet<>();
+   public Collection<BranchToken> getBranchesCommittedTo(IAtsTeamWorkflow teamWf) {
+      Set<BranchToken> branches = new HashSet<>();
       for (TransactionToken transId : getTransactionIds(teamWf, false)) {
-         branches.add(transId.getBranch());
+         BranchToken branch = atsApi.getBranchService().getBranch(transId.getBranch());
+         branches.add(branch);
       }
       return branches;
    }
@@ -212,7 +213,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public Collection<BranchId> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf) {
       Set<BranchId> branchesLeft = new HashSet<>();
-      Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
+      Collection<BranchToken> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId branchToCommit : getBranchesToCommitTo(teamWf)) {
          if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamWf,
             branchToCommit) && !isCommitOverridden(teamWf, branchToCommit)) {
@@ -278,7 +279,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     */
    @Override
    public boolean isBranchesAllCommitted(IAtsTeamWorkflow teamWf) {
-      Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
+      Collection<BranchToken> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
          if (!committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf, destBranch) && !isCommitOverridden(teamWf,
             destBranch)) {

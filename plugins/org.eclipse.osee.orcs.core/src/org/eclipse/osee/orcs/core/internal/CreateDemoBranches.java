@@ -71,11 +71,12 @@ public class CreateDemoBranches {
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, ArtifactId.SENTINEL);
 
+      createProductLineConfig(DemoBranches.SAW_PL, account);
+
       Branch hardeningBranch = branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith,
          SAW_PL, ArtifactId.SENTINEL);
       orcsApi.getAccessControlService().removePermissions(hardeningBranch);
 
-      createProductLineConfig(DemoBranches.SAW_PL, account);
       branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, DemoUsers.Joe_Smith, SAW_PL,
          ArtifactId.SENTINEL);
    }

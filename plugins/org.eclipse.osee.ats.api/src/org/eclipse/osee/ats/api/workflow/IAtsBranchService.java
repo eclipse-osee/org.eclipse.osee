@@ -74,7 +74,7 @@ public interface IAtsBranchService {
 
    boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude);
 
-   Collection<BranchId> getBranchesCommittedTo(IAtsTeamWorkflow teamWf);
+   Collection<BranchToken> getBranchesCommittedTo(IAtsTeamWorkflow teamWf);
 
    Collection<BranchId> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf);
 

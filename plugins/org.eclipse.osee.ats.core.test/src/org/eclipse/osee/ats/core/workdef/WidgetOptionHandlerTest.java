@@ -131,9 +131,9 @@ public class WidgetOptionHandlerTest {
    public void testToString() {
       WidgetOptionHandler handler = new WidgetOptionHandler();
       handler.add(Arrays.asList(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.FILL_HORIZONTALLY));
-      Assert.assertTrue(
-         handler.toString().equals("[ADD_DEFAULT_VALUE, FILL_HORIZONTALLY]") || handler.toString().equals(
-            "[FILL_HORIZONTALLY, ADD_DEFAULT_VALUE]"));
+      String toString = handler.toString();
+      Assert.assertTrue(toString.equals("[ADD_DEFAULT_VALUE, FILL_HORIZONTALLY]") || toString.equals(
+         "[FILL_HORIZONTALLY, ADD_DEFAULT_VALUE]"));
    }
 
 }
