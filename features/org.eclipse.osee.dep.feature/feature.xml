@@ -225,26 +225,7 @@
          id="org.eclipse.core.runtime.feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.xtext.runtime"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtend"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtend.ui"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xpand"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.xbase"
-         version="0.0.0"/>
-
+  
    <includes
          id="org.eclipse.help"
          version="0.0.0"/>
@@ -257,21 +238,7 @@
          id="org.eclipse.rcp"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.xtend.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.docs"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.ui"
-         version="0.0.0"/>
+  
 
    <includes
          id="org.eclipse.nebula.widgets.ganttchart.feature"
@@ -439,7 +406,6 @@
    
    <requires>
       <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.slf4j.api"/>
       <import plugin="org.apache.sshd.core"/>
       <import plugin="javax.xml"/>
@@ -699,14 +665,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-           
-   <plugin
-         id="org.apache.log4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         unpack="false"/>           
 
    <plugin
          id="org.codehaus.stax2"
@@ -1359,166 +1318,6 @@
          unpack="false"/>
 
    
-   <plugin
-         id="org.eclipse.ocl.pivot"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.pivot.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.pivot.uml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.common.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.ecore"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.base"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.base.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.examples.xtext.console"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.examples.debug"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.completeocl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.completeocl.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.essentialocl.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.essentialocl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.oclstdlib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.oclstdlib.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.oclinecore.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.oclinecore"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.markup.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.xtext.markup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.examples.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ocl.examples.debug.vm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 	<plugin
          id="org.eclipse.ui.genericeditor"
@@ -1527,13 +1326,7 @@
          version="0.0.0"
          unpack="false" />  
          
-   <plugin
-         id="org.eclipse.ocl.examples.debug.vm.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
+  
    <plugin
          id="org.eclipse.gmf.runtime.common.core"
          download-size="0"
@@ -1779,27 +1572,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.ocl.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-	 id="org.eclipse.ocl.examples.emf.validation.validity.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-	 id="org.eclipse.ocl.examples.emf.validation.validity"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
+  
   
    <plugin
          id="org.eclipse.m2m.qvt.oml"
@@ -1822,12 +1595,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.m2m.qvt.oml.ecore.imperativeocl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  
 
    <plugin
          id="org.eclipse.m2m.qvt.oml.emf.util"
@@ -1943,13 +1711,6 @@
 
    <plugin
          id="org.eclipse.emf.validation.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.validation.ocl"
          download-size="0"
          install-size="0"
          version="0.0.0"

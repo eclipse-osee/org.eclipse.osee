@@ -37,8 +37,6 @@
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.xtext.sdk" version="2.0.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.xtext.ui" version="2.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.compare" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>

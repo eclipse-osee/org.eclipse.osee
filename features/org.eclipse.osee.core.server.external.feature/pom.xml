@@ -26,6 +26,7 @@
 						<configuration>
 							<excludes>
 							   <plugin id="ch.qos.logback.slf4j" />
+							   <plugin id="org.antlr.runtime" />
 							   <plugin id="org.apache.cxf.cxf-core" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
 							   <plugin id="org.apache.cxf.cxf-rt-security" />

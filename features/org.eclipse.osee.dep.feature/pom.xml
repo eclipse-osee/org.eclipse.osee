@@ -29,6 +29,9 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.apache.xerces" />
+								<plugin id="org.eclipse.egit" />
+								<plugin id="org.eclipse.oss.ajax" />
+								<plugin id="org.apache.aries.proxy" />
 								<plugin id="org.apache.cxf.cxf-core" />
 								<plugin id="org.apache.cxf.cxf-rt-security" />
 								<plugin id="org.apache.cxf.cxf-rt-transports-http" />

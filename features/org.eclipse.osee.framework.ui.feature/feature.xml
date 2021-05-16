@@ -57,15 +57,10 @@
       <import plugin="org.eclipse.zest.layouts"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.osee.ote.define"/>
-      <import plugin="org.eclipse.xtext.ui"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.shared"/>
-      <import plugin="org.eclipse.xtext.builder"/>
       <import plugin="org.antlr.runtime"/>
-      <import plugin="org.apache.log4j"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>
-      <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.swt"/>
