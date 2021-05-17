@@ -26,15 +26,19 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 
 /**
@@ -89,7 +93,7 @@ public class XList extends GenericXWidget {
          this.xmlValue = xmlValue;
       }
    }
-
+   private ScrolledComposite scrolledComposite;
    private List listList;
    private Menu listMenu;
    private Composite parent;
@@ -168,8 +172,10 @@ public class XList extends GenericXWidget {
       }
 
       createControlsAfterLabel(parent, horizontalSpan);
-
-      listList = new List(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
+      scrolledComposite = new ScrolledComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL);
+      scrolledComposite.setExpandHorizontal(true);
+      scrolledComposite.setExpandVertical(true);
+      listList = new List(scrolledComposite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
       String array[] = items.keySet().toArray(new String[items.size()]);
       java.util.Arrays.sort(array);
       listList.setMenu(listMenu);
@@ -183,11 +189,19 @@ public class XList extends GenericXWidget {
       Rectangle trim = listList.computeTrim(0, 0, 0, listHeight);
       gridData5.heightHint = trim.height;
       gridData5.grabExcessVerticalSpace = true;
-      listList.setLayoutData(gridData5);
       listList.addSelectionListener(listListener);
       updateListWidget();
       listList.setEnabled(isEditable());
-
+      scrolledComposite.setContent(listList);
+      scrolledComposite.setLayoutData(gridData5);
+      scrolledComposite.setEnabled(true);
+      scrolledComposite.addListener(SWT.Resize, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            final Point size = listList.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+            scrolledComposite.setMinSize(size);
+         }
+      });
    }
 
    @Override
