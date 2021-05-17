@@ -36,6 +36,7 @@ public class ApplicabilityBlock {
    private String applicabilityExpression;
    private String optionalEndExpression;
    private boolean isInTable;
+   private boolean commentNonApplicableBlocks;
 
    private String beforeElseText;
    private String afterElseText;
@@ -54,6 +55,7 @@ public class ApplicabilityBlock {
       outerExpressionOperators = new ArrayList<>();
       fileTypeApplicabilityData = new FileTypeApplicabilityData();
       isInTable = false;
+      commentNonApplicableBlocks = false;
 
       startInsertIndex = Integer.MAX_VALUE;
       startTextIndex = Integer.MAX_VALUE;
@@ -191,5 +193,13 @@ public class ApplicabilityBlock {
 
    public void setFileTypeApplicabilityData(FileTypeApplicabilityData fileTypeApplicabilityData) {
       this.fileTypeApplicabilityData = fileTypeApplicabilityData;
+   }
+
+   public boolean getCommentNonApplicableBlocks() {
+      return commentNonApplicableBlocks;
+   }
+
+   public void setCommentNonApplicableBlocks(boolean commentNonApplicableBlocks) {
+      this.commentNonApplicableBlocks = commentNonApplicableBlocks;
    }
 }

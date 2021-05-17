@@ -79,8 +79,6 @@ public class BlockApplicabilityOps {
    private final List<FeatureDefinition> featureDefinition;
    private final Map<String, List<String>> viewApplicabilitiesMap;
 
-   private boolean commentNonApplicableBlocks = false;
-
    public BlockApplicabilityOps(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactToken view) {
       this.orcsApi = orcsApi;
       this.logger = logger;
@@ -102,9 +100,9 @@ public class BlockApplicabilityOps {
 
    public String applyApplicabilityToFiles(boolean commentNonApplicableBlocks, String sourcePath, String stagePath) throws OseeCoreException {
       Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap();
-      this.commentNonApplicableBlocks = commentNonApplicableBlocks;
 
-      BlockApplicabilityRule rule = new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap);
+      BlockApplicabilityRule rule =
+         new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap, commentNonApplicableBlocks);
 
       StringBuilder filePattern = new StringBuilder(".*\\.(");
       filePattern.append(Collections.toString("|", fileTypeApplicabilityDataMap.keySet()));
@@ -146,7 +144,7 @@ public class BlockApplicabilityOps {
 
          if (type.equals(ApplicabilityType.Feature)) {
             toInsert = getValidFeatureContent(insideText, applic.isInTable(), applic.getFileTypeApplicabilityData(),
-               parser.getIdValuesMap(), parser.getOperators());
+               parser.getIdValuesMap(), parser.getOperators(), applic.getCommentNonApplicableBlocks());
          } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
             toInsert = getValidConfigurationContent(branch, view, type, insideText, parser.getIdValuesMap());
          } else if (type.equals(ApplicabilityType.ConfigurationGroup) || type.equals(
@@ -162,7 +160,7 @@ public class BlockApplicabilityOps {
       return toInsert;
    }
 
-   private String getValidFeatureContent(String fullText, boolean isInTable, FileTypeApplicabilityData fileTypeApplicabilityData, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
+   private String getValidFeatureContent(String fullText, boolean isInTable, FileTypeApplicabilityData fileTypeApplicabilityData, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators, boolean commentNonApplicableBlocks) {
 
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
@@ -405,9 +403,14 @@ public class BlockApplicabilityOps {
       try {
          while ((line = reader.readLine()) != null) {
             if (!line.isEmpty()) {
-               strB.append(commentPrefix);
-               strB.append(line);
-               strB.append(commentSuffix);
+               if ((!commentPrefix.isEmpty() && !line.contains(
+                  commentPrefix)) || (!commentSuffix.isEmpty() && !line.contains(commentSuffix))) {
+                  strB.append(commentPrefix);
+                  strB.append(line);
+                  strB.append(commentSuffix);
+               } else {
+                  strB.append(line);
+               }
             }
             strB.append(newLine);
          }

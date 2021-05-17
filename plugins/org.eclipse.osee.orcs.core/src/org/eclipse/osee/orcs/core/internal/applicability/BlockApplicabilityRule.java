@@ -46,13 +46,16 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class BlockApplicabilityRule extends Rule {
    private final BlockApplicabilityOps orcsApplicability;
    private final Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap;
+   private final boolean commentNonApplicableBlocks;
+   private boolean isConfig = false;
    private final Stack<ApplicabilityBlock> applicBlocks = new Stack<>();
 
-   public BlockApplicabilityRule(BlockApplicabilityOps orcsApplicability, Map<String, FileTypeApplicabilityData> fileTypeApplicabilityData) {
+   public BlockApplicabilityRule(BlockApplicabilityOps orcsApplicability, Map<String, FileTypeApplicabilityData> fileTypeApplicabilityData, boolean commentNonApplicableBlocks) {
       super(null); // don't change extension on resulting file (i.e. overwrite the original file)
 
       this.orcsApplicability = orcsApplicability;
       this.fileTypeApplicabilityDataMap = fileTypeApplicabilityData;
+      this.commentNonApplicableBlocks = commentNonApplicableBlocks;
    }
 
    /**
@@ -180,6 +183,7 @@ public class BlockApplicabilityRule extends Rule {
    private int startApplicabilityBlock(String beginFeature, Matcher matcher, FileTypeApplicabilityData fileTypeApplicabilityData) {
       ApplicabilityBlock applicStart = new ApplicabilityBlock(ApplicabilityType.Feature);
       applicStart.setFileTypeApplicabilityData(fileTypeApplicabilityData);
+      applicStart.setCommentNonApplicableBlocks(!isConfig && commentNonApplicableBlocks);
       applicStart.setApplicabilityExpression(matcher.group(BlockApplicabilityOps.beginFeatureTagMatcherGroup));
       applicStart.setStartInsertIndex(matcher.start());
       applicStart.setStartTextIndex(matcher.end());
@@ -195,8 +199,15 @@ public class BlockApplicabilityRule extends Rule {
       ApplicabilityBlock applicBlock = applicBlocks.pop();
       applicBlock.setEndTextIndex(matcher.start());
       applicBlock.setEndInsertIndex(matcher.end());
-      applicBlock.setInsideText(
-         changeSet.subSequence(applicBlock.getStartTextIndex(), applicBlock.getEndTextIndex()).toString());
+
+      String insideText;
+      if (!isConfig && commentNonApplicableBlocks) {
+         insideText =
+            changeSet.subSequence(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex()).toString();
+      } else {
+         insideText = changeSet.subSequence(applicBlock.getStartTextIndex(), applicBlock.getEndTextIndex()).toString();
+      }
+      applicBlock.setInsideText(insideText);
       String replacementText = orcsApplicability.evaluateApplicabilityExpression(applicBlock);
       changeSet.replace(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex(), replacementText);
       return matcher.end();
@@ -204,8 +215,9 @@ public class BlockApplicabilityRule extends Rule {
 
    /**
     * This method checks the children of a directory for a BlockApplicabilityConfig text file. If found, it will process
-    * that file to find files that have applicability applied to them. Each entry into the text file should follow a
-    * syntax of /FileName.ext/.
+    * that file to find files that have applicability applied to them. The processing of this file relies on the only
+    * text being left are applicable file names. If commenting is turned on, the isConfig boolean is used to fix that
+    * and make sure no commenting is enabled during that file processing.
     */
    private Set<String> processConfig(List<File> children, List<File> stagedChildren, File stageFile) {
       Set<String> filesToExclude = new HashSet<>();
@@ -234,7 +246,9 @@ public class BlockApplicabilityRule extends Rule {
                // Using existing BlockApplicability logic to process the file
                File stagedConfig = new File(stageFile, configFile.getName());
                inputFile = configFile;
+               isConfig = true;
                process(configFile, stagedConfig);
+               isConfig = false;
 
                // Reading the new staged config file, any names that are left are included in the publish and removed from the list
 
