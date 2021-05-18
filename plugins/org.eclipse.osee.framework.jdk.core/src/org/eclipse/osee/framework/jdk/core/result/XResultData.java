@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -389,6 +390,12 @@ public class XResultData {
 
    public void setTxId(String txId) {
       this.txId = txId;
+   }
+
+   public void exceptionIfErrors(String title) {
+      if (isErrors()) {
+         throw new OseeCoreException(title + " - " + toString());
+      }
    }
 
 }

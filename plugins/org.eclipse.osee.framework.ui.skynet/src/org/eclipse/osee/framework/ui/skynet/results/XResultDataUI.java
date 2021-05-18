@@ -241,4 +241,15 @@ public class XResultDataUI {
       }
    }
 
+   /**
+    * @return true if errors found
+    */
+   public static boolean reportIfErrors(XResultData rd, String name) {
+      if (rd.isErrors()) {
+         report(rd, name);
+         return true;
+      }
+      return false;
+   }
+
 }

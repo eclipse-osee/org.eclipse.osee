@@ -27,12 +27,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -101,9 +103,13 @@ public class DeleteAction extends Action {
                Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
                SkynetTransaction transaction =
                   TransactionManager.createTransaction(artifactsArray[0].getBranch(), "Delete Artifact Action");
-               ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
-               transaction.execute();
-
+               XResultData rd =
+                  ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), artifactsArray);
+               if (XResultDataUI.reportIfErrors(rd, getName())) {
+                  transaction.cancel();
+               } else {
+                  transaction.execute();
+               }
                return toReturn;
             }
          };

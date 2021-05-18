@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -47,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -127,7 +129,12 @@ public class AtsDeleteManager {
                } else if (!allDeleteArts.isEmpty()) {
                   SkynetTransaction transaction =
                      TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Delete ATS Objects");
-                  ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, allDeleteArts);
+                  XResultData rd = ArtifactPersistenceManager.deleteArtifactCollection(transaction, false,
+                     new XResultData(), allDeleteArts);
+                  if (XResultDataUI.reportIfErrors(rd, "Exception " + getName())) {
+                     transaction.cancel();
+                     return;
+                  }
                   transaction.execute();
                }
                if (deleteOptions.contains(DeleteOption.Prompt)) {
@@ -159,9 +166,8 @@ public class AtsDeleteManager {
             atsDelete((AbstractWorkflowArtifact) deleteArt, relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
                if (loopArt.notEqual(deleteArt)) {
-                  delBuilder.append(
-                     String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]", loopArt.getArtifactTypeName(),
-                        AtsApiService.get().getAtsId(loopArt), loopArt.getName()) + "\n");
+                  delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
+                     loopArt.getArtifactTypeName(), AtsApiService.get().getAtsId(loopArt), loopArt.getName()) + "\n");
                }
             }
          }

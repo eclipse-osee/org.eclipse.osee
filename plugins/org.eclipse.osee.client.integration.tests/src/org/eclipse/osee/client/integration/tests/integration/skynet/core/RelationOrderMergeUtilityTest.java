@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderMergeUtility;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -113,8 +115,13 @@ public class RelationOrderMergeUtilityTest {
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4], sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);
       srcParent.persist(getClass().getSimpleName() + ".testOrderMerge()_2");
-      RelationManager.deleteRelationsAll(destChildren[0], true,
-         TransactionManager.createTransaction(destBranch, "Delete the relations"));
+      SkynetTransaction transaction = TransactionManager.createTransaction(destBranch, "Delete Relations");
+      XResultData rd = RelationManager.deleteRelationsAll(destChildren[0], true, transaction, new XResultData());
+      if (XResultDataUI.reportIfErrors(rd, "Delete Relations")) {
+         transaction.cancel();
+         return;
+      }
+      transaction.execute();
 
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(destParent, srcParent);
       Assert.assertNotNull(mergedOrder);

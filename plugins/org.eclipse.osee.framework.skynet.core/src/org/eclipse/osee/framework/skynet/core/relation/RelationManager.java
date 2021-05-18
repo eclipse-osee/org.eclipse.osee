@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -447,7 +448,7 @@ public class RelationManager {
       Conditions.checkNotNull(relation, "relationLink",
          "A relation link of type [%s] does exist in the cache between a artifact %s and b artifact %s", relationType,
          artifactA.toStringWithId(), artifactB.toStringWithId());
-      ArtifactPersistenceManager.performDeleteRelationChecks(artifactA, relationType);
+      ArtifactPersistenceManager.performDeleteRelationChecks(artifactA, relationType, new XResultData());
       relation.delete(true);
 
       updateOrderListOnDelete(artifactA, relationType, RelationSide.SIDE_B,
@@ -456,7 +457,7 @@ public class RelationManager {
          getRelatedArtifacts(artifactB, relationType, RelationSide.SIDE_A));
    }
 
-   public static void deleteRelationsAll(Artifact artifact, boolean reorderRelations, SkynetTransaction transaction) {
+   public static XResultData deleteRelationsAll(Artifact artifact, boolean reorderRelations, SkynetTransaction transaction, XResultData rd) {
       if (artifact.isHistorical()) {
          throw new OseeCoreException(
             "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
@@ -475,6 +476,7 @@ public class RelationManager {
          updateOrderListOnDelete(artifact, type.getFirst(), type.getSecond(),
             getRelatedArtifacts(artifact, type.getFirst(), type.getSecond()));
       }
+      return rd;
    }
 
    public static void deleteRelations(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {

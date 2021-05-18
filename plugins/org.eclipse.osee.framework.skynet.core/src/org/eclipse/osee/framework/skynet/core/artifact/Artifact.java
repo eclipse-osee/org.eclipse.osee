@@ -68,6 +68,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -642,6 +643,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return attribute;
    }
 
+   @SuppressWarnings("unchecked")
    public <T> List<T> getEnumAttributeValues(AttributeTypeToken attributeType) {
       List<T> attributeValues = new ArrayList<T>();
       if (attributeType.isEnumerated()) {
@@ -1318,15 +1320,18 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final void delete() {
-      ArtifactPersistenceManager.deleteArtifact(null, false, this);
+      XResultData rd = ArtifactPersistenceManager.deleteArtifact(null, false, new XResultData(), this);
+      rd.exceptionIfErrors("Exception deleting artifact");
    }
 
    public final void deleteAndPersist(SkynetTransaction transaction, boolean overrideChecks) {
-      ArtifactPersistenceManager.deleteArtifact(transaction, overrideChecks, this);
+      XResultData rd = ArtifactPersistenceManager.deleteArtifact(transaction, overrideChecks, new XResultData(), this);
+      rd.exceptionIfErrors("Exception deleting artifact");
    }
 
    public final void deleteAndPersist(SkynetTransaction transaction) {
-      ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
+      XResultData rd = ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), this);
+      rd.exceptionIfErrors("Exception deleting artifact");
    }
 
    /**
@@ -1411,13 +1416,16 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final void deleteRelation(RelationTypeSide relationTypeSide, Artifact artifact) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      ArtifactPersistenceManager.performDeleteRelationChecks(artifact, relationTypeSide);
+      XResultData rd =
+         ArtifactPersistenceManager.performDeleteRelationChecks(artifact, relationTypeSide, new XResultData());
+      rd.exceptionIfErrors("deleteRelation");
       RelationManager.deleteRelation(relationTypeSide, sides.getFirst(), sides.getSecond());
    }
 
    public final void deleteRelations(RelationTypeSide relationSide) {
       for (Artifact art : getRelatedArtifacts(relationSide)) {
-         ArtifactPersistenceManager.performDeleteRelationChecks(art, relationSide);
+         XResultData rd = ArtifactPersistenceManager.performDeleteRelationChecks(art, relationSide, new XResultData());
+         rd.exceptionIfErrors("deleteRelation");
          deleteRelation(relationSide, art);
       }
    }

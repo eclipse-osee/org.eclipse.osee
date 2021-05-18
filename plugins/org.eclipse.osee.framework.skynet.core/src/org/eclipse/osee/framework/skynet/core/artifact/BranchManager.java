@@ -92,6 +92,7 @@ public final class BranchManager {
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranchUuid";
    public static final String COMMIT_COMMENT = "Commit Branch ";
    private static final String SELECT_BRANCH_BY_NAME = "select * from osee_branch where branch_name = ?";
+   private static final String SELECT_BRANCH_BY_ASSOC_ART = "select * from osee_branch where associated_art_id = ?";
    private static BranchToken lastBranch;
 
    private BranchManager() {
@@ -141,6 +142,13 @@ public final class BranchManager {
          throw new MultipleBranchesExist("More than 1 branch exists with the name: [%s]", branchName);
       }
       return branches.iterator().next();
+   }
+
+   public static Collection<BranchToken> getBranchesByAssocArt(ArtifactToken art) {
+      Collection<BranchToken> branches = new ArrayList<>(1);
+      ConnectionHandler.getJdbcClient().runQuery(stmt -> branches.add(getBranchToken(stmt.getLong("branch_id"))),
+         SELECT_BRANCH_BY_ASSOC_ART, art.getIdString());
+      return branches;
    }
 
    public static Collection<BranchToken> getBranchesByName(String branchName) {
@@ -768,4 +776,3 @@ public final class BranchManager {
    }
 
 }
-

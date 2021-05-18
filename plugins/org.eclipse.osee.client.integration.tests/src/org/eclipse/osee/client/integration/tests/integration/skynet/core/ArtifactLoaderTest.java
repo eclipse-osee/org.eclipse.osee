@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -68,7 +69,7 @@ public class ArtifactLoaderTest {
    public void tearDown() throws Exception {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, testInfo.getQualifiedTestName());
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch);
-      ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, artifacts);
+      ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, new XResultData(), artifacts);
       transaction.execute();
    }
 

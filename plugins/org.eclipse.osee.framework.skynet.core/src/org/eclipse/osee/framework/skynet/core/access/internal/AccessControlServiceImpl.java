@@ -25,14 +25,12 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -85,24 +83,16 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
    @Override
    public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
       super.isDeleteable(artifacts, results);
-
       // Check for associated artifact
       for (ArtifactToken art : artifacts) {
+         // Branches can only be associated with artifacts on common
          if (art.isOnBranch(CoreBranches.COMMON)) {
-            for (BranchToken branch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.BASELINE,
-               BranchType.MERGE, BranchType.PORT, BranchType.WORKING, BranchType.SYSTEM_ROOT)) {
-               if (BranchManager.getState(branch).isDeleted()) {
-                  continue;
-               }
-               ArtifactToken assocArt = null;
-               try {
-                  assocArt = BranchManager.getAssociatedArtifact(branch);
-               } catch (ArtifactDoesNotExist ex) {
-                  // do nothing
-               }
-               if (art.equals(assocArt)) {
-                  results.errorf("Cannot delete artId %s because it is the associated artifact of branch %s\n",
-                     assocArt.toStringWithId(), branch.toStringWithId());
+            Collection<BranchToken> branches = BranchManager.getBranchesByAssocArt(art);
+            for (BranchToken branchTok : branches) {
+               BranchState state = BranchManager.getState(branchTok);
+               if (state.isCreated() || state.isModified() || state.isCommitted()) {
+                  results.errorf("Cannot delete artId %s because it is the associated artifact of branch(es) %s\n",
+                     art.toStringWithId(), branches.toString());
                }
             }
          }

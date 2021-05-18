@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -101,7 +99,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return allArtifacts;
    }
 
-   private IStatus checkActions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkActions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       for (ArtifactToken art : artifacts) {
          if (!isAtsAdmin && isWorkflowOrAction(art) && !isTask(art)) {
             results.errorf("Deletion of [%s] is only permitted by ATS Admin; %s invalid",
@@ -113,7 +111,6 @@ public class AtsArtifactChecks implements ArtifactCheck {
                atsApi.getStoreService().getArtifactTypeName(art), art.toStringWithId(), error);
          }
       }
-      return Status.OK_STATUS;
    }
 
    private String isWorkflowOrActionPermittedByAnyone(AtsApi atsApi, ArtifactToken art, Collection<ArtifactToken> allArtifacts) {
@@ -127,8 +124,17 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
       if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
-         if (!allArtifacts.contains(teamWf.getParentAction().getStoreObject())) {
-            return String.format("Can't delete workflow %s without deleting action %s, use ATS World Editor",
+         IAtsAction action = teamWf.getParentAction();
+         Collection<IAtsTeamWorkflow> children = action.getTeamWorkflows();
+         boolean allInList = true;
+         for (IAtsTeamWorkflow child : children) {
+            if (!allArtifacts.contains(child.getStoreObject())) {
+               allInList = false;
+               break;
+            }
+         }
+         if (allInList && !allArtifacts.contains(action.getStoreObject())) {
+            return String.format("Can't delete all child workflow(s) without deleting action %s, use ATS World Editor",
                teamWf.toStringWithId(), teamWf.getParentAction().getStoreObject().toStringWithId());
          }
       }
@@ -143,7 +149,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return art instanceof IAtsTask;
    }
 
-   private IStatus checkActionableItems(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkActionableItems(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       Set<ArtifactToken> aiIds = getActionableItemIdsWithRecurse(new HashSet<>(), artifacts, atsApi, results);
       if (!aiIds.isEmpty()) {
          List<ArtifactToken> teamWfsRelatedToAis = atsApi.getQueryService().getArtifactListFromTypeAndAttribute(
@@ -157,7 +163,6 @@ public class AtsArtifactChecks implements ArtifactCheck {
             results.error("Deletion of Actionable Items is only permitted by ATS Admin.");
          }
       }
-      return Status.OK_STATUS;
    }
 
    private Set<ArtifactToken> getActionableItemIdsWithRecurse(HashSet<ArtifactToken> aiIds, Collection<ArtifactToken> artifacts, AtsApi atsApi, XResultData results) {
@@ -176,7 +181,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return aiIds;
    }
 
-   private IStatus checkTeamDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkTeamDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       List<String> ids = new ArrayList<>();
       for (ArtifactToken art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
@@ -195,10 +200,9 @@ public class AtsArtifactChecks implements ArtifactCheck {
             results.error("Deletion of Team Definitions is only permitted by ATS Admin.");
          }
       }
-      return Status.OK_STATUS;
    }
 
-   private IStatus checkWorkPackages(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkWorkPackages(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       List<ArtifactToken> ids = new ArrayList<>();
       for (ArtifactToken art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
@@ -214,10 +218,9 @@ public class AtsArtifactChecks implements ArtifactCheck {
                ids);
          }
       }
-      return Status.OK_STATUS;
    }
 
-   private IStatus checkAtsWorkDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkAtsWorkDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       for (ArtifactToken art : artifacts) {
          // legacy work definition check (remove after 26.0)
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
@@ -248,10 +251,9 @@ public class AtsArtifactChecks implements ArtifactCheck {
          }
 
       }
-      return Status.OK_STATUS;
    }
 
-   private IStatus checkUsers(AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkUsers(AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       Set<UserToken> users = new HashSet<>();
       for (ArtifactId art : artifacts) {
          if (art instanceof UserToken) {
@@ -267,7 +269,6 @@ public class AtsArtifactChecks implements ArtifactCheck {
                user.getName(), user.getUserId());
          }
       }
-      return Status.OK_STATUS;
    }
 
    public static void setDeletionChecksEnabled(boolean deletionChecksEnabled) {
