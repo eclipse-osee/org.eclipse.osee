@@ -58,4 +58,9 @@ public class ImportEndpointImpl implements ImportEndpoint {
    public XResultData postProcessBranch(BranchId branch) {
       return null;
    }
+
+   @Override
+   public XResultData postProcessBranchLinks(BranchId branch, ArtifactId parent) {
+      return null;
+   }
 }

@@ -66,4 +66,9 @@ public interface ImportEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    XResultData postProcessBranch(@PathParam("branch") BranchId branch);
+
+   @POST
+   @Path("postProcessBranchLinks/{branch}/parent/{parent}")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData postProcessBranchLinks(@PathParam("branch") BranchId branch, @PathParam("parent") ArtifactId parent);
 }
