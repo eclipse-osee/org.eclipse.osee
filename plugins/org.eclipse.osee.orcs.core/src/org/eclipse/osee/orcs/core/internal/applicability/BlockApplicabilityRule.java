@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -167,10 +168,33 @@ public class BlockApplicabilityRule extends Rule {
       while (matcherIndex < seq.length() && matcher.find(matcherIndex)) {
          String beginFeature = matcher.group(BlockApplicabilityOps.beginFeatureCommentMatcherGroup);
          String endFeature = matcher.group(BlockApplicabilityOps.endFeatureCommentMatcherGroup);
+         String beginConfig = matcher.group(BlockApplicabilityOps.beginConfigCommentMatcherGroup);
+         String endConfig = matcher.group(BlockApplicabilityOps.endConfigCommentMatcherGroup);
+         String beginConfigGrp = matcher.group(BlockApplicabilityOps.beginConfigGrpCommentMatcherGroup);
+         String endConfigGrp = matcher.group(BlockApplicabilityOps.endConfigGrpCommentMatcherGroup);
+         String applicabilityExpression;
 
          if (beginFeature != null) {
-            matcherIndex = startApplicabilityBlock(beginFeature, matcher, fileTypeApplicabilityData);
-         } else if (endFeature != null) {
+            applicabilityExpression = matcher.group(BlockApplicabilityOps.beginFeatureTagMatcherGroup);
+            matcherIndex = startApplicabilityBlock(ApplicabilityType.Feature, matcher, beginFeature,
+               applicabilityExpression, fileTypeApplicabilityData);
+         } else if (beginConfig != null) {
+            applicabilityExpression = matcher.group(BlockApplicabilityOps.beginConfigTagMatcherGroup);
+            ApplicabilityType applicabilityType = ApplicabilityType.Configuration;
+            if (beginConfig.contains("Not")) {
+               applicabilityType = ApplicabilityType.NotConfiguration;
+            }
+            matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfigGrp, applicabilityExpression,
+               fileTypeApplicabilityData);
+         } else if (beginConfigGrp != null) {
+            applicabilityExpression = matcher.group(BlockApplicabilityOps.beginConfigGrpTagMatcherGroup);
+            ApplicabilityType applicabilityType = ApplicabilityType.ConfigurationGroup;
+            if (beginConfigGrp.contains("Not")) {
+               applicabilityType = ApplicabilityType.NotConfigurationGroup;
+            }
+            matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfigGrp, applicabilityExpression,
+               fileTypeApplicabilityData);
+         } else if (endFeature != null || endConfig != null || endConfigGrp != null) {
             matcherIndex = finishApplicabilityBlock(changeSet, matcher);
             ruleWasApplicable = true;
          } else {
@@ -180,37 +204,98 @@ public class BlockApplicabilityRule extends Rule {
       return changeSet;
    }
 
-   private int startApplicabilityBlock(String beginFeature, Matcher matcher, FileTypeApplicabilityData fileTypeApplicabilityData) {
-      ApplicabilityBlock applicStart = new ApplicabilityBlock(ApplicabilityType.Feature);
+   private int startApplicabilityBlock(ApplicabilityType applicabilityType, Matcher matcher, String beginTag, String applicabilityExpression, FileTypeApplicabilityData fileTypeApplicabilityData) {
+      ApplicabilityBlock applicStart = new ApplicabilityBlock(applicabilityType);
       applicStart.setFileTypeApplicabilityData(fileTypeApplicabilityData);
-      applicStart.setCommentNonApplicableBlocks(!isConfig && commentNonApplicableBlocks);
-      applicStart.setApplicabilityExpression(matcher.group(BlockApplicabilityOps.beginFeatureTagMatcherGroup));
+      applicStart.setApplicabilityExpression(applicabilityExpression);
       applicStart.setStartInsertIndex(matcher.start());
       applicStart.setStartTextIndex(matcher.end());
-      applicStart.setBeginTag(beginFeature);
+      applicStart.setBeginTag(beginTag);
       applicBlocks.add(applicStart);
       return matcher.end();
    }
 
    private int finishApplicabilityBlock(ChangeSet changeSet, Matcher matcher) {
       if (applicBlocks.isEmpty()) {
-         throw new OseeCoreException("An End Feature tag was found before a beginning Feature tag");
+         throw new OseeCoreException("An Applicability End tag was found before a beginning tag");
       }
       ApplicabilityBlock applicBlock = applicBlocks.pop();
       applicBlock.setEndTextIndex(matcher.start());
       applicBlock.setEndInsertIndex(matcher.end());
 
-      String insideText;
-      if (!isConfig && commentNonApplicableBlocks) {
-         insideText =
-            changeSet.subSequence(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex()).toString();
-      } else {
-         insideText = changeSet.subSequence(applicBlock.getStartTextIndex(), applicBlock.getEndTextIndex()).toString();
-      }
+      String insideText =
+         changeSet.subSequence(applicBlock.getStartTextIndex(), applicBlock.getEndTextIndex()).toString();
       applicBlock.setInsideText(insideText);
+
       String replacementText = orcsApplicability.evaluateApplicabilityExpression(applicBlock);
+      /**
+       * BlockApplicabilityOps currently removes else statements using WordCoreUtil regex, for the BAT this leaves
+       * behind the comment portion of the else. The below line is used to remove those lines along with any other
+       * potential leftover empty comments.
+       */
+      replacementText = replacementText.replaceAll(
+         applicBlock.getFileTypeApplicabilityData().getCommentPrefix() + BlockApplicabilityOps.SPACES, "");
+
+      if (!isConfig && commentNonApplicableBlocks) {
+         /**
+          * To apply comments to the block, first the entire block is commented which includes the feature tags. Then,
+          * the replacement text that was returned has comments applied to it that way there is text to match within the
+          * full text block. Finally, using those strings, a replaceAll is performed to substitute in the applicable
+          * uncommented text.
+          */
+         String fullText =
+            changeSet.subSequence(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex()).toString();
+         fullText = getCommentedString(fullText, applicBlock.getFileTypeApplicabilityData().getCommentPrefix(),
+            applicBlock.getFileTypeApplicabilityData().getCommentSuffix());
+         String commentedReplacementText =
+            getCommentedString(replacementText, applicBlock.getFileTypeApplicabilityData().getCommentPrefix(),
+               applicBlock.getFileTypeApplicabilityData().getCommentSuffix());
+         replacementText = fullText.replaceAll(commentedReplacementText, replacementText);
+      }
+
       changeSet.replace(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex(), replacementText);
       return matcher.end();
+   }
+
+   private String getCommentedString(String text, String commentPrefix, String commentSuffix) {
+      BufferedReader reader = new BufferedReader(new StringReader(text));
+      StringBuilder strB = new StringBuilder();
+      String line;
+      String newLine = getNewLineFromFile(text);
+      try {
+         while ((line = reader.readLine()) != null) {
+            if (!line.isEmpty()) {
+               if ((!commentPrefix.isEmpty() && !line.contains(
+                  commentPrefix)) || (!commentSuffix.isEmpty() && !line.contains(commentSuffix))) {
+                  strB.append(commentPrefix);
+                  strB.append(line);
+                  strB.append(commentSuffix);
+               } else {
+                  strB.append(line);
+               }
+            }
+            strB.append(newLine);
+         }
+         reader.close();
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+
+      return strB.toString();
+   }
+
+   /**
+    * Using the given text, this finds the first instance of a newline character and returns that to be replaced back
+    * into the file. This is to protect from different new line characters styles between operating systems. The style
+    * that comes in is the style that goes out.
+    */
+   private String getNewLineFromFile(String text) {
+      Matcher matcher = Pattern.compile(BlockApplicabilityOps.SINGLE_NEW_LINE).matcher(text);
+      if (matcher.find()) {
+         return matcher.group();
+      } else {
+         return System.lineSeparator();
+      }
    }
 
    /**

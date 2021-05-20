@@ -14,10 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.applicability;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -64,12 +61,26 @@ public class BlockApplicabilityOps {
    public static final String SINGLE_NEW_LINE = "\\r\\n|[\\n\\r]";
    public static final String BEGINFEATURE = " ?(Feature ?(\\[(.*?)\\])) ?";
    public static final String ENDFEATURE = " ?(End Feature ?((\\[.*?\\]))?) ?";
+   public static final String BEGINCONFIG = " ?(Configuration( Not)? ?(\\[(.*?)\\])) ?";
+   public static final String ENDCONFIG = " ?(End Configuration ?((\\[.*?\\]))?) ?";
+   public static final String BEGINCONFIGGRP = " ?(ConfigurationGroup( Not)? ?(\\[(.*?)\\])) ?";
+   public static final String ENDCONFIGGRP = " ?(End ConfigurationGroup ?((\\[.*?\\]))?) ?";
    public static final String COMMENT_EXTRA_CHARS = SPACES + "(" + SINGLE_NEW_LINE + ")?";
 
    public static final int beginFeatureCommentMatcherGroup = 1;
    public static final int beginFeatureTagMatcherGroup = 2;
    public static final int endFeatureCommentMatcherGroup = 6;
    public static final int endFeatureTagMatcherGroup = 7;
+
+   public static final int beginConfigCommentMatcherGroup = 11;
+   public static final int beginConfigTagMatcherGroup = 12;
+   public static final int endConfigCommentMatcherGroup = 17;
+   public static final int endConfigTagMatcherGroup = 18;
+
+   public static final int beginConfigGrpCommentMatcherGroup = 22;
+   public static final int beginConfigGrpTagMatcherGroup = 23;
+   public static final int endConfigGrpCommentMatcherGroup = 28;
+   public static final int endConfigGrpTagMatcherGroup = 29;
 
    private final OrcsApi orcsApi;
    private final Log logger;
@@ -143,8 +154,8 @@ public class BlockApplicabilityOps {
          ApplicabilityType type = applic.getType();
 
          if (type.equals(ApplicabilityType.Feature)) {
-            toInsert = getValidFeatureContent(insideText, applic.isInTable(), applic.getFileTypeApplicabilityData(),
-               parser.getIdValuesMap(), parser.getOperators(), applic.getCommentNonApplicableBlocks());
+            toInsert =
+               getValidFeatureContent(insideText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
          } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
             toInsert = getValidConfigurationContent(branch, view, type, insideText, parser.getIdValuesMap());
          } else if (type.equals(ApplicabilityType.ConfigurationGroup) || type.equals(
@@ -160,7 +171,7 @@ public class BlockApplicabilityOps {
       return toInsert;
    }
 
-   private String getValidFeatureContent(String fullText, boolean isInTable, FileTypeApplicabilityData fileTypeApplicabilityData, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators, boolean commentNonApplicableBlocks) {
+   private String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
 
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
@@ -198,15 +209,7 @@ public class BlockApplicabilityOps {
       StringBuilder toReturn = new StringBuilder();
       if (result) {
          toReturn.append(beginningText);
-         if (commentNonApplicableBlocks && !elseText.isEmpty()) {
-            toReturn.append(getCommentedString(elseText, fileTypeApplicabilityData.getCommentPrefix(),
-               fileTypeApplicabilityData.getCommentSuffix()));
-         }
       } else {
-         if (commentNonApplicableBlocks && !beginningText.isEmpty()) {
-            toReturn.append(getCommentedString(beginningText, fileTypeApplicabilityData.getCommentPrefix(),
-               fileTypeApplicabilityData.getCommentSuffix()));
-         }
          toReturn.append(elseText);
       }
 
@@ -395,47 +398,6 @@ public class BlockApplicabilityOps {
       return toReturn;
    }
 
-   private String getCommentedString(String text, String commentPrefix, String commentSuffix) {
-      BufferedReader reader = new BufferedReader(new StringReader(text));
-      StringBuilder strB = new StringBuilder();
-      String line;
-      String newLine = getNewLineFromFile(text);
-      try {
-         while ((line = reader.readLine()) != null) {
-            if (!line.isEmpty()) {
-               if ((!commentPrefix.isEmpty() && !line.contains(
-                  commentPrefix)) || (!commentSuffix.isEmpty() && !line.contains(commentSuffix))) {
-                  strB.append(commentPrefix);
-                  strB.append(line);
-                  strB.append(commentSuffix);
-               } else {
-                  strB.append(line);
-               }
-            }
-            strB.append(newLine);
-         }
-         reader.close();
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-
-      return strB.toString();
-   }
-
-   /**
-    * Using the given text, this finds the first instance of a newline character and returns that to be replaced back
-    * into the file. This is to protect from different new line characters styles between operating systems. The style
-    * that comes in is the style that goes out.
-    */
-   private String getNewLineFromFile(String text) {
-      Matcher matcher = Pattern.compile(SINGLE_NEW_LINE).matcher(text);
-      if (matcher.find()) {
-         return matcher.group();
-      } else {
-         return System.lineSeparator();
-      }
-   }
-
    private Map<String, FileTypeApplicabilityData> populateFileTypeApplicabilityDataMap() {
       Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = new HashMap<>();
       ArtifactReadable globalPreferences = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
@@ -480,7 +442,16 @@ public class BlockApplicabilityOps {
          "(" + SPACES + commentPrefix + BEGINFEATURE + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedFeatureEnd =
          "(" + SPACES + commentPrefix + ENDFEATURE + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
-      String pattern = commentedFeatureStart + "|" + commentedFeatureEnd;
+      String commentedConfigStart =
+         "(" + SPACES + commentPrefix + BEGINCONFIG + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedConfigEnd =
+         "(" + SPACES + commentPrefix + ENDCONFIG + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedConfigGrpStart =
+         "(" + SPACES + commentPrefix + BEGINCONFIGGRP + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedConfigGrpEnd =
+         "(" + SPACES + commentPrefix + ENDCONFIGGRP + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String pattern =
+         commentedFeatureStart + "|" + commentedFeatureEnd + "|" + commentedConfigStart + "|" + commentedConfigEnd + "|" + commentedConfigGrpStart + "|" + commentedConfigGrpEnd;
       return Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);
    }
 }
