@@ -93,4 +93,6 @@ public interface OrcsApplicability {
 
    XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account);
 
+   XResultData validateCompoundApplicabilities(BranchId branch, UserId account, boolean update);
+
 }

@@ -957,6 +957,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
             tx.createApplicabilityForView(viewId, applicability);
             tx.commit();
+            /**
+             * Once a new compound applicability tag is created, it must be evaluated whether the tag applies for each
+             * view on the branch
+             */
+            for (ArtifactId bView : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
+               updateCompoundApplicabilities(branch, bView, user, true);
+            }
          } else {
             results.error(
                "Invalid applicability tag.  One of the applicabilities used is not valid for the given view.");
@@ -995,7 +1002,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             }
             tx.createApplicabilityForView(viewId, applicability);
             tx.commit();
-            updateCompoundApplicabilities(branch, viewId, user);
+            updateCompoundApplicabilities(branch, viewId, user, true);
 
          } else {
             results.error("Feature is not defined or Value is invalid.");
@@ -1006,12 +1013,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   private XResultData updateCompoundApplicabilities(BranchId branch, ArtifactId viewId, UserId user) {
+   private XResultData updateCompoundApplicabilities(BranchId branch, ArtifactId viewId, UserId user, boolean update) {
       /**
        * After updating an value on the feature value matrix for a specific view; there is a need to evaluate each of
        * the existing compound applicabilities on a branch to see if the applicability is valid for the view.
        */
       XResultData results = new XResultData();
+      List<String> actions = new ArrayList<>();
       Collection<ApplicabilityToken> allApps =
          orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
       List<ApplicabilityToken> compoundApps =
@@ -1058,19 +1066,30 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          if (orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
             app.getName())) {
             if (!validApplicability) {
-               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
-                  "Remove invalid compound applicability");
-               tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, app.getName());
-               tx.commit();
+               if (update) {
+                  TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
+                     "Remove invalid compound applicability");
+                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, app.getName());
+                  tx.commit();
+               }
+               actions.add("Remove " + app.getName() + " from configuration: " + getView(viewId.getIdString(),
+                  branch).getName());
             }
          } else {
             if (validApplicability) {
-               TransactionBuilder tx =
-                  orcsApi.getTransactionFactory().createTransaction(branch, user, "Apply valid compound applicability");
-               tx.createApplicabilityForView(viewId, app.getName());
-               tx.commit();
+               if (update) {
+                  TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
+                     "Apply valid compound applicability");
+                  tx.createApplicabilityForView(viewId, app.getName());
+                  tx.commit();
+               }
+               actions.add(
+                  "Add " + app.getName() + " to configuration: " + getView(viewId.getIdString(), branch).getName());
             }
          }
+      }
+      if (!actions.isEmpty()) {
+         results.setResults(actions);
       }
       return results;
    }
@@ -1409,4 +1428,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          commentNonApplicableBlocks, sourcePath, stagePath);
    }
 
+   @Override
+   public XResultData validateCompoundApplicabilities(BranchId branch, UserId account, boolean update) {
+      XResultData results = new XResultData();
+      List<String> actions = new ArrayList<>();
+      for (ArtifactId bView : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
+         actions.addAll(updateCompoundApplicabilities(branch, bView, account, update).getResults());
+      }
+      results.setResults(actions);
+      return results;
+   }
 }

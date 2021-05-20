@@ -286,4 +286,9 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    String applyBlockVisibility(BlockApplicabilityStageRequest data);
 
+   @PUT
+   @Path("validate")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData validate();
+
 }

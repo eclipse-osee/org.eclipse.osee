@@ -191,6 +191,17 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public XResultData validate() {
+      XResultData results = isAccess();
+      UserId user = account;
+      if (user == null) {
+         user = SystemUser.OseeSystem;
+      }
+      results = ops.validateCompoundApplicabilities(branch, user, false);
+      return results;
+   }
+
+   @Override
    public XResultData removeApplicabilityFromView(ArtifactId viewId, String applicability) {
       XResultData results = isAccess();
       UserId user = account;
