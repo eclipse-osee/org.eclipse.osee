@@ -14,6 +14,7 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
-import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -133,25 +133,19 @@ public class ArtifactEndpointTest {
 
    @Test
    public void getArtifactAsHtml() {
-      ArtifactId artifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
-      String artifactHtml = artifactEndpoint.getArtifactAsHtml(artifact);
+      String artifactHtml = artifactEndpoint.getArtifactAsHtml(DefaultHierarchyRoot);
       boolean isPopulated = artifactHtml.contains("Name:");
-      Assert.assertNotNull(artifactHtml);
       Assert.assertTrue(isPopulated);
    }
 
    @Test
    public void getArtifactToken() {
-      ArtifactId artifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
-      ArtifactToken userToken = artifactEndpoint.getArtifactToken(artifact);
-      Assert.assertNotNull(userToken);
+      Assert.assertNotNull(artifactEndpoint.getArtifactToken(DefaultHierarchyRoot));
    }
 
    @Test
    public void getAttributes() {
-      ArtifactId artifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
-      AttributeEndpoint attributes = artifactEndpoint.getAttributes(artifact);
-      Assert.assertNotNull(attributes);
+      Assert.assertNotNull(artifactEndpoint.getAttributes(DefaultHierarchyRoot));
    }
 
    @Test
@@ -196,7 +190,7 @@ public class ArtifactEndpointTest {
 
    @Test
    public void createArtifacts() {
-      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
+      ArtifactId parentArtifact = DefaultHierarchyRoot;
       List<String> names = Arrays.asList("TestArtifact1", "TestArtifact2", "TestArtifact3");
 
       List<ArtifactToken> newArtifacts =
@@ -206,7 +200,7 @@ public class ArtifactEndpointTest {
 
    @Test
    public void createArtifact() {
-      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
+      ArtifactId parentArtifact = DefaultHierarchyRoot;
       String name = "TestArtifactA";
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);
@@ -236,7 +230,7 @@ public class ArtifactEndpointTest {
    }
 
    private ArtifactToken createTestArtifact() {
-      ArtifactId parentArtifact = CoreArtifactTokens.OseeTypesAndAccessFolder;
+      ArtifactId parentArtifact = DefaultHierarchyRoot;
       String name = "TestArtifactB";
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);

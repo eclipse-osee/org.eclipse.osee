@@ -185,8 +185,10 @@ public class ApplicabilityEndpointTest {
       String inputPath = OsgiUtil.getResourceAsUrl(ApplicabilityEndpointTest.class,
          "/support/BlockApplicabilityTest/InputFiles").getPath();
       String stagePath = OseeData.getPath().toString();
-      BlockApplicabilityStageRequest data =
-         new BlockApplicabilityStageRequest(ArtifactId.valueOf(200046L), false, inputPath, stagePath);
+
+      ArtifactId productA =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.BranchView, "Product A", DemoBranches.SAW_PL);
+      BlockApplicabilityStageRequest data = new BlockApplicabilityStageRequest(productA, false, inputPath, stagePath);
 
       appl.applyBlockVisibility(data);
 
@@ -194,17 +196,17 @@ public class ApplicabilityEndpointTest {
       File stagingFolder = new File(stagePath, "Staging");
       assertTrue(stagingFolder.exists());
 
-      File viewFolder = new File(stagingFolder.getPath(), "Product A");
+      File viewFolder = new File(stagingFolder, "Product A");
       assertTrue(viewFolder.exists());
 
-      File inputFolder = new File(viewFolder.getPath(), "InputFiles");
+      File inputFolder = new File(viewFolder, "InputFiles");
       assertTrue(inputFolder.exists());
 
-      File codeFolder = new File(inputFolder.getPath(), "Code");
+      File codeFolder = new File(inputFolder, "Code");
       assertTrue(codeFolder.exists());
 
       // Testing the Cpp file with applicability, delete when done
-      File cppFile = new File(codeFolder.getPath(), "TestCpp.cpp");
+      File cppFile = new File(codeFolder, "TestCpp.cpp");
       assertTrue(cppFile.exists());
       String actualOutput = Lib.fileToString(cppFile);
       String expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
@@ -213,7 +215,7 @@ public class ApplicabilityEndpointTest {
       cppFile.delete();
 
       // Testing the Java file with applicability
-      File javaFile = new File(codeFolder.getPath(), "TestJava.java");
+      File javaFile = new File(codeFolder, "TestJava.java");
       assertTrue(javaFile.exists());
       actualOutput = Lib.fileToString(javaFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
@@ -222,15 +224,15 @@ public class ApplicabilityEndpointTest {
       javaFile.delete();
 
       // Testing that the java file included in a config file was properly excluded
-      File excludedJavaFile = new File(codeFolder.getPath(), "TestExcludedJava.java");
+      File excludedJavaFile = new File(codeFolder, "TestExcludedJava.java");
       assertFalse(excludedJavaFile.exists());
       codeFolder.delete();
 
-      File resourcesFolder = new File(inputFolder.getPath(), "Resources");
+      File resourcesFolder = new File(inputFolder, "Resources");
       assertTrue(resourcesFolder.exists());
 
       // Test that the icon exists and is equal to the input file, delete when done
-      File iconFile = new File(resourcesFolder.getPath(), "TestIcon.ico");
+      File iconFile = new File(resourcesFolder, "TestIcon.ico");
       assertTrue(iconFile.exists());
       actualOutput = Lib.fileToString(iconFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
@@ -239,7 +241,7 @@ public class ApplicabilityEndpointTest {
       iconFile.delete();
 
       // Test that the unchanged Xml file exists and is equal to the input file, delete when done
-      File noChangeXmlFile = new File(resourcesFolder.getPath(), "TestXmlNoChange.xml");
+      File noChangeXmlFile = new File(resourcesFolder, "TestXmlNoChange.xml");
       assertTrue(noChangeXmlFile.exists());
       actualOutput = Lib.fileToString(noChangeXmlFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
@@ -248,7 +250,7 @@ public class ApplicabilityEndpointTest {
       noChangeXmlFile.delete();
 
       // Testing the Xml file with applicability, delete when done along with resources folder
-      File xmlFile = new File(resourcesFolder.getPath(), "TestXml.xml");
+      File xmlFile = new File(resourcesFolder, "TestXml.xml");
       assertTrue(xmlFile.exists());
       actualOutput = Lib.fileToString(xmlFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
@@ -258,7 +260,7 @@ public class ApplicabilityEndpointTest {
       resourcesFolder.delete();
 
       // Checking that the readMe file still exists after processing. An out of scope config file tried to exclude this file.
-      File readMeFile = new File(inputFolder.getPath(), "readMeTest.txt");
+      File readMeFile = new File(inputFolder, "readMeTest.txt");
       assertTrue(readMeFile.exists());
       readMeFile.delete();
 

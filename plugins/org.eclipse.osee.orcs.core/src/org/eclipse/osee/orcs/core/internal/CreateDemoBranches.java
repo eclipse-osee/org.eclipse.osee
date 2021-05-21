@@ -186,7 +186,7 @@ public class CreateDemoBranches {
       TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create SAW Product Decomposition");
 
       ArtifactId sawProduct = tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Component,
-         "SAW Product Decomposition");
+         CoreArtifactTokens.SAW_PRODUCT_DECOMP);
 
       for (String subsystem : DemoSubsystems.getSubsystems()) {
          tx.createArtifact(sawProduct, CoreArtifactTypes.Component, subsystem);

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,25 +61,25 @@ public class RevisionChangeTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private BranchToken workingBranch;
-
-   private final ArtifactToken sawProductDecomp =
-      ArtifactToken.valueOf(200012L, "SAW Product Decomposition", Component);
    private final ArtifactToken chassisDeleted = ArtifactToken.valueOf(200016L, "Chassis", Component);
    private final ArtifactToken controlsToModifyAttrs = ArtifactToken.valueOf(200021L, "Controls", Component);
    private final ArtifactToken navigationToModifyApplic = ArtifactToken.valueOf(200023L, "Navigation", Component);
+
+   private BranchToken workingBranch;
+   private Artifact sawProductDecomp;
    private Artifact newSoftReq;
 
    @Before
    public void setUp() {
       workingBranch = BranchManager.createWorkingBranch(SAW_PL, "Test Working Branch");
-      Artifact sawProductDecompArt = ArtifactQuery.getArtifactFromId(sawProductDecomp, workingBranch);
+      sawProductDecomp =
+         ArtifactQuery.getArtifactFromTypeAndName(Component, CoreArtifactTokens.SAW_PRODUCT_DECOMP, workingBranch);
 
       newSoftReq = ArtifactTypeManager.addArtifact(SoftwareRequirementMsWord, workingBranch);
       newSoftReq.setName("New Software Requirement");
       newSoftReq.addAttribute(ParagraphNumber);
       newSoftReq.setSoleAttributeFromString(ParagraphNumber, "1.1");
-      newSoftReq.addRelation(DefaultHierarchical_Parent, sawProductDecompArt);
+      newSoftReq.addRelation(DefaultHierarchical_Parent, sawProductDecomp);
       newSoftReq.persist("Add New Software Requirement");
 
       Artifact chassisDeletedArt = ArtifactQuery.getArtifactFromId(chassisDeleted, workingBranch);
@@ -278,10 +279,9 @@ public class RevisionChangeTest {
    @Test
    public void testModifiedRelations() {
       List<Change> changes = new ArrayList<>();
-      Artifact sawProductDecompArt = ArtifactQuery.getArtifactFromId(sawProductDecomp, workingBranch);
       boolean artifactsModified = true, foundRelationArtDeleted = false, foundRelationNew = false;
 
-      changes.addAll(ChangeManager.getChangesPerArtifact(sawProductDecompArt, 2, null));
+      changes.addAll(ChangeManager.getChangesPerArtifact(sawProductDecomp, 2, null));
       assertFalse(changes.isEmpty());
 
       for (Change change : changes) {

@@ -19,12 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.client.demo.DemoChoice;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.junit.BeforeClass;
@@ -54,7 +56,9 @@ public class TransactionEndpointTest {
     */
    @Test
    public void testGetArtifactHistory() {
-      ArtifactToken sawProductDecomp = ArtifactToken.valueOf(200012L, "SAW Product Decomposition", Component);
+      ArtifactId sawProductDecomp = ArtifactQuery.getArtifactFromTypeAndName(Component,
+         CoreArtifactTokens.SAW_PRODUCT_DECOMP, DemoBranches.SAW_PL);
+
       List<ChangeItem> changeItems = transactionEndpoint.getArtifactHistory(sawProductDecomp, DemoBranches.SAW_PL);
 
       assertFalse(changeItems.isEmpty());

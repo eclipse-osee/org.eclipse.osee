@@ -59,6 +59,8 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken InterfacePlatformTypesFolder = ArtifactToken.valueOf(2121138079, "Interface Platform Types", Folder);
    // @formatter:on
 
+   public static final String SAW_PRODUCT_DECOMP = "SAW Product Decomposition";
+
    private CoreArtifactTokens() {
       // Constants
    }
