@@ -120,8 +120,11 @@ public class BlockApplicabilityOps {
       filePattern.append(")");
       rule.setFileNamePattern(filePattern.toString());
 
+      HashSet<String> excludedFiles = new HashSet<>();
+      excludedFiles.add("Staging");
+
       stagePath = getOrCreateFullStagePath(stagePath);
-      rule.process(new File(sourcePath), stagePath, new HashSet<String>());
+      rule.process(new File(sourcePath), stagePath, excludedFiles);
 
       return "ruleWasApplicable: " + rule.ruleWasApplicable();
    }
