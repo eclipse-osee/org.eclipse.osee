@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
@@ -75,17 +76,6 @@ public interface PlatformTypesEndpoint {
     */
    XResultData createPlatformType(PlatformTypeToken platformTypeToken);
 
-   @POST()
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   /**
-    * Creates a new Platform Type for Branch
-    *
-    * @param platformTypeToken logical type to base platformType off of
-    * @return Api Response success/failure
-    */
-   XResultData createPlatformType(Object platformTypeToken);
-
    @GET()
    @Path("{type_id}")
    @Produces({MediaType.APPLICATION_JSON})
@@ -95,7 +85,7 @@ public interface PlatformTypesEndpoint {
     * @param typeId id of platform type
     * @return platform type
     */
-   PlatformTypeToken getPlatformType(@PathParam("type_id") String typeId);
+   PlatformTypeToken getPlatformType(@PathParam("type_id") ArtifactId typeId);
 
    @DELETE()
    @Path("{type_id}")
@@ -106,6 +96,6 @@ public interface PlatformTypesEndpoint {
     * @param typeId id of platform type
     * @return Api Response success/failure
     */
-   XResultData removePlatformType(@PathParam("type_id") String typeId);
+   XResultData removePlatformType(@PathParam("type_id") ArtifactId typeId);
 
 }

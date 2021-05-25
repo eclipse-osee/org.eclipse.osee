@@ -13,6 +13,12 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.mim.InterfaceElementApi;
+import org.eclipse.osee.mim.InterfaceElementArrayApi;
+import org.eclipse.osee.mim.InterfaceMessageApi;
+import org.eclipse.osee.mim.InterfacePlatformTypeApi;
+import org.eclipse.osee.mim.InterfaceStructureApi;
+import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeBoolean;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeCharacter;
@@ -40,6 +46,18 @@ public class MimApiImpl implements MimApi {
    private final ConcurrentHashMap<Long, InterfaceLogicalTypeGeneric> logicalTypes = new ConcurrentHashMap<>();
 
    private OrcsApi orcsApi;
+
+   private InterfaceMessageApi interfaceMessageApi;
+
+   private InterfaceSubMessageApi interfaceSubMessageApi;
+
+   private InterfaceStructureApi interfaceStructureApi;
+
+   private InterfaceElementApi interfaceElementApi;
+
+   private InterfaceElementArrayApi interfaceElementArrayApi;
+
+   private InterfacePlatformTypeApi interfacePlatformApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -80,6 +98,12 @@ public class MimApiImpl implements MimApi {
       logicalTypes.put(unsignedLongLongType.getId(), unsignedLongLongType);
       logicalTypes.put(unsignedShortType.getId(), unsignedShortType);
 
+      this.interfaceMessageApi = new InterfaceMessageApiImpl(orcsApi);
+      this.interfaceSubMessageApi = new InterfaceSubMessageApiImpl(orcsApi);
+      this.interfacePlatformApi = new InterfacePlatformTypeApiImpl(orcsApi);
+      this.interfaceStructureApi = new InterfaceStructureApiImpl(orcsApi);
+      this.interfaceElementApi = new InterfaceElementApiImpl(orcsApi);
+      this.interfaceElementArrayApi = new InterfaceElementArrayApiImpl(orcsApi);
    }
 
    @Override
@@ -90,6 +114,36 @@ public class MimApiImpl implements MimApi {
    @Override
    public OrcsApi getOrcsApi() {
       return this.orcsApi;
+   }
+
+   @Override
+   public InterfaceMessageApi getInterfaceMessageApi() {
+      return this.interfaceMessageApi;
+   }
+
+   @Override
+   public InterfacePlatformTypeApi getInterfacePlatformTypeApi() {
+      return this.interfacePlatformApi;
+   }
+
+   @Override
+   public InterfaceSubMessageApi getInterfaceSubMessageApi() {
+      return this.interfaceSubMessageApi;
+   }
+
+   @Override
+   public InterfaceStructureApi getInterfaceStructureApi() {
+      return this.interfaceStructureApi;
+   }
+
+   @Override
+   public InterfaceElementApi getInterfaceElementApi() {
+      return this.interfaceElementApi;
+   }
+
+   @Override
+   public InterfaceElementArrayApi getInterfaceElementArrayApi() {
+      return this.interfaceElementArrayApi;
    }
 
 }

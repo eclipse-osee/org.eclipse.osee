@@ -23,5 +23,17 @@ import org.eclipse.osee.orcs.OrcsApi;
 public interface MimApi {
    OrcsApi getOrcsApi();
 
+   InterfaceMessageApi getInterfaceMessageApi();
+
+   InterfaceSubMessageApi getInterfaceSubMessageApi();
+
+   InterfaceStructureApi getInterfaceStructureApi();
+
+   InterfaceElementApi getInterfaceElementApi();
+
+   InterfaceElementArrayApi getInterfaceElementArrayApi();
+
+   InterfacePlatformTypeApi getInterfacePlatformTypeApi();
+
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 }
