@@ -111,7 +111,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    private final HashCollection<AttributeTypeId, Attribute<?>> attributes = new HashCollection<>(true);
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords = new HashSet<>();
    private final BranchToken branch;
-   private TransactionToken transaction = TransactionToken.SENTINEL;
+   private TransactionToken transaction = TransactionRecord.SENTINEL;
    private GammaId gammaId;
    private boolean linksLoaded;
    private boolean historical;
@@ -1727,7 +1727,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   public final void setTransactionId(TransactionToken transaction) {
+   public final void setTransactionId(TransactionRecord transaction) {
       if (transaction.isInvalid()) {
          throw new OseeArgumentException("Transaction can not be set invalid for %s", toStringWithId());
       }

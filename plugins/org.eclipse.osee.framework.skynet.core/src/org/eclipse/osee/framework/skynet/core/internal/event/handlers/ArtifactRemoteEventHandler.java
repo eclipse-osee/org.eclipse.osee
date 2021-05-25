@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.Transport;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -115,7 +116,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
-            artifact.setTransactionId(transactionId);
+
+            artifact.setTransactionId(TransactionManager.getTransaction(transactionId));
             for (AttributeChange attrChange : guidArt.getAttributeChanges()) {
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =

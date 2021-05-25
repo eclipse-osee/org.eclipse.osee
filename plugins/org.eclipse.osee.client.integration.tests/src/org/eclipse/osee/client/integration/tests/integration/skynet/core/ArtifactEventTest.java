@@ -92,7 +92,7 @@ public class ArtifactEventTest {
 
    private ArtifactEventListener listener;
    private RemoteNetworkSender1 networkSender;
-   private final TransactionId tx = TransactionId.valueOf(1000);
+   private final TransactionId tx = TransactionId.valueOf(1);
    private final int gammaId7 = 7;
 
    @Before
@@ -530,7 +530,7 @@ public class ArtifactEventTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long.valueOf(getIncrementingRelationId()),
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
             RelationEventType.Added, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
 
       // Send
@@ -639,7 +639,7 @@ public class ArtifactEventTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long.valueOf(getIncrementingRelationId()),
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
             RelationEventType.Added, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
       relation.setRationale(RATIONALE_STR);
@@ -868,8 +868,8 @@ public class ArtifactEventTest {
    /**
     * Need to always get a new relationId that hasn't been used in this DB yet
     */
-   private int getIncrementingRelationId() {
-      return (int) ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true);
+   private long getIncrementingRelationId() {
+      return ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true);
    }
 
    private static final class ArtifactEventListener implements IArtifactEventListener {

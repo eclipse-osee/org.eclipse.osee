@@ -21,8 +21,8 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -57,7 +58,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    private static final BranchToken BRANCH = SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
-   private static final TransactionId newArtTx = TransactionId.valueOf(12345);
+   private static final TransactionId newArtTx = TransactionId.valueOf(1);
 
    private RemoteNetworkSender1 networkSender;
 
@@ -92,7 +93,7 @@ public class FrameworkEventToRemoteEventListenerTest {
 
       RemotePersistEvent1 remoteEvent = createRemoteEvent(artifact);
       remoteEvent.setTransaction(newArtTx);
-      TransactionToken origArtTx = artifact.getTransaction();
+      TransactionRecord origArtTx = TransactionManager.getTransaction(artifact.getTransaction());
 
       OseeEventManager.addListener(listener);
       OseeEventManager.setDisableEvents(false);

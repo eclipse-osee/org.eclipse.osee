@@ -187,7 +187,7 @@ public final class TransactionManager {
       return loadTransaction(BranchId.valueOf(stmt.getLong("branch_id")), stmt);
    }
 
-   private static TransactionRecord loadTransaction(BranchId branch, JdbcStatement stmt) {
+   public static TransactionRecord loadTransaction(BranchId branch, JdbcStatement stmt) {
       Long transactionNumber = stmt.getLong("transaction_id");
       String comment = stmt.getString("osee_comment");
       Date timestamp = stmt.getTimestamp("time");

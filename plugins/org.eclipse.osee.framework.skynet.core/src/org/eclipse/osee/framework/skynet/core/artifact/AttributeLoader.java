@@ -27,15 +27,16 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -87,7 +88,7 @@ public class AttributeLoader {
       public AttributeId attrId = AttributeId.SENTINEL;
       public GammaId gammaId = GammaId.SENTINEL;
       public ModificationType modType;
-      public Long transactionId = -1L;
+      public TransactionRecord transaction;
       public AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
       public Object value = "";
       public TransactionId stripeId = TransactionId.SENTINEL;
@@ -105,7 +106,8 @@ public class AttributeLoader {
          gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
          modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
-         transactionId = chStmt.getLong("transaction_id");
+         transaction = TransactionManager.loadTransaction(branch, chStmt);
+
          attributeType = tokenservice.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
 
          value = chStmt.loadAttributeValue(attributeType);
@@ -142,7 +144,7 @@ public class AttributeLoader {
       if (artifact == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
-      Long maxTransaction = Id.SENTINEL;
+      TransactionRecord maxTransaction = TransactionRecord.SENTINEL;
       AttrData previous = new AttrData();
       synchronized (artifact) {
          if (!artifact.isAttributesLoaded()) {
@@ -151,13 +153,13 @@ public class AttributeLoader {
                   handleMultipleVersions(previous, current, historical);
                } else {
                   loadAttribute(artifact, current, previous);
-                  if (current.transactionId > maxTransaction) {
-                     maxTransaction = current.transactionId;
+                  if (current.transaction.isGreaterThan(maxTransaction)) {
+                     maxTransaction = current.transaction;
                   }
                }
                previous = current;
             }
-            artifact.setTransactionId(TransactionToken.valueOf(maxTransaction, artifact.getBranch()));
+            artifact.setTransactionId(maxTransaction);
             artifact.meetMinimumAttributeCounts(false);
          }
       }
