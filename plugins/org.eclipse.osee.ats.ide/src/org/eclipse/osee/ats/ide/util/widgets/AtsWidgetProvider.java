@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExam
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -208,6 +209,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XCreateEscapementDemoWfXButton();
       } else if (widgetName.equals(XHyperlinkFeatureDam.WIDGET_ID)) {
          return new XHyperlinkFeatureDam(name);
+      } else if (widgetName.equals(XDateWithValidateDam.WIDGET_ID)) {
+         return new XDateWithValidateDam(name);
       }
 
       return toReturn;

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -36,6 +37,25 @@ public class XDateDam extends XDate implements AttributeWidget {
 
    public XDateDam(String displayLabel) {
       super(displayLabel);
+   }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      if (isAutoSave()) {
+         addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (artifact != null && artifact.isValid()) {
+                  saveToArtifact();
+                  if (artifact.isDirty()) {
+                     artifact.persist("XDateDam Auto-Save");
+                  }
+               }
+            }
+         });
+      }
    }
 
    @Override

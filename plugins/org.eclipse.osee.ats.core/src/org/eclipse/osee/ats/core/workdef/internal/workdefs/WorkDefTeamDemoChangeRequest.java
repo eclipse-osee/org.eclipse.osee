@@ -46,7 +46,10 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
+
+            new WidgetDefinition("Found-In Version", "XFoundInVersionWidget"), //
             new WidgetDefinition("Create/Open Change Request Analysis Workflow", "XCreateEscapementDemoWfXButton"), //
+
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
@@ -63,7 +66,10 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
+
+            new WidgetDefinition("Found-In Version", "XFoundInVersionWidget"), //
             new WidgetDefinition("Create/Open Change Request Analysis Workflow", "XCreateEscapementDemoWfXButton"), //
+
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //

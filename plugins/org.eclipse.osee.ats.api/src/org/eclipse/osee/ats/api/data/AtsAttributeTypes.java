@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewFormalTypeAttributeType;
+import org.eclipse.osee.ats.api.data.enums.token.RiskAnalysisAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.WorkPackageTypeAttributeType;
 import org.eclipse.osee.framework.core.data.AttributeTypeArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
@@ -156,7 +157,10 @@ public interface AtsAttributeTypes {
    ReviewBlocksAttributeType ReviewBlocks = ats.createEnum(new ReviewBlocksAttributeType());
    AttributeTypeString ReviewDefect = ats.createString(1152921504606847222L, "ats.Review Defect", MediaType.TEXT_PLAIN, "");
    ReviewFormalTypeAttributeType ReviewFormalType = ats.createEnum(new ReviewFormalTypeAttributeType());
+   RiskAnalysisAttributeType RiskAnalysis = ats.createEnum(new RiskAnalysisAttributeType());
+   AttributeTypeDate RevisitDate = ats.createDate(8158028655410858717L, "ats.Re-Visit Date", AttributeTypeToken.TEXT_CALENDAR, "Date to revist this workflow");
    AttributeTypeString Role = ats.createString(1152921504606847226L, "ats.Role", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString RootCause = ats.createString(3624854321220981352L, "ats.Root Cause", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RuleDefinition = ats.createString(1152921504606847150L, "ats.Rule Definition", MediaType.TEXT_PLAIN, "");
    AttributeTypeString SignalDbSystemId = ats.createString(1153126013769613779L, "Signal Db System ID", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", AttributeTypeToken.TEXT_CALENDAR, "");
