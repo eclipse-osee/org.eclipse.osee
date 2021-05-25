@@ -138,13 +138,11 @@ public class WidgetPageUtil {
       for (int x = 0; x < stateItems.size(); x++) {
          boolean lastWidget = x == stateItems.size() - 1;
          IAtsLayoutItem stateItem = stateItems.get(x);
-         System.err.println("State Item " + stateItem);
          if (stateItem instanceof IAtsWidgetDefinition) {
             XWidgetRendererItem renderItem =
                processWidgetDefinition((IAtsWidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
             if (firstWidget) {
                if (compositeLayoutItem.getNumColumns() > 0) {
-                  System.err.println(compositeLayoutItem.getName() + " - " + compositeLayoutItem.getName());
                   if (!compositeLayoutItem.isGroupComposite()) {
                      renderItem.setBeginComposite(compositeLayoutItem.getNumColumns());
                   }
