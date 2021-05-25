@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -50,5 +51,10 @@ public interface INewActionListener {
    public default ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
       // for override
       return null;
+   }
+
+   public default ArtifactTypeToken getOverrideArtifactType(IAtsTeamDefinition teamDef) {
+      // for override
+      return ArtifactTypeToken.SENTINEL;
    }
 }

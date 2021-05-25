@@ -368,10 +368,23 @@ public class AtsActionService implements IAtsActionService {
       Conditions.assertNotNull(workDef, "Work Definition can not be null");
 
       /**
-       * Get Team Workflow artifact type from Work Def, else from Team Def
+       * Get Team Workflow artifact type from listeners, else from Work Def, else from Team Def
        */
       ArtifactTypeToken teamWorkflowArtifactType = null;
-      teamWorkflowArtifactType = workDef != null ? workDef.getArtType() : null;
+      if (newActionListeners != null) {
+         for (INewActionListener listener : newActionListeners) {
+            ArtifactTypeToken artType = listener.getOverrideArtifactType(teamDef);
+            if (artType.isValid()) {
+               if (teamWorkflowArtifactType != null) {
+                  throw new OseeArgumentException("Provided listeners can not provide override art type");
+               }
+               teamWorkflowArtifactType = artType;
+            }
+         }
+      }
+      if (teamWorkflowArtifactType == null) {
+         teamWorkflowArtifactType = workDef != null ? workDef.getArtType() : null;
+      }
       if (teamWorkflowArtifactType == null) {
          teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
       }
