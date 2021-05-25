@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -405,6 +406,16 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public ConfigurationGroupDefinition getConfigurationGroup(String id) {
       return ops.getConfigurationGroup(id, branch);
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityTokenFromId(String id) {
+      Optional<ApplicabilityToken> findAny =
+         getApplicabilityTokens().stream().filter(a -> a.getIdString().equals(id)).findAny();
+      if (findAny.isPresent()) {
+         return findAny.get();
+      }
+      return ApplicabilityToken.SENTINEL;
    }
 
 }

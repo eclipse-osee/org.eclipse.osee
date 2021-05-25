@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -93,7 +94,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return change.getItemTypeName();
          } else if (cCol.equals(ChangeXViewerFactory.Is_Value)) {
 
-            if (attributeWasDeleted(change)) {
+            if (attributeWasDeleted(change) && !change.getChangeType().equals(ChangeType.Tuple)) {
                return "";
             }
             if (isBinaryAttributeType(change)) {

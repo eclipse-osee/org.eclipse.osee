@@ -76,6 +76,7 @@ public class ChangeDataLoader extends AbstractOperation {
       this.changes = changes;
       this.txDelta = txDelta;
       this.tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
+
    }
 
    @Override
@@ -300,15 +301,19 @@ public class ChangeDataLoader extends AbstractOperation {
 
          String itemKind = "";
          String tupleIsValue = "";
-
+         String tupleWasValue = "";
          if (tok.hasMoreTokens()) {
             itemKind = tok.nextToken();
          }
          if (tok.hasMoreElements()) {
-            tupleIsValue = tok.nextToken();
+            if (netModType.equals(ModificationType.DELETED)) {
+               tupleWasValue = tok.nextToken();
+            } else {
+               tupleIsValue = tok.nextToken();
+            }
          }
-         change = new TupleChange(startTxBranch, itemGammaId, txDelta, netModType, tupleTypeId, tupleIsValue, "?",
-            itemKind, isHistorical);
+         change = new TupleChange(startTxBranch, itemGammaId, txDelta, netModType, tupleTypeId, tupleIsValue,
+            tupleWasValue, itemKind, isHistorical);
       } else {
          throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
       }

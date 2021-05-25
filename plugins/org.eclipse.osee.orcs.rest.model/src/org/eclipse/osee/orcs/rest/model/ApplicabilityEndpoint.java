@@ -291,4 +291,8 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData validate();
 
+   @GET
+   @Path("applicabilityToken/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   ApplicabilityToken getApplicabilityTokenFromId(@PathParam("id") String id);
 }
