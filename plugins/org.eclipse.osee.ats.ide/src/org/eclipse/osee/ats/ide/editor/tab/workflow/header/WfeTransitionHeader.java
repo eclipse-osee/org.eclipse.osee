@@ -369,6 +369,8 @@ public class WfeTransitionHeader extends Composite {
 
                transitionAssigneesLabel.setText(workItem.getTransitionAssigneesStr());
                transitionAssigneesLabel.getParent().layout();
+
+               userSelectedTransitionToState = null;
             }
          }
       });
