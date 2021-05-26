@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
-<setEntry value="org.eclipse.osee.ats.ide.integration.tests:0.26.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.ats.ide.integration.tests:1.0.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.integration.tests:1.0.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.test.framework:1.0.0.qualifier:default:true"/>
 <setEntry value="org.hamcrest.core:1.3.0.v20180420-1519:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
@@ -78,15 +78,6 @@
 <setEntry value="org.eclipse.rcp.source:default"/>
 <setEntry value="org.eclipse.rcp:default"/>
 <setEntry value="org.eclipse.sdk:default"/>
-<setEntry value="org.eclipse.xtend.sdk:default"/>
-<setEntry value="org.eclipse.xtext.docs:default"/>
-<setEntry value="org.eclipse.xtext.examples:default"/>
-<setEntry value="org.eclipse.xtext.runtime:default"/>
-<setEntry value="org.eclipse.xtext.sdk:default"/>
-<setEntry value="org.eclipse.xtext.ui:default"/>
-<setEntry value="org.eclipse.xtext.xbase.lib:default"/>
-<setEntry value="org.eclipse.xtext.xbase:default"/>
-<setEntry value="org.eclipse.xtext.xtext.ui:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
 <stringAttribute key="timestamp" value="1354263054730"/>

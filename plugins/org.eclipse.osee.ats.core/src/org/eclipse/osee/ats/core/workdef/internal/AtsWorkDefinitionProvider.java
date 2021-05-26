@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.workdef.WorkDefTaskDemoForCrEstimating;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamProductLine;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamSimpleInWork;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefGoal;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPe
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefSprint;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDemoForCrEstimating;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;

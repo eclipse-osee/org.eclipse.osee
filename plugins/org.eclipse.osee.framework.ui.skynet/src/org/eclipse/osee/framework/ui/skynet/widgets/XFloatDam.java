@@ -22,6 +22,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -30,6 +33,7 @@ public class XFloatDam extends XFloat implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
+   private EditorData editorData;
 
    public XFloatDam(String displayLabel) {
       super(displayLabel);
@@ -98,4 +102,31 @@ public class XFloatDam extends XFloat implements AttributeWidget {
    public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      if (isAutoSave()) {
+         getStyledText().addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+               if (artifact != null && artifact.isValid()) {
+                  saveToArtifact();
+                  if (artifact.isDirty()) {
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "XFloatDam Auto-Save";
+                     }
+                     getArtifact().persist(comment);
+                  }
+               }
+            }
+
+         });
+      }
+   }
+
 }

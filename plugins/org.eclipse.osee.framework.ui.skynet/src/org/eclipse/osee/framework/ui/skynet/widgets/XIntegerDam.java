@@ -40,32 +40,6 @@ public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidg
    }
 
    @Override
-   protected void createControls(Composite parent, int horizontalSpan) {
-      super.createControls(parent, horizontalSpan);
-      if (isAutoSave()) {
-         getStyledText().addFocusListener(new FocusAdapter() {
-
-            @Override
-            public void focusLost(FocusEvent e) {
-               if (artifact != null && artifact.isValid()) {
-                  saveToArtifact();
-                  if (artifact.isDirty()) {
-                     String comment = null;
-                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
-                     } else {
-                        comment = "XIntegerDam Auto-Save";
-                     }
-                     getArtifact().persist(comment);
-                  }
-               }
-            }
-
-         });
-      }
-   }
-
-   @Override
    public Artifact getArtifact() {
       return artifact;
    }
@@ -133,6 +107,32 @@ public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidg
    @Override
    public void setEditorData(EditorData editorData) {
       this.editorData = editorData;
+   }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      if (isAutoSave()) {
+         getStyledText().addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+               if (artifact != null && artifact.isValid()) {
+                  saveToArtifact();
+                  if (artifact.isDirty()) {
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "XIntegerDam Auto-Save";
+                     }
+                     getArtifact().persist(comment);
+                  }
+               }
+            }
+
+         });
+      }
    }
 
 }

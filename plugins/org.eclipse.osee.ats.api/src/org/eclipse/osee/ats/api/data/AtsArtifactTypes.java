@@ -157,6 +157,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidationRequired));
    ArtifactTypeToken AbstractWorkflowArtifact = ats.add(ats.artifactType(71L, "ats.State Machine", true, AtsArtifact)
       .exactlyOne(AtsId, "0")
+      .zeroOrOne(Assumptions)
       .zeroOrOne(BlockedReason)
       .zeroOrOne(HoldReason)
       .zeroOrOne(CancelledReasonEnum, null)

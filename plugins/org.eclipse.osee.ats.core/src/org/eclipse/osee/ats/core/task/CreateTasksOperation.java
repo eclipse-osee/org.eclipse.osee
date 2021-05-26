@@ -145,6 +145,16 @@ public class CreateTasksOperation {
                }
             }
 
+            List<ArtifactId> assigneeAccountIds = task.getAssigneeAccountIds();
+            if (!assigneeUserIds.isEmpty()) {
+               for (ArtifactId assignArt : assigneeAccountIds) {
+                  ArtifactId assignee = atsApi.getUserService().getUserById(assignArt);
+                  if (assignee == null) {
+                     results.errorf("Task Assignee [%s] valid in %s\n", String.valueOf(assignArt), task);
+                  }
+               }
+            }
+
             // If task work def is defined in NewTaskData, get from there and validate
             if (taskWorkDef == null) {
                if (Strings.isValid(task.getTaskWorkDef())) {
@@ -292,8 +302,13 @@ public class CreateTasksOperation {
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
             List<AtsUser> assignees = new ArrayList<>();
-            if (jaxTask.getAssigneeUserIds() != null) {
+            if (!jaxTask.getAssigneeUserIds().isEmpty()) {
                assignees.addAll(atsApi.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
+            }
+            if (!jaxTask.getAssigneeAccountIds().isEmpty()) {
+               for (ArtifactId assignArt : jaxTask.getAssigneeAccountIds()) {
+                  assignees.add(atsApi.getUserService().getUserById(assignArt));
+               }
             }
             if (assignees.isEmpty()) {
                assignees.add(AtsCoreUsers.UNASSIGNED_USER);

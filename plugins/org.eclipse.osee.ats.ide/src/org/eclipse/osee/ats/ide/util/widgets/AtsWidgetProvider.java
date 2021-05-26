@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapementDemoWfXButton;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.ide.workflow.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
+import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.demo.XTaskEstManagerDemo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -90,6 +91,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XIntroducedInVersionWidget(name);
       } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {
          toReturn = new XCommitManager();
+      } else if (widgetName.equals(XTaskEstManagerDemo.WIDGET_ID)) {
+         toReturn = new XTaskEstManagerDemo();
       } else if (widgetName.equals(XWorkingBranchLabel.WIDGET_NAME)) {
          toReturn = new XWorkingBranchLabel();
       } else if (widgetName.equals(XWorkingBranchButtonCreate.WIDGET_NAME)) {
@@ -213,6 +216,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XHyperlinkFeatureDam(name);
       } else if (widgetName.equals(XDateWithValidateDam.WIDGET_ID)) {
          return new XDateWithValidateDam(name);
+      } else if (widgetName.equals(XPointsWidget.WIDGET_ID)) {
+         return new XPointsWidget();
       }
 
       return toReturn;

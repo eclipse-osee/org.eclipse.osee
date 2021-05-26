@@ -32,6 +32,11 @@ public abstract class XLabelValueBase extends GenericXWidget {
 
    String valueText = "";
    private Text valueTextWidget;
+   private Composite comp;
+
+   public Composite getComp() {
+      return comp;
+   }
 
    public XLabelValueBase(String label) {
       super(label);
@@ -40,7 +45,7 @@ public abstract class XLabelValueBase extends GenericXWidget {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
-      Composite comp = new Composite(parent, SWT.NONE);
+      comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(5, false));
       if (isFillHorizontally()) {
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -112,4 +117,9 @@ public abstract class XLabelValueBase extends GenericXWidget {
          valueTextWidget.getParent().update();
       }
    }
+
+   public Text getValueTextWidget() {
+      return valueTextWidget;
+   }
+
 }

@@ -69,6 +69,7 @@ public class EntryDialog extends MessageDialog {
    private Button fontButton;
    private String label;
    protected Integer textHeight = null;
+   protected boolean addOpenInEditorOption = true;
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final String dialogTitle;
@@ -112,7 +113,9 @@ public class EntryDialog extends MessageDialog {
       createErrorLabel(areaComposite);
       createTextBox();
 
-      createOpenInEditorHyperlink(parent);
+      if (isAddOpenInEditorOption()) {
+         createOpenInEditorHyperlink(parent);
+      }
       createExtendedArea(areaComposite);
       areaComposite.layout();
       parent.layout();
@@ -423,6 +426,14 @@ public class EntryDialog extends MessageDialog {
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          areaComposite.layout();
       }
+   }
+
+   public boolean isAddOpenInEditorOption() {
+      return addOpenInEditorOption;
+   }
+
+   public void setAddOpenInEditorOption(boolean addOpenInEditorOption) {
+      this.addOpenInEditorOption = addOpenInEditorOption;
    }
 
 }

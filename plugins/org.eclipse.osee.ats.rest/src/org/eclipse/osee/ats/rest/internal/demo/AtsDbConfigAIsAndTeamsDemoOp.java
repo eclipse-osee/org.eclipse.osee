@@ -28,10 +28,15 @@ import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.core.access.demo.DemoAtsAccessContextTokens;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 
@@ -63,6 +68,30 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       createSystemSafetyTeamConfig(cfgTx, topTeam, topActionableItem);
 
       cfgTx.execute();
+
+      createSawPlCrTaskEstUserGroups();
+   }
+
+   private void createSawPlCrTaskEstUserGroups() {
+      IAtsChangeSet changes = atsApi.createChangeSet("createSawPlCrTaskEstUserGroups");
+
+      ArtifactToken reqUserGroup =
+         changes.createArtifact(DemoArtifactToken.SAW_PL_CR_TeamDef, CoreArtifactTypes.UserGroup, "Requirements");
+      changes.addAttribute(reqUserGroup, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      changes.relate(reqUserGroup, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
+      changes.relate(reqUserGroup, CoreRelationTypes.Users_User, DemoUsers.Kay_Jones);
+
+      ArtifactToken codeUserGroup =
+         changes.createArtifact(DemoArtifactToken.SAW_PL_CR_TeamDef, CoreArtifactTypes.UserGroup, "Code");
+      changes.addAttribute(codeUserGroup, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      changes.relate(codeUserGroup, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
+
+      ArtifactToken testUserGroup =
+         changes.createArtifact(DemoArtifactToken.SAW_PL_CR_TeamDef, CoreArtifactTypes.UserGroup, "SW Test");
+      changes.addAttribute(testUserGroup, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      changes.relate(testUserGroup, CoreRelationTypes.Users_User, DemoUsers.Alex_Kay);
+
+      changes.execute();
    }
 
    private void createFacilitiesTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
