@@ -9,9 +9,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { httpInterceptorProviders } from './interceptors/http/interceptor-provider';
 
+//Sub-component imports
+import { DisplayUserComponent } from './userdata/components/display-user/display-user.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, DisplayUserComponent
   ],
   imports: [
     BrowserModule,
