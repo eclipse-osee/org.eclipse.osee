@@ -25,17 +25,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
-public class XTextDam extends XText implements AttributeWidget {
+public class XTextDam extends XText implements AttributeWidget, EditorWidget {
 
    public static final String WIDGET_ID = XTextDam.class.getSimpleName();
    private Artifact artifactStrongRef;
    private AttributeTypeToken attributeType;
    private final boolean isWeakReference;
    private WeakReference<Artifact> artifactRef;
+   private EditorData editorData;
 
    public XTextDam(String displayLabel) {
       this(displayLabel, false);
@@ -127,4 +131,36 @@ public class XTextDam extends XText implements AttributeWidget {
    public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+      if (isAutoSave()) {
+         getStyledText().addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+               if (getArtifact() != null && getArtifact().isValid()) {
+                  saveToArtifact();
+                  if (getArtifact().isDirty()) {
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "XTextDam Auto-Save";
+                     }
+                     getArtifact().persist(comment);
+                  }
+               }
+            }
+
+         });
+      }
+   }
+
+   @Override
+   public void setEditorData(EditorData editorData) {
+      this.editorData = editorData;
+   }
+
 }

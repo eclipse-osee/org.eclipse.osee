@@ -28,11 +28,12 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class XIntegerDam extends XInteger implements AttributeWidget {
+public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
    public static final String WIDGET_ID = XIntegerDam.class.getSimpleName();
+   private EditorData editorData;
 
    public XIntegerDam(String displayLabel) {
       super(displayLabel);
@@ -49,7 +50,13 @@ public class XIntegerDam extends XInteger implements AttributeWidget {
                if (artifact != null && artifact.isValid()) {
                   saveToArtifact();
                   if (artifact.isDirty()) {
-                     artifact.persist("XIntegerDam Auto-Save");
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "XIntegerDam Auto-Save";
+                     }
+                     getArtifact().persist(comment);
                   }
                }
             }
@@ -121,6 +128,11 @@ public class XIntegerDam extends XInteger implements AttributeWidget {
    @Override
    public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
+   }
+
+   @Override
+   public void setEditorData(EditorData editorData) {
+      this.editorData = editorData;
    }
 
 }

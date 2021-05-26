@@ -56,6 +56,8 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummary
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -240,8 +242,29 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       createOperationsSection();
       createDetailsSection();
 
+      setEditorWidgets();
       atsBody.layout();
       atsBody.setFocus();
+   }
+
+   private void setEditorWidgets() {
+      if (Widgets.isAccessible(headerComp)) {
+         Collection<XWidget> headerWidgets = headerComp.getXWidgets(new ArrayList<XWidget>());
+         for (XWidget widget : headerWidgets) {
+            if (widget instanceof EditorWidget) {
+               ((EditorWidget) widget).setEditorData(editor);
+            }
+         }
+      }
+      List<StateXWidgetPage> statePages = getStatePages();
+      for (StateXWidgetPage currStatePage : statePages) {
+         Collection<XWidget> updateWidgets = currStatePage.getDynamicXWidgetLayout().getXWidgets();
+         for (XWidget widget : updateWidgets) {
+            if (widget instanceof EditorWidget) {
+               ((EditorWidget) widget).setEditorData(editor);
+            }
+         }
+      }
    }
 
    private void createDetailsSection() {

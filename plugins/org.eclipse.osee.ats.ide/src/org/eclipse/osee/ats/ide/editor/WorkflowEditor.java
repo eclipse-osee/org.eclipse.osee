@@ -76,6 +76,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.EditorData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -98,7 +99,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyReportable, ISelectedAtsArtifacts, IAtsMetricsProvider {
+public class WorkflowEditor extends AbstractArtifactEditor implements EditorData, IDirtyReportable, ISelectedAtsArtifacts, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.ide.editor.WorkflowEditor";
    private AbstractWorkflowArtifact workItem;
    private WfeWorkFlowTab workFlowTab;
@@ -723,6 +724,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          return reloadTab.getReloadButtion();
       }
       return null;
+   }
+
+   @Override
+   public String getEditorName() {
+      return "Workflow Editor";
    }
 
 }

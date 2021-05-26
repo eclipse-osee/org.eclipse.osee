@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -31,10 +32,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements AttributeWidget {
+public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements AttributeWidget, EditorWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
+   private EditorData editorData;
    public static String WIDGET_ID = XCheckBoxThreeStateDam.class.getSimpleName();
 
    public XCheckBoxThreeStateDam(String displayLabel) {
@@ -84,7 +86,13 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements Attri
             checkState = (CheckState) obj;
             saveToArtifact();
             if (artifact.isDirty()) {
-               artifact.persist("Set " + getAttributeType().toStringWithId());
+               String comment = null;
+               if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                  comment = editorData.getEditorName() + " Auto-Save";
+               } else {
+                  comment = "XCheckDam Auto-Save";
+               }
+               getArtifact().persist(comment);
             }
          }
       } else {
@@ -152,6 +160,11 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements Attri
          }
       }
       return status;
+   }
+
+   @Override
+   public void setEditorData(EditorData editorData) {
+      this.editorData = editorData;
    }
 
 }

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,10 +31,11 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class XDateDam extends XDate implements AttributeWidget {
+public class XDateDam extends XDate implements AttributeWidget, EditorWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
+   private EditorData editorData;
 
    public XDateDam(String displayLabel) {
       super(displayLabel);
@@ -50,7 +52,13 @@ public class XDateDam extends XDate implements AttributeWidget {
                if (artifact != null && artifact.isValid()) {
                   saveToArtifact();
                   if (artifact.isDirty()) {
-                     artifact.persist("XDateDam Auto-Save");
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "XDateDam Auto-Save";
+                     }
+                     getArtifact().persist(comment);
                   }
                }
             }
@@ -138,4 +146,10 @@ public class XDateDam extends XDate implements AttributeWidget {
       }
       return status;
    }
+
+   @Override
+   public void setEditorData(EditorData editorData) {
+      this.editorData = editorData;
+   }
+
 }

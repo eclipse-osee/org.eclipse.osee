@@ -202,6 +202,10 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamWorkflowToFoundInVersion_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToFoundInVersion, SIDE_A);
    RelationTypeSide TeamWorkflowToFoundInVersion_Version = RelationTypeSide.create(TeamWorkflowToFoundInVersion, SIDE_B);
 
+   RelationTypeToken TeamWorkflowToIntroducedInVersion = ats.add(144658762017629160L, "TeamWorkflowToIntroducedInVersion", MANY_TO_ONE, UNORDERED, TeamWorkflow, "Team Workflow", Version, "Version");
+   RelationTypeSide TeamWorkflowToIntroducedInVersion_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToIntroducedInVersion, SIDE_A);
+   RelationTypeSide TeamWorkflowToIntroducedInVersion_Version = RelationTypeSide.create(TeamWorkflowToIntroducedInVersion, SIDE_B);
+
    RelationTypeToken TeamWorkflowToRelease = ats.add(2531996123289575340L, "TeamWorkflowToRelease", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", ReleaseArtifact, "Release Artifact");
    RelationTypeSide TeamWorkflowToRelease_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToRelease, SIDE_A);
    RelationTypeSide TeamWorkflowToRelease_Release = RelationTypeSide.create(TeamWorkflowToRelease, SIDE_B);

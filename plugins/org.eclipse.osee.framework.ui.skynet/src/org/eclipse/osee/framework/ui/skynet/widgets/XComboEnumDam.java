@@ -35,11 +35,12 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @author Donald G. Dunne
  */
-public class XComboEnumDam extends XCombo implements AttributeWidget {
+public class XComboEnumDam extends XCombo implements AttributeWidget, EditorWidget {
 
    public static String WIDGET_ID = XComboEnumDam.class.getSimpleName();
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;
+   private EditorData editorData;
 
    @Override
    public Artifact getArtifact() {
@@ -61,7 +62,13 @@ public class XComboEnumDam extends XCombo implements AttributeWidget {
                if (artifact != null && artifact.isValid()) {
                   saveToArtifact();
                   if (artifact.isDirty()) {
-                     artifact.persist("XComboDam Auto-Save");
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "XComboEnumDam Auto-Save";
+                     }
+                     getArtifact().persist(comment);
                   }
                }
             }
@@ -156,6 +163,11 @@ public class XComboEnumDam extends XCombo implements AttributeWidget {
    @Override
    public void revert() {
       setAttributeType(artifact, attributeType);
+   }
+
+   @Override
+   public void setEditorData(EditorData editorData) {
+      this.editorData = editorData;
    }
 
 }
