@@ -234,7 +234,7 @@ public class BlockApplicabilityRule extends Rule {
        * potential leftover empty comments.
        */
       replacementText = replacementText.replaceAll(
-         applicBlock.getFileTypeApplicabilityData().getCommentPrefix() + BlockApplicabilityOps.SPACES, "");
+         applicBlock.getFileTypeApplicabilityData().getCommentPrefixRegex() + BlockApplicabilityOps.SPACES, "");
 
       if (!isConfig && commentNonApplicableBlocks) {
          /**
@@ -250,7 +250,7 @@ public class BlockApplicabilityRule extends Rule {
          String commentedReplacementText =
             getCommentedString(replacementText, applicBlock.getFileTypeApplicabilityData().getCommentPrefix(),
                applicBlock.getFileTypeApplicabilityData().getCommentSuffix());
-         replacementText = fullText.replaceAll(commentedReplacementText, replacementText);
+         replacementText = fullText.replace(commentedReplacementText, replacementText);
       }
 
       changeSet.replace(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex(), replacementText);

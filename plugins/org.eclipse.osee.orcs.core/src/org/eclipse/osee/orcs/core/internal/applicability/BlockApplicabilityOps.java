@@ -426,7 +426,8 @@ public class BlockApplicabilityOps {
          JsonNode optionalSuffix = currNode.findValue("CommentSuffix");
          String commentSuffix = optionalSuffix == null ? "" : optionalSuffix.asText();
 
-         FileTypeApplicabilityData data = new FileTypeApplicabilityData(pattern, commentPrefix, commentSuffix);
+         FileTypeApplicabilityData data = new FileTypeApplicabilityData(pattern, commentPrefixRegex, commentSuffixRegex,
+            commentPrefix, commentSuffix);
 
          fileTypeApplicabilityDataMap.put(fileExtension, data);
       }

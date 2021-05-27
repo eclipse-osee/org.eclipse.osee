@@ -20,23 +20,37 @@ import java.util.regex.Pattern;
 public class FileTypeApplicabilityData {
 
    private final Pattern commentedTagPattern;
+   private final String commentPrefixRegex;
+   private final String commentSuffixRegex;
    private final String commentPrefix;
    private final String commentSuffix;
 
-   public FileTypeApplicabilityData(Pattern commentedTagPattern, String commentPrefix, String commentSuffix) {
+   public FileTypeApplicabilityData(Pattern commentedTagPattern, String commentPrefixRegex, String commentSuffixRegex, String commentPrefix, String commentSuffix) {
       this.commentedTagPattern = commentedTagPattern;
+      this.commentPrefixRegex = commentPrefixRegex;
+      this.commentSuffixRegex = commentSuffixRegex;
       this.commentPrefix = commentPrefix;
       this.commentSuffix = commentSuffix;
    }
 
    public FileTypeApplicabilityData() {
       this.commentedTagPattern = Pattern.compile("");
+      this.commentPrefixRegex = "";
+      this.commentSuffixRegex = "";
       this.commentPrefix = "";
       this.commentSuffix = "";
    }
 
    public Pattern getCommentedTagPattern() {
       return commentedTagPattern;
+   }
+
+   public String getCommentPrefixRegex() {
+      return commentPrefixRegex;
+   }
+
+   public String getCommentSuffixRegex() {
+      return commentSuffixRegex;
    }
 
    public String getCommentPrefix() {
