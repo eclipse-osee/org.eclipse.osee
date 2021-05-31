@@ -214,6 +214,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", MediaType.TEXT_PLAIN, "Holds the Rank of workflow for prioritization");
    AttributeTypeString Shortname = ats.createStringNoTag(1152921504606847340L, "Shortname", MediaType.TEXT_PLAIN, "Shorter name of project");
    AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", MediaType.TEXT_PLAIN, "Count value to hold the number of tasks under a project");
+   AttributeTypeString BurnDownData = ats.createString(1152921504606851667L, "burndown.data", MediaType.TEXT_PLAIN, "Stores the modified remaining time and date");
 
    // Remove after 1.0.0 full release
    AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");

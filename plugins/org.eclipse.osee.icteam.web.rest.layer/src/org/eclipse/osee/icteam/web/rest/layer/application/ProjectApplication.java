@@ -19,6 +19,7 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs.ICTeamAtsWorkDefintionProvider;
+import org.eclipse.osee.icteam.web.rest.layer.structure.resources.ChartingResource;
 import org.eclipse.osee.icteam.web.rest.layer.structure.resources.ComponentsResource;
 import org.eclipse.osee.icteam.web.rest.layer.structure.resources.GeneralArtifactResource;
 import org.eclipse.osee.icteam.web.rest.layer.structure.resources.ProjectsResource;
@@ -67,6 +68,7 @@ public class ProjectApplication extends Application {
       singletons.add(new UsersResource(atsApi, orcsApi));
       singletons.add(new GeneralArtifactResource(atsApi, orcsApi));
       singletons.add(new UserDashboardResource(atsApi, orcsApi));
+      singletons.add(new ChartingResource(atsApi, orcsApi));
 
       Thread loadConfig = new Thread("Load iCTeam ATS Config") {
 

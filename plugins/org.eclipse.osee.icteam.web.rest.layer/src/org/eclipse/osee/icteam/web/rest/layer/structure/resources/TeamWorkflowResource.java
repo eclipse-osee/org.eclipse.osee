@@ -17,13 +17,17 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -59,6 +63,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -338,6 +343,10 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       String changes = "";
       Map<String, List<String>> attributes = artifact.getAttributes();
       Set<Entry<String, List<String>>> entrySet = attributes.entrySet();
+      Map<String, Pair<String, String>> linkedHashMap = new LinkedHashMap<>();
+      String timeSpent = "";
+      String estimatedTime = "";
+      String currentDate = CommonUtil.getCurrentDate();
 
       for (Entry<String, List<String>> entry : entrySet) {
          String type = entry.getKey();
@@ -411,6 +420,14 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                         if (!(teamwfartifact.getAttributes(
                            AtsAttributeTypes.CurrentStateType).getExactlyOne().toString().equalsIgnoreCase(
                               "Completed"))) {
+                           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                           Date completedDate = null;
+                           try {
+                              completedDate = simpleDateFormat.parse(currentDate);
+                           } catch (ParseException e) {
+                              e.printStackTrace();
+                           }
+                           tx.setSoleAttributeValue(teamwfartifact, AtsAttributeTypes.CompletedDate, completedDate);
                            tx.setSoleAttributeFromString(teamwfartifact, AtsAttributeTypes.CurrentStateType,
                               "Completed");
                         }
@@ -431,6 +448,13 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                         tx.setSoleAttributeFromString(teamwfartifact,
                            AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), string);
                      }
+                     //Get timeSpent and estimatedTime
+                     if (split[0].equalsIgnoreCase("1152921504606847212")) {
+                        timeSpent = string;
+                     }
+                     if (split[0].equalsIgnoreCase("1152921504606847182")) {
+                        estimatedTime = string;
+                     }
                   }
                } else if (split[0].equalsIgnoreCase("tag.Information")) {
                   tx.setSoleAttributeFromString(teamwfartifact, AtsAttributeTypes.Information, string);
@@ -439,6 +463,19 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                }
             }
          }
+      }
+
+      if (!estimatedTime.isEmpty()) {
+         String existingBurndownData = teamwfartifact.getAttributeValuesAsString(AtsAttributeTypes.BurnDownData);
+         Gson gson = new Gson();
+         LinkedHashMap<String, Pair<String, String>> existingLinkedHashMap =
+            gson.fromJson(existingBurndownData, LinkedHashMap.class);
+         Pair<String, String> pair = new Pair<>(estimatedTime, timeSpent);
+         linkedHashMap.putAll(existingLinkedHashMap);
+         linkedHashMap.put(currentDate, pair);
+         JSONSerializer jsonSerializer = new JSONSerializer();
+         String burnDownData = jsonSerializer.deepSerialize(linkedHashMap);
+         tx.setSoleAttributeFromString(teamwfartifact, AtsAttributeTypes.BurnDownData, burnDownData);
       }
 
       if (artifact.getAttributes("Product_Backlog") != null) {
@@ -642,10 +679,18 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          String type = entry.getKey();
          String[] split = type.split(";");
          List<String> value = entry.getValue();
+         Map<String, Pair<String, String>> linkedHashMap = new LinkedHashMap<>();
 
          for (String string : value) {
             if ((split.length == 2) && split[1].equals("Date")) {
                Date date = CommonUtil.getDate(string);
+               Pair<String, String> pair = new Pair<>("0", "0");
+               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+               String formattedDate = simpleDateFormat.format(date);
+               linkedHashMap.put(formattedDate, pair);
+               JSONSerializer jsonSerializer = new JSONSerializer();
+               String burnDownData = jsonSerializer.deepSerialize(linkedHashMap);
+               tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.BurnDownData, burnDownData);
                tx.setSoleAttributeValue(childArtifact,
                   AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), date);
                tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.WorkflowDefinition, "WorkDef_ICTeam");

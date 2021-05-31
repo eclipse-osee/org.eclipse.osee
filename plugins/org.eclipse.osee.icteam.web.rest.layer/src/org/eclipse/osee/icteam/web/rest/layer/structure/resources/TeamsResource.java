@@ -133,8 +133,9 @@ public class TeamsResource extends AbstractConfigResource {
             tx.relate(childArtifact, AtsRelationTypes.TeamLead_Lead, teamLeader.getExactlyOne());
             tx.relate(project, CoreRelationTypes.Users_User, teamLeader.getExactlyOne());
 
-            ArtifactReadable atsAdmin = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-               CoreArtifactTypes.UserGroup).andNameEquals("AtsAdmin").getResults().getExactlyOne();
+            ArtifactReadable atsAdmin =
+               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.UserGroup).andId(
+                  ArtifactId.valueOf(136750l)).getResults().getExactlyOne();
             ArtifactReadable oseeAdmin = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
                CoreArtifactTypes.UserGroup).andNameEquals("OseeAdmin").getResults().getExactlyOne();
             tx.relate(atsAdmin, CoreRelationTypes.Users_User, teamLeader.getExactlyOne());
@@ -297,7 +298,8 @@ public class TeamsResource extends AbstractConfigResource {
 
                         ArtifactReadable atsAdmin =
                            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-                              CoreArtifactTypes.UserGroup).andNameEquals("AtsAdmin").getResults().getExactlyOne();
+                              CoreArtifactTypes.UserGroup).andId(
+                                 ArtifactId.valueOf(136750l)).getResults().getExactlyOne();
                         ArtifactReadable oseeAdmin =
                            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
                               CoreArtifactTypes.UserGroup).andNameEquals("OseeAdmin").getResults().getExactlyOne();
