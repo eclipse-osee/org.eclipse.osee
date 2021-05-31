@@ -184,6 +184,7 @@ public class ReleasesResource extends AbstractConfigResource {
             childArtifact = tx.createArtifact(AtsArtifactTypes.Version, artifact.getName());
 
             List<String> attributes = artifact.getAttributes(AtsAttributeTypes.ReleaseDate.toString());
+            List<String> startDateAttribute = artifact.getAttributes(AtsAttributeTypes.StartDate.toString());
 
             if ((attributes != null) && (attributes.size() > 0)) {
                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -196,6 +197,15 @@ public class ReleasesResource extends AbstractConfigResource {
                }
 
                tx.setSoleAttributeValue(childArtifact, AtsAttributeTypes.ReleaseDate, date);
+
+               Date startDate = null;
+               try {
+                  startDate = formatter.parse(startDateAttribute.get(0));
+               } catch (ParseException e) {
+                  e.printStackTrace();
+               }
+
+               tx.setSoleAttributeValue(childArtifact, AtsAttributeTypes.StartDate, startDate);
             }
 
             List<String> baselineBranchGuid = artifact.getAttributes(AtsAttributeTypes.BaselineBranchGuid.toString());
@@ -313,6 +323,7 @@ public class ReleasesResource extends AbstractConfigResource {
             for (ArtifactReadable artifactReadable : list) {
                if (artifactReadable.getIdString().equals(attribute)) {
                   List<String> attributes = artifact.getAttributes(AtsAttributeTypes.ReleaseDate.toString());
+                  List<String> startDateAttribute = artifact.getAttributes(AtsAttributeTypes.StartDate.toString());
 
                   if ((attributes != null) && (attributes.size() > 0)) {
                      SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -325,6 +336,15 @@ public class ReleasesResource extends AbstractConfigResource {
                      }
 
                      tx.setSoleAttributeValue(artifactReadable, AtsAttributeTypes.ReleaseDate, date);
+
+                     Date startDate = null;
+                     try {
+                        startDate = formatter.parse(startDateAttribute.get(0));
+                     } catch (ParseException e) {
+                        e.printStackTrace();
+                     }
+
+                     tx.setSoleAttributeValue(artifactReadable, AtsAttributeTypes.StartDate, startDate);
                   }
 
                   List<String> baselineBranchGuid =

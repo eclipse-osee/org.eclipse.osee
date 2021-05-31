@@ -14,6 +14,7 @@ Export-Package: org.eclipse.osee.icteam.web.mail.notifier,
  org.eclipse.osee.icteam.web.rest.layer.util
 Import-Package: com.google.common.util.concurrent,
  com.google.gson,
+ com.google.gson.internal,
  flexjson,
  javax.mail,
  javax.mail.internet,

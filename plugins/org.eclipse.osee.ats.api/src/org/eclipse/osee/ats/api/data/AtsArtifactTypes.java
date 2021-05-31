@@ -112,6 +112,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(FullName)
       .zeroOrOne(NextVersion)
       .zeroOrOne(ReleaseDate)
+      .zeroOrOne(StartDate)
       .zeroOrOne(Released)
       .zeroOrOne(TestRunToSourceLocator)
       .zeroOrOne(VersionLocked)
@@ -245,7 +246,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidationRequired)
       .zeroOrOne(WeeklyBenefit)
       .zeroOrOne(WorkaroundDescription)
-      .any(GitChangeId));
+      .any(GitChangeId)
+      .zeroOrOne(BurnDownData));
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType, ChangeType.Improvement)
       .zeroOrOne(NeedBy)

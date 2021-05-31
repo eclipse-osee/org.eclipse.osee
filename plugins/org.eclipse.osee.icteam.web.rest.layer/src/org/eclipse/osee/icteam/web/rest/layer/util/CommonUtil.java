@@ -170,6 +170,16 @@ public class CommonUtil {
    }
 
    /**
+    * @return Get current date in yyyy-MM-dd format
+    */
+
+   public static String getCurrentDate() {
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+      Date date = new Date();
+      return simpleDateFormat.format(date);
+   }
+
+   /**
     * @param xml xml string containing userIDs
     * @return List of Transferable Artifact containing UserIDs from xml string
     */
@@ -383,9 +393,8 @@ public class CommonUtil {
          Collection<RelationTypeToken> existingRelationTypes = artifact.getExistingRelationTypes();
          for (RelationTypeToken iRelationType : existingRelationTypes) {
 
-            if (((RelationTypeToken) iRelationType).getName().equals(relationName)) {
-               RelationTypeSide createRelationTypeSide =
-                  RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_B);
+            if (iRelationType.getName().equals(relationName)) {
+               RelationTypeSide createRelationTypeSide = RelationTypeSide.create((iRelationType), RelationSide.SIDE_B);
                ResultSet<ArtifactReadable> relatedArtifactsTemp1 = artifact.getRelated(createRelationTypeSide);
                if (relatedArtifactsTemp1.size() > 0) {
                   Iterator<ArtifactReadable> iterator = relatedArtifactsTemp1.iterator();
@@ -394,8 +403,7 @@ public class CommonUtil {
                   }
                }
 
-               RelationTypeSide createRelationTypeSide1 =
-                  RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_A);
+               RelationTypeSide createRelationTypeSide1 = RelationTypeSide.create((iRelationType), RelationSide.SIDE_A);
                ResultSet<ArtifactReadable> relatedArtifactsTemp2 = artifact.getRelated(createRelationTypeSide1);
                if (relatedArtifactsTemp2.size() > 0) {
                   Iterator<ArtifactReadable> iterator = relatedArtifactsTemp2.iterator();
@@ -490,7 +498,7 @@ public class CommonUtil {
 
    /**
     * Gets all Projects as Artifacts
-    * 
+    *
     * @return List of projects as artifact readable
     */
 
@@ -580,5 +588,55 @@ public class CommonUtil {
 
       return assignees;
 
+   }
+
+   /**
+    * @param noOfDays NoOfDays in a sprint
+    * @param totalStoryPoints Total number of points in a sprint
+    * @return List of practical line data for story points
+    */
+   public static List<Float> getPracticalStoryPointsData(float noOfDays, float totalStoryPoints) {
+
+      float segement1 = noOfDays * 0.5f;
+      float segment2 = noOfDays * 0.3f + segement1;
+      float segment3 = noOfDays * 0.2f + segment2;
+      float segement4 = noOfDays * 0.05f + segment3;
+      int segmentTracker = 1;
+      float total = totalStoryPoints;
+      List<Float> arrayList = new ArrayList<Float>();
+
+      for (int i = 1; i <= noOfDays; i++) {
+         float value = 0f;
+
+         if (!(i > segement1)) {
+            segmentTracker = 1;
+         } else if (!((i > segment2))) {
+            segmentTracker = 2;
+         } else if (!(i > segment3)) {
+            segmentTracker = 3;
+         } else if (!(i > segement4)) {
+            segmentTracker = 4;
+         }
+
+         if (segmentTracker == 1) {
+            if (i == 1) {
+               value = totalStoryPoints;
+            } else {
+               value = total - totalStoryPoints * 0.01f;
+               total = value;
+            }
+         } else if (segmentTracker == 2) {
+            value = total - totalStoryPoints * 0.03f;
+            total = value;
+         } else if (segmentTracker == 3) {
+            value = total - totalStoryPoints * 0.1f;
+            total = value;
+         }
+         if (i == noOfDays) {
+            value = 0;
+         }
+         arrayList.add(value);
+      }
+      return arrayList;
    }
 }
