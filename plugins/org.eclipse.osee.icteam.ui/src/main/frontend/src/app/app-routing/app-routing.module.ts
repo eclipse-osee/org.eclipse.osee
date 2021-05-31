@@ -10,74 +10,91 @@
  * Contributors:
  *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
  **********************************************************************/
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
-import { AppComponent } from '../app.component';
-import { LoginComponent } from '../login/login.component';
-import { DashboardComponent } from '../dashboard/dashboard.component';
-import { DisplayProjectComponent } from '../project/displayproject/displayproject.component';
-import { TeamComponent } from '../team/team.component';
-import { UserDashboardComponent } from '../dashboard/user-dashboard/user-dashboard.component';
-import { TaskComponent } from '../workitem/task/task.component';
-import { ReleaseViewComponent } from '../project/displayproject/release-view/release-view.component';
-import { SprintViewComponent } from '../project/displayproject/sprint-view/sprint-view.component';
-import { AuthGuard } from '../guards/auth/auth.guard';
+import { LoginComponent } from "../login/login.component";
+import { DashboardComponent } from "../dashboard/dashboard.component";
+import { DisplayProjectComponent } from "../project/displayproject/displayproject.component";
+import { UserDashboardComponent } from "../dashboard/user-dashboard/user-dashboard.component";
+import { TaskComponent } from "../workitem/task/task.component";
+import { ReleaseViewComponent } from "../project/displayproject/release-view/release-view.component";
+import { SprintViewComponent } from "../project/displayproject/sprint-view/sprint-view.component";
+import { AuthGuard } from "../guards/auth/auth.guard";
+import { ChartsComponent } from "../charts/charts.component";
+import { PointschartComponent } from "../charts/pointschart/pointschart.component";
 
 const appRouters: Routes = [
-
-  { path: 'login', component: LoginComponent },
+  { path: "login", component: LoginComponent },
   {
-    path: 'dashboard',
-    component: DashboardComponent, canActivate: [AuthGuard],
+    path: "dashboard",
+    component: DashboardComponent,
+    canActivate: [AuthGuard],
     children: [
       {
-        path: 'projectDashboard/:projecId',
+        path: "projectDashboard/:projecId",
         component: DisplayProjectComponent,
         canActivate: [AuthGuard],
         children: [
           {
-            path: '',
-            redirectTo: 'Releases',
-            pathMatch : 'full',
-            canActivate: [AuthGuard]
+            path: "",
+            redirectTo: "Releases",
+            pathMatch: "full",
+            canActivate: [AuthGuard],
           },
           {
-            path: 'Releases',
+            path: "Releases",
             component: ReleaseViewComponent,
             canActivate: [AuthGuard],
             children: [
               {
-                path: 'Sprint/:sprintId',
+                path: "Sprint/:sprintId",
                 component: SprintViewComponent,
-                canActivate: [AuthGuard]
+                canActivate: [AuthGuard],
               },
               {
-                path: 'Backlog',
+                path: "Backlog",
                 component: SprintViewComponent,
-                canActivate: [AuthGuard]
-              }
-            ]
-          }
-        ]
+                canActivate: [AuthGuard],
+              },
+              {
+                path: "effortChart/:projectId",
+                component: ChartsComponent,
+                canActivate: [AuthGuard],
+              },
+              {
+                path: "pointsChart/:projectId",
+                component: PointschartComponent,
+                canActivate: [AuthGuard],
+              },
+            ],
+          },
+        ],
       },
       {
-        path: 'userDashboard',
+        path: "userDashboard",
         component: UserDashboardComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
-      { path: ':projectId/:id', component: TaskComponent, canActivate: [AuthGuard] },
-
-    ]
+      {
+        path: ":projectId/:id",
+        component: TaskComponent,
+        canActivate: [AuthGuard],
+      },
+    ],
   },
-  { path: '**', redirectTo: 'login' }
-
+  { path: "**", redirectTo: "login" },
 ];
-
 
 @NgModule({
   providers: [AuthGuard],
-  imports: [RouterModule.forRoot(appRouters, { enableTracing: true, useHash: true , onSameUrlNavigation: 'reload'} )],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(appRouters, {
+      enableTracing: true,
+      useHash: true,
+      onSameUrlNavigation: "reload",
+    }),
+  ],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

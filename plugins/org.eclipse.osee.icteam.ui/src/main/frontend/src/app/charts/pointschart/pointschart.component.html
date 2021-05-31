@@ -1,0 +1,31 @@
+<!--
+ * Copyright (c) 2021 Robert Bosch Engineering and Business Solutions Ltd India
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+ -->
+<mat-form-field appearance="fill">
+  <mat-label>Select Sprint</mat-label>
+  <mat-select [(ngModel)]="selectedValue" (selectionChange)="getBurndownData()">
+    <mat-option *ngFor="let sprint of releaseList" [value]="sprint">
+      {{ sprint.attributeMap["displayName"][0] }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<button mat-raised-button color="accent" (click)="generateBurndownChart()">
+  Generate Chart
+</button>
+
+<div>
+  <div style="display: block">
+    <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+      [legend]="lineChartLegend" [chartType]="chartType" [colors]="lineChartColors">
+    </canvas>
+  </div>
+</div>

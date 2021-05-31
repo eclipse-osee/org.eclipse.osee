@@ -15,128 +15,138 @@ Contributors:
     <span class="fa fa-filter custom-icon " (click)="filterActions() "></span>
     <div class="filter-action-items " [hidden]="filter?.isEnable">
       <div class="custom-control custom-checkbox">
-        <input class="custom-control-input" type="checkbox" id="Working" name="Working" value="Working" [(ngModel)]="filter.working" (change)="onClicked($event) " />
+        <input class="custom-control-input" type="checkbox" id="Working" name="Working" value="Working"
+          [(ngModel)]="filter.working" (change)="onClicked($event) " />
         <label class="custom-control-label" for="Working ">Working</label>
       </div>
       <div class="custom-control custom-checkbox">
-        <input class="custom-control-input" type="checkbox" id="Completed" name="Completed" value="Completed" [(ngModel)]="filter.Completed" (change)="onClicked($event) "/>
+        <input class="custom-control-input" type="checkbox" id="Completed" name="Completed" value="Completed"
+          [(ngModel)]="filter.Completed" (change)="onClicked($event) " />
         <label class="custom-control-label" for="Completed ">Completed</label>
       </div>
       <div class="custom-control custom-checkbox">
-        <input class="custom-control-input" type="checkbox" id="Cancelled" name="Cancelled" value="Cancelled" [(ngModel)]="filter.Cancelled" (change)="onClicked($event) "/>
+        <input class="custom-control-input" type="checkbox" id="Cancelled" name="Cancelled" value="Cancelled"
+          [(ngModel)]="filter.Cancelled" (change)="onClicked($event) " />
         <label class="custom-control-label" for="Cancelled ">Cancelled</label>
       </div>
     </div>
   </div>
   <div class="text-box">
-      <h2 class="header-primary">
-          <span class="header-primary-main">{{selectedsprintName}}</span>
-      </h2>
+    <h2 class="header-primary">
+      <span class="header-primary-main">{{selectedsprintName}}</span>
+    </h2>
   </div>
-  
-<div class="head__right sprint-header">
+
+  <div class="head__right sprint-header">
     <div>
       <mat-form-field style="font-size:12px">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
       </mat-form-field>
       <span></span>
-      
+
     </div>
-    </div>
-   
-    
+  </div>
+
+
 </div>
 
 <div class="sprintTable">
   <div class="sprint-Table-container mat-elevation-z8 ">
 
-      <mat-table #table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" matSortActive="taskId" matSortDirection="desc" matSortDisableClear>
+    <mat-table #table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" matSortActive="taskId"
+      matSortDirection="desc" matSortDisableClear>
 
-        <ng-container matColumnDef="taskId">
-            <mat-header-cell [ngClass]="'customWidthID'" *matHeaderCellDef mat-sort-header>Task Id</mat-header-cell>
-          <mat-cell [ngClass]="'customWidthID'" style="cursor:default" *matCellDef="let row"> {{row.taskId}} </mat-cell>
-          </ng-container>
+      <ng-container matColumnDef="taskId">
+        <mat-header-cell [ngClass]="'customWidthID'" *matHeaderCellDef mat-sort-header>Task Id</mat-header-cell>
+        <mat-cell [ngClass]="'customWidthID'" style="cursor:default" *matCellDef="let row"> {{row.taskId}} </mat-cell>
+      </ng-container>
 
-          <ng-container matColumnDef="name">
-            <mat-header-cell [ngClass]="'customWidthName'" *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-            <mat-cell [ngClass]="'customWidthName'"  *matCellDef="let row" >
-            <a style="cursor:pointer" [routerLink]="['/dashboard',selectedProjectGuid,row.guid]" [ngbPopover]="taskdetails" popoverTitle="Task Details" triggers="mouseenter mouseleave"  #popover="ngbPopover">{{row.name}} </a>
-            <ng-template #taskdetails>
-              <b>Task Id: </b>{{row.taskId}}<br>
-                <b>Task name: </b>{{row.name}}<br>
-                <b>Current state: </b>{{row.status}}<br>
-                <b>Assignee: </b>{{row.selectedUser}}<br>
-                <b>Created by: </b>{{row.createdBy}}<br>
-                <b>Created Date: </b>{{row.createdDate}}<br>
-                <b>Task Priority: </b>{{row.priority}}<br>
-                <b>Task type: </b>{{row.type}}<br>
-                <b>Rank: </b>{{row.rank}}<br>
-                <b>Description: </b>{{row.description}}<br>
-                <b>Estimated Hours: </b>{{row.estimatedHours}}<br>
-                <b>Expected Date: </b>{{row.expectedDate}}<br>
-               </ng-template> </mat-cell>
+      <ng-container matColumnDef="name">
+        <mat-header-cell [ngClass]="'customWidthName'" *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell [ngClass]="'customWidthName'" *matCellDef="let row">
+          <a style="cursor:pointer" [routerLink]="['/dashboard',selectedProjectGuid,row.guid]"
+            [ngbPopover]="taskdetails" popoverTitle="Task Details" triggers="mouseenter mouseleave"
+            #popover="ngbPopover">{{row.name}} </a>
+          <ng-template #taskdetails>
+            <b>Task Id: </b>{{row.taskId}}<br>
+            <b>Task name: </b>{{row.name}}<br>
+            <b>Current state: </b>{{row.status}}<br>
+            <b>Assignee: </b>{{row.selectedUser}}<br>
+            <b>Created by: </b>{{row.createdBy}}<br>
+            <b>Created Date: </b>{{row.createdDate}}<br>
+            <b>Task Priority: </b>{{row.priority}}<br>
+            <b>Task type: </b>{{row.type}}<br>
+            <b>Rank: </b>{{row.rank}}<br>
+            <b>Description: </b>{{row.description}}<br>
+            <b>Estimated Hours: </b>{{row.estimatedHours}}<br>
+            <b>Expected Date: </b>{{row.expectedDate}}<br>
+          </ng-template>
+        </mat-cell>
 
-          </ng-container>
+      </ng-container>
 
-          <ng-container matColumnDef="status">
-              <mat-header-cell [ngClass]="'customWidthStatus'" *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
-              <mat-cell [ngClass]="'customWidthStatus'" *matCellDef="let row" >
-                  <mat-form-field style="max-width:75%;font-size:9px">
-                    <mat-select  [(value)]="row.status" (selectionChange)="statusUpdate($event, row)">
-                      <mat-option *ngFor="let state of row.listStatus" [value]="state">
-                        {{state}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                 </mat-cell>
-            </ng-container>
+      <ng-container matColumnDef="status">
+        <mat-header-cell [ngClass]="'customWidthStatus'" *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+        <mat-cell [ngClass]="'customWidthStatus'" *matCellDef="let row">
+          <mat-form-field style="max-width:75%;font-size:9px">
+            <mat-select [(value)]="row.status" (selectionChange)="statusUpdate($event, row)">
+              <mat-option *ngFor="let state of row.listStatus" [value]="state">
+                {{state}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
 
-          <ng-container matColumnDef="story">
-              <mat-header-cell [ngClass]="'customWidthStory'" *matHeaderCellDef mat-sort-header> Story </mat-header-cell>
-              <mat-cell style="text-align:center" [ngClass]="'customWidthStory'"  *matCellDef="let row"> {{row.story}} </mat-cell>
-            </ng-container>
+      <ng-container matColumnDef="story">
+        <mat-header-cell [ngClass]="'customWidthStory'" *matHeaderCellDef mat-sort-header> Story </mat-header-cell>
+        <mat-cell style="text-align:center" [ngClass]="'customWidthStory'" *matCellDef="let row"> {{row.story}}
+        </mat-cell>
+      </ng-container>
 
-          <ng-container matColumnDef="type">
-            <mat-header-cell [ngClass]="'customWidthType'" style="text-align:center" *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
-            <mat-cell [ngClass]="'customWidthType'" style="cursor:default" *matCellDef="let row" > {{row.type  }} </mat-cell>
-          </ng-container>
+      <ng-container matColumnDef="type">
+        <mat-header-cell [ngClass]="'customWidthType'" style="text-align:center" *matHeaderCellDef mat-sort-header> Type
+        </mat-header-cell>
+        <mat-cell [ngClass]="'customWidthType'" style="cursor:default" *matCellDef="let row"> {{row.type  }} </mat-cell>
+      </ng-container>
 
-            <ng-container matColumnDef="assignee">
-                <mat-header-cell *matHeaderCellDef > Assignee </mat-header-cell>
-                <mat-cell *matCellDef="let row" style="display:inline-block">
-                    <mat-form-field style="max-width:75%; font-size:9px">
-                        <mat-select  [(value)]="row.selectedUser" (selectionChange)="assignUser($event,row)">
-                          <mat-option *ngFor="let user of row.users" [value]="user.name">{{user.name}}</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                        <button type="button " class="btn btn-sm fa fa-comments comment-span " placement="left" [autoClose]="false" triggers="manual" [ngbPopover]="popContent "#p="ngbPopover" (click)="p.open()" popoverTitle="Add Comments"
-                                   #popover="ngbPopover"></button>
-                                <ng-template #popContent>
-                                  <textarea rows="4 " cols="30" [(ngModel)]='commentText'></textarea>
-                                  <div class="comments-footer ">
-                                    <button type="button " class="btn btn-sm btn-primary comments-btn " (click)="saveComments(row,commentText,p) ">Save</button>
-                                    <button type="button" class="btn btn-sm btn-secondary mr-2" (click)="p.close()">close </button>
-                                  </div>
-                                </ng-template>
-                </mat-cell>
-              </ng-container>
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
-      </div>
+      <ng-container matColumnDef="assignee">
+        <mat-header-cell *matHeaderCellDef> Assignee </mat-header-cell>
+        <mat-cell *matCellDef="let row" style="display:inline-block">
+          <mat-form-field style="max-width:75%; font-size:9px">
+            <mat-select [(value)]="row.selectedUser" (selectionChange)="assignUser($event,row)">
+              <mat-option *ngFor="let user of row.users" [value]="user.name">{{user.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button type="button " class="btn btn-sm fa fa-comments comment-span " placement="left" [autoClose]="false"
+            triggers="manual" [ngbPopover]="popContent " #p="ngbPopover" (click)="p.open()" popoverTitle="Add Comments"
+             #popover="ngbPopover"></button>
+          <ng-template #popContent>
+            <textarea rows="4 " cols="30" [(ngModel)]='commentText'></textarea>
+            <div class="comments-footer ">
+              <button type="button " class="btn btn-sm btn-primary comments-btn "
+                (click)="saveComments(row,commentText,p) ">Save</button>
+              <button type="button" class="btn btn-sm btn-secondary mr-2" (click)="p.close()">close </button>
+            </div>
+          </ng-template>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
   </div>
+</div>
 
-  <div class ="noTasksAssigned" *ngIf=noTasksAssigned class="NoTasksAssigned">
-      <h3 style="color: blue;padding-top: 5%;padding-bottom: 5%;padding-left: 5%" class="prj-tittle">No tasks created/pending for this sprint.</h3>
-    </div>
+<div class="noTasksAssigned" *ngIf=noTasksAssigned class="NoTasksAssigned">
+  <h3 style="color: blue;padding-top: 5%;padding-bottom: 5%;padding-left: 5%" class="prj-tittle">No tasks
+    created/pending for this sprint.</h3>
+</div>
 
-    <div class ="noBacklogTasksAssigned" *ngIf=noBacklogTasksAssigned class="NoTasksAssigned">
-        <h3 style="color: blue;padding-top: 5%;padding-bottom: 5%;padding-left: 5%"  class="prj-tittle">No tasks created/pending in backlog.</h3>
-      </div>
+<div class="noBacklogTasksAssigned" *ngIf=noBacklogTasksAssigned class="NoTasksAssigned">
+  <h3 style="color: blue;padding-top: 5%;padding-bottom: 5%;padding-left: 5%" class="prj-tittle">No tasks
+    created/pending in backlog.</h3>
+</div>
 
-<mat-paginator class="PageStyle" #paginator
-  [length]="pageLength"
-  [pageSize]="15"
-  [pageSizeOptions]="[10, 15, 20]"
+<mat-paginator class="PageStyle" #paginator [length]="pageLength" [pageSize]="15" [pageSizeOptions]="[10, 15, 20]"
   [showFirstLastButtons]="true">
 </mat-paginator>

@@ -20,17 +20,21 @@ Contributors:
   </div>
   <div class="row ml-1">
     <div class="col-sm-3 left-container">
-      <input class="btn btn-outline-primary w-100 mt-2" id="newSprint" name="newSprint" type="button" value="New" (click)="NewSprintInit()">
+      <input class="btn btn-outline-primary w-100 mt-2" id="newSprint" name="newSprint" type="button" value="New"
+        (click)="NewSprintInit()">
       <div class="releaseList">
-      <div *ngFor="let milstone of mileStoneList">
-        <span class="milestones p-1" (click)="renderMilestoneinfo(milstone)" [ngClass]="{'release-active':selectedMilestoneForUpdate === milstone}">{{milstone.name}}</span>
-        <div class="project-list ml-4 p-1" *ngFor="let sprint of milstone.relationMap['Default Hierarchical'] " [ngClass]="{'release-active':selectedSprintForUpdate === sprint}"
-          (click)="renderSprintinfo(sprint)">
-          <span class="pull-left badge badge-pill badge-secondary m-1 " *ngIf="sprint.attributeMap['ats.Released'][0] =='true' ">R</span>
-          <span class="pull-left badge badge-pill badge-success m-1 " *ngIf="sprint.attributeMap['ats.Released'][0] =='false' ">O</span>
-          {{sprint.name}}
+        <div *ngFor="let milstone of mileStoneList">
+          <span class="milestones p-1" (click)="renderMilestoneinfo(milstone)"
+            [ngClass]="{'release-active':selectedMilestoneForUpdate === milstone}">{{milstone.name}}</span>
+          <div class="project-list ml-4 p-1" *ngFor="let sprint of milstone.relationMap['Default Hierarchical'] "
+            [ngClass]="{'release-active':selectedSprintForUpdate === sprint}" (click)="renderSprintinfo(sprint)">
+            <span class="pull-left badge badge-pill badge-secondary m-1 "
+              *ngIf="sprint.attributeMap['ats.Released'][0] =='true' ">R</span>
+            <span class="pull-left badge badge-pill badge-success m-1 "
+              *ngIf="sprint.attributeMap['ats.Released'][0] =='false' ">O</span>
+            {{sprint.name}}
+          </div>
         </div>
-      </div>
       </div>
     </div>
     <div class="col-sm-9 right-container">
@@ -39,7 +43,8 @@ Contributors:
           <div class="form-group row">
             <label for="projectname" class="col-sm-4 col-form-label ml-2">Name</label>
             <div class="col-sm-7">
-              <input type="text" class="form-control" id="Releasename" maxlength="15" placeholder="Name" name="releaseName" [(ngModel)]="release.releaseName" required>
+              <input type="text" class="form-control" id="Releasename" maxlength="15" placeholder="Name"
+                name="releaseName" [(ngModel)]="release.releaseName" required>
             </div>
           </div>
 
@@ -47,8 +52,8 @@ Contributors:
             <div class="col-sm-12">
               <div class="form-group row">
                 <label for="" class="col-sm-4 col-form-label ml-2">Project</label>
-                <select class="col-sm-6 ml-3" (change)="getSelectedProject()" [(ngModel)]="release.selectedProject" name="selectedProject"
-                  [disabled]="projectsDisable" required>
+                <select class="col-sm-6 ml-3" (change)="getSelectedProject()" [(ngModel)]="release.selectedProject"
+                  name="selectedProject" [disabled]="projectsDisable" required>
                   <option *ngFor="let project of projectList" [ngValue]="project">{{project.name}}</option>
                 </select>
 
@@ -57,17 +62,20 @@ Contributors:
           </div>
           <div *ngIf="!isUpdate">
             <div class="row p-3">
-                <mat-radio-group required>
-                    <mat-radio-button (change)="onMileStoneSelection('MileStone')" name="releaseType" value="MileStone" >MileStone</mat-radio-button>
-                    <mat-radio-button (change)="onSprintSelection('Sprint')" name="releaseType" value="Sprint" >Sprint</mat-radio-button>
-                  </mat-radio-group>
+              <mat-radio-group required>
+                <mat-radio-button (change)="onMileStoneSelection('MileStone')" name="releaseType" value="MileStone">
+                  MileStone</mat-radio-button>
+                <mat-radio-button (change)="onSprintSelection('Sprint')" name="releaseType" value="Sprint">Sprint
+                </mat-radio-button>
+              </mat-radio-group>
             </div>
             <div class="row" *ngIf="releaseType == 'Sprint'">
               <div class="col-sm-12">
                 <div class="form-group row">
                   <label for="" class="col-sm-4 col-form-label ml-2">MileStone List</label>
                   <select class="col-sm-6 ml-3" [(ngModel)]="release.selectedmileStone" name="mileStone" required>
-                    <option *ngFor="let mileStone of mileStoneList" [ngValue]="mileStone.guid">{{mileStone.name}}</option>
+                    <option *ngFor="let mileStone of mileStoneList" [ngValue]="mileStone.guid">{{mileStone.name}}
+                    </option>
                   </select>
                 </div>
               </div>
@@ -77,7 +85,7 @@ Contributors:
             <div class="col-sm-12">
               <div class="form-group row" *ngIf="releaseType == 'MileStone'">
                 <label for="" class="col-sm-4 col-form-label ml-2">Team</label>
-                <select class="col-sm-6 ml-3" [(ngModel)]="release.selectedTeam" name="team"  required>
+                <select class="col-sm-6 ml-3" [(ngModel)]="release.selectedTeam" name="team" required>
                   <option *ngFor="let team of teamList" [ngValue]="team">{{team.name}}</option>
                 </select>
               </div>
@@ -85,24 +93,39 @@ Contributors:
           </div>
 
           <div class="form-group row">
-            <label for="" class="col-sm-4 col-form-label ml-2">Estimated Date</label>
+            <label for="startDate" class="col-sm-4 col-form-label ml-2">Start Date</label>
             <div class="input-group col-sm-7">
-              <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="release.model" ngbDatepicker #d="ngbDatepicker" required>
+              <input class="form-control" placeholder="yyyy-mm-dd" name="dp1" [(ngModel)]="release.startDate"
+                ngbDatepicker #startDate="ngbDatepicker" required>
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary fa fa-calendar" (click)="d.toggle()" type="button">
+                <button class="btn btn-outline-secondary fa fa-calendar" (click)="startDate.toggle()" type="button">
                 </button>
               </div>
             </div>
           </div>
-          <label  class="decoratedErrorField" style="color: red" [hidden]=isUnique name="userMessage" [(ngModel)]="message">{{message}}</label>
+
+          <div class="form-group row">
+            <label for="estimatedDate" class="col-sm-4 col-form-label ml-2">Release Date</label>
+            <div class="input-group col-sm-7">
+              <input class="form-control" placeholder="yyyy-mm-dd" name="dp2" [(ngModel)]="release.model" ngbDatepicker
+                #endDate="ngbDatepicker" required>
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary fa fa-calendar" (click)="endDate.toggle()" type="button">
+                </button>
+              </div>
+            </div>
+          </div>
+          <label class="decoratedErrorField" style="color: red" [hidden]=isUnique name="userMessage"
+            [(ngModel)]="message">{{message}}</label>
         </div>
         <div class="modal-footer">
           <small *ngIf="relaseResponse" class="text-danger">
             {{relaseResponse}}
           </small>
 
-       <!--   <button type="button" class="btn btn-secondary" [disabled]="!isSprintSelected" (click)="releaseReport()">Generate Release Report</button>-->  
-          <button type="button" class="btn btn-secondary" [disabled]="!isSprintSelected" (click)="releaseSprint()">Mark as Release</button>
+          <!--   <button type="button" class="btn btn-secondary" [disabled]="!isSprintSelected" (click)="releaseReport()">Generate Release Report</button>-->
+          <button type="button" class="btn btn-secondary" [disabled]="!isSprintSelected" (click)="releaseSprint()">Mark
+            as Release</button>
           <button type="submit" class="btn btn-primary" [disabled]="!sprintForm.form.valid">
             <span [hidden]="changeToUpdate">Save</span>
             <span [hidden]="!changeToUpdate">Update</span>

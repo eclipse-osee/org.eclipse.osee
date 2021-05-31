@@ -10,19 +10,20 @@
  * Contributors:
  *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
  **********************************************************************/
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProjectModel } from '../../model/projectModel';
-import { UserDashboardService } from '../../service/userdashborad.service';
-import { MatPaginator, MatSort, MatTableDataSource, MatSortable} from '@angular/material';
+import { Component, OnInit, Input, ViewChild } from "@angular/core";
+import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { ProjectModel } from "../../model/projectModel";
+import { UserDashboardService } from "../../service/userdashborad.service";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort, MatSortable } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
-  selector: 'app-user-dashboard',
-  templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.scss']
+  selector: "app-user-dashboard",
+  templateUrl: "./user-dashboard.component.html",
+  styleUrls: ["./user-dashboard.component.scss"],
 })
 export class UserDashboardComponent implements OnInit {
-
   showStyle: false;
   selectedIndex: number;
   projectListData = [];
@@ -46,9 +47,9 @@ export class UserDashboardComponent implements OnInit {
   chartClicked: any;
   newData = 0;
   inProgressData = 0;
-  public pieChartLabels: string[] = [ 'New', 'InProgress'];
-  public pieChartData: number[] ;
-  public pieChartType: string = 'pie';
+  public pieChartLabels: string[] = ["New", "InProgress"];
+  public pieChartData: number[];
+  public pieChartType: string = "pie";
 
   filterValue: string;
   noTasksAssigned: boolean;
@@ -60,32 +61,40 @@ export class UserDashboardComponent implements OnInit {
   dataSource: MatTableDataSource<SprintData>;
   cleardataSource: MatTableDataSource<SprintData>;
   sprintData: any;
-  displayedColumns = ['taskid', 'name', 'type', 'story', 'status', 'sprint', 'project'];
+  displayedColumns = [
+    "taskid",
+    "name",
+    "type",
+    "story",
+    "status",
+    "sprint",
+    "project",
+  ];
   currentStatus: any;
   showChart = false;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-
-  constructor(private userdashboradservice: UserDashboardService ) {
-  }
+  constructor(private userdashboradservice: UserDashboardService) {}
 
   ngOnInit() {
-  
+    this.userDetails = JSON.parse(sessionStorage.getItem("userDetails"));
+    this.userGuid = JSON.parse(sessionStorage.getItem("userDetails")).userGuid;
+    this.userName = JSON.parse(sessionStorage.getItem("userDetails")).username;
 
-    this.userDetails = JSON.parse(sessionStorage.getItem('userDetails'));
-    this.userGuid = JSON.parse(sessionStorage.getItem('userDetails')).userGuid;
-    this.userName = JSON.parse(sessionStorage.getItem('userDetails')).username;
-
-    const userDashboradArtifact = new ProjectModel();
+    const userDashboradArtifact = new ProjectModel();
     userDashboradArtifact.guid = this.userGuid;
-    userDashboradArtifact.name = JSON.parse(sessionStorage.getItem('userDetails')).username;
-    this.userdashboradservice.getUserSpecificTasks(userDashboradArtifact).subscribe(
+    userDashboradArtifact.name = JSON.parse(
+      sessionStorage.getItem("userDetails")
+    ).username;
+    this.userdashboradservice
+      .getUserSpecificTasks(userDashboradArtifact)
+      .subscribe(
     (result: Response) => {
-      console.log('getTasks', result);
-      this.taskList = result['list'];
+          console.log("getTasks", result);
+          this.taskList = result["list"];
       this.rowData = this.taskList;
-      if ( this.taskList.length === 0) {
+          if (this.taskList.length === 0) {
         this.noTasksAssigned = true;
        }
       for (let i = 0; i <= this.taskList.length - 1; i++) {
@@ -96,13 +105,13 @@ export class UserDashboardComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.sprints);
       console.log(this.dataSource);
       this.dataSource.paginator = this.paginator;
-      this.sort.sort(<MatSortable>({id: 'taskid', start: 'asc'}));
+          this.sort.sort(<MatSortable>{ id: "taskid", start: "asc" });
       this.dataSource.sort = this.sort;
       this.pieChartData = [this.newData, this.inProgressData];
       this.showChart = true;
      },
-    (error) => {
-     });
+        (error) => {}
+      );
   }
 
   createNewTask(task: any): SprintData {
@@ -119,17 +128,17 @@ export class UserDashboardComponent implements OnInit {
     status = task.attributeMap[ 'ats.Current State'][0].split(';')[0];
     if ( status === "New" ) {
       this.newData = this.newData + 1;
-    } else if ( status === "In Progress") {
+    } else if (status === "In Progress") {
       this.inProgressData = this.inProgressData + 1;
     }
     const guid = task.guid;
-    const createdBy = task.attributeMap['ats.Created By'];
-    const createdDate = task.attributeMap['ats.Created Date'];
-    const rank = task.attributeMap['agile.Rank'];
-    const description = task.attributeMap['ats.Description'];
-    const estimatedHours = task.attributeMap['ats.Estimated Hours'];
-    const expectedDate = task.attributeMap['ats.Estimated Completion Date'];
-    const currentState = task.attributeMap['ats.Current State'];
+    const createdBy = task.attributeMap["ats.Created By"];
+    const createdDate = task.attributeMap["ats.Created Date"];
+    const rank = task.attributeMap["agile.Rank"];
+    const description = task.attributeMap["ats.Description"];
+    const estimatedHours = task.attributeMap["ats.Estimated Hours"];
+    const expectedDate = task.attributeMap["ats.Estimated Completion Date"];
+    const currentState = task.attributeMap["ats.Current State"];
     // const selusersIdList = task.attributeMap['ats.Current State'][0].split(';')[1].split('><');
 
     if ( task.attributeMap['ats.Points Attribute Type'] === undefined) {
@@ -141,11 +150,11 @@ export class UserDashboardComponent implements OnInit {
     if (task.attributeMap['Backlog'][0] === 'false' ) {
      sprint =  task.attributeMap['SprintName'];
     } else {
-      sprint = 'Backlog';
+      sprint = "Backlog";
     }
-    const project = task.attributeMap['ProjectName'];
+    const project = task.attributeMap["ProjectName"];
     // Returns a new task of a sprint
-         return{
+    return {
            taskid: id,
            name: name,
            priority: priority,
@@ -173,34 +182,56 @@ export class UserDashboardComponent implements OnInit {
     this.filterValue = this.filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
-
 }
 
 @Component({
-  selector: 'ngbd-modal-content',
+  selector: "ngbd-modal-content",
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Cancel</h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="activeModal.dismiss('Cross click')"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
       <div class="form-group">
         <label for="">Enter cancellation reson*</label>
-        <textarea class="form-control" name="" id="" rows="3" [(ngModel)] = "resonvalue"></textarea>
+        <textarea
+          class="form-control"
+          name=""
+          id=""
+          rows="3"
+          [(ngModel)]="resonvalue"
+        ></textarea>
       </div>
     </div>
     <div class="modal-footer">
-    <button type="button" class="btn btn-outline-info" (click)="activeModal.close(resonvalue)">Ok</button>
-      <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss('close')">Cancel</button>
+      <button
+        type="button"
+        class="btn btn-outline-info"
+        (click)="activeModal.close(resonvalue)"
+      >
+        Ok
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="activeModal.dismiss('close')"
+      >
+        Cancel
+      </button>
     </div>
-  `
+  `,
 })
 export class NgbdModalContent {
   // @Input() name;
   resonvalue: any;
-  constructor(public activeModal: NgbActiveModal) { }
+  constructor(public activeModal: NgbActiveModal) {}
 }
 
 export interface SprintData {
@@ -224,4 +255,3 @@ export interface SprintData {
   sprint: any;
   project: any;
 }
-
