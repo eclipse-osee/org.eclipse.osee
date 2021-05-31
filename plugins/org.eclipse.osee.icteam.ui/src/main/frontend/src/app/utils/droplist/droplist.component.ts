@@ -10,12 +10,19 @@
  * Contributors:
  *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
  **********************************************************************/
-import { Component, OnInit, forwardRef, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ElementRef,
+} from "@angular/core";
 
 @Component({
-  selector: 'app-droplist',
-  templateUrl: './droplist.component.html',
-  styleUrls: ['./droplist.component.scss']
+  selector: "app-droplist",
+  templateUrl: "./droplist.component.html",
+  styleUrls: ["./droplist.component.scss"],
 })
 export class DroplistComponent implements OnInit {
   private selectedItems: any;
@@ -24,7 +31,7 @@ export class DroplistComponent implements OnInit {
   @Output() statusUpdate = new EventEmitter();
 
   showlist: Boolean;
-  constructor(private element: ElementRef) { }
+  constructor(private element: ElementRef) {}
 
   ngOnInit() {
     console.log(this.itemList);
@@ -32,9 +39,6 @@ export class DroplistComponent implements OnInit {
 
     this.showlist = false;
   }
-
- 
-
 
   openlist(): void {
     console.log("OpenClicked");
@@ -44,12 +48,10 @@ export class DroplistComponent implements OnInit {
   changeStatus(status: any): void {
     this.statusUpdate.emit(status);
     this.showlist = false;
-
   }
   close(event) {
     if (this.showlist) {
       this.showlist = false;
-
     }
   }
 }

@@ -20,38 +20,57 @@ Contributors:
     </div>
   </div>
   <div class="project-main row" stle="width: 100%">
-      <div *ngIf="dropDownNav==='Releases'" (click)="closeNav()">
-            <div class="dropdown dropright" style="margin-left: 15%">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  Sprints
-                </button>
-                <div class="dropdown-menu">
-                  <div class="dropdown-header">Open Sprints</div>
-                  <a class="dropdown-item" [routerLink]="['Releases/Sprint',sprint.guid]" *ngFor="let sprint of releaseList">
-                    {{ sprint.attributeMap['displayName'][0] }}
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" [routerLink]="['Releases/Backlog']">Backlog</a>
-                  <div class="dropdown-divider"></div>
-                  <div class="dropdown-header">Closed Sprints</div>
-                  <a class="dropdown-item" [routerLink]="['Releases/Sprint',sprint.guid]" *ngFor="let sprint of closereleaseList">
-                    {{ sprint.attributeMap['displayName'][0] }}
-                  </a>
-                </div>
-              </div>
-      </div>
 
-      <div class="text-box" (click)="closeNav()">
-          <h2 class="header-primary">
-            <span class="header-primary-main">{{selectedProject?.name}}</span>
-          </h2>
+    <div *ngIf="dropDownNav==='Releases'" (click)="closeNav()">
+      <div class="dropdown dropright" style="margin-left: 15%">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          Sprints
+        </button>
+        <div class="dropdown-menu">
+          <div class="dropdown-header">Open Sprints</div>
+          <a class="dropdown-item" [routerLink]="['Releases/Sprint',sprint.guid]" *ngFor="let sprint of releaseList">
+            {{ sprint.attributeMap['displayName'][0] }}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" [routerLink]="['Releases/Backlog']">Backlog</a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-header">Closed Sprints</div>
+          <a class="dropdown-item" [routerLink]="['Releases/Sprint',sprint.guid]"
+            *ngFor="let sprint of closereleaseList">
+            {{ sprint.attributeMap['displayName'][0] }}
+          </a>
+        </div>
       </div>
-      <div  >
-       <span style="font-size:20px;cursor:pointer;right:0px;top:50px" (click)="openNav()">&#9776; Settings</span>
+      <div class="dropdown dropright" style="margin-left: 15%">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          Charts
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['Releases/effortChart',selectedProjectGuid]" [skipLocationChange]=true
+            [replaceUrl]=false>
+            Effort Burndown Chart
+          </a>
+          <a class="dropdown-item" [routerLink]="['Releases/pointsChart' ,selectedProjectGuid]"
+            [skipLocationChange]=true [replaceUrl]=false>
+            Story Point Burndown Chart
+          </a>
+        </div>
       </div>
+    </div>
+
+
+
+    <div class="text-box" (click)="closeNav()">
+      <h2 class="header-primary">
+        <span class="header-primary-main">{{selectedProject?.name}}</span>
+      </h2>
+    </div>
+    <div>
+      <span style="font-size:20px;cursor:pointer;right:0px;top:50px" (click)="openNav()">&#9776; Settings</span>
+    </div>
   </div>
 
-  <div class="container-fluid"  (click)="closeNav()">
+  <div class="container-fluid" (click)="closeNav()">
     <router-outlet></router-outlet>
   </div>
 

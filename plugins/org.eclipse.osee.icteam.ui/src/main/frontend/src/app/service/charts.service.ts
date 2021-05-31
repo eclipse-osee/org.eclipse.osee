@@ -10,19 +10,24 @@
  * Contributors:
  *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
  **********************************************************************/
-import { Directive, Input, ContentChild } from "@angular/core";
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
-@Directive({
-  selector: "app-table-tr",
-})
-export class TableTrDirective {
-  @Input() header: string;
-  @Input() property: Array<string>;
-  @Input() sortable: Boolean = false;
-  @Input() filter: Boolean = false;
+@Injectable()
+export class ChartsService {
+  constructor(private http: HttpClient) {}
 
-  @ContentChild("dataTableCell", { static: false })
-  cellTemplate;
+  getBurnDownData(projectGuid: any) {
+    return this.http.post(
+      "service?url=/getproject/Charts/getEffortBurnDownInfo",
+      projectGuid
+    );
+  }
 
-  constructor() {}
+  getStoryPointsBurnDownData(projectGuid: any) {
+    return this.http.post(
+      "service?url=/getproject/Charts/getStoryPointsBurndown",
+      projectGuid
+    );
+  }
 }
