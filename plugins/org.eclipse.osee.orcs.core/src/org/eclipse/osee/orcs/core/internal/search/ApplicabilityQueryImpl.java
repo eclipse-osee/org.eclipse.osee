@@ -165,7 +165,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<FeatureDefinition> featureDefinition = new ArrayList<>();
 
       List<ArtifactReadable> featureArts =
-         queryFactory.fromBranch(branchToUse).andIsOfType(CoreArtifactTypes.Feature).getResults().getList();
+         queryFactory.fromBranch(branchToUse).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
       Collections.sort(featureArts, new NamedComparator(SortOrder.ASCENDING));
 
       for (ArtifactToken featureArt : featureArts) {

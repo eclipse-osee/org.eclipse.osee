@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.rest.model;
 import java.util.List;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -25,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -59,10 +57,5 @@ public interface ApplicabilityUiEndpoint {
    @Path("branch/{branch}")
    @Produces({MediaType.APPLICATION_JSON})
    public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch, @QueryParam("showAll") @DefaultValue("false") Boolean showAll);
-
-   @POST
-   @Path("branch/{branch}/convert")
-   @Produces({MediaType.TEXT_HTML})
-   public XResultData convertConfigToArtifact(@PathParam("branch") BranchId branch);
 
 }

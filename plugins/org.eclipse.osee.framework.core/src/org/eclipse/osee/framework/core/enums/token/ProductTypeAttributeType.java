@@ -37,7 +37,7 @@ public class ProductTypeAttributeType extends AttributeTypeEnum<ProductTypeEnum>
    }
 
    public ProductTypeAttributeType() {
-      this(NamespaceToken.OSEE, 1);
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class ProductTypeEnum extends EnumToken {

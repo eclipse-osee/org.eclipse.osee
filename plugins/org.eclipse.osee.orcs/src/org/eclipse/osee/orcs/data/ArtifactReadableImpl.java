@@ -415,6 +415,22 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return applicability;
    }
 
+   /**
+    * @return string collection containing of all the attribute values of type attributeType
+    */
+   @Override
+   public List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType) {
+
+      List<String> items = new ArrayList<>();
+      List<Object> attributeValues = getAttributeValues(attributeType);
+      if (attributeValues != null) {
+         for (Object object : attributeValues) {
+            items.add(object.toString());
+         }
+      }
+      return items;
+   }
+
    @Override
    public String getSafeName() {
       return getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED,

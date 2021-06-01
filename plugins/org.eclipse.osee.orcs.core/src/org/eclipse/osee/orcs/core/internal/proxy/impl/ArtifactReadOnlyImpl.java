@@ -444,4 +444,9 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide) {
       return getRelated(relationTypeSide).getList();
    }
+
+   @Override
+   public List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType) {
+      throw new UnsupportedOperationException();
+   }
 }

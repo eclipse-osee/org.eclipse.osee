@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -79,11 +78,6 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @Override
    public ApplicabilityBranchConfig getConfig(BranchId branch, Boolean showAll) {
       return ops.getConfig(branch, showAll);
-   }
-
-   @Override
-   public XResultData convertConfigToArtifact(BranchId branch) {
-      return ops.convertConfigToArtifact(branch);
    }
 
 }

@@ -175,4 +175,5 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 
+   List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType);
 }

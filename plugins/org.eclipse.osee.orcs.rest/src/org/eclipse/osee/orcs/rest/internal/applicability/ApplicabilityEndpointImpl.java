@@ -251,7 +251,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateFeature(feature, "edit", branch, account);
+      return ops.updateFeature(feature, branch, account);
    }
 
    @Override
@@ -260,7 +260,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateFeature(feature, "add", branch, account);
+      return ops.createFeature(feature, branch, account);
    }
 
    @Override
@@ -278,7 +278,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateView(view, "edit", branch, account);
+      return ops.updateView(view, branch, account);
    }
 
    @Override
@@ -287,7 +287,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateView(view, "add", branch, account);
+      return ops.createView(view, branch, account);
    }
 
    @Override

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -33,13 +34,15 @@ public interface OrcsApplicability {
 
    ApplicabilityBranchConfig getConfig(BranchId branchId, boolean showAll);
 
-   FeatureDefinition getFeatureDefinition(ArtifactToken featureArt);
+   FeatureDefinition getFeatureDefinition(ArtifactReadable featureArt);
 
    ArtifactToken getProductLineFolder(BranchId branch);
 
    ArtifactToken getFeaturesFolder(BranchId branch);
 
-   ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, String action, TransactionBuilder tx, XResultData results);
+   ArtifactToken createFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx, XResultData results);
+
+   ArtifactToken updateFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx, XResultData results);
 
    List<BranchId> getApplicabilityBranches();
 
@@ -47,11 +50,11 @@ public interface OrcsApplicability {
 
    ArtifactToken getProductsFolder(BranchId branch);
 
-   XResultData convertConfigToArtifact(BranchId branch);
+   CreateViewDefinition getViewDefinition(ArtifactReadable artifact);
 
-   CreateViewDefinition getViewDefinition(ArtifactToken artifact);
+   XResultData createFeature(FeatureDefinition feature, BranchId branch, UserId account);
 
-   XResultData createUpdateFeature(FeatureDefinition feature, String action, BranchId branch, UserId account);
+   XResultData updateFeature(FeatureDefinition feature, BranchId branch, UserId account);
 
    FeatureDefinition getFeature(String feature, BranchId branch);
 
@@ -59,7 +62,9 @@ public interface OrcsApplicability {
 
    CreateViewDefinition getView(String view, BranchId branch);
 
-   XResultData createUpdateView(CreateViewDefinition view, String action, BranchId branch, UserId account);
+   XResultData createView(CreateViewDefinition view, BranchId branch, UserId account);
+
+   XResultData updateView(CreateViewDefinition view, BranchId branch, UserId account);
 
    XResultData deleteView(String view, BranchId branch, UserId account);
 

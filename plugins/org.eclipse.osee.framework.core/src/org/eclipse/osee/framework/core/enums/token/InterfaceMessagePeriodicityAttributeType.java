@@ -36,7 +36,7 @@ public class InterfaceMessagePeriodicityAttributeType extends AttributeTypeEnum<
    }
 
    public InterfaceMessagePeriodicityAttributeType() {
-      this(NamespaceToken.OSEE, 5);
+      this(NamespaceToken.OSEE, 3);
    }
 
    public class InterfaceMessagePeriodicityEnum extends EnumToken {
