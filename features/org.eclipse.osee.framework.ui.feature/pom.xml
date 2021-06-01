@@ -31,6 +31,7 @@
 								<plugin id="org.eclipse.osee.framework.ui.product" />
 								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
 							   <plugin id="org.eclipse.sdk" />
+							   <plugin id="org.antlr.runtime" />							
 							</excludes>
 						</configuration>
 					</execution>

@@ -34,6 +34,7 @@
 							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
 								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
 							   <plugin id="javaewah" />
+							   <plugin id="org.antlr.runtime" />							
 							   <plugin id="org.apache.ws.xmlschema.core" />
 							   <plugin id="org.postgresql.driver" />
 							   <plugin id="org.eclipse.egit" />

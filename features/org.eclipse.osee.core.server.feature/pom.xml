@@ -34,6 +34,7 @@
 							        <plugin id="org.hamcrest" />
 							        <plugin id="com.jcraft.jsch" />
 							        <plugin id="javax.xml.bind" />
+							        <plugin id="org.antlr.runtime" />							
 							        <plugin id="javax.xml.stream" />
 							</excludes>
 						</configuration>
