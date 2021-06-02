@@ -41,6 +41,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsTest_Workflow_Suite.class,
    AtsTest_Access_Suite.class,
    // Note: AtsTest_Action_Suite in parent suite
    AtsTest_Agile_Suite.class,
@@ -58,7 +59,6 @@ import org.junit.runners.Suite;
    AtsTest_Resource_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_WorkDef_Suite.class,
-   AtsTest_Workflow_Suite.class,
    AtsTest_World_Suite.class,
    AtsTest_World_Search_Suite.class,
    AtsTest_Version_Search_Suite.class,})

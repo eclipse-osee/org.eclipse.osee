@@ -305,7 +305,7 @@ public class CreateTasksOperation {
             if (!jaxTask.getAssigneeUserIds().isEmpty()) {
                assignees.addAll(atsApi.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
             }
-            if (!jaxTask.getAssigneeAccountIds().isEmpty()) {
+            if (jaxTask.getAssigneeAccountIds() != null && !jaxTask.getAssigneeAccountIds().isEmpty()) {
                for (ArtifactId assignArt : jaxTask.getAssigneeAccountIds()) {
                   assignees.add(atsApi.getUserService().getUserById(assignArt));
                }

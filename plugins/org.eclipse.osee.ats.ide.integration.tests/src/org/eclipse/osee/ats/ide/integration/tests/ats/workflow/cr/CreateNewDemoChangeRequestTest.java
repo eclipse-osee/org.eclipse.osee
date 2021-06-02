@@ -34,6 +34,7 @@ import org.junit.Before;
 public class CreateNewDemoChangeRequestTest {
 
    AtsApi atsApi;
+   public static String TITLE = "New CR - CreateNewDemoChangeRequestTest";
 
    @Before
    public void setup() {
@@ -64,12 +65,11 @@ public class CreateNewDemoChangeRequestTest {
       final CreateNewDemoChangeRequestBlam fBlam =
          (CreateNewDemoChangeRequestBlam) blamEd.getEditorInput().getBlamOperation();
       final BlamEditor fBlamEd = blamEd;
-      final String title = "New CR - " + getClass().getSimpleName();
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override
          public void run() {
-            fBlam.handlePopulateWithDebugInfo(title);
+            fBlam.handlePopulateWithDebugInfo(TITLE);
             fBlamEd.executeBlam();
          }
       }, true);
@@ -86,7 +86,7 @@ public class CreateNewDemoChangeRequestTest {
       Assert.assertTrue(actionResult.getResults().isSuccess());
 
       ArtifactToken artifactByName =
-         atsApi.getQueryService().getArtifactByName(AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow, title);
+         atsApi.getQueryService().getArtifactByName(AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow, TITLE);
       Assert.assertNotNull(artifactByName);
    }
 

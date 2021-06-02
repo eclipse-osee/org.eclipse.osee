@@ -23,7 +23,6 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
@@ -406,16 +405,16 @@ public abstract class XTaskEstManager extends GenericXWidget implements Artifact
     * Create dynamic TEDs from children UserGroups off given teamDef where UserGroup has TaskEst static id
     */
    protected void getTaskDefsFromUserGroupsOff(IAtsTeamDefinitionArtifactToken teamDef, List<TaskEstDefinition> taskDefs) {
-      for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamDef)) {
-         if (atsApi.getAttributeResolver().getAttributesToStringList(child, CoreAttributeTypes.StaticId).contains(
+      for (ArtifactToken childArt : atsApi.getRelationResolver().getChildren(teamDef)) {
+         if (atsApi.getAttributeResolver().getAttributesToStringList(childArt, CoreAttributeTypes.StaticId).contains(
             TaskEstUtil.TASK_EST_STATIC_ID)) {
             String desc =
-               atsApi.getAttributeResolver().getSoleAttributeValueAsString(child, AtsAttributeTypes.Description, "");
+               atsApi.getAttributeResolver().getSoleAttributeValueAsString(childArt, CoreAttributeTypes.Description, "");
             List<ArtifactId> assigneeAccountIds = new LinkedList<>();
-            for (UserToken user : atsApi.getUserGroupService().getUserGroup(child).getMembers()) {
+            for (UserToken user : atsApi.getUserGroupService().getUserGroup(childArt).getMembers()) {
                assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
             }
-            taskDefs.add(new TaskEstDefinition(child.getId(), child.getName(), desc, assigneeAccountIds));
+            taskDefs.add(new TaskEstDefinition(childArt.getId(), childArt.getName(), desc, assigneeAccountIds));
          }
       }
    }

@@ -15,13 +15,13 @@ package org.eclipse.osee.ats.ide.workflow.task.widgets.estimates;
 import java.util.Date;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEstActionBar {
+public class TaskEstActionBar implements TaskEstNameProvider {
 
    private final XTaskEstManager xTaskEstManager;
    private Label extraInfoLabel;
@@ -151,34 +151,23 @@ public class TaskEstActionBar {
    }
 
    protected void createCannedTasks() {
-      NewTaskSet newTaskSet = NewTaskSet.create("Create Task(s)", atsApi.getUserService().getCurrentUserId());
-      NewTaskData newTaskData = NewTaskData.create(newTaskSet, teamWf);
-      for (TaskEstDefinition ted : xTaskEstManager.getItems()) {
-         if (ted.isChecked() && ted.getTask() == null) {
-            newTaskData.setTaskWorkDef(xTaskEstManager.getTaskWorkDefTok());
-            JaxAtsTask task = new JaxAtsTask();
-            String name = getTaskName(ted);
-            task.setName(name);
-            task.addAttribute(CoreAttributeTypes.StaticId, ted.getId());
-            task.setCreatedByUserId(atsApi.getUserService().getCurrentUserId());
-            task.setCreatedDate(new Date());
-            task.setAssigneeAccountIds(ted.getAssigneeAccountIds());
-            newTaskData.add(task);
-         }
-      }
-      if (newTaskData.getTasks().isEmpty()) {
+      if (xTaskEstManager.getItems().isEmpty()) {
          AWorkbench.popup("No Tasks Selected");
+         return;
+      }
+      TaskEstOperations ops =
+         new TaskEstOperations(atsApi, DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating, this);
+      NewTaskSet newTaskSet = ops.createCannedTasks(teamWf, xTaskEstManager.getItems());
+
+      if (newTaskSet.isErrors() || newTaskSet.getTaskData().isEmpty()) {
+         XResultDataUI.report(newTaskSet.getResults(), XTaskEstManager.NAME);
       } else {
-         newTaskSet = atsApi.getTaskService().createTasks(newTaskSet);
-         if (newTaskSet.isErrors() || newTaskSet.getTaskData().isEmpty()) {
-            XResultDataUI.report(newTaskSet.getResults(), XTaskEstManager.NAME);
-         } else {
-            AWorkbench.popup("New Tasks Created");
-         }
+         AWorkbench.popup("New Tasks Created");
       }
    }
 
-   private String getTaskName(TaskEstDefinition ted) {
+   @Override
+   public String getTaskName(TaskEstDefinition ted) {
       return String.format(xTaskEstManager.getTaskNameFormat(), ted.getName());
    }
 

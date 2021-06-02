@@ -78,6 +78,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       ArtifactToken reqUserGroup =
          changes.createArtifact(DemoArtifactToken.SAW_PL_CR_TeamDef, CoreArtifactTypes.UserGroup, "Requirements");
       changes.addAttribute(reqUserGroup, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      changes.addAttribute(reqUserGroup, CoreAttributeTypes.Description, "desc");
       changes.relate(reqUserGroup, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
       changes.relate(reqUserGroup, CoreRelationTypes.Users_User, DemoUsers.Kay_Jones);
 

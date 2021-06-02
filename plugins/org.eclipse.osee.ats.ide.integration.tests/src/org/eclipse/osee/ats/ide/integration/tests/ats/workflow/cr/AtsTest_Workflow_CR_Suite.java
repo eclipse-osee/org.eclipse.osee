@@ -21,7 +21,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-   CreateNewDemoChangeRequestTest.class
+   CreateNewDemoChangeRequestTest.class,
+   XTaskEstManagerTest.class
    //
 })
 public class AtsTest_Workflow_CR_Suite {
