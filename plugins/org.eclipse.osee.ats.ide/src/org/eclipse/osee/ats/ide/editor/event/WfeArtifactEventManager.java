@@ -16,6 +16,10 @@ package org.eclipse.osee.ats.ide.editor.event;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -23,6 +27,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -40,10 +45,12 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
 
    static List<WorkflowEditor> editors = new CopyOnWriteArrayList<>();
    static WfeArtifactEventManager instance = new WfeArtifactEventManager();
+   private final AtsApi atsApi;
 
    // Singleton
    private WfeArtifactEventManager() {
       OseeEventManager.addListener(this);
+      atsApi = AtsApiService.get();
    }
 
    public static void add(WorkflowEditor editor) {
@@ -91,15 +98,40 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          editor.closeEditor();
          return;
       }
+      if (artifactEvent.isHasEvent(awa) || artifactEvent.isReloaded(awa)) {
+         Displays.ensureInDisplayThread(new Runnable() {
 
-      Displays.ensureInDisplayThread(new Runnable() {
-
-         @Override
-         public void run() {
-            editor.refresh();
+            @Override
+            public void run() {
+               editor.refresh();
+            }
+         });
+      } else if (awa.isTeamWorkflow()) {
+         boolean refreshNeeded = false;
+         for (IAtsTask task : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) awa)) {
+            if (artifactEvent.isHasEvent((Artifact) task.getStoreObject())) {
+               refreshNeeded = true;
+               break;
+            }
          }
-      });
+         if (!refreshNeeded) {
+            for (IAtsAbstractReview review : atsApi.getReviewService().getReviews((IAtsTeamWorkflow) awa)) {
+               if (artifactEvent.isHasEvent((Artifact) review.getStoreObject())) {
+                  refreshNeeded = true;
+                  break;
+               }
+            }
+         }
+         if (refreshNeeded) {
+            Displays.ensureInDisplayThread(new Runnable() {
 
+               @Override
+               public void run() {
+                  editor.refresh();
+               }
+            });
+         }
+      }
    }
 
 }
