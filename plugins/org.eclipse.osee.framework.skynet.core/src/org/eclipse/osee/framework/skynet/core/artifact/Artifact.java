@@ -626,6 +626,10 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return artifactType.getValidAttributeTypes();
    }
 
+   public final Collection<ComputedCharacteristicToken<?>> getComputedCharacteristics() {
+      return artifactType.getValidComputedCharacteristics();
+   }
+
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
       ensureAttributesLoaded();
       return Collections.oneOrSentinel(getAttributes(attributeType), null);

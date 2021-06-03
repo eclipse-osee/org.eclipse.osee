@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristic;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -29,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition {
 
    private final AttributeTypeToken attributeType;
+   private final ComputedCharacteristicToken<?> computedCharacteristic;
    private final Map<String, Object> parameters = new HashMap<String, Object>();
    private final RelationTypeSide relationTypeSide;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
@@ -46,22 +49,26 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    }
 
    public WidgetDefinition(String name, AttributeTypeToken attributeType, String xWidgetName, WidgetOption... widgetOptions) {
-      this(name, RelationTypeSide.SENTINEL, attributeType, xWidgetName, widgetOptions);
+      this(name, RelationTypeSide.SENTINEL, attributeType, ComputedCharacteristicToken.SENTINEL, xWidgetName,
+         widgetOptions);
    }
 
    public WidgetDefinition(String name, String xWidgetName, WidgetOption... widgetOptions) {
-      this(name, RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL, xWidgetName, widgetOptions);
+      this(name, RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL, ComputedCharacteristicToken.SENTINEL,
+         xWidgetName, widgetOptions);
    }
 
    public WidgetDefinition(String name, RelationTypeSide relationTypeSide, String xWidgetName, WidgetOption... widgetOptions) {
-      this(name, relationTypeSide, AttributeTypeToken.SENTINEL, xWidgetName, widgetOptions);
+      this(name, relationTypeSide, AttributeTypeToken.SENTINEL, ComputedCharacteristicToken.SENTINEL, xWidgetName,
+         widgetOptions);
    }
 
-   public WidgetDefinition(String name, RelationTypeSide relationTypeSide, AttributeTypeToken attributeType, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDefinition(String name, RelationTypeSide relationTypeSide, AttributeTypeToken attributeType, ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
       super(name);
       this.relationTypeSide = relationTypeSide;
       Conditions.assertNotNull(attributeType, "attribute type can not be null for WidgetDefinition [%s]", name);
       this.attributeType = attributeType;
+      this.computedCharacteristic = computedCharacteristic;
       this.xWidgetName = xWidgetName;
       for (WidgetOption opt : widgetOptions) {
          options.add(opt);
@@ -69,7 +76,13 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    }
 
    public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
-      this(attrType.getUnqualifiedName(), RelationTypeSide.SENTINEL, attrType, xWidgetName, widgetOptions);
+      this(attrType.getUnqualifiedName(), RelationTypeSide.SENTINEL, attrType, ComputedCharacteristicToken.SENTINEL,
+         xWidgetName, widgetOptions);
+   }
+
+   public WidgetDefinition(ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
+      this(computedCharacteristic.getName(), RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL,
+         computedCharacteristic, xWidgetName, widgetOptions);
    }
 
    @Override
@@ -160,6 +173,11 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    @Override
    public AttributeTypeToken getAttributeType() {
       return attributeType;
+   }
+
+   @Override
+   public ComputedCharacteristicToken<?> getComputedCharacteristic() {
+      return computedCharacteristic;
    }
 
    @Override

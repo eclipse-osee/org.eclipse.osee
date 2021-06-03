@@ -1,3 +1,4 @@
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.core.data.TaggerTypeToken;
  * @author Stephen J. Molaro
  */
 public final class ComputedCharacteristicSentinel extends ComputedCharacteristic<Object> {
-
    public ComputedCharacteristicSentinel(Long id, String name, TaggerTypeToken taggerType, NamespaceToken namespace, String description, List<AttributeTypeGeneric<Object>> typesToCompute) {
       super(id, name, taggerType, namespace, description, typesToCompute);
    }

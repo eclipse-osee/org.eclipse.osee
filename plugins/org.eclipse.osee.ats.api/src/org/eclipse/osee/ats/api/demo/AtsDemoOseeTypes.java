@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.atsDemo;
 import static org.eclipse.osee.ats.api.util.AtsImage.CHANGE_REQUEST;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.api.demo.enums.token.CodeReqDocAttributeType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.computed.ComputedCharacteristicDelta;
 
 /**
  * @author Ryan D. Brooks
@@ -42,7 +44,9 @@ public interface AtsDemoOseeTypes {
    CodeDefectCodeAttributeType DefectCode = atsDemo.createEnumNoTag(new CodeDefectCodeAttributeType());
    CodeDetectionAttributeType Detection = atsDemo.createEnumNoTag(new CodeDetectionAttributeType());
    AttributeTypeString IncludeBuild = atsDemo.createString(6624602983846643901L, "demo.code.Include Build", MediaType.TEXT_PLAIN, "");
-   AttributeTypeInteger LocAffected = atsDemo.createIntegerNoTag(2266722106367646882L, "demo.code.LOC Affected", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger LocAffected = atsDemo.createIntegerNoTag(2266722106367646882L, "demo.code.LOC Affected", MediaType.TEXT_PLAIN, "Total Lines of Code Affected");
+   AttributeTypeInteger LocReviewed = ats.createInteger(2266722106367646342L, "demo.code.LOC Reviewed", MediaType.TEXT_PLAIN, "Total Lines of Code Reviewed");
+   ComputedCharacteristicDelta LocRemaining = ats.createComp(ComputedCharacteristicDelta::new, 89273067834049579L, "demo.code.LOC Remaining", "Total Lines of Code Remaining", LocAffected, LocReviewed);
    AttributeTypeString OriginatingBuild = atsDemo.createString(6539429238794418072L, "demo.code.Originating Build", MediaType.TEXT_PLAIN, "");
    CodeReqDocAttributeType ReqDoc = atsDemo.createEnumNoTag(new CodeReqDocAttributeType());
    AttributeTypeString Subsystem = atsDemo.createString(1152921504606847248L, "demo.code.Subsystem", MediaType.TEXT_PLAIN, "");
@@ -84,6 +88,8 @@ public interface AtsDemoOseeTypes {
       .zeroOrOne(Detection, Detection.Other)
       .zeroOrOne(IncludeBuild)
       .zeroOrOne(LocAffected)
+      .zeroOrOne(LocReviewed)
+      .computed(LocRemaining)
       .zeroOrOne(OriginatingBuild)
       .zeroOrOne(ReqDoc, ReqDoc.Unknown)
       .zeroOrOne(Subsystem)

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.CreateChangeReportTasksWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -102,7 +103,13 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
             new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY), //
+            new CompositeLayoutItem(6, //
+               new WidgetDefinition(AtsDemoOseeTypes.LocAffected, "XIntegerDam", WidgetOption.EDITABLE), //
+               new WidgetDefinition(AtsDemoOseeTypes.LocReviewed, "XIntegerDam", WidgetOption.EDITABLE), //
+               new WidgetDefinition(AtsDemoOseeTypes.LocRemaining, "XComputedCharacteristicWidget",
+                  WidgetOption.NOT_EDITABLE, WidgetOption.NO_SELECT) //
+            ));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

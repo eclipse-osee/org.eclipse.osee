@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboEnumDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComputedCharacteristicWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
@@ -384,6 +385,8 @@ public final class FrameworkXWidgetProvider {
                }
             } else if (xWidgetName.equals(XListRelationWidget.WIDGET_ID)) {
                return new XListRelationWidget(artifact, name, xWidgetLayoutData.getRelationTypeSide());
+            } else if (xWidgetName.equals(XComputedCharacteristicWidget.WIDGET_ID)) {
+               return new XComputedCharacteristicWidget(xWidgetLayoutData.getComputedCharacteristic());
             } else if (xWidgetName.startsWith("XList")) {
                String values[] =
                   xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);

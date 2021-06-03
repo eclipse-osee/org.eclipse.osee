@@ -180,6 +180,7 @@ public class WidgetPageUtil {
             data.setStoreId(widgetDef.getAttributeType().getId());
          }
          data.setRelationTypeSide(widgetDef.getRelationTypeSide());
+         data.setComputedCharacteristic(widgetDef.getComputedCharacteristic());
          data.setToolTip(widgetDef.getToolTip());
          data.setId(widgetDef.getName());
          data.setXWidgetName(widgetDef.getXWidgetName());

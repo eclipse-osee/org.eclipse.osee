@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -54,6 +55,7 @@ public class XWidgetRendererItem implements Cloneable {
    private String doubleClickText;
    private ArtifactTypeId artifactType;
    private RelationTypeSide relationTypeSide;
+   private ComputedCharacteristicToken<?> computedCharacteristic;
    private boolean horizontalLabel;
    private Object defaultValueObj;
 
@@ -289,6 +291,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setRelationTypeSide(RelationTypeSide relationTypeSide) {
       this.relationTypeSide = relationTypeSide;
+   }
+
+   public ComputedCharacteristicToken<?> getComputedCharacteristic() {
+      return computedCharacteristic;
+   }
+
+   public void setComputedCharacteristic(ComputedCharacteristicToken<?> computedCharacteristicToken) {
+      this.computedCharacteristic = computedCharacteristicToken;
    }
 
    /**
