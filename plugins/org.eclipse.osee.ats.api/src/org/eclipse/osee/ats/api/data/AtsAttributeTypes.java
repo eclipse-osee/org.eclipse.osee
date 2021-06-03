@@ -180,6 +180,8 @@ public interface AtsAttributeTypes {
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", MediaType.TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow");
    AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", MediaType.TEXT_PLAIN, "Enter clear and concise title that can be generally understood.");
    AttributeTypeString Title = CoreAttributeTypes.Name;
+   AttributeTypeDate TleReviewedDate = ats.createDate(2436278456841462630L, "ats.TLE Reviewed Date", AttributeTypeToken.TEXT_CALENDAR, "");
+   AttributeTypeLong TleReviewedBy = ats.createLong(4020478495150345644L, "ats.TLE Reviewed By", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger UnplannedPoints = ats.createInteger(284254492767020802L, "ats.Unplanned Points", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean UnplannedWork = ats.createBoolean(2421093774890249189L, "ats.Unplanned Work", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean UsesResolutionOptions = ats.createBoolean(1152921504606847154L, "ats.Uses Resolution Options", MediaType.TEXT_PLAIN, "");

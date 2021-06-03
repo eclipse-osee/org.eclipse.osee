@@ -74,7 +74,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       if (date != null) {
          User user = UserManager.getUserByArtId(
             getArtifact().getSoleAttributeValue(signByAttrType, SystemUser.UnAssigned.getId()));
-         labelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          return String.format("signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
       }
       if (this.isRequiredButton) {
@@ -178,6 +178,17 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    public AttributeTypeId getSignDateAttrType() {
       return signDateAttrType;
+   }
+
+   @Override
+   public IStatus isValid() {
+      if (isRequiredEntry()) {
+         Date date = getArtifact().getSoleAttributeValue(signDateAttrType, null);
+         if (date == null) {
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be signed");
+         }
+      }
+      return Status.OK_STATUS;
    }
 
 }

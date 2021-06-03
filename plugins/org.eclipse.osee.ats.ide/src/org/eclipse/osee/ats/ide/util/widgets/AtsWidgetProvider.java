@@ -218,6 +218,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XDateWithValidateDam(name);
       } else if (widgetName.equals(XPointsWidget.WIDGET_ID)) {
          return new XPointsWidget();
+      } else if (widgetName.equals(XTleReviewedWidget.WIDGET_ID)) {
+         return new XTleReviewedWidget();
       }
 
       return toReturn;

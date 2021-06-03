@@ -193,6 +193,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(StartDate)
       .any(State)
       .zeroOrOne(StateNotes)
+      .zeroOrOne(TleReviewedBy)
+      .zeroOrOne(TleReviewedDate)
       .zeroOrOne(UnplannedWork)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
       .zeroOrOne(WorkPackageGuid)

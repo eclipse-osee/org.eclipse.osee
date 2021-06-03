@@ -20,6 +20,8 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedCompletio
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.WorkflowNotes;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -60,10 +62,13 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
                new WidgetDefinition("Estimated Points", "XPointsWidget", AUTO_SAVE), //
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
             ), //
+            new WidgetDefinition("TLE Reviewed Estimate", AtsAttributeTypes.TleReviewedDate, "XTleReviewedWidget",
+               REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(WorkflowNotes, "XTextDam", AUTO_SAVE), //
                new WidgetDefinition(Category1, "XTextDam", AUTO_SAVE) //
-            ));
+            ) //
+         );
 
       bld.andState(2, "Completed", StateType.Completed) //
          .andColor(StateColor.DARK_GREEN);
