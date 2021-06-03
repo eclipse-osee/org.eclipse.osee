@@ -99,12 +99,18 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          networkButtons.put(addrs[i], button);
       }
 
-      String inetaddress = getPreferenceStore().getString(CorePreferences.INETADDRESS_KEY);
+      String inetaddress;
+      try {
+         inetaddress = CorePreferences.getDefaultInetAddress().getHostAddress();
+      } catch (UnknownHostException e) {
+         inetaddress = getPreferenceStore().getString(CorePreferences.INETADDRESS_KEY);
+      }
 
       boolean addressSelected = false;
       if (Strings.isValid(inetaddress)) {
          for (InetAddress address : networkButtons.keySet()) {
-            if (address.getHostAddress().equals(inetaddress)) {
+            String current = address.getHostAddress();
+            if (current.equals(inetaddress)) {
                networkButtons.get(address).setSelection(true);
                addressSelected = true;
             }
@@ -190,7 +196,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       getPreferenceStore().setValue(CorePreferences.INETADDRESS_KEY, "");
       for (InetAddress address : networkButtons.keySet()) {
          if (networkButtons.get(address).getSelection()) {
-            getPreferenceStore().setValue(CorePreferences.INETADDRESS_KEY, address.getHostAddress());
+            CorePreferences.setDefaultAddress(address.getHostAddress());
             break;
          }
       }

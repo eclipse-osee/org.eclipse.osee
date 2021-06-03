@@ -15,8 +15,9 @@ package org.eclipse.osee.framework.plugin.core.internal;
 
 import java.net.UnknownHostException;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,21 +26,20 @@ import org.eclipse.osee.framework.plugin.core.CorePreferences;
 /**
  * @author Roberto E. Escobar
  */
-@SuppressWarnings("deprecation")
 public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
 
    @Override
    public void initializeDefaultPreferences() {
-      Preferences store = Activator.getInstance().getPluginPreferences();
+      IEclipsePreferences prefs = ConfigurationScope.INSTANCE.getNode(Activator.PLUGIN_ID);
       try {
-         String defaultNetworkValue = Network.getValidIP().getHostAddress();
-         store.setDefault(CorePreferences.INETADDRESS_KEY, defaultNetworkValue);
-         String value = store.getString(CorePreferences.INETADDRESS_KEY);
-         if (!Strings.isValid(value)) {
-            store.setValue(CorePreferences.INETADDRESS_KEY, store.getDefaultString(CorePreferences.INETADDRESS_KEY));
+         String currentValue = prefs.get(CorePreferences.INETADDRESS_KEY, "");
+         if (Strings.isInValid(currentValue)) {
+            String defaultNetworkValue = Network.getValidIP().getHostAddress();
+            prefs.put(CorePreferences.INETADDRESS_KEY, defaultNetworkValue);
          }
       } catch (UnknownHostException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error initializing default inet address key", ex);
       }
+
    }
 }
