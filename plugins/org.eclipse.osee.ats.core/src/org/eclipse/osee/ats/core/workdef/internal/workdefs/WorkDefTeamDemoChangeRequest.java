@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
@@ -50,14 +51,15 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition("Found-In Version", "XFoundInVersionWidget"), //
             new WidgetDefinition("Create/Open Change Request Analysis Workflow", "XCreateEscapementDemoWfXButton"), //
 
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
+               AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
+                  REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
+                  REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE) //
             ), //
             new WidgetDefinition(AtsAttributeTypes.FeatureImpactReference, "XHyperlinkFeatureDam"));
 
@@ -70,16 +72,17 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition("Found-In Version", "XFoundInVersionWidget"), //
             new WidgetDefinition("Create/Open Change Request Analysis Workflow", "XCreateEscapementDemoWfXButton"), //
 
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
+               AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
+                  REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
+                  REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE) //
             ), //
             new WidgetDefinition("Task Estimating Manager", "XTaskEstManagerDemo"));
 
@@ -88,8 +91,8 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
@@ -98,9 +101,9 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AllowEditToAll, RuleDefinitionOption.AddDecisionValidateBlockingReview) //
