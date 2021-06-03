@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.applicability;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Donald G. Dunne
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FeatureDefinition extends NamedIdBase {
    public static final FeatureDefinition SENTINEL = new FeatureDefinition();
 

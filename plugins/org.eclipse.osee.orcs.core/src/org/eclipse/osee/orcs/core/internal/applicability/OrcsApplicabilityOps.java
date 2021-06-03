@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +32,8 @@ import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BlockApplicabilityCacheFile;
+import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
@@ -1433,10 +1438,70 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String applyApplicabilityToFiles(BranchId branch, ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
-      ArtifactToken viewToken = orcsApi.getQueryFactory().fromBranch(branch).andId(view).asArtifactToken();
-      return new BlockApplicabilityOps(orcsApi, logger, branch, viewToken).applyApplicabilityToFiles(
-         commentNonApplicableBlocks, sourcePath, stagePath);
+   public XResultData applyApplicabilityToFiles(BlockApplicabilityStageRequest data, BranchId branch) {
+      XResultData results = new XResultData();
+      String sourcePath = data.getSourcePath();
+      String stagePath = data.getStagePath();
+      if (sourcePath == null || stagePath == null) {
+         results.error("Both a source path and stage path are required");
+         return results;
+      }
+
+      boolean commentNonApplicableBlocks = data.isCommentNonApplicableBlocks();
+      ArtifactId viewId = data.getView();
+      ArtifactToken viewToken;
+      BlockApplicabilityOps ops;
+
+      String cachePath = data.getCachePath();
+      if (cachePath.isEmpty()) {
+         // The user has not given a cache to use for processing
+         viewToken = orcsApi.getQueryFactory().fromBranch(branch).andId(viewId).asArtifactToken();
+         ops = new BlockApplicabilityOps(orcsApi, logger, branch, viewToken);
+      } else {
+         // The user has given a cache to use
+         File cacheFile = new File(cachePath);
+         if (cacheFile.exists()) {
+            ObjectMapper objMap = new ObjectMapper();
+            BlockApplicabilityCacheFile cache;
+            try {
+               cache = objMap.readValue(cacheFile, BlockApplicabilityCacheFile.class);
+            } catch (IOException ex) {
+               results.error("There was a problem reading the cache file given");
+               return results;
+            }
+
+            Long cachedViewId = cache.getViewId();
+            if (!cachedViewId.equals(viewId.getId())) {
+               results.error(String.format("The entered view id (%s) does not match up with the cached view id (%s)",
+                  viewId.getId(), cachedViewId));
+               return results;
+            }
+
+            // The token is created/queried from the token service as this should not be stored within the DB
+            viewToken = ArtifactToken.valueOf(cachedViewId, cache.getViewName(),
+               orcsApi.tokenService().getArtifactType(cache.getViewTypeId()));
+
+            ops = new BlockApplicabilityOps(orcsApi, logger, branch, viewToken, cache);
+         } else {
+            results.error("A cache path was given but no file was found");
+            return results;
+         }
+      }
+
+      File stageDir = new File(stagePath, "Staging");
+      if (!stageDir.exists() && !stageDir.mkdir()) {
+         results.error(String.format("Could not create stage directory %s", stageDir.toString()));
+         return results;
+      }
+      File stageViewDir = new File(stageDir.getPath(), viewToken.getName());
+      if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
+         results.error(String.format("Could not create stage directory %s", stageViewDir.toString()));
+         return results;
+      }
+
+      stagePath = stageViewDir.getPath();
+
+      return ops.applyApplicabilityToFiles(commentNonApplicableBlocks, sourcePath, stagePath);
    }
 
    @Override

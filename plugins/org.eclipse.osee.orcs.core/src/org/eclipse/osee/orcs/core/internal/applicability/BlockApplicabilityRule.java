@@ -258,7 +258,7 @@ public class BlockApplicabilityRule extends Rule {
    }
 
    private String getCommentedString(String text, String commentPrefix, String commentSuffix) {
-      BufferedReader reader = new BufferedReader(new StringReader(text));
+      BufferedReader reader = new BufferedReader(new StringReader(text.replaceAll("\t", "")));
       StringBuilder strB = new StringBuilder();
       String line;
       String newLine = getNewLineFromFile(text);

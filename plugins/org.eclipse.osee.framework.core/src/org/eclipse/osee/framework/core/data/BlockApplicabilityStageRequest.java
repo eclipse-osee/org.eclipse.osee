@@ -12,6 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Branden W. Phillips
  */
@@ -21,16 +23,22 @@ public class BlockApplicabilityStageRequest {
    private boolean commentNonApplicableBlocks;
    private String sourcePath;
    private String stagePath;
+   private String cachePath = "";
 
    public BlockApplicabilityStageRequest() {
       // for jax-rs
    }
 
-   public BlockApplicabilityStageRequest(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
+   public BlockApplicabilityStageRequest(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath, String cachePath) {
       this.view = view;
       this.commentNonApplicableBlocks = commentNonApplicableBlocks;
       this.sourcePath = sourcePath;
       this.stagePath = stagePath;
+      this.cachePath = cachePath;
+   }
+
+   public BlockApplicabilityStageRequest(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
+      this(view, commentNonApplicableBlocks, sourcePath, stagePath, Strings.EMPTY_STRING);
    }
 
    public ArtifactId getView() {
@@ -63,5 +71,13 @@ public class BlockApplicabilityStageRequest {
 
    public void setStagePath(String stagePath) {
       this.stagePath = stagePath;
+   }
+
+   public String getCachePath() {
+      return cachePath;
+   }
+
+   public void setCachePath(String cachePath) {
+      this.cachePath = cachePath;
    }
 }

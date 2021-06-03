@@ -14,7 +14,9 @@
 package org.eclipse.osee.orcs.core.internal.applicability;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BlockApplicabilityCacheFile;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -44,6 +47,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityT
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -57,12 +61,17 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class BlockApplicabilityOps {
    private static String SCRIPT_ENGINE_NAME = "JavaScript";
 
+   /**
+    * Regex for use withing BlockApplicability.<br/>
+    * (?!Group) is included within Configuration in order to void matching ConfigurationGroup text but leaving 'Group'
+    * behind. This ensures that ConfigurationGroup tags will properly match their own regex.
+    */
    public static final String SPACES = " *";
    public static final String SINGLE_NEW_LINE = "\\r\\n|[\\n\\r]";
    public static final String BEGINFEATURE = " ?(Feature ?(\\[(.*?)\\])) ?";
    public static final String ENDFEATURE = " ?(End Feature ?((\\[.*?\\]))?) ?";
-   public static final String BEGINCONFIG = " ?(Configuration( Not)? ?(\\[(.*?)\\])) ?";
-   public static final String ENDCONFIG = " ?(End Configuration ?((\\[.*?\\]))?) ?";
+   public static final String BEGINCONFIG = " ?(Configuration(?!Group)( Not)? ?(\\[(.*?)\\])) ?";
+   public static final String ENDCONFIG = " ?(End Configuration(?!Group) ?((\\[.*?\\]))?) ?";
    public static final String BEGINCONFIGGRP = " ?(ConfigurationGroup( Not)? ?(\\[(.*?)\\])) ?";
    public static final String ENDCONFIGGRP = " ?(End ConfigurationGroup ?((\\[.*?\\]))?) ?";
    public static final String COMMENT_EXTRA_CHARS = SPACES + "(" + SINGLE_NEW_LINE + ")?";
@@ -87,19 +96,39 @@ public class BlockApplicabilityOps {
    private final ScriptEngine se;
    private final BranchId branch;
    private final ArtifactToken view;
+   private final String plPreferences;
    private final List<FeatureDefinition> featureDefinition;
    private final Map<String, List<String>> viewApplicabilitiesMap;
+   private final Map<String, List<String>> configurationMap;
+   private final boolean useCachedConfig;
+
+   public BlockApplicabilityOps(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactToken view, BlockApplicabilityCacheFile cache) {
+      this.orcsApi = orcsApi;
+      this.logger = logger;
+      this.branch = branch;
+      this.view = view;
+      ScriptEngineManager sem = new ScriptEngineManager();
+      this.se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
+      this.featureDefinition = cache.getFeatureDefinition();
+      this.viewApplicabilitiesMap = cache.getViewApplicabilitiesMap();
+      this.configurationMap = cache.getConfigurationMap();
+      this.plPreferences = cache.getProductLinePreferences();
+      this.useCachedConfig = true;
+   }
 
    public BlockApplicabilityOps(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactToken view) {
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.branch = branch;
       this.view = view;
-      this.featureDefinition = orcsApi.getApplicabilityOps().getFeatureDefinitionData(branch);
       ScriptEngineManager sem = new ScriptEngineManager();
-      se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
-      viewApplicabilitiesMap =
-         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(this.branch, view);
+      this.se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
+      this.featureDefinition = orcsApi.getApplicabilityOps().getFeatureDefinitionData(branch);
+      this.viewApplicabilitiesMap =
+         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, view);
+      this.configurationMap = new HashMap<>();
+      this.plPreferences = getProductLinePreferences();
+      this.useCachedConfig = false;
    }
 
    public ApplicabilityBlock createApplicabilityBlock(ApplicabilityType applicType, String beginExpression) {
@@ -109,7 +138,9 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public String applyApplicabilityToFiles(boolean commentNonApplicableBlocks, String sourcePath, String stagePath) throws OseeCoreException {
+   public XResultData applyApplicabilityToFiles(boolean commentNonApplicableBlocks, String sourcePath, String stagePath) throws OseeCoreException {
+      XResultData results = new XResultData();
+
       Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap();
 
       BlockApplicabilityRule rule =
@@ -123,22 +154,13 @@ public class BlockApplicabilityOps {
       HashSet<String> excludedFiles = new HashSet<>();
       excludedFiles.add("Staging");
 
-      stagePath = getOrCreateFullStagePath(stagePath);
       rule.process(new File(sourcePath), stagePath, excludedFiles);
 
-      return "ruleWasApplicable: " + rule.ruleWasApplicable();
-   }
+      if (!useCachedConfig) {
+         createCacheFile(results, stagePath);
+      }
 
-   public String getOrCreateFullStagePath(String stagePath) throws OseeCoreException {
-      File stageDir = new File(stagePath, "Staging");
-      if (!stageDir.exists() && !stageDir.mkdir()) {
-         throw new OseeCoreException("Could not create stage directory " + stageDir.toString());
-      }
-      File stageViewDir = new File(stageDir.getPath(), view.getName());
-      if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
-         throw new OseeCoreException("Could not create stage directory " + stageViewDir.toString());
-      }
-      return stageViewDir.getPath();
+      return results;
    }
 
    public String evaluateApplicabilityExpression(ApplicabilityBlock applic) {
@@ -160,10 +182,10 @@ public class BlockApplicabilityOps {
             toInsert =
                getValidFeatureContent(insideText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
          } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
-            toInsert = getValidConfigurationContent(branch, view, type, insideText, parser.getIdValuesMap());
+            toInsert = getValidConfigurationContent(type, insideText, parser.getIdValuesMap());
          } else if (type.equals(ApplicabilityType.ConfigurationGroup) || type.equals(
             ApplicabilityType.NotConfigurationGroup)) {
-            toInsert = getValidConfigurationGroupContent(branch, view, type, insideText, applic.getBeginTag());
+            toInsert = getValidConfigurationGroupContent(type, insideText, applic.getBeginTag());
          }
 
       } catch (RecognitionException ex) {
@@ -219,7 +241,7 @@ public class BlockApplicabilityOps {
       return toReturn.toString();
    }
 
-   private String getValidConfigurationGroupContent(BranchId branch, ArtifactToken view, ApplicabilityType type, String fullText, String beginTag) {
+   private String getValidConfigurationGroupContent(ApplicabilityType type, String fullText, String beginTag) {
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -235,7 +257,7 @@ public class BlockApplicabilityOps {
       String toReturn = "";
       Boolean viewInCfgGroup = false;
       // Note: this assumes only OR's are put in between configuration groups
-      viewInCfgGroup = viewInCfgGroup(branch, view, beginTag);
+      viewInCfgGroup = viewInCfgGroup(beginTag);
       if (type.equals(ApplicabilityType.NotConfigurationGroup)) {
          if (viewInCfgGroup) {
             toReturn = elseText;
@@ -251,7 +273,7 @@ public class BlockApplicabilityOps {
       return toReturn;
    }
 
-   private Boolean viewInCfgGroup(BranchId branch, ArtifactToken view, String beginTag) {
+   private Boolean viewInCfgGroup(String beginTag) {
       String beginConfigGroup = WordCoreUtil.textOnly(beginTag);
       Boolean viewInCfgGroup = false;
       int start = beginConfigGroup.indexOf("[") + 1;
@@ -260,10 +282,7 @@ public class BlockApplicabilityOps {
       String[] configGroups = applicExpText.split("&|\\|");
       for (int i = 0; i < configGroups.length; i++) {
          configGroups[i] = configGroups[i].split("=")[0].trim();
-         if (orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andNameEquals(
-            configGroups[i]).andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent,
-               CoreArtifactTokens.PlCfgGroupsFolder).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_BranchView,
-                  view).exists()) {
+         if (queryGroup(configGroups[i])) {
             viewInCfgGroup = true;
             break;
          } else {
@@ -275,7 +294,19 @@ public class BlockApplicabilityOps {
       return viewInCfgGroup;
    }
 
-   private String getValidConfigurationContent(BranchId branch, ArtifactToken view, ApplicabilityType type, String fullText, HashMap<String, List<String>> configIdValuesMap) {
+   private boolean queryGroup(String configGroup) {
+      if (useCachedConfig) {
+         return configurationMap.containsKey(configGroup);
+      } else {
+         return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andNameEquals(
+            configGroup).andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent,
+               CoreArtifactTokens.PlCfgGroupsFolder).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_BranchView,
+                  view).exists();
+      }
+
+   }
+
+   private String getValidConfigurationContent(ApplicabilityType type, String fullText, HashMap<String, List<String>> configIdValuesMap) {
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -293,12 +324,7 @@ public class BlockApplicabilityOps {
 
       List<String> matchingTags = new ArrayList<String>();
       if (view.isTypeEqual(CoreArtifactTypes.GroupArtifact)) {
-         for (ArtifactReadable memberConfig : orcsApi.getQueryFactory().fromBranch(branch).andId(
-            view).getArtifact().getRelated(CoreRelationTypes.PlConfigurationGroup_BranchView).getList()) {
-            if (configIdValuesMap.containsKey(memberConfig.getName().toUpperCase())) {
-               matchingTags.add("Config = " + memberConfig.getName());
-            }
-         }
+         getGroupConfigMatchingTags(matchingTags, configIdValuesMap);
          if (matchingTags.isEmpty()) {
             matchingTags = null;
          }
@@ -308,8 +334,7 @@ public class BlockApplicabilityOps {
       }
       if (type.equals(ApplicabilityType.NotConfiguration)) {
          //Note when publishing with view=configurationgroup, do not publish Configuration Not[configA] text
-         if (orcsApi.getQueryFactory().fromBranch(branch).andId(view).andIsOfType(
-            CoreArtifactTypes.BranchView).exists()) {
+         if (branchViewExists()) {
             if (matchingTags != null) {
                toReturn = elseText;
             } else {
@@ -323,6 +348,38 @@ public class BlockApplicabilityOps {
       }
 
       return toReturn;
+   }
+
+   private void getGroupConfigMatchingTags(List<String> matchingTags, HashMap<String, List<String>> configIdValuesMap) {
+      if (useCachedConfig) {
+         List<String> configs = configurationMap.getOrDefault(view.getName(), new ArrayList<String>());
+         for (String config : configs) {
+            if (configIdValuesMap.containsKey(config.toUpperCase())) {
+               matchingTags.add("Config = " + config);
+            }
+         }
+      } else {
+         for (ArtifactReadable memberConfig : orcsApi.getQueryFactory().fromBranch(branch).andId(
+            view).getArtifact().getRelated(CoreRelationTypes.PlConfigurationGroup_BranchView).getList()) {
+            if (configIdValuesMap.containsKey(memberConfig.getName().toUpperCase())) {
+               matchingTags.add("Config = " + memberConfig.getName());
+            }
+         }
+      }
+   }
+
+   private boolean branchViewExists() {
+      if (useCachedConfig) {
+         for (List<String> configs : configurationMap.values()) {
+            if (configs.contains(view.getName())) {
+               return true;
+            }
+         }
+         return false;
+      } else {
+         return orcsApi.getQueryFactory().fromBranch(branch).andId(view).andIsOfType(
+            CoreArtifactTypes.BranchView).exists();
+      }
    }
 
    private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
@@ -401,14 +458,76 @@ public class BlockApplicabilityOps {
       return toReturn;
    }
 
-   private Map<String, FileTypeApplicabilityData> populateFileTypeApplicabilityDataMap() {
-      Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = new HashMap<>();
-      ArtifactReadable globalPreferences = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         CoreArtifactTokens.GlobalPreferences).getArtifact();
+   /**
+    * This cache file is created to store necessary information to process applicability within this class. Anything
+    * that is normally queried from the database, should be stored in this json file and saved within the stagePath.
+    */
+   public void createCacheFile(XResultData results, String stagePath) {
+      ObjectMapper objMap = new ObjectMapper();
+      try {
+         BlockApplicabilityCacheFile cache = new BlockApplicabilityCacheFile();
+         cache.setViewId(view.getId());
+         cache.setViewName(view.getName());
+         cache.setViewTypeId(view.getArtifactType().getId());
+         cache.setViewApplicabilitiesMap(viewApplicabilitiesMap);
+         cache.setFeatureDefinition(featureDefinition);
+         cache.setConfigurationMap(createCacheConfigurationMap());
+         cache.setProductLinePreferences(plPreferences);
 
+         File cacheFile = new File(stagePath, ".applicabilityCache");
+         objMap.writeValue(cacheFile, cache);
+
+      } catch (IOException ex) {
+         results.error(String.format("There was a problem while writing the cache file %s", ex.getMessage()));
+      }
+   }
+
+   /**
+    * The configurationMap should be specific to the view given. If the view is a GroupConfig, it will map that group
+    * config to all of the configurations related to it. If the view is a configuration, it will map each related group
+    * config to its' configurations.
+    */
+   private Map<String, List<String>> createCacheConfigurationMap() {
+      Map<String, List<String>> configMap = new HashMap<>();
+      List<ArtifactReadable> groupConfigs = new ArrayList<>();
+      if (view.isOfType(CoreArtifactTypes.GroupArtifact)) {
+         groupConfigs =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).follow(
+                  CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
+      } else {
+         groupConfigs =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).andRelatedTo(
+                  CoreRelationTypes.PlConfigurationGroup_BranchView, view).follow(
+                     CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
+      }
+
+      for (ArtifactReadable groupConfig : groupConfigs) {
+         List<ArtifactReadable> branchViews =
+            groupConfig.getRelatedList(CoreRelationTypes.PlConfigurationGroup_BranchView);
+         List<String> viewNames = new ArrayList<>();
+         for (ArtifactReadable view : branchViews) {
+            viewNames.add(view.getName());
+         }
+         configMap.put(groupConfig.getName(), viewNames);
+      }
+
+      return configMap;
+   }
+
+   private String getProductLinePreferences() {
+      ArtifactReadable globalPreferences = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         CoreArtifactTokens.GlobalPreferences).asArtifact();
       String preferences = globalPreferences.getSoleAttributeValue(CoreAttributeTypes.ProductLinePreferences, "");
 
-      JsonNode preferencesJson = orcsApi.jaxRsApi().readTree(preferences);
+      return preferences;
+   }
+
+   private Map<String, FileTypeApplicabilityData> populateFileTypeApplicabilityDataMap() {
+      Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = new HashMap<>();
+
+      JsonNode preferencesJson = orcsApi.jaxRsApi().readTree(plPreferences);
       JsonNode commentStyles = preferencesJson.findValue("FileExtensionCommentStyle");
       Iterator<JsonNode> iter = commentStyles.elements();
 

@@ -393,14 +393,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String applyBlockVisibility(BlockApplicabilityStageRequest data) {
-      String sourcePath = data.getSourcePath();
-      String stagePath = data.getStagePath();
-      if (sourcePath == null || stagePath == null) {
-         return "Both a source path and stage path are required";
-      }
-      return ops.applyApplicabilityToFiles(branch, data.getView(), data.isCommentNonApplicableBlocks(), sourcePath,
-         stagePath);
+   public XResultData applyBlockVisibility(BlockApplicabilityStageRequest data) {
+      return ops.applyApplicabilityToFiles(data, branch);
    }
 
    @Override
