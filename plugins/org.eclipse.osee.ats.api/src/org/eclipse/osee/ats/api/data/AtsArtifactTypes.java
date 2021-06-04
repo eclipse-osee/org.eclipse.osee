@@ -148,7 +148,6 @@ public interface AtsArtifactTypes {
 
    // ATS Workflows
    ArtifactTypeToken Action = ats.add(ats.artifactType(67L, "Action", false, ACTION, AtsArtifact)
-      .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
       .exactlyOne(AtsId, "0")
       .zeroOrOne(ChangeType, null)
@@ -202,7 +201,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(WorkflowDefinitionReference)
       .zeroOrOne(WorkflowNotes));
    ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, AbstractAccessControlled, AbstractWorkflowArtifact)
-      .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
       .zeroOrOne(AgileChangeType, AgileChangeType.Improvement)
       .zeroOrOne(ApplicabilityWorkflow)
@@ -270,7 +268,6 @@ public interface AtsArtifactTypes {
 
    // Reviews
    ArtifactTypeToken AbstractReview = ats.add(ats.artifactType(64L, "ats.Review", true, AbstractWorkflowArtifact)
-      .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
       .zeroOrOne(RelatedToState)
       .zeroOrOne(ReviewBlocks, ReviewBlocks.None));

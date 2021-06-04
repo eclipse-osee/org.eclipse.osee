@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -51,6 +53,8 @@ public class ConvertAtsConfigGuidAttributesOperation {
    // Types would need to be moved back temporarily to AtsAttributeTypes to be loaded correctly
    AttributeTypeString WorkPackageGuid =
       ats.createString(1152921504606847876L, "ats.Work Package Guid", MediaType.TEXT_PLAIN, "");
+   private static AttributeTypeString ActionableItem = ats.createString(1152921504606847200L, "ats.Actionable Item",
+      MediaType.TEXT_PLAIN, "Actionable Items that are impacted by this change.");
 
    public ConvertAtsConfigGuidAttributesOperation(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -78,7 +82,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          IAtsChangeSet changes = atsApi.createChangeSet("Update TeamDef, AI and WorkPkg TeamWf GUIDs");
          for (ArtifactToken art : allArtifacts) {
             ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, art, atsApi);
-            ConvertAtsConfigGuidAttributesOperations.convertActionableItemsIfNeeded(changes, art, atsApi);
+            convertActionableItemsIfNeeded(changes, art, atsApi);
             atsApi.getLogger().error("Work Item - " + art.toStringWithId());
          }
          TransactionId transaction = changes.executeIfNeeded();
@@ -133,7 +137,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       for (ArtifactToken actionArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), false,
          AtsArtifactTypes.Action)) {
          changes.deleteAttributes(actionArt, AtsAttributeTypes.TeamDefinition);
-         changes.deleteAttributes(actionArt, AtsAttributeTypes.ActionableItem);
+         changes.deleteAttributes(actionArt, ActionableItem);
       }
       changes.executeIfNeeded();
 
@@ -141,8 +145,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       changes = atsApi.createChangeSet("Update AIs for ats.Review GUIDs");
       for (IAtsAbstractReview program : atsApi.getQueryService().createQuery(WorkItemType.Review).getItems(
          IAtsAbstractReview.class)) {
-         ConvertAtsConfigGuidAttributesOperations.convertActionableItemsIfNeeded(changes, program.getStoreObject(),
-            atsApi);
+         convertActionableItemsIfNeeded(changes, program.getStoreObject(), atsApi);
       }
       changes.executeIfNeeded();
       atsApi.getLogger().error("complete");
@@ -206,5 +209,48 @@ public class ConvertAtsConfigGuidAttributesOperation {
    }
 
    java.util.Map<String, IAtsWorkPackage> guidToWorkPackage = new HashMap<>();
+
+   public static void convertActionableItemsIfNeeded(IAtsChangeSet changes, ArtifactToken art, AtsApi atsApi) {
+      // convert guids to id
+      Collection<ArtifactId> currentAiRefIds =
+         atsApi.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
+
+      List<ArtifactId> neededAiRefIds = new LinkedList<>();
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art, ActionableItem)) {
+         String aiArtGuid = (String) attr.getValue();
+         ArtifactToken ai = atsApi.getQueryService().getArtifactByGuidOrSentinel(aiArtGuid);
+         if (ai.isInvalid()) {
+            atsApi.getLogger().error("AI not found for aiArtGuid " + aiArtGuid + " for art " + art.toStringWithId());
+         } else if (!currentAiRefIds.contains(ai)) {
+            neededAiRefIds.add(ai);
+         }
+      }
+
+      for (ArtifactId need : neededAiRefIds) {
+         changes.addAttribute(art, AtsAttributeTypes.ActionableItemReference, need);
+      }
+
+      // convert id to guid
+      List<String> currentAiGuidIds = atsApi.getAttributeResolver().getAttributesToStringList(art, ActionableItem);
+
+      List<String> neededAiGuidIds = new LinkedList<>();
+      Collection<ArtifactId> aiArts =
+         atsApi.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
+      for (ArtifactId id : aiArts) {
+         IAtsActionableItem ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(id.getId());
+         if (ai == null) {
+            ai = atsApi.getQueryService().getConfigItem(id);
+         }
+         if (ai == null) {
+            atsApi.getLogger().error("AI not found for id " + id + " for art " + art.toStringWithId());
+         } else if (!currentAiGuidIds.contains(ai.getStoreObject().getGuid())) {
+            neededAiGuidIds.add(ai.getStoreObject().getGuid());
+         }
+      }
+
+      for (String guid : neededAiGuidIds) {
+         changes.addAttribute(art, ActionableItem, guid);
+      }
+   }
 
 }

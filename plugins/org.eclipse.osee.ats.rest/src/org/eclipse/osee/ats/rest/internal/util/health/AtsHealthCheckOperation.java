@@ -343,18 +343,6 @@ public class AtsHealthCheckOperation {
 
          for (ArtifactToken teamDefArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.TeamDefinition)) {
 
-            // Actionable Items
-            for (AttributeTypeGeneric<? extends Object> artType : Arrays.asList(AtsAttributeTypes.ActionableItem)) {
-               for (Object obj : atsApi.getAttributeResolver().getAttributeValues(teamDefArt, artType)) {
-                  ArtifactId artId = (ArtifactId) obj;
-                  ArtifactToken refArt = atsApi.getQueryService().getArtifact(artId);
-                  if (refArt == null) {
-                     results.log("TestTeamDefinitions", String.format("Invalid %s %s for Team Def %s",
-                        artType.getName(), artId.getId(), teamDefArt.toStringWithId()));
-                  }
-               }
-            }
-
             // Baseline Branch Id valid and Baseline
             String branchId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt,
                AtsAttributeTypes.BaselineBranchId, "-1");

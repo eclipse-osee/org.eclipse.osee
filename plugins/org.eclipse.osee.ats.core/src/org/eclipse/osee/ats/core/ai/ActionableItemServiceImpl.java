@@ -196,12 +196,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    @Override
    public boolean hasActionableItems(IAtsWorkItem workItem) {
-      boolean hasAis = false;
-      hasAis = attrResolver.getAttributeCount(workItem, AtsAttributeTypes.ActionableItemReference) > 0;
-      if (!hasAis && atsApi.getStoreService().getAttributeTypes().contains(AtsAttributeTypes.ActionableItem)) {
-         hasAis = attrResolver.getAttributeCount(workItem, AtsAttributeTypes.ActionableItem) > 0;
-      }
-      return hasAis;
+      return attrResolver.getAttributeCount(workItem, AtsAttributeTypes.ActionableItemReference) > 0;
    }
 
    @Override

@@ -507,8 +507,6 @@ public class AtsActionService implements IAtsActionService {
        */
       String createGuidAttrs = atsApi.getConfigValue("CreateGuidAttrs");
       if (createGuidAttrs != null && createGuidAttrs.equals("true")) {
-         ConvertAtsConfigGuidAttributesOperations.convertActionableItemsIfNeeded(changes, teamWf.getStoreObject(),
-            atsApi);
          ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, teamWf.getStoreObject(),
             atsApi);
       }

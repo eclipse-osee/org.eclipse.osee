@@ -224,7 +224,7 @@ public class ICTeamMailNotifier {
       String taskId = shortName + "-" + workPackageId;
       buffer.append(AHTML.addSpace(5) + AHTML.simplePage("Task ID:" + taskId));
 
-      String actionableItemId = artifact.getSoleAttributeAsString(AtsAttributeTypes.ActionableItem);
+      String actionableItemId = artifact.getSoleAttributeAsString(AtsAttributeTypes.ActionableItemReference);
       ArtifactReadable componentArt = getActionalBleItemsByGuid(actionableItemId);
       buffer.append(AHTML.addSpace(5) + AHTML.simplePage("Packages:          " + componentArt.getName()));
 

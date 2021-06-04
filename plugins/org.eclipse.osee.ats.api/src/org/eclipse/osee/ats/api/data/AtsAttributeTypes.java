@@ -209,7 +209,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", MediaType.TEXT_PLAIN, "Count value to hold the number of tasks under a project");
 
    // Remove static after 25.0
-   AttributeTypeString ActionableItem = ats.createString(1152921504606847200L, "ats.Actionable Item", MediaType.TEXT_PLAIN, "Actionable Items that are impacted by this change.");
    AttributeTypeString TeamDefinition = ats.createString(1152921504606847201L, "ats.Team Definition", MediaType.TEXT_PLAIN, "");
 
    // Remove static after 26.0

@@ -128,7 +128,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
       }
 
       ResultSet<? extends AttributeReadable<Object>> attributes1 =
-         readable.getAttributes(AtsAttributeTypes.ActionableItem);
+         readable.getAttributes(AtsAttributeTypes.ActionableItemReference);
       if (attributes1 != null && attributes1.size() > 0) {
          for (AttributeReadable<Object> attributeReadable : attributes1) {
             String actionableGuid = (String) attributeReadable.getValue();
