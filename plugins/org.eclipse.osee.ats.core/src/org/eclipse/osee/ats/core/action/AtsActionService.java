@@ -59,7 +59,6 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -501,15 +500,6 @@ public class AtsActionService implements IAtsActionService {
          AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeamOrAi));
 
       changes.addWorkflowCreated(teamWf);
-
-      /**
-       * Add guid TeamDef and AI attributes. This can be removed after 0.26.0 where guids will no longer be needed.
-       */
-      String createGuidAttrs = atsApi.getConfigValue("CreateGuidAttrs");
-      if (createGuidAttrs != null && createGuidAttrs.equals("true")) {
-         ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, teamWf.getStoreObject(),
-            atsApi);
-      }
 
       return teamWf;
    }

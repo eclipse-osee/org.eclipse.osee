@@ -208,9 +208,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString Shortname = ats.createStringNoTag(1152921504606847340L, "Shortname", MediaType.TEXT_PLAIN, "Shorter name of project");
    AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", MediaType.TEXT_PLAIN, "Count value to hold the number of tasks under a project");
 
-   // Remove static after 25.0
-   AttributeTypeString TeamDefinition = ats.createString(1152921504606847201L, "ats.Team Definition", MediaType.TEXT_PLAIN, "");
-
    // Remove static after 26.0
    AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
    AttributeTypeString RelatedPeerWorkflowDefinition = ats.createString(1152921504606847870L, "ats.Related Peer Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Peer To Peer Reviews for this Team");

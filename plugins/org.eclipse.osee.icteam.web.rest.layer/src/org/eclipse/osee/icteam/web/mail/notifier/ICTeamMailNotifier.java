@@ -258,7 +258,7 @@ public class ICTeamMailNotifier {
       buffer.append(AHTML.addSpace(5) + AHTML.simplePage(
          "Request Type:          " + artifact.getSoleAttributeAsString(AtsAttributeTypes.ChangeType)));
 
-      String teamDefId = artifact.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition);
+      String teamDefId = artifact.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinitionReference);
       ArtifactReadable teamArt = getTeamDefinitionByGuid(teamDefId);
       buffer.append(AHTML.addSpace(5) + AHTML.simplePage("Team:          " + teamArt.getName()));
 

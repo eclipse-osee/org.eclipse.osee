@@ -28,9 +28,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
@@ -55,6 +55,8 @@ public class ConvertAtsConfigGuidAttributesOperation {
       ats.createString(1152921504606847876L, "ats.Work Package Guid", MediaType.TEXT_PLAIN, "");
    private static AttributeTypeString ActionableItem = ats.createString(1152921504606847200L, "ats.Actionable Item",
       MediaType.TEXT_PLAIN, "Actionable Items that are impacted by this change.");
+   private static AttributeTypeString TeamDefinition =
+      ats.createString(1152921504606847201L, "ats.Team Definition", MediaType.TEXT_PLAIN, "");
 
    public ConvertAtsConfigGuidAttributesOperation(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -68,8 +70,8 @@ public class ConvertAtsConfigGuidAttributesOperation {
       List<ArtifactId> artIdList = new LinkedList<>();
       artIdList.addAll(atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andNotExists(
          AtsAttributeTypes.TeamDefinitionReference).getItemIds());
-      artIdList.addAll(atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andNotExists(
-         AtsAttributeTypes.TeamDefinition).getItemIds());
+      artIdList.addAll(
+         atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andNotExists(TeamDefinition).getItemIds());
       List<Collection<ArtifactId>> subDivide = Collections.subDivide(artIdList, 2000);
       int size = subDivide.size(), count = 1;
       for (Collection<ArtifactId> artIds : subDivide) {
@@ -81,7 +83,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
          IAtsChangeSet changes = atsApi.createChangeSet("Update TeamDef, AI and WorkPkg TeamWf GUIDs");
          for (ArtifactToken art : allArtifacts) {
-            ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, art, atsApi);
+            convertTeamDefinitionIfNeeded(changes, art, atsApi);
             convertActionableItemsIfNeeded(changes, art, atsApi);
             atsApi.getLogger().error("Work Item - " + art.toStringWithId());
          }
@@ -127,8 +129,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       IAtsChangeSet changes = atsApi.createChangeSet("Update Program Team Def GUID");
       for (IAtsProgram program : atsApi.getQueryService().createQuery(AtsArtifactTypes.Program).getItems(
          IAtsProgram.class)) {
-         ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, program.getStoreObject(),
-            atsApi);
+         convertTeamDefinitionIfNeeded(changes, program.getStoreObject(), atsApi);
       }
       changes.executeIfNeeded();
 
@@ -136,7 +137,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       changes = atsApi.createChangeSet("Remove Action AI and TeamDef GUIDs");
       for (ArtifactToken actionArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), false,
          AtsArtifactTypes.Action)) {
-         changes.deleteAttributes(actionArt, AtsAttributeTypes.TeamDefinition);
+         changes.deleteAttributes(actionArt, TeamDefinition);
          changes.deleteAttributes(actionArt, ActionableItem);
       }
       changes.executeIfNeeded();
@@ -250,6 +251,30 @@ public class ConvertAtsConfigGuidAttributesOperation {
 
       for (String guid : neededAiGuidIds) {
          changes.addAttribute(art, ActionableItem, guid);
+      }
+   }
+
+   public static void convertTeamDefinitionIfNeeded(IAtsChangeSet changes, ArtifactToken art, AtsApi atsApi) {
+      // convert guid to id
+      ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefId.isInvalid()) {
+         String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
+         if (Strings.isValid(teamDefGuid)) {
+            ArtifactToken artifact = atsApi.getQueryService().getArtifactByGuidOrSentinel(teamDefGuid);
+            IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
+            changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
+         }
+      }
+      // convert id to guid
+      String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
+      if (!Strings.isValid(teamDefGuid)) {
+         ArtifactId teamDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
+            AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+         ArtifactToken artifact = atsApi.getQueryService().getArtifact(teamDefArt);
+         if (artifact != null) {
+            changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
+         }
       }
    }
 

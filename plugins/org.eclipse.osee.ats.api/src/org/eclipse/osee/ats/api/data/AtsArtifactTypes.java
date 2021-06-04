@@ -78,7 +78,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(Description)
       .zeroOrOne(Namespace)
-      .zeroOrOne(AtsAttributeTypes.TeamDefinition)
       .zeroOrOne(TeamDefinitionReference));
    ArtifactTypeToken ResponsibleTeam = ats.add(ats.artifactType(8943243743202487405L, "Responsible Team", false, AtsTeamDefinitionOrAi));
    ArtifactTypeToken RuleDefinition = ats.add(ats.artifactType(6370402109038303278L, "Rule Definition", false, WORKFLOW_DEFINITION, Artifact)
@@ -242,7 +241,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(RevisitDate)
       .zeroOrOne(RiskAnalysis)
       .zeroOrOne(RootCause)
-      .zeroOrOne(AtsAttributeTypes.TeamDefinition)
       .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(ValidationRequired)
       .zeroOrOne(WeeklyBenefit)

@@ -311,7 +311,8 @@ public class AtsHealthCheckOperation {
 
          // Actionable Items
          for (ArtifactToken aiArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.ActionableItem)) {
-            for (AttributeTypeGeneric<? extends Object> artType : Arrays.asList(AtsAttributeTypes.TeamDefinition)) {
+            for (AttributeTypeGeneric<? extends Object> artType : Arrays.asList(
+               AtsAttributeTypes.TeamDefinitionReference)) {
                for (Object obj : atsApi.getAttributeResolver().getAttributeValues(aiArt, artType)) {
                   ArtifactId artId = (ArtifactId) obj;
                   ArtifactToken refArt = atsApi.getQueryService().getArtifact(artId);
