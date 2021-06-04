@@ -79,6 +79,7 @@ public abstract class XTaskEstManager extends GenericXWidget implements Artifact
    public static final String NAME = "Estimate Manager";
    public static final String DESCRIPTION = "Generate and manage estimating tasks.";
    private int lastSize = 0;
+   private final int MAX_TABLE_SIZE = 10;
    private Composite mainComp;
    private Composite parentComp;
    private final AtsApi atsApi;
@@ -186,6 +187,9 @@ public abstract class XTaskEstManager extends GenericXWidget implements Artifact
    public void setXviewerTreeSize() {
       Tree tree = xTaskEstViewer.getTree();
       int size = xTaskEstViewer.getTree().getItemCount();
+      if (size > MAX_TABLE_SIZE) {
+         size = MAX_TABLE_SIZE;
+      }
       if (size == lastSize) {
          return;
       }
@@ -408,8 +412,8 @@ public abstract class XTaskEstManager extends GenericXWidget implements Artifact
       for (ArtifactToken childArt : atsApi.getRelationResolver().getChildren(teamDef)) {
          if (atsApi.getAttributeResolver().getAttributesToStringList(childArt, CoreAttributeTypes.StaticId).contains(
             TaskEstUtil.TASK_EST_STATIC_ID)) {
-            String desc =
-               atsApi.getAttributeResolver().getSoleAttributeValueAsString(childArt, CoreAttributeTypes.Description, "");
+            String desc = atsApi.getAttributeResolver().getSoleAttributeValueAsString(childArt,
+               CoreAttributeTypes.Description, "");
             List<ArtifactId> assigneeAccountIds = new LinkedList<>();
             for (UserToken user : atsApi.getUserGroupService().getUserGroup(childArt).getMembers()) {
                assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
