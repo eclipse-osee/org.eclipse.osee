@@ -46,6 +46,7 @@ public class ConvertAtsConfigGuidAttributes implements IAtsDatabaseConversion {
          + "   - For Team Workflows\n" //
          + "   ---- Convert Team Definition to new id attribute\n" //
          + "   ---- Convert Actionable Item to new id attribute\n" //
+         + "   ---- Convert work Package to new id attribute\n" //
          + "   - For Programs\n" //
          + "   ---- Convert Team Definition new new id attribute\n" //
          + "   - For Action\n" //

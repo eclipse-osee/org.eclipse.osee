@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -30,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -44,6 +47,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class ConvertAtsConfigGuidAttributesOperation {
 
    private final AtsApi atsApi;
+
+   // Types would need to be moved back temporarily to AtsAttributeTypes to be loaded correctly
+   AttributeTypeString WorkPackageGuid =
+      ats.createString(1152921504606847876L, "ats.Work Package Guid", MediaType.TEXT_PLAIN, "");
 
    public ConvertAtsConfigGuidAttributesOperation(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -172,14 +179,13 @@ public class ConvertAtsConfigGuidAttributesOperation {
       ArtifactId workPackageId = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItemArt,
          AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
       if (workPackageId.isInvalid()) {
-         String workPackageGuid =
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, AtsAttributeTypes.WorkPackageGuid, "");
+         String workPackageGuid = atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, WorkPackageGuid, "");
          if (Strings.isValid(workPackageGuid)) {
             IAtsWorkPackage workPackage = guidToWorkPackage.get(workPackageGuid);
             if (workPackage == null) {
                atsApi.getLogger().error(String.format("Work Package null for guid %s; deleting attribute for %s",
                   workPackageGuid, workItemArt.toStringWithId()));
-               changes.deleteAttributes(workItemArt, AtsAttributeTypes.WorkPackageGuid);
+               changes.deleteAttributes(workItemArt, WorkPackageGuid);
                return;
             } else {
                changes.setSoleAttributeValue(workItemArt, AtsAttributeTypes.WorkPackageReference,
@@ -188,14 +194,13 @@ public class ConvertAtsConfigGuidAttributesOperation {
          }
       }
       // convert id to guid
-      String workPackageGuid =
-         atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, AtsAttributeTypes.WorkPackageGuid, "");
+      String workPackageGuid = atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, WorkPackageGuid, "");
       if (Strings.isInValid(workPackageGuid)) {
          ArtifactId workPackageArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItemArt,
             AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
          ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(workPackageArt);
          if (artifact != null) {
-            changes.setSoleAttributeValue(workItemArt, AtsAttributeTypes.WorkPackageGuid, artifact.getGuid());
+            changes.setSoleAttributeValue(workItemArt, WorkPackageGuid, artifact.getGuid());
          }
       }
    }

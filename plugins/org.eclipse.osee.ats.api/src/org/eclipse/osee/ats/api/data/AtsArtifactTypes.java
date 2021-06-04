@@ -197,7 +197,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TleReviewedDate)
       .zeroOrOne(UnplannedWork)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
-      .zeroOrOne(WorkPackageGuid)
       .zeroOrOne(WorkPackageReference)
       .zeroOrOne(WorkflowDefinition)
       .zeroOrOne(WorkflowDefinitionReference)
