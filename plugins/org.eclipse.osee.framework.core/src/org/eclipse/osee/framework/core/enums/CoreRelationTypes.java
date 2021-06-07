@@ -44,7 +44,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProced
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalGroup;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UserGroup;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
@@ -199,10 +198,6 @@ public interface CoreRelationTypes {
    RelationTypeToken UniversalGrouping = osee.add(2305843009213694294L, "Universal Grouping", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, UniversalGroup, "group", Artifact, "members");
    RelationTypeSide UniversalGrouping_Group = RelationTypeSide.create(UniversalGrouping, SIDE_A);
    RelationTypeSide UniversalGrouping_Members = RelationTypeSide.create(UniversalGrouping, SIDE_B);
-
-   RelationTypeToken UserGrouping = osee.add(2305843009213694307L, "User Grouping", MANY_TO_MANY, UNORDERED, UserGroup, "group", CoreArtifactTypes.User, "users");
-   RelationTypeSide UserGrouping_Group = RelationTypeSide.create(UserGrouping, SIDE_A);
-   RelationTypeSide UserGrouping_Users = RelationTypeSide.create(UserGrouping, SIDE_B);
 
    RelationTypeToken Users = osee.add(2305843009213694308L, "Users", MANY_TO_MANY, UNORDERED, Artifact, "Artifact", User, "User");
    RelationTypeSide Users_Artifact = RelationTypeSide.create(Users, SIDE_A);
