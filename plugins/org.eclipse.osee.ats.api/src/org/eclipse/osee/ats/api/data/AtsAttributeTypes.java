@@ -58,7 +58,6 @@ public interface AtsAttributeTypes {
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ApproveRequestedHoursDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString AtsConfiguredBranch = ats.createString(72063456936722683L, "ats.ATS Configured Branch", MediaType.TEXT_PLAIN, "ATS Configured Branch");
    AttributeTypeString AtsId = ats.createString(1152921504606847877L, "ats.Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString AtsIdPrefix = ats.createString(1162773128791720837L, "ats.ATS Id Prefix", MediaType.TEXT_PLAIN, "ATS Id Prefix");
    AttributeTypeString AtsIdSequenceName = ats.createString(1163054603768431493L, "ats.ATS Id Sequence Name", MediaType.TEXT_PLAIN, "ATS Id Sequence Name");

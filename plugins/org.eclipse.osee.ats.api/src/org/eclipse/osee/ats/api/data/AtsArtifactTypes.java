@@ -61,10 +61,6 @@ public interface AtsArtifactTypes {
       .any(CSCI)
       .zeroOrOne(ProgramId)
       .any(WorkType));
-   ArtifactTypeToken Configuration = ats.add(ats.artifactType(93802085744703L, "Configuration", false, Artifact)
-      .zeroOrOne(AtsConfiguredBranch)
-      .zeroOrOne(Default)
-      .zeroOrOne(Description));
    ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, AtsConfigArtifact));
    ArtifactTypeToken Insertion = ats.add(ats.artifactType(1735587136604728792L, "Insertion", false, INSERTION,  AtsConfigArtifact)
       .zeroOrOne(Description)
