@@ -174,7 +174,6 @@ public class CreateTasksOperation {
                taskWorkDef = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
             }
             Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
-            task.addAttribute(AtsAttributeTypes.WorkflowDefinition, taskWorkDef.getName());
             task.addAttribute(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.valueOf(taskWorkDef.getId()));
 
             for (JaxAttribute attribute : task.getAttributes()) {

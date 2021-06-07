@@ -379,7 +379,7 @@ public abstract class XTaskEstManager extends GenericXWidget implements Artifact
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isModified(getTeamArt())) {
+      if (getTeamArt() != null && artifactEvent.isModified(getTeamArt())) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

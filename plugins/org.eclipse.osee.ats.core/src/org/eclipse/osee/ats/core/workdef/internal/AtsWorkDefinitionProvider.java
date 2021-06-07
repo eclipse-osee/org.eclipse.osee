@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReq;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoTest;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
+import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimpleAnalyze;
 
 /**
  * @author Donald G. Dunne
@@ -66,7 +67,8 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTeamDefault().build(),
             new WorkDefTeamProductLine().build(),
             new WorkDefTeamSimpleInWork().build(),
-            new WorkDefTeamSimple().build()));
+            new WorkDefTeamSimple().build(),
+            new WorkDefTeamSimpleAnalyze().build()));
          if (isDemoDb()) {
             ret.addAll(Arrays.asList(
             // Team Wf

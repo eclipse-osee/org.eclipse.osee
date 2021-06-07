@@ -123,13 +123,15 @@ public class BlamOutputSection extends BaseBlamSection {
 
    @Override
    public void refresh() {
-      super.refresh();
-      int height = formText.getLineCount() * formText.getLineHeight();
-      GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
-      formTextGd.heightHint = height;
-      formTextGd.widthHint = 200;
-      formText.setLayoutData(formTextGd);
-      getManagedForm().reflow(true);
+      if (!formText.isDisposed()) {
+         super.refresh();
+         int height = formText.getLineCount() * formText.getLineHeight();
+         GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         formTextGd.heightHint = height;
+         formTextGd.widthHint = 200;
+         formText.setLayoutData(formTextGd);
+         getManagedForm().reflow(true);
+      }
    }
 
    private final class InternalLogger extends OperationLogger {

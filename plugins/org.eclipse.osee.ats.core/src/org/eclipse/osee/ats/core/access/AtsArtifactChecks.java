@@ -222,20 +222,6 @@ public class AtsArtifactChecks implements ArtifactCheck {
 
    private void checkAtsWorkDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       for (ArtifactToken art : artifacts) {
-         // legacy work definition check (remove after 26.0)
-         if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
-            List<ArtifactToken> artifactListFromTypeAndAttribute =
-               atsApi.getQueryService().getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
-                  AtsAttributeTypes.WorkflowDefinition, art.getName(), atsApi.getAtsBranch());
-            if (artifactListFromTypeAndAttribute.size() > 0) {
-               results.errorf(
-                  "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinition attributes set to it's name in %d artifact.  These must be changed first.",
-                  art, artifactListFromTypeAndAttribute.size());
-            }
-            if (!isAtsAdmin) {
-               results.error("Deletion of Work Definitions is only permitted by ATS Admin.");
-            }
-         }
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
             List<ArtifactToken> artifactListFromTypeAndAttribute =
                atsApi.getQueryService().getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,

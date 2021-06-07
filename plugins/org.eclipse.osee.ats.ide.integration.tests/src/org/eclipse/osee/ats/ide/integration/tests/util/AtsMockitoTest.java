@@ -80,7 +80,6 @@ public class AtsMockitoTest {
    @Mock protected AtsApi atsApi;
    // @formatter:on
 
-   public String WORK_DEF_NAME = "Mock_Team_Workflow_Definition";
    public ArtifactId WORK_DEF_ART = ArtifactId.valueOf(345L);
    private final String className;
    private String testName = "";
@@ -118,7 +117,6 @@ public class AtsMockitoTest {
       initializeState(cancelled, "Cancelled", StateType.Cancelled, 4, Arrays.asList(analyze, implement),
          Arrays.asList(analyze, implement));
 
-      when(workDef.getName()).thenReturn(WORK_DEF_NAME);
       when(workDef.getStartState()).thenReturn(analyze);
       when(workDef.getStates()).thenReturn(Arrays.asList(cancelled, analyze, completed, implement));
 
@@ -143,8 +141,6 @@ public class AtsMockitoTest {
       when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
       when(teamDefinitionService.getLeads(teamDef)).thenReturn(Arrays.asList(currentUser));
       when(actionableItemService.getActionableItems(teamDef)).thenReturn(aias);
-      when(attrResolver.getSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, "")).thenReturn(
-         WORK_DEF_NAME);
       when(attrResolver.getSoleArtifactIdReference(teamDef, AtsAttributeTypes.WorkflowDefinitionReference,
          ArtifactId.SENTINEL)).thenReturn(WORK_DEF_ART);
 

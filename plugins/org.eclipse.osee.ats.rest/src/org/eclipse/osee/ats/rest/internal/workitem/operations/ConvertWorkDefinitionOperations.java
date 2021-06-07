@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem.operations;
 
+import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -31,6 +33,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -47,6 +50,10 @@ public class ConvertWorkDefinitionOperations {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
+
+   // Types would need to be moved back temporarily to AtsAttributeTypes to be loaded correctly
+   AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition",
+      MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
 
    public ConvertWorkDefinitionOperations(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -65,7 +72,7 @@ public class ConvertWorkDefinitionOperations {
       List<ArtifactId> artIdList = new LinkedList<>();
       artIdList.addAll(
          atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.CurrentStateType,
-            StateType.Working.name()).andNotExists(AtsAttributeTypes.WorkflowDefinition).getItemIds());
+            StateType.Working.name()).andNotExists(WorkflowDefinition).getItemIds());
       List<Collection<ArtifactId>> subDivide = Collections.subDivide(artIdList, 500);
       int size = subDivide.size();
       int count = 1;
@@ -91,8 +98,7 @@ public class ConvertWorkDefinitionOperations {
                if (workDefinition == null || workDefinition.isInvalid()) {
                   rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
                } else {
-                  changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkflowDefinition,
-                     workDefinition.getName());
+                  changes.setSoleAttributeValue(workItem, WorkflowDefinition, workDefinition.getName());
                   updatedCount++;
                }
             }
@@ -229,7 +235,7 @@ public class ConvertWorkDefinitionOperations {
    private void convertMissingTeamDefinitionWorkDefAttributes(XResultData rd) {
 
       Map<AttributeTypeToken, AttributeTypeToken> oldAttrTypeToNewTypeMap = new HashMap<>();
-      oldAttrTypeToNewTypeMap.put(AtsAttributeTypes.WorkflowDefinition, AtsAttributeTypes.WorkflowDefinitionReference);
+      oldAttrTypeToNewTypeMap.put(WorkflowDefinition, AtsAttributeTypes.WorkflowDefinitionReference);
       oldAttrTypeToNewTypeMap.put(AtsAttributeTypes.RelatedTaskWorkflowDefinition,
          AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference);
       oldAttrTypeToNewTypeMap.put(AtsAttributeTypes.RelatedPeerWorkflowDefinition,

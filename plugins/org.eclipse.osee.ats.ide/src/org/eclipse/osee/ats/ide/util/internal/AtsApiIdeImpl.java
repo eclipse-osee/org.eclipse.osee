@@ -65,7 +65,6 @@ import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
@@ -221,11 +220,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IAtsActionableItemService getActionableItemService() {
       return actionableItemManager;
-   }
-
-   @Override
-   public boolean isWorkDefAsName() {
-      return "true".equals(OseeInfo.getCachedValue("osee.work.def.as.name"));
    }
 
    @Override

@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -253,11 +252,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public IAtsActionableItemService getActionableItemService() {
       return actionableItemManager;
-   }
-
-   @Override
-   public boolean isWorkDefAsName() {
-      return "true".equals(OseeInfo.getCachedValue(getJdbcService().getClient(), "osee.work.def.as.name"));
    }
 
    @Override

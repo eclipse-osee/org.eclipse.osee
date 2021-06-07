@@ -170,8 +170,6 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    IAtsConfigurationsService getConfigService();
 
-   boolean isWorkDefAsName();
-
    IAtsTaskRelatedService getTaskRelatedService();
 
    IAtsHealthService getHealthService();

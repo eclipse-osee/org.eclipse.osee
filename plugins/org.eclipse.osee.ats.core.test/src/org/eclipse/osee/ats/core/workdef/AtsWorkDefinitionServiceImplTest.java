@@ -16,8 +16,6 @@ package org.eclipse.osee.ats.core.workdef;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -60,9 +58,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class AtsWorkDefinitionServiceImplTest {
 
-   private static final String MyPeerToPeerWorkDefName = "myPeerToPeerWorkDef";
    private static final ArtifactId MyPeerToPeerWorkDefArt = ArtifactId.valueOf(266434L);
-   private static final String MyTaskWorkDefId = "WorkDef_Task_Test_Review";
    private static final ArtifactId MyTaskWorkDefArt = ArtifactId.valueOf(34345L);
 
    // @formatter:off
@@ -92,7 +88,6 @@ public class AtsWorkDefinitionServiceImplTest {
    @Before
    public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
-      when(atsApi.isWorkDefAsName()).thenReturn(true);
       when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
       when(atsApi.getTeamDefinitionService().getParentTeamDef(topTeamDef)).thenReturn(null);
       when(atsApi.getTeamDefinitionService().getParentTeamDef(projTeamDef)).thenReturn(topTeamDef);
@@ -121,21 +116,6 @@ public class AtsWorkDefinitionServiceImplTest {
    }
 
    /**
-    * When peerReview has no WorkDefinition attribute set, then default peer review WorkDefinition is returned
-    */
-   @Test
-   public void testGetWorkDefinitionForPeerToPeerReview_deafault() throws Exception {
-      when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
-         Collections.emptyList());
-      when(
-         attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-            Collections.emptyList());
-
-      IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReview(peerReview);
-      assertEquals(defaultPeerToPeerWorkDef, workDef);
-   }
-
-   /**
     * Test that peer review WorkDefinition id comes from teamDefinition hierarchy
     */
    @Test
@@ -147,27 +127,6 @@ public class AtsWorkDefinitionServiceImplTest {
 
       IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
       assertEquals(defaultPeerToPeerWorkDef, workDef);
-   }
-
-   /**
-    * When peerReview WorkDefinition attribute is set, then that WorkDefinition is returned instead of default
-    */
-   @Test
-   public void testGetWorkDefinitionForPeerToPeerReviewIAtsTeamWorkflowIAtsPeerToPeerReview__fromReview() throws Exception {
-      List<Object> attrValues = new ArrayList<>();
-      attrValues.add(MyPeerToPeerWorkDefName);
-      when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
-         attrValues);
-      List<Object> attrValues2 = new ArrayList<>();
-      attrValues2.add(MyPeerToPeerWorkDefArt);
-      when(
-         attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-            attrValues2);
-
-      Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(MyPeerToPeerWorkDefName);
-
-      IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReview(peerReview);
-      assertEquals(myPeerToPeerWorkDef, workDef);
    }
 
    /**
@@ -217,59 +176,6 @@ public class AtsWorkDefinitionServiceImplTest {
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
-      // Test that no-match is returned
-      Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(eq(MyPeerToPeerWorkDefName));
-
-      // Setup that top team definition has WorkDefinition defined
-      when(attributeResolver.getSoleAttributeValue(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition,
-         "")).thenReturn(MyPeerToPeerWorkDefName);
-
-      when(attributeResolver.getSoleArtifactIdReference(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition,
-         ArtifactId.SENTINEL)).thenReturn(MyPeerToPeerWorkDefArt);
-
-      when(attributeResolver.getSoleAttributeValue(topTeamDef, AtsAttributeTypes.WorkflowDefinition, "")).thenReturn(
-         MyPeerToPeerWorkDefName);
-      when(attributeResolver.getSoleArtifactIdReference(topTeamDef, AtsAttributeTypes.WorkflowDefinitionReference,
-         ArtifactId.SENTINEL)).thenReturn(MyPeerToPeerWorkDefArt);
-      Mockito.doReturn(myPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(MyPeerToPeerWorkDefName);
-
-   }
-
-   @Test
-   public void testGetWorkDefinitionIAtsWorkItem() throws Exception {
-      when(peerReview.getParentTeamWorkflow()).thenReturn(teamWf);
-      when(teamWf.getTeamDefinition()).thenReturn(topTeamDef);
-      when(
-         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-            Collections.emptyList());
-      when(
-         attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-            Collections.emptyList());
-
-      Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(peerReview);
-
-      IAtsWorkDefinition workDef = workDefService.getWorkDefinition(peerReview);
-      assertEquals(defaultPeerToPeerWorkDef, workDef);
-   }
-
-   @Test
-   public void testGetWorkDefinitionForTaskWithSpecifiedId() throws Exception {
-      List<Object> attrValues = new ArrayList<>();
-      attrValues.add(MyTaskWorkDefId);
-      when(attributeResolver.getAttributeValues(task, AtsAttributeTypes.WorkflowDefinition)).thenReturn(attrValues);
-
-      List<Object> attrValues2 = new ArrayList<>();
-      attrValues2.add(MyTaskWorkDefArt);
-      when(attributeResolver.getAttributeValues(task, AtsAttributeTypes.WorkflowDefinitionReference)).thenReturn(
-         attrValues2);
-
-      when(task.getParentTeamWorkflow()).thenReturn(teamWf);
-
-      Mockito.doReturn(myTaskWorkDef).when(workDefService).getWorkDefinitionByName(eq(MyTaskWorkDefId));
-      Mockito.doReturn(myTaskWorkDef).when(workDefService).getWorkDefinition(task);
-
-      IAtsWorkDefinition workDef = workDefService.getWorkDefinition(task);
-      assertEquals(workDef, myTaskWorkDef);
    }
 
    @Test

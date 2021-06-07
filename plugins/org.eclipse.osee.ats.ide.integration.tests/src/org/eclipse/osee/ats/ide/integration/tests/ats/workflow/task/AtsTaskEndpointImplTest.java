@@ -181,11 +181,6 @@ public class AtsTaskEndpointImplTest {
       // Work Definition should be set
       boolean found = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinition)) {
-            found = true;
-            Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default", "WorkDef_Task_Default",
-               attr.getValues().iterator().next());
-         }
          if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinitionReference)) {
             found = true;
             Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default",
@@ -207,21 +202,14 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(SystemUser.UnAssigned.getUserId(), task2R.getAssigneeUserIds().iterator().next());
       // Work Definition attribute should NOT be set
       attributes = task2R.getAttributes();
-      boolean foundByName = false;
       boolean foundById = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinition)) {
-            Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getName(),
-               attr.getValues().iterator().next());
-            foundByName = true;
-         }
          if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinitionReference)) {
             Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString(),
                attr.getValues().iterator().next());
             foundById = true;
          }
       }
-      Assert.assertTrue(foundByName);
       Assert.assertTrue(foundById);
 
       JaxAtsTask task3R = taskEp.get(taskId3);
@@ -232,7 +220,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals("", task3R.getDescription());
       Assert.assertEquals(true, task3R.isActive());
       Assert.assertEquals(1, task3R.getAssigneeUserIds().size());
-      Assert.assertEquals(11, task3R.getAttributes().size());
+      Assert.assertEquals(10, task3R.getAttributes().size());
       found = false;
       for (JaxAttribute attribute : task3R.getAttributes()) {
          if (attribute.getAttrType().equals(CoreAttributeTypes.StaticId)) {

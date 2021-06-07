@@ -11,11 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
+package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -29,10 +30,10 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamAtsTestUtil extends AbstractWorkDef {
+public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
-   public WorkDefTeamAtsTestUtil() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_AtsTestUtil);
+   public WorkDefTeamSimpleAnalyze() {
+      super(AtsWorkDefinitionTokens.WorkDef_Team_Simple_Analyze);
    }
 
    @Override

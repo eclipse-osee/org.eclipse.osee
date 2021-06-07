@@ -22,7 +22,6 @@ public class DemoWorkDefinitionTokens {
 
    // @formatter:off
 
-   public static AtsWorkDefinitionToken WorkDef_Team_AtsTestUtil = new AtsWorkDefinitionToken(946555776L, "WorkDef_Team_AtsTestUtil");
    public static AtsWorkDefinitionToken WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare = new AtsWorkDefinitionToken(916526903L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare");
    public static AtsWorkDefinitionToken WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision = new AtsWorkDefinitionToken(913396704L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision");
    public static AtsWorkDefinitionToken WorkDef_Team_PeerReviewDefinitionManagerTest_Transition = new AtsWorkDefinitionToken(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 public class AtsIntegrationTestsWorkDefinitionProvider {
 
    public Collection<IAtsWorkDefinitionBuilder> getWorkDefinitionBuilders() {
-      return Arrays.asList(new WorkDefTeamAtsTestUtil(), new WorkDefTeamDecisionReviewDefinitionManagerTestPrepare(),
+      return Arrays.asList(new WorkDefTeamDecisionReviewDefinitionManagerTestPrepare(),
          new WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision(),
          new WorkDefTeamPeerReviewDefinitionManagerTestTransition(),
          new WorkDefTeamTransitionManagerTestTargetedVersion(),

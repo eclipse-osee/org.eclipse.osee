@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -45,7 +44,6 @@ public class StateDefinitionTest {
    @Before
    public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
-      when(atsApi.isWorkDefAsName()).thenReturn(true);
    }
 
    @Test
