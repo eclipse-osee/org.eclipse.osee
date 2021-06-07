@@ -58,7 +58,6 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.change.TupleChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
@@ -256,21 +255,10 @@ public class ChangeDataLoader extends AbstractOperation {
                item.getDestinationVersion().getApplicabilityToken().getName(), null, AttributeId.valueOf(itemId),
                attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
          } else {
-
-            // Remove after 26.0 release; only set in OseeInfo if want to turn off
-            String value = OseeInfo.getValue("UseWasIsLazyProvider");
-            boolean useWasIsLazyProvider = !"false".equals(value);
             ChangeDateLoaderWasIsLazyProvider wasIsProvider =
                new ChangeDateLoaderWasIsLazyProvider(txDelta, item, attributeType, artifactDelta);
-            if (useWasIsLazyProvider) {
-               change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, wasIsProvider,
-                  AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
-            } else {
-               change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                  wasIsProvider.getIsValue(), wasIsProvider.getIsUri(), wasIsProvider.getWasValue(),
-                  wasIsProvider.getWasUri(), AttributeId.valueOf(itemId), attributeType, netModType, isHistorical,
-                  changeArtifact, artifactDelta);
-            }
+            change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, wasIsProvider,
+               AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
          }
       } else if (item.getChangeType().isRelationChange()) {
          RelationTypeToken relationType = tokenService.getRelationType(item.getItemTypeId().getId());
