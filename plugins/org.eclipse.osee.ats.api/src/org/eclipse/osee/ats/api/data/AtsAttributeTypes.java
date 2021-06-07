@@ -210,7 +210,6 @@ public interface AtsAttributeTypes {
 
    // Remove after 1.0.0 full release
    AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
-   AttributeTypeString RelatedTaskWorkflowDefinition = ats.createString(1152921504606847152L, "ats.Related Task Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Tasks related to this Workflow");
 
    // Leave this attribute definition for other OSEE sites to convert
    AttributeTypeString BaselineBranchGuid = ats.createString(1152921504606847145L, "ats.Baseline Branch Guid", MediaType.TEXT_PLAIN, "");

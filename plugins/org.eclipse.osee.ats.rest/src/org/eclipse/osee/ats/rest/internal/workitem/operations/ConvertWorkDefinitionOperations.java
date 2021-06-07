@@ -57,6 +57,9 @@ public class ConvertWorkDefinitionOperations {
    AttributeTypeString RelatedPeerWorkflowDefinition =
       ats.createString(1152921504606847870L, "ats.Related Peer Workflow Definition", MediaType.TEXT_PLAIN,
          "Specific work flow definition id used by Peer To Peer Reviews for this Team");
+   AttributeTypeString RelatedTaskWorkflowDefinition =
+      ats.createString(1152921504606847152L, "ats.Related Task Workflow Definition", MediaType.TEXT_PLAIN,
+         "Specific work flow definition id used by Tasks related to this Workflow");
 
    public ConvertWorkDefinitionOperations(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -214,7 +217,7 @@ public class ConvertWorkDefinitionOperations {
       int count = 0;
       IAtsChangeSet changes = atsApi.createChangeSet("Update Team Workflow Related Task WorkDef");
       Collection<IAtsWorkItem> workItems = atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andExists(
-         AtsAttributeTypes.RelatedTaskWorkflowDefinition).getItems();
+         RelatedTaskWorkflowDefinition).getItems();
       int size = workItems.size();
       for (IAtsWorkItem workItem : workItems) {
          boolean deleted = atsApi.getStoreService().isDeleted(workItem);
@@ -223,7 +226,7 @@ public class ConvertWorkDefinitionOperations {
          }
          rd.logf(String.format("TeamWfs TaskRel: Processing WorkItem WorkDef Set %s / %s", count++, size));
          updatedCount = setNewWorkDefRefIfNecessary(rd, updatedCount, changes, workItem.getStoreObject(),
-            AtsAttributeTypes.RelatedTaskWorkflowDefinition, AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference);
+            RelatedTaskWorkflowDefinition, AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference);
       }
       changes.executeIfNeeded();
       rd.logf("Updtated %s Work Items for Related Task Work Def\n", updatedCount);
@@ -239,7 +242,7 @@ public class ConvertWorkDefinitionOperations {
 
       Map<AttributeTypeToken, AttributeTypeToken> oldAttrTypeToNewTypeMap = new HashMap<>();
       oldAttrTypeToNewTypeMap.put(WorkflowDefinition, AtsAttributeTypes.WorkflowDefinitionReference);
-      oldAttrTypeToNewTypeMap.put(AtsAttributeTypes.RelatedTaskWorkflowDefinition,
+      oldAttrTypeToNewTypeMap.put(RelatedTaskWorkflowDefinition,
          AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference);
       oldAttrTypeToNewTypeMap.put(RelatedPeerWorkflowDefinition,
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
