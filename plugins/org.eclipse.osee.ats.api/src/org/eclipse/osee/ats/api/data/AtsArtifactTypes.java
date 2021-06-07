@@ -96,7 +96,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(FullName)
       .zeroOrOne(HoursPerWorkDay)
       .zeroOrOne(ProgramId)
-      .any(RelatedPeerWorkflowDefinition)
       .any(RelatedPeerWorkflowDefinitionReference)
       .any(RelatedTaskWorkflowDefinition)
       .zeroOrOne(RelatedTaskWorkflowDefinitionOld)

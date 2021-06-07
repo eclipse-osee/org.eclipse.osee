@@ -210,7 +210,6 @@ public interface AtsAttributeTypes {
 
    // Remove after 1.0.0 full release
    AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
-   AttributeTypeString RelatedPeerWorkflowDefinition = ats.createString(1152921504606847870L, "ats.Related Peer Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Peer To Peer Reviews for this Team");
    AttributeTypeString RelatedTaskWorkflowDefinition = ats.createString(1152921504606847152L, "ats.Related Task Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Tasks related to this Workflow");
 
    // Leave this attribute definition for other OSEE sites to convert
