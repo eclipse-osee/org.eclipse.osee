@@ -1,7 +1,11 @@
-Feature[JHU_CONTROLLER]
-TestExcludedJava.java
-End Feature
+Configuration[Product C]
+CppTest_Exclude.cpp
+End Configuration
 
-Feature[ROBOT_SPEAKER=SPKR_A]
-TestXml.xml
+ConfigurationGroup[abGroup]
+Code
+End ConfigurationGroup
+
+Feature[JHU_CONTROLLER]
+TestXml_Exclude.xml
 End Feature

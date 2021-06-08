@@ -1,0 +1,1 @@
+This folder is for defining test cases for the BlockApplicabilityTool

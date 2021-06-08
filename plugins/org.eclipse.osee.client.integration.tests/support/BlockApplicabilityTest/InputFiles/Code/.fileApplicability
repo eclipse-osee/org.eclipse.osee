@@ -1,3 +1,4 @@
-Feature[JHU_CONTROLLER]
-readMeTest.txt
-End Feature
+Configuration Not[Product A]
+readme.txt
+LSTTest.lst
+End Configuration

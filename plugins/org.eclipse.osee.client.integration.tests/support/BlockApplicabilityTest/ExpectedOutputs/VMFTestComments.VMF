@@ -1,0 +1,23 @@
+%V R O B O T  M E T A F I L E
+BEGIN_METAFILE "VMFTest"
+%  M E T A F I L E   I N F O R M A T I O N
+   METAFILE_VERSION(1.5)
+%  O B J E C T   D E F I N I T I O N S
+   BEGIN_OBJECT "VMFTest" (FRAME)
+      SET_SAVE_TO_GRID(TRUE)
+	  % Configuration Not[Product A]
+      % BEGIN_OBJECT "RobotApi" (REFERENCE)
+         % TRANSLATE(0.0000000, 5.0000000)
+         % SET_REF_TRANSPARENCY(255)
+         % INCLUDE_OBJECT(EXTERNAL, "robot\\api")
+      % END_OBJECT "RobotApi" (REFERENCE)
+	  % End Configuration
+	  % Feature[ENGINE_5=A2543]
+      BEGIN_OBJECT "Engine" (REFERENCE)
+         TRANSLATE(0.0000000, 91.0000000)
+         SET_REF_TRANSPARENCY(255)
+         INCLUDE_OBJECT(EXTERNAL, "engine\\a2543")
+      END_OBJECT "Engine" (REFERENCE)
+	  % End Feature
+   END_OBJECT "VMFTest" (FRAME)
+END_METAFILE

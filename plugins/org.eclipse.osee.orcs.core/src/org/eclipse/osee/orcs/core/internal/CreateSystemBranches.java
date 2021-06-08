@@ -202,12 +202,15 @@ public class CreateSystemBranches {
       "{\"TypeId\" : 204509162766371, \"BranchId\" : 61, \"Range\" : [{\"Min\" : 400}]}," + //
       "{\"TypeId\" : 204509162766371, \"BranchId\" : 714, \"Range\" : [{\"Min\" : 1}]}]}";
 
-   private static final String JSON_PL_PREFERENCES = "{ \"FileExtensionCommentStyle\" : [" + //
-      "{ \"FileExtension\" : \"fileApplicability\", \"CommentPrefixRegex\" : \"\", \"CommentSuffixRegex\" : \"\", \"CommentPrefix\" : \"\", \"CommentSuffix\" : \"\"}," + //
-      "{ \"FileExtension\" : \"txt\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
-      "{ \"FileExtension\" : \"java\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
-      "{ \"FileExtension\" : \"h\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
-      "{ \"FileExtension\" : \"cxx\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
-      "{ \"FileExtension\" : \"cpp\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"//\" }," + //
-      "{ \"FileExtension\" : \"xml\", \"CommentPrefixRegex\" : \"<!--\", \"CommentSuffixRegex\" : \"-->\", \"CommentPrefix\" : \"<!--\", \"CommentSuffix\" : \"-->\"}]}";
+   private static final String JSON_PL_PREFERENCES = "{ \"FileExtensionCommentStyle\" : [\n" + //
+      "      { \"FileExtension\" : \"fileApplicability\", \"CommentPrefixRegex\" : \"\", \"CommentSuffixRegex\" : \"\", \"CommentPrefix\" : \"\", \"CommentSuffix\" : \"\"},\n" + //
+      "      { \"FileExtension\" : \"txt\", \"CommentPrefixRegex\" : \"\", \"CommentSuffixRegex\" : \"\", \"CommentPrefix\" : \"\", \"CommentSuffix\" : \"\"},\n" + //
+      "      { \"FileExtension\" : \"VMF\", \"CommentPrefixRegex\" : \"%\", \"CommentPrefix\" : \"% \" },\n" + //
+      "      { \"FileExtension\" : \"mdgsource\", \"CommentPrefixRegex\" : \"\\\\+\\\\.\", \"CommentPrefix\" : \"+. \" },\n" + //
+      "      { \"FileExtension\" : \"java\", \"CommentPrefixRegex\" : \"/\\\\*\", \"CommentSuffixRegex\" : \"\\\\*/\", \"CommentPrefix\" : \"/* \", \"CommentSuffix\" : \" */\"},\n" + //
+      "      { \"FileExtension\" : \"cpp\", \"CommentPrefixRegex\" : \"//\", \"CommentPrefix\" : \"// \" },\n" + //
+      "      { \"FileExtension\" : \"cmd\", \"CommentPrefixRegex\" : \"REM\", \"CommentPrefix\" : \"REM \" },\n" + //
+      "      { \"FileExtension\" : \"xml\", \"CommentPrefixRegex\" : \"<!--\", \"CommentSuffixRegex\" : \"-->\", \"CommentPrefix\" : \"<!-- \", \"CommentSuffix\" : \" -->\"},\n" + //
+      "      { \"FileExtension\" : \"lst\", \"CommentPrefixRegex\" : \"#\", \"CommentPrefix\" : \"# \" }\n" + //
+      "      ]}";
 }

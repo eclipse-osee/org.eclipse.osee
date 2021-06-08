@@ -17,10 +17,13 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -166,14 +169,12 @@ public class ApplicabilityEndpointTest {
       ApplicabilityToken testAppToken = appl.getApplicabilityToken(newArtifact);
       Assert.assertTrue(testAppToken.equals(robotIncluded));
       artifactEndpoint.deleteArtifact(DemoBranches.SAW_PL_Working_Branch, newArtifact);
-
    }
 
    /**
-    * This test runs the blockVisibility rest call on a set of files, some having applicability and some not. The files
-    * that have applicability need to be tested against their expected output, as the tags need to be removed from the
-    * new file. The files that do not have detected applicability changes need to be a link to the original location,
-    * which is just a check that the file is the same in each location.
+    * This test runs the BlockVisibility rest call on a set of files, executing the BlockApplicabilityTool. Most files
+    * have applicability tags meant for processing and are to be tested against their expected output. The rest call is
+    * ran twice, once with comments turned on, then again without comments and using the saved off cache file.
     *
     * @throws Exception
     */
@@ -186,87 +187,177 @@ public class ApplicabilityEndpointTest {
          "/support/BlockApplicabilityTest/InputFiles").getPath();
       String stagePath = OseeData.getPath().toString();
 
+      // First testing by commenting instead of removing all non-applicable code
       ArtifactId productA =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.BranchView, "Product A", DemoBranches.SAW_PL);
-      BlockApplicabilityStageRequest data = new BlockApplicabilityStageRequest(productA, false, inputPath, stagePath);
-
+      BlockApplicabilityStageRequest data = new BlockApplicabilityStageRequest(productA, true, inputPath, stagePath);
       appl.applyBlockVisibility(data);
 
       // Traversing the Staging Folders checking to see if each creation was successful
       File stagingFolder = new File(stagePath, "Staging");
       assertTrue(stagingFolder.exists());
-
       File viewFolder = new File(stagingFolder, "Product A");
       assertTrue(viewFolder.exists());
-
       File inputFolder = new File(viewFolder, "InputFiles");
       assertTrue(inputFolder.exists());
 
+      // Checking that readme.txt exists
+      File readmeFile = new File(inputFolder, "readme.txt");
+      assertTrue(readmeFile.exists());
+
+      // Checking Code Folder
       File codeFolder = new File(inputFolder, "Code");
       assertTrue(codeFolder.exists());
 
-      // Testing the Cpp file with applicability, delete when done
-      File cppFile = new File(codeFolder, "TestCpp.cpp");
+      // Testing CppTest.cpp against CppTestComments.cpp
+      File cppFile = new File(codeFolder, "CppTest.cpp");
       assertTrue(cppFile.exists());
       String actualOutput = Lib.fileToString(cppFile);
       String expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
-         "support/BlockApplicabilityTest/ExpectedOutputs/TestCpp.cpp");
+         "support/BlockApplicabilityTest/ExpectedOutputs/CppTestComments.cpp");
       assertTrue(actualOutput.equals(expectedOutput));
-      cppFile.delete();
 
-      // Testing the Java file with applicability
-      File javaFile = new File(codeFolder, "TestJava.java");
+      // Testing JavaTestWithTags.java against JavaTestWithTagsComments.java
+      File javaFile = new File(codeFolder, "JavaTestWithTags.java");
       assertTrue(javaFile.exists());
       actualOutput = Lib.fileToString(javaFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
-         "support/BlockApplicabilityTest/ExpectedOutputs/TestJava.java");
+         "support/BlockApplicabilityTest/ExpectedOutputs/JavaTestWithTagsComments.java");
       assertTrue(actualOutput.equals(expectedOutput));
-      javaFile.delete();
 
-      // Testing that the java file included in a config file was properly excluded
-      File excludedJavaFile = new File(codeFolder, "TestExcludedJava.java");
-      assertFalse(excludedJavaFile.exists());
-      codeFolder.delete();
+      // Testing JavaTestWithoutTags.java against the original file
+      File javaFileWithoutTags = new File(codeFolder, "JavaTestWithoutTags.java");
+      assertTrue(javaFileWithoutTags.exists());
+      actualOutput = Lib.fileToString(javaFileWithoutTags);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/InputFiles/Code/JavaTestWithoutTags.java");
+      assertTrue(actualOutput.equals(expectedOutput));
 
+      // Testing that CppTest_Exclude.cpp was excluded
+      File excludedCppFile = new File(codeFolder, "CppTest_Exclude.cpp");
+      assertFalse(excludedCppFile.exists());
+
+      // Adding in a fake directory that should be deleted in future refresh test
+      File fakeDir = new File(codeFolder, "Fake Directory");
+      fakeDir.mkdir();
+
+      // Check Resources Folder
       File resourcesFolder = new File(inputFolder, "Resources");
       assertTrue(resourcesFolder.exists());
 
-      // Test that the icon exists and is equal to the input file, delete when done
-      File iconFile = new File(resourcesFolder, "TestIcon.ico");
-      assertTrue(iconFile.exists());
-      actualOutput = Lib.fileToString(iconFile);
+      // Testing CMDTest.cmd against CMDTestComments.cmd
+      File cmdFile = new File(resourcesFolder, "CMDTest.cmd");
+      assertTrue(cmdFile.exists());
+      actualOutput = Lib.fileToString(cmdFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
-         "support/BlockApplicabilityTest/InputFiles/Resources/TestIcon.ico");
+         "support/BlockApplicabilityTest/ExpectedOutputs/CMDTestComments.cmd");
       assertTrue(actualOutput.equals(expectedOutput));
-      iconFile.delete();
 
-      // Test that the unchanged Xml file exists and is equal to the input file, delete when done
-      File noChangeXmlFile = new File(resourcesFolder, "TestXmlNoChange.xml");
-      assertTrue(noChangeXmlFile.exists());
-      actualOutput = Lib.fileToString(noChangeXmlFile);
+      // Testing LSTTest.lst against LSTTestComments.lst
+      File lstFile = new File(resourcesFolder, "LSTTest.lst");
+      assertTrue(lstFile.exists());
+      actualOutput = Lib.fileToString(lstFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
-         "support/BlockApplicabilityTest/InputFiles/Resources/TestXmlNoChange.xml");
+         "support/BlockApplicabilityTest/ExpectedOutputs/LSTTestComments.lst");
       assertTrue(actualOutput.equals(expectedOutput));
-      noChangeXmlFile.delete();
 
-      // Testing the Xml file with applicability, delete when done along with resources folder
+      // Testing MDGTest.mdgsource against MDGTestComments.mdgsource
+      File mdgFile = new File(resourcesFolder, "MDGTest.mdgsource");
+      assertTrue(mdgFile.exists());
+      actualOutput = Lib.fileToString(mdgFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/MDGTestComments.mdgsource");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing TestXml.xml against TestXmlComments.xml
       File xmlFile = new File(resourcesFolder, "TestXml.xml");
+      assertTrue(xmlFile.exists());
+      actualOutput = Lib.fileToString(xmlFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/TestXmlComments.xml");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing that TestXml_Exclude.xml was excluded
+      File excludedXmlFile = new File(codeFolder, "TestXml_Exclude.xml");
+      assertFalse(excludedXmlFile.exists());
+
+      // Testing VMFTest.VMF against VMFTestComments.VMF
+      File vmfFile = new File(resourcesFolder, "VMFTest.VMF");
+      assertTrue(vmfFile.exists());
+      actualOutput = Lib.fileToString(vmfFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/VMFTestComments.VMF");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Acquiring the .applicabilityCache file for next test
+      File cacheFile = new File(viewFolder, ".applicabilityCache");
+      assertTrue(cacheFile.exists());
+
+      // Set the cache file and turn off commenting for the next test
+      data.setCachePath(cacheFile.getAbsolutePath());
+      data.setCommentNonApplicableBlocks(false);
+      appl.applyBlockVisibility(data);
+
+      // Testing CppTest.cpp against expected CppTest.cpp output
+      cppFile = new File(codeFolder, "CppTest.cpp");
+      assertTrue(cppFile.exists());
+      actualOutput = Lib.fileToString(cppFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/CppTest.cpp");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing JavaTestWithTags.java against expected JavaTestWithTags.java
+      javaFile = new File(codeFolder, "JavaTestWithTags.java");
+      assertTrue(javaFile.exists());
+      actualOutput = Lib.fileToString(javaFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/JavaTestWithTags.java");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing the fake directory from earlier to make sure it was deleted on refresh
+      fakeDir = new File(codeFolder, "Fake Directory");
+      assertFalse(fakeDir.exists());
+
+      // Testing CMDTest.cmd against expected CMDTest.cmd output
+      cmdFile = new File(resourcesFolder, "CMDTest.cmd");
+      assertTrue(cmdFile.exists());
+      actualOutput = Lib.fileToString(cmdFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/CMDTest.cmd");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing LSTTest.lst against expected LSTTest.lst output
+      lstFile = new File(resourcesFolder, "LSTTest.lst");
+      assertTrue(lstFile.exists());
+      actualOutput = Lib.fileToString(lstFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/LSTTest.lst");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing MDGTest.mdgsource against expected MDGTest.mdgsource output
+      mdgFile = new File(resourcesFolder, "MDGTest.mdgsource");
+      assertTrue(mdgFile.exists());
+      actualOutput = Lib.fileToString(mdgFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/MDGTest.mdgsource");
+      assertTrue(actualOutput.equals(expectedOutput));
+
+      // Testing TestXml.xml against expected TestXml.xml output
+      xmlFile = new File(resourcesFolder, "TestXml.xml");
       assertTrue(xmlFile.exists());
       actualOutput = Lib.fileToString(xmlFile);
       expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
          "support/BlockApplicabilityTest/ExpectedOutputs/TestXml.xml");
       assertTrue(actualOutput.equals(expectedOutput));
-      xmlFile.delete();
-      resourcesFolder.delete();
 
-      // Checking that the readMe file still exists after processing. An out of scope config file tried to exclude this file.
-      File readMeFile = new File(inputFolder, "readMeTest.txt");
-      assertTrue(readMeFile.exists());
-      readMeFile.delete();
+      // Testing VMFTest.VMF against expected VMFTest.VMF output
+      vmfFile = new File(resourcesFolder, "VMFTest.VMF");
+      assertTrue(vmfFile.exists());
+      actualOutput = Lib.fileToString(vmfFile);
+      expectedOutput = OsgiUtil.getResourceAsString(ApplicabilityEndpointTest.class,
+         "support/BlockApplicabilityTest/ExpectedOutputs/VMFTest.VMF");
 
-      // Cleaning up the remaining folders in the directory
-      inputFolder.delete();
-      viewFolder.delete();
-      stagingFolder.delete();
+      // Deleting all of the staging files created in the workspace
+      Files.walk(stagingFolder.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
    }
 }

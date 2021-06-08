@@ -1,9 +1,7 @@
 <Body>
 	<Header>ROBOT ARM LIGHT</Header>
-	<p>SAW Controls</p>
+	<p>SAW Controls</p
 	<!-- Feature[ROBOT_ARM_LIGHT] -->
 	<p>SAW Electrical Requirements</p>
-	<!-- Feature Else -->
-	<p>SAW Software Requirements</p>
 	<!-- End Feature -->
 </Body> 

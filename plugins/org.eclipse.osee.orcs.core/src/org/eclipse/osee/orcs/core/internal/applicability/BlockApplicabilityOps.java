@@ -66,7 +66,7 @@ public class BlockApplicabilityOps {
     * (?!Group) is included within Configuration in order to void matching ConfigurationGroup text but leaving 'Group'
     * behind. This ensures that ConfigurationGroup tags will properly match their own regex.
     */
-   public static final String SPACES = " *";
+   public static final String INLINE_WHITESPACE = "[ \\t]*";
    public static final String SINGLE_NEW_LINE = "\\r\\n|[\\n\\r]";
    public static final String BEGINFEATURE = " ?(Feature ?(\\[(.*?)\\])) ?";
    public static final String ENDFEATURE = " ?(End Feature ?((\\[.*?\\]))?) ?";
@@ -74,7 +74,7 @@ public class BlockApplicabilityOps {
    public static final String ENDCONFIG = " ?(End Configuration(?!Group) ?((\\[.*?\\]))?) ?";
    public static final String BEGINCONFIGGRP = " ?(ConfigurationGroup( Not)? ?(\\[(.*?)\\])) ?";
    public static final String ENDCONFIGGRP = " ?(End ConfigurationGroup ?((\\[.*?\\]))?) ?";
-   public static final String COMMENT_EXTRA_CHARS = SPACES + "(" + SINGLE_NEW_LINE + ")?";
+   public static final String COMMENT_EXTRA_CHARS = INLINE_WHITESPACE + "(" + SINGLE_NEW_LINE + ")?";
 
    public static final int beginFeatureCommentMatcherGroup = 1;
    public static final int beginFeatureTagMatcherGroup = 2;
@@ -562,17 +562,17 @@ public class BlockApplicabilityOps {
     */
    private Pattern createFullPatternFromCommentStyle(String commentPrefix, String commentSuffix) {
       String commentedFeatureStart =
-         "(" + SPACES + commentPrefix + BEGINFEATURE + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+         "(" + INLINE_WHITESPACE + commentPrefix + BEGINFEATURE + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedFeatureEnd =
-         "(" + SPACES + commentPrefix + ENDFEATURE + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+         "(" + INLINE_WHITESPACE + commentPrefix + ENDFEATURE + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedConfigStart =
-         "(" + SPACES + commentPrefix + BEGINCONFIG + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+         "(" + INLINE_WHITESPACE + commentPrefix + BEGINCONFIG + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedConfigEnd =
-         "(" + SPACES + commentPrefix + ENDCONFIG + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+         "(" + INLINE_WHITESPACE + commentPrefix + ENDCONFIG + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedConfigGrpStart =
-         "(" + SPACES + commentPrefix + BEGINCONFIGGRP + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+         "(" + INLINE_WHITESPACE + commentPrefix + BEGINCONFIGGRP + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedConfigGrpEnd =
-         "(" + SPACES + commentPrefix + ENDCONFIGGRP + SPACES + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+         "(" + INLINE_WHITESPACE + commentPrefix + ENDCONFIGGRP + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String pattern =
          commentedFeatureStart + "|" + commentedFeatureEnd + "|" + commentedConfigStart + "|" + commentedConfigEnd + "|" + commentedConfigGrpStart + "|" + commentedConfigGrpEnd;
       return Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);

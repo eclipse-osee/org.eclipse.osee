@@ -233,8 +233,18 @@ public class BlockApplicabilityRule extends Rule {
        * behind the comment portion of the else. The below line is used to remove those lines along with any other
        * potential leftover empty comments.
        */
-      replacementText = replacementText.replaceAll(
-         applicBlock.getFileTypeApplicabilityData().getCommentPrefixRegex() + BlockApplicabilityOps.SPACES, "");
+      if (!replacementText.isEmpty()) {
+         if (!applicBlock.getFileTypeApplicabilityData().getCommentPrefixRegex().isEmpty()) {
+            replacementText = replacementText.replaceAll(
+               BlockApplicabilityOps.INLINE_WHITESPACE + applicBlock.getFileTypeApplicabilityData().getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
+               "");
+         }
+         if (!applicBlock.getFileTypeApplicabilityData().getCommentSuffixRegex().isEmpty()) {
+            replacementText = replacementText.replaceAll(
+               BlockApplicabilityOps.INLINE_WHITESPACE + applicBlock.getFileTypeApplicabilityData().getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
+               "");
+         }
+      }
 
       if (!isConfig && commentNonApplicableBlocks) {
          /**
@@ -258,17 +268,23 @@ public class BlockApplicabilityRule extends Rule {
    }
 
    private String getCommentedString(String text, String commentPrefix, String commentSuffix) {
-      BufferedReader reader = new BufferedReader(new StringReader(text.replaceAll("\t", "")));
+      Pattern whitespacePattern = Pattern.compile("\\s*");
+      BufferedReader reader = new BufferedReader(new StringReader(text));
       StringBuilder strB = new StringBuilder();
       String line;
       String newLine = getNewLineFromFile(text);
       try {
          while ((line = reader.readLine()) != null) {
             if (!line.isEmpty()) {
-               if ((!commentPrefix.isEmpty() && !line.contains(
-                  commentPrefix)) || (!commentSuffix.isEmpty() && !line.contains(commentSuffix))) {
+               boolean noPrefix = commentPrefix.isEmpty() ? true : !line.contains(commentPrefix);
+               boolean noSuffix = commentSuffix.isEmpty() ? true : !line.contains(commentSuffix);
+               if (noPrefix && noSuffix) {
+                  Matcher match = whitespacePattern.matcher(line);
+                  if (match.find()) {
+                     strB.append(match.group());
+                  }
                   strB.append(commentPrefix);
-                  strB.append(line);
+                  strB.append(line.substring(match.end()));
                   strB.append(commentSuffix);
                } else {
                   strB.append(line);

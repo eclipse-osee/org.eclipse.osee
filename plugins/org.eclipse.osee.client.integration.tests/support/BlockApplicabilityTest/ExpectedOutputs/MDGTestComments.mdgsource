@@ -1,0 +1,22 @@
+         -       ID     API,E/F,B12
+         -       RATE   20
+         -       OP
+         -       LONG    7,,,,@9
+         -ASGFAD GJPR   IOOMODE                    . GO TO SPIN LOGIC..
+         -HASDFG API    1,,T,24,8,,               . API OP CODE..            *
+         -              OHAPIX(0),                . API X..                  *
+         -              79,                       . API Y..                  *
++. Feature[JHU_CONTROLLER]
+         +. -              APPLICA,                   . API PITCH ANGLE DEGREES..*
+         +. -              APPLICB,                   . API ROLL ANGLE DEGREES.. *
++. Feature Else
+         -              APPLICC,                   . API PITCH RATE DEG/SEC.. *
+         -              APPLICD,                   . API ROLL RATE DEG/SEC..  *
+         -              APPLICE(10),               . API ECHO OF NO. IN DEG...*
++. End Feature
+         -              APPLICF(100),              . API ECHO OF NO. IN DIS...*
+         -              APPLICG,                   . API TURN SPEED DI POS... *
+         -              APPLICH(307),              . API RAPIUS IN DI..       *
+         -              APPLICI,                   . API COLOR WORD 1..       *
+         -              APPLICJ,                   . API COLOR WORD 2..       *
+18E_0123 *              APPLICK(1632368),          . SHAPED API WORD..        *
