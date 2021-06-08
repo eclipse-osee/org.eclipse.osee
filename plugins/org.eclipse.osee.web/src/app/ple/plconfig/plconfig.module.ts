@@ -14,7 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+//import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -43,6 +43,8 @@ import { ConfigurationGroupDropdownComponent } from './components/configuration-
 import { AddConfigurationGroupDialogComponent } from './components/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { ConfigGroupDialogComponent } from './components/config-group-dialog/config-group-dialog.component';
 
+import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module'
+
 
 
 @NgModule({
@@ -57,7 +59,8 @@ import { ConfigGroupDialogComponent } from './components/config-group-dialog/con
     MatPaginatorModule,
     MatInputModule,
     MatMenuModule,
-    MatButtonModule,
+    //MatButtonModule,
+    PleSharedMaterialModule,
     MatDialogModule,
     MatSlideToggleModule,
     MatTooltipModule,

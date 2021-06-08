@@ -1,5 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigActionService } from '../../services/pl-config-action.service';
 
@@ -11,6 +17,7 @@ describe('CreateActionDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports:[MatFormFieldModule,MatSelectModule,MatInputModule,MatButtonModule,MatDialogModule,NoopAnimationsModule, FormsModule],
       declarations: [CreateActionDialogComponent],
       providers: [
         { provide: MatDialogRef, useValue: {} },

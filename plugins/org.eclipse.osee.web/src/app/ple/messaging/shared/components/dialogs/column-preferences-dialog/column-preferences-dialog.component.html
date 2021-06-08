@@ -1,0 +1,69 @@
+<h1 mat-dialog-title>Settings</h1>
+<mat-dialog-content>
+  <mat-checkbox
+    [(ngModel)]="data.editable"
+    [disabled]="!(editability | async) || false"
+    color="primary"
+    >Edit Mode</mat-checkbox
+  >
+  <ng-container *ngIf="data.headersTableActive">
+    <h2>Column Preferences</h2>
+    <table class="mat-table mat-elevation-z8">
+      <tr class="mat-header-row">
+        <th class="mat-header-cell">
+          <mat-label>{{ data.headers1Label }}:</mat-label>
+        </th>
+        <th class="mat-header-cell">
+          <mat-label>{{ data.headers2Label }}:</mat-label>
+        </th>
+      </tr>
+      <tr class="mat-row">
+        <td class="mat-cell column-preferences-align-top">
+          <mat-selection-list
+            [(ngModel)]="data.allowedHeaders1"
+            color="primary"
+          >
+            <mat-list-option
+              *ngFor="let header of data.allHeaders1"
+              [value]="header"
+            >
+              {{ header | convertMessageInterfaceTitlesToString }}
+            </mat-list-option>
+          </mat-selection-list>
+        </td>
+        <td class="mat-cell column-preferences-align-top">
+          <mat-selection-list
+            [(ngModel)]="data.allowedHeaders2"
+            color="primary"
+          >
+            <mat-list-option
+              *ngFor="let header of data.allHeaders2"
+              [value]="header"
+            >
+              {{ header | convertMessageInterfaceTitlesToString }}
+            </mat-list-option>
+          </mat-selection-list>
+        </td>
+      </tr>
+    </table>
+  </ng-container>
+  <!-- <mat-selection-list [(ngModel)]="data.allowedStructureHeaders" color="primary">
+        <mat-label>Structure Headers:</mat-label>
+        <mat-list-option *ngFor="let header of data.allStructureHeaders" [value]="header">
+            {{header |convertMessageInterfaceTitlesToString}}
+        </mat-list-option>
+    </mat-selection-list>
+    <mat-selection-list [(ngModel)]="data.allowedElementHeaders" color="primary">
+        <mat-label>Element Headers:</mat-label>
+        <mat-list-option *ngFor="let header of data.allElementHeaders" [value]="header">
+            {{header |convertMessageInterfaceTitlesToString}}
+        </mat-list-option>
+    </mat-selection-list> -->
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <!-- [disabled]="data.allowedElementHeaders.length===0||data.allowedStructureHeaders.length===0" -->
+  <button mat-raised-button [mat-dialog-close]="data" color="primary">
+    Ok
+  </button>
+</mat-dialog-actions>

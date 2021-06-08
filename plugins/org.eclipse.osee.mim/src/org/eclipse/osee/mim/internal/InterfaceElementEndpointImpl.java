@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
@@ -147,8 +148,23 @@ public class InterfaceElementEndpointImpl implements InterfaceElementEndpoint {
 
    @Override
    public XResultData relatePlatformType(ArtifactId elementId, ArtifactId platformTypeId) {
-      return elementApi.getInserter().relateArtifact(platformTypeId, elementId,
-         CoreRelationTypes.InterfaceElementPlatformType_PlatformType, branch, account);
+      XResultData results = new XResultData();
+      try {
+         Collection<PlatformTypeToken> platformTypes = platformApi.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceElementPlatformType_Element, elementId, PlatformTypeToken.class);
+         if (platformTypes.size() > 0) {
+            for (PlatformTypeToken token : platformTypes) {
+               results.merge(elementApi.getInserter().unrelateArtifact(ArtifactId.valueOf(token.getId()), elementId,
+                  CoreRelationTypes.InterfaceElementPlatformType_PlatformType, branch, account));
+            }
+         }
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         results.error(Lib.exceptionToString(ex));
+      }
+      results.merge(elementApi.getInserter().relateArtifact(platformTypeId, elementId,
+         CoreRelationTypes.InterfaceElementPlatformType_PlatformType, branch, account));
+      return results;
    }
 
 }

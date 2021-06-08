@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { BranchTypeSelectorComponent } from './branch-type-selector.component';
 
@@ -8,6 +11,7 @@ describe('BranchTypeSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports:[NoopAnimationsModule,MatRadioModule, FormsModule],
       declarations: [ BranchTypeSelectorComponent ]
     })
     .compileComponents();

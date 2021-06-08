@@ -27,7 +27,7 @@ speed-measure-plugin*.json
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
+# !.vscode/launch.json don't see any reason to include launch configurations with everyone unless there's heavy usage
 !.vscode/extensions.json
 .history/*
 

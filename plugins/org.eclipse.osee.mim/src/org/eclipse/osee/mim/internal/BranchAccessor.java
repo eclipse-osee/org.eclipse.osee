@@ -23,10 +23,12 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
+import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
+import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
@@ -95,6 +97,20 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceElementEndpoint getElementEndpoint(@PathParam("branch") BranchId branch, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @PathParam("structureId") ArtifactId structureId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceElementEndpointImpl(branch, accountId, messageId, subMessageId, structureId,
+         mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
+   }
+
+   @Path("{branch}/elements")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceElementSearchEndpoint getElementSearchEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceElementSearchEndpointImpl(branch, accountId, mimApi.getInterfaceElementApi(),
+         mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
+   }
+
+   @Path("{branch}/structures")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceStructureSearchEndpoint getStructureSearchEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceStructureSearchEndpointImpl(branch, accountId, mimApi.getInterfaceStructureApi(),
          mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
    }
 }

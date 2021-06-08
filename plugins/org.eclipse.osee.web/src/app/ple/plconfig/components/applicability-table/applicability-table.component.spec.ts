@@ -1,4 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -14,8 +24,10 @@ describe('ApplicabilityTableComponent', () => {
     const branchServiceSpy = jasmine.createSpyObj('PlConfigBranchService',['modifyConfiguration'])
     
     await TestBed.configureTestingModule({
+      imports:[MatFormFieldModule,MatListModule,MatDialogModule,MatInputModule,FormsModule, MatSelectModule, NoopAnimationsModule,MatTableModule, MatPaginatorModule,MatTooltipModule, MatPaginatorModule],
       declarations: [ApplicabilityTableComponent],
       providers: [
+        { provide: MatDialog, useValue: {} },
         { provide: PlConfigBranchService, useValue: branchServiceSpy },
         {
           provide: PlConfigCurrentBranchService, useValue: {

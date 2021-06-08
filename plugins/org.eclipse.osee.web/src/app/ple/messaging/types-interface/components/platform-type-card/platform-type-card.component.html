@@ -1,0 +1,44 @@
+<mat-card class="mat-elevation-z8">
+    <div mat-card-header>
+        <div mat-card-title>
+            {{typeData.name}}
+        </div>
+        <div mat-card-subtitle>
+            {{typeData.interfaceLogicalType}}
+        </div>
+    </div>
+    <div mat-card-content>
+        <div *ngIf="typeData.interfacePlatformTypeMinval">
+            Minimum Value:<br> {{typeData.interfacePlatformTypeMinval}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeMaxval">
+            Maximum Value:<br> {{typeData.interfacePlatformTypeMaxval}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeBitSize">
+            Bit Size: {{typeData.interfacePlatformTypeBitSize}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeDefaultValue">
+            Default Value: {{typeData.interfacePlatformTypeDefaultValue}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeMsbValue">
+            MSB Value: {{typeData.interfacePlatformTypeMsbValue}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeBitsResolution">
+            Resolution: {{typeData.interfacePlatformTypeBitsResolution}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeCompRate">
+            Comp Rate: {{typeData.interfacePlatformTypeCompRate}}
+        </div>
+        <div *ngIf="typeData.interfacePlatformTypeAnalogAccuracy">
+            Analog Accuracy: {{typeData.interfacePlatformTypeAnalogAccuracy}}
+        </div>
+    </div>
+    <div mat-card-actions>
+        <button mat-stroked-button (click)="openDialog(edit)">
+            Edit
+        </button>
+        <button mat-stroked-button (click)="openDialog(copy)">
+            Create New Type From Base
+        </button>
+    </div>
+</mat-card>

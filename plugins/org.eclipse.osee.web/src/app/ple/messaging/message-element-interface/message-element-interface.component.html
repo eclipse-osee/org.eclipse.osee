@@ -1,0 +1,69 @@
+<div class="message-element-interface message-element-interface-button-header">
+    <button mat-raised-button (click)="openSettingsDialog()" style="float:right">Settings</button>
+</div>
+<ng-container *ngIf="editMode===true;">
+    <button mat-fab color="primary" (click)="openAddStructureDialog()"class="new-structure-button">+</button>
+</ng-container>
+<div class="message-element-interface message-element-interface-top-level-table">
+    <mat-form-field class="message-element-interface-table-view-width-100 message-element-interface-table-filter-padding">
+        <mat-label>Filter Message Information</mat-label>
+        <input matInput type="text" (keyup)="applyFilter($event)" #input>
+        <mat-hint>Enter text to filter Structure Table.
+            Only full text matches will show results.
+        </mat-hint>
+    </mat-form-field>
+    <table mat-table  [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container matColumnDef="Breadcrumbs">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="allowedStructureHeaders.length" class="message-element-interface-table-view-message-header message-element-interface-breadcrumbs">
+                {{breadCrumb}}
+            </th>
+        </ng-container>
+        <ng-container [matColumnDef]="header" *ngFor="let header of allowedStructureHeaders; let i = index; trackBy:valueTracker;">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="allowedStructureHeaders[i]" class="message-element-interface-table-view-message-header" [matTooltip]="header">
+                <ng-container>
+                    {{header |convertMessageInterfaceTitlesToString}}
+                </ng-container>
+            </th>
+            <td mat-cell *matCellDef="let element; let i = dataIndex" [ngClass]="i%2===0? 'message-table-row-even':'message-table-row-odd'">
+                <div class="flex-row">
+                    <ng-container *ngIf="editMode===true; else no_edit">
+                        <ng-container *ngIf="header==='name'">
+                            <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))">V</button>
+                        </ng-container>
+                        <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]"></osee-messaging-edit-structure-field>
+                    </ng-container>
+                    <ng-template #no_edit>
+                        <ng-container *ngIf="header==='name'">
+                            <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))">V</button>
+                        </ng-container>
+                        <div *ngIf="header==='description'" [matTooltip]="element[header]" [matTooltipDisabled]="element[header].length<15" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header] | displayTruncatedStringWithFieldOverflow:15" classToApply="ple-message-element-interface-table-highlighted-text">
+                            {{element[header] | displayTruncatedStringWithFieldOverflow:15}}
+                        </div>
+                        <div *ngIf="header!=='description'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
+                            {{element[header]}}
+                        </div>
+                    </ng-template>
+                </div>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="expandedMessage">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="allowedStructureHeaders.length" class="no-pad">    
+                <div class="sub-message-detail message-element-interface-table-view-width-100"
+                   [@detailExpand]="expandedElement.includes(element.id) ? 'expanded' : 'collapsed'">
+                   <ng-container *ngIf="expandedElement.includes(element.id)">
+                    <ple-messaging-message-element-interface-sub-element-table [data]="element.elements" [filter]="filter" [element]="element" (expandRow)="expandRow($event)" [subMessageHeaders]="allowedElementHeaders" [editMode]="editMode"></ple-messaging-message-element-interface-sub-element-table>
+                   </ng-container>
+                </div>    
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['Breadcrumbs']; sticky:true"></tr>
+        <tr mat-header-row *matHeaderRowDef="allowedStructureHeaders; sticky:true">
+        </tr>    
+        <tr mat-row *matRowDef= "let row; columns: allowedStructureHeaders;"    
+        class="message-detail-row"
+        [class.message-expanded-detail-row]="expandedElement.includes(row.id)">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedMessage']" class="message-expanded-detail-row">
+        </tr>
+    </table>
+</div>

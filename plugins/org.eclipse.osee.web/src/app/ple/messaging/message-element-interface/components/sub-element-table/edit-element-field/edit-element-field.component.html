@@ -1,0 +1,24 @@
+<mat-form-field>
+    <mat-label>{{header|convertMessageInterfaceTitlesToString}}</mat-label>
+    <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2'">
+    <ng-container *ngIf="header==='name'">
+        <ng-container *ngIf="elementEnd-elementStart>0">
+            <p matSuffix>
+                {{"["+elementStart+"..."+elementEnd+"]"}}
+            </p>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="header==='platformTypeName2'">
+        <!-- <mat-select [(ngModel)]="value" (selectionChange)="updateType($event.value)">
+            <mat-option *ngFor="let option of (availableTypes|async)" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
+                {{option.name}}
+            </mat-option>
+        </mat-select> -->
+        <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
+            <mat-option *ngFor="let option of filteredTypes | async" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''">
+              {{option.name}}
+            </mat-option>
+        </mat-autocomplete>
+    </ng-container>
+</mat-form-field>

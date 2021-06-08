@@ -1,0 +1,77 @@
+<h1 mat-dialog-title>Add Element to {{data.name}}</h1>
+<mat-horizontal-stepper #stepper class ="new-submessage-stepper">
+    <mat-step label="Select Element options" #step1>
+        <div style="display:flex; flex-direction:row; justify-content: space-evenly; align-items: baseline;">
+            <button mat-raised-button color="primary" style="width:100%;" matStepperNext (click)="createNew()">Create new Element</button>
+            <p style="width:100%; text-align:center;">or</p>
+            <mat-form-field style="width:100%;">
+                <mat-label>Select a Element to Add to Structure</mat-label>
+                <mat-select [(ngModel)]="data.element" (selectionChange)="storeId($event.value)">
+                    <mat-option *ngFor="let option of (availableElements|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
+                        {{option.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button color="primary" *ngIf="data.element?.id && data.element?.id!=='-1'" (click)="moveToReview(stepper)">Proceed to Review</button>
+    </mat-step>
+    <mat-step label="Define element" #step2>
+        <div style="display:flex; flex-direction:column">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput [(ngModel)]="data.element.name" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Description</mat-label>
+                <input matInput [(ngModel)]="data.element.description" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Notes</mat-label>
+                <input matInput [(ngModel)]="data.element.notes">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Start Index</mat-label>
+                <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexStart" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>End Index</mat-label>
+                <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexEnd" required>
+            </mat-form-field>
+            <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before'>
+                Alterable
+            </mat-slide-toggle>
+            <mat-form-field style="width:100%;">
+                <mat-label>Select a Platform Type</mat-label>
+                <mat-select [(ngModel)]="data.type">
+                    <mat-option *ngFor="let option of (availableTypes|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
+                        {{option.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" *ngIf="data.element.name.length>0 && 
+                                                        data.element.description.length>0 &&
+                                                        data.type.name.length>0 &&
+                                                        +data.type.id>0" matStepperNext>Next</button>
+    </mat-step>
+    <mat-step label="Review" #step3>
+        <div style="display:flex;flex-direction:column">
+            An element will be related to:
+            <mat-label>{{data.name}}</mat-label> with the following properties:
+            <mat-label>Element Name: {{data.element.name}}</mat-label>
+            <mat-label>Element Description: {{data.element.description}}</mat-label>
+            <mat-label>Element Notes: {{data.element.notes}}</mat-label>
+            <mat-label>Element Start Index: {{data.element.interfaceElementIndexStart}}</mat-label>
+            <mat-label>Element End Index: {{data.element.interfaceElementIndexEnd}}</mat-label>
+            <mat-label>Element Alterable: {{data.element.interfaceElementAlterable}}</mat-label>
+            <mat-label>Platform Type: {{data.type.name}}</mat-label>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="data">
+                Ok
+            </button>
+        </mat-dialog-actions>
+    </mat-step>
+</mat-horizontal-stepper>

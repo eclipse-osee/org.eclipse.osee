@@ -1,0 +1,51 @@
+<div class="message-interface-table-view mat-elevation-z9">
+    <table mat-table [dataSource]="dataSource" class="message-interface-table-view-width-100">
+        <ng-container [matColumnDef]="header" *ngFor="let header of headers;let j=index;trackBy:valueTracker">
+         <th mat-header-cell *matHeaderCellDef class="message-interface-table-view-sub-message-header">{{header |convertSubMessageTitlesToString}}</th>
+         <td mat-cell *matCellDef="let value" class="message-interface-table-center">
+            <ng-container *ngIf="editMode==false; else edit_Mode;">
+                <ng-container *ngIf="header==='description'">
+                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header] | displayTruncatedStringWithFieldOverflow:75" classToApply="ple-message-interface-table-highlighted-text">
+                        {{value[header] | displayTruncatedStringWithFieldOverflow:75}}
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="header!=='description' && header!==' '">
+                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header]" classToApply="ple-message-interface-table-highlighted-text">
+                        {{value[header]}}
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="header===' '"><button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])" (contextmenu)="openMenu($event,element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                </ng-container>
+            </ng-container>
+            <ng-template #edit_Mode>
+                <ng-container *ngIf="header!==' '">
+                    <osee-messaging-edit-sub-message-field [messageId]="element.id" [subMessageId]="value['id']" [header]="header" [value]="value[header]"></osee-messaging-edit-sub-message-field>
+                </ng-container>
+                <ng-container *ngIf="header===' '">
+                    <button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])" (contextmenu)="openMenu($event,element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                </ng-container>
+            </ng-template>
+         </td>
+        </ng-container>
+        <ng-container matColumnDef="footer">
+            <td mat-footer-cell *matFooterCellDef [attr.colspan]="headers.length" style="text-align:right">
+                <ng-container *ngIf="editMode===true;">
+                    <button mat-mini-fab color="primary" (click)="createNewSubMessage()">+</button>
+                </ng-container>
+             </td>
+        </ng-container>
+     <tr mat-header-row *matHeaderRowDef="headers;"></tr>    
+     <tr mat-row *matRowDef= "let row2; columns: headers; let k=index;"
+     [ngClass]="k%2===0? 'message-table-sub-message-row-even':'message-table-sub-message-row-odd'"></tr>
+     <tr mat-footer-row *matFooterRowDef="['footer']"></tr>
+    </table>
+</div>
+<mat-menu #contextMenu="matMenu">
+    <ng-template matMenuContent let-id="id" let-submessage="submessage" let-location="location">
+        <button mat-menu-item (click)="navigateToElementsTableInNewTab(id,submessage,location)"> Open in new tab</button>
+    </ng-template>
+</mat-menu>
+<div style="visibility: hidden; position: fixed;" 
+[style.left]="menuPosition.x" 
+[style.top]="menuPosition.y" 
+[matMenuTriggerFor]="contextMenu"></div>

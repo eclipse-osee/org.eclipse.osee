@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.ArtifactInserter;
@@ -234,7 +235,7 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
             user = SystemUser.OseeSystem;
          }
          TransactionBuilder tx =
-            orcsApi.getTransactionFactory().createTransaction(branch, user, "Relate " + this.getObjectTypeToInsert());
+            orcsApi.getTransactionFactory().createTransaction(branch, user, "Unrelate " + this.getObjectTypeToInsert());
          tx.unrelate(artifactToUnRelateFrom, relation, artifactToUnRelate);
          tx.commit();
       } catch (Exception ex) {
@@ -354,11 +355,21 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
    }
 
    private boolean checkIfIdExists(T newArtifact) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-      Long Id = (Long) getGetter(newArtifact.getClass(), "Id").invoke(newArtifact);
-      if (Id.equals(null) || Id <= 0L) {
+      Long Id = (Long) getGetter(getNamedIdBase(newArtifact.getClass()), "Id").invoke(newArtifact);
+      if (Id == null || Id <= 0L) {
          return false;
       }
       return true;
+   }
+
+   Class<?> getNamedIdBase(Class<?> type) {
+      if (type.getSuperclass() != null) {
+         if (type.getSuperclass() == NamedIdBase.class) {
+            return type.getSuperclass();
+         }
+         return getNamedIdBase(type.getSuperclass());
+      }
+      return null;
    }
 
    List<Field> getAllFields(List<Field> fields, Class<?> type) {

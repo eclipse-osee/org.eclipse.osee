@@ -2,17 +2,19 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse } fr
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
+import { HttpLoadingService } from "src/app/ple/messaging/shared/services/ui/http-loading.service";
 import { PlConfigUIStateService } from "src/app/ple/plconfig/services/pl-config-uistate.service";
 
 /** Pass untouched request through to the next request handler. */
 @Injectable()
 export class PlConfigSetLoadingIndicatorInterceptor implements HttpInterceptor {
     requests: HttpRequest<any>[] = [];
-    constructor(private uiStateService: PlConfigUIStateService) { };
+    constructor(private uiStateService: PlConfigUIStateService, private messageUIHttpLoadingService:HttpLoadingService) { };
     intercept(req: HttpRequest<any>, next: HttpHandler):
         Observable<HttpEvent<any>> {
         this.requests.push(req);
         this.uiStateService.loadingBool = true;
+        this.messageUIHttpLoadingService.loading = true;
         return new Observable((observer: { next: (arg0: HttpEvent<any>) => void; error: (arg0: any) => void; complete: () => void; }) => {
             const subscription = next.handle(req)
                 .subscribe(
@@ -44,6 +46,7 @@ export class PlConfigSetLoadingIndicatorInterceptor implements HttpInterceptor {
             this.requests.splice(index, 1);
         }
         this.uiStateService.loadingBool = this.requests.length > 0;
+        this.messageUIHttpLoadingService.loading = this.requests.length > 0;
     }
 }
 

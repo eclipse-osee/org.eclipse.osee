@@ -1,0 +1,13 @@
+<button mat-fab (click)="openNewTypeDialog()" class="new-platform-type-button" color="primary">+</button>
+<mat-form-field class="ple-messaging-type-grid-filter">
+    <mat-label>Filter Types</mat-label>
+    <input matInput type="text" (keyup)="applyFilter($event)" #input [value]="filterValue">
+    <mat-hint>Enter text to filter Types.
+    </mat-hint>
+</mat-form-field>
+<div class="ple-messaging-type-grid">
+    <ng-container *ngFor="let card of (filteredData | async); let i=index;">
+        <ple-messaging-types-platform-type-card [typeData]="card" [attr.width]="getWidthString()" [style.margin]="getMarginString()" class="typeElement">
+        </ple-messaging-types-platform-type-card>
+    </ng-container>
+</div>

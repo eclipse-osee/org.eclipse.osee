@@ -1,0 +1,77 @@
+@import '~@angular/material/theming';
+
+@mixin color($config-or-theme) {
+  // Extract the color configuration in case a theme has been passed.
+  // This allows consumers to either pass a theme object or a color configuration.
+  $config: mat-get-color-config($config-or-theme);
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($config, primary);
+  $accent: map-get($config, accent);
+  $warn: map-get($config, warn);
+  $background: map-get($config, background);
+  $foreground: map-get($config, foreground);
+  
+  // Define any styles affected by the theme.
+  .message-element-interface-table-view-sub-message-header{
+    color: mat-color($primary)
+  }
+
+  .message-element-interface-table-view-message-header{
+    color:mat-color($primary,600)
+  }
+
+  .message-table-row-even{
+    background-color:mat-color($background, background)
+  }
+
+  .message-table-row-odd{
+    background-color:mat-color($background, selected-button)
+  }
+
+  tr.message-detail-row:not(.message-expanded-detail-row):hover {
+    background: mat-color($background,app-bar)
+  }
+
+  tr.message-detail-row:not(.message-expanded-detail-row):active {
+    background: mat-color($background,unselected-chip)
+  }
+
+  .message-table-sub-element-row-even{
+    background-color:mat-color($primary,50)
+  }
+
+  .message-table-sub-element-row-odd{
+    background-color:mat-color($primary,100)
+  }
+
+  .message-element-interface-table-view-element{
+    border-bottom: 0.5em solid mat-color($background,disabled-button-toggle)
+  }
+  .message-element-interface-table-sub-message-element-computed{
+    color: mat-color($foreground,secondary-text) //need to user test this
+    //color:mat-color($warn,900)
+  }
+
+  .ple-message-element-interface-table-highlighted-text{
+    color:mat-color($accent,900)
+  }
+}
+@mixin typography($config-or-theme){
+    
+}
+@mixin typography-themed($config-or-theme){
+  $config: mat-get-typography-config($config-or-theme);
+}
+
+@mixin theme($theme, $typography){
+    $color: mat-get-color-config($theme);
+    $typography: mat-get-typography-config($typography);
+    @include typography($theme);
+    
+    @if $color != null {  
+      @include color($color);   
+    }  
+    @if $typography != null {
+      @include typography-themed($typography);  
+    }
+}

@@ -1,0 +1,56 @@
+<h1 mat-dialog-title>Add Sub Message to Message {{data.name}}</h1>
+<mat-horizontal-stepper #stepper class ="new-submessage-stepper">
+    <mat-step label="Select Sub Message options" #step1>
+        <div style="display:flex; flex-direction:row; justify-content: space-evenly; align-items: baseline;">
+            <button mat-raised-button color="primary" style="width:100%;" matStepperNext (click)="createNew()">Create new Sub Message</button>
+            <p style="width:100%; text-align:center;">or</p>
+            <mat-form-field style="width:100%;">
+                <mat-label>Select a Sub Message to Add to Message</mat-label>
+                <mat-select [(ngModel)]="data.subMessage" (selectionChange)="storeId($event.value)">
+                    <mat-option *ngFor="let option of (availableSubMessages|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
+                        {{option.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button color="primary" *ngIf="data.subMessage?.id && data.subMessage?.id!=='-1'" (click)="moveToReview(stepper)">Proceed to Review</button>
+    </mat-step>
+    <mat-step label="Define Sub Message" #step2>
+        <div style="display:flex; flex-direction:column">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput [(ngModel)]="data.subMessage.name" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Description</mat-label>
+                <input matInput [(ngModel)]="data.subMessage.description" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Message Rate</mat-label>
+                <input matInput [(ngModel)]="data.subMessage.interfaceMessageRate" required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Sub Message Number</mat-label>
+                <input matInput [(ngModel)]="data.subMessage.interfaceSubMessageNumber" required>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0 && data.subMessage.interfaceMessageRate.length>0 && data.subMessage.interfaceSubMessageNumber.length>0" matStepperNext>Next</button>
+    </mat-step>
+    <mat-step label="Review" #step3>
+        <div style="display:flex;flex-direction:column">
+            A sub message will be related to:
+            <mat-label>{{data.name}}</mat-label> with the following properties:
+            <mat-label>Sub Message Name: {{data.subMessage?.name}}</mat-label>
+            <mat-label>Sub Message Description: {{data.subMessage?.description}}</mat-label>
+            <mat-label>Sub Message Rate: {{data.subMessage?.interfaceMessageRate}}</mat-label>
+            <mat-label>Sub Message Number: {{data.subMessage?.interfaceSubMessageNumber}}</mat-label>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="data">
+                Ok
+            </button>
+        </mat-dialog-actions>
+    </mat-step>
+</mat-horizontal-stepper>

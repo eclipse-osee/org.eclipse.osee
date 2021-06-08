@@ -34,10 +34,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
    @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225801L)
    private Integer InterfaceElementIndexStart;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225802L)
    private Integer InterfaceElementIndexEnd;
 
    private Long PlatformTypeId;
@@ -167,7 +165,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
    /**
     * @return the platformTypeName
     */
-   public String getPlatformTypeName() {
+   public String getPlatformTypeName2() {
       return PlatformTypeName;
    }
 

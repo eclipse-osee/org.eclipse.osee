@@ -16,5 +16,14 @@
         "pathReWrite":{
             "^/ats":""
         }
+    },
+    "/mim/*":{
+        "target":"http://localhost:8089",
+        "secure":true,
+        "changeOrigin":true,
+        "logLevel":"debug",
+        "pathReWrite":{
+            "^/mim":""
+        }
     }
 }

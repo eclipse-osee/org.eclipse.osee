@@ -1,0 +1,4 @@
+<mat-form-field>
+    <mat-label>{{header|convertMessageTableTitlesToString}}</mat-label>
+    <input matInput [(ngModel)]="value" (ngModelChange)="updateMessage(header,value)">
+</mat-form-field>

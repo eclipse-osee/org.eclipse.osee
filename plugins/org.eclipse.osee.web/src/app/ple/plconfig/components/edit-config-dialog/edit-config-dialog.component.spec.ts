@@ -1,20 +1,36 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 
 import { EditConfigurationDialogComponent } from './edit-config-dialog.component';
 
-describe('EditDialogComponent', () => {
+describe('EditConfigDialogComponent', () => {
   let component: EditConfigurationDialogComponent;
   let fixture: ComponentFixture<EditConfigurationDialogComponent>;
 
   beforeEach(async () => {
+    const typesService = jasmine.createSpyObj('PlConfigTypesService', [], ['productApplicabilityTypes']);
+    const currentBranchService = jasmine.createSpyObj('PlConfigCurrentBranchService', [], ['cfgGroups']);
+    const branchService = jasmine.createSpyObj('PlConfigBranchService', ['getBranchApplicability']);
     await TestBed.configureTestingModule({
+      imports:[MatFormFieldModule,MatInputModule,MatSelectModule,MatDialogModule,NoopAnimationsModule,MatListModule,MatButtonModule, FormsModule],
       declarations: [EditConfigurationDialogComponent],
       providers: [
+        { provide: PlConfigBranchService, useValue: branchService },
+        { provide: PlConfigCurrentBranchService, useValue: currentBranchService },
+        { provide: PlConfigTypesService, useValue: typesService },
         { provide: MatDialogRef, useValue: {} },
         {
           provide: MAT_DIALOG_DATA, useValue: {

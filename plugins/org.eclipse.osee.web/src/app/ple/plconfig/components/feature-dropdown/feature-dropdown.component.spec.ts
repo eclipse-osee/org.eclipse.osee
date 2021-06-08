@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
@@ -38,7 +39,7 @@ describe('FeatureDropdownComponent', () => {
     const deleteFeatureSpy = branchService.deleteFeature.and.returnValue(of(testResponse));
     const modifyFeatureSpy = branchService.modifyFeature.and.returnValue(of(testResponse));
     await TestBed.configureTestingModule({
-      imports:[MatMenuModule],
+      imports:[MatMenuModule,MatButtonModule],
       declarations: [FeatureDropdownComponent],
       providers: [
         {

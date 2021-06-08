@@ -1,7 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
+import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 
@@ -12,12 +21,17 @@ describe('EditFeatureDialogComponent', () => {
   let fixture: ComponentFixture<EditFeatureDialogComponent>;
 
   beforeEach(async () => {
+    const typesService = jasmine.createSpyObj('PlConfigTypesService', [], ['productApplicabilityTypes']);
     await TestBed.configureTestingModule({
+      imports:[MatFormFieldModule,MatInputModule,MatButtonModule,MatListModule,MatSelectModule,MatDialogModule,NoopAnimationsModule, MatSlideToggleModule, FormsModule],
       declarations: [EditFeatureDialogComponent],
-      providers: [{ provide: MatDialogRef, useValue: {} },
+      providers: [
+        { provide: PlConfigTypesService, useValue: typesService },
+        { provide: MatDialogRef, useValue: {} },
         {
           provide: MAT_DIALOG_DATA, useValue: {
             currentBranch: "01238082141",
+            editable:true,
             feature: {
               id: '',
               idIntValue: 6451325,

@@ -44,7 +44,7 @@ public class InterfaceMessageToken extends PLGenericDBObject {
 
    @OseeArtifactRequiredAttribute()
    @OseeArtifactAttribute(attributeId = 2455059983007225754L)
-   private String InterfaceMessageWriteAccess; //required
+   private Boolean InterfaceMessageWriteAccess; //required
 
    @OseeArtifactRequiredAttribute()
    @OseeArtifactAttribute(attributeId = 2455059983007225770L)
@@ -69,7 +69,7 @@ public class InterfaceMessageToken extends PLGenericDBObject {
       this.setInterfaceMessageRate(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, ""));
       this.setInterfaceMessageType(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, ""));
       this.setInterfaceMessageWriteAccess(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess, ""));
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false));
    }
 
    public InterfaceMessageToken(Long id, String name) {
@@ -125,14 +125,14 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    /**
     * @return the interfaceMessageWriteAccess
     */
-   public String getInterfaceMessageWriteAccess() {
+   public Boolean getInterfaceMessageWriteAccess() {
       return InterfaceMessageWriteAccess;
    }
 
    /**
     * @param interfaceMessageWriteAccess the interfaceMessageWriteAccess to set
     */
-   public void setInterfaceMessageWriteAccess(String interfaceMessageWriteAccess) {
+   public void setInterfaceMessageWriteAccess(Boolean interfaceMessageWriteAccess) {
       InterfaceMessageWriteAccess = interfaceMessageWriteAccess;
    }
 
