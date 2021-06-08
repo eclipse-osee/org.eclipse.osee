@@ -177,10 +177,8 @@ public class WfeHeaderComposite extends Composite {
          createStateNotesHeader(this, workItem, editor.getToolkit(), numColumns, null);
          createAnnotationsHeader(this, editor.getToolkit());
 
-         if (WfeRelationsHyperlinkComposite.relationExists((AbstractWorkflowArtifact) workItem)) {
-            relationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
-            relationsComposite.create();
-         }
+         relationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
+         relationsComposite.create();
 
          if (WfeActionableItemReviewHeader.isApplicable(workItem)) {
             aiReviewHeader =
