@@ -123,9 +123,9 @@ export class ActionDropDownComponent implements OnInit {
       minWidth: '60%'
     })
     dialogRef.afterClosed().subscribe((result: TransitionActionDialogData) => {
-      if (result?.selectedUser?.loginIds != null && result?.selectedUser?.loginIds!=undefined) {
+      if (result?.selectedUser?.artifactId != null && result?.selectedUser?.artifactId!=undefined) {
         let body = {
-          committer: result.selectedUser.loginIds[0],
+          committer: result.selectedUser.artifactId,
           archive:"false"
         }
         this.currentBranchService.commitBranch(this.parentBranch,body).subscribe((commitResponse: commitResponse) => {
