@@ -60,7 +60,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
 
    @Override
    public AtsUser getCurrentUserNoCache() {
-      currentUser = null;
+      clearCaches();
       return getCurrentUser();
    }
 

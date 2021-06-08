@@ -67,11 +67,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       throw new UnsupportedOperationException();
    }
 
-   @Override
-   public boolean isAtsAdmin() {
-      throw new UnsupportedOperationException();
-   }
-
    public static AtsUser valueOf(ArtifactReadable userArt) {
       AtsUser atsUser = new AtsUser();
       atsUser.setName(userArt.getName());

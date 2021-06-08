@@ -66,8 +66,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                   ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
                }
 
-               IUserGroup oseeAdminGroup =
-                  org.eclipse.osee.framework.skynet.core.access.UserServiceImpl.getOseeAdmin();
+               IUserGroup oseeAdminGroup = org.eclipse.osee.framework.skynet.core.access.UserServiceImpl.getOseeAdmin();
                if (!oseeAdminGroup.isCurrentUserMember()) {
                   oseeAdminGroup.addMember(UserManager.getUser(), true);
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
@@ -88,10 +87,9 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
                }
             }
-            AtsApiService.get().getConfigService().getConfigurationsWithPend();
-            AtsApiService.get().getUserService().isAtsAdmin(false);
-            AtsApiService.get().getUserService().clearCaches();
+            AtsApiService.get().clearCaches();
             NavigateViewItems.getInstance().clearCaches();
+
             for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
                editor.refresh();
             }
