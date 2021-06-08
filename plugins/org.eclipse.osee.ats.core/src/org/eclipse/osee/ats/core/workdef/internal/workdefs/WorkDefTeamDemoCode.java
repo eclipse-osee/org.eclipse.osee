@@ -49,7 +49,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsDemoOseeTypes.DemoCodeTeamWorkflow);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
-         .andToStates(StateToken.Cancelled, StateToken.Analyze) //
+         .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //

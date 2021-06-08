@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -322,7 +321,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedStateItems) {
             return !((WrappedStateItems) element).workflowHooks.isEmpty();
          } else if (element instanceof WrappedStates) {
-            return !((WrappedStates) element).states.isEmpty();
+            if (((WrappedStates) element).states != null) {
+               return !((WrappedStates) element).states.isEmpty();
+            }
          } else if (element instanceof RuleAndLocation) {
             return false;
          } else if (element instanceof WrappedRules) {
@@ -555,7 +556,11 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         return name + (states.isEmpty() ? " (Empty)" : "");
+         if (states != null) {
+            return name + (states.isEmpty() ? " (Empty)" : "");
+         } else {
+            return name;
+         }
       }
 
       public Collection<IAtsStateDefinition> getStates() {
@@ -670,11 +675,10 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       public Collection<Object> getTransitions() {
          List<Object> items = new ArrayList<>();
-         if (!stateDef.getToStates().isEmpty()) {
-            items.add(new WrappedStates("DefaultToState", Collections.emptyList()));
+         if (stateDef.getToStates().isEmpty()) {
+            items.add(new WrappedStates("DefaultToState: None", null));
          } else {
-            items.add(
-               new WrappedStates("DefaultToState", Collections.singleton(stateDef.getToStates().iterator().next())));
+            items.add(new WrappedStates("DefaultToState: " + stateDef.getToStates().iterator().next(), null));
          }
          items.add(new WrappedStates("ToStates", stateDef.getToStates()));
          return items;
