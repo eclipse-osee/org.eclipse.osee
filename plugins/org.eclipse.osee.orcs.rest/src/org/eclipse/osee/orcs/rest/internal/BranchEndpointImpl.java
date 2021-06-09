@@ -849,8 +849,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
          Long childOf = options.getIsChildOf();
          if (childOf > 0) {
-            BranchId childOfToken = BranchId.valueOf(ancestorOf);
-            query.andIsAncestorOf(childOfToken);
+            BranchId childOfToken = BranchId.valueOf(childOf);
+            query.andIsChildOf(childOfToken);
          }
       }
 
