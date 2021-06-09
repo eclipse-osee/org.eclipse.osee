@@ -157,8 +157,8 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          String newline = "";
          for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.RequirementTrace_HigherLevelRequirement)) {
             builtRows[5].append(newline);
-            if (req.getAttributeCount(CoreAttributeTypes.LegacyId) > 0) {
-               builtRows[5].append(req.getSoleAttributeAsString(CoreAttributeTypes.LegacyId));
+            if (subSysReq.getAttributeCount(CoreAttributeTypes.LegacyId) > 0) {
+               builtRows[5].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.LegacyId));
             }
             builtRows[6].append(newline);
             try {
