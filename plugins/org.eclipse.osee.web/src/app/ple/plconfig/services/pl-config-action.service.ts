@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
 import { action, actionableItem, newActionInterface, newActionResponse, targetedVersion, teamWorkflow, transitionAction } from '../types/pl-config-actions';
 import { transitionResponse } from '../types/pl-config-responses';
@@ -13,7 +14,7 @@ export class PlConfigActionService {
 
   constructor(private http: HttpClient) { }
   public get users():Observable<user[]> {
-    return this.http.get<user[]>(apiURL+'/ats/user');
+    return this.http.get<user[]>(apiURL+'/ats/user?active=Active')
   }
   public get ARB(): Observable<actionableItem[]> {
     return this.http.get<actionableItem[]>(apiURL+'/ats/ai/worktype/ARB')

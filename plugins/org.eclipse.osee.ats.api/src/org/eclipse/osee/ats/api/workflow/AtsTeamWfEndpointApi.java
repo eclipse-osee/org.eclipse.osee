@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
 /**
  * @author Donald G. Dunne
@@ -41,6 +42,7 @@ public interface AtsTeamWfEndpointApi {
    public List<ChangeItem> getChangeData(@PathParam("id") String id);
 
    @GET
+   @IdentityView
    @Path("{aiId}/version")
    @Produces({MediaType.APPLICATION_JSON})
    Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId);

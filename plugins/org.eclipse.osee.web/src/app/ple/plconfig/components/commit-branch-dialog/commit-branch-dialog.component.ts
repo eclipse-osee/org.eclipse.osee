@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PlConfigActionService } from '../../services/pl-config-action.service';
+import { PlConfigUserService } from '../../services/pl-config-user.service';
 import { action, TransitionActionDialogData } from '../../types/pl-config-actions';
 
 @Component({
@@ -10,9 +10,9 @@ import { action, TransitionActionDialogData } from '../../types/pl-config-action
 })
 export class CommitBranchDialogComponent implements OnInit {
   actionInfo: action;
-  users = this.actionService.users;
+  users = this.userService.usersSorted;
   constructor(public dialogRef: MatDialogRef<CommitBranchDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TransitionActionDialogData, private actionService: PlConfigActionService) {
+    @Inject(MAT_DIALOG_DATA) public data: TransitionActionDialogData, private userService: PlConfigUserService) {
     this.actionInfo = this.data.actions[0];
    }
 

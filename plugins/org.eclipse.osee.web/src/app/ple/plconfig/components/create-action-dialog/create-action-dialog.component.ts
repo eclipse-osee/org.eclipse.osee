@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { share} from 'rxjs/operators';
 import { PlConfigActionService } from '../../services/pl-config-action.service';
+import { PlConfigUserService } from '../../services/pl-config-user.service';
 import { actionableItem, PLConfigCreateAction, targetedVersion } from '../../types/pl-config-actions';
 import { user } from '../../types/pl-config-users';
 
@@ -12,10 +13,10 @@ import { user } from '../../types/pl-config-users';
   styleUrls: ['./create-action-dialog.component.sass']
 })
 export class CreateActionDialogComponent implements OnInit {
-  users:Observable<user[]> = this.actionService.users;
+  users = this.userService.usersSorted;
   arb: Observable<actionableItem[]> = this.actionService.ARB.pipe(share());
   targetedVersions!: Observable<targetedVersion[]>;
-  constructor(public dialogRef: MatDialogRef<CreateActionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: PLConfigCreateAction, public actionService: PlConfigActionService) { 
+  constructor(public dialogRef: MatDialogRef<CreateActionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: PLConfigCreateAction, public actionService: PlConfigActionService, public userService: PlConfigUserService) { 
   }
 
   ngOnInit(): void {
