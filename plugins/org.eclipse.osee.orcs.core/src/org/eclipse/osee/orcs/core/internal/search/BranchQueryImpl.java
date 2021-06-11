@@ -16,8 +16,10 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -79,5 +81,12 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
          return branches.iterator().next();
       }
       return BranchToken.SENTINEL;
+   }
+
+   @Override
+   public List<GammaId> getBranchCategoryGammaId(BranchId branchId, BranchCategoryToken category) {
+      List<GammaId> branchCategories = new ArrayList<>();
+      queryEngine.getBranchCategoryGammaIds(branchCategories::add, branchId, category);
+      return branchCategories;
    }
 }

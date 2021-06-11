@@ -46,4 +46,14 @@ public class OrcsVisitorAdapter implements OrcsVisitor {
    public void deleteTuple(BranchId branch, SqlTable tupleTable, GammaId gammaId) {
       //
    }
+
+   @Override
+   public void visit(BranchCategoryData data) {
+      //
+   }
+
+   @Override
+   public void deleteBranchCategory(BranchId branch, GammaId gammaId) {
+      //
+   }
 }

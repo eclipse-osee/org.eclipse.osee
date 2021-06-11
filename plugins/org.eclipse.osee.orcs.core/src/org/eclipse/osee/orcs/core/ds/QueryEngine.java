@@ -15,10 +15,13 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -64,4 +67,6 @@ public interface QueryEngine {
    List<ArtifactReadable> asArtifacts(QueryData queryData, QueryFactory queryFactory);
 
    boolean isArchived(BranchId branchId);
+
+   void getBranchCategoryGammaIds(Consumer<GammaId> consumer, BranchId branchId, BranchCategoryToken category);
 }

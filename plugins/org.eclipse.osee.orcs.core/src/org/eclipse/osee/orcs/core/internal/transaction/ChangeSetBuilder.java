@@ -15,9 +15,11 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import com.google.common.collect.Sets;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
@@ -62,7 +64,8 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, HasOr
       }
    }
 
-   public void handleTuples(TxData txData) {
+   //method to handle everything that is not artifact, attr or relations
+   public void handleOtherData(TxData txData) {
       changeSet.txData = txData;
    }
 
@@ -94,8 +97,16 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, HasOr
             visitor.visit(data);
          }
 
+         for (BranchCategoryData data : txData.getCategoriesToAdd()) {
+            visitor.visit(data);
+         }
+
          txData.getTuplesToDelete().forEachValue(
             (key, gammaId) -> visitor.deleteTuple(txData.getBranch(), key, gammaId));
+
+         for (GammaId data : txData.getBranchCategoriesToDelete()) {
+            visitor.deleteBranchCategory(txData.getBranch(), data);
+         }
       }
 
       @Override
@@ -120,7 +131,7 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, HasOr
 
       @Override
       public boolean isEmpty() {
-         return arts.isEmpty() && attrs.isEmpty() && rels.isEmpty() && txData.getTuplesToAdd().isEmpty() && txData.getTuplesToDelete().isEmpty();
+         return arts.isEmpty() && attrs.isEmpty() && rels.isEmpty() && txData.getTuplesToAdd().isEmpty() && txData.getTuplesToDelete().isEmpty() && txData.getCategoriesToAdd().isEmpty() && txData.getBranchCategoriesToDelete().isEmpty();
       }
 
       @Override

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
@@ -519,6 +520,26 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       addTuple2(CoreTupleTypes.ViewApplicability, view, "Config = " + viewName);
 
       return view;
+   }
+
+   @Override
+   public void createBranchCategory(BranchId branch, BranchCategoryToken category) {
+      validateBuilder();
+      txManager.createBranchCategory(txData, category);
+   }
+
+   @Override
+   public boolean deleteBranchCategory(BranchId branch, BranchCategoryToken category) {
+      validateBuilder();
+      List<GammaId> categories = orcsApi.getQueryFactory().branchQuery().getBranchCategoryGammaId(branch, category);
+      if (categories.isEmpty()) {
+         return false;
+      }
+      for (GammaId gammaId : categories) {
+         txData.deleteBranchCategory(gammaId);
+      }
+      return true;
+
    }
 
    @Override

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -103,5 +104,9 @@ public interface OrcsBranch {
    BranchToken createProgramBranch(BranchToken branch, UserId account);
 
    XResultData createBranchValidation(CreateBranchData branchData);
+
+   XResultData setBranchCategory(BranchId branch, BranchCategoryToken category);
+
+   XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category);
 
 }

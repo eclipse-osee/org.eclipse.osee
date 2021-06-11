@@ -40,6 +40,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
@@ -165,7 +166,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf) {
+   public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf, BranchCategoryToken category) {
       BranchQueryData options = new BranchQueryData();
       options.setBranchIds(Collections.fromString(branchUuids, ",", BranchId::valueOf));
 
@@ -203,6 +204,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
       if (ancestorOf != null) {
          options.setIsAncestorOf(ancestorOf);
       }
+
+      if (category != null) {
+         options.setCategory(category);
+      }
       return getBranches(options);
    }
 
@@ -221,6 +226,21 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Branch getBranchById(BranchId branch) {
       return newBranchQuery().andId(branch).includeArchived().includeDeleted().getResults().getExactlyOne();
+   }
+
+   @Override
+   public List<Branch> getBranchesByCategory(BranchCategoryToken id) {
+      return newBranchQuery().andIsOfCategory(id).getResults().getList();
+   }
+
+   @Override
+   public XResultData setBranchCategory(BranchId branch, BranchCategoryToken category) {
+      return branchOps.setBranchCategory(branch, category);
+   }
+
+   @Override
+   public XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category) {
+      return branchOps.deleteBranchCategory(branch, category);
    }
 
    @Override
@@ -853,6 +873,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
             BranchId childOfToken = BranchId.valueOf(childOf);
             query.andIsChildOf(childOfToken);
          }
+         BranchCategoryToken category = options.getCategory();
+         if (category.isValid()) {
+            query.andIsOfCategory(category);
+         }
       }
 
       return query.getResults();
@@ -922,4 +946,5 @@ public class BranchEndpointImpl implements BranchEndpoint {
       rel.setTypeId(chStmt.getString("rel_link_type_id"));
       return rel;
    }
+
 }

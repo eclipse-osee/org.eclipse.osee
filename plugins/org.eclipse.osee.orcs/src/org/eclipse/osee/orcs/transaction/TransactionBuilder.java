@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
@@ -174,6 +175,11 @@ public interface TransactionBuilder {
 
    void createApplicabilityForView(ArtifactId viewId, String applicability);
 
+   //Branch Category
+   void createBranchCategory(BranchId branch, BranchCategoryToken category);
+
+   boolean deleteBranchCategory(BranchId branch, BranchCategoryToken category);
+
    // Tuples
    <E1, E2> GammaId addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
 
@@ -207,4 +213,5 @@ public interface TransactionBuilder {
    List<ArtifactToken> createArtifacts(ArtifactTypeToken artifactType, ArtifactId parent, List<String> names);
 
    void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma);
+
 }

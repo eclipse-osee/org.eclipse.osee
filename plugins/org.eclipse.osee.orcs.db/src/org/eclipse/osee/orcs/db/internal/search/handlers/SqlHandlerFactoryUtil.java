@@ -31,6 +31,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchCategory;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
@@ -123,6 +124,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchAncestorOf.class, BranchAncestorOfSqlHandler.class);
       handleMap.put(CriteriaMergeBranchFor.class, MergeBranchForSqlHandler.class);
       handleMap.put(CriteriaAssociatedArtId.class, AssociatedArtIdSqlHandler.class);
+      handleMap.put(CriteriaBranchCategory.class, BranchCategorySqlHandler.class);
       handleMap.put(CriteriaAllBranches.class, AllBranchesSqlHandler.class);
    }
 

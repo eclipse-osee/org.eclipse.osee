@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -42,7 +44,7 @@ import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.TupleDataImpl;
 
 /**
- * @author Roberto E. Escobar
+ * @author Audrey Denk
  */
 public class DataFactoryImpl implements DataFactory {
    private final IdentityManager idFactory;
@@ -168,6 +170,13 @@ public class DataFactoryImpl implements DataFactory {
       VersionData version = objectFactory.createDefaultVersionData();
       TupleData tupleData = objectFactory.createTuple2Data(version, branch, tupleType, e1, e2);
       return tupleData;
+   }
+
+   @Override
+   public BranchCategoryData createBranchCategoryData(BranchId branch, BranchCategoryToken category) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      BranchCategoryData categoryData = objectFactory.createBranchCategoryData(version, branch, category);
+      return categoryData;
    }
 
    @Override

@@ -38,6 +38,33 @@ public class TransactionWriter {
    protected static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs SET tx_current = " + TxCurrent.NOT_CURRENT + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
+   private static final String INSERT_ARTIFACT =
+      "INSERT INTO osee_artifact (art_id, art_type_id, gamma_id, guid) VALUES (?,?,?,?)";
+
+   private static final String INSERT_ATTRIBUTE =
+      "INSERT INTO osee_attribute (attr_id, attr_type_id, gamma_id, art_id, value, uri) VALUES (?, ?, ?, ?, ?, ?)";
+
+   private static final String INSERT_RELATION_TABLE =
+      "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, gamma_id, a_art_id, b_art_id, rationale) VALUES (?,?,?,?,?,?)";
+
+   private static final String INSERT_TUPLES2_TABLE =
+      "INSERT INTO osee_tuple2 (tuple_type, e1, e2, gamma_id) VALUES (?,?,?,?)";
+
+   private static final String INSERT_TUPLES3_TABLE =
+      "INSERT INTO osee_tuple3 (tuple_type, e1, e2, e3, gamma_id) VALUES (?,?,?,?,?)";
+
+   private static final String INSERT_TUPLES4_TABLE =
+      "INSERT INTO osee_tuple4 (tuple_type, e1, e2, e3, e4, gamma_id) VALUES (?,?,?,?,?,?)";
+
+   private static final String INSERT_BRANCH_CATEGORY_TABLE =
+      "INSERT INTO osee_branch_category (branch_id, category, gamma_id) VALUES (?,?,?)";
+
+   private static final String INSERT_INTO_TRANSACTION_TABLE =
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+   private static final String INSERT_INTO_TRANSACTION_DETAIL =
+      "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type, build_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS =
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
@@ -50,6 +77,9 @@ public class TransactionWriter {
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE =
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_txs txs WHERE jid.query_id = ? AND jid.id = txs.gamma_id AND txs.branch_id = ?   AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
+   private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_CATEGORY =
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_txs txs WHERE jid.query_id = ? AND jid.id = txs.gamma_id AND txs.branch_id = ?   AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+
    public static enum SqlOrderEnum {
       ARTIFACTS(OseeDb.ARTIFACT_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
       ATTRIBUTES(OseeDb.ATTRIBUTE_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES),
@@ -57,6 +87,7 @@ public class TransactionWriter {
       TUPLES2(OseeDb.TUPLE2, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
       TUPLES3(OseeDb.TUPLE3, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
       TUPLES4(OseeDb.TUPLE4, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
+      BRANCH_CATEGORY(OseeDb.BRANCH_CATEGORY, TX_GET_PREVIOUS_TX_NOT_CURRENT_CATEGORY),
       TXS_DETAIL(OseeDb.TX_DETAILS_TABLE),
       TXS(OseeDb.TXS_TABLE);
 

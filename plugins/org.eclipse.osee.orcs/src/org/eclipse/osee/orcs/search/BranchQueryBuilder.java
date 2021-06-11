@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -62,5 +63,7 @@ public interface BranchQueryBuilder<T> {
    T andIsMergeFor(BranchId source, BranchId destination);
 
    T andAssociatedArtId(ArtifactId artId);
+
+   T andIsOfCategory(BranchCategoryToken category);
 
 }

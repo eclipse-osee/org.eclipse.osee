@@ -65,7 +65,7 @@ public class ChangeSetBuilderTest {
       when(attribute.isDirty()).thenReturn(false);
       when(relation.isDirty()).thenReturn(false);
 
-      handler.handleTuples(new TxData(null, null));
+      handler.handleOtherData(new TxData(null, null));
 
       handler.visit(artifact);
       handler.visit(attribute);

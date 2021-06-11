@@ -30,6 +30,10 @@ public interface OrcsVisitor {
 
    void visit(TupleData data);
 
+   void visit(BranchCategoryData data);
+
    void deleteTuple(BranchId branch, SqlTable tupleTable, GammaId gammaId);
+
+   void deleteBranchCategory(BranchId branch, GammaId gammaId);
 
 }

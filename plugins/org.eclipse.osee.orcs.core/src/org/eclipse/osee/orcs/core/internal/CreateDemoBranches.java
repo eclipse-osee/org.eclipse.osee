@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -103,6 +104,8 @@ public class CreateDemoBranches {
 
       createLegacyFeatureConfig(featuresFolder, tx);
 
+      tx.createBranchCategory(branch, CoreBranchCategoryTokens.PLE);
+      tx.createBranchCategory(branch, CoreBranchCategoryTokens.ATS);
       tx.commit();
       ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
       group.setName("abGroup");

@@ -39,6 +39,7 @@ import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
@@ -214,6 +215,33 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
+   public void deleteBranchCategory(BranchId branch, GammaId gammaId) {
+      ApplicabilityId applicability = jdbcClient.fetch(ApplicabilityId.SENTINEL,
+         "SELECT app_id from osee_txs where branch_id = ? and gamma_id = ?", branch, gammaId);
+
+      addRow(SqlOrderEnum.TXS, txId, gammaId, ModificationType.DELETED, TxCurrent.DELETED, branch, applicability);
+
+      IdJoinQuery join = txNotCurrentsJoin.get(SqlOrderEnum.BRANCH_CATEGORY);
+      if (join == null) {
+         join = createJoin();
+         txNotCurrentsJoin.put(SqlOrderEnum.BRANCH_CATEGORY, join);
+      }
+      join.add(gammaId);
+
+   }
+
+   @Override
+   public void visit(BranchCategoryData data) {
+      updateTxValues(data);
+
+      if (!data.isExistingVersionUsed()) {
+         addRow(SqlOrderEnum.BRANCH_CATEGORY, data.getBranchId(), data.getCategory(), data.getVersion().getGammaId());
+      }
+      addTxs(SqlOrderEnum.BRANCH_CATEGORY, data);
+
+   }
+
+   @Override
    public void updateAfterBinaryStorePersist() {
       List<Object[]> insertData = getInsertData(SqlOrderEnum.ATTRIBUTES);
       for (int index = 0; index < binaryStores.size() && index < insertData.size(); index++) {
@@ -256,7 +284,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             join = createJoin();
             txNotCurrentsJoin.put(key, join);
          }
-         if (key.toString().startsWith("TUPLE")) {
+         if (key.toString().startsWith("TUPLE") || key.toString().equals("BRANCH_CATEGORY")) {
             join.add(orcsData.getVersion().getGammaId());
          } else {
             join.add(orcsData.getLocalId());
@@ -297,4 +325,5 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private void addRow(SqlOrderEnum sqlKey, Object... data) {
       dataItemInserts.put(sqlKey, data);
    }
+
 }

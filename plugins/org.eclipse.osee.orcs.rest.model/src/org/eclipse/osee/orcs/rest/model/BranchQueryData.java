@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -39,6 +40,7 @@ public class BranchQueryData {
    private String namePatternIgnoreCase;
    private Long isChildOf = -1L;
    private Long isAncestorOf = -1L;
+   private BranchCategoryToken category = BranchCategoryToken.SENTINEL;
 
    public Collection<BranchId> getBranchIds() {
       return branchIds;
@@ -137,7 +139,15 @@ public class BranchQueryData {
             + branchStates + "<br/>includeDeleted=" + includeDeleted + "<br/>includeArchived=" //
             + includeArchived + "<br/>asIds=" + asIds + "<br/>nameEquals=" + nameEquals + //
             "<br/>namePattern=" + namePattern + "<br/>namePatternIgnoreCase=" + namePatternIgnoreCase //
-            + "<br/>isChildOf=" + isChildOf + "<br/>isAncestorOf=" + isAncestorOf);
+            + "<br/>isChildOf=" + isChildOf + "<br/>isAncestorOf=" + isAncestorOf + "<br/>category=" + category);
+   }
+
+   public BranchCategoryToken getCategory() {
+      return category.isValid() ? category : BranchCategoryToken.SENTINEL;
+   }
+
+   public void setCategory(BranchCategoryToken category) {
+      this.category = category;
    }
 
 }

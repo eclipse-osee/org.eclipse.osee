@@ -412,6 +412,15 @@ public class OseeDb {
    public static final SqlColumn LDAP_DETAILS_GROUP_SEARCH_FILTER =
       LDAP_DETAILS_TABLE.addVarCharColumn("GROUP_SEARCH_FILTER", 1000, false);
 
+   public static final SqlTable BRANCH_CATEGORY = new SqlTable("osee_branch_category", "brc", 2);
+   public static final SqlColumn BRANCH_CATEGORY_BRANCH_ID = BRANCH_CATEGORY.addColumn("BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn BRANCH_CATEGORY_CATEGORY = BRANCH_CATEGORY.addColumn("CATEGORY", JDBCType.BIGINT);
+   public static final SqlColumn BRANCH_CATEGORY_GAMMA_ID = BRANCH_CATEGORY.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   static {
+      BRANCH_CATEGORY.setPrimaryKeyConstraint(BRANCH_CATEGORY_CATEGORY, BRANCH_CATEGORY_BRANCH_ID);
+      BRANCH_CATEGORY.createIndex("BRANCH_CATEGORY__G_IDX", false, BRANCH_CATEGORY_GAMMA_ID);
+   }
+
    public static final SqlTable TUPLE2 = new SqlTable("osee_tuple2", "tp2", ObjectType.TUPLE, 2);
    public static final SqlColumn TUPLE2_TUPLE_TYPE = TUPLE2.addColumn("TUPLE_TYPE", JDBCType.BIGINT);
    public static final SqlColumn TUPLE2_E1 = TUPLE2.addColumn("E1", JDBCType.BIGINT);

@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal;
 import static org.eclipse.osee.orcs.OseeDb.ARTIFACT_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.BRANCH_BASELINE_TRANSACTION_ID;
+import static org.eclipse.osee.orcs.OseeDb.BRANCH_CATEGORY;
 import static org.eclipse.osee.orcs.OseeDb.BRANCH_PARENT_TRANSACTION_ID;
 import static org.eclipse.osee.orcs.OseeDb.BRANCH_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.LDAP_DETAILS_TABLE;
@@ -109,6 +110,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(TUPLE2);
       jdbcClient.createTable(TUPLE3);
       jdbcClient.createTable(TUPLE4);
+      jdbcClient.createTable(BRANCH_CATEGORY);
       jdbcClient.createTable(OSEE_KEY_VALUE_TABLE);
       jdbcClient.createTable(OSEE_JOIN_ID4_TABLE);
       jdbcClient.createTable(OSEE_SERVER_LOOKUP_TABLE);
@@ -167,6 +169,7 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(TUPLE2);
       jdbcClient.dropTable(TUPLE3);
       jdbcClient.dropTable(TUPLE4);
+      jdbcClient.dropTable(BRANCH_CATEGORY);
       jdbcClient.dropTable(OSEE_KEY_VALUE_TABLE);
       jdbcClient.dropTable(OSEE_JOIN_ID4_TABLE);
       jdbcClient.dropTable(OSEE_SERVER_LOOKUP_TABLE);

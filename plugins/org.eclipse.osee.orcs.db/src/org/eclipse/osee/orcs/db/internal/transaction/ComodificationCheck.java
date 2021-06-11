@@ -24,6 +24,7 @@ import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
@@ -66,6 +67,7 @@ public class ComodificationCheck implements TransactionProcessor {
       private final Map<Integer, AttributeData> attributes = new HashMap<>();
       private final Map<Integer, RelationData> relations = new HashMap<>();
       private final Map<Integer, TupleData> tuples = new HashMap<>();
+      private final Map<Integer, BranchCategoryData> categories = new HashMap<>();
 
       public Collection<Integer> getArtifactIds() {
          return artifacts.keySet();
@@ -135,6 +137,16 @@ public class ComodificationCheck implements TransactionProcessor {
       @Override
       public void deleteTuple(BranchId branch, SqlTable tupleTable, GammaId gammaId) {
          // tuples do not support modification (only create and delete)
+      }
+
+      @Override
+      public void visit(BranchCategoryData data) {
+         categories.put(data.getLocalId(), data);
+      }
+
+      @Override
+      public void deleteBranchCategory(BranchId branch, GammaId gammaId) {
+         //
       }
    }
 }
