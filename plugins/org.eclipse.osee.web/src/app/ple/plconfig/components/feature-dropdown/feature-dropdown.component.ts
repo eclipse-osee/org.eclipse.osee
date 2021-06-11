@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { share} from 'rxjs/operators';
+import { share, take} from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { trackableFeature } from '../../types/features/base';
@@ -37,7 +37,7 @@ export class FeatureDropdownComponent implements OnInit {
   }
 
   deleteFeature(feature: trackableFeature) {
-    this.currentBranchService.deleteFeature(feature.id).subscribe((response: response) => {
+    this.currentBranchService.deleteFeature(feature.id).pipe(take(1)).subscribe((response: response) => {
       if (response.success) {
         this.uiStateService.updateReqConfig = true;
       }
@@ -56,7 +56,7 @@ export class FeatureDropdownComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe((result: PLEditFeatureData) => {
       if (result) {
-        this.currentBranchService.modifyFeature(result.feature).subscribe((response: response) => {
+        this.currentBranchService.modifyFeature(result.feature).pipe(take(1)).subscribe((response: response) => {
         })
       }
     })
@@ -75,7 +75,7 @@ export class FeatureDropdownComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result: PLAddFeatureData) => {
       if (result) {
-        this.currentBranchService.addFeature(result.feature).subscribe((response: response) => {
+        this.currentBranchService.addFeature(result.feature).pipe(take(1)).subscribe((response: response) => {
         }); 
       }
     });

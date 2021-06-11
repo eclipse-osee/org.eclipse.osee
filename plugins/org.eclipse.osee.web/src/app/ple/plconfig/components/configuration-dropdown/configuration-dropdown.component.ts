@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { share, take } from 'rxjs/operators';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
@@ -33,7 +33,7 @@ export class ConfigurationDropdownComponent implements OnInit {
   }
 
   deleteConfig(config: {id:string , name:string}) {
-    this.currentBranchService.deleteConfiguration(config.id).subscribe((response: response[]) => {
+    this.currentBranchService.deleteConfiguration(config.id).pipe(take(1)).subscribe((response: response[]) => {
       this.uiStateService.deleteReqConfig = config.name;
     })
   }
@@ -50,11 +50,11 @@ export class ConfigurationDropdownComponent implements OnInit {
         let body: editConfiguration = {
           ...result.currentConfig,
           copyFrom: result.copyFrom.id && result.copyFrom.id || '',
-          configurationGroup: result.group && result.group || '',
+          configurationGroup: result.group.id && result.group.id || '',
           productApplicabilities:result.productApplicabilities||[]
         };
         apiRequest = this.currentBranchService.editConfigurationDetails(body);
-        apiRequest.subscribe((response:response) => {
+        apiRequest.pipe(take(1)).subscribe((response:response) => {
         }); 
       }
     });
@@ -65,7 +65,7 @@ export class ConfigurationDropdownComponent implements OnInit {
       currentBranch: this.branchId?.toString(),
       copyFrom: { id: '0', name: '', hasFeatureApplicabilities:false, productApplicabilities:[] },
       title: '',
-      group: '',
+      group: { id: '0', name: ''},
       productApplicabilities:[],
     }
     const dialogRef = this.dialog.open(AddConfigurationDialogComponent, {
@@ -74,7 +74,7 @@ export class ConfigurationDropdownComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.currentBranchService.addConfiguration({ name: result.title, copyFrom: result.copyFrom.id, configurationGroup: result.group.id, productApplicabilities:result.productApplicabilities }).subscribe((response: response) => {
+        this.currentBranchService.addConfiguration({ name: result.title, copyFrom: result.copyFrom.id, configurationGroup: result.group.id, productApplicabilities:result.productApplicabilities }).pipe(take(1)).subscribe((response: response) => {
         });
       }
     })
@@ -94,7 +94,7 @@ export class ConfigurationDropdownComponent implements OnInit {
           copyFrom: result.ConfigurationToCopyFrom.id && result.ConfigurationToCopyFrom.id || '',
           configurationGroup: result.group && result.group || ''
         };
-        this.currentBranchService.editConfigurationDetails(body).subscribe((response:response) => {
+        this.currentBranchService.editConfigurationDetails(body).pipe(take(1)).subscribe((response:response) => {
         }); 
       }
     })

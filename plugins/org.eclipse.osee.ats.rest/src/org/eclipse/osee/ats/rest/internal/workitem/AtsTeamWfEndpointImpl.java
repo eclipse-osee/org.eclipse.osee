@@ -85,13 +85,18 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   public Collection<IAtsVersion> getVersionsbyTeamDefinition(String aiId) {
+   public Collection<IAtsVersion> getVersionsbyTeamDefinition(String aiId, String sort) {
       IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(aiId);
       IAtsTeamDefinition impactedTeamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
       IAtsTeamDefinition teamDefHoldingVersions =
          atsApi.getTeamDefinitionService().getTeamDefinitionHoldingVersions(impactedTeamDef);
 
-      return atsApi.getVersionService().getVersions(teamDefHoldingVersions);
+      ArrayList<IAtsVersion> versionsList =
+         new ArrayList<>(atsApi.getVersionService().getVersions(teamDefHoldingVersions));
+      if ("true".equals(sort)) {
+         Collections.sort(versionsList);
+      }
+      return versionsList;
    }
 
    @Override

@@ -23,6 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -45,7 +46,7 @@ public interface AtsTeamWfEndpointApi {
    @IdentityView
    @Path("{aiId}/version")
    @Produces({MediaType.APPLICATION_JSON})
-   Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId);
+   Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId, @QueryParam("sort") String sort);
 
    @GET
    @Path("{id}")

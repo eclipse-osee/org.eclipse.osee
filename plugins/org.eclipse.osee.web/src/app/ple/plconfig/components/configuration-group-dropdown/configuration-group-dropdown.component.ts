@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { share } from 'rxjs/operators';
+import { share, take } from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { cfgGroup } from '../../types/pl-config-branch';
@@ -29,17 +29,17 @@ export class ConfigurationGroupDropdownComponent implements OnInit {
       minWidth: '60%'
     });
     dialogRef.afterClosed().subscribe((result:addCfgGroup) => {
-      this.currentBranchService.addConfigurationGroup({name:result.title}).subscribe((response) => {
+      this.currentBranchService.addConfigurationGroup({name:result.title}).pipe(take(1)).subscribe((response) => {
       })
     });
   }
   deleteGroup(id: string) {
-    this.currentBranchService.deleteConfigurationGroup(id).subscribe((response) => {
+    this.currentBranchService.deleteConfigurationGroup(id).pipe(take(1)).subscribe((response) => {
     })
   }
   synchronizeGroups(groups:cfgGroup[]) {
     groups.forEach((value) => {
-      this.currentBranchService.synchronizeGroup(value.id).subscribe((response) => {
+      this.currentBranchService.synchronizeGroup(value.id).pipe(take(1)).subscribe((response) => {
         if (response.success) {
           this.uiStateService.updateReqConfig = true;
         }

@@ -32,7 +32,7 @@ export class PlConfigActionService {
     return this.http.post<transitionResponse>(apiURL+'/ats/action/transition', body);
   }
   public getVersions(arbId: string): Observable<targetedVersion[]> {
-    return this.http.get<targetedVersion[]>(apiURL+'/ats/teamwf/' + arbId + '/version');
+    return this.http.get<targetedVersion[]>(apiURL+'/ats/teamwf/' + arbId + '/version?sort=true');
   }
   public createBranch(body: newActionInterface): Observable<newActionResponse> {
     return this.http.post<newActionResponse>(apiURL+'/ats/action/branch', body);

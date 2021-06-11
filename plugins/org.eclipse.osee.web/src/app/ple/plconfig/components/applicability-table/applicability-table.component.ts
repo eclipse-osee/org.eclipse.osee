@@ -5,7 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { share, take } from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { extendedFeature, trackableFeature } from '../../types/features/base';
@@ -123,7 +123,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
       value.toLowerCase() === event.value.toLowerCase()
     ) > -1) {
       let body = feature.name + " = " + event.value;
-      this.currentBranchService.modifyConfiguration(featureId, body,this.sorter.groupList).subscribe((responses: response[]) => {
+      this.currentBranchService.modifyConfiguration(featureId, body,this.sorter.groupList).pipe(take(1)).subscribe((responses: response[]) => {
       });
     } else {
       this.uiStateService.error="Error: No matching applicability."
@@ -161,7 +161,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
     })
     dialogRef.afterClosed().subscribe((result: PLEditFeatureData) => {
       if (result && result.editable) {
-        this.currentBranchService.modifyFeature(result.feature).subscribe((response: response) => {
+        this.currentBranchService.modifyFeature(result.feature).pipe(take(1)).subscribe((response: response) => {
         })
       }
     })
@@ -183,7 +183,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
             configurationGroup: result.group && result.group || '',
             productApplicabilities:result.productApplicabilities||[]
           };
-          this.currentBranchService.editConfigurationDetails(body).subscribe((response) => { 
+          this.currentBranchService.editConfigurationDetails(body).pipe(take(1)).subscribe((response) => { 
           })
         }
       })
@@ -206,7 +206,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
             id: result.configGroup.id,
             name: result.configGroup.name,
             configurations: cfgArray
-          }).subscribe();
+          }).pipe(take(1)).subscribe();
         }
       })
     }
