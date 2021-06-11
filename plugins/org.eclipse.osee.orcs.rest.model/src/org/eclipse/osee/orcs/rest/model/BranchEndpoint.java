@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
@@ -89,7 +90,8 @@ public interface BranchEndpoint {
       @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
       @DefaultValue("") @QueryParam("namePattern") String namePattern, //
       @QueryParam("childOf") Long childOf, //
-      @QueryParam("ancestorOf") Long ancestorOf);
+      @QueryParam("ancestorOf") Long ancestorOf, //
+      @QueryParam("category") BranchCategoryToken category);
 
    @GET
    @Path("baseline")
@@ -105,6 +107,23 @@ public interface BranchEndpoint {
    @Path("{branch}")
    @Produces({MediaType.APPLICATION_JSON})
    Branch getBranchById(@PathParam("branch") BranchId branch);
+
+   @GET
+   @Path("category/{category}")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getBranchesByCategory(@PathParam("category") BranchCategoryToken id);
+
+   @POST
+   @Path("{branch}/category/{category}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData setBranchCategory(@PathParam("branch") BranchId branch, @PathParam("category") BranchCategoryToken category);
+
+   @DELETE
+   @Path("{branch}/category/{category}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData deleteBranchCategory(@PathParam("branch") BranchId branch, @PathParam("category") BranchCategoryToken category);
 
    @POST
    @Path("{branch}")

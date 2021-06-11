@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryDataFactory;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TupleDataFactory;
@@ -70,6 +71,7 @@ public class TxCallableFactoryTest {
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
    @Mock private TupleDataFactory tupleFactory;
+   @Mock private BranchCategoryDataFactory categoryFactory;
    @Mock private GraphData graph;
    @Mock private TxDataStore txDataStore;
    @Mock private ArtifactReadable groupArtifact;
@@ -83,7 +85,8 @@ public class TxCallableFactoryTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      txManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleFactory, loader);
+      txManager =
+         new TxDataManager(proxyManager, artifactFactory, relationManager, tupleFactory, categoryFactory, loader);
       txFactory = new TxCallableFactory(logger, txDataStore, txManager);
       data = new TxData(session, graph);
       when(graph.getBranch()).thenReturn(COMMON);

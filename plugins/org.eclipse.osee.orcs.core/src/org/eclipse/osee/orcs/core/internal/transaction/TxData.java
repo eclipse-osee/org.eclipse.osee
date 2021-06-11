@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -49,7 +50,9 @@ public class TxData implements HasSession, HasBranchId {
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
+   private final List<BranchCategoryData> categories = new ArrayList<>();
    private final HashCollection<SqlTable, GammaId> tuplesToDelete = new HashCollection<>();
+   private final List<GammaId> branchCategoriesToDelete = new ArrayList<>();
    private final HashMap<Long, Artifact> writeables = new HashMap<>();
    private final HashMap<Long, ArtifactReadable> readables = new HashMap<>();
    private final Set<Relation> relations = new HashSet<>();
@@ -138,8 +141,24 @@ public class TxData implements HasSession, HasBranchId {
       tuplesToDelete.put(tupleTable, gammaId);
    }
 
+   public void deleteBranchCategory(GammaId gammaId) {
+      branchCategoriesToDelete.add(gammaId);
+   }
+
+   public List<GammaId> getBranchCategoriesToDelete() {
+      return branchCategoriesToDelete;
+   }
+
    public HashCollection<SqlTable, GammaId> getTuplesToDelete() {
       return tuplesToDelete;
+   }
+
+   public void add(BranchCategoryData categoryData) {
+      categories.add(categoryData);
+   }
+
+   public List<BranchCategoryData> getCategoriesToAdd() {
+      return categories;
    }
 
    public Iterable<Artifact> getAllWriteables() {

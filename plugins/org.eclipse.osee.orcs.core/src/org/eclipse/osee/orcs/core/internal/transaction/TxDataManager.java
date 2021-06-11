@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -41,6 +42,8 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryDataFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
@@ -75,14 +78,16 @@ public class TxDataManager {
    private final ArtifactFactory artifactFactory;
    private final RelationManager relationManager;
    private final TupleDataFactory tupleFactory;
+   private final BranchCategoryDataFactory categoryFactory;
    private final TxDataLoader loader;
 
-   public TxDataManager(ExternalArtifactManager proxyManager, ArtifactFactory artifactFactory, RelationManager relationManager, TupleDataFactory tupleFactory, TxDataLoader loader) {
+   public TxDataManager(ExternalArtifactManager proxyManager, ArtifactFactory artifactFactory, RelationManager relationManager, TupleDataFactory tupleFactory, BranchCategoryDataFactory categoryFactory, TxDataLoader loader) {
       this.proxyManager = proxyManager;
       this.artifactFactory = artifactFactory;
       this.relationManager = relationManager;
       this.loader = loader;
       this.tupleFactory = tupleFactory;
+      this.categoryFactory = categoryFactory;
    }
 
    public TxData createTxData(OrcsSession session, BranchId branch) {
@@ -281,6 +286,12 @@ public class TxDataManager {
       TupleData tuple = tupleFactory.createTuple4Data(tupleType, txData.getBranch(), e1, e2, e3, e4);
       txData.add(tuple);
       return tuple.getVersion().getGammaId();
+   }
+
+   public GammaId createBranchCategory(TxData txData, BranchCategoryToken category) {
+      BranchCategoryData data = categoryFactory.createBranchCategoryData(txData.getBranch(), category);
+      txData.add(data);
+      return data.getVersion().getGammaId();
    }
 
    public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, String guid) {
@@ -496,7 +507,7 @@ public class TxDataManager {
          artifact.accept(builder);
          relationManager.accept(graph, artifact, builder);
       }
-      builder.handleTuples(txData);
+      builder.handleOtherData(txData);
 
       OrcsChangeSet changeSet = builder.getChangeSet();
       return new TransactionDataImpl(txData.getBranch(), txData.getAuthor(), txData.getComment(), changeSet);

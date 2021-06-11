@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -165,6 +166,12 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       return addAndCheck(getQueryData(), criteria);
    }
 
+   @Override
+   public T andIsOfCategory(BranchCategoryToken category) {
+      Criteria criteria = criteriaFactory.createBranchCategoryCriteria(category);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
    @SuppressWarnings("unchecked")
    private T addAndCheck(QueryData queryData, Criteria criteria) {
       criteria.checkValid(getOptions());
@@ -191,4 +198,5 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       }
       return queryData;
    }
+
 }

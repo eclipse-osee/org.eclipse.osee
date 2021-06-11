@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
@@ -53,6 +55,7 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
    private final ParamConverter<ActivityTypeId> activityTypeIdConverter;
    private final ParamConverter<ApplicabilityId> applicabilityIdConverter;
    private final ParamConverter<ActivityEntryId> activityEntryIdConverter;
+   private final ParamConverter<BranchCategoryToken> branchCategoryTokenConverter;
 
    private final ParamConverter<BranchState> branchStateConverter;
    private final ParamConverter<BranchType> branchTypeConverter;
@@ -91,6 +94,7 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       attributeIdConverter = new IdParamConverter<>(AttributeId::valueOf);
       applicabilityIdConverter = new IdParamConverter<>(ApplicabilityId::valueOf);
       activityEntryIdConverter = new IdParamConverter<>(ActivityEntryId::valueOf);
+      branchCategoryTokenConverter = new IdParamConverter<>(CoreBranchCategoryTokens::valueOf);
    }
 
    @SuppressWarnings("unchecked")
@@ -144,6 +148,9 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       }
       if (ActivityEntryId.class.isAssignableFrom(rawType)) {
          return (ParamConverter<T>) activityEntryIdConverter;
+      }
+      if (BranchCategoryToken.class.isAssignableFrom(rawType)) {
+         return (ParamConverter<T>) branchCategoryTokenConverter;
       }
 
       // This condition should be last, enter any new types above this

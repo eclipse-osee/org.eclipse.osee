@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -95,7 +96,7 @@ public class BranchEndpointTest {
 
    @Test
    public void getBranches() {
-      List<Branch> baselineBranches = branchEndpoint.getBranches("", "", "", false, false, "", "", null, null);
+      List<Branch> baselineBranches = branchEndpoint.getBranches("", "", "", false, false, "", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : baselineBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -123,7 +124,9 @@ public class BranchEndpointTest {
          }
       }
       Assert.assertFalse(allBranchesContained);
-
+      List<Branch> catBranches =
+         branchEndpoint.getBranches("", "", "", false, false, "", "", null, null, CoreBranchCategoryTokens.PLE);
+      Assert.assertFalse(catBranches.size() != 1);
    }
 
    @Test
@@ -134,7 +137,8 @@ public class BranchEndpointTest {
       originalBranches.add(DemoBranches.SAW_PL);
 
       String branchUuIds = String.format("%s,%s", COMMON.getIdString(), DemoBranches.SAW_PL.getIdString());
-      List<Branch> baselineBranches = branchEndpoint.getBranches(branchUuIds, "", "", false, false, "", "", null, null);
+      List<Branch> baselineBranches =
+         branchEndpoint.getBranches(branchUuIds, "", "", false, false, "", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : baselineBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -154,7 +158,7 @@ public class BranchEndpointTest {
    public void getBranchesByTypeWorking() {
       BranchManager.createWorkingBranch(BranchId.valueOf(DemoBranches.SAW_PL.getId()), BranchType.WORKING.toString());
       List<Branch> workingBranches =
-         branchEndpoint.getBranches("", BranchType.WORKING.toString(), "", false, false, "", "", null, null);
+         branchEndpoint.getBranches("", BranchType.WORKING.toString(), "", false, false, "", "", null, null, null);
 
       boolean foundCreatedWorkingBranch = false;
       for (Branch branch : workingBranches) {
@@ -173,7 +177,8 @@ public class BranchEndpointTest {
       originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.SAW_PL);
 
-      List<Branch> baselineBranches = branchEndpoint.getBranches("", "BASELINE", "", false, false, "", "", null, null);
+      List<Branch> baselineBranches =
+         branchEndpoint.getBranches("", "BASELINE", "", false, false, "", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : baselineBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -196,7 +201,8 @@ public class BranchEndpointTest {
       originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.SAW_PL);
 
-      List<Branch> modifiedBranches = branchEndpoint.getBranches("", "", "MODIFIED", false, false, "", "", null, null);
+      List<Branch> modifiedBranches =
+         branchEndpoint.getBranches("", "", "MODIFIED", false, false, "", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : modifiedBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -221,7 +227,7 @@ public class BranchEndpointTest {
       originalBranches.add(DemoBranches.SAW_Bld_1);
       originalBranches.add(DemoBranches.SAW_PL);
 
-      List<Branch> deletedBranches = branchEndpoint.getBranches("", "", "", true, false, "", "", null, null);
+      List<Branch> deletedBranches = branchEndpoint.getBranches("", "", "", true, false, "", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : deletedBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -246,7 +252,7 @@ public class BranchEndpointTest {
       originalBranches.add(DemoBranches.SAW_Bld_1);
       originalBranches.add(DemoBranches.SAW_PL);
 
-      List<Branch> archivedBranches = branchEndpoint.getBranches("", "", "", false, true, "", "", null, null);
+      List<Branch> archivedBranches = branchEndpoint.getBranches("", "", "", false, true, "", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : archivedBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -268,7 +274,8 @@ public class BranchEndpointTest {
       //Selecting branches from CreateDemoBranches.java
       originalBranches.add(COMMON);
 
-      List<Branch> commonBranches = branchEndpoint.getBranches("", "", "", false, false, "Common", "", null, null);
+      List<Branch> commonBranches =
+         branchEndpoint.getBranches("", "", "", false, false, "Common", "", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : commonBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -286,7 +293,8 @@ public class BranchEndpointTest {
 
    @Test
    public void getBranchByNamePattern() {
-      List<Branch> baselineBranches = branchEndpoint.getBranches("", "", "", false, false, "", "SAW.*", null, null);
+      List<Branch> baselineBranches =
+         branchEndpoint.getBranches("", "", "", false, false, "", "SAW.*", null, null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : baselineBranches) {
          branchIds.add(BranchId.valueOf(branch.getId()));
@@ -311,7 +319,7 @@ public class BranchEndpointTest {
    public void getBranchesByChildOf() {
       BranchManager.createWorkingBranch(BranchId.valueOf(DemoBranches.SAW_PL.getId()), BranchType.WORKING.toString());
       List<Branch> childBranches =
-         branchEndpoint.getBranches("", "", "", false, false, "", "", DemoBranches.SAW_PL.getId(), null);
+         branchEndpoint.getBranches("", "", "", false, false, "", "", DemoBranches.SAW_PL.getId(), null, null);
       boolean isEmpty = true;
       if (!childBranches.isEmpty()) {
          isEmpty = false;
@@ -322,9 +330,46 @@ public class BranchEndpointTest {
    @Test
    public void getBranchesByAncestorOf() {
       List<Branch> ancestorBranches =
-         branchEndpoint.getBranches("", "", "", false, false, "", "", null, DemoBranches.SAW_PL.getId());
+         branchEndpoint.getBranches("", "", "", false, false, "", "", null, DemoBranches.SAW_PL.getId(), null);
       boolean isEmpty = true;
       if (!ancestorBranches.isEmpty()) {
+         isEmpty = false;
+      }
+      Assert.assertFalse(isEmpty);
+   }
+
+   @Test
+   public void getBranchesByCategory() {
+
+      List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.PLE);
+      boolean isEmpty = true;
+      if (!branches.isEmpty()) {
+         isEmpty = false;
+      }
+      Assert.assertFalse(isEmpty);
+   }
+
+   @Test
+   public void deleteBranchFromCategory() {
+      XResultData deleteBranchCategory =
+         branchEndpoint.deleteBranchCategory(DemoBranches.SAW_PL, CoreBranchCategoryTokens.PLE);
+      Assert.assertFalse(deleteBranchCategory.isErrors());
+      List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.PLE);
+      boolean hasSAWPl = false;
+      if (!branches.isEmpty() & branches.contains(DemoBranches.SAW_PL)) {
+         hasSAWPl = true;
+      }
+      Assert.assertFalse(hasSAWPl);
+   }
+
+   @Test
+   public void setBranchFromCategory() {
+      XResultData setBranchCategory =
+         branchEndpoint.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.PLE);
+      Assert.assertFalse(setBranchCategory.isErrors());
+      List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.PLE);
+      boolean isEmpty = true;
+      if (!branches.isEmpty()) {
          isEmpty = false;
       }
       Assert.assertFalse(isEmpty);
@@ -334,7 +379,7 @@ public class BranchEndpointTest {
    public void getWorkingBranches() {
       List<Branch> workingBranchesList = branchEndpoint.getWorkingBranches();
       List<Branch> getBranches =
-         branchEndpoint.getBranches("", BranchType.WORKING.toString(), "", false, false, "", "", null, null);
+         branchEndpoint.getBranches("", BranchType.WORKING.toString(), "", false, false, "", "", null, null, null);
 
       Assert.assertFalse(workingBranchesList.isEmpty());
       for (Branch branch : workingBranchesList) {
@@ -353,7 +398,7 @@ public class BranchEndpointTest {
    public void getBaselineBranches() {
       List<Branch> baseLineBranchesList = branchEndpoint.getBaselineBranches();
       List<Branch> getBranches =
-         branchEndpoint.getBranches("", BranchType.BASELINE.toString(), "", false, false, "", "", null, null);
+         branchEndpoint.getBranches("", BranchType.BASELINE.toString(), "", false, false, "", "", null, null, null);
 
       Assert.assertFalse(baseLineBranchesList.isEmpty());
       for (Branch branch : baseLineBranchesList) {
@@ -370,7 +415,7 @@ public class BranchEndpointTest {
 
    @Test
    public void getBranchById() {
-      List<Branch> getBranches = branchEndpoint.getBranches("", "", "", false, false, "", "", null, null);
+      List<Branch> getBranches = branchEndpoint.getBranches("", "", "", false, false, "", "", null, null, null);
 
       Branch branchById = branchEndpoint.getBranchById(getBranches.get(0));
       for (Branch branch : getBranches) {

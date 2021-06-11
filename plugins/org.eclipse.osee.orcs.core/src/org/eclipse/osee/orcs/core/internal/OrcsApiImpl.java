@@ -163,8 +163,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
       TxDataLoader txDataLoader = new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory,
          graphProvider, txProvider);
-      txDataManager =
-         new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(), txDataLoader);
+      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(),
+         module.getDataFactory(), txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
       queryModule = new QueryModule(this, logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,

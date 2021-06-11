@@ -29,8 +29,10 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -348,5 +350,13 @@ public class QueryEngineImpl implements QueryEngine {
          () -> new OseeCoreException("Failed to get Branch archived state for %s", branchId), SELECT_IS_BRANCH_ARCHIVED,
          branchId);
       return BranchArchivedState.valueOf(result.intValue()).isArchived();
+   }
+
+   @Override
+   public void getBranchCategoryGammaIds(Consumer<GammaId> consumer, BranchId branchId, BranchCategoryToken category) {
+      String SELECT_BRANCH_CATEGORY_GAMMA =
+         "SELECT gamma_id FROM osee_branch_category WHERE branch_id=? AND category = ?";
+      jdbcClient.runQuery(stmt -> consumer.accept(GammaId.valueOf(stmt.getLong("gamma_id"))),
+         SELECT_BRANCH_CATEGORY_GAMMA, branchId, category);
    }
 }

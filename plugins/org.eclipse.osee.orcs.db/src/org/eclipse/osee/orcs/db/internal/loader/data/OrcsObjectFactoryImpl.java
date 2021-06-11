@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataImpl;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
@@ -185,6 +187,19 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          source.getRationale(), source.getApplicabilityId());
    }
 
+   @Override
+   public BranchCategoryData createBranchCategoryData(VersionData version, BranchId branchId, BranchCategoryToken category) {
+      BranchCategoryData data = new BranchCategoryDataImpl(version);
+      data.setBaseModType(ModificationType.NEW);
+      data.setModType(ModificationType.NEW);
+      data.setApplicabilityId(ApplicabilityId.BASE);
+      data.getVersion().setGammaId(GammaId.valueOf(Lib.generateUuid()));
+      data.getVersion().setBranch(branchId);
+      data.setBranchId(branchId);
+      data.setCategory(category);
+      return data;
+   }
+
    private TupleData createTuple2Data(VersionData version, BranchId branch, TupleTypeId tupleType, Long e1, Long e2) {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
@@ -223,4 +238,5 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return createArtifactData(version, generateArtId, tokenService.getArtifactType(artifactType), modType, guidToSet,
          applicId);
    }
+
 }

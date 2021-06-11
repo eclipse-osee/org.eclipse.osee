@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -24,6 +25,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchCategory;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
@@ -69,5 +71,9 @@ public class BranchCriteriaFactory {
 
    public Criteria createAssociatedArtIdCriteria(ArtifactId artId) {
       return new CriteriaAssociatedArtId(artId);
+   }
+
+   public Criteria createBranchCategoryCriteria(BranchCategoryToken category) {
+      return new CriteriaBranchCategory(category);
    }
 }

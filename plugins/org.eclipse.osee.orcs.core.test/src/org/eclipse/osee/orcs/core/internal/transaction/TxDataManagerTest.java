@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.BranchCategoryDataFactory;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.TupleDataFactory;
@@ -89,6 +90,7 @@ public class TxDataManagerTest {
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
    @Mock private TupleDataFactory tupleFactory;
+   @Mock private BranchCategoryDataFactory categoryFactory;
 
    @Mock private TxData txData;
 
@@ -116,7 +118,8 @@ public class TxDataManagerTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleFactory, loader);
+      txDataManager =
+         new TxDataManager(proxyManager, artifactFactory, relationManager, tupleFactory, categoryFactory, loader);
 
       when(artifact1.getExistingAttributeTypes()).thenAnswer(i -> types);
 

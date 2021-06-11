@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -279,6 +280,24 @@ public class OrcsBranchImpl implements OrcsBranch {
       tx.createArtifact(CoreArtifactTokens.CustomerReqFolder);
       tx.commit();
       return newBranch;
+   }
+
+   @Override
+   public XResultData setBranchCategory(BranchId branch, BranchCategoryToken category) {
+      XResultData result = new XResultData();
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Set Branch Category");
+      tx.createBranchCategory(branch, category);
+      tx.commit();
+      return result;
+   }
+
+   @Override
+   public XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category) {
+      XResultData result = new XResultData();
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Delete Branch Category");
+      tx.deleteBranchCategory(branch, category);
+      tx.commit();
+      return result;
    }
 
 }
