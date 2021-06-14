@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -167,6 +168,20 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
+   public Collection<ArtifactToken> getWfByRelease(String releaseName) {
+      Collection<ArtifactToken> releases =
+         atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
+      if (releases.size() > 1) {
+         throw new OseeCoreException("Release Name [%s] matches multiple releases", releaseName);
+      } else if (releases.isEmpty()) {
+         throw new OseeCoreException("No Releases found with name [%s]", releaseName);
+      }
+      ArtifactToken release = releases.iterator().next();
+      IRelationResolver relationResolver = atsApi.getRelationResolver();
+      return relationResolver.getRelated(release, AtsRelationTypes.TeamWorkflowToRelease_TeamWorkflow);
+   }
+
+   @Override
    public XResultData relateReleaseToWorkflow(String build, UserId userId, List<String> changeIds) {
       XResultData rd = new XResultData();
       try {
@@ -203,11 +218,11 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
                atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(build).getArtifacts();
             if (isBuildValid) {
                if (release.size() > 1) {
-                  rd.errorf("%s has multiple releases", build);
+                  rd.errorf("Release Name [%s] matches multiple releases", build);
                   return rd;
                }
                if (release.isEmpty()) {
-                  rd.errorf("%s has no elements", build);
+                  rd.errorf("No Releases found with name [%s]", build);
                   return rd;
                }
                IRelationResolver relationResolver = atsApi.getRelationResolver();

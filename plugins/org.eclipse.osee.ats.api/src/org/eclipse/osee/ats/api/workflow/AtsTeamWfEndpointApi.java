@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -63,6 +64,11 @@ public interface AtsTeamWfEndpointApi {
    @Path("{id}/goal")
    @Produces({MediaType.APPLICATION_JSON})
    List<IAtsGoal> getGoals(@PathParam("id") String id);
+
+   @GET
+   @Path("release/{release}")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<ArtifactToken> getWfByRelease(@PathParam("release") String releaseName);
 
    @PUT
    @Path("build/{build}")
