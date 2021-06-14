@@ -164,7 +164,7 @@ public class AtsDbConfigBase {
       checklists.addAttachment(new AtsAttachment("W_Document_Checklist", "osee", DemoBranches.Processes));
       checklists.addAttachment(new AtsAttachment("W_Process_Checklist", "osee", DemoBranches.Processes));
       String jsonToStore = atsApi.jaxRsApi().toJson(checklists);
-      atsApi.setConfigValue("WalkthroughChecklist", jsonToStore);
+      atsApi.setConfigValue("XAttachmentExampleWidget", jsonToStore);
 
       // Create Top Folder on Processes Branch
       IAtsChangeSet changes = atsApi.createChangeSet("Create WT Attachment Folder", DemoBranches.Processes);

@@ -34,6 +34,7 @@ public class XAttachmentExampleWidget extends XAttachmentWidget {
    private static final String LABEL = "Select Peer Review Checklist to Attach";
    public static final Object WIDGET_ID = XAttachmentExampleWidget.class.getSimpleName();
    private static String PEER_REVIEW_CHECKLIST_STATIC_ID = "7244494692772089382";
+   public static String ATTACHMENT_EXAMPLE_KEY = "XAttachmentExampleWidget";
 
    public XAttachmentExampleWidget() {
       super(LABEL, "");
