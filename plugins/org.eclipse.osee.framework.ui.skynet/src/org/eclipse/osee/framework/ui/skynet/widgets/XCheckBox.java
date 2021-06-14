@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class XCheckBox extends XButtonCommon {
+public class XCheckBox extends XButtonCommon implements LabelAfterWidget {
 
    public static String WIDGET_ID = XCheckBox.class.getSimpleName();
    protected Button checkButton;
@@ -146,12 +146,18 @@ public class XCheckBox extends XButtonCommon {
     *
     * @param labelAfter The labelAfter to set.
     */
+   @Override
    public void setLabelAfter(boolean labelAfter) {
       this.labelAfter = labelAfter;
    }
 
    public Button getCheckButton() {
       return checkButton;
+   }
+
+   @Override
+   public boolean isLabelAfter() {
+      return labelAfter;
    }
 
 }

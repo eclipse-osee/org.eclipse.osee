@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.builder;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -178,9 +179,17 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXCheckBoxThreeState(AttributeTypeBoolean attrType) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setXWidgetName("XCheckBoxThreeState");
+      return this;
+   }
+
    public XWidgetBuilder andLabelAfter() {
       Conditions.assertNotNull(currItem, "currItem");
       currItem.getXOptionHandler().add(XOption.LABEL_AFTER);
       return this;
    }
+
 }

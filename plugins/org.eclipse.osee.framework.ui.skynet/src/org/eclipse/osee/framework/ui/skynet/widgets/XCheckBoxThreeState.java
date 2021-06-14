@@ -13,13 +13,19 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -29,13 +35,14 @@ import org.eclipse.swt.widgets.Label;
  *
  * @author Donald G. Dunne
  */
-public class XCheckBoxThreeState extends GenericXWidget {
+public class XCheckBoxThreeState extends GenericXWidget implements LabelAfterWidget {
 
    public static String WIDGET_ID = XCheckBoxThreeState.class.getSimpleName();
    protected Label checkLabel;
    private Composite parent;
    private boolean labelAfter = true;
    protected CheckState checkState = CheckState.UnSet;
+   private Composite composite;
 
    public XCheckBoxThreeState(String displayLabel) {
       super(displayLabel);
@@ -45,6 +52,18 @@ public class XCheckBoxThreeState extends GenericXWidget {
       UnSet,
       Checked,
       UnChecked;
+
+      public boolean isUnSet() {
+         return this == CheckState.UnSet;
+      }
+
+      public boolean isChecked() {
+         return this == CheckState.Checked;
+      }
+
+      public boolean isUnChecked() {
+         return this == CheckState.UnChecked;
+      }
    }
 
    @Override
@@ -71,13 +90,28 @@ public class XCheckBoxThreeState extends GenericXWidget {
       }
       this.parent = parent;
 
+      this.parent = parent;
+      if (fillVertically) {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+         composite.setLayout(layout);
+         composite.setLayoutData(new GridData());
+      } else {
+         composite = new Composite(parent, SWT.NONE);
+         GridLayout layout = ALayout.getZeroMarginLayout(horizontalSpan, false);
+         composite.setLayout(layout);
+         GridData gd = new GridData();
+         gd.horizontalSpan = horizontalSpan;
+         composite.setLayoutData(gd);
+      }
+
       // Create Text Widgets
       if (!labelAfter) {
-         labelWidget = new Label(parent, SWT.NONE);
+         labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
 
-      checkLabel = new Label(parent, SWT.PUSH);
+      checkLabel = new Label(composite, SWT.PUSH);
       GridData gd2 = new GridData(GridData.BEGINNING);
       checkLabel.setLayoutData(gd2);
       checkLabel.addMouseListener(new MouseAdapter() {
@@ -96,7 +130,7 @@ public class XCheckBoxThreeState extends GenericXWidget {
       gd.horizontalSpan = horizontalSpan - 1;
 
       if (labelAfter) {
-         labelWidget = new Label(parent, SWT.NONE);
+         labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel());
       }
       if (getToolTip() != null) {
@@ -153,8 +187,29 @@ public class XCheckBoxThreeState extends GenericXWidget {
     *
     * @param labelAfter The labelAfter to set.
     */
+   @Override
    public void setLabelAfter(boolean labelAfter) {
       this.labelAfter = labelAfter;
+   }
+
+   @Override
+   public boolean isLabelAfter() {
+      return labelAfter;
+   }
+
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         try {
+            if (getCheckState() == CheckState.UnSet) {
+               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Must Select [%s]", getLabel()));
+            }
+         } catch (OseeCoreException ex) {
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error Validating " + getLabel(), ex);
+         }
+      }
+      return status;
    }
 
 }

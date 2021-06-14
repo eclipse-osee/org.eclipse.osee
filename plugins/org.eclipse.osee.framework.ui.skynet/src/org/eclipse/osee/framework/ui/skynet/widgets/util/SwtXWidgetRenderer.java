@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.LabelAfterWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -134,6 +135,10 @@ public class SwtXWidgetRenderer {
       xWidget.setAutoSave(xWidgetLayoutData.getXOptionHandler().contains(XOption.AUTO_SAVE));
       xWidget.setFillHorizontally(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
       xWidget.setFillVertically(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
+      if (xWidget instanceof LabelAfterWidget) {
+         ((LabelAfterWidget) xWidget).setLabelAfter(
+            xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
+      }
 
       xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
 
