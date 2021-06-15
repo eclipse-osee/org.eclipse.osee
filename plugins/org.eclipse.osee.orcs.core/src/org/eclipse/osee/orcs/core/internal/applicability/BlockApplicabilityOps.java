@@ -370,12 +370,7 @@ public class BlockApplicabilityOps {
 
    private boolean branchViewExists() {
       if (useCachedConfig) {
-         for (List<String> configs : configurationMap.values()) {
-            if (configs.contains(view.getName())) {
-               return true;
-            }
-         }
-         return false;
+         return true;
       } else {
          return orcsApi.getQueryFactory().fromBranch(branch).andId(view).andIsOfType(
             CoreArtifactTypes.BranchView).exists();
