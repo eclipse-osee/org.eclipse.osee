@@ -67,7 +67,7 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
       Composite comboComp = new Composite(parent, SWT.NONE);
       comboComp.setLayout(new GridLayout(6, false));
       GridData gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
-      gd.widthHint = 600;
+      gd.widthHint = 750;
       gd.horizontalSpan = 2;
       comboComp.setLayoutData(gd);
 

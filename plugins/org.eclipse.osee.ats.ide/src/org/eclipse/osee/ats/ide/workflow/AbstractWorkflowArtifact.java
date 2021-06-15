@@ -407,7 +407,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String getTransitionAssigneesStr() {
-      return AtsObjects.toString(";", getTransitionAssignees());
+      return AtsObjects.toString(";  ", getTransitionAssignees());
    }
 
    @Override
