@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -77,6 +78,8 @@ public interface ITransitionHelper {
    public String getCancellationReasonDetails();
 
    public String getCancellationReason();
+
+   public AttributeTypeToken getCancellationReasonAttrType();
 
    default void setCancellationReasonDetails(String cancelReasonDetails) {
       // do nothing

@@ -223,10 +223,12 @@ public class WfeTransitionHeader extends Composite {
                         }
                         if (useCancelledReasonEnumDialog) {
                            transitionData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
+                           transitionData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReasonEnum);
                            transitionData.setCancellationReasonDetails(
                               ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
                         } else {
                            transitionData.setCancellationReason(cancelDialog.getEntry());
+                           transitionData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
                         }
                      }
                   } catch (OseeCoreException ex) {

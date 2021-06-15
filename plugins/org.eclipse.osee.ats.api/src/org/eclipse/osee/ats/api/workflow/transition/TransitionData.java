@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class TransitionData {
 
    private String cancellationReason;
+   private AttributeTypeToken cancellationReasonAttrType = AttributeTypeToken.SENTINEL;
    private String cancellationReasonDetails;
    private Collection<ArtifactToken> workItemIds = new HashSet<>();
    private String name;
@@ -148,6 +150,14 @@ public class TransitionData {
 
    public void setTransitionUserArtId(ArtifactId transitionUserArtId) {
       this.transitionUserArtId = transitionUserArtId;
+   }
+
+   public AttributeTypeToken getCancellationReasonAttrType() {
+      return cancellationReasonAttrType;
+   }
+
+   public void setCancellationReasonAttrType(AttributeTypeToken cancellationReasonAttrType) {
+      this.cancellationReasonAttrType = cancellationReasonAttrType;
    }
 
 }

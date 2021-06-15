@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -236,7 +237,16 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public String getCancelledReason() {
-      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledReason, null);
+      String ret = "";
+      if (artifact instanceof IAtsWorkItem) {
+         ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact, AtsAttributeTypes.CancelledReason,
+            "");
+         if (Strings.isInValid(ret)) {
+            ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact,
+               AtsAttributeTypes.CancelledReasonEnum, "");
+         }
+      }
+      return ret;
    }
 
    @Override

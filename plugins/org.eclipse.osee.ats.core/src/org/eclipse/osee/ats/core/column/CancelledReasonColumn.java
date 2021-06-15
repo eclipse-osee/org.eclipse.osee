@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeremy A. Midvidy
@@ -33,6 +34,10 @@ public class CancelledReasonColumn extends AbstractServicesColumn {
       if (atsObject instanceof IAtsWorkItem) {
          ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(atsObject, AtsAttributeTypes.CancelledReason,
             "");
+         if (Strings.isInValid(ret)) {
+            ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(atsObject,
+               AtsAttributeTypes.CancelledReasonEnum, "");
+         }
       }
       return ret;
    }

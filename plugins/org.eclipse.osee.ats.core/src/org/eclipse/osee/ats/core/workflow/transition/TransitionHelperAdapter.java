@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -143,6 +145,11 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    @Override
    public AtsApi getServices() {
       return atsApi;
+   }
+
+   @Override
+   public AttributeTypeToken getCancellationReasonAttrType() {
+      return AtsAttributeTypes.CancelledReason;
    }
 
 }

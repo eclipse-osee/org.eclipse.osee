@@ -17,12 +17,14 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -46,6 +48,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
       transData.setWorkItems(workItems);
       transData.setToStateName(toStateName);
       transData.setCancellationReason(cancellationReason);
+      transData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
       transData.setToAssignees(toAssignees);
       for (TransitionOption opt : transitionOption) {
          transData.getTransitionOptions().add(opt);
@@ -183,6 +186,11 @@ public class TransitionHelper extends TransitionHelperAdapter {
    @Override
    public String getCancellationReason() {
       return transData.getCancellationReason();
+   }
+
+   @Override
+   public AttributeTypeToken getCancellationReasonAttrType() {
+      return transData.getCancellationReasonAttrType();
    }
 
 }

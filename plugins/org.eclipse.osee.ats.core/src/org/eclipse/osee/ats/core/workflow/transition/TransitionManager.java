@@ -56,12 +56,14 @@ import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -183,8 +185,7 @@ public class TransitionManager implements IExecuteListener {
                // Ignore transitions to the same state
                if (!fromStateDef.equals(toStateDef)) {
                   // Validate transition from fromState and toState
-                  List<IAtsStateDefinition> toStatesWithReturnStates =
-                     workItemService.getAllToStates(workItem);
+                  List<IAtsStateDefinition> toStatesWithReturnStates = workItemService.getAllToStates(workItem);
                   if (!helper.isOverrideTransitionValidityCheck() && !toStatesWithReturnStates.contains(
                      toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
                      String errStr =
@@ -495,17 +496,19 @@ public class TransitionManager implements IExecuteListener {
 
    private void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       logWorkflowCancelledEvent(workItem, fromState, toState, cancelDate, helper.getCancellationReason(),
-         helper.getCancellationReasonDetails(), cancelBy, changes, attrResolver);
+         helper.getCancellationReasonAttrType(), helper.getCancellationReasonDetails(), cancelBy, changes,
+         attrResolver);
    }
 
-   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, String cancelReason, String cancelReasonDetails, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, String cancelReason, AttributeTypeToken cancelReasonAttrType, String cancelReasonDetails, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), cancelReason, cancelDate,
          cancelBy.getUserId());
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(), changes);
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate, changes);
          if (Strings.isValid(cancelReason)) {
-            attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, cancelReason, changes);
+            Conditions.assertTrue(cancelReasonAttrType.isValid(), "Cancel Attr Type must be valid");
+            attrResolver.setSoleAttributeValue(workItem, cancelReasonAttrType, cancelReason, changes);
          }
          if (Strings.isValid(cancelReasonDetails)) {
             attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReasonDetails, cancelReasonDetails,
@@ -521,7 +524,8 @@ public class TransitionManager implements IExecuteListener {
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledBy, changes);
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledDate, changes);
-         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledReason, changes);
+         changes.deleteAttributes(workItem, AtsAttributeTypes.CancelledReason);
+         changes.deleteAttributes(workItem, AtsAttributeTypes.CancelledReasonEnum);
          changes.deleteAttributes(workItem.getStoreObject(), AtsAttributeTypes.CancelledReasonDetails);
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState, changes);
       }
