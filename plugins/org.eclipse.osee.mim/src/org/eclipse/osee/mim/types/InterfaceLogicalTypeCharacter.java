@@ -14,7 +14,6 @@
 package org.eclipse.osee.mim.types;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Audrey E Denk
@@ -25,18 +24,13 @@ public class InterfaceLogicalTypeCharacter extends InterfaceLogicalTypeGeneric {
    public InterfaceLogicalTypeCharacter() {
       super(2L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true));
-      fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize",
-         true, true));
-      fields.add(new InterfaceLogicalTypeField("2s Complement",
-         "InterfacePlatformType2sComplement", true, false));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true,"Name"));
+      fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize", true, true,"8"));
+      fields.add(new InterfaceLogicalTypeField("2s Complement", "InterfacePlatformType2sComplement", true, false,"true"));
       fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true));
-      fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval",
-         false, true));
-      fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval",
-         false, true));
-      fields.add(new InterfaceLogicalTypeField("Default Value",
-         "InterfacePlatformTypeDefaultValue", false, true));
+      fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", false, true));
+      fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", false, true));
+      fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true));
 
       this.setFields(fields);
    }

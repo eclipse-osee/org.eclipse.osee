@@ -25,11 +25,11 @@ public class InterfaceLogicalTypeEnumeration extends InterfaceLogicalTypeGeneric
    public InterfaceLogicalTypeEnumeration() {
       super(4L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true,"Name"));
       fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize",
          true, true));
       fields.add(new InterfaceLogicalTypeField("2s Complement",
-         "InterfacePlatformType2sComplement", true, false));
+         "InterfacePlatformType2sComplement", true, false,"true"));
       fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true));
       fields.add(
          new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true));
