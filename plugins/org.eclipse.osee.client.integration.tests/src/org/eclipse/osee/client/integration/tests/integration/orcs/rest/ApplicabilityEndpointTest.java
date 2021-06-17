@@ -196,7 +196,7 @@ public class ApplicabilityEndpointTest {
       // Traversing the Staging Folders checking to see if each creation was successful
       File stagingFolder = new File(stagePath, "Staging");
       assertTrue(stagingFolder.exists());
-      File viewFolder = new File(stagingFolder, "Product A");
+      File viewFolder = new File(stagingFolder, "Product_A");
       assertTrue(viewFolder.exists());
       File inputFolder = new File(viewFolder, "InputFiles");
       assertTrue(inputFolder.exists());

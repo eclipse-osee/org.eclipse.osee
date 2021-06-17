@@ -1493,7 +1493,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          results.error(String.format("Could not create stage directory %s", stageDir.toString()));
          return results;
       }
-      File stageViewDir = new File(stageDir.getPath(), viewToken.getName());
+      File stageViewDir = new File(stageDir.getPath(), viewToken.getName().replaceAll(" ", "_"));
       if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
          results.error(String.format("Could not create stage directory %s", stageViewDir.toString()));
          return results;

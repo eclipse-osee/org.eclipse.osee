@@ -81,7 +81,7 @@ public class BlockApplicabilityRule extends Rule {
     * @throws OseeCoreException
     */
    public File process(File inFile, String stagePath, Set<String> excludedFiles) throws OseeCoreException {
-      if (!excludedFiles.contains(inFile.getName())) {
+      if ((!excludedFiles.contains(inFile.getName())) && !(inFile.isDirectory() && inFile.getName().startsWith("."))) {
          File stageFile = new File(stagePath, inFile.getName());
          if (inFile.isDirectory()) {
             if (!stageFile.exists() && !stageFile.mkdir()) {
