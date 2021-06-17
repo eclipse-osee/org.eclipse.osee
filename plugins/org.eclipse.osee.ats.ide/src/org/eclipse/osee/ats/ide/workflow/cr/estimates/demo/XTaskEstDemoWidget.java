@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.demo;
+package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,18 +18,18 @@ import java.util.List;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.TaskEstDefinition;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.XTaskEstManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstDefinition;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class XTaskEstManagerDemo extends XTaskEstManager {
-
-   public static final String WIDGET_ID = XTaskEstManagerDemo.class.getSimpleName();
+public class XTaskEstDemoWidget extends XTaskEstWidget {
+   public static final String WIDGET_ID = XTaskEstDemoWidget.class.getSimpleName();
 
    @Override
-   public Collection<TaskEstDefinition> getTaskDefs() {
+   public Collection<TaskEstDefinition> getTaskEstDefs() {
       List<TaskEstDefinition> taskDefs = new ArrayList<TaskEstDefinition>();
       taskDefs.add(new TaskEstDefinition(111L, "Integration Test", "Description", null));
       taskDefs.add(new TaskEstDefinition(112L, "Quality", "Description", null));
@@ -40,6 +40,11 @@ public class XTaskEstManagerDemo extends XTaskEstManager {
    @Override
    public AtsWorkDefinitionToken getTaskWorkDefTok() {
       return DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating;
+   }
+
+   @Override
+   public Collection<IAtsTask> getTasks() {
+      return atsApi.getTaskService().getTasks(teamWf);
    }
 
 }

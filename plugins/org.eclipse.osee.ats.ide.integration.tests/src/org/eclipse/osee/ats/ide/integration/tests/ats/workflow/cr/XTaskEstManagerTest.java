@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.TaskEstDefinition;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.TaskEstNameProvider;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.TaskEstOperations;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.demo.XTaskEstManagerDemo;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstDefinition;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstNameProvider;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstOperations;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.demo.XTaskEstDemoWidget;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
@@ -60,8 +60,8 @@ public class XTaskEstManagerTest implements TaskEstNameProvider {
       Assert.assertNotNull(artifactByName);
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
 
-      XTaskEstManagerDemo mgr = new XTaskEstManagerDemo();
-      Collection<TaskEstDefinition> taskDefs = mgr.getTaskDefs();
+      XTaskEstDemoWidget mgr = new XTaskEstDemoWidget();
+      Collection<TaskEstDefinition> taskDefs = mgr.getTaskEstDefs();
 
       Assert.assertEquals("3 UserGroup tasks and 2 code tasks should be found", 5, taskDefs.size());
 

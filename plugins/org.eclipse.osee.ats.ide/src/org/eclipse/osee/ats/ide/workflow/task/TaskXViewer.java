@@ -21,7 +21,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.ide.actions.EditBlockedStatusAction;
 import org.eclipse.osee.ats.ide.actions.EditHoldStatusAction;
@@ -41,7 +40,6 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TaskXViewer extends WorldXViewer {
 
    Action editAssigneeAction;
-   Action addNewTaskAction;
    EditBlockedStatusAction editBlockedStatusAction;
    EditHoldStatusAction editHoldStatusAction;
    private boolean tasksEditable = true;
@@ -60,7 +58,6 @@ public class TaskXViewer extends WorldXViewer {
       editAssigneeAction = new EditAssigneeAction(this, this);
       editBlockedStatusAction = new EditBlockedStatusAction(this);
       editHoldStatusAction = new EditHoldStatusAction(this);
-      addNewTaskAction = new AddTaskAction(this);
    }
 
    @Override

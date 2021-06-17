@@ -36,6 +36,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
    Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
    protected boolean supportClear;
    protected Integer truncateValueLength = null;
+   private Composite comp;
 
    public XHyperlinkLabelCmdValueSelection(String label) {
       this(label, false);
@@ -82,7 +83,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
-      Composite comp = new Composite(parent, SWT.NONE);
+      comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(5, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.horizontalSpan = horizontalSpan;
@@ -172,7 +173,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
 
    @Override
    public Control getControl() {
-      return valueLabel;
+      return comp;
    }
 
    @Override

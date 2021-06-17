@@ -84,7 +84,8 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
                   REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE) //
             ), //
-            new WidgetDefinition("Task Estimating Manager", "XTaskEstManagerDemo"));
+            new WidgetDefinition("Task Estimating", "XTaskEstDemoWidget") //
+         );
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
@@ -92,13 +93,16 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE));
+            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE), //
+            new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget") //
+         );
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
+            new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget"), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
@@ -107,7 +111,9 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AllowEditToAll, RuleDefinitionOption.AddDecisionValidateBlockingReview) //
-         .andColor(StateColor.DARK_GREEN);
+         .andColor(StateColor.DARK_GREEN) //
+         .andLayout( //
+            new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget"));
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
          .andRules(RuleDefinitionOption.AllowEditToAll) //

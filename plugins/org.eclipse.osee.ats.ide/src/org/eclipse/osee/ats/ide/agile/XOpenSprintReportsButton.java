@@ -61,7 +61,7 @@ public class XOpenSprintReportsButton extends XButton implements ArtifactWidget 
 
       XHyperlinkLabel external = new XHyperlinkLabel("Open Externally");
       external.setAddDefaultListener(false);
-      external.createWidgets(bComp, horizontalSpan);
+      external.createWidgets(comp, horizontalSpan);
       external.getControl().setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
       external.getControl().addListener(SWT.MouseUp, new Listener() {
          @Override

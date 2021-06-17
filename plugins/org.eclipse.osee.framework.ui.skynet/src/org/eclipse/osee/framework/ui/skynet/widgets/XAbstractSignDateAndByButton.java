@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +38,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * XWidget that provides a label and button. Upon pressing button, user and date will be stored and displayed. Widget
@@ -47,21 +50,21 @@ import org.eclipse.swt.SWT;
 public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    public static final String NOT_YET_SIGNED = "Not Yet Signed";
-   private final AttributeTypeId signDateAttrType;
-   private final AttributeTypeId signByAttrType;
-   private boolean isRequiredButton = false;
+   protected final AttributeTypeId signDateAttrType;
+   protected final AttributeTypeId signByAttrType;
    protected boolean doSign = false;
+   protected boolean required = false;
 
-   public XAbstractSignDateAndByButton(String label, String toolTip, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrUser, KeyedImage keyedImage) {
+   public XAbstractSignDateAndByButton(String label, String toolTip, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType, KeyedImage keyedImage) {
       super(label, toolTip, ImageManager.getImage(keyedImage));
       this.signDateAttrType = signDateAttrType;
-      this.signByAttrType = signByAttrUser;
+      this.signByAttrType = signByAttrType;
       addListener();
    }
 
-   public XAbstractSignDateAndByButton(String labelReq, String toolTipReq, AttributeTypeId signDateAttrTypeReq, AttributeTypeId signByAttrUserReq, KeyedImage keyedImageReq, boolean isRequired) {
+   public XAbstractSignDateAndByButton(String labelReq, String toolTipReq, AttributeTypeId signDateAttrTypeReq, AttributeTypeId signByAttrUserReq, KeyedImage keyedImageReq, boolean required) {
       this(labelReq, toolTipReq, signDateAttrTypeReq, signByAttrUserReq, keyedImageReq);
-      this.isRequiredButton = isRequired;
+      this.required = required;
    }
 
    protected void addListener() {
@@ -70,17 +73,15 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    @Override
    public String getResultsText() {
-      Date date = getArtifact().getSoleAttributeValue(signDateAttrType, null);
+      return getText(getArtifact(), signDateAttrType, signByAttrType);
+   }
+
+   public static String getText(Artifact artifact, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType) {
+      Date date = artifact.getSoleAttributeValue(signDateAttrType, null);
       if (date != null) {
-         User user = UserManager.getUserByArtId(
-            getArtifact().getSoleAttributeValue(signByAttrType, SystemUser.UnAssigned.getId()));
-         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+         User user =
+            UserManager.getUserByArtId(artifact.getSoleAttributeValue(signByAttrType, SystemUser.UnAssigned.getId()));
          return String.format("signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
-      }
-      if (this.isRequiredButton) {
-         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else {
-         resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       }
       return NOT_YET_SIGNED;
    }
@@ -92,7 +93,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       }
    };
 
-   protected void handleSelection() {
+   public void handleSelection() {
       try {
          // Ok --> 0, Cancel --> 1, Clear --> 2
          int res = MessageDialog.open(3, Displays.getActiveShell(), getLabel(), getSignMessage(), SWT.NONE,
@@ -108,9 +109,15 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                if (res == 2) {
-                  setUnsigned();
-               } else {
-                  setSigned();
+                  if (userHasPermission()) {
+                     setSigned(artifact, signDateAttrType, signByAttrType, getLabel(), false);
+                     refreshLabel();
+                  }
+               } else if (res == 0) {
+                  if (userHasPermission()) {
+                     setSigned(artifact, signDateAttrType, signByAttrType, getLabel(), true);
+                     refreshLabel();
+                  }
                }
                return Status.OK_STATUS;
             }
@@ -141,30 +148,24 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       return true;
    }
 
-   public void setSigned() {
-      if (userHasPermission()) {
-         SkynetTransaction tx =
-            TransactionManager.createTransaction(getArtifact().getBranch(), "Set signed for " + getLabel());
-         Artifact storeArt = getArtifact();
-         storeArt.setSoleAttributeValue(signByAttrType, UserManager.getUser().getId());
-         storeArt.setSoleAttributeValue(signDateAttrType, new Date());
-         tx.addArtifact(storeArt);
-         tx.execute();
-         refreshLabel();
-      }
+   public static void setSigned(Artifact artifact, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType, String label, boolean signed) {
+      setSigned(Collections.singleton(artifact), signDateAttrType, signByAttrType, label, signed);
    }
 
-   public void setUnsigned() {
-      if (userHasPermission()) {
-         SkynetTransaction tx =
-            TransactionManager.createTransaction(getArtifact().getBranch(), "Set unsigned for " + getLabel());
-         Artifact storeArt = getArtifact();
-         storeArt.deleteSoleAttribute(signByAttrType);
-         storeArt.deleteSoleAttribute(signDateAttrType);
-         tx.addArtifact(storeArt);
-         tx.execute();
-         refreshLabel();
+   public static void setSigned(Collection<Artifact> artifacts, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType, String label, boolean signed) {
+      SkynetTransaction tx =
+         TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Set signed for " + label);
+      for (Artifact art : artifacts) {
+         if (signed) {
+            art.setSoleAttributeValue(signByAttrType, UserManager.getUser().getId());
+            art.setSoleAttributeValue(signDateAttrType, new Date());
+         } else {
+            art.deleteSoleAttribute(signByAttrType);
+            art.deleteSoleAttribute(signDateAttrType);
+         }
+         tx.addArtifact(art);
       }
+      tx.execute();
    }
 
    @Override
@@ -189,6 +190,19 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
          }
       }
       return Status.OK_STATUS;
+   }
+
+   public void setUnsigned() {
+      XAbstractSignDateAndByButton.setSigned(getArtifact(), signDateAttrType, signByAttrType, getLabel(), false);
+   }
+
+   public void setSigned() {
+      XAbstractSignDateAndByButton.setSigned(getArtifact(), signDateAttrType, signByAttrType, getLabel(), true);
+   }
+
+   @Override
+   public Label getControl() {
+      return labelWidget;
    }
 
 }

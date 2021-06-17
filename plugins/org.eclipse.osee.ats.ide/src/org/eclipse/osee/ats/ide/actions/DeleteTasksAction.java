@@ -50,13 +50,17 @@ public class DeleteTasksAction extends AbstractAtsAction {
    }
 
    public void updateEnablement(Collection<Artifact> selected) {
-      for (Artifact art : selected) {
-         if (!(art instanceof TaskArtifact)) {
-            setEnabled(false);
-            return;
+      if (selected.isEmpty()) {
+         setEnabled(false);
+      } else {
+         for (Artifact art : selected) {
+            if (!(art instanceof TaskArtifact)) {
+               setEnabled(false);
+               return;
+            }
          }
+         setEnabled(true);
       }
-      setEnabled(true);
    }
 
    @Override

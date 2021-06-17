@@ -41,10 +41,11 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionMultiChoiceSelect;
 import org.eclipse.osee.ats.ide.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.ats.ide.util.widgets.task.XCreateChangeReportTasksXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapementDemoWfXButton;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.demo.XTaskEstDemoWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingWorldWidget;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.ide.workflow.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
-import org.eclipse.osee.ats.ide.workflow.task.widgets.estimates.demo.XTaskEstManagerDemo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -91,8 +92,6 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XIntroducedInVersionWidget(name);
       } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {
          toReturn = new XCommitManager();
-      } else if (widgetName.equals(XTaskEstManagerDemo.WIDGET_ID)) {
-         toReturn = new XTaskEstManagerDemo();
       } else if (widgetName.equals(XWorkingBranchLabel.WIDGET_NAME)) {
          toReturn = new XWorkingBranchLabel();
       } else if (widgetName.equals(XWorkingBranchButtonCreate.WIDGET_NAME)) {
@@ -218,8 +217,12 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XDateWithValidateDam(name);
       } else if (widgetName.equals(XEstimatedPointsWidget.WIDGET_ID)) {
          return new XEstimatedPointsWidget();
+      } else if (widgetName.equals(XTaskEstDemoWidget.WIDGET_ID)) {
+         return new XTaskEstDemoWidget();
       } else if (widgetName.equals(XTleReviewedWidget.WIDGET_ID)) {
          return new XTleReviewedWidget();
+      } else if (widgetName.equals(XSiblingWorldWidget.WIDGET_ID)) {
+         return new XSiblingWorldWidget();
       }
 
       return toReturn;

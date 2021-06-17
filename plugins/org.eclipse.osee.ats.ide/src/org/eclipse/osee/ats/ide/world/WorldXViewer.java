@@ -34,6 +34,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -350,8 +351,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
 
       final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
-      mm.insertBefore(MENU_GROUP_PRE,
-         TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
+      Set<Artifact> workflowArtifacts = getSelectedWorkflowArtifacts();
+      if (!workflowArtifacts.isEmpty()) {
+         mm.insertBefore(MENU_GROUP_PRE,
+            TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
+      }
 
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
       editStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() > 0);
@@ -395,7 +399,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, addTaskAction);
-      addTaskAction.updateEnablement();
+      addTaskAction.updateEnablement(isAddTaskEnabled());
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteTasksAction);
       deleteTasksAction.updateEnablement(getSelectedArtifacts());
@@ -422,6 +426,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       for (IMenuActionProvider provider : menuActionProviders) {
          provider.updateMenuActionsForTable();
       }
+   }
+
+   protected boolean isAddTaskEnabled() {
+      return true;
    }
 
    @Override
@@ -466,7 +474,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add(AtsApiService.get().getQueryServiceIde().getArtifact(item));
+            if (item.getData() instanceof IAtsWorkItem) {
+               Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(item);
+               if (artifact != null) {
+                  arts.add(artifact);
+               }
+            }
          }
       }
       return arts;

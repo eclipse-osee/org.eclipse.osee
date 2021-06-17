@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.task.widgets.estimates;
+package org.eclipse.osee.ats.ide.workflow.cr.estimates;
 
 import java.util.ArrayList;
 import java.util.List;

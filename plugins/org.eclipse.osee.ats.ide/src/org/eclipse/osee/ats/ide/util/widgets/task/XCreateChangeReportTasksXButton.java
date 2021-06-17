@@ -108,7 +108,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
          @Override
          public void run() {
             setLabel(fName + " - Creating...");
-            bComp.layout(true);
+            comp.layout(true);
             parent.layout(true);
          }
       });

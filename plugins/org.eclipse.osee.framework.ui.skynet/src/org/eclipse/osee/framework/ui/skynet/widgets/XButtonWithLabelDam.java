@@ -39,7 +39,7 @@ public abstract class XButtonWithLabelDam extends XButton implements ArtifactWid
    protected void createControls(Composite parent, int horizontalSpan) {
       numColumns = 3;
       super.createControls(parent, horizontalSpan);
-      resultsLabelWidget = new Label(bComp, SWT.NONE);
+      resultsLabelWidget = new Label(comp, SWT.NONE);
       refreshLabel();
    }
 

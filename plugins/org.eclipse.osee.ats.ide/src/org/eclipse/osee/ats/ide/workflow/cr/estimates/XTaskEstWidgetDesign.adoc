@@ -2,9 +2,9 @@
 
 == Usage
 
-XTaskEstManager is an XViewer based widget that can be used to generate a configured set of tasks.  One use cases is in the Change Request workflow where you want to create an Estimating task for a selected set of team and have them auto-assigned based on UserGroups.
+XTaskEstWidget is an XViewer based widget that can be used to generate a configured set of tasks.  One use cases is in the Change Request workflow where you want to create an Estimating task for a selected set of team and have them auto-assigned based on UserGroups.
 
-To use this widget, you must extend XTaskEstManager and implement the required methods.  See XTaskEstManagerDemo for an example.
+To use this widget, you must extend XTaskEstWidget and implement the required methods.  See XTaskEstDemoWidget for an example.
 
 There are 3 ways to create tasks
 * Create TaskEstimatingDefinitions in code.  This will add these items in the table and allow the user to check a box and create the task(s)

@@ -24,7 +24,8 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  * @author Donald G. Dunne
  */
 public class AddTaskAction extends AbstractAtsAction {
-   private final ISelectedTeamWorkflowArtifacts selectedTeamWfs;
+
+   protected final ISelectedTeamWorkflowArtifacts selectedTeamWfs;
 
    public AddTaskAction(ISelectedTeamWorkflowArtifacts selectedTeamWfs) {
       super("Add Task", IAction.AS_PUSH_BUTTON);
@@ -33,7 +34,11 @@ public class AddTaskAction extends AbstractAtsAction {
       setToolTipText(getText());
    }
 
-   public void updateEnablement() {
+   public void updateEnablement(boolean enabled) {
+      if (!enabled) {
+         setEnabled(enabled);
+         return;
+      }
       Collection<TeamWorkFlowArtifact> teamWfs = selectedTeamWfs.getSelectedTeamWorkflowArtifacts();
       setEnabled(teamWfs.size() == 1 && teamWfs.iterator().next().isInWork());
    }

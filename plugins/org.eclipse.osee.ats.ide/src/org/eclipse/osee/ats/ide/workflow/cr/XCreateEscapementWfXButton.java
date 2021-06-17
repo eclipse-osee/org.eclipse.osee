@@ -123,7 +123,7 @@ public abstract class XCreateEscapementWfXButton extends XButton implements Arti
          @Override
          public void run() {
             setLabel(fName + " - Creating...");
-            bComp.layout(true);
+            comp.layout(true);
             parent.layout(true);
          }
       });

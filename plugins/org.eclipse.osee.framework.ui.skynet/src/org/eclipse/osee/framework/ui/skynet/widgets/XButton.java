@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -32,7 +33,7 @@ public class XButton extends XButtonCommon {
 
    protected Label button;
    protected Composite parent;
-   protected Composite bComp;
+   protected Composite comp;
    private boolean labelAfter = true;
    protected int numColumns = 2;
 
@@ -45,8 +46,8 @@ public class XButton extends XButtonCommon {
    }
 
    @Override
-   public Label getControl() {
-      return button;
+   public Control getControl() {
+      return comp;
    }
 
    /**
@@ -60,23 +61,23 @@ public class XButton extends XButtonCommon {
       }
       this.parent = parent;
 
-      bComp = new Composite(parent, SWT.NONE);
-      bComp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      comp = new Composite(parent, SWT.NONE);
+      comp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
+      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
-         toolkit.adapt(bComp);
+         toolkit.adapt(comp);
       }
 
       // Create Text Widgets
       if (!labelAfter) {
-         labelWidget = new Label(bComp, SWT.NONE);
+         labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
 
       if (toolkit != null) {
-         button = toolkit.createLabel(bComp, "");
+         button = toolkit.createLabel(comp, "");
       } else {
-         button = new Label(bComp, SWT.PUSH);
+         button = new Label(comp, SWT.PUSH);
       }
       GridData gd2 = new GridData(GridData.BEGINNING);
       button.setLayoutData(gd2);
@@ -95,7 +96,7 @@ public class XButton extends XButtonCommon {
       gd.horizontalSpan = horizontalSpan - 1;
 
       if (labelAfter) {
-         labelWidget = new Label(bComp, SWT.NONE);
+         labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel());
       }
       // Nice to allow user to select label or icon to kick-off action
@@ -133,7 +134,7 @@ public class XButton extends XButtonCommon {
    public void dispose() {
       labelWidget.dispose();
       button.dispose();
-      bComp.dispose();
+      comp.dispose();
       if (parent != null && !parent.isDisposed()) {
          parent.layout();
       }

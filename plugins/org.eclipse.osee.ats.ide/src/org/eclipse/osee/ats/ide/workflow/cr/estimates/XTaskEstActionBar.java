@@ -10,12 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.task.widgets.estimates;
+package org.eclipse.osee.ats.ide.workflow.cr.estimates;
 
 import java.util.Date;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
@@ -43,19 +42,18 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEstActionBar implements TaskEstNameProvider {
+public class XTaskEstActionBar implements TaskEstNameProvider {
 
-   private final XTaskEstManager xTaskEstManager;
+   private final XTaskEstWidget xTaskEstWidget;
    private Label extraInfoLabel;
    private ToolItem refreshItem;
-   private ToolItem addItem;
    private final AtsApi atsApi;
    private final IAtsTeamWorkflow teamWf;
 
-   public TaskEstActionBar(XTaskEstManager xTaskEstManager) {
-      this.xTaskEstManager = xTaskEstManager;
+   public XTaskEstActionBar(XTaskEstWidget xTaskEstWidget) {
+      this.xTaskEstWidget = xTaskEstWidget;
       atsApi = AtsApiService.get();
-      this.teamWf = xTaskEstManager.getArtifact();
+      this.teamWf = xTaskEstWidget.getTeamWf();
    }
 
    public ToolBar createTaskActionBar(Composite parent) {
@@ -72,7 +70,7 @@ public class TaskEstActionBar implements TaskEstNameProvider {
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("");
       extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      xTaskEstManager.setExtraInfoLabel(extraInfoLabel);
+      xTaskEstWidget.setExtraInfoLabel(extraInfoLabel);
 
       Composite rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
@@ -82,10 +80,11 @@ public class TaskEstActionBar implements TaskEstNameProvider {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
 
-      addItem = new ToolItem(toolBar, SWT.PUSH);
-      addItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
-      addItem.setToolTipText("Create Checked Estimating Task(s)");
-      addItem.addSelectionListener(new SelectionAdapter() {
+      ToolItem addCannedItem = new ToolItem(toolBar, SWT.PUSH);
+      addCannedItem.setText("Create Checked Task(s)");
+      addCannedItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
+      addCannedItem.setToolTipText("Create Checked Estimating Task(s)");
+      addCannedItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             createCannedTasks();
@@ -93,10 +92,11 @@ public class TaskEstActionBar implements TaskEstNameProvider {
 
       });
 
-      addItem = new ToolItem(toolBar, SWT.PUSH);
-      addItem.setImage(ImageManager.getImage(AtsImage.NEW_TASK));
-      addItem.setToolTipText("Create Manual Estimating Task(s)");
-      addItem.addSelectionListener(new SelectionAdapter() {
+      ToolItem addManualItem = new ToolItem(toolBar, SWT.PUSH);
+      addManualItem.setText("Create Manual Task(s)");
+      addManualItem.setImage(ImageManager.getImage(AtsImage.NEW_TASK));
+      addManualItem.setToolTipText("Create Manual Estimating Task(s) from entered list");
+      addManualItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             createManualTasks();
@@ -104,13 +104,15 @@ public class TaskEstActionBar implements TaskEstNameProvider {
 
       });
 
+      new ToolItem(toolBar, SWT.SEPARATOR);
+
       refreshItem = new ToolItem(toolBar, SWT.PUSH);
       refreshItem.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       refreshItem.setToolTipText("Refresh");
       refreshItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            xTaskEstManager.loadTable();
+            xTaskEstWidget.loadTable();
          }
       });
 
@@ -130,7 +132,7 @@ public class TaskEstActionBar implements TaskEstNameProvider {
       NewTaskData newTaskData = NewTaskData.create(newTaskSet, teamWf);
       for (String name : dialog.getEntry().split("\r\n")) {
          if (Strings.isValid(name)) {
-            newTaskData.setTaskWorkDef(xTaskEstManager.getTaskWorkDefTok());
+            newTaskData.setTaskWorkDef(xTaskEstWidget.getTaskWorkDefTok());
             JaxAtsTask task = new JaxAtsTask();
             task.setName(name);
             task.setCreatedByUserId(atsApi.getUserService().getCurrentUserId());
@@ -143,7 +145,7 @@ public class TaskEstActionBar implements TaskEstNameProvider {
       } else {
          newTaskSet = atsApi.getTaskService().createTasks(newTaskSet);
          if (newTaskSet.isErrors() || newTaskSet.getTaskData().isEmpty()) {
-            XResultDataUI.report(newTaskSet.getResults(), XTaskEstManager.NAME);
+            XResultDataUI.report(newTaskSet.getResults(), XTaskEstWidget.NAME);
          } else {
             AWorkbench.popup("New Tasks Created");
          }
@@ -151,16 +153,15 @@ public class TaskEstActionBar implements TaskEstNameProvider {
    }
 
    protected void createCannedTasks() {
-      if (xTaskEstManager.getItems().isEmpty()) {
+      if (xTaskEstWidget.getTaskEstDefsFromTableChecked().isEmpty()) {
          AWorkbench.popup("No Tasks Selected");
          return;
       }
-      TaskEstOperations ops =
-         new TaskEstOperations(atsApi, DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating, this);
-      NewTaskSet newTaskSet = ops.createCannedTasks(teamWf, xTaskEstManager.getItems());
+      TaskEstOperations ops = new TaskEstOperations(atsApi, xTaskEstWidget.getTaskWorkDefTok(), this);
+      NewTaskSet newTaskSet = ops.createCannedTasks(teamWf, xTaskEstWidget.getTaskEstDefsFromTableChecked());
 
       if (newTaskSet.isErrors() || newTaskSet.getTaskData().isEmpty()) {
-         XResultDataUI.report(newTaskSet.getResults(), XTaskEstManager.NAME);
+         XResultDataUI.report(newTaskSet.getResults(), XTaskEstWidget.NAME);
       } else {
          AWorkbench.popup("New Tasks Created");
       }
@@ -168,7 +169,7 @@ public class TaskEstActionBar implements TaskEstNameProvider {
 
    @Override
    public String getTaskName(TaskEstDefinition ted) {
-      return String.format(xTaskEstManager.getTaskNameFormat(), ted.getName());
+      return String.format(xTaskEstWidget.getTaskNameFormat(), ted.getName());
    }
 
 }

@@ -73,7 +73,7 @@ public abstract class AbstractXOpenSprintBurnupButton extends XButton implements
       super.createControls(parent, horizontalSpan);
 
       XHyperlinkLabel external = new XHyperlinkLabel("Open Externally", getUrl(), true);
-      external.createWidgets(bComp, horizontalSpan);
+      external.createWidgets(comp, horizontalSpan);
       external.getControl().setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
       external.addXModifiedListener(new XModifiedListener() {
 

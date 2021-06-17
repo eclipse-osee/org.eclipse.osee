@@ -13,24 +13,17 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import java.util.Collection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.column.PointsColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +34,7 @@ public class XEstimatedPointsWidget extends XHyperlinkLabelValueSelDam implement
    public float points = 0;
    private final AtsApi atsApi;
    private IAtsWorkItem workItem;
-   private AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
+   private AttributeTypeToken pointsAttrType = null;
 
    public XEstimatedPointsWidget() {
       super("Estimated Points", true, 50);
@@ -51,7 +44,7 @@ public class XEstimatedPointsWidget extends XHyperlinkLabelValueSelDam implement
    @Override
    public String getCurrentValue() {
       AttributeTypeToken pointsAttrType = getAttributeType();
-      if (pointsAttrType == null) {
+      if (pointsAttrType.isInvalid()) {
          pointsAttrType = AtsAttributeTypes.PointsNumeric;
       }
       return atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, pointsAttrType, "");
@@ -59,41 +52,7 @@ public class XEstimatedPointsWidget extends XHyperlinkLabelValueSelDam implement
 
    @Override
    public boolean handleSelection() {
-      AttributeTypeToken pointsAttrType = getAttributeType();
-      if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
-         EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
-         if (dialog.open() == Window.OK) {
-            String entry = dialog.getEntry();
-            if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(entry)) {
-               try {
-                  double points = Double.valueOf(entry);
-                  IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
-                  changes.setSoleAttributeValue(workItem, pointsAttrType, points);
-                  changes.executeIfNeeded();
-                  return true;
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         }
-      } else {
-         Collection<EnumToken> enumValues = pointsAttrType.toEnum().getEnumValues();
-         Object[] values = enumValues.toArray(new Object[enumValues.size()]);
-         ListSelectionDialog dialog = new ListSelectionDialog(values, Displays.getActiveShell(), "Enter Points", null,
-            "Enter Points", 3, new String[] {"OK", "Cancel"}, 0);
-         if (dialog.open() == Window.OK) {
-            EnumToken entry = (EnumToken) values[dialog.getSelection()];
-            try {
-               IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
-               changes.setSoleAttributeValue(workItem, pointsAttrType, entry.getName());
-               changes.executeIfNeeded();
-               return true;
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-      }
-      return false;
+      return PointsColumn.promptChangePoints(workItem, getPointsAttrType(), atsApi);
    }
 
    @Override
@@ -104,19 +63,9 @@ public class XEstimatedPointsWidget extends XHyperlinkLabelValueSelDam implement
       return true;
    }
 
-   @Override
-   public AttributeTypeToken getAttributeType() {
-      if (pointsAttrType.isInvalid()) {
-         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         if (teamWf != null) {
-            IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
-            if (agileTeam != null) {
-               pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(agileTeam);
-            }
-         }
-         if (pointsAttrType.isInvalid()) {
-            pointsAttrType = AtsAttributeTypes.PointsNumeric;
-         }
+   private AttributeTypeToken getPointsAttrType() {
+      if (pointsAttrType == null) {
+         pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
       }
       return pointsAttrType;
    }

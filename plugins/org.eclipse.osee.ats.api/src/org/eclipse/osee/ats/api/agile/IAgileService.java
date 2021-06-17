@@ -35,6 +35,11 @@ public interface IAgileService {
    public static String FEATURE_GROUP_FOLDER_NAME = "Feature Groups";
    public static long EMPTY_VALUE = -1;
 
+   /**
+    * @return Points Attr type defined if agile team, else default points attribute type
+    */
+   AttributeTypeToken getPointsAttrType(IAtsWorkItem workItem);
+
    IAgileTeam getAgileTeam(ArtifactId artifact);
 
    IAgileTeam updateAgileTeam(JaxAgileTeam team);

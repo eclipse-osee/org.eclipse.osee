@@ -13,10 +13,16 @@
 
 package org.eclipse.osee.ats.ide.column;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import org.eclipse.jface.window.Window;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
@@ -28,14 +34,13 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.XTleReviewedWidget;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -43,27 +48,27 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class TleReviewedColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
-   public static PointsColumn instance = new PointsColumn();
+   public static TleReviewedColumn instance = new TleReviewedColumn();
    private final AtsApi atsApi;
 
-   public static PointsColumn getInstance() {
+   public static TleReviewedColumn getInstance() {
       return instance;
    }
 
-   private PointsColumn() {
-      super("ats.wi.points", "Points", 40, XViewerAlign.Left, false, SortDataType.Integer, true, "");
+   private TleReviewedColumn() {
+      super("ats.taskest.reviewed", "TLE Reviewed", 20, XViewerAlign.Left, true, SortDataType.String, true, "");
       atsApi = AtsApiService.get();
    }
 
@@ -72,8 +77,8 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public PointsColumn copy() {
-      PointsColumn newXCol = new PointsColumn();
+   public TleReviewedColumn copy() {
+      TleReviewedColumn newXCol = new TleReviewedColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -98,17 +103,12 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
 
             IAtsWorkItem workItem = (IAtsWorkItem) useArt;
 
-            AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
-            if (!atsApi.getAttributeResolver().isAttributeTypeValid(workItem, pointsAttrType)) {
-               return false;
-            }
-
-            boolean modified = promptChangePoints(workItem, pointsAttrType, atsApi);
+            XTleReviewedWidget widget = new XTleReviewedWidget();
+            widget.setArtifact((Artifact) workItem.getStoreObject());
+            widget.handleSelection();
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified) {
-               xViewer.update(useArt, null);
-               return true;
-            }
+            xViewer.update(useArt, null);
+            return true;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -117,49 +117,38 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
       return false;
    }
 
-   public static boolean promptChangePoints(IAtsWorkItem workItem, AttributeTypeToken pointsAttrType, AtsApi atsApi) {
-      return promptChangePoints(java.util.Collections.singleton(workItem), pointsAttrType, atsApi);
+   public static boolean promptChange(IAtsWorkItem workItem, AtsApi atsApi) {
+      return promptChange(java.util.Collections.singleton(workItem), atsApi);
    }
 
-   public static boolean promptChangePoints(Collection<IAtsWorkItem> workItems, AttributeTypeToken pointsAttrType, AtsApi atsApi) {
-      if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
-         EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
-         if (dialog.open() == Window.OK) {
-            String entry = dialog.getEntry();
-            if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(entry)) {
-               try {
-                  double points = Double.valueOf(entry);
-                  IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
-                  for (IAtsWorkItem workItem : workItems) {
-                     changes.setSoleAttributeValue(workItem, pointsAttrType, points);
-                  }
-                  changes.executeIfNeeded();
-                  return true;
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         }
-      } else {
-         Collection<EnumToken> enumValues = pointsAttrType.toEnum().getEnumValues();
-         Object[] values = enumValues.toArray(new Object[enumValues.size()]);
-         ListSelectionDialog dialog = new ListSelectionDialog(values, Displays.getActiveShell(), "Enter Points", null,
-            "Enter Points", 3, new String[] {"OK", "Cancel"}, 0);
-         if (dialog.open() == Window.OK) {
-            EnumToken entry = (EnumToken) values[dialog.getSelection()];
-            try {
-               IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
+   public static boolean promptChange(final Collection<IAtsWorkItem> workItems, AtsApi atsApi) {
+      try {
+         // Ok --> 0, Cancel --> 1, Clear --> 2
+         int res = MessageDialog.open(3, Displays.getActiveShell(), "TLE Reviewed", "Has TLE Reviewed", SWT.NONE,
+            new String[] {"Ok", "Cancel", "Clear"});
+         Job signJob = new Job("Set TLE Reviewed") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               List<Artifact> artifacts = new ArrayList<>();
                for (IAtsWorkItem workItem : workItems) {
-                  changes.setSoleAttributeValue(workItem, pointsAttrType, entry.getName());
+                  artifacts.add((Artifact) workItem.getStoreObject());
                }
-               changes.executeIfNeeded();
-               return true;
-            } catch (Exception ex) {
-               // do nothing
+               if (res == 2) {
+                  XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.TleReviewedDate,
+                     AtsAttributeTypes.TleReviewedBy, "TLE Reviewed", false);
+               } else if (res == 0) {
+                  XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.TleReviewedDate,
+                     AtsAttributeTypes.TleReviewedBy, "TLE Reviewed", true);
+               }
+               return Status.OK_STATUS;
             }
-         }
+         };
+         Operations.scheduleJob(signJob, false, Job.SHORT, null);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return false;
+      return true;
    }
 
    @Override
@@ -181,13 +170,8 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
             return "";
          }
          IAtsWorkItem workItem = (IAtsWorkItem) element;
-         AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
-         if (!atsApi.getAttributeResolver().isAttributeTypeValid(workItem, pointsAttrType)) {
-            return "";
-         }
-
-         String ptsStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, pointsAttrType, "");
-         return ptsStr;
+         return XAbstractSignDateAndByButton.getText((Artifact) workItem.getStoreObject(),
+            AtsAttributeTypes.TleReviewedDate, AtsAttributeTypes.TleReviewedBy);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
@@ -196,26 +180,16 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         AttributeTypeToken pointsAttrType = null;
          Set<IAtsWorkItem> workItems = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof IAtsWorkItem) {
-               IAtsWorkItem workItem = (IAtsWorkItem) item.getData();
-               AttributeTypeToken ptsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
-               if (pointsAttrType == null) {
-                  pointsAttrType = ptsAttrType;
-               } else if (!pointsAttrType.equals(ptsAttrType)) {
-                  throw new OseeArgumentException(
-                     "Can not change points attribute for workflows of different attr types");
-               }
                Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art instanceof IAtsWorkItem) {
                   workItems.add((IAtsWorkItem) art);
                }
             }
          }
-         promptChangePoints(workItems, pointsAttrType, atsApi);
-         return;
+         promptChange(workItems, atsApi);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
