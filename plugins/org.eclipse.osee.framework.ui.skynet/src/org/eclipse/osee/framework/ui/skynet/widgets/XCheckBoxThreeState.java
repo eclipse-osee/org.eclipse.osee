@@ -212,4 +212,9 @@ public class XCheckBoxThreeState extends GenericXWidget implements LabelAfterWid
       return status;
    }
 
+   public void setCheckState(CheckState checked) {
+      checkState = checked;
+      updateCheckWidget();
+   }
+
 }
