@@ -28,29 +28,29 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
  */
-public class XPointsWidget extends XHyperlinkLabelCmdValueSelection implements ArtifactWidget {
+public class XEstimatedPointsWidget extends XHyperlinkLabelValueSelDam implements ArtifactWidget {
 
-   public static final Object WIDGET_ID = XPointsWidget.class.getSimpleName();
+   public static final Object WIDGET_ID = XEstimatedPointsWidget.class.getSimpleName();
    public float points = 0;
    private final AtsApi atsApi;
    private IAtsWorkItem workItem;
    private AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
 
-   public XPointsWidget() {
-      super("Points", true, 50);
+   public XEstimatedPointsWidget() {
+      super("Estimated Points", true, 50);
       atsApi = AtsApiService.get();
    }
 
    @Override
    public String getCurrentValue() {
-      AttributeTypeToken pointsAttrType = getPointsAttrType();
+      AttributeTypeToken pointsAttrType = getAttributeType();
       if (pointsAttrType == null) {
          pointsAttrType = AtsAttributeTypes.PointsNumeric;
       }
@@ -59,7 +59,7 @@ public class XPointsWidget extends XHyperlinkLabelCmdValueSelection implements A
 
    @Override
    public boolean handleSelection() {
-      AttributeTypeToken pointsAttrType = getPointsAttrType();
+      AttributeTypeToken pointsAttrType = getAttributeType();
       if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
          EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
          if (dialog.open() == Window.OK) {
@@ -99,12 +99,13 @@ public class XPointsWidget extends XHyperlinkLabelCmdValueSelection implements A
    @Override
    public boolean handleClear() {
       IAtsChangeSet changes = atsApi.createChangeSet("Remove Points");
-      changes.deleteAttributes(workItem, getPointsAttrType());
+      changes.deleteAttributes(workItem, getAttributeType());
       changes.executeIfNeeded();
       return true;
    }
 
-   public AttributeTypeToken getPointsAttrType() {
+   @Override
+   public AttributeTypeToken getAttributeType() {
       if (pointsAttrType.isInvalid()) {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {

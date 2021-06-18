@@ -49,24 +49,27 @@ public class TaskEstLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
-      TaskEstDefinition taskDef = (TaskEstDefinition) element;
+      TaskEstDefinition ted = (TaskEstDefinition) element;
       if (xCol.equals(TaskEstFactory.Check_Col)) {
-         if (taskDef.isManual()) {
+         if (ted.isManual()) {
             return ImageManager.getImage(AtsImage.TASK);
          }
-         if (taskDef.hasTask()) {
+         if (ted.hasTask()) {
             return null;
          }
-         if (taskDef.isChecked()) {
+         if (ted.isChecked()) {
             return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE);
          } else {
             return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_UNSET);
          }
-      }
-      if (xCol.equals(TaskEstFactory.Assignee_Col)) {
-         if (taskDef.hasTask()) {
-            return AssigneeColumnUI.instance.getColumnImage(taskDef.getTask(), xCol, columnIndex);
+      } else if (xCol.equals(TaskEstFactory.Assignee_Col)) {
+         if (ted.hasTask()) {
+            return AssigneeColumnUI.instance.getColumnImage(ted.getTask(), xCol, columnIndex);
          }
+      } else if (atsApi.getAttributeResolver().getAttributeCount(ted.getTask(),
+         AtsAttributeTypes.TleReviewedDate) == 1) {
+         return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE);
+
       }
       return null;
    }
@@ -116,6 +119,14 @@ public class TaskEstLabelProvider extends XViewerLabelProvider {
          if (ted.hasTask()) {
             return String.valueOf(atsApi.getAttributeResolver().getSoleAttributeValueAsString(ted.getTask(),
                xTaskEstViewer.getPointsAttrType(), ""));
+         }
+         return "";
+      } else if (xCol.equals(TaskEstFactory.Tle_Reviewed_Col)) {
+         if (ted.hasTask()) {
+            if (atsApi.getAttributeResolver().getAttributeCount(ted.getTask(),
+               AtsAttributeTypes.TleReviewedDate) == 1) {
+               return "Reviewed";
+            }
          }
          return "";
       } else if (xCol.equals(TaskEstFactory.Attachments_Col)) {

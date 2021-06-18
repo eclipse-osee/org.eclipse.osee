@@ -216,8 +216,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XHyperlinkFeatureDam(name);
       } else if (widgetName.equals(XDateWithValidateDam.WIDGET_ID)) {
          return new XDateWithValidateDam(name);
-      } else if (widgetName.equals(XPointsWidget.WIDGET_ID)) {
-         return new XPointsWidget();
+      } else if (widgetName.equals(XEstimatedPointsWidget.WIDGET_ID)) {
+         return new XEstimatedPointsWidget();
       } else if (widgetName.equals(XTleReviewedWidget.WIDGET_ID)) {
          return new XTleReviewedWidget();
       }

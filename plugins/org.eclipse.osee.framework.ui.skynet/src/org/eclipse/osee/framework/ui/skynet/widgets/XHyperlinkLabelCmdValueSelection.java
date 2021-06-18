@@ -34,8 +34,8 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
 
    Label valueLabel;
    Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
-   private final boolean supportClear;
-   private Integer truncateValueLength = null;
+   protected boolean supportClear;
+   protected Integer truncateValueLength = null;
 
    public XHyperlinkLabelCmdValueSelection(String label) {
       this(label, false);
@@ -214,4 +214,5 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
          clearHyperLinkLabel.setEnabled(true);
       }
    }
+
 }

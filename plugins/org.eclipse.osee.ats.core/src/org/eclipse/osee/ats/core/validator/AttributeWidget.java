@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 /**
  * @author Donald G. Dunne
  */
-public class SignAndDateWidget {
+public class AttributeWidget {
    private String widgetName;
    private List<AttributeTypeToken> attrTypes = new ArrayList<>();
 
-   public SignAndDateWidget(String widgetName, AttributeTypeToken... attrTypes) {
+   public AttributeWidget(String widgetName, AttributeTypeToken... attrTypes) {
       this.widgetName = widgetName;
       for (AttributeTypeToken type : attrTypes) {
          this.attrTypes.add(type);

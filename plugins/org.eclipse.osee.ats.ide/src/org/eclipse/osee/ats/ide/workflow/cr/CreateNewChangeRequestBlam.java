@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.workflow.cr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -184,10 +185,12 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
          changeWidget = (XCombo) xWidget;
+         changeWidget.setDataStrings(Arrays.asList("Improvement", "Problem"));
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XCombo) xWidget;
       } else if (xWidget.getLabel().equals(PROGRAM)) {
          XCombo programCombo = (XCombo) xWidget;
+         programCombo.setToolTip("Selection if multiple Change Request programs exist");
          List<String> aiStrs = new ArrayList<String>();
          for (IAtsActionableItem ai : getProgramCrAis()) {
             aiStrs.add(ai.getName());
@@ -195,6 +198,9 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          programCombo.setDataStrings(aiStrs);
          if (aiStrs.size() == 1) {
             programCombo.getComboBox().select(1);
+         }
+         if (aiStrs.size() == 1) {
+            programCombo.setEditable(false);
          }
          programCombo.getLabelWidget().addMouseListener(new MouseAdapter() {
 
@@ -239,6 +245,11 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    @Override
    public String getTabTitle() {
       return "Change Request";
+   }
+
+   @Override
+   public String getTitle() {
+      return getName();
    }
 
    @Override

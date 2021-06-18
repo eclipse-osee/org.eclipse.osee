@@ -59,7 +59,7 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
             new WidgetDefinition(Description, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
             new WidgetDefinition(Assumptions, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition("Estimated Points", "XPointsWidget", AUTO_SAVE), //
+               new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
             ), //
             new WidgetDefinition("TLE Reviewed Estimate", AtsAttributeTypes.TleReviewedDate, "XTleReviewedWidget",

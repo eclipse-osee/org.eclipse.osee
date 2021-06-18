@@ -23,28 +23,23 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
+ * Add any xwidgets that need attr type(s) to be valid
+ *
  * @author Donald G. Dunne
  */
-public class AtsXSignAndDateValidator extends AtsXWidgetValidator {
+public class AtsXWidgetAttrValidator extends AtsXWidgetValidator {
 
-   AtsApi atsApi;
-
-   private final List<SignAndDateWidget> widgets = Arrays.asList( //
-      new SignAndDateWidget("XTleReviewedWidget", AtsAttributeTypes.TleReviewedBy, AtsAttributeTypes.TleReviewedDate) //
+   private final List<AttributeWidget> widgets = Arrays.asList( //
+      new AttributeWidget("XTleReviewedWidget", AtsAttributeTypes.TleReviewedBy, AtsAttributeTypes.TleReviewedDate) //
    );
 
-   public AtsXSignAndDateValidator() {
-      atsApi = AtsApiService.get();
-   }
-
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      for (SignAndDateWidget sdWidget : widgets) {
+      for (AttributeWidget sdWidget : widgets) {
          if (sdWidget.getWidgetName().equals(widgetDef.getXWidgetName())) {
             result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
             if (!result.isSuccess()) {

@@ -35,8 +35,10 @@ public class TaskEstFactory extends SkynetXViewerFactory {
    public static XViewerColumn Assignee_Col =
       new XViewerColumn("ats.taskest.assignee", "Assignees", 120, XViewerAlign.Left, true, SortDataType.String, false,
          "Assignee(s) of Estimating task.  Double-click to open task.");
-   public static XViewerColumn Estimated_Points_Col = new XViewerColumn("ats.taskest.est.points", "Est Points", 40,
+   public static XViewerColumn Estimated_Points_Col = new XViewerColumn("ats.taskest.est.points", "Est Points", 70,
       XViewerAlign.Left, true, SortDataType.Float, false, "Double-click to open task.");
+   public static XViewerColumn Tle_Reviewed_Col = new XViewerColumn("ats.taskest.tle.reviewed", "TLE Reviewed", 50,
+      XViewerAlign.Left, true, SortDataType.Boolean, false, "Double-click to open task.");
    public static XViewerColumn Estimated_Completion_Date_Col = new XViewerColumn("ats.taskest.est.completion.date",
       "Est Completion Date", 60, XViewerAlign.Left, true, SortDataType.Date, false, null);
    public static XViewerColumn Description_Col = new XViewerColumn("ats.taskest.description", "Description", 120,
@@ -50,7 +52,7 @@ public class TaskEstFactory extends SkynetXViewerFactory {
 
    public TaskEstFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
-      registerColumns(Check_Col, Name_Col, Status_Col, Assignee_Col, Estimated_Points_Col,
+      registerColumns(Check_Col, Name_Col, Status_Col, Assignee_Col, Estimated_Points_Col, Tle_Reviewed_Col,
          Estimated_Completion_Date_Col, Description_Col, Assumptions_Col, Notes_Col, Attachments_Col);
    }
 

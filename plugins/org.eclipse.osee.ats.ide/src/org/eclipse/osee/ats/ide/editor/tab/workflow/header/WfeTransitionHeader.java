@@ -281,10 +281,12 @@ public class WfeTransitionHeader extends Composite {
          @Override
          public void done(IJobChangeEvent event) {
             TransitionResults results = operation.getResults();
-            results.setAtsApi(AtsApiService.get());
-            if (results.isErrors()) {
-               TransitionResultsUi.reportDialog("Transition Failed", results);
-               AtsUtilClient.logExceptions(results);
+            if (results != null) {
+               results.setAtsApi(AtsApiService.get());
+               if (results.isErrors()) {
+                  TransitionResultsUi.reportDialog("Transition Failed", results);
+                  AtsUtilClient.logExceptions(results);
+               }
             }
             editor.getWorkFlowTab().setLoading(false);
             transitionHeader.refresh();

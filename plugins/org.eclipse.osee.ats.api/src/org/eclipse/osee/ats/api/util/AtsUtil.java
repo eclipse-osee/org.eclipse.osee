@@ -63,7 +63,7 @@ public class AtsUtil {
    }
 
    public static String getActionUrl(String atsIdOrid, AtsApi atsApi) {
-      return getActionUrl(atsIdOrid, ATS_DEFAULT_ACTION_URL, atsApi);
+      return getActionUrl(atsIdOrid, "", atsApi);
    }
 
    public static String getActionUrl(String atsIdOrid, String defaultUrl, AtsApi atsApi) {
@@ -73,7 +73,11 @@ public class AtsUtil {
    }
 
    public static String getBaseActionUiUrl(String defaultUrl, AtsApi atsApi) {
-      return atsApi.getConfigValue(AtsUtil.ATS_CONFIG_ACTION_URL_KEY, defaultUrl);
+      String configUrl = atsApi.getConfigValue(AtsUtil.ATS_CONFIG_ACTION_URL_KEY, defaultUrl);
+      if (Strings.isInValid(configUrl)) {
+         configUrl = System.getProperty("osee.application.server") + ATS_DEFAULT_ACTION_URL;
+      }
+      return configUrl;
    }
 
    public static String resolveAjaxToBaseApplicationServer(String html, AtsApi atsApi) {
