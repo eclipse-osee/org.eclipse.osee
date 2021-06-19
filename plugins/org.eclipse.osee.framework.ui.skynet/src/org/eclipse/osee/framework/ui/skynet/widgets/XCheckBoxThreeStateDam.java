@@ -92,7 +92,7 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements Attri
                } else {
                   comment = "XCheckDam Auto-Save";
                }
-               getArtifact().persist(comment);
+               getArtifact().persistInThread(comment);
             }
          }
       } else {

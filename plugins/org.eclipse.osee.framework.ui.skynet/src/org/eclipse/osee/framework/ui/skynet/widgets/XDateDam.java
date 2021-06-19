@@ -58,7 +58,7 @@ public class XDateDam extends XDate implements AttributeWidget, EditorWidget {
                      } else {
                         comment = "XDateDam Auto-Save";
                      }
-                     getArtifact().persist(comment);
+                     getArtifact().persistInThread(comment);
                   }
                }
             }

@@ -126,7 +126,7 @@ public class XIntegerDam extends XInteger implements AttributeWidget, EditorWidg
                      } else {
                         comment = "XIntegerDam Auto-Save";
                      }
-                     getArtifact().persist(comment);
+                     getArtifact().persistInThread(comment);
                   }
                }
             }

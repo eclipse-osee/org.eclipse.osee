@@ -68,7 +68,7 @@ public class XComboEnumDam extends XCombo implements AttributeWidget, EditorWidg
                      } else {
                         comment = "XComboEnumDam Auto-Save";
                      }
-                     getArtifact().persist(comment);
+                     getArtifact().persistInThread(comment);
                   }
                }
             }

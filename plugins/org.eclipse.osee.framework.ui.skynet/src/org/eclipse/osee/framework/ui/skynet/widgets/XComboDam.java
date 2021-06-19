@@ -63,7 +63,7 @@ public class XComboDam extends XCombo implements AttributeWidget, EditorWidget {
                      } else {
                         comment = "XComboDam Auto-Save";
                      }
-                     getArtifact().persist(comment);
+                     getArtifact().persistInThread(comment);
                   }
                }
             }

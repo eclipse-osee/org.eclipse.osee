@@ -149,7 +149,7 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
                      } else {
                         comment = "XTextDam Auto-Save";
                      }
-                     getArtifact().persist(comment);
+                     getArtifact().persistInThread(comment);
                   }
                }
             }

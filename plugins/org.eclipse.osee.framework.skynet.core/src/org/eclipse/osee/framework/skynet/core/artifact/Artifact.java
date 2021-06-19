@@ -1276,6 +1276,18 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return transaction.execute();
    }
 
+   public void persistInThread(String comment) {
+      Thread persistThread = new Thread("Persist: [" + comment + "]") {
+
+         @Override
+         public void run() {
+            persist(comment);
+         }
+
+      };
+      persistThread.start();
+   }
+
    /**
     * <b>THIS ASSUMES YOU ARE MAINTAINING YOUR OWN TRANSACTION</b> vs {@link #SkynetTransaction.persist(String)} where
     * silently you are provided a transaction.

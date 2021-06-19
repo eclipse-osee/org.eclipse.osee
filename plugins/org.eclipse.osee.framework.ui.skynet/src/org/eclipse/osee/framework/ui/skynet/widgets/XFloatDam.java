@@ -120,7 +120,7 @@ public class XFloatDam extends XFloat implements AttributeWidget {
                      } else {
                         comment = "XFloatDam Auto-Save";
                      }
-                     getArtifact().persist(comment);
+                     getArtifact().persistInThread(comment);
                   }
                }
             }
