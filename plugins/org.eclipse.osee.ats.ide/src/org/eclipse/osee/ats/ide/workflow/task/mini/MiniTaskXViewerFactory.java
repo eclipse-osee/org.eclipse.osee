@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.ide.column.AssumptionsColumn;
 import org.eclipse.osee.ats.ide.column.AtsColumnIdUi;
 import org.eclipse.osee.ats.ide.column.DescriptionColumn;
 import org.eclipse.osee.ats.ide.column.PointsColumn;
-import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.column.TleReviewedColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -62,24 +61,23 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       cols.add(getAttributeConfigColumn(AtsColumnToken.TitleColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.StateColumn));
       cols.add(AssigneeColumnUI.getInstance());
-      cols.add(PointsColumn.instance);
+      PointsColumn ptsCol = PointsColumn.instance.copy();
+      ptsCol.setShow(true);
+      ptsCol.setWidth(30);
+      cols.add(ptsCol);
       cols.add(TleReviewedColumn.instance);
-      cols.add(DescriptionColumn.instance);
+      DescriptionColumn descCol = DescriptionColumn.instance.copy();
+      descCol.setShow(true);
+      cols.add(descCol);
       cols.add(AssumptionsColumn.instance);
       cols.add(getAttributeConfigColumn(AtsColumnToken.NotesColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
-      cols.add(TargetedVersionColumnUI.getInstance());
 
       for (XViewerColumn col : cols) {
-         col.setShow(true);
          if (col.getName().equals(AtsColumnToken.TitleColumn.getName())) {
             col.setWidth(250);
          } else if (col.getName().equals(AtsColumnToken.NotesColumn.getName())) {
             col.setWidth(150);
-         } else if (col.getName().equals(AtsColumnToken.TargtedVersionColumn.getName())) {
-            col.setWidth(120);
-         } else if (col.getName().equals("Points")) {
-            col.setWidth(30);
          }
       }
       for (XViewerColumn col : WorldXViewerFactory.getWorldViewColumns()) {

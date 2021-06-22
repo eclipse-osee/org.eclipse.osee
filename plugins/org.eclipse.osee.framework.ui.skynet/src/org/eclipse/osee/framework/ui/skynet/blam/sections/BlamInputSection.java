@@ -101,6 +101,7 @@ public class BlamInputSection extends BaseBlamSection {
          DefaultXWidgetOptionResolver optionResolver = new DefaultXWidgetOptionResolver();
          widgetPage = new XWidgetPage(layoutDatas, optionResolver, getAbstractBlam());
          widgetPage.createBody(getManagedForm(), parent, null, null, true);
+         abstractBlam.createWidgets(parent, getManagedForm(), getSection());
          setLabelFonts(parent, FontManager.getCourierNew12Bold());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

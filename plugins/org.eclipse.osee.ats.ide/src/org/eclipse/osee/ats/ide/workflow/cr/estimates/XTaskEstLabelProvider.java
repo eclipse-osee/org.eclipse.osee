@@ -83,7 +83,8 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             return "";
          }
       }
-      return super.getColumnText(element, columnIndex);
+      String str = super.getColumnText(element, columnIndex);
+      return str;
    }
 
    @Override

@@ -88,12 +88,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class ModifyActionableItemsBlam extends AbstractBlam {
 
-   private final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
+   protected final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private TeamWorkFlowArtifact defaultTeamWorkflow;
    private FilteredCheckboxTree wfTree;
    private FilteredCheckboxTree otherTree;
    private FilteredCheckboxTree newTree;
-   private XListDropViewer dropViewer;
+   protected XListDropViewer dropViewer;
    private XText resultsText;
    private Set<IAtsActionableItem> currAIsForAllWfs;
    private List<IAtsActionableItem> currWorkflowDesiredAIs;
@@ -104,10 +104,14 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       // do nothing
    }
 
+   protected String getDropLabelStr() {
+      return TEAM_WORKFLOW;
+   }
+
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (xWidget.getLabel().equals(TEAM_WORKFLOW)) {
+      if (xWidget.getLabel().equals(getDropLabelStr())) {
          createTreeViewers(xWidget.getControl().getParent());
 
          dropViewer = (XListDropViewer) xWidget;
@@ -125,35 +129,43 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    private void createTreeViewers(Composite parent) {
 
       Composite treeComp = new Composite(parent, SWT.BORDER);
-      treeComp.setLayout(new GridLayout(3, true));
+      treeComp.setLayout(new GridLayout(getLayoutColumns(), true));
       GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
       data.heightHint = 300;
       treeComp.setLayoutData(data);
 
-      Label wfLabel = new Label(treeComp, SWT.BOLD | SWT.CENTER);
-      wfLabel.setText("This Workflow's Actionable Items\n(select to add to this workflow)");
+      if (displayWfTree()) {
+         Label wfLabel = new Label(treeComp, SWT.BOLD | SWT.CENTER);
+         wfLabel.setText("This Workflow's Actionable Items\n(select to add to this workflow)");
+      }
 
-      Label otherLabel = new Label(treeComp, SWT.BOLD | SWT.CENTER);
-      otherLabel.setText("Actionable Items in other Team Workflows\n(readonly)");
+      if (displayOtherTree()) {
+         Label otherLabel = new Label(treeComp, SWT.BOLD | SWT.CENTER);
+         otherLabel.setText("Actionable Items in other Team Workflows\n(readonly)");
+      }
 
       Label newLabel = new Label(treeComp, SWT.BOLD | SWT.CENTER);
       newLabel.setText("New Workflows\n(select to create new workflows)");
 
-      wfTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-      wfAiProvider =
-         new WorkflowsActiveAisContentProvider(defaultTeamWorkflow == null ? null : defaultTeamWorkflow, Active.Active);
-      wfTree.getViewer().setContentProvider(wfAiProvider);
-      wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
-      wfTree.getViewer().setComparator(new AtsObjectNameSorter());
-      wfTree.setLayoutData(data);
-      wfTree.getViewer().addPostSelectionChangedListener(new ModificationListener());
+      if (displayWfTree()) {
+         wfTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         wfAiProvider = new WorkflowsActiveAisContentProvider(defaultTeamWorkflow == null ? null : defaultTeamWorkflow,
+            Active.Active);
+         wfTree.getViewer().setContentProvider(wfAiProvider);
+         wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
+         wfTree.getViewer().setComparator(new AtsObjectNameSorter());
+         wfTree.setLayoutData(data);
+         wfTree.getViewer().addPostSelectionChangedListener(new ModificationListener());
+      }
 
-      otherTree = new FilteredCheckboxTree(treeComp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-      otherTree.getViewer().setContentProvider(new ArrayTreeContentProvider());
-      otherTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
-      otherTree.getViewer().setComparator(new AtsObjectNameSorter());
-      otherTree.setLayoutData(data);
-      otherTree.setEnabled(false);
+      if (displayOtherTree()) {
+         otherTree = new FilteredCheckboxTree(treeComp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         otherTree.getViewer().setContentProvider(new ArrayTreeContentProvider());
+         otherTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
+         otherTree.getViewer().setComparator(new AtsObjectNameSorter());
+         otherTree.setLayoutData(data);
+         otherTree.setEnabled(false);
+      }
 
       newTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       newTree.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
@@ -176,7 +188,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       buttonComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       Button executeButton = new Button(buttonComp, SWT.PUSH | SWT.LEFT);
-      executeButton.setText("Run");
+      executeButton.setText(getRunText());
       executeButton.setImage(ImageManager.getImage(FrameworkImage.RUN_EXC));
       executeButton.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
       executeButton.addListener(SWT.MouseUp, new Listener() {
@@ -188,28 +200,35 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       });
 
-      Button advancedDuplicate = new Button(buttonComp, SWT.PUSH | SWT.RIGHT);
-      advancedDuplicate.setText("Open Advanced Duplicate Workflow");
-      advancedDuplicate.setImage(ImageManager.getImage(FrameworkImage.DUPLICATE));
-      advancedDuplicate.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
-      advancedDuplicate.addListener(SWT.MouseUp, new Listener() {
+      if (displayDuplicateButton()) {
+         Button advancedDuplicate = new Button(buttonComp, SWT.PUSH | SWT.RIGHT);
+         advancedDuplicate.setText("Open Advanced Duplicate Workflow");
+         advancedDuplicate.setImage(ImageManager.getImage(FrameworkImage.DUPLICATE));
+         advancedDuplicate.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
+         advancedDuplicate.addListener(SWT.MouseUp, new Listener() {
 
-         @Override
-         public void handleEvent(Event event) {
-            TeamWorkFlowArtifact teamWf = getDroppedTeamWf();
-            List<TeamWorkFlowArtifact> teams = new ArrayList<>();
-            if (teamWf != null) {
-               teams.add(teamWf);
+            @Override
+            public void handleEvent(Event event) {
+               TeamWorkFlowArtifact teamWf = getDroppedTeamWf();
+               List<TeamWorkFlowArtifact> teams = new ArrayList<>();
+               if (teamWf != null) {
+                  teams.add(teamWf);
+               }
+               new DuplicateWorkflowAction(teams).run();
             }
-            new DuplicateWorkflowAction(teams).run();
-         }
 
-      });
+         });
+      }
 
       if (defaultTeamWorkflow != null) {
          refreshTables(defaultTeamWorkflow);
       }
    }
+
+   protected int getLayoutColumns() {
+      return 3;
+   }
+
    private class ModificationListener implements ISelectionChangedListener {
 
       @Override
@@ -238,19 +257,23 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                clearTables();
             } else {
                try {
-                  fWfAiProvider.setTeamWf(teamWf);
-                  wfTree.getViewer().setInput(teamWf);
-                  Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
-                  wfTree.setInitalChecked(actionableItems);
-
-                  Set<IAtsActionableItem> ais = new HashSet<>();
-                  for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(
-                     teamWf.getParentAction())) {
-                     if (team.notEqual(teamWf)) {
-                        ais.addAll(team.getActionableItems());
-                     }
+                  if (wfTree != null) {
+                     fWfAiProvider.setTeamWf(teamWf);
+                     wfTree.getViewer().setInput(teamWf);
+                     Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
+                     wfTree.setInitalChecked(actionableItems);
                   }
-                  otherTree.getViewer().setInput(ais);
+
+                  if (otherTree != null) {
+                     Set<IAtsActionableItem> ais = new HashSet<>();
+                     for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(
+                        teamWf.getParentAction())) {
+                        if (team.notEqual(teamWf)) {
+                           ais.addAll(team.getActionableItems());
+                        }
+                     }
+                     otherTree.getViewer().setInput(ais);
+                  }
 
                   newTree.getViewer().setInput(
                      AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
@@ -265,9 +288,13 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
    private void clearTables() {
       List<Object> emptyList = Collections.emptyList();
-      wfTree.getViewer().setInput(emptyList);
-      wfTree.clearChecked();
-      otherTree.getViewer().setInput(emptyList);
+      if (wfTree != null) {
+         wfTree.getViewer().setInput(emptyList);
+         wfTree.clearChecked();
+      }
+      if (otherTree != null) {
+         otherTree.getViewer().setInput(emptyList);
+      }
       newTree.getViewer().setInput(emptyList);
       newTree.clearChecked();
    }
@@ -294,12 +321,13 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       }
       try {
          currAIsForAllWfs = new HashSet<>();
-         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(
-            teamWf.getParentAction())) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(teamWf.getParentAction())) {
             currAIsForAllWfs.addAll(team.getActionableItems());
          }
 
-         currWorkflowDesiredAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(wfTree.getChecked());
+         if (wfTree != null) {
+            currWorkflowDesiredAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(wfTree.getChecked());
+         }
 
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(newTree.getChecked());
          AtsUser modifiedBy = AtsApiService.get().getUserService().getCurrentUser();
@@ -428,7 +456,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets>"
          //
-         + "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
+         + "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + getDropLabelStr() + "\" />" +
          //
          "</xWidgets>";
    }
@@ -478,11 +506,17 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    }
 
    public int getWorkflowTreeItemCount() {
-      return wfTree.getViewer().getTree().getItemCount();
+      if (wfTree != null) {
+         return wfTree.getViewer().getTree().getItemCount();
+      }
+      return 0;
    }
 
    public int getOtherTreeItemCount() {
-      return otherTree.getViewer().getTree().getItemCount();
+      if (otherTree != null) {
+         return otherTree.getViewer().getTree().getItemCount();
+      }
+      return 0;
    }
 
    public int getNewTreeItemCount() {
@@ -492,6 +526,18 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    @Override
    public Collection<IUserGroupArtifactToken> getUserGroups() {
       return Collections.singleton(CoreUserGroups.Everyone);
+   }
+
+   protected boolean displayWfTree() {
+      return true;
+   }
+
+   protected boolean displayOtherTree() {
+      return true;
+   }
+
+   protected boolean displayDuplicateButton() {
+      return true;
    }
 
 }

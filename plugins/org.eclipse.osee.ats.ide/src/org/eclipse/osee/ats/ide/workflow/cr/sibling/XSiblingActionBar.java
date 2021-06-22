@@ -15,10 +15,15 @@ package org.eclipse.osee.ats.ide.workflow.cr.sibling;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.operation.CreateSiblingWorkflowBlam;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.operation.CreateSiblingOffTaskEstOperation;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -37,12 +42,12 @@ import org.eclipse.swt.widgets.ToolItem;
 public class XSiblingActionBar {
 
    private Label extraInfoLabel;
-   private ToolItem refreshItem;
-   private ToolItem addItem;
    private final XSiblingWorldWidget siblingWorldWidget;
+   private final IAtsTeamWorkflow teamWf;
 
    public XSiblingActionBar(XSiblingWorldWidget siblingWorldWidget) {
       this.siblingWorldWidget = siblingWorldWidget;
+      this.teamWf = siblingWorldWidget.getTeamWf();
    }
 
    public ToolBar createTaskActionBar(Composite parent) {
@@ -51,15 +56,7 @@ public class XSiblingActionBar {
       bComp.setLayout(new GridLayout(2, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
-
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      siblingWorldWidget.setExtraInfoLabel(extraInfoLabel);
+      createExtraLabel(bComp);
 
       Composite rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
@@ -69,10 +66,35 @@ public class XSiblingActionBar {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
 
-      addItem = new ToolItem(toolBar, SWT.PUSH);
-      addItem.setImage(ImageManager.getImage(AtsImage.GLOBE));
-      addItem.setToolTipText("Open in ATS World Editor");
-      addItem.addSelectionListener(new SelectionAdapter() {
+      ToolItem createSiblingOffTaskEst = new ToolItem(toolBar, SWT.PUSH);
+      createSiblingOffTaskEst.setImage(ImageManager.getImage(AtsImage.WORKFLOW));
+      createSiblingOffTaskEst.setText("Create Sibling Workflows off Estimating Tasks");
+      createSiblingOffTaskEst.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            CreateSiblingOffTaskEstOperation op = new CreateSiblingOffTaskEstOperation(teamWf);
+            op.run();
+         }
+
+      });
+
+      ToolItem createSibling = new ToolItem(toolBar, SWT.PUSH);
+      createSibling.setImage(ImageManager.getImage(AtsImage.WORKFLOW));
+      createSibling.setText("Create Sibling Workflow(s)");
+      createSibling.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            openCreateSiblingWorkflowBlam(teamWf);
+         }
+
+      });
+
+      new ToolItem(toolBar, SWT.SEPARATOR);
+
+      ToolItem openInWorld = new ToolItem(toolBar, SWT.PUSH);
+      openInWorld.setImage(ImageManager.getImage(AtsImage.NEW_ACTION));
+      openInWorld.setToolTipText("Open in ATS World Editor");
+      openInWorld.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             Collection<IAtsWorkItem> items = siblingWorldWidget.getItems();
@@ -83,10 +105,10 @@ public class XSiblingActionBar {
 
       });
 
-      addItem = new ToolItem(toolBar, SWT.PUSH);
-      addItem.setImage(ImageManager.getImage(AtsImage.GLOBE_SELECT));
-      addItem.setToolTipText("Open Selected in ATS World Editor");
-      addItem.addSelectionListener(new SelectionAdapter() {
+      ToolItem openSelectedInWorld = new ToolItem(toolBar, SWT.PUSH);
+      openSelectedInWorld.setImage(ImageManager.getImage(AtsImage.GLOBE_SELECT));
+      openSelectedInWorld.setToolTipText("Open Selected in ATS World Editor");
+      openSelectedInWorld.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             Collection<IAtsWorkItem> items =
@@ -100,7 +122,7 @@ public class XSiblingActionBar {
 
       new ToolItem(toolBar, SWT.SEPARATOR);
 
-      refreshItem = new ToolItem(toolBar, SWT.PUSH);
+      ToolItem refreshItem = new ToolItem(toolBar, SWT.PUSH);
       refreshItem.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       refreshItem.setToolTipText("Refresh");
       refreshItem.addSelectionListener(new SelectionAdapter() {
@@ -113,6 +135,24 @@ public class XSiblingActionBar {
       new ToolItem(toolBar, SWT.SEPARATOR);
 
       return toolBar;
+   }
+
+   private void createExtraLabel(Composite bComp) {
+      Composite leftComp = new Composite(bComp, SWT.NONE);
+      leftComp.setLayout(new GridLayout());
+      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+
+      extraInfoLabel = new Label(leftComp, SWT.NONE);
+      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      extraInfoLabel.setText("");
+      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      siblingWorldWidget.setExtraInfoLabel(extraInfoLabel);
+   }
+
+   public static void openCreateSiblingWorkflowBlam(IAtsTeamWorkflow teamWf) {
+      CreateSiblingWorkflowBlam blamOperation = new CreateSiblingWorkflowBlam();
+      blamOperation.setDefaultTeamWorkflow((TeamWorkFlowArtifact) teamWf);
+      BlamEditor.edit(blamOperation, false);
    }
 
 }

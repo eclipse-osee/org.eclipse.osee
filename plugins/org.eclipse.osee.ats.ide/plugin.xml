@@ -221,6 +221,14 @@
       </Operation>
    </extension>
    <extension
+         id="CreateSiblingWorkflowBlam"
+         name="CreateSiblingWorkflowBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.operation.CreateSiblingWorkflowBlam">
+      </Operation>
+   </extension>
+   <extension
          id="ModifyActionableItemsBlam"
          name="ModifyActionableItemsBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -349,6 +357,13 @@
          id="DetailedTestStatus" name="DetailedTestStatus"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation className="org.eclipse.osee.ats.ide.operation.DetailedTestStatusBlam"/>
+   </extension>
+   <extension
+         name="CreateNewActionBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionBlam">
+      </Operation>
    </extension>
    <extension
          id="CreateWorkingBranchFromTx"

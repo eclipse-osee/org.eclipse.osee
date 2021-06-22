@@ -336,7 +336,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    @Override
-   public void wizardCompleted(ActionResult actionResult, NewActionWizard wizard, IAtsChangeSet changes) {
+   public void wizardCompleted(ActionResult actionResult, IAtsChangeSet changes) {
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
 
@@ -481,8 +481,6 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    @Override
-   public String getName() {
-      return "MSA Teams";
-   }
+   public abstract String getName();
 
 }

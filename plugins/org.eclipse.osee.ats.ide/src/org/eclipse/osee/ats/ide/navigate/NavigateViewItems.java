@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.ide.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionByIdAction;
 import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionsAction;
+import org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionBlam;
 import org.eclipse.osee.ats.ide.agile.navigate.CreateNewAgileBacklog;
 import org.eclipse.osee.ats.ide.agile.navigate.CreateNewAgileFeatureGroup;
 import org.eclipse.osee.ats.ide.agile.navigate.CreateNewAgileSprint;
@@ -209,7 +210,18 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          createOpenViewsSection(item, items);
 
          time2.start("NVI - addAtsSectionChildren - NewAction");
+         // New Action dialog and BLAM
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
+            for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
+               if (blam instanceof CreateNewActionBlam) {
+                  items.add(new XNavigateItemBlam(item, blam, AtsImage.NEW_ACTION));
+                  break;
+               }
+            }
+         }
+
+         // New Change Request
          for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
             if (blam instanceof CreateNewChangeRequestBlam) {
                boolean isOverrideAccess = blam.isOverrideAccess();

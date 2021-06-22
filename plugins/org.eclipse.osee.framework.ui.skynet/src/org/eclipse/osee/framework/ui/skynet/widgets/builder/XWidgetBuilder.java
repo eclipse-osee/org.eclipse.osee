@@ -192,4 +192,10 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXActionableItem() {
+      newXWidget();
+      currItem.setXWidgetName("XActionableItemWidget");
+      return this;
+   }
+
 }

@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
@@ -107,7 +108,32 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    }
 
    public static void edit(AbstractBlam blamOperation) {
-      BlamEditor.edit(new BlamEditorInput(blamOperation));
+      BlamEditor.edit(blamOperation, true);
+   }
+
+   public static void edit(AbstractBlam blamOperation, boolean restoreOnRestart) {
+      if (restoreOnRestart) {
+         BlamEditor.edit(new BlamEditorInput(blamOperation));
+      } else {
+         BlamEditor.edit(new NonPersistableBlamEditorInput(blamOperation));
+      }
+   }
+   private static class NonPersistableBlamEditorInput extends BlamEditorInput {
+
+      public NonPersistableBlamEditorInput(AbstractBlam blamOperation) {
+         super(blamOperation);
+      }
+
+      @Override
+      public <T> T getAdapter(Class<T> adapter) {
+         return null;
+      }
+
+      @Override
+      public IPersistableElement getPersistable() {
+         return null;
+      }
+
    }
 
    private final class BlamEditorExecutionAdapter extends JobChangeAdapter {

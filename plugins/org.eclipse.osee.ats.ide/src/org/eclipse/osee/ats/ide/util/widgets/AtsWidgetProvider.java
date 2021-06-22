@@ -223,6 +223,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XTleReviewedWidget();
       } else if (widgetName.equals(XSiblingWorldWidget.WIDGET_ID)) {
          return new XSiblingWorldWidget();
+      } else if (widgetName.equals(XActionableItemWidget.WIDGET_ID)) {
+         return new XActionableItemWidget();
       }
 
       return toReturn;

@@ -58,7 +58,7 @@ public interface IAtsWizardItem {
     * Callback with created action upon completion and creation of the action and it's workflows.
     * hasWizardXWidgetExtenstions will be called to determine if this method should be called.
     */
-   void wizardCompleted(ActionResult actionResult, NewActionWizard wizard, IAtsChangeSet changes);
+   void wizardCompleted(ActionResult actionResult, IAtsChangeSet changes);
 
    /**
     * Validation that the data entered is valid and the wizard can be finished. This will be called after every

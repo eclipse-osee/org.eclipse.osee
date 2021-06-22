@@ -69,8 +69,10 @@ public class ModifyActionableItems {
       Conditions.checkNotNull(results, "results");
       Conditions.checkNotNull(teamWf, "teamWf");
       Conditions.checkNotNull(modifiedBy, "modifiedBy");
-      // Determine if changes to this workflow's actionable items
-      processAisAddedRemovedFromSelectedTeamWf();
+      if (currWorkflowDesiredAIs != null) {
+         // Determine if changes to this workflow's actionable items
+         processAisAddedRemovedFromSelectedTeamWf();
+      }
       // Determine what workflows to add
       processAisAddedForNewWorkflows();
    }
@@ -81,15 +83,19 @@ public class ModifyActionableItems {
       // determine AIs that already have a team workflow associated
       for (IAtsActionableItem checkAi : newAIs) {
          if (!checkAi.isActionable()) {
-            results.errorf("Actionable Item [%s] is not actionable; select item lower in hierarchy", checkAi);
+            results.errorf("Actionable Item [%s] is not actionable; select item lower in hierarchy\n", checkAi);
          } else if (!checkAi.isAllowUserActionCreation()) {
-            results.errorf("Actionable Item [%s] is not actionable by users; select another item", checkAi);
+            results.errorf("Actionable Item [%s] is not actionable by users; select another item\n", checkAi);
          } else {
             if (currAIsForAllWfs.contains(checkAi)) {
                duplicatedAIs.add(checkAi);
             }
             allAIsForNewWorkflow.add(checkAi);
          }
+      }
+      if (allAIsForNewWorkflow.isEmpty()) {
+         results.errorf("No Actionable Items Selected");
+         return;
       }
       Date createdDate = new Date();
       // process new and duplicated workflows

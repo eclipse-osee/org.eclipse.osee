@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -166,13 +165,6 @@ public class NewActionWizard extends Wizard implements INewWizard {
       if (page3 != null) {
          page3.notifyAtsWizardItemExtensions(actionResult, changes);
       }
-   }
-
-   public XWidget getExtendedXWidget(String attrName) {
-      if (page3 == null) {
-         return null;
-      }
-      return page3.getXWidget(attrName);
    }
 
    public Result isActionValid() {

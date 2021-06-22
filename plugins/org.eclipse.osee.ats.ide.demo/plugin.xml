@@ -45,4 +45,10 @@
             TraceUnitResourceLocator="org.eclipse.osee.ats.ide.demo.traceability.DemoTraceUnitResourceLocator">
       </TraceUnitHandler>
    </extension>
+   <extension
+         point="org.eclipse.osee.ats.ide.AtsWizardItem">
+      <AtsWizardItem
+            classname="org.eclipse.osee.ats.ide.demo.workflow.DemoPlWizardItem">
+      </AtsWizardItem>
+   </extension>
 </plugin>

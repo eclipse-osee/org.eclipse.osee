@@ -12,16 +12,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr.sibling;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.world.mini.XMiniWorldWidget;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 
@@ -30,17 +41,26 @@ import org.eclipse.swt.widgets.ToolBar;
  *
  * @author Donald G. Dunne
  */
-public class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWidget {
+public class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWidget, IArtifactEventListener {
 
    public static final String WIDGET_ID = XSiblingWorldWidget.class.getSimpleName();
    private IAtsTeamWorkflow teamWf;
 
    public XSiblingWorldWidget() {
       super("Sibling Workflows", new XSiblingXViewerFactory());
+      OseeEventManager.addListener(this);
    }
 
    @Override
    public ToolBar createActionBar(Composite tableComp) {
+      final XSiblingWorldWidget fWidget = this;
+      tableComp.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            OseeEventManager.removeListener(fWidget);
+         }
+      });
       XSiblingActionBar actionBar = new XSiblingActionBar(this);
       ToolBar toolBar = actionBar.createTaskActionBar(tableComp);
       return toolBar;
@@ -87,6 +107,50 @@ public class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWid
    @Override
    public Pair<Integer, String> getExtraInfoString() {
       return new Pair<Integer, String>(SWT.COLOR_BLACK, "Edit (most) fields here or double-click to open.");
+   }
+
+   @Override
+   public void refresh() {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            superRefresh();
+         }
+      });
+   }
+
+   private void superRefresh() {
+      super.refresh();
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return Arrays.asList(AtsUtilClient.getAtsBranchFilter());
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      try {
+         // Handle case where new sibling created/deleted
+         if (artifactEvent.isHasEvent((Artifact) teamWf.getParentAction().getStoreObject())) {
+            refresh();
+            return;
+         }
+         // Handle case where sibling changed
+         for (IAtsTeamWorkflow siblingWf : atsApi.getActionService().getSiblingTeamWorkflows(teamWf)) {
+            if (artifactEvent.isHasEvent((Artifact) siblingWf.getStoreObject())) {
+               refresh();
+               return;
+            }
+            if (artifactEvent.isReloaded((Artifact) siblingWf.getStoreObject())) {
+               refresh();
+               return;
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
    }
 
 }

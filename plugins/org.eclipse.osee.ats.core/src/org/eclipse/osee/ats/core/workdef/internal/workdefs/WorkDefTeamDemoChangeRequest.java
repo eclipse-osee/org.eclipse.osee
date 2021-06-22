@@ -92,8 +92,8 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam", HORIZONTAL_LABEL, AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XDateWithValidateDam", AUTO_SAVE), //
+            new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget"), //
             new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget") //
          );
 

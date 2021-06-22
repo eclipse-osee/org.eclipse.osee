@@ -65,7 +65,7 @@ public class NewActionPage3 extends WizardPage {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
             if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
-               item.wizardCompleted(actionResult, wizard, changes);
+               item.wizardCompleted(actionResult, changes);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

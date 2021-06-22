@@ -48,6 +48,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.Section;
 import org.xml.sax.SAXException;
 
 /**
@@ -271,6 +274,13 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public boolean isOverrideAccess() {
       return false;
+   }
+
+   /**
+    * Provided for BLAMs to add widgets after the defined widgets are drawn
+    */
+   public void createWidgets(Composite parent, IManagedForm iManagedForm, Section section) {
+      // do nothing
    }
 
 }

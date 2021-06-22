@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateOption;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
@@ -42,6 +43,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingActionBar;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -78,6 +80,7 @@ public class WfeTransitionHeader extends Composite {
    private final boolean isEditable;
    private final Hyperlink transitionLabelLink;
    private final Hyperlink stateLabelLink;
+   private Hyperlink createSiblingLink;
 
    public WfeTransitionHeader(Composite parent, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
@@ -144,6 +147,21 @@ public class WfeTransitionHeader extends Composite {
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       transitionAssigneesLabel.setToolTipText("Select to change assignee(s) upon transition to next state.");
 
+      if (workItem.isTeamWorkflow()) {
+         createSiblingLink = editor.getToolkit().createHyperlink(this, "Create Sibling Workflow(s)", SWT.NONE);
+         createSiblingLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         createSiblingLink.setToolTipText("Create new Team Workflows off same Action");
+         createSiblingLink.addHyperlinkListener(new HyperlinkAdapter() {
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               try {
+                  XSiblingActionBar.openCreateSiblingWorkflowBlam((IAtsTeamWorkflow) workItem);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+         });
+      }
    }
 
    public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {

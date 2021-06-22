@@ -28,6 +28,7 @@ import org.osgi.service.event.EventHandler;
  */
 public class Activator extends OseeActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.ide";
+   public static boolean workbenchListenerStarted = false;
 
    @Override
    public void start(final BundleContext context) {
