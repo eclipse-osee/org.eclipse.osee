@@ -82,7 +82,6 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
             treeExpandCollapseEvent = true;
          }
       });
-
    }
 
    @Override

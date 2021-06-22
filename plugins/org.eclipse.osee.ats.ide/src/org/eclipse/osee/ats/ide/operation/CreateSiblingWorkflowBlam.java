@@ -14,21 +14,30 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.util.Collection;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam {
+public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam implements IsEnabled {
+
+   @Override
+   protected void createTreeViewers(Composite parent) {
+      super.createTreeViewers(parent);
+      newTree.setEnabledChecker(this);
+   }
 
    @Override
    protected int getLayoutColumns() {
@@ -107,4 +116,13 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam {
          dropViewer.getTableViewer().getTable().setEnabled(false);
       }
    }
+
+   @Override
+   public boolean isEnabled(Object obj) {
+      if (obj instanceof IAtsActionableItem) {
+         return ((IAtsActionableItem) obj).isActive() && ((IAtsActionableItem) obj).isActionable();
+      }
+      return false;
+   }
+
 }
