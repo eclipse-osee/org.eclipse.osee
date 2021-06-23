@@ -33,6 +33,7 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    private String userId;
    private String email;
+   private String phone;
    private List<String> loginIds = new ArrayList<>();
    private List<String> savedSearches = new ArrayList<>();
    private List<ArtifactId> userGroups = new ArrayList<>();
@@ -67,6 +68,14 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    public void setEmail(String email) {
       this.email = email;
+   }
+
+   public String getPhone() {
+      return phone;
+   }
+
+   public void setPhone(String phone) {
+      this.phone = phone;
    }
 
    @Override

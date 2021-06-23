@@ -98,7 +98,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
       List<UserToken> users = new ArrayList<UserToken>();
       for (ArtifactReadable userArt : getArtifact().getRelated(CoreRelationTypes.Users_User).getList()) {
          String name = userArt.getName();
-         String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email);
+         String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email, "");
          String userId = userArt.getSoleAttributeValue(CoreAttributeTypes.UserId);
          boolean active = userArt.getSoleAttributeValue(CoreAttributeTypes.Active);
          List<IUserGroupArtifactToken> roles = new ArrayList<IUserGroupArtifactToken>();
