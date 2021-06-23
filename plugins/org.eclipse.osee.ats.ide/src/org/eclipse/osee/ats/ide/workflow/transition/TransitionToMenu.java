@@ -30,6 +30,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -81,8 +82,7 @@ public class TransitionToMenu {
                }
             }
             try {
-               for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkItemService().getAllToStates(
-                  awa)) {
+               for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkItemService().getAllToStates(awa)) {
                   toStateDefs.add(stateDef);
                   stateNameToStateDef.put(stateDef.getName(), stateDef);
                }
@@ -202,10 +202,12 @@ public class TransitionToMenu {
                      }
                      if (useEntryCancelWidgetDialog) {
                         transitionData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
+                        transitionData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReasonEnum);
                         transitionData.setCancellationReasonDetails(
                            ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
                      } else {
                         transitionData.setCancellationReason(cancelDialog.getEntry());
+                        transitionData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
                      }
                   }
                }
