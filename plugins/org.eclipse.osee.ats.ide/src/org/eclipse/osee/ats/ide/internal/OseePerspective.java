@@ -15,7 +15,10 @@ package org.eclipse.osee.ats.ide.internal;
 
 import org.eclipse.osee.ats.ide.navigate.NavigateView;
 import org.eclipse.osee.ats.ide.walker.ActionWalkerView;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -36,6 +39,19 @@ public class OseePerspective implements IPerspectiveFactory {
 
    @Override
    public void createInitialLayout(final IPageLayout layout) {
+      Thread checkAccess = new Thread(new Runnable() {
+         @Override
+         public void run() {
+            if (!ClientSessionManager.isSessionValid()) {
+               XResultData results = new XResultData();
+               results.error(
+                  "You currently do not have OSEE Account Access.  Please contact your manager or support for assistance.");
+               XResultDataUI.report(results, "Authentication Error");
+            }
+         }
+
+      }, "Check User OSEE Access");
+      checkAccess.start();
       defineActions(layout);
       defineLayout(layout);
    }
