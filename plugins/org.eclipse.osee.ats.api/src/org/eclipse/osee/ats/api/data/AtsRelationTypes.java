@@ -48,6 +48,7 @@ import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_ONE;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 
 /**
@@ -114,7 +115,7 @@ public interface AtsRelationTypes {
    RelationTypeSide CountryToProgram_Country = RelationTypeSide.create(CountryToProgram, SIDE_A);
    RelationTypeSide CountryToProgram_Program = RelationTypeSide.create(CountryToProgram, SIDE_B);
 
-   RelationTypeToken Derive = ats.add(2305843009213694331L, "Derive", ONE_TO_MANY, UNORDERED, TeamWorkflow, "From", TeamWorkflow, "To");
+   RelationTypeToken Derive = ats.add(2305843009213694331L, "Derive", ONE_TO_MANY, UNORDERED, AbstractWorkflowArtifact, "From", AbstractWorkflowArtifact, "To");
    RelationTypeSide Derive_From = RelationTypeSide.create(Derive, SIDE_A);
    RelationTypeSide Derive_To = RelationTypeSide.create(Derive, SIDE_B);
 
@@ -217,6 +218,10 @@ public interface AtsRelationTypes {
    RelationTypeToken TeamDefinitionToWorkPackage = ats.add(2305843009213694334L, "TeamDefinitionToWorkPackage", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.WorkPackage, "Work Package", AtsTeamDefinitionOrAi, "ATS Team Def or AI");
    RelationTypeSide TeamDefinitionToWorkPackage_WorkPackage = RelationTypeSide.create(TeamDefinitionToWorkPackage, SIDE_A);
    RelationTypeSide TeamDefinitionToWorkPackage_AtsTeamDefOrAi = RelationTypeSide.create(TeamDefinitionToWorkPackage, SIDE_B);
+
+   RelationTypeToken UserGroupToActionableItem = ats.add(23875102986153L, "UserGroupToActionableItem", MANY_TO_ONE, UNORDERED, CoreArtifactTypes.UserGroup, "User Group", ActionableItem, "ActionableItem");
+   RelationTypeSide UserGroupToActionableItem_UserGroup = RelationTypeSide.create(UserGroupToActionableItem, SIDE_A);
+   RelationTypeSide UserGroupToActionableItem_AI = RelationTypeSide.create(UserGroupToActionableItem, SIDE_B);
 
    // Program uses supporting info to relate to team.  Use different name for readability and understandability
    RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;

@@ -19,22 +19,37 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstDefinition;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstXViewerFactory;
+import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
 public class XTaskEstDemoWidget extends XTaskEstWidget {
+
    public static final String WIDGET_ID = XTaskEstDemoWidget.class.getSimpleName();
+   private XTaskEstDemoXViewer xTaskEstDemoViewer;
 
    @Override
    public Collection<TaskEstDefinition> getTaskEstDefs() {
       List<TaskEstDefinition> taskDefs = new ArrayList<TaskEstDefinition>();
-      taskDefs.add(new TaskEstDefinition(111L, "Integration Test", "Description", null));
-      taskDefs.add(new TaskEstDefinition(112L, "Quality", "Description", null));
+      taskDefs.add(
+         new TaskEstDefinition(111L, "Integration Test", "Description", null, DemoArtifactToken.SAW_PL_Test_AI));
+      taskDefs.add(new TaskEstDefinition(112L, "Quality", "Description", null, null));
       getTaskDefsFromUserGroupsOff(DemoArtifactToken.SAW_PL_CR_TeamDef, taskDefs);
       return taskDefs;
+   }
+
+   @Override
+   protected TaskXViewer createXTaskViewer(Composite tableComp) {
+      xTaskEstDemoViewer = new XTaskEstDemoXViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+         new XTaskEstXViewerFactory(), null, teamWf);
+      xTaskViewer = xTaskEstDemoViewer;
+      return xTaskViewer;
    }
 
    @Override

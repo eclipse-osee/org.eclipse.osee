@@ -41,13 +41,12 @@ import org.eclipse.swt.widgets.ToolBar;
  *
  * @author Donald G. Dunne
  */
-public class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWidget, IArtifactEventListener {
+public abstract class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWidget, IArtifactEventListener {
 
-   public static final String WIDGET_ID = XSiblingWorldWidget.class.getSimpleName();
-   private IAtsTeamWorkflow teamWf;
+   protected IAtsTeamWorkflow teamWf;
 
-   public XSiblingWorldWidget() {
-      super("Sibling Workflows", new XSiblingXViewerFactory());
+   public XSiblingWorldWidget(XSiblingXViewerFactory xSiblingXViewerFactory) {
+      super("Sibling Workflows", xSiblingXViewerFactory);
       OseeEventManager.addListener(this);
    }
 

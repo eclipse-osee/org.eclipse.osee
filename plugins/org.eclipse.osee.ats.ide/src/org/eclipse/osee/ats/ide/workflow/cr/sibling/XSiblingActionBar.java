@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.operation.CreateSiblingWorkflowBlam;
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.operation.CreateSiblingOffTaskEstOperation;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
@@ -41,9 +40,9 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class XSiblingActionBar {
 
-   private Label extraInfoLabel;
-   private final XSiblingWorldWidget siblingWorldWidget;
-   private final IAtsTeamWorkflow teamWf;
+   protected Label extraInfoLabel;
+   protected final XSiblingWorldWidget siblingWorldWidget;
+   protected final IAtsTeamWorkflow teamWf;
 
    public XSiblingActionBar(XSiblingWorldWidget siblingWorldWidget) {
       this.siblingWorldWidget = siblingWorldWidget;
@@ -66,17 +65,7 @@ public class XSiblingActionBar {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
 
-      ToolItem createSiblingOffTaskEst = new ToolItem(toolBar, SWT.PUSH);
-      createSiblingOffTaskEst.setImage(ImageManager.getImage(AtsImage.WORKFLOW));
-      createSiblingOffTaskEst.setText("Create Sibling Workflows off Estimating Tasks");
-      createSiblingOffTaskEst.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            CreateSiblingOffTaskEstOperation op = new CreateSiblingOffTaskEstOperation(teamWf);
-            op.run();
-         }
-
-      });
+      createPreToolbarItems(toolBar);
 
       ToolItem createSibling = new ToolItem(toolBar, SWT.PUSH);
       createSibling.setImage(ImageManager.getImage(AtsImage.WORKFLOW));
@@ -135,6 +124,10 @@ public class XSiblingActionBar {
       new ToolItem(toolBar, SWT.SEPARATOR);
 
       return toolBar;
+   }
+
+   protected void createPreToolbarItems(ToolBar toolBar) {
+      // for subclass implementation
    }
 
    private void createExtraLabel(Composite bComp) {

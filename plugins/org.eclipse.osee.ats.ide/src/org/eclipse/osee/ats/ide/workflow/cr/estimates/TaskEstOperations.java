@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr.estimates;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -21,6 +22,8 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -43,12 +46,13 @@ public class TaskEstOperations {
       NewTaskSet newTaskSet = NewTaskSet.create("Create Task(s)", atsApi.getUserService().getCurrentUserId());
       NewTaskData newTaskData = NewTaskData.create(newTaskSet, teamWf);
       for (TaskEstDefinition ted : items) {
-         if (ted.isChecked() && ted.getTask() == null) {
+         if (ted.isChecked()) {
             newTaskData.setTaskWorkDef(taskWorkDef);
             JaxAtsTask task = new JaxAtsTask();
             String name = nameProvider.getTaskName(ted);
             task.setName(name);
-            task.addAttribute(CoreAttributeTypes.StaticId, ted.getId());
+            task.addAttributes(CoreAttributeTypes.StaticId,
+               Arrays.asList(ted.getId(), TaskEstUtil.TASK_EST_STATIC_ID, TaskEstUtil.TASK_EST_CANNED));
             if (Strings.isValid(ted.getDescription())) {
                task.addAttribute(AtsAttributeTypes.Description, ted.getDescription());
             }

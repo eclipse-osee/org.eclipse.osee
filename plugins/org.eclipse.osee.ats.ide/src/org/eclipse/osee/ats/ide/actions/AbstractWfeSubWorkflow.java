@@ -139,7 +139,9 @@ public class AbstractWfeSubWorkflow extends Composite {
       labelLink.setText(label);
       labelLink.setLayoutData(new GridData());
 
-      reasonLink.setText("Reason: " + reason);
+      String text = "Reason: " + reason;
+      text = Strings.truncate(text, 60, true);
+      reasonLink.setText(text);
       reasonLink.setToolTipText(reason);
 
       boolean showReason = Strings.isValid(reason);

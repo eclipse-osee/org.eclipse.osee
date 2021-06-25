@@ -17,12 +17,10 @@ import org.eclipse.osee.ats.ide.world.mini.MiniWorldXViewerFactory;
 /**
  * @author Donald G. Dunne
  */
-public class XSiblingXViewerFactory extends MiniWorldXViewerFactory {
+public abstract class XSiblingXViewerFactory extends MiniWorldXViewerFactory {
 
-   public final static String NAMESPACE = "SiblingXViewer";
-
-   public XSiblingXViewerFactory() {
-      super(NAMESPACE);
+   public XSiblingXViewerFactory(String namespace) {
+      super(namespace);
    }
 
 }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
@@ -117,5 +118,9 @@ public interface IAttributeResolver {
     * @return set/update static id in format of key=value
     */
    void setStaticIdValue(IAtsWorkItem workItem, String key, String value, IAtsChangeSet changes);
+
+   default boolean hasTag(ArtifactToken art, String tag) {
+      return getAttributesToStringList(art, CoreAttributeTypes.StaticId).contains(tag);
+   }
 
 }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr.estimates;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -20,7 +21,10 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -137,6 +141,8 @@ public class XTaskEstActionBar implements TaskEstNameProvider {
             task.setName(name);
             task.setCreatedByUserId(atsApi.getUserService().getCurrentUserId());
             task.setCreatedDate(new Date());
+            task.addAttributes(CoreAttributeTypes.StaticId,
+               Arrays.asList(TaskEstUtil.TASK_EST_MANUAL, TaskEstUtil.TASK_EST_STATIC_ID));
             newTaskData.add(task);
          }
       }

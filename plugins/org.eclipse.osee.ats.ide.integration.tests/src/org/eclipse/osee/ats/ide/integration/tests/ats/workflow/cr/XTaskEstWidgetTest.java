@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstDefinition;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstNameProvider;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.TaskEstOperations;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.demo.XTaskEstDemoWidget;
@@ -37,7 +37,7 @@ import org.junit.Before;
  *
  * @author Donald G. Dunne
  */
-public class XTaskEstManagerTest implements TaskEstNameProvider {
+public class XTaskEstWidgetTest implements TaskEstNameProvider {
 
    AtsApi atsApi;
 

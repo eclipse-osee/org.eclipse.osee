@@ -17,7 +17,11 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -32,8 +36,8 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
 
    private final AtsApi atsApi;
 
-   public XTaskEstLabelProvider(XTaskEstViewer xTaskEstViewer) {
-      super(xTaskEstViewer);
+   public XTaskEstLabelProvider(TaskXViewer xTaskViewer) {
+      super(xTaskViewer);
       this.atsApi = AtsApiService.get();
    }
 
@@ -66,10 +70,12 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
       } else if (element instanceof IAtsTask) {
          IAtsTask task = (IAtsTask) element;
          if (xViewerColumn.getName().equals("Select")) {
-            if (task.getTags().contains("canned")) {
+            if (task.getTags().contains(TaskEstUtil.TASK_EST_CANNED)) {
                return "Canned";
+            } else if (task.getTags().contains(TaskEstUtil.TASK_EST_MANUAL)) {
+               return "Manual";
             } else {
-               return "Manual ";
+               return "Other";
             }
          } else if (xViewerColumn.getName().equals("Attachments")) {
             int count =
@@ -81,6 +87,12 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             }
          } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
             return "";
+         } else if (xViewerColumn.getName().equals("Related Workflow")) {
+            IAtsTeamWorkflow teamWf = TaskEstUtil.getWorkflow(task.getParentTeamWorkflow(), task, atsApi);
+            if (teamWf != null) {
+               return teamWf.toStringWithId();
+            }
+            return "Select to Create Workflow";
          }
       }
       String str = super.getColumnText(element, columnIndex);
@@ -107,6 +119,12 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.TleReviewedBy) > 0) {
                return ImageManager.getImage(AtsImage.CHECK_BLUE);
             }
+         } else if (xViewerColumn.getName().equals("Related Workflow")) {
+            IAtsTeamWorkflow teamWf = TaskEstUtil.getWorkflow(task.getParentTeamWorkflow(), task, atsApi);
+            if (teamWf != null) {
+               return ImageManager.getImage(AtsImage.WORKFLOW);
+            }
+            return ImageManager.getImage(FrameworkImage.ADD_GREEN);
          }
       }
       return null;

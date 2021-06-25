@@ -21,8 +21,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
@@ -81,12 +83,12 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
    }
 
    @Override
-   protected WorldLabelProvider getWorldLabelProvider() {
-      return new XTaskEstLabelProvider(xTaskEstViewer);
+   protected WorldLabelProvider getWorldLabelProvider(TaskXViewer xTaskViewer) {
+      return new XTaskEstLabelProvider(xTaskViewer);
    }
 
    @Override
-   protected WorldContentProvider getWorldContentProvider() {
+   protected WorldContentProvider getWorldContentProvider(TaskXViewer xTaskViewer) {
       return new XTaskEstContentProvider(xTaskViewer);
    }
 
@@ -235,7 +237,9 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
             for (UserToken user : atsApi.getUserGroupService().getUserGroup(childArt).getMembers()) {
                assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
             }
-            taskDefs.add(new TaskEstDefinition(childArt.getId(), childArt.getName(), desc, assigneeAccountIds));
+            ArtifactToken aiArt = atsApi.getRelationResolver().getRelatedOrSentinel(childArt,
+               AtsRelationTypes.UserGroupToActionableItem_AI);
+            taskDefs.add(new TaskEstDefinition(childArt.getId(), childArt.getName(), desc, assigneeAccountIds, aiArt));
          }
       }
    }

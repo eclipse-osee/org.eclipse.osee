@@ -10,15 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates;
+package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
 
-import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
+import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
+import org.eclipse.osee.ats.ide.world.WorldXViewer;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
-public interface TaskEstNameProvider {
+public class XTaskEstSiblingWorldXViewer extends WorldXViewer {
 
-   public String getTaskName(TaskEstDefinition ted);
+   public XTaskEstSiblingWorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
+      super(parent, style, xViewerFactory, editor);
+   }
 
 }

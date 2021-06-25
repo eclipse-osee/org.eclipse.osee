@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates;
+package org.eclipse.osee.ats.api.workflow.cr;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -25,14 +25,17 @@ public class TaskEstDefinition extends NamedIdBase {
 
    private List<ArtifactId> assigneeAccountIds = new ArrayList<>();
    private String description;
-   private IAtsTask task;
    private boolean checked = false;
    private boolean manual = false;
+   private ArtifactToken actionableItem = ArtifactToken.SENTINEL;
 
-   public TaskEstDefinition(Long id, String name, String description, List<ArtifactId> assigneeAccountIds) {
+   public TaskEstDefinition(Long id, String name, String description, List<ArtifactId> assigneeAccountIds, ArtifactToken actionableItem) {
       super(id, name);
       this.description = description;
-      this.assigneeAccountIds = assigneeAccountIds;
+      if (assigneeAccountIds != null && !assigneeAccountIds.isEmpty()) {
+         this.assigneeAccountIds = assigneeAccountIds;
+      }
+      this.actionableItem = actionableItem;
    }
 
    public String getDescription() {
@@ -51,14 +54,6 @@ public class TaskEstDefinition extends NamedIdBase {
       this.assigneeAccountIds = assigneeAccountIds;
    }
 
-   public IAtsTask getTask() {
-      return task;
-   }
-
-   public void setTask(IAtsTask task) {
-      this.task = task;
-   }
-
    public boolean isChecked() {
       return checked;
    }
@@ -67,16 +62,20 @@ public class TaskEstDefinition extends NamedIdBase {
       this.checked = checked;
    }
 
-   public boolean hasTask() {
-      return task != null;
-   }
-
    public boolean isManual() {
       return manual;
    }
 
    public void setManual(boolean manual) {
       this.manual = manual;
+   }
+
+   public ArtifactToken getActionableItem() {
+      return actionableItem;
+   }
+
+   public void setActionableItem(ArtifactToken actionableItem) {
+      this.actionableItem = actionableItem;
    }
 
 }

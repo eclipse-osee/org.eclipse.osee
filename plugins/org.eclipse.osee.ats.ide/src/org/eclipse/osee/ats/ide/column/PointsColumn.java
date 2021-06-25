@@ -180,14 +180,7 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
          if (!(element instanceof IAtsWorkItem)) {
             return "";
          }
-         IAtsWorkItem workItem = (IAtsWorkItem) element;
-         AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
-         if (!atsApi.getAttributeResolver().isAttributeTypeValid(workItem, pointsAttrType)) {
-            return "";
-         }
-
-         String ptsStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, pointsAttrType, "");
-         return ptsStr;
+         return atsApi.getAgileService().getPointsStr((IAtsWorkItem) element);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }

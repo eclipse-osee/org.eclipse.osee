@@ -108,4 +108,8 @@ public class TaskXViewer extends WorldXViewer {
    public Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
       return Arrays.asList((TeamWorkFlowArtifact) this.teamWf);
    }
+
+   public IAtsTeamWorkflow getTeamWf() {
+      return teamWf;
+   }
 }

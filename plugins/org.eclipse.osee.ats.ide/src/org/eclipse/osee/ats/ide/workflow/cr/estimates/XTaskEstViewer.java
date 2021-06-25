@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -38,9 +39,6 @@ public class XTaskEstViewer extends TaskXViewer {
          return false;
       }
       TaskEstDefinition ted = selected.iterator().next();
-      if (ted.hasTask()) {
-         return false;
-      }
       ted.setChecked(!ted.isChecked());
       refresh(ted);
       return true;

@@ -91,6 +91,17 @@ public class AgileService implements IAgileService {
    }
 
    @Override
+   public String getPointsStr(IAtsWorkItem workItem) {
+      AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
+      if (!atsApi.getAttributeResolver().isAttributeTypeValid(workItem, pointsAttrType)) {
+         return "";
+      }
+
+      String ptsStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, pointsAttrType, "");
+      return ptsStr;
+   }
+
+   @Override
    public AttributeTypeToken getPointsAttrType(IAtsWorkItem workItem) {
       AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();

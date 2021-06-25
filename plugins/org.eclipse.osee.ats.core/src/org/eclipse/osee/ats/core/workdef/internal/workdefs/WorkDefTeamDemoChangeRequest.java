@@ -75,8 +75,10 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
                AUTO_SAVE), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
+            new CompositeLayoutItem(4, //
+               new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
+               new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE) //
+            ), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
                   REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
@@ -94,7 +96,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XDateWithValidateDam", AUTO_SAVE), //
             new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget"), //
-            new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget") //
+            new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget") //
          );
 
       bld.andState(4, "Implement", StateType.Working) //
@@ -102,7 +104,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget"), //
+            new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", AUTO_SAVE), //

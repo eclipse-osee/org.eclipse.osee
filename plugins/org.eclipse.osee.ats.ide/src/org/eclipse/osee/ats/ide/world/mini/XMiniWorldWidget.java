@@ -83,6 +83,10 @@ public abstract class XMiniWorldWidget extends GenericXWidget {
       redrawComposite();
    }
 
+   public WorldXViewer createWorldXViewer(Composite tableComp, IXViewerFactory xViewerFactory) {
+      return new WorldXViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null);
+   }
+
    private void redrawComposite() {
       if (parentComp == null || !Widgets.isAccessible(parentComp)) {
          return;
@@ -115,11 +119,11 @@ public abstract class XMiniWorldWidget extends GenericXWidget {
 
          ToolBar toolBar = createActionBar(tableComp);
 
-         xWorldViewer = new WorldXViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null);
+         xWorldViewer = createWorldXViewer(tableComp, xViewerFactory);
          xWorldViewer.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          xWorldViewer.setContentProvider(new WorldContentProvider(xWorldViewer));
-         xWorldViewer.setLabelProvider(new WorldLabelProvider(xWorldViewer));
+         xWorldViewer.setLabelProvider(createWorldLabelProvider(xWorldViewer));
 
          new ActionContributionItem(xWorldViewer.getCustomizeAction()).fill(toolBar, -1);
 
@@ -145,6 +149,8 @@ public abstract class XMiniWorldWidget extends GenericXWidget {
 
       parentComp.layout();
    }
+
+   abstract protected WorldLabelProvider createWorldLabelProvider(WorldXViewer xWorldViewer);
 
    public abstract ToolBar createActionBar(Composite tableComp);
 

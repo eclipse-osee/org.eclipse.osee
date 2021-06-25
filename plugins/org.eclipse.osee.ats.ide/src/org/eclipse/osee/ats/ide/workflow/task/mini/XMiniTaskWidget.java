@@ -95,11 +95,11 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
       redrawComposite();
    }
 
-   protected WorldLabelProvider getWorldLabelProvider() {
+   protected WorldLabelProvider getWorldLabelProvider(TaskXViewer xTaskViewer) {
       return new WorldLabelProvider(xTaskViewer);
    }
 
-   protected WorldContentProvider getWorldContentProvider() {
+   protected WorldContentProvider getWorldContentProvider(TaskXViewer xTaskViewer) {
       return new WorldContentProvider(xTaskViewer);
    }
 
@@ -138,8 +138,8 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
          xTaskViewer = createXTaskViewer(tableComp);
          xTaskViewer.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         xTaskViewer.setContentProvider(getWorldContentProvider());
-         xTaskViewer.setLabelProvider(getWorldLabelProvider());
+         xTaskViewer.setContentProvider(getWorldContentProvider(xTaskViewer));
+         xTaskViewer.setLabelProvider(getWorldLabelProvider(xTaskViewer));
 
          new ActionContributionItem(xTaskViewer.getCustomizeAction()).fill(toolBar, -1);
 
@@ -167,7 +167,9 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
    }
 
    protected TaskXViewer createXTaskViewer(Composite tableComp) {
-      return new TaskXViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null, teamWf);
+      xTaskViewer =
+         new TaskXViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, null, teamWf);
+      return xTaskViewer;
    }
 
    public abstract ToolBar createActionBar(Composite tableComp);

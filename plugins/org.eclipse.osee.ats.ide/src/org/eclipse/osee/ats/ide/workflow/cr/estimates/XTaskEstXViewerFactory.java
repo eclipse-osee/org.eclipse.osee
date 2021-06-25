@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr.estimates;
 
+import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.ide.workflow.task.mini.MiniTaskXViewerFactory;
 
 /**
@@ -20,9 +24,26 @@ import org.eclipse.osee.ats.ide.workflow.task.mini.MiniTaskXViewerFactory;
 public class XTaskEstXViewerFactory extends MiniTaskXViewerFactory {
 
    public final static String NAMESPACE = "TaskEstXViewer";
+   public static XViewerColumn Check_Col = new XViewerColumn("ats.taskest.check", "Select", 53, XViewerAlign.Left, true,
+      SortDataType.String, false, "Check and plus to create canned tasks.  Add task to create manual tasks.");
+   public static XViewerColumn Attachments_Col = new XViewerColumn("ats.taskest.attachments", "Attachments", 20,
+      XViewerAlign.Left, true, SortDataType.String, false, "Shows number of attachments.  Double-click to open task.");
+   public static XViewerColumn Related_Wf_Col = new XViewerColumn("ats.taskest.related.wf", "Related Workflow", 200,
+      XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflow, if created");
 
    public XTaskEstXViewerFactory() {
       super(NAMESPACE);
+   }
+
+   @Override
+   protected void addPreColumns(List<XViewerColumn> cols) {
+      cols.add(Check_Col);
+      cols.add(Attachments_Col);
+   }
+
+   @Override
+   protected void addPostColumns(List<XViewerColumn> cols) {
+      cols.add(Related_Wf_Col);
    }
 
 }

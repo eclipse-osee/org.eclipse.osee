@@ -83,6 +83,8 @@ public class WfeHeaderComposite extends Composite {
    private WfeAssigneesHeader assigneeHeader;
    private WfeWorkPackage workPackageHeader;
    private WfeActionableItemReviewHeader aiReviewHeader;
+   private WfeBlockedWorkflowHeader blockedWfHeader;
+   private WfeHoldWorkflowHeader holdWfHeader;
 
    public WfeTransitionHeader getWfeTransitionComposite() {
       return transitionHeader;
@@ -168,8 +170,8 @@ public class WfeHeaderComposite extends Composite {
          }
          int numColumns = 4;
          createWorkDefHeader(this, editor.getToolkit(), workItem, numColumns);
-         blockedWfHeader = new WfeBlockedWorkflowHeader(this, SWT.NONE, workItem, editor);
-         holdWfHeader = new WfeHoldWorkflowHeader(this, SWT.NONE, workItem, editor);
+
+         createBlockedHoldHeader(this, editor.getToolkit());
 
          customHeader = createCustomHeader(this, editor.getToolkit(), workItem, editor, managedForm);
 
@@ -192,6 +194,18 @@ public class WfeHeaderComposite extends Composite {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   private void createBlockedHoldHeader(WfeHeaderComposite parent, XFormToolkit toolkit) {
+      Composite comp = new Composite(parent, SWT.NONE);
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+      comp.setLayoutData(gridData);
+      int numColumns = 4;
+      comp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
+      toolkit.adapt(comp);
+
+      blockedWfHeader = new WfeBlockedWorkflowHeader(comp, SWT.NONE, workItem, editor);
+      holdWfHeader = new WfeHoldWorkflowHeader(comp, SWT.NONE, workItem, editor);
    }
 
    private WfeCustomHeader createCustomHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem, WorkflowEditor editor, IManagedForm managedForm) {
@@ -395,8 +409,6 @@ public class WfeHeaderComposite extends Composite {
          }
       }
    };
-   private WfeBlockedWorkflowHeader blockedWfHeader;
-   private WfeHoldWorkflowHeader holdWfHeader;
 
    public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
       titleHeader.getXWidgets(widgets);

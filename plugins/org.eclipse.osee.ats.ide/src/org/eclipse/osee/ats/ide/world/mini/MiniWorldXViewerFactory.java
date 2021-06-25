@@ -45,9 +45,18 @@ public abstract class MiniWorldXViewerFactory extends SkynetXViewerFactory {
       namespace2 = namespace;
    }
 
+   protected void addPreColumns(List<XViewerColumn> cols) {
+      // for subclass implementation
+   }
+
+   protected void addPostColumns(List<XViewerColumn> cols) {
+      // for subclass implementation
+   }
+
    @Override
    public List<XViewerColumn> getColumns() {
       List<XViewerColumn> cols = new ArrayList<>();
+      addPreColumns(cols);
       cols.add(getColumnServiceColumn(AtsColumnToken.TypeColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.StateColumn));
       cols.add(AssigneeColumnUI.getInstance());
@@ -55,6 +64,8 @@ public abstract class MiniWorldXViewerFactory extends SkynetXViewerFactory {
       cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
       cols.add(TargetedVersionColumnUI.getInstance());
       cols.add(getAttributeConfigColumn(AtsColumnToken.NotesColumn));
+      addPostColumns(cols);
+
       for (XViewerColumn col : cols) {
          if (col.getName().equals(AtsColumnToken.NotesColumn.getName())) {
             col.setWidth(350);

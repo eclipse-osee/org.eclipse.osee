@@ -10,27 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.sibling.operation;
+package org.eclipse.osee.ats.ide.workflow.cr.estimates.sibling;
 
-import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingActionBar;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateSiblingOffTaskEstOperation {
+public abstract class XTaskEstSiblingActionBar extends XSiblingActionBar {
 
-   private final IAtsTeamWorkflow teamWf;
-   private final AtsApi atsApi;
-
-   public CreateSiblingOffTaskEstOperation(IAtsTeamWorkflow teamWf) {
-      this.teamWf = teamWf;
-      this.atsApi = AtsApiService.get();
-   }
-
-   public void run() {
-      // TBD
+   public XTaskEstSiblingActionBar(XTaskEstSiblingWorldWidget siblingWorldWidget) {
+      super(siblingWorldWidget);
    }
 
 }

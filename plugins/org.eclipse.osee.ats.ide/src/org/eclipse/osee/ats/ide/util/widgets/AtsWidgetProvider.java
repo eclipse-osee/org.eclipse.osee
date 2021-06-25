@@ -42,7 +42,7 @@ import org.eclipse.osee.ats.ide.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.ats.ide.util.widgets.task.XCreateChangeReportTasksXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapementDemoWfXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.demo.XTaskEstDemoWidget;
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingWorldWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.demo.XTaskEstSiblingWorldDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.ide.workflow.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
@@ -221,12 +221,11 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XTaskEstDemoWidget();
       } else if (widgetName.equals(XTleReviewedWidget.WIDGET_ID)) {
          return new XTleReviewedWidget();
-      } else if (widgetName.equals(XSiblingWorldWidget.WIDGET_ID)) {
-         return new XSiblingWorldWidget();
       } else if (widgetName.equals(XActionableItemWidget.WIDGET_ID)) {
          return new XActionableItemWidget();
+      } else if (widgetName.equals(XTaskEstSiblingWorldDemoWidget.WIDGET_ID)) {
+         return new XTaskEstSiblingWorldDemoWidget();
       }
-
       return toReturn;
    }
 }

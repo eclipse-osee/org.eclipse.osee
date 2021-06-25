@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
@@ -40,24 +38,25 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
 
-   public static XViewerColumn Check_Col = new XViewerColumn("ats.taskest.check", "Select", 53, XViewerAlign.Left, true,
-      SortDataType.String, false, "Check and plus to create canned tasks.  Add task to create manual tasks.");
-   public static XViewerColumn Attachments_Col = new XViewerColumn("ats.taskest.attachments", "Attachments", 20,
-      XViewerAlign.Left, true, SortDataType.String, false, "Shows number of attachments.  Double-click to open task.");
-
-   public static final String COLUMN_NAMESPACE = "ats.column";
-   private final String namespace2;
+   private final String namespace;
 
    public MiniTaskXViewerFactory(String namespace) {
       super(namespace, null);
-      namespace2 = namespace;
+      this.namespace = namespace;
+   }
+
+   protected void addPreColumns(List<XViewerColumn> cols) {
+      // for subclass implementation
+   }
+
+   protected void addPostColumns(List<XViewerColumn> cols) {
+      // for subclass implementation
    }
 
    @Override
    public List<XViewerColumn> getColumns() {
       List<XViewerColumn> cols = new ArrayList<>();
-      cols.add(Check_Col);
-      cols.add(Attachments_Col);
+      addPreColumns(cols);
       cols.add(getAttributeConfigColumn(AtsColumnToken.TitleColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.StateColumn));
       cols.add(AssigneeColumnUI.getInstance());
@@ -72,6 +71,7 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       cols.add(AssumptionsColumn.instance);
       cols.add(getAttributeConfigColumn(AtsColumnToken.NotesColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
+      addPostColumns(cols);
 
       for (XViewerColumn col : cols) {
          if (col.getName().equals(AtsColumnToken.TitleColumn.getName())) {
@@ -99,7 +99,7 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
    private XViewerColumn getAttributeConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
       for (AtsAttributeValueColumn column : AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
-         if (column.getNamespace().equals(namespace2) && column.getId().equals(attrValueColumn.getId())) {
+         if (column.getNamespace().equals(namespace) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;
          }

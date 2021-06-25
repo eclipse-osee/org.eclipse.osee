@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxTeamDef;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
@@ -81,16 +82,20 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       changes.addAttribute(reqUserGroup, CoreAttributeTypes.Description, "desc");
       changes.relate(reqUserGroup, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
       changes.relate(reqUserGroup, CoreRelationTypes.Users_User, DemoUsers.Kay_Jones);
+      changes.relate(reqUserGroup, AtsRelationTypes.UserGroupToActionableItem_AI,
+         DemoArtifactToken.SAW_PL_Requirements_AI);
 
       ArtifactToken codeUserGroup =
          changes.createArtifact(DemoArtifactToken.SAW_PL_CR_TeamDef, CoreArtifactTypes.UserGroup, "Code");
       changes.addAttribute(codeUserGroup, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
       changes.relate(codeUserGroup, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
+      changes.relate(codeUserGroup, AtsRelationTypes.UserGroupToActionableItem_AI, DemoArtifactToken.SAW_PL_Code_AI);
 
       ArtifactToken testUserGroup =
          changes.createArtifact(DemoArtifactToken.SAW_PL_CR_TeamDef, CoreArtifactTypes.UserGroup, "SW Test");
       changes.addAttribute(testUserGroup, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
       changes.relate(testUserGroup, CoreRelationTypes.Users_User, DemoUsers.Alex_Kay);
+      changes.relate(testUserGroup, AtsRelationTypes.UserGroupToActionableItem_AI, DemoArtifactToken.SAW_PL_Test_AI);
 
       changes.execute();
    }

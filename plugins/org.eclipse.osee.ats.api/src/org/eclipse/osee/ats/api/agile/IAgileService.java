@@ -190,4 +190,6 @@ public interface IAgileService {
 
    void setSprint(IAtsTeamWorkflow teamWf, IAgileSprint sprint, IAtsChangeSet changes);
 
+   String getPointsStr(IAtsWorkItem workItem);
+
 }
