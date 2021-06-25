@@ -39,14 +39,16 @@ public class XComputedCharacteristicWidget extends XText implements ArtifactWidg
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
-      if (!getAttributeValues().isEmpty()) {
-         refresh();
-      }
+      refresh();
    }
 
    @Override
    public void refresh() {
-      setText(computedCharacteristic.calculate(getAttributeValues()).toString());
+      if (!getAttributeValues().isEmpty()) {
+         setText(artifact.getComputedCharacteristicValue(computedCharacteristic).toString());
+      } else {
+         setText("");
+      }
       updateTextWidget();
    }
 

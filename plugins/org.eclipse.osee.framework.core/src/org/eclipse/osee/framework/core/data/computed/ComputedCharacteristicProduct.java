@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.data.computed;
 
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
@@ -35,9 +36,10 @@ public final class ComputedCharacteristicProduct<T extends Number> extends Compu
 
    @Override
    public T calculate(List<T> computingValues) {
-      double product = computingValues.get(0).doubleValue();
-      for (T value : computingValues.subList(1, computingValues.size())) {
-         product *= value.doubleValue();
+      Iterator<T> valueIterator = computingValues.iterator();
+      double product = valueIterator.next().doubleValue();
+      while (valueIterator.hasNext()) {
+         product *= valueIterator.next().doubleValue();
       }
       return typesToCompute.get(0).valueFromDouble(product);
    }
