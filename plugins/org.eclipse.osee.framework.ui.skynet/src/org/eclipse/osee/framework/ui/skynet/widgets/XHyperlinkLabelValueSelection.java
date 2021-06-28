@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -32,7 +31,8 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
-   Hyperlink valueHyperlinkLabel;
+   protected Hyperlink labelHyperlink;
+   protected Label labelWidget;
    protected Label valueLabel;
    protected Composite comp;
 
@@ -55,31 +55,23 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
       } else {
          comp.setLayoutData(new GridData());
       }
-
-      // Create Text Widgets
-      if (isDisplayLabel() && !getLabel().equals("")) {
-         labelWidget = new Label(comp, SWT.NONE);
-         labelWidget.setText(getLabel() + ":");
-         if (getToolTip() != null) {
-            labelWidget.setToolTipText(getToolTip());
-         }
-      }
-
-      GridData gd = new GridData();
-      if (isFillHorizontally()) {
-         gd.grabExcessHorizontalSpace = true;
-         gd.horizontalAlignment = SWT.FILL;
+      if (toolkit != null) {
+         toolkit.adapt(comp);
       }
 
       if (isEditable()) {
          if (toolkit == null) {
-            valueHyperlinkLabel = new Hyperlink(comp, SWT.NONE);
+            labelHyperlink = new Hyperlink(comp, SWT.NONE);
+            labelHyperlink.setText(getLabel());
          } else {
-            valueHyperlinkLabel = toolkit.createHyperlink(comp, " <edit>", SWT.NONE);
+            labelHyperlink = toolkit.createHyperlink(comp, getLabel() + ":", SWT.NONE);
          }
-         valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
-         valueHyperlinkLabel.setLayoutData(gd);
-         valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
+         labelHyperlink.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
+         labelHyperlink.setLayoutData(new GridData());
+         if (getToolTip() != null) {
+            labelHyperlink.setToolTipText(getToolTip());
+         }
+         labelHyperlink.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
                if (handleSelection()) {
@@ -90,12 +82,27 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
          });
       } else {
          if (toolkit == null) {
-            valueLabel = new Label(comp, SWT.NONE);
+            labelWidget = new Label(comp, SWT.NONE);
          } else {
-            valueLabel = toolkit.createLabel(comp, " Not Set", SWT.NONE);
+            labelWidget = toolkit.createLabel(comp, getLabel() + ":", SWT.NONE);
          }
+         labelWidget.setLayoutData(new GridData());
+      }
+
+      GridData gd = new GridData();
+      if (isFillHorizontally()) {
+         gd.grabExcessHorizontalSpace = true;
+         gd.horizontalAlignment = SWT.FILL;
+      }
+
+      valueLabel = new Label(comp, SWT.NONE);
+      valueLabel.setText(getLabel() + ":");
+      if (toolkit != null) {
+         toolkit.adapt(valueLabel, false, false);
+      }
+      valueLabel.setLayoutData(gd);
+      if (getToolTip() != null) {
          valueLabel.setToolTipText(getToolTip());
-         valueLabel.setLayoutData(gd);
       }
 
       refresh();
@@ -103,24 +110,16 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    @Override
    public void refresh() {
-      if (getControl() == null || getControl().isDisposed()) {
+      if (!Widgets.isAccessible(comp)) {
          return;
       }
-      if (Widgets.isAccessible(valueHyperlinkLabel)) {
-         if (getCurrentValue().equals(valueHyperlinkLabel.getText())) {
-            return;
-         }
-         valueHyperlinkLabel.setText(getCurrentValue());
-         valueHyperlinkLabel.update();
-         valueHyperlinkLabel.getParent().update();
-      } else if (Widgets.isAccessible(valueLabel)) {
+      if (Widgets.isAccessible(valueLabel)) {
          if (getCurrentValue().equals(valueLabel.getText())) {
             return;
          }
          valueLabel.setText(getCurrentValue());
          valueLabel.update();
          valueLabel.getParent().update();
-
       }
       validate();
    }
@@ -130,31 +129,13 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    }
 
    @Override
-   public Control getControl() {
-      if (Widgets.isAccessible(valueHyperlinkLabel)) {
-         return valueHyperlinkLabel;
-      }
-      if (Widgets.isAccessible(valueLabel)) {
-         return valueLabel;
-      }
-      return null;
-   }
-
-   @Override
-   public void adaptControls(FormToolkit toolkit) {
-      super.adaptControls(toolkit);
-      if (Widgets.isAccessible(valueHyperlinkLabel)) {
-         toolkit.adapt(valueHyperlinkLabel, true, true);
-         valueHyperlinkLabel.update();
-      }
-      if (Widgets.isAccessible(valueLabel)) {
-         toolkit.adapt(valueLabel, true, true);
-         valueLabel.update();
-      }
-   }
-
-   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getLabel(), getCurrentValue());
    }
+
+   @Override
+   public Control getControl() {
+      return comp;
+   }
+
 }

@@ -24,24 +24,26 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
+ * XWidget where label is hyperlink and value is label.
+ *
  * @author Donald G. Dunne
  */
-public abstract class XHyperlinkLabelValueSelDam extends XHyperlinkLabelCmdValueSelection implements AttributeWidget {
+public abstract class XHyperlinkLabelCmdValueSelDam extends XHyperlinkLabelCmdValueSelection implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
 
-   public XHyperlinkLabelValueSelDam(String label) {
+   public XHyperlinkLabelCmdValueSelDam(String label) {
       this(label, false);
    }
 
-   public XHyperlinkLabelValueSelDam(String label, boolean supportClear, Integer truncateValueLength) {
+   public XHyperlinkLabelCmdValueSelDam(String label, boolean supportClear, Integer truncateValueLength) {
       super(label);
       this.supportClear = supportClear;
       this.truncateValueLength = truncateValueLength;
    }
 
-   public XHyperlinkLabelValueSelDam(String label, boolean supportClear) {
+   public XHyperlinkLabelCmdValueSelDam(String label, boolean supportClear) {
       this(label, supportClear, null);
    }
 

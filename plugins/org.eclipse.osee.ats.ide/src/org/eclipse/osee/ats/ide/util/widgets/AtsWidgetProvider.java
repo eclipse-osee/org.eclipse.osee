@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
@@ -225,6 +226,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XActionableItemWidget();
       } else if (widgetName.equals(XTaskEstSiblingWorldDemoWidget.WIDGET_ID)) {
          return new XTaskEstSiblingWorldDemoWidget();
+      } else if (widgetName.equals(XHyperlinkLabelValueSelectionDam.WIDGET_ID)) {
+         return new XHyperlinkLabelValueSelectionDam();
       }
       return toReturn;
    }

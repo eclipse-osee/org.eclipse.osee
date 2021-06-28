@@ -76,6 +76,9 @@ public class XTaskEstViewer extends TaskXViewer {
       } else if (xViewerColumn.getName().equals(XTaskEstXViewerFactory.Related_Wf_Col.getName())) {
          if ((treeItem.getData() instanceof IAtsTask)) {
             IAtsTask task = (IAtsTask) treeItem.getData();
+            if (task.isCancelled()) {
+               return false;
+            }
             IAtsTeamWorkflow teamWf = TaskEstUtil.getWorkflow(crTeamWf, task, atsApi);
             if (teamWf != null) {
                WorkflowEditor.edit(teamWf);

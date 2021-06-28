@@ -88,6 +88,9 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
          } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
             return "";
          } else if (xViewerColumn.getName().equals("Related Workflow")) {
+            if (task.isCancelled()) {
+               return "";
+            }
             IAtsTeamWorkflow teamWf = TaskEstUtil.getWorkflow(task.getParentTeamWorkflow(), task, atsApi);
             if (teamWf != null) {
                return teamWf.toStringWithId();
@@ -120,6 +123,9 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
                return ImageManager.getImage(AtsImage.CHECK_BLUE);
             }
          } else if (xViewerColumn.getName().equals("Related Workflow")) {
+            if (task.isCancelled()) {
+               return null;
+            }
             IAtsTeamWorkflow teamWf = TaskEstUtil.getWorkflow(task.getParentTeamWorkflow(), task, atsApi);
             if (teamWf != null) {
                return ImageManager.getImage(AtsImage.WORKFLOW);

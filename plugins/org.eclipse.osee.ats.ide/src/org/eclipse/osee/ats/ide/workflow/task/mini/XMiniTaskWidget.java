@@ -195,6 +195,9 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
    public abstract ToolBar createActionBar(Composite tableComp);
 
    public void setXviewerTreeSize() {
+      if (xTaskViewer == null || !Widgets.isAccessible(xTaskViewer.getTree())) {
+         return;
+      }
       Tree tree = xTaskViewer.getTree();
       int size = xTaskViewer.getTree().getItemCount();
       if (size > MAX_TABLE_SIZE) {

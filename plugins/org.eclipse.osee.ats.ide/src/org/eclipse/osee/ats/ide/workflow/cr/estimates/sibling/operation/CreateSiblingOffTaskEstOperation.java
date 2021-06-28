@@ -74,6 +74,10 @@ public class CreateSiblingOffTaskEstOperation {
             // if TED and task and estimate <= 0, do nothing
             IAtsTask task = TaskEstUtil.getTask(teamWf, ted, atsApi);
             if (task.isValid()) {
+               if (task.isCancelled()) {
+                  teds.remove(ted);
+                  continue;
+               }
                String ptsStr = atsApi.getAgileService().getPointsStr(task);
                if (!Strings.isValid(ptsStr)) {
                   rd.errorf("No estimated points for task %s\n", task.toStringWithId());

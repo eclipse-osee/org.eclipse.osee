@@ -66,6 +66,8 @@ public class AtsObjectLabelProvider extends LabelProvider {
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
          return ArtifactImageManager.getImage(
             AtsApiService.get().getQueryServiceIde().getArtifact(((Match) element).getElement()));
+      } else if (element instanceof String) {
+         return null;
       }
       return ImageManager.getImage(ImageManager.MISSING);
    }

@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelDam;
 
 /**
  * @author Donald G. Dunne
  */
-public class XEstimatedPointsWidget extends XHyperlinkLabelValueSelDam implements ArtifactWidget {
+public class XEstimatedPointsWidget extends XHyperlinkLabelCmdValueSelDam implements ArtifactWidget {
 
    public static final Object WIDGET_ID = XEstimatedPointsWidget.class.getSimpleName();
    public float points = 0;
