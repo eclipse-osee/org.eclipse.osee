@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.task.mini;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -23,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.world.WorldContentProvider;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
@@ -32,6 +35,11 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
@@ -40,6 +48,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -53,7 +63,7 @@ import org.eclipse.swt.widgets.Tree;
  *
  * @author Donald G. Dunne
  */
-public abstract class XMiniTaskWidget extends GenericXWidget implements ArtifactWidget {
+public abstract class XMiniTaskWidget extends GenericXWidget implements ArtifactWidget, IArtifactEventListener {
 
    protected TaskXViewer xTaskViewer;
    public final static String normalColor = "#EEEEEE";
@@ -72,6 +82,7 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
       super(label);
       this.xViewerFactory = xViewerFactory;
       atsApi = AtsApiService.get();
+      OseeEventManager.addListener(this);
    }
 
    abstract public Collection<IAtsTask> getTasks();
@@ -91,6 +102,15 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
       parentComp = new Composite(parent, SWT.FLAT);
       parentComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       parentComp.setLayout(ALayout.getZeroMarginLayout());
+
+      final XMiniTaskWidget fWidget = this;
+      parentComp.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            OseeEventManager.removeListener(fWidget);
+         }
+      });
 
       redrawComposite();
    }
@@ -214,10 +234,15 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
       if (xTaskViewer == null || xTaskViewer.getTree() == null || xTaskViewer.getTree().isDisposed()) {
          return;
       }
-      loadTable();
-      setXviewerTreeSize();
-      updateExtraInfoLabel();
-      pointsLabel.setValueText("Put Label Here");
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            loadTable();
+            setXviewerTreeSize();
+            updateExtraInfoLabel();
+         }
+      });
    }
 
    public WorldXViewer getxWorldViewer() {
@@ -260,6 +285,35 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
    public void setArtifact(Artifact artifact) {
       if (artifact instanceof IAtsTeamWorkflow) {
          teamWf = (IAtsTeamWorkflow) artifact;
+      }
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return Arrays.asList(AtsUtilClient.getAtsBranchFilter());
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      try {
+         // Handle case where new task created/deleted
+         if (artifactEvent.isHasEvent((Artifact) teamWf.getStoreObject())) {
+            refresh();
+            return;
+         }
+         // Handle case where task changed
+         for (IAtsTask task : atsApi.getTaskService().getTasks(teamWf)) {
+            if (artifactEvent.isHasEvent((Artifact) task.getStoreObject())) {
+               refresh();
+               return;
+            }
+            if (artifactEvent.isReloaded((Artifact) task.getStoreObject())) {
+               refresh();
+               return;
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
    }
 
