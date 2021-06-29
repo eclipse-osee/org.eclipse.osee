@@ -134,7 +134,11 @@ public class BlockApplicabilityRule extends Rule {
                   }
 
                   inputFile = inFile;
-                  process(inFile, stageFile);
+                  try {
+                     process(inFile, stageFile);
+                  } catch (Exception ex) {
+                     System.out.println("Exception " + ex.toString() + " with file " + inputFile);
+                  }
                   ruleWasApplicable = this.ruleWasApplicable;
                }
                if (!ruleWasApplicable) {
