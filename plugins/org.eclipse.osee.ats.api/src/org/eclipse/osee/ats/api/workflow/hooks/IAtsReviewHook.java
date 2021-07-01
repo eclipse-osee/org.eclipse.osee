@@ -26,4 +26,6 @@ public interface IAtsReviewHook {
     */
    public void reviewCreated(IAtsAbstractReview reviewWf);
 
+   public String getDescription();
+
 }

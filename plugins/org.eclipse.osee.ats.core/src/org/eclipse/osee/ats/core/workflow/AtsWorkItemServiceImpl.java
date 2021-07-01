@@ -600,5 +600,4 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       }
       return journalData;
    }
-
 }

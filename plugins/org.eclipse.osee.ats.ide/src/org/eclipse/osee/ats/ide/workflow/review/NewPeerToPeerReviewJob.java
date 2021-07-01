@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -69,8 +70,9 @@ public class NewPeerToPeerReviewJob extends Job {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("New Peer To Peer Review");
          PeerToPeerReviewArtifact peerArt = null;
          if (teamParent != null) {
-            peerArt = (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(
-               teamParent, reviewTitle, againstState, changes);
+            peerArt =
+               (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamParent,
+                  reviewTitle, againstState, changes);
          } else {
             peerArt = (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(
                actionableItem, reviewTitle, null, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
@@ -83,6 +85,10 @@ public class NewPeerToPeerReviewJob extends Job {
             changes.setSoleAttributeValue((ArtifactId) peerArt, AtsAttributeTypes.ReviewFormalType, reviewType.name());
          }
          changes.execute();
+
+         for (IAtsReviewHook reviewHook : AtsApiService.get().getReviewService().getReviewHooks()) {
+            reviewHook.reviewCreated(peerArt);
+         }
 
          AtsEditors.openATSAction(peerArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

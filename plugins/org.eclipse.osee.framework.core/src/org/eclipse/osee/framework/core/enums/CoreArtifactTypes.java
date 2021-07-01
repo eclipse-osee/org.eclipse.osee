@@ -339,7 +339,9 @@ public interface CoreArtifactTypes {
       .any(XViewerDefaults)
       .zeroOrOne(Zip));
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
-      .zeroOrOne(DefaultGroup));
+      .zeroOrOne(DefaultGroup)
+      .any(Email));
+
    ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .any(DoorsId)
       .zeroOrOne(DoorsHierarchy));

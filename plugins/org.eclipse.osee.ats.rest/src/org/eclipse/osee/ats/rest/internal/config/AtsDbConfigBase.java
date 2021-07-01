@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -123,14 +124,26 @@ public class AtsDbConfigBase {
 
       createUserCreationDisabledConfig();
 
-      CreateAndconfigureProcessesBranchAndDemoPeerChecklist();
+      createAndconfigureProcessesBranchAndDemoPeerChecklist();
 
-      ConfigureWalkthroughChecklist();
+      configureWalkthroughChecklist();
+
+      createPeerReviewUserGroup();
 
       return results;
    }
 
-   private void CreateAndconfigureProcessesBranchAndDemoPeerChecklist() {
+   private void createPeerReviewUserGroup() {
+
+      // Create "Peer Review Created" User Group.
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Peer Review User Group", COMMON);
+      ArtifactToken userGroupArt = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups, COMMON);
+      ArtifactToken artifact = changes.createArtifact(userGroupArt, AtsUserGroups.peerReviewCreationNotify);
+      changes.addAttribute(artifact, CoreAttributeTypes.Email, "testemail@boeing.com");
+      changes.execute();
+   }
+
+   private void createAndconfigureProcessesBranchAndDemoPeerChecklist() {
       AtsAttachments checklists = new AtsAttachments();
       checklists.addAttachment(new AtsAttachment("Document_Checklist", "osee", DemoBranches.Processes));
       checklists.addAttachment(new AtsAttachment("Process_Checklist", "osee", DemoBranches.Processes));
@@ -159,7 +172,7 @@ public class AtsDbConfigBase {
       transaction.commit();
    }
 
-   private void ConfigureWalkthroughChecklist() {
+   private void configureWalkthroughChecklist() {
       AtsAttachments checklists = new AtsAttachments();
       checklists.addAttachment(new AtsAttachment("W_Document_Checklist", "osee", DemoBranches.Processes));
       checklists.addAttachment(new AtsAttachment("W_Process_Checklist", "osee", DemoBranches.Processes));

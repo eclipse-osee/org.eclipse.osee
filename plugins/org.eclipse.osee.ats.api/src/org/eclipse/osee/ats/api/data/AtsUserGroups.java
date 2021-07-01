@@ -25,5 +25,7 @@ public class AtsUserGroups {
       UserGroupArtifactToken.valueOf(10847751L, "Ats Add Attr Columns");
    public static IUserGroupArtifactToken AtsAdmin = UserGroupArtifactToken.valueOf(136750L, "Ats Admin");
    public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "AtsTemp Admin");
+   public static IUserGroupArtifactToken peerReviewCreationNotify =
+      UserGroupArtifactToken.valueOf(8742803L, "Peer Review Creation");
 
 }
