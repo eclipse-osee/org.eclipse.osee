@@ -29,14 +29,17 @@ import java.util.StringTokenizer;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.define.api.OseeHierarchyComparator;
 import org.eclipse.osee.define.api.ParagraphNumberComparator;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -56,12 +59,12 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final ActivityLog activityLog;
    private final Map<String, Integer> summarySubsystemCounter = new HashMap<>();
    private final Map<String, Integer> summaryTraceCounter = new HashMap<>();
-   private final Map<String, Integer> summaryAllocationCounter = new HashMap<>();
    private ExcelXmlWriter writer;
    private final Collection<ArtifactTypeToken> includeOnlyArtifactTypes;
    private final String REQUIREMENT_TRACE_TYPE = "Requirement Trace";
-   private final String ALLOCATION_TRACE_TYPE = "Allocation Trace";
    private final Map<String, ArtifactTypeToken> allTypesMap = new HashMap<>();
+   private static final AttributeTypeToken SRSName = AttributeTypeToken.valueOf(44074994010072549L, "SRS Name");
+   private OseeHierarchyComparator hierarchyComparator = null;
 
    public PublishLowHighReqStreamingOutput(ActivityLog activityLog, OrcsApi orcsApi, BranchId branch, String selectedTypes) {
       this.activityLog = activityLog;
@@ -116,10 +119,6 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          writer.endSheet();
          return;
       }
-      StringBuilder[] builtRows = new StringBuilder[10];
-      for (int i = 0; i < 10; i++) {
-         builtRows[i] = new StringBuilder();
-      }
 
       for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(activityLog))) {
          boolean foundType = false;
@@ -133,56 +132,69 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
             continue;
          }
          for (int i = 0; i < 10; i++) {
-            builtRows[i].setLength(0);
+            row[i] = "";
          }
          if (req.getAttributeCount(CoreAttributeTypes.ParagraphNumber) > 0) {
-            builtRows[0].append(req.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
+            row[0] = req.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber);
          }
-         builtRows[1].append(req.getName());
-         builtRows[2].append(req.getArtifactType().getName());
+         row[1] = req.getName();
+         row[2] = req.getArtifactType().getName();
          if (req.getAttributeCount(CoreAttributeTypes.Category) > 0) {
-            builtRows[3].append(req.getSoleAttributeAsString(CoreAttributeTypes.Category));
+            row[3] = req.getSoleAttributeAsString(CoreAttributeTypes.Category);
          }
          List<String> qualificationMethods = req.getAttributeValues(CoreAttributeTypes.QualificationMethod);
          if (qualificationMethods.size() > 0) {
             Iterator<String> iter = qualificationMethods.iterator();
-            builtRows[4].append(iter.next());
+            row[4] = iter.next();
             while (iter.hasNext()) {
-               builtRows[4].append(",");
-               builtRows[4].append(iter.next());
+               row[4] += ", ";
+               row[4] += iter.next();
             }
          } else {
             row[4] = "";
          }
-         String newline = "";
-         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.RequirementTrace_HigherLevelRequirement)) {
-            builtRows[5].append(newline);
-            if (subSysReq.getAttributeCount(CoreAttributeTypes.LegacyId) > 0) {
-               builtRows[5].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.LegacyId));
+         ResultSet<ArtifactReadable> subSystemRequirements =
+            req.getRelated(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
+         if (subSystemRequirements.size() < 1) {
+            for (int i = 0; i < 10; i++) {
+               if (Strings.isInValid(row[i])) {
+                  row[i] = " ";
+               }
             }
-            builtRows[6].append(newline);
-            try {
-               builtRows[6].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
-            } catch (Exception ex) {
-               builtRows[6].append("Paragraph # unavailable");
+            writer.writeRow((Object[]) row);
+         } else {
+            for (ArtifactReadable subSysReq : subSystemRequirements) {
+
+               if (subSysReq.getAttributeCount(CoreAttributeTypes.LegacyId) > 0) {
+                  row[5] = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.LegacyId);
+               }
+
+               try {
+                  row[6] = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber);
+               } catch (Exception ex) {
+                  row[6] = "Paragraph # unavailable";
+               }
+
+               row[7] = subSysReq.getName();
+
+               row[8] = subSysReq.getArtifactType().getName();
+               String subsystem = "Not specified";
+               if (subSysReq.getAttributeCount(CoreAttributeTypes.Subsystem) > 0) {
+                  subsystem = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.Subsystem);
+               }
+
+               row[9] = subsystem;
+               for (int i = 0; i < 10; i++) {
+                  if (Strings.isInValid(row[i])) {
+                     row[i] = " ";
+                  }
+               }
+               writer.writeRow((Object[]) row);
+               for (int i = 0; i < 10; ++i) {
+                  row[i] = "";
+               }
             }
-            builtRows[7].append(newline);
-            builtRows[7].append(subSysReq.getName());
-            builtRows[8].append(newline);
-            builtRows[8].append(subSysReq.getArtifactType().getName());
-            String subsystem = "Not specified";
-            if (subSysReq.getAttributeCount(CoreAttributeTypes.Subsystem) > 0) {
-               subsystem = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.Subsystem);
-            }
-            builtRows[9].append(newline);
-            builtRows[9].append(subsystem);
-            newline = "\n";
          }
-         for (int i = 0; i < 10; i++) {
-            row[i] = builtRows[i].toString();
-         }
-         nullEmptyCells(row);
-         writer.writeRow((Object[]) row);
       }
 
       writer.endSheet();
@@ -212,28 +224,23 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       row[10] = "Qualification Method";
       writer.writeRow((Object[]) row);
 
-      StringBuilder[] builtRows = new StringBuilder[11];
-      for (int i = 0; i < 11; i++) {
-         builtRows[i] = new StringBuilder();
-      }
       for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(activityLog))) {
-         row[0] = row[1] = row[2] = row[3] = row[4] = row[5] = row[6] = row[7] = row[8] = row[9] = row[10] = "";
          for (int i = 0; i < 11; i++) {
-            builtRows[i].setLength(0);
+            row[i] = "";
          }
          if (req.getAttributeCount(CoreAttributeTypes.LegacyId) > 0) {
-            builtRows[0].append(req.getSoleAttributeAsString(CoreAttributeTypes.LegacyId));
+            row[0] = req.getSoleAttributeAsString(CoreAttributeTypes.LegacyId);
          }
          if (req.getAttributeCount(CoreAttributeTypes.ParagraphNumber) > 0) {
-            builtRows[1].append(req.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
+            row[1] = req.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber);
          }
-         builtRows[2].append(req.getName());
-         builtRows[3].append(req.getArtifactType().getName());
+         row[2] = req.getName();
+         row[3] = req.getArtifactType().getName();
          String subsystem = "Not specified";
          if (req.getAttributeCount(CoreAttributeTypes.Subsystem) > 0) {
             subsystem = req.getSoleAttributeAsString(CoreAttributeTypes.Subsystem);
          }
-         builtRows[4].append(subsystem);
+         row[4] = subsystem;
          Integer counter = summarySubsystemCounter.get(subsystem);
          if (counter == null) {
             counter = new Integer(1);
@@ -241,89 +248,118 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
             counter = new Integer(counter.intValue() + 1);
          }
          summarySubsystemCounter.put(subsystem, counter);
-         String newline = "";
-         boolean foundTrace = false;
-         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement)) {
-            builtRows[5].append(newline);
-            builtRows[5].append(REQUIREMENT_TRACE_TYPE);
-            builtRows[6].append(newline);
-            if (subSysReq.getAttributeCount(CoreAttributeTypes.Category) > 0) {
-               builtRows[6].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.Category));
-            }
-            builtRows[7].append(newline);
-            if (subSysReq.getAttributeCount(CoreAttributeTypes.ParagraphNumber) > 0) {
-               builtRows[7].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
-            }
-            builtRows[8].append(newline);
-            builtRows[8].append(subSysReq.getName());
-            builtRows[9].append(newline);
-            builtRows[9].append(subSysReq.getArtifactType().getName());
-            List<String> qualificationMethods = subSysReq.getAttributeValues(CoreAttributeTypes.QualificationMethod);
-            builtRows[10].append(newline);
-            if (qualificationMethods.size() > 0) {
-               Iterator<String> iter = qualificationMethods.iterator();
-               builtRows[10].append(iter.next());
-               while (iter.hasNext()) {
-                  builtRows[10].append(iter.next());
+         ResultSet<ArtifactReadable> subSystemRequirements =
+            req.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement);
+         if (subSystemRequirements.size() < 1) {
+            for (int i = 0; i < 11; i++) {
+               if (Strings.isInValid(row[i])) {
+                  row[i] = " ";
                }
             }
-            newline = "\n";
-            foundTrace = true;
-         }
-         if (foundTrace) {
-            counter = summaryTraceCounter.get(subsystem);
-            if (counter == null) {
-               counter = new Integer(1);
-            } else {
-               counter = new Integer(counter.intValue() + 1);
-            }
-            summaryTraceCounter.put(subsystem, counter);
-         }
+            writer.writeRow((Object[]) row);
+         } else {
+            boolean foundTrace = false;
+            for (ArtifactReadable subSysReq : subSystemRequirements) {
 
-         foundTrace = false;
-         for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.Allocation_Component)) {
-            builtRows[5].append(newline);
-            builtRows[5].append(ALLOCATION_TRACE_TYPE);
-            builtRows[6].append(newline);
-            if (subSysReq.getAttributeCount(CoreAttributeTypes.Category) > 0) {
-               builtRows[6].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.Category));
-            }
-            builtRows[7].append(newline);
-            if (subSysReq.getAttributeCount(CoreAttributeTypes.ParagraphNumber) > 0) {
-               builtRows[7].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
-            }
-            builtRows[8].append(newline);
-            builtRows[8].append(subSysReq.getName());
-            builtRows[9].append(newline);
-            builtRows[9].append(subSysReq.getArtifactType().getName());
-            List<String> qualificationMethods = subSysReq.getAttributeValues(CoreAttributeTypes.QualificationMethod);
-            builtRows[10].append(newline);
-            if (qualificationMethods.size() > 0) {
-               Iterator<String> iter = qualificationMethods.iterator();
-               builtRows[10].append(iter.next());
-               while (iter.hasNext()) {
-                  builtRows[10].append(iter.next());
+               row[5] = REQUIREMENT_TRACE_TYPE;
+
+               if (subSysReq.getAttributeCount(CoreAttributeTypes.Category) > 0) {
+                  row[6] = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.Category);
+               }
+
+               if (subSysReq.getAttributeCount(CoreAttributeTypes.ParagraphNumber) > 0) {
+                  row[7] = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber);
+               }
+               if (checkName(subSysReq.getArtifactType().getName())) {
+                  fixupParagraphNumber(row, subSysReq);
+                  row[8] = subSysReq.getSoleAttributeAsString(SRSName);
+               } else {
+                  row[8] = subSysReq.getName();
+               }
+
+               row[9] = subSysReq.getArtifactType().getName();
+               List<String> qualificationMethods = subSysReq.getAttributeValues(CoreAttributeTypes.QualificationMethod);
+
+               if (qualificationMethods.size() > 0) {
+                  Iterator<String> iter = qualificationMethods.iterator();
+                  row[10] = iter.next();
+                  while (iter.hasNext()) {
+                     row[10] += ", ";
+                     row[10] += iter.next();
+                  }
+               }
+               foundTrace = true;
+               for (int i = 0; i < 11; i++) {
+                  if (Strings.isInValid(row[i])) {
+                     row[i] = " ";
+                  }
+               }
+               writer.writeRow((Object[]) row);
+               for (int i = 0; i < 11; ++i) {
+                  row[i] = "";
                }
             }
-            newline = "\n";
-            foundTrace = true;
-         }
-         if (foundTrace) {
-            counter = summaryAllocationCounter.get(subsystem);
-            if (counter == null) {
-               counter = new Integer(1);
-            } else {
-               counter = new Integer(counter.intValue() + 1);
+            if (foundTrace) {
+               counter = summaryTraceCounter.get(subsystem);
+               if (counter == null) {
+                  counter = new Integer(1);
+               } else {
+                  counter = new Integer(counter.intValue() + 1);
+               }
+               summaryTraceCounter.put(subsystem, counter);
             }
-            summaryAllocationCounter.put(subsystem, counter);
          }
-         for (int i = 0; i < 11; i++) {
-            row[i] = builtRows[i].toString();
-         }
-         nullEmptyCells(row);
-         writer.writeRow((Object[]) row);
       }
       writer.endSheet();
+   }
+
+   private void fixupParagraphNumber(String[] row, ArtifactReadable subSysReq) {
+      if (hierarchyComparator == null) {
+         hierarchyComparator = new OseeHierarchyComparator(activityLog);
+         ArtifactReadable grandParent = subSysReq.getParent().getParent();
+         List<ArtifactReadable> children =
+            queryApi.fromBranch(branch).andRelatedRecursive(CoreRelationTypes.DefaultHierarchical_Child,
+               grandParent).getResults().getList();
+         children.sort(hierarchyComparator);
+      }
+      if (Strings.isInValid(row[7])) {
+         row[7] = convertParagraphNumber(hierarchyComparator.getHierarchyPosition(subSysReq));
+      }
+   }
+
+   private String convertParagraphNumber(String given) {
+      if (given.startsWith("6.9.2")) {
+         // warning
+         return given.replaceFirst("6\\.9\\.2", "B\\.1");
+      }
+      if (given.startsWith("6.9.3")) {
+         // caution
+         return given.replaceFirst("6\\.9\\.3", "B\\.2");
+      }
+      if (given.startsWith("6.9.4")) {
+         // advisory
+         return given.replaceFirst("6\\.9\\.4", "B\\.3");
+      }
+      return "";
+   }
+
+   private boolean checkName(String name) {
+      if ("Warning".equals(name)) {
+         return true;
+      }
+      if ("Caution".equals(name)) {
+         return true;
+      }
+      if ("Advisory".equals(name)) {
+         return true;
+      }
+      if ("Fault".equals(name)) {
+         return true;
+      }
+      if ("Exceedance".equals(name)) {
+         return true;
+      }
+      return false;
    }
 
    private void writeSummarySheet() throws IOException {
@@ -354,28 +390,8 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          row[1] = counter.toString();
          writer.writeRow((Object[]) row);
       }
-      writer.endRow(); // blank row
-
-      row[0] = "Subsystem";
-      row[1] = "Number of System requirements traced to allocation components";
-      writer.writeRow((Object[]) row);
-      for (String subsystem : summaryAllocationCounter.keySet()) {
-         row[0] = subsystem;
-         Integer counter = summaryAllocationCounter.get(subsystem);
-         row[1] = counter.toString();
-         writer.writeRow((Object[]) row);
-      }
 
       writer.endSheet();
-   }
-
-   private void nullEmptyCells(String[] row) {
-      for (int i = 0; i < row.length; i++) {
-         String trimmed = row[i].trim().replaceAll("\n", "");
-         if (!Strings.isValid(trimmed)) {
-            row[i] = null;
-         }
-      }
    }
 
    private Collection<ArtifactTypeToken> convertStringTypes(String csvTypes) {
