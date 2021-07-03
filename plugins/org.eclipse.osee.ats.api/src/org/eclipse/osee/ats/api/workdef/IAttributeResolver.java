@@ -103,7 +103,7 @@ public interface IAttributeResolver {
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString(separator, strs);
    }
 
-   List<String> getAttributesToStringList(ArtifactId customizeStoreArt, AttributeTypeToken attributeType);
+   List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType);
 
    List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType);
 

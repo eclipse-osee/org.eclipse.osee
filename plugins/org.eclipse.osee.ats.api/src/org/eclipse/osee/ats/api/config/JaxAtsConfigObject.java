@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
@@ -22,6 +24,8 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsConfigObject {
 
    protected boolean active = false;
+   private String programId;
+   private List<String> cscis = new ArrayList<>();
 
    public JaxAtsConfigObject() {
       this(Id.SENTINEL, "");
@@ -39,6 +43,22 @@ public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsCon
    @Override
    public void setActive(boolean active) {
       this.active = active;
+   }
+
+   public String getProgramId() {
+      return programId;
+   }
+
+   public void setProgramId(String programId) {
+      this.programId = programId;
+   }
+
+   public List<String> getCscis() {
+      return cscis;
+   }
+
+   public void setCscis(List<String> cscis) {
+      this.cscis = cscis;
    }
 
 }

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.query;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -54,11 +54,7 @@ public class AtsConfigCacheQueryImpl implements IAtsConfigCacheQuery {
                }
             }
             if (workTypes != null && !workTypes.isEmpty()) {
-               List<String> workTypeStrs = new ArrayList<>();
-               for (WorkType workType : workTypes) {
-                  workTypeStrs.add(workType.name());
-               }
-               if (!workTypeStrs.contains(teamDef.getWorkType())) {
+               if (Collections.setIntersection(workTypes, teamDef.getWorkTypes()).size() == 0) {
                   continue;
                }
             }

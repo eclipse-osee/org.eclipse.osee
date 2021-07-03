@@ -18,23 +18,17 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
@@ -136,7 +130,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                   configs.setTopTeamDefinition(ArtifactId.valueOf(art.getId()));
                }
                teamDef.setAtsApi(atsApi);
-               addExtraAttributes(teamDef, atsApi);
             } else if (art.isOfType(ActionableItem)) {
                ActionableItem ai = atsApi.getActionableItemService().createActionableItem(art);
                configs.addAi(ai);
@@ -145,18 +138,17 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                   configs.setTopActionableItem(ArtifactId.valueOf(art.getId()));
                }
                ai.setAtsApi(atsApi);
-               addExtraAttributes(ai, atsApi);
             } else if (art.isOfType(Version)) {
                Version version = atsApi.getVersionService().createVersion(art);
                configs.addVersion(version);
                handleVersion(art, version, idToArtifact, configs);
                version.setAtsApi(atsApi);
-               addExtraAttributes(version, atsApi);
             } else if (art.isOfType(CoreArtifactTypes.User)) {
                AtsUser user = AtsUserServiceServerImpl.valueOf(art);
                configs.addUser(user);
                user.setAtsApi(atsApi);
-               addExtraAttributes(user, atsApi);
+               user.getTags().addAll(
+                  atsApi.getAttributeResolver().getAttributeValues(art, CoreAttributeTypes.StaticId));
             }
             idToArtifact.put(art.getId(), art);
          } catch (Exception ex) {
@@ -200,44 +192,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          }
       }
       return configs.getAtsConfig();
-   }
-
-   /**
-    * Add WorkType and StaticIds as appropriate
-    */
-   private void addExtraAttributes(IAtsObject atsObject, AtsApi atsApi) {
-      if (atsObject instanceof IAtsWorkItem) {
-         IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         for (IAtsActionableItem ai : atsApi.getActionableItemService().getActionableItems(workItem)) {
-            Collection<String> workTypeStrs =
-               atsApi.getAttributeResolver().getAttributeValues(ai, AtsAttributeTypes.WorkType);
-            for (String workTypeStr : workTypeStrs) {
-               try {
-                  WorkType workType = WorkType.valueOfOrNone(workTypeStr);
-                  if (workType != WorkType.None) {
-                     ai.getWorkTypes().add(workType);
-                  }
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         }
-      } else {
-         Collection<String> workTypeStrs =
-            atsApi.getAttributeResolver().getAttributeValues(atsObject, AtsAttributeTypes.WorkType);
-         for (String workTypeStr : workTypeStrs) {
-            try {
-               WorkType workType = WorkType.valueOfOrNone(workTypeStr);
-               if (workType != WorkType.None) {
-                  atsObject.getWorkTypes().add(workType);
-               }
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-      }
-      atsObject.getTags().addAll(
-         atsApi.getAttributeResolver().getAttributeValues(atsObject, CoreAttributeTypes.StaticId));
    }
 
    private TeamDefinition handleTeamDef(ArtifactReadable teamDefArt, TeamDefinition teamDef, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {

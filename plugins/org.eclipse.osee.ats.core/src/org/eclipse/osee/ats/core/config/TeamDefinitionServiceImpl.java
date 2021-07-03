@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -89,10 +91,25 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
       teamDef.setGuid(teamDefArt.getGuid());
       teamDef.setActive(
          atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.Active, true));
-      teamDef.setWorkType(
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.WorkType, ""));
+      for (String workTypeStr : atsApi.getAttributeResolver().getAttributesToStringList(teamDefArt,
+         AtsAttributeTypes.WorkType)) {
+         WorkType workType = WorkType.valueOfOrNone(workTypeStr);
+         if (workType.isNotNone()) {
+            teamDef.getWorkTypes().add(workType);
+         }
+      }
+      teamDef.getTags().addAll(
+         atsApi.getAttributeResolver().getAttributeValues(teamDefArt, CoreAttributeTypes.StaticId));
       Collection<ArtifactToken> ais =
          atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem);
+      ArtifactId programId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt,
+         AtsAttributeTypes.ProgramId, ArtifactId.SENTINEL);
+      if (programId.isValid()) {
+         teamDef.setProgramId(programId.getIdString());
+      }
+      for (String csci : atsApi.getAttributeResolver().getAttributesToStringList(teamDefArt, AtsAttributeTypes.CSCI)) {
+         teamDef.getCscis().add(csci);
+      }
       for (ArtifactToken ai : ais) {
          teamDef.addAi(ai);
       }

@@ -83,6 +83,16 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
             return false;
          }
 
+         @Override
+         public String getProgramId() {
+            return null;
+         }
+
+         @Override
+         public Collection<String> getCscis() {
+            return null;
+         }
+
       }
       return new IAtsTeamDefinitionSentinel();
    }
@@ -92,5 +102,9 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
    Collection<TeamDefinition> getChildrenTeamDefs();
 
    boolean hasWorkPackages();
+
+   public String getProgramId();
+
+   public Collection<String> getCscis();
 
 }

@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -42,6 +43,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -93,6 +95,22 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
       ai.setName(aiArt.getName());
       ai.setId(aiArt.getId());
       ai.setGuid(aiArt.getGuid());
+      ArtifactId programId =
+         atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.ProgramId, ArtifactId.SENTINEL);
+      if (programId.isValid()) {
+         ai.setProgramId(programId.getIdString());
+      }
+      for (String workTypeStr : atsApi.getAttributeResolver().getAttributesToStringList(aiArt,
+         AtsAttributeTypes.WorkType)) {
+         WorkType workType = WorkType.valueOfOrNone(workTypeStr);
+         if (workType.isNotNone()) {
+            ai.getWorkTypes().add(workType);
+         }
+      }
+      ai.getTags().addAll(atsApi.getAttributeResolver().getAttributeValues(aiArt, CoreAttributeTypes.StaticId));
+      for (String csci : atsApi.getAttributeResolver().getAttributesToStringList(aiArt, AtsAttributeTypes.CSCI)) {
+         ai.getCscis().add(csci);
+      }
       ai.setDescription(atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, Description, ""));
       ai.setActive(atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.Active, true));
       ai.setActionable(atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.Actionable, true));

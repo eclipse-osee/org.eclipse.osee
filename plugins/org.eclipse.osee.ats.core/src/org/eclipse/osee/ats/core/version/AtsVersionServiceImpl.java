@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -43,6 +44,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -121,6 +123,14 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.NextVersion, false));
       version.setBaselineBranch(BranchId.valueOf(
          atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1")));
+      for (String workTypeStr : atsApi.getAttributeResolver().getAttributesToStringList(verArt,
+         AtsAttributeTypes.WorkType)) {
+         WorkType workType = WorkType.valueOfOrNone(workTypeStr);
+         if (workType.isNotNone()) {
+            version.getWorkTypes().add(workType);
+         }
+      }
+      version.getTags().addAll(atsApi.getAttributeResolver().getAttributeValues(verArt, CoreAttributeTypes.StaticId));
       return version;
    }
 

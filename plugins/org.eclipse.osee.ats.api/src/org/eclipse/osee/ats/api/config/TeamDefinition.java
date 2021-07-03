@@ -38,7 +38,6 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
    Set<Long> ais = new HashSet<>();
    Set<Long> versions = new HashSet<>();
    Set<Long> children = new HashSet<>();
-   String workType;
    boolean hasWorkPackages = false;
 
    public TeamDefinition() {
@@ -93,14 +92,6 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
 
    public void addAi(Long aiId) {
       ais.add(aiId);
-   }
-
-   public String getWorkType() {
-      return workType;
-   }
-
-   public void setWorkType(String workType) {
-      this.workType = workType;
    }
 
    @Override

@@ -97,4 +97,10 @@ public class WorkType extends OseeEnum {
    public void setDescription(String description) {
       this.description = description;
    }
+
+   @JsonIgnore
+   public boolean isNotNone() {
+      return !this.equals(WorkType.None);
+   }
+
 }

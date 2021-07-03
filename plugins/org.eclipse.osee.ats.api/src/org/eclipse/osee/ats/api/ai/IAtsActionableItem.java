@@ -93,6 +93,16 @@ public interface IAtsActionableItem extends IAtsConfigObject {
             return false;
          }
 
+         @Override
+         public String getProgramId() {
+            return null;
+         }
+
+         @Override
+         public Collection<String> getCscis() {
+            return null;
+         }
+
       }
       return new IAtsActionableItemSentinel();
    }
@@ -106,5 +116,9 @@ public interface IAtsActionableItem extends IAtsConfigObject {
    public boolean isAllowUserActionCreation();
 
    public IAtsTeamDefinition getTeamDefinition();
+
+   public String getProgramId();
+
+   public Collection<String> getCscis();
 
 }
