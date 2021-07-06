@@ -4,6 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,6 +20,7 @@ import { EditSubMessageFieldComponent } from './components/sub-message-table/edi
 import { SubMessageTableComponent } from './components/sub-message-table/sub-message-table.component';
 
 import { MessageInterfaceComponent } from './message-interface.component';
+import { MessageTableComponentMock } from './mocks/components/MessageTableComponent.mock';
 import { ConvertMessageTableTitlesToStringPipe } from './pipes/convert-message-table-titles-to-string.pipe';
 import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message-titles-to-string.pipe';
 import { CurrentMessagesService } from './services/current-messages.service';
@@ -34,7 +36,7 @@ describe('MessageInterfaceComponent', () => {
     interfaceMessageRate: '50Hz',
     interfaceMessageNumber: '0',
     interfaceMessagePeriodicity: '1Hz',
-    interfaceMessageWriteAccess: 'true',
+    interfaceMessageWriteAccess: true,
     interfaceMessageType: 'Connection',
     subMessages: [{
       id: '0',
@@ -58,8 +60,9 @@ describe('MessageInterfaceComponent', () => {
         MatTooltipModule,
         OseeStringUtilsDirectivesModule,
         OseeStringUtilsPipesModule,
-        MatDialogModule],
-      declarations: [MessageInterfaceComponent, MessageTableComponent, SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent, EditMessageFieldComponent, AddMessageDialogComponent],
+        MatDialogModule,
+        MatProgressBarModule],
+      declarations: [MessageInterfaceComponent, MessageTableComponentMock],
       providers: [{
         provide: CurrentMessagesService, useValue: {
           filter: '',

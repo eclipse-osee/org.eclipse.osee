@@ -12,26 +12,45 @@
     <br>
     <mat-form-field>
         <label>Rate</label>
-        <input matInput type="text" [(ngModel)]="data.interfaceMessageRate" #input required>
+        <!-- <input matInput type="text" [(ngModel)]="data.interfaceMessageRate" #input required> -->
+        <mat-select [(ngModel)]="data.interfaceMessageRate" required>
+            <mat-option *ngFor="let option of (rates|async)" [value]="option" >
+                {{option}} Hz
+            </mat-option>
+        </mat-select>
     </mat-form-field>
     <br>
     <mat-form-field>
         <label>Periodicity</label>
-        <input matInput type="text" [(ngModel)]="data.interfaceMessagePeriodicity" #input required>
+        <!-- <input matInput type="text" [(ngModel)]="data.interfaceMessagePeriodicity" #input required> -->
+        <mat-select [(ngModel)]="data.interfaceMessagePeriodicity" required>
+            <mat-option *ngFor="let option of (periodicities|async)" [value]="option" >
+                {{option}}
+            </mat-option>
+        </mat-select>
     </mat-form-field>
     <br>
     <!-- <mat-form-field>
         <label>Read/Write</label>
         <input matInput type="text" [(ngModel)]="data.interfaceMessageWriteAccess" #input required>
     </mat-form-field> -->
-    <mat-slide-toggle [(ngModel)]="data.interfaceMessageWriteAccess" labelPosition='before'>
-        Read
+    <mat-slide-toggle [(ngModel)]="data.interfaceMessageWriteAccess" [labelPosition]='data.interfaceMessageWriteAccess? "after":"before"'>
+        <ng-container *ngIf="data.interfaceMessageWriteAccess;else read">
+            Writable
+        </ng-container>
+        <ng-template #read>
+            Read Only
+        </ng-template>
     </mat-slide-toggle>
-    Write
     <br>
     <mat-form-field>
         <label>Type</label>
-        <input matInput type="text" [(ngModel)]="data.interfaceMessageType" #input required>
+        <!-- <input matInput type="text" [(ngModel)]="data.interfaceMessageType" #input required> -->
+        <mat-select [(ngModel)]="data.interfaceMessageType" required>
+            <mat-option *ngFor="let option of (types|async)" [value]="option" >
+                {{option}}
+            </mat-option>
+        </mat-select>
     </mat-form-field>
     <br>
     <mat-form-field>

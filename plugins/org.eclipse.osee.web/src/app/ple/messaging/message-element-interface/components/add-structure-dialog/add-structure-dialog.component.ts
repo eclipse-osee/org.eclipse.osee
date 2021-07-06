@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
+import { EnumsService } from '../../../shared/services/http/enums.service';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
 import { structure } from '../../types/structure';
@@ -13,8 +14,9 @@ import { structure } from '../../types/structure';
 export class AddStructureDialogComponent implements OnInit {
 
   availableStructures = this.structures.availableStructures;
+  categories = this.enumService.categories;
   storedId:string='-1'
-  constructor(private structures:CurrentStateService,public dialogRef: MatDialogRef<AddStructureDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddStructureDialog) { }
+  constructor(private structures:CurrentStateService,public dialogRef: MatDialogRef<AddStructureDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddStructureDialog, private enumService: EnumsService) { }
 
   ngOnInit(): void {
   }

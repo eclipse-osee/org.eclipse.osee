@@ -28,6 +28,7 @@
     @include ple.messages-messaging-message-interface-elements-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-interface-interface-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-interface-types-theme($modern-ple-light-theme,$modern-ple-typography);
+    @include ple.messages-messaging-message-typeSearch-theme($modern-ple-light-theme);
 
 .dark-theme{
     @include angular-material-color($modern-ple-dark-theme);
@@ -37,6 +38,7 @@
     @include ple.plconfig-dropdown-feature-color($modern-ple-dark-theme);
     @include ple.plconfig-dropdown-configuration-group-color($modern-ple-dark-theme);
     @include ple.plconfig-branch-selector-radio-color($modern-ple-dark-theme);
+    @include ple.messages-messaging-message-typeSearch-theme($modern-ple-dark-theme);
 }
 
 

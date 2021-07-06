@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
+import { EnumsService } from '../../../shared/services/http/enums.service';
 import { CurrentStateService } from '../../services/current-state.service';
 
 interface structure {
@@ -36,7 +37,8 @@ export class EditStructureFieldComponent implements OnInit {
     }),
     switchMap(val=>this.structureService.partialUpdateStructure(this._structure))
   )
-  constructor (private structureService: CurrentStateService) {
+  categories= this.enumService.categories;
+  constructor (private structureService: CurrentStateService, private enumService: EnumsService) {
     this._sendValue.subscribe();
    }
 

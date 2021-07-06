@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -61,7 +62,7 @@ describe('SubElementTableComponent', () => {
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
     await TestBed.configureTestingModule({
-      imports:[MatTableModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
+      imports:[MatTableModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
       declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent],
       providers: [{ provide: Router, useValue: router }, {
         provide: ActivatedRoute, useValue: {

@@ -27,11 +27,11 @@
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Max Simultaneity</mat-label>
-                <input matInput [(ngModel)]="data.structure.interfaceMaxSimultaneity" required>
+                <input matInput type="number" [(ngModel)]="data.structure.interfaceMaxSimultaneity" required>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Min Simultaneity</mat-label>
-                <input matInput [(ngModel)]="data.structure.interfaceMinSimultaneity" required>
+                <input matInput type="number" [(ngModel)]="data.structure.interfaceMinSimultaneity" required>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Task File Type</mat-label>
@@ -39,11 +39,18 @@
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Category</mat-label>
-                <input matInput [(ngModel)]="data.structure.interfaceStructureCategory" required>
+                <!-- <input matInput [(ngModel)]="data.structure.interfaceStructureCategory" required> -->
+                <mat-select [(ngModel)]="data.structure.interfaceStructureCategory" required>
+                    <mat-option *ngFor="let option of (categories|async)" [value]="option" >
+                        {{option}}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
         </div>
         <button mat-raised-button matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" *ngIf="data.structure.name.length>0 && data.structure.description.length>0 && data.structure.interfaceMaxSimultaneity.length >0 && data.structure.interfaceMinSimultaneity.length >0 && data.structure.interfaceTaskFileType!==undefined && data.structure.interfaceStructureCategory.length>0" matStepperNext>Next</button>
+        <ng-container *ngIf="data.structure.name!=='' && data.structure.description!=='' && data.structure.interfaceMaxSimultaneity !=='' && data.structure.interfaceMinSimultaneity !=='' && data.structure.interfaceTaskFileType!==undefined && data.structure.interfaceStructureCategory!==''">
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </ng-container>
     </mat-step>
     <mat-step label="Review" #step3>
         <div style="display:flex;flex-direction:column">

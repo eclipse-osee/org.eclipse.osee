@@ -11,9 +11,9 @@
             </ng-container>
         </ng-container>
         <ng-template #no_edit>
-            <div *ngIf="subHeader==='description'||subHeader==='EnumLiteralsDesc'||subHeader==='Notes'" [matTooltip]="value[subHeader]" [matTooltipDisabled]="value[subHeader].length<15" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader] | displayTruncatedStringWithFieldOverflow:15" classToApply="ple-message-element-interface-table-highlighted-text">
+            <div *ngIf="subHeader==='description'||subHeader==='EnumLiteralsDesc'||subHeader==='notes'" [matTooltip]="value[subHeader]" [matTooltipDisabled]="value[subHeader].length<15" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader] | displayTruncatedStringWithFieldOverflow:15" classToApply="ple-message-element-interface-table-highlighted-text">
             </div>
-            <div *ngIf="subHeader!=='Notes' &&subHeader!=='platformTypeName2' && subHeader!=='name' && subHeader !=='description'" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]" classToApply="ple-message-element-interface-table-highlighted-text">
+            <div *ngIf="subHeader!=='notes' &&subHeader!=='platformTypeName2' && subHeader!=='name' && subHeader !=='description'" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]" classToApply="ple-message-element-interface-table-highlighted-text">
                 <!-- subHeader!=='description'&&subHeader!=='EnumLiteralsDesc'&& -->
                 {{value[subHeader]}}
             </div>

@@ -1,0 +1,8 @@
+<mat-form-field appearance="fill">
+    <mat-label>Select a Branch</mat-label>
+    <mat-select (selectionChange)="selectBranch($event)" [disabled]="(selectedBranchType |async)?.length ==0" [(value)]="selectedBranchId" required>
+        <mat-option *ngFor="let option of (options |async)" [value]="option.id" [id]="option.id" >
+            {{option.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>

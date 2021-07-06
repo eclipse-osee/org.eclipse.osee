@@ -23,6 +23,7 @@ import { CurrentStateService } from './services/current-state.service';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { EditElementFieldComponent } from './components/sub-element-table/edit-element-field/edit-element-field.component';
 import { EditStructureFieldComponent } from './components/edit-structure-field/edit-structure-field.component';
+import { EditStructureFieldComponentMock } from './mocks/components/EditStructureField.mock';
 
 let loader: HarnessLoader;
 
@@ -50,7 +51,7 @@ describe('MessageElementInterfaceComponent', () => {
         SubElementTableComponent,
         ConvertMessageInterfaceTitlesToStringPipe,
         EditElementFieldComponent,
-        EditStructureFieldComponent
+        EditStructureFieldComponentMock
       ],
       providers: [
         { provide: Router, useValue: { navigate: () => {} } },

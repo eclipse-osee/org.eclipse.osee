@@ -1,5 +1,4 @@
 <mat-form-field>
-    <mat-label>{{header|convertMessageInterfaceTitlesToString}}</mat-label>
     <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2'">
     <ng-container *ngIf="header==='name'">
         <ng-container *ngIf="elementEnd-elementStart>0">

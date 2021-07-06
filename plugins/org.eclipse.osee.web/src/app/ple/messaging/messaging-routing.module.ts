@@ -8,6 +8,9 @@ const routes: Routes = [
   { path: ':branchType/:branchId/messages', loadChildren: () => import('./message-interface/message-interface.module').then(m => m.MessageInterfaceModule) },
   { path: ':branchType/:branchId/types', loadChildren: () => import('./types-interface/types-interface.module').then(m => m.TypesInterfaceModule) },
   { path: ':branchType/:branchId/types/:type', loadChildren: () => import('./types-interface/types-interface.module').then(m => m.TypesInterfaceModule) },
+  { path: 'typeSearch', loadChildren: () => import('./type-element-search/type-element-search.module').then(m => m.TypeElementSearchModule) },
+  { path: ':branchType/typeSearch', loadChildren: () => import('./type-element-search/type-element-search.module').then(m => m.TypeElementSearchModule) },
+  { path: ':branchType/:branchId/typeSearch', loadChildren: () => import('./type-element-search/type-element-search.module').then(m => m.TypeElementSearchModule) },
 ];
 
 @NgModule({

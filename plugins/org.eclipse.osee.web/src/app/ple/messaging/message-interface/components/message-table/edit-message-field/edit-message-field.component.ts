@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
+import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 
 interface message {
@@ -37,7 +38,11 @@ export class EditMessageFieldComponent implements OnInit {
     }),
     switchMap(val=>this.messageService.partialUpdateMessage(this._message))
   )
-  constructor (private messageService: CurrentMessagesService) {
+
+  rates = this.enumService.rates;
+  types = this.enumService.types;
+  periodicities = this.enumService.periodicities;
+  constructor (private messageService: CurrentMessagesService, private enumService: EnumsService) {
     this._sendValue.subscribe();
    }
 

@@ -36,6 +36,7 @@ public class MimApplication extends Application {
       int i = 1;
       resources.add(new LogicalTypeEndpointImpl(mimApi));
       resources.add(new BranchAccessor(mimApi));
+      resources.add(new EnumEndpointImpl());
    }
 
    public void stop() {

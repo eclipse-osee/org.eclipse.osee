@@ -1,0 +1,6 @@
+<mat-radio-group
+(change)="selectType($event.value)" [(ngModel)]="branchType">
+    <mat-radio-button *ngFor="let type of branchTypes" [value]="type.toLowerCase()" [id]="type.toLowerCase()" [name]="type.toLowerCase()" [ngClass]="branchType === type.toLowerCase() ? 'messaging-typeSearch-radio-option-selected' : 'messaging-typeSearch-radio-option'" color="primary">
+        {{type}}
+    </mat-radio-button>
+</mat-radio-group>

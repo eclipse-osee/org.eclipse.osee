@@ -24,7 +24,8 @@ import { BehaviorSubject, of } from 'rxjs';
 import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
-import { EditMessageFieldComponent } from './edit-message-field/edit-message-field.component';
+import { EditMessageFieldComponentMock } from '../../mocks/components/EditMessageField.mock';
+import { SubMessageTableComponentMock } from '../../mocks/components/SubMessageTable.mock';
 
 let loader: HarnessLoader;
 
@@ -38,7 +39,7 @@ describe('MessageTableComponent', () => {
     interfaceMessageRate: '50Hz',
     interfaceMessageNumber: '0',
     interfaceMessagePeriodicity: '1Hz',
-    interfaceMessageWriteAccess: 'true',
+    interfaceMessageWriteAccess: true,
     interfaceMessageType: 'Connection',
     subMessages: [{
       id: '0',
@@ -64,7 +65,7 @@ describe('MessageTableComponent', () => {
         MatDialogModule,
         RouterTestingModule
       ],
-      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponent, ConvertSubMessageTitlesToStringPipe, EditMessageFieldComponent],
+      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock],
       providers: [{
         provide: CurrentMessagesService, useValue: {
           messages: of(expectedData),
