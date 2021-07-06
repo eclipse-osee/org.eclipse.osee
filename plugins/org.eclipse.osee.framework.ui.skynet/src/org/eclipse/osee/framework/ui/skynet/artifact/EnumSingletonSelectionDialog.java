@@ -15,9 +15,13 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -43,13 +47,19 @@ public class EnumSingletonSelectionDialog extends ListDialog {
 
    public EnumSingletonSelectionDialog(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
       super(Displays.getActiveShell());
-      Set<String> options;
+      Set<String> options = new HashSet<>();
       try {
-         options = attributeType.toEnum().getEnumStrValues();
+
+         Artifact artifact = artifacts.iterator().next();
+         ArtifactTypeToken artType = artifact.getArtifactType();
+         @SuppressWarnings("unchecked")
+         List<EnumToken> validEnumValues = artType.getValidEnumValues((AttributeTypeEnum<EnumToken>) attributeType);
+         for (EnumToken enumTok : validEnumValues) {
+            options.add(enumTok.getName());
+         }
          isRemoveAllAllowed = AttributeTypeManager.checkIfRemovalAllowed(attributeType, artifacts);
 
       } catch (OseeCoreException ex) {
-         options = new HashSet<>();
          options.add(ex.getLocalizedMessage());
       }
       setInput(options);

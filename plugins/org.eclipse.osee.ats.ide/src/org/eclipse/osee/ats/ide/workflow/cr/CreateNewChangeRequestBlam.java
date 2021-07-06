@@ -157,11 +157,15 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       wb.andXCombo(PROGRAM, Collections.emptyList()).andRequired().endWidget();
       wb.andXText(TITLE).andRequired().endWidget();
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
-      wb.andXCombo(AtsAttributeTypes.ChangeType).andComposite(getChangeTypeRowColumns()).andRequired().endWidget();
+      addChangeTypeCombo();
       wb.andXCombo(getPriorityAttr()).andRequired().endWidget();
       addWidgetAfterPriority();
       wb.andXDate(AtsAttributeTypes.NeedBy).endComposite().endWidget();
       return wb.getItems();
+   }
+
+   private void addChangeTypeCombo() {
+      wb.andXCombo(AtsAttributeTypes.ChangeType).andComposite(getChangeTypeRowColumns()).andRequired().endWidget();
    }
 
    protected void addWidgetAfterPriority() {

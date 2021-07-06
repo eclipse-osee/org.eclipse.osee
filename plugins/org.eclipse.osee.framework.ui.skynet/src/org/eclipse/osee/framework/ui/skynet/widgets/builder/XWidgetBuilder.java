@@ -101,6 +101,15 @@ public class XWidgetBuilder {
 
    }
 
+   public XWidgetBuilder andXCombo(AttributeTypeToken attrType, List<String> options) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setName(attrType.getUnqualifiedName());
+      String optionsStr = Collections.toString(",", options);
+      currItem.setXWidgetName(String.format("XCombo(%s)", optionsStr));
+      return this;
+   }
+
    public XWidgetBuilder andXCombo(String displayName, AttributeTypeToken attrType) {
       newXWidget();
       setAttrTypeSettings(attrType);

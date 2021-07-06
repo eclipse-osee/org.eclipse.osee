@@ -24,7 +24,9 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -86,7 +88,8 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
                return "";
             }
          } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
-            return "";
+            return XAbstractSignDateAndByButton.getText((Artifact) task.getStoreObject(),
+               AtsAttributeTypes.TleReviewedDate, AtsAttributeTypes.TleReviewedBy);
          } else if (xViewerColumn.getName().equals("Related Workflow")) {
             if (task.isCancelled()) {
                return "";

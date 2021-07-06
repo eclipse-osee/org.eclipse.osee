@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstViewer;
+import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
 
@@ -27,4 +28,9 @@ public class XTaskEstDemoXViewer extends XTaskEstViewer {
       super(parent, style, xViewerFactory, editor, teamWf);
    }
 
+   @Override
+   protected XTaskEstWidget getXTaskEstWidget() {
+      XTaskEstDemoWidget estWidget = new XTaskEstDemoWidget();
+      return estWidget;
+   }
 }

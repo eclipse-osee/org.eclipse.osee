@@ -60,7 +60,6 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
       "Select to create estimating tasks.  Complete all estimates/tasks.  Double-Click to open/edit task/fields.";
    private AttributeTypeToken pointsAttrType;
    private final List<Object> input = new ArrayList<>();
-   private XTaskEstViewer xTaskEstViewer;
    public static String NAME = "Estimate Manager";
 
    public XTaskEstWidget() {
@@ -75,12 +74,7 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
    }
 
    @Override
-   protected TaskXViewer createXTaskViewer(Composite tableComp) {
-      xTaskEstViewer = new XTaskEstViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-         new XTaskEstXViewerFactory(), null, teamWf);
-      xTaskViewer = xTaskEstViewer;
-      return xTaskViewer;
-   }
+   protected abstract TaskXViewer createXTaskViewer(Composite tableComp);
 
    @Override
    protected WorldLabelProvider getWorldLabelProvider(TaskXViewer xTaskViewer) {

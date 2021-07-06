@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemCheckboxStateDialog;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.demo.XTaskEstDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.sibling.operation.CreateSiblingOffTaskEstOperation;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -51,10 +50,10 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class XTaskEstViewer extends TaskXViewer {
+public abstract class XTaskEstViewer extends TaskXViewer {
 
-   private final IAtsTeamWorkflow crTeamWf;
-   private final AtsApi atsApi;
+   protected final IAtsTeamWorkflow crTeamWf;
+   protected final AtsApi atsApi;
 
    public XTaskEstViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf) {
       super(parent, style, xViewerFactory, editor, teamWf);
@@ -109,8 +108,10 @@ public class XTaskEstViewer extends TaskXViewer {
       return true;
    }
 
+   protected abstract XTaskEstWidget getXTaskEstWidget();
+
    private boolean createWorkflow(IAtsTask task) {
-      XTaskEstDemoWidget estWidget = new XTaskEstDemoWidget();
+      XTaskEstWidget estWidget = getXTaskEstWidget();
       estWidget.setArtifact((Artifact) crTeamWf.getStoreObject());
       TaskEstDefinition tedMatch = null;
       for (TaskEstDefinition ted : estWidget.getTaskEstDefs()) {
@@ -147,14 +148,19 @@ public class XTaskEstViewer extends TaskXViewer {
       // Create workflow with configured or selected AI
       XResultData rd = new XResultData();
       IAtsChangeSet changes = atsApi.createChangeSet("Create Task Est Workflow");
-      CreateSiblingOffTaskEstOperation.createTaskEstSiblingWorkflow(rd, changes, new Date(), task, useAi, teamDef,
-         assignees, action, atsApi);
+      IAtsTeamWorkflow newTeamWf = CreateSiblingOffTaskEstOperation.createTaskEstSiblingWorkflow(rd, changes,
+         new Date(), task, useAi, teamDef, assignees, action, atsApi);
+      workflowCreating(newTeamWf, changes);
       changes.execute();
       if (rd.isErrors()) {
          XResultDataUI.report(rd, "Create Task Est Workflow");
          return false;
       }
       return true;
+   }
+
+   protected void workflowCreating(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
+      // For subclass additions
    }
 
    @Override

@@ -81,7 +81,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       if (date != null) {
          User user =
             UserManager.getUserByArtId(artifact.getSoleAttributeValue(signByAttrType, SystemUser.UnAssigned.getId()));
-         return String.format("signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
+         return String.format("Signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
       }
       return NOT_YET_SIGNED;
    }
