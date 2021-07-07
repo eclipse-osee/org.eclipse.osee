@@ -68,7 +68,7 @@ public class CloneActionToGoalAction extends Action {
          Collection<? extends Artifact> selected = selectedAtsArtifacts.getSelectedAtsArtifacts();
          final Artifact dropTarget = selected.isEmpty() ? null : selected.iterator().next();
          IAtsTeamWorkflow teamWf = null;
-         if (!(dropTarget instanceof IAtsTeamWorkflow)) {
+         if (!(dropTarget instanceof IAtsTeamWorkflow) && !((IAtsTeamWorkflow) dropTarget).isChangeRequest()) {
             AWorkbench.popup("Can only clone workflow");
             return;
          }
