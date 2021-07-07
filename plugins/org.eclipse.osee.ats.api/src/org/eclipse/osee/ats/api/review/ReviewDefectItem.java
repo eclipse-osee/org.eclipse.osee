@@ -50,7 +50,9 @@ public class ReviewDefectItem {
       public static Collection<String> strValues() {
          Set<String> values = new HashSet<>();
          for (Enum<Severity> e : values()) {
-            values.add(e.name());
+            if (!e.equals(Severity.None)) {
+               values.add(e.name());
+            }
          }
          return values;
       }
