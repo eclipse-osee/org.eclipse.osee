@@ -22,6 +22,7 @@ import java.util.EnumSet;
 public enum XOption {
    NONE("", ""),
 
+   VALIDATE_DATE("validateDate", "false"),
    AUTO_SAVE("autoSave", "true"),
    NOT_AUTO_SAVE("autoSave", "false"),
    REQUIRED("required", "true"),

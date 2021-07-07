@@ -134,6 +134,7 @@ public class SwtXWidgetRenderer {
       xWidget.setNoSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_SELECT));
       xWidget.setAutoSave(xWidgetLayoutData.getXOptionHandler().contains(XOption.AUTO_SAVE));
       xWidget.setFillHorizontally(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
+      xWidget.setValidateDate(xWidgetLayoutData.getXOptionHandler().contains(XOption.VALIDATE_DATE));
       xWidget.setFillVertically(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
       if (xWidget instanceof LabelAfterWidget) {
          ((LabelAfterWidget) xWidget).setLabelAfter(

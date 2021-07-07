@@ -70,6 +70,7 @@ public abstract class XWidget {
    private String id;
    protected Object defaultValueObj;
    private boolean autoSave = false;
+   private boolean validateDate = false;
 
    public XWidget(String label) {
       this.label = label;
@@ -462,5 +463,13 @@ public abstract class XWidget {
 
    public void setAutoSave(boolean autoSave) {
       this.autoSave = autoSave;
+   }
+
+   public boolean isValidateDate() {
+      return validateDate;
+   }
+
+   public void setValidateDate(boolean validateDate) {
+      this.validateDate = validateDate;
    }
 }

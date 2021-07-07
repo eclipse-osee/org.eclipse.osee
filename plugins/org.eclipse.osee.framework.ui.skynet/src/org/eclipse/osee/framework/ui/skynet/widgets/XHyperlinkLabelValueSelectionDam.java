@@ -13,11 +13,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collections;
+import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
@@ -52,6 +54,11 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
 
    @Override
    public String getCurrentValue() {
+      // Dates are almost always just date and not timestamp; default to that for value
+      if (attributeType.isDate()) {
+         Date date = artifact.getSoleAttributeValue(attributeType, null);
+         return DateUtil.getMMDDYY(date);
+      }
       String value = artifact.getAttributesToString(attributeType);
       if (Strings.isInValid(value)) {
          value = "No Set";
@@ -113,6 +120,20 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
             }
          } catch (OseeCoreException ex) {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
+         }
+         if (status.isOK() && attributeType.isDate() && isValidateDate()) {
+            try {
+               Date date = artifact.getSoleAttributeValue(attributeType, null);
+               if (date != null) {
+                  Date today = new Date();
+                  if (date.before(today)) {
+                     status = new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Date is past today");
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
+            }
+
          }
       }
       return status;
