@@ -1,0 +1,40 @@
+<ng-container *ngIf="(data|async) as graphData">
+    <div style="width:100vw;height:80vh">
+        <ngx-graph class="chart-container" layout="dagre"
+        [nodes]="graphData.nodes" [links]="graphData.edges" [update$]="update">
+
+        <ng-template #defsTemplate>
+            <!-- <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+              <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+            </svg:marker> -->
+            <svg:marker id="arrow" viewBox="0 0 200 200" refX="160" refY="100" markerWidth="4" markerHeight="4" orient="auto">
+              <svg:line x1="0" y1="0" x2="200" y2="0" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="0" y1="0" x2="0" y2="200" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="0" y1="200" x2="200" y2="200" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="200" y1="0" x2="200" y2="200" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="0" y1="50" x2="200" y2="50" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="100" y1="50" x2="100" y2="150" stroke="black" stroke-width="4"></svg:line>
+            </svg:marker>
+          </ng-template>
+  
+          <ng-template #nodeTemplate let-node>
+            <svg:g class="node">
+              <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+              <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}</svg:text>
+            </svg:g>
+          </ng-template>
+  
+          <ng-template #linkTemplate let-link>
+            <svg:g class="edge" (click)="navigateToMessages(link.id)">
+              <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+              </svg:path>
+              <svg:text class="edge-label" text-anchor="middle">
+                <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+                  {{link.label}}
+                </textPath>
+              </svg:text>
+            </svg:g>
+          </ng-template>
+        </ngx-graph>
+    </div>
+</ng-container>

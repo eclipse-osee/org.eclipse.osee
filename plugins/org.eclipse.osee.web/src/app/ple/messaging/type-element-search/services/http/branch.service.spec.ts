@@ -27,7 +27,7 @@ describe('BranchService', () => {
   it('should query for working branches', () => {
     let testData: BranchListing[] = [];
     service.getBranches('working').subscribe();
-    const req = httpTestingController.expectOne(apiURL+'/ats/ple/branches/'+'working');
+    const req = httpTestingController.expectOne(apiURL+'/orcs/branches/'+'working');
     expect(req.request.method).toEqual('GET');
     req.flush(testData);
     httpTestingController.verify();

@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy-jetty-win":"xcopy /s \".\/dist\/osee\/production\" \"..\/org.eclipse.osee.web.deploy\/OSEE-INF\/web\/dist/\" \/Y"
+    "deploy-jetty-win": "xcopy /s \"./dist/osee/production\" \"../org.eclipse.osee.web.deploy/OSEE-INF/web/dist/\" /Y"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +22,7 @@
     "@angular/platform-browser": "~11.1.2",
     "@angular/platform-browser-dynamic": "~11.1.2",
     "@angular/router": "~11.1.2",
+    "@swimlane/ngx-graph": "^7.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"
@@ -30,6 +31,10 @@
     "@angular-devkit/build-angular": "~0.1101.4",
     "@angular/cli": "~11.1.4",
     "@angular/compiler-cli": "~11.1.2",
+    "@types/d3-dispatch": "^3.0.0",
+    "@types/d3-drag": "^3.0.0",
+    "@types/d3-shape": "^2.1.0",
+    "@types/d3-timer": "^2.0.0",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",

@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
+import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
+import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { ElementTableSearchDummy } from '../../testing/MockComponents/ElementTableSearch';
 import { elementSearch3 } from '../../testing/MockResponses/ElementSearch';
@@ -16,7 +19,8 @@ describe('ElementTableComponent', () => {
   beforeEach(async () => {
     serviceSpy = jasmine.createSpyObj('CurrentElementSearchService', {}, {elements:of(elementSearch3)})
     await TestBed.configureTestingModule({
-      imports: [MatTableModule, NoopAnimationsModule],
+      imports: [MatTableModule,SharedMessagingModule,OseeStringUtilsPipesModule,
+        OseeStringUtilsDirectivesModule, NoopAnimationsModule],
       providers:[{provide:CurrentElementSearchService,useValue:serviceSpy}],
       declarations: [ ElementTableComponent, ElementTableSearchDummy ]
     })

@@ -4,11 +4,16 @@
         <ng-container [matColumnDef]="header" *ngFor="let header of headers; let i = index; trackBy:valueTracker;">
             <th mat-header-cell *matHeaderCellDef [attr.colspan]="headers[i]" class="message-interface-table-view-message-header">
                 <ng-container>
-                    {{header}}
+                    {{header|convertMessageInterfaceTitlesToString}}
                 </ng-container>
             </th>
             <td mat-cell *matCellDef="let element; let i = dataIndex" [ngClass]="i%2===0? 'message-table-row-even':'message-table-row-odd'">
-                {{element[header]}}
+                <ng-container *ngIf="header === 'notes' || header === 'description'; else noShrink">
+                    {{element[header] | displayTruncatedStringWithFieldOverflow:15}}
+                </ng-container>
+                <ng-template #noShrink>
+                    {{element[header]}}
+                </ng-template>
             </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="headers; sticky:true">

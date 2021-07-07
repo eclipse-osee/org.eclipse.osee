@@ -13,6 +13,9 @@ import { ElementTableComponent } from './components/element-table/element-table.
 import { ElementTableSearchComponent } from './components/element-table-search/element-table-search.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
+import { SharedMessagingModule } from '../shared/shared-messaging.module';
+import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
+import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 
 
 @NgModule({
@@ -25,6 +28,9 @@ import { MatTableModule } from '@angular/material/table';
     MatInputModule,
     MatSelectModule,
     MatTableModule,
+    SharedMessagingModule,
+    OseeStringUtilsPipesModule,
+    OseeStringUtilsDirectivesModule,
     TypeElementSearchRoutingModule
   ]
 })

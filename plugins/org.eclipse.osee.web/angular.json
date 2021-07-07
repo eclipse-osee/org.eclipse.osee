@@ -121,7 +121,8 @@
             "karmaConfig": "karma.conf.js",
             "codeCoverageExclude": [
               "src/app/ple/plconfig/types/**",
-              "src/app/ple/plconfig/testing/**"
+              "src/app/ple/plconfig/testing/**",
+              "src/app/ple/messaging/connection-view/mock/**"
             ],
             "assets": [
               "src/favicon.ico",
