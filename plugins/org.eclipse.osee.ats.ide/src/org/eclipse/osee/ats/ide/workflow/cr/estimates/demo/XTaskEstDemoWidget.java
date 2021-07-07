@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstXViewerFactory;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
@@ -40,7 +41,7 @@ public class XTaskEstDemoWidget extends XTaskEstWidget {
       taskDefs.add(
          new TaskEstDefinition(111L, "Integration Test", "Description", null, DemoArtifactToken.SAW_PL_Test_AI));
       taskDefs.add(new TaskEstDefinition(112L, "Quality", "Description", null, null));
-      getTaskDefsFromUserGroupsOff(DemoArtifactToken.SAW_PL_CR_TeamDef, taskDefs);
+      TaskEstUtil.getTaskDefsFromUserGroupsOff(DemoArtifactToken.SAW_PL_CR_TeamDef, taskDefs, atsApi);
       return taskDefs;
    }
 

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -130,6 +131,21 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    void clearCaches();
 
    boolean isInState(IStateToken state);
+
+   @Override
+   default public Collection<String> getTags() {
+      return getAtsApi().getAttributeResolver().getAttributesToStringList(getStoreObject(),
+         CoreAttributeTypes.StaticId);
+   }
+
+   default public void setTags(List<String> tags) {
+      throw new UnsupportedOperationException("Invalid method for IAtsWorkItem; use IAtsChangeSet");
+   }
+
+   @Override
+   default public boolean hasTag(String tag) {
+      return getTags().contains(tag);
+   }
 
    @Override
    default String toStringWithId() {

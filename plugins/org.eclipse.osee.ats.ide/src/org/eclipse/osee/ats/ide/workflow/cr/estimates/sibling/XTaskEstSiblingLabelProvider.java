@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
@@ -65,6 +66,9 @@ public class XTaskEstSiblingLabelProvider extends WorldLabelProvider {
             } else {
                return null;
             }
+         }
+         if (xViewerColumn.getName().equals(AtsColumnId.Type.name())) {
+            return ImageManager.getImage(AtsImage.WORKFLOW);
          }
       }
       return null;

@@ -14,14 +14,18 @@
 package org.eclipse.osee.ats.api.workflow.cr;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -93,4 +97,25 @@ public class TaskEstUtil {
       }
       return assignees;
    }
+
+   /**
+    * Create dynamic TEDs from children UserGroups off given teamDef where UserGroup has TaskEst static id
+    */
+   public static void getTaskDefsFromUserGroupsOff(IAtsTeamDefinitionArtifactToken teamDef, List<TaskEstDefinition> taskDefs, AtsApi atsApi) {
+      for (ArtifactToken childArt : atsApi.getRelationResolver().getChildren(teamDef)) {
+         if (atsApi.getAttributeResolver().getAttributesToStringList(childArt, CoreAttributeTypes.StaticId).contains(
+            TaskEstUtil.TASK_EST_STATIC_ID)) {
+            String desc = atsApi.getAttributeResolver().getSoleAttributeValueAsString(childArt,
+               CoreAttributeTypes.Description, "");
+            List<ArtifactId> assigneeAccountIds = new LinkedList<>();
+            for (UserToken user : atsApi.getUserGroupService().getUserGroup(childArt).getMembers()) {
+               assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
+            }
+            ArtifactToken aiArt = atsApi.getRelationResolver().getRelatedOrSentinel(childArt,
+               AtsRelationTypes.UserGroupToActionableItem_AI);
+            taskDefs.add(new TaskEstDefinition(childArt.getId(), childArt.getName(), desc, assigneeAccountIds, aiArt));
+         }
+      }
+   }
+
 }

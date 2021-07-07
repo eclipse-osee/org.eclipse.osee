@@ -14,28 +14,20 @@ package org.eclipse.osee.ats.ide.workflow.cr.estimates;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
-import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
-import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.workflow.task.mini.XMiniTaskWidget;
 import org.eclipse.osee.ats.ide.world.WorldContentProvider;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -216,26 +208,6 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
             }
          }
       });
-   }
-
-   /**
-    * Create dynamic TEDs from children UserGroups off given teamDef where UserGroup has TaskEst static id
-    */
-   protected void getTaskDefsFromUserGroupsOff(IAtsTeamDefinitionArtifactToken teamDef, List<TaskEstDefinition> taskDefs) {
-      for (ArtifactToken childArt : atsApi.getRelationResolver().getChildren(teamDef)) {
-         if (atsApi.getAttributeResolver().getAttributesToStringList(childArt, CoreAttributeTypes.StaticId).contains(
-            TaskEstUtil.TASK_EST_STATIC_ID)) {
-            String desc = atsApi.getAttributeResolver().getSoleAttributeValueAsString(childArt,
-               CoreAttributeTypes.Description, "");
-            List<ArtifactId> assigneeAccountIds = new LinkedList<>();
-            for (UserToken user : atsApi.getUserGroupService().getUserGroup(childArt).getMembers()) {
-               assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
-            }
-            ArtifactToken aiArt = atsApi.getRelationResolver().getRelatedOrSentinel(childArt,
-               AtsRelationTypes.UserGroupToActionableItem_AI);
-            taskDefs.add(new TaskEstDefinition(childArt.getId(), childArt.getName(), desc, assigneeAccountIds, aiArt));
-         }
-      }
    }
 
    @Override
