@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
@@ -71,6 +72,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    private ArtifactToken featureFolder = ArtifactToken.SENTINEL;
    private ArtifactToken configurationsFolder = ArtifactToken.SENTINEL;
    private ArtifactToken plConfigurationGroupsFolder = ArtifactToken.SENTINEL;
+   private static StagedFileWatcher fileWatcher;
 
    public OrcsApplicabilityOps(OrcsApi orcsApi, Log logger) {
       this.orcsApi = orcsApi;
@@ -1448,11 +1450,120 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
 
       boolean commentNonApplicableBlocks = data.isCommentNonApplicableBlocks();
-      ArtifactId viewId = data.getView();
-      ArtifactToken viewToken;
-      BlockApplicabilityOps ops;
+      Entry<Long, String> viewInfo = data.getViews().entrySet().iterator().next();
+      ArtifactId viewId = ArtifactId.valueOf(viewInfo.getKey());
+      String cachePath = viewInfo.getValue();
+      BlockApplicabilityOps ops = getBlockApplicabilityOps(results, data, viewId, cachePath, branch);
+      if (ops == null) {
+         return results;
+      }
 
-      String cachePath = data.getCachePath();
+      stagePath = getFullStagePath(results, stagePath, ops.getOpsView().getName());
+      if (results.isErrors()) {
+         return results;
+      }
+
+      return ops.applyApplicabilityToFiles(commentNonApplicableBlocks, sourcePath, stagePath);
+   }
+
+   @Override
+   public XResultData refreshStagedFiles(BlockApplicabilityStageRequest data, BranchId branch) {
+      XResultData results = new XResultData();
+
+      String sourcePath = data.getSourcePath();
+      String stagePath = data.getStagePath();
+      List<String> files = data.getFiles();
+
+      if (sourcePath == null || stagePath == null) {
+         results.error("Both a source path and stage path are required");
+         return results;
+      }
+
+      boolean commentNonApplicableBlocks = data.isCommentNonApplicableBlocks();
+      Entry<Long, String> viewInfo = data.getViews().entrySet().iterator().next();
+      ArtifactId viewId = ArtifactId.valueOf(viewInfo.getKey());
+      String cachePath = viewInfo.getValue();
+      BlockApplicabilityOps ops = getBlockApplicabilityOps(results, data, viewId, cachePath, branch);
+      if (ops == null) {
+         return results;
+      }
+
+      stagePath = getFullStagePath(results, stagePath, ops.getOpsView().getName());
+      if (results.isErrors()) {
+         return results;
+      }
+
+      ops.setUpBlockApplicability(commentNonApplicableBlocks);
+
+      return ops.refreshStagedFiles(sourcePath, stagePath, files);
+   }
+
+   @Override
+   public XResultData startWatcher(BlockApplicabilityStageRequest data, BranchId branch) {
+      XResultData results = new XResultData();
+
+      if (fileWatcher == null) {
+         fileWatcher = new StagedFileWatcher();
+      }
+
+      String sourcePath = data.getSourcePath();
+      String stagePath = data.getStagePath();
+
+      if (sourcePath == null || stagePath == null) {
+         results.error("Both a source path and stage path are required");
+         return results;
+      }
+
+      boolean commentNonApplicableBlocks = data.isCommentNonApplicableBlocks();
+
+      for (Map.Entry<Long, String> viewInfo : data.getViews().entrySet()) {
+         ArtifactId viewId = ArtifactId.valueOf(viewInfo.getKey());
+         String cachePath = viewInfo.getValue();
+         BlockApplicabilityOps ops = getBlockApplicabilityOps(results, data, viewId, cachePath, branch);
+         if (ops == null) {
+            return results;
+         }
+
+         String fullStagePath = getFullStagePath(results, stagePath, ops.getOpsView().getName());
+         if (results.isErrors()) {
+            return results;
+         }
+
+         ops.setUpBlockApplicability(commentNonApplicableBlocks);
+         fileWatcher.addView(ops.getOpsView(), fullStagePath, ops);
+      }
+
+      Thread watcherThread = new Thread(new Runnable() {
+         @Override
+         public void run() {
+            fileWatcher.runWatcher(data, data.getSourcePath());
+         }
+      }, "Starting StagedFileWatcher");
+      watcherThread.start();
+
+      results.log("Watcher is running");
+      return results;
+   }
+
+   @Override
+   public XResultData stopWatcher() {
+      XResultData results = new XResultData();
+      if (fileWatcher == null) {
+         results.error("File Watcher has yet to be started");
+         return results;
+      }
+
+      fileWatcher.stopWatcher();
+      fileWatcher = null;
+
+      results.log("Watcher has stopped");
+      return results;
+   }
+
+   private BlockApplicabilityOps getBlockApplicabilityOps(XResultData results, BlockApplicabilityStageRequest data, ArtifactId viewId, String cachePath, BranchId branch) {
+      BlockApplicabilityOps ops = null;
+      ArtifactToken viewToken;
+
       if (cachePath.isEmpty()) {
          // The user has not given a cache to use for processing
          viewToken = orcsApi.getQueryFactory().fromBranch(branch).andId(viewId).asArtifactToken();
@@ -1467,14 +1578,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                cache = objMap.readValue(cacheFile, BlockApplicabilityCacheFile.class);
             } catch (IOException ex) {
                results.error("There was a problem reading the cache file given");
-               return results;
+               return ops;
             }
 
             Long cachedViewId = cache.getViewId();
             if (!cachedViewId.equals(viewId.getId())) {
                results.error(String.format("The entered view id (%s) does not match up with the cached view id (%s)",
                   viewId.getId(), cachedViewId));
-               return results;
+               return ops;
             }
 
             // The token is created/queried from the token service as this should not be stored within the DB
@@ -1484,24 +1595,26 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             ops = new BlockApplicabilityOps(orcsApi, logger, branch, viewToken, cache);
          } else {
             results.error("A cache path was given but no file was found");
-            return results;
+            return ops;
          }
       }
 
+      return ops;
+   }
+
+   private String getFullStagePath(XResultData results, String stagePath, String viewName) {
       File stageDir = new File(stagePath, "Staging");
       if (!stageDir.exists() && !stageDir.mkdir()) {
          results.error(String.format("Could not create stage directory %s", stageDir.toString()));
-         return results;
+         return "";
       }
-      File stageViewDir = new File(stageDir.getPath(), viewToken.getName().replaceAll(" ", "_"));
+      File stageViewDir = new File(stageDir.getPath(), viewName.replaceAll(" ", "_"));
       if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
          results.error(String.format("Could not create stage directory %s", stageViewDir.toString()));
-         return results;
+         return "";
       }
 
-      stagePath = stageViewDir.getPath();
-
-      return ops.applyApplicabilityToFiles(commentNonApplicableBlocks, sourcePath, stagePath);
+      return stageViewDir.getPath();
    }
 
    @Override

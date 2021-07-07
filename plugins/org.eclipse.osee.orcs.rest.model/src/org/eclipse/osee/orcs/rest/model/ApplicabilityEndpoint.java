@@ -286,6 +286,24 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData applyBlockVisibility(BlockApplicabilityStageRequest data);
 
+   @POST
+   @Path("blockVisibility/refresh")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData refreshStagedFiles(BlockApplicabilityStageRequest data);
+
+   @PUT
+   @Path("blockVisibility/startWatcher")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData startBlockVisibilityWatcher(BlockApplicabilityStageRequest data);
+
+   @PUT
+   @Path("blockVisibility/stopWatcher")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData stopBlockVisibilityWatcher();
+
    @PUT
    @Path("validate")
    @Produces(MediaType.APPLICATION_JSON)

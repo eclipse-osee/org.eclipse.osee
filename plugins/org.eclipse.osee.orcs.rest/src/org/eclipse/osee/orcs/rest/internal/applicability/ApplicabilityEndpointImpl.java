@@ -398,6 +398,21 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public XResultData refreshStagedFiles(BlockApplicabilityStageRequest data) {
+      return ops.refreshStagedFiles(data, branch);
+   }
+
+   @Override
+   public XResultData startBlockVisibilityWatcher(BlockApplicabilityStageRequest data) {
+      return ops.startWatcher(data, branch);
+   }
+
+   @Override
+   public XResultData stopBlockVisibilityWatcher() {
+      return ops.stopWatcher();
+   }
+
+   @Override
    public ConfigurationGroupDefinition getConfigurationGroup(String id) {
       return ops.getConfigurationGroup(id, branch);
    }

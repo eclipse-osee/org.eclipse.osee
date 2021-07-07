@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
@@ -95,7 +96,7 @@ public class BlockApplicabilityRule extends Rule {
             List<File> stagedChildren = new ArrayList<>();
             stagedChildren.addAll(Arrays.asList(stageFile.listFiles()));
 
-            Set<String> filesInConfig = processConfig(children, stagedChildren, stageFile);
+            Set<String> filesInConfig = processConfig(children, stageFile);
             excludedFiles.addAll(filesInConfig);
             for (File child : children) {
                File stagedFile = process(child, stageFile.getPath(), excludedFiles);
@@ -123,30 +124,40 @@ public class BlockApplicabilityRule extends Rule {
             }
 
             // The excluded files from this scope are removed from the list
+            if (!excludedFiles.isEmpty()) {
+               orcsApplicability.addFileApplicabilityEntry(stageFile.getPath(), excludedFiles);
+            }
             excludedFiles.removeAll(filesInConfig);
          } else {
             try {
                boolean ruleWasApplicable = false;
+               File outFile = new File(stageFile.toPath() + ".tmp");
                if (fileNamePattern.matcher(inFile.getName()).matches()) {
-                  if (stageFile.exists()) {
-                     // In case this file has already been staged, we remove it before processing
-                     stageFile.delete();
-                  }
-
                   inputFile = inFile;
                   try {
-                     process(inFile, stageFile);
+                     process(inFile, outFile);
                   } catch (Exception ex) {
-                     System.out.println("Exception " + ex.toString() + " with file " + inputFile);
+                     logger.log(Level.SEVERE, "Exception " + ex.toString() + " with file " + inputFile);
                   }
                   ruleWasApplicable = this.ruleWasApplicable;
                }
-               if (!ruleWasApplicable) {
-                  Files.createLink(stageFile.toPath(), inFile.toPath());
-               } else {
-                  // Only want to set new files to read only, otherwise the original will also be read only
-                  stageFile.setReadOnly();
+
+               /**
+                * If the processed outFile is not different than what was previously in the staging, no changes are
+                * made.
+                */
+               boolean isNew = isStageFileNew(stageFile, outFile);
+               if (isNew) {
+                  if (!ruleWasApplicable) {
+                     Files.createLink(stageFile.toPath(), inFile.toPath());
+                  } else {
+                     stageFile.delete();
+                     // Only want to set new processed files to read only, otherwise the original will also be read only
+                     outFile.setReadOnly();
+                     com.google.common.io.Files.move(outFile, stageFile); // Another Files import is already taken for this class
+                  }
                }
+               outFile.delete();
             } catch (IOException ex) {
                OseeCoreException.wrap(ex);
             }
@@ -159,6 +170,35 @@ public class BlockApplicabilityRule extends Rule {
           */
          return null;
       }
+   }
+
+   /**
+    * If there is no previous stage file, then it is new. <br/>
+    * If the files are not equal lengths, they must be different. <br/>
+    * Read each file line by line until a different is found, if none are found, must be the same
+    */
+   private boolean isStageFileNew(File stageFile, File outFile) throws IOException {
+
+      if (!stageFile.exists()) {
+         return true;
+      }
+
+      if (stageFile.length() != outFile.length()) {
+         return true;
+      }
+
+      BufferedReader stageReader = Files.newBufferedReader(stageFile.toPath());
+      BufferedReader outReader = Files.newBufferedReader(outFile.toPath());
+      String stageLine, outLine;
+      while (((stageLine = stageReader.readLine()) != null) && ((outLine = outReader.readLine()) != null)) {
+         if (!stageLine.equals(outLine)) {
+            if (stageFile.length() != outFile.length()) {
+               return true;
+            }
+         }
+      }
+
+      return false;
    }
 
    @Override
@@ -324,7 +364,7 @@ public class BlockApplicabilityRule extends Rule {
     * text being left are applicable file names. If commenting is turned on, the isConfig boolean is used to fix that
     * and make sure no commenting is enabled during that file processing.
     */
-   private Set<String> processConfig(List<File> children, List<File> stagedChildren, File stageFile) {
+   private Set<String> processConfig(List<File> children, File stageFile) {
       Set<String> filesToExclude = new HashSet<>();
       BufferedReader reader;
       String readLine;

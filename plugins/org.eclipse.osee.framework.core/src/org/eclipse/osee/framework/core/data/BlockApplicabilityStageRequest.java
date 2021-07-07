@@ -12,41 +12,37 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Branden W. Phillips
  */
 public class BlockApplicabilityStageRequest {
 
-   private ArtifactId view;
+   private Map<Long, String> views;
    private boolean commentNonApplicableBlocks;
    private String sourcePath;
    private String stagePath;
-   private String cachePath = "";
+   private List<String> files;
 
    public BlockApplicabilityStageRequest() {
       // for jax-rs
    }
 
-   public BlockApplicabilityStageRequest(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath, String cachePath) {
-      this.view = view;
+   public BlockApplicabilityStageRequest(Map<Long, String> views, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
+      this.views = views;
       this.commentNonApplicableBlocks = commentNonApplicableBlocks;
       this.sourcePath = sourcePath;
       this.stagePath = stagePath;
-      this.cachePath = cachePath;
    }
 
-   public BlockApplicabilityStageRequest(ArtifactId view, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
-      this(view, commentNonApplicableBlocks, sourcePath, stagePath, Strings.EMPTY_STRING);
+   public Map<Long, String> getViews() {
+      return views;
    }
 
-   public ArtifactId getView() {
-      return view;
-   }
-
-   public void setView(ArtifactId view) {
-      this.view = view;
+   public void setViews(Map<Long, String> views) {
+      this.views = views;
    }
 
    public boolean isCommentNonApplicableBlocks() {
@@ -73,11 +69,11 @@ public class BlockApplicabilityStageRequest {
       this.stagePath = stagePath;
    }
 
-   public String getCachePath() {
-      return cachePath;
+   public List<String> getFiles() {
+      return files;
    }
 
-   public void setCachePath(String cachePath) {
-      this.cachePath = cachePath;
+   public void setFiles(List<String> files) {
+      this.files = files;
    }
 }

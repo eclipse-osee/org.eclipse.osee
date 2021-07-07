@@ -187,7 +187,7 @@ public abstract class Rule {
    }
 
    public final void setFileNamePattern(String fileNamePattern) {
-      this.fileNamePattern = Pattern.compile(fileNamePattern);
+      this.fileNamePattern = Pattern.compile(fileNamePattern, Pattern.CASE_INSENSITIVE);
    }
 
    public final String getCharsetString() {

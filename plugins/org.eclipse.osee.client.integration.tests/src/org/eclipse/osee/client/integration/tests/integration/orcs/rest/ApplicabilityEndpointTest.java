@@ -24,7 +24,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
@@ -190,8 +192,10 @@ public class ApplicabilityEndpointTest {
       // First testing by commenting instead of removing all non-applicable code
       ArtifactId productA =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.BranchView, "Product A", DemoBranches.SAW_PL);
-      BlockApplicabilityStageRequest data = new BlockApplicabilityStageRequest(productA, true, inputPath, stagePath);
-      appl.applyBlockVisibility(data);
+      Map<Long, String> views = new HashMap<>();
+      views.put(productA.getId(), "");
+      BlockApplicabilityStageRequest blockApplicabilityData = new BlockApplicabilityStageRequest(views, true, inputPath, stagePath);
+      appl.applyBlockVisibility(blockApplicabilityData);
 
       // Traversing the Staging Folders checking to see if each creation was successful
       File stagingFolder = new File(stagePath, "Staging");
@@ -294,9 +298,10 @@ public class ApplicabilityEndpointTest {
       assertTrue(cacheFile.exists());
 
       // Set the cache file and turn off commenting for the next test
-      data.setCachePath(cacheFile.getAbsolutePath());
-      data.setCommentNonApplicableBlocks(false);
-      appl.applyBlockVisibility(data);
+      views.put(productA.getId(), cacheFile.getAbsolutePath());
+      blockApplicabilityData.setViews(views);
+      blockApplicabilityData.setCommentNonApplicableBlocks(false);
+      appl.applyBlockVisibility(blockApplicabilityData);
 
       // Testing CppTest.cpp against expected CppTest.cpp output
       cppFile = new File(codeFolder, "CppTest.cpp");

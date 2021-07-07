@@ -95,6 +95,12 @@ public interface OrcsApplicability {
 
    XResultData applyApplicabilityToFiles(BlockApplicabilityStageRequest data, BranchId branch);
 
+   XResultData refreshStagedFiles(BlockApplicabilityStageRequest data, BranchId branch);
+
+   XResultData startWatcher(BlockApplicabilityStageRequest data, BranchId branch);
+
+   XResultData stopWatcher();
+
    ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch);
 
    XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account);

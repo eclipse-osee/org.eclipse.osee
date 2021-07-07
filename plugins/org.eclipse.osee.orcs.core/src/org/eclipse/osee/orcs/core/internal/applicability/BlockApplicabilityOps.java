@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
@@ -96,11 +99,15 @@ public class BlockApplicabilityOps {
    private final ScriptEngine se;
    private final BranchId branch;
    private final ArtifactToken view;
-   private final String plPreferences;
    private final List<FeatureDefinition> featureDefinition;
    private final Map<String, List<String>> viewApplicabilitiesMap;
-   private final Map<String, List<String>> configurationMap;
    private final boolean useCachedConfig;
+   private BlockApplicabilityRule rule;
+   private BlockApplicabilityCacheFile cache;
+   private String plPreferences;
+   private Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap;
+   private Map<String, List<String>> configurationMap;
+   private Map<String, Set<String>> fileApplicabilityCache = new HashMap<>();
 
    public BlockApplicabilityOps(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactToken view, BlockApplicabilityCacheFile cache) {
       this.orcsApi = orcsApi;
@@ -113,6 +120,8 @@ public class BlockApplicabilityOps {
       this.viewApplicabilitiesMap = cache.getViewApplicabilitiesMap();
       this.configurationMap = cache.getConfigurationMap();
       this.plPreferences = cache.getProductLinePreferences();
+      this.fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap(plPreferences);
+      this.cache = cache;
       this.useCachedConfig = true;
    }
 
@@ -128,6 +137,7 @@ public class BlockApplicabilityOps {
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, view);
       this.configurationMap = new HashMap<>();
       this.plPreferences = getProductLinePreferences();
+      this.fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap(plPreferences);
       this.useCachedConfig = false;
    }
 
@@ -141,26 +151,76 @@ public class BlockApplicabilityOps {
    public XResultData applyApplicabilityToFiles(boolean commentNonApplicableBlocks, String sourcePath, String stagePath) throws OseeCoreException {
       XResultData results = new XResultData();
 
-      Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap();
-
-      BlockApplicabilityRule rule =
-         new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap, commentNonApplicableBlocks);
-
-      StringBuilder filePattern = new StringBuilder(".*\\.(");
-      filePattern.append(Collections.toString("|", fileTypeApplicabilityDataMap.keySet()));
-      filePattern.append(")");
-      rule.setFileNamePattern(filePattern.toString());
-
       HashSet<String> excludedFiles = new HashSet<>();
       excludedFiles.add("Staging");
 
-      rule.process(new File(sourcePath), stagePath, excludedFiles);
+      setUpBlockApplicability(commentNonApplicableBlocks);
+      File sourceFile = new File(sourcePath);
+      rule.process(sourceFile, stagePath, excludedFiles);
 
       if (!useCachedConfig) {
          createCacheFile(results, stagePath);
       }
 
+      writeFileApplicabilityCache(results, sourceFile.getName(), stagePath);
+
       return results;
+   }
+
+   public XResultData refreshStagedFiles(String sourcePath, String stagePath, List<String> files) {
+      XResultData results = new XResultData();
+
+      File sourceDir = new File(sourcePath);
+      File stageDir = new File(stagePath, sourceDir.getName());
+
+      File fileApplicCache = readFileApplicabilityCache(results, stageDir);
+
+      Set<String> excludedFiles;
+      for (String sourceFileString : files) {
+         File sourceFile = new File(sourceDir, sourceFileString);
+         File stageFile = new File(stageDir, sourceFileString).getParentFile();
+
+         if (sourceFile.getName().equals(".fileApplicability")) {
+            /**
+             * If it's a .fileApplicability file, it could be making changes to its' siblings and therefore those all
+             * need to be processed
+             */
+            sourceFile = sourceFile.getParentFile();
+            stageFile = stageFile.getParentFile();
+         }
+
+         excludedFiles = fileApplicabilityCache.getOrDefault(stageFile.getPath(), Sets.newHashSet("Staging"));
+
+         rule.process(sourceFile, stageFile.getPath(), excludedFiles);
+      }
+
+      writeFileApplicabilityCache(results, fileApplicCache);
+
+      return results;
+
+   }
+
+   /**
+    * This method can be used internally or externally to set up the BlockApplicabilityRule class for the
+    * BlockApplicabilityTool's use.
+    */
+   public void setUpBlockApplicability(boolean commentNonApplicableBlocks) {
+      if (useCachedConfig) {
+         configurationMap = cache.getConfigurationMap();
+         plPreferences = cache.getProductLinePreferences();
+         fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap(plPreferences);
+      } else {
+         configurationMap = new HashMap<>();
+         plPreferences = getProductLinePreferences();
+         fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap(plPreferences);
+      }
+
+      rule = new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap, commentNonApplicableBlocks);
+
+      StringBuilder filePattern = new StringBuilder(".*\\.(");
+      filePattern.append(Collections.toString("|", fileTypeApplicabilityDataMap.keySet()));
+      filePattern.append(")");
+      rule.setFileNamePattern(filePattern.toString());
    }
 
    public String evaluateApplicabilityExpression(ApplicabilityBlock applic) {
@@ -453,6 +513,44 @@ public class BlockApplicabilityOps {
       return toReturn;
    }
 
+   public void addFileApplicabilityEntry(String path, Set<String> excludedFiles) {
+      Set<String> excludedSet = new HashSet<>();
+      excludedSet.addAll(excludedFiles);
+      fileApplicabilityCache.put(path, excludedSet);
+   }
+
+   public ArtifactToken getOpsView() {
+      return view;
+   }
+
+   private File readFileApplicabilityCache(XResultData results, File stageDir) {
+      File fileApplicCache = new File(stageDir, ".fileApplicabilityCache");
+      ObjectMapper objMap = new ObjectMapper();
+      JavaType type = objMap.getTypeFactory().constructMapType(HashMap.class, String.class, Set.class);
+      try {
+         fileApplicabilityCache = objMap.readValue(fileApplicCache, type);
+      } catch (IOException ex) {
+         results.error("Error reading fileApplicabilityCache");
+      }
+
+      return fileApplicCache;
+   }
+
+   private void writeFileApplicabilityCache(XResultData results, String sourceFileName, String stagePath) {
+      File fileApplicCache = new File(stagePath, sourceFileName);
+      fileApplicCache = new File(fileApplicCache, ".fileApplicabilityCache");
+      writeFileApplicabilityCache(results, fileApplicCache);
+   }
+
+   private void writeFileApplicabilityCache(XResultData results, File fileApplicCache) {
+      ObjectMapper objMap = new ObjectMapper();
+      try {
+         objMap.writeValue(fileApplicCache, fileApplicabilityCache);
+      } catch (IOException ex) {
+         results.error("Error writing file applicability cache file");
+      }
+   }
+
    /**
     * This cache file is created to store necessary information to process applicability within this class. Anything
     * that is normally queried from the database, should be stored in this json file and saved within the stagePath.
@@ -519,7 +617,7 @@ public class BlockApplicabilityOps {
       return preferences;
    }
 
-   private Map<String, FileTypeApplicabilityData> populateFileTypeApplicabilityDataMap() {
+   private Map<String, FileTypeApplicabilityData> populateFileTypeApplicabilityDataMap(String plPreferences) {
       Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = new HashMap<>();
 
       JsonNode preferencesJson = orcsApi.jaxRsApi().readTree(plPreferences);
