@@ -17,9 +17,8 @@ import org.eclipse.osee.ats.api.workflow.AtsAttachment;
 import org.eclipse.osee.ats.api.workflow.AtsAttachments;
 import org.eclipse.osee.ats.ide.config.editor.AtsConfigLabelProvider;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeAttachmentsComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeEditorAddSupportingFiles;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite.OpenType;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -276,11 +275,11 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
             if (!Widgets.isAccessible(readHyperlink)) {
                setValueText(attachmentArt.toString());
                WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
-               readHyperlink = WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
-                  attachmentArt, parent, editor, OpenType.Read.name());
-               editHyperlink = WfeRelationsHyperlinkComposite.createEditHyperlink(attachmentArt, parent, editor);
-               deleteHyperlink = WfeRelationsHyperlinkComposite.createDeleteHyperlink(
-                  (AbstractWorkflowArtifact) workItem, attachmentArt, entry.getSecond(), parent, editor);
+               readHyperlink = WfeAttachmentsComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
+                  attachmentArt, parent, editor, "Read");
+               editHyperlink = WfeAttachmentsComposite.createEditHyperlink(attachmentArt, parent, editor);
+               deleteHyperlink = WfeAttachmentsComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
+                  attachmentArt, entry.getSecond(), parent, editor);
             }
          } else {
             if (Widgets.isAccessible(readHyperlink)) {

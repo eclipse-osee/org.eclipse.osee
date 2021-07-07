@@ -68,7 +68,7 @@ public class WfeHeaderComposite extends Composite {
 
    private final WorkflowEditor editor;
    private final IAtsWorkItem workItem;
-   private WfeRelationsHyperlinkComposite relationsComposite;
+   private WfeRelatedComposite relatedComposite;
    private WfeActionableItemHeader actionableItemHeader;
    private WfeMetricsHeader metricsHeader;
    private final StateXWidgetPage currentStateXWidgetPage;
@@ -85,6 +85,7 @@ public class WfeHeaderComposite extends Composite {
    private WfeActionableItemReviewHeader aiReviewHeader;
    private WfeBlockedWorkflowHeader blockedWfHeader;
    private WfeHoldWorkflowHeader holdWfHeader;
+   private WfeAttachmentsComposite attachmentsComposite;
 
    public WfeTransitionHeader getWfeTransitionComposite() {
       return transitionHeader;
@@ -123,8 +124,11 @@ public class WfeHeaderComposite extends Composite {
       if (workPackageHeader != null) {
          workPackageHeader.refresh();
       }
-      if (relationsComposite != null) {
-         relationsComposite.refresh();
+      if (relatedComposite != null) {
+         relatedComposite.refresh();
+      }
+      if (attachmentsComposite != null) {
+         attachmentsComposite.refresh();
       }
       if (transitionHeader != null) {
          transitionHeader.refresh();
@@ -179,8 +183,11 @@ public class WfeHeaderComposite extends Composite {
          createStateNotesHeader(this, workItem, editor.getToolkit(), numColumns, null);
          createAnnotationsHeader(this, editor.getToolkit());
 
-         relationsComposite = new WfeRelationsHyperlinkComposite(this, SWT.NONE, editor);
-         relationsComposite.create();
+         relatedComposite = new WfeRelatedComposite(this, SWT.NONE, editor);
+         relatedComposite.create();
+
+         attachmentsComposite = new WfeAttachmentsComposite(this, SWT.NONE, editor);
+         attachmentsComposite.create();
 
          if (WfeActionableItemReviewHeader.isApplicable(workItem)) {
             aiReviewHeader =
@@ -412,6 +419,7 @@ public class WfeHeaderComposite extends Composite {
 
    public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
       titleHeader.getXWidgets(widgets);
+      relatedComposite.getXWidgets(widgets);
       customHeader.getXWidgets(widgets);
       return widgets;
    }

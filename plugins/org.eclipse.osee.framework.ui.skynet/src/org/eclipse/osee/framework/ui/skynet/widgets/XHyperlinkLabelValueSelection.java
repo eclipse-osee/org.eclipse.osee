@@ -35,6 +35,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    protected Label labelWidget;
    protected Label valueLabel;
    protected Composite comp;
+   protected boolean includeColon = true;
 
    public XHyperlinkLabelValueSelection(String label) {
       super(label);
@@ -64,7 +65,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
             labelHyperlink = new Hyperlink(comp, SWT.NONE);
             labelHyperlink.setText(getLabel());
          } else {
-            labelHyperlink = toolkit.createHyperlink(comp, getLabel() + ":", SWT.NONE);
+            labelHyperlink = toolkit.createHyperlink(comp, getLabel() + (isIncludeColon() ? ":" : ""), SWT.NONE);
          }
          labelHyperlink.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
          labelHyperlink.setLayoutData(new GridData());
@@ -136,6 +137,14 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    @Override
    public Control getControl() {
       return comp;
+   }
+
+   public boolean isIncludeColon() {
+      return includeColon;
+   }
+
+   public void setIncludeColon(boolean includeColon) {
+      this.includeColon = includeColon;
    }
 
 }

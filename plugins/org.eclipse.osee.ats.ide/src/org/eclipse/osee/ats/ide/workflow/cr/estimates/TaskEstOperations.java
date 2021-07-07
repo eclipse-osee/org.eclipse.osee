@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
@@ -59,6 +60,7 @@ public class TaskEstOperations {
             task.setCreatedByUserId(atsApi.getUserService().getCurrentUserId());
             task.setCreatedDate(new Date());
             task.setAssigneeAccountIds(ted.getAssigneeAccountIds());
+            task.addRelation(AtsRelationTypes.Derive_From, teamWf.getId());
             newTaskData.add(task);
          }
       }

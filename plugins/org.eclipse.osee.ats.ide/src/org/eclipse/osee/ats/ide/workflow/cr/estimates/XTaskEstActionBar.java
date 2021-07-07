@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
@@ -143,6 +144,7 @@ public class XTaskEstActionBar implements TaskEstNameProvider {
             task.setCreatedDate(new Date());
             task.addAttributes(CoreAttributeTypes.StaticId,
                Arrays.asList(TaskEstUtil.TASK_EST_MANUAL, TaskEstUtil.TASK_EST_STATIC_ID));
+            task.addRelation(AtsRelationTypes.Derive_From, teamWf.getId());
             newTaskData.add(task);
          }
       }
