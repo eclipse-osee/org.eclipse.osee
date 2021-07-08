@@ -162,7 +162,9 @@ public class BlockApplicabilityOps {
          createCacheFile(results, stagePath);
       }
 
-      writeFileApplicabilityCache(results, sourceFile.getName(), stagePath);
+      if (sourceFile.isDirectory()) {
+         writeFileApplicabilityCache(results, sourceFile.getName(), stagePath);
+      }
 
       return results;
    }
@@ -641,7 +643,7 @@ public class BlockApplicabilityOps {
          FileTypeApplicabilityData data = new FileTypeApplicabilityData(pattern, commentPrefixRegex, commentSuffixRegex,
             commentPrefix, commentSuffix);
 
-         fileTypeApplicabilityDataMap.put(fileExtension, data);
+         fileTypeApplicabilityDataMap.put(fileExtension.toLowerCase(), data);
       }
 
       return fileTypeApplicabilityDataMap;

@@ -178,7 +178,6 @@ public class BlockApplicabilityRule extends Rule {
     * Read each file line by line until a different is found, if none are found, must be the same
     */
    private boolean isStageFileNew(File stageFile, File outFile) throws IOException {
-
       if (!stageFile.exists()) {
          return true;
       }
@@ -187,25 +186,29 @@ public class BlockApplicabilityRule extends Rule {
          return true;
       }
 
+      boolean isFileNew = false;
+
       BufferedReader stageReader = Files.newBufferedReader(stageFile.toPath());
       BufferedReader outReader = Files.newBufferedReader(outFile.toPath());
       String stageLine, outLine;
       while (((stageLine = stageReader.readLine()) != null) && ((outLine = outReader.readLine()) != null)) {
          if (!stageLine.equals(outLine)) {
             if (stageFile.length() != outFile.length()) {
-               return true;
+               isFileNew = true;
             }
          }
       }
 
-      return false;
+      stageReader.close();
+      outReader.close();
+      return isFileNew;
    }
 
    @Override
    public ChangeSet computeChanges(CharSequence seq) {
       ChangeSet changeSet = new ChangeSet(seq);
       FileTypeApplicabilityData fileTypeApplicabilityData =
-         fileTypeApplicabilityDataMap.get(Lib.getExtension(getInputFile().getName()));
+         fileTypeApplicabilityDataMap.get(Lib.getExtension(getInputFile().getName()).toLowerCase());
       Matcher matcher = fileTypeApplicabilityData.getCommentedTagPattern().matcher(seq);
 
       int matcherIndex = 0;
@@ -375,7 +378,7 @@ public class BlockApplicabilityRule extends Rule {
          if (fileName.equals(".fileApplicability")) {
             configFile = child;
             FileTypeApplicabilityData fileTypeApplicabilityData =
-               fileTypeApplicabilityDataMap.get(Lib.getExtension(configFile.getName()));
+               fileTypeApplicabilityDataMap.get(Lib.getExtension(configFile.getName()).toLowerCase());
             Pattern tagPattern = fileTypeApplicabilityData.getCommentedTagPattern();
 
             try {
