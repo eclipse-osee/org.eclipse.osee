@@ -16,9 +16,13 @@
  */
 package org.eclipse.osee.framework.core.applicability;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class NameValuePair {
    private String Name;
    private String Value;
+   private List<String> Values;
 
    public NameValuePair() {
       this("", "");
@@ -27,6 +31,7 @@ public class NameValuePair {
    public NameValuePair(String name, String value) {
       this.setName(name);
       this.setValue(value);
+      this.setValues(Arrays.asList(value.split(",")));
    }
 
    public void setName(String name) {
@@ -43,5 +48,13 @@ public class NameValuePair {
 
    public String getValue() {
       return this.Value;
+   }
+
+   public List<String> getValues() {
+      return Values;
+   }
+
+   public void setValues(List<String> values) {
+      Values = values;
    }
 }

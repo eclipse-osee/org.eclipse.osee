@@ -61,11 +61,13 @@
                                             <mat-label>{{config.value}}</mat-label>
                                         </div>
                                         <ng-template #edit_content >
-                                            <div *ngIf="(element.values.length===0 || element.multiValued)">
-                                                <mat-form-field appearance="fill" class="selectApplicabilityTableOption">
-                                                    <mat-label>{{config.value}}</mat-label>
-                                                    <input matInput type="text" (input)="modifyConfiguration(displayedColumn,element,$event)" matTooltip="{{'Acceptable values:\n'+element['values'].toString()}}">
-                                                    <!-- <mat-icon aria-hidden="false" matSuffix>add_circle_outline</mat-icon> Uncomment when mat-icon hosting is figured out-->
+                                            <div *ngIf="element.values.length!=0 && element.multiValued" class="applicabilityTableMatSelect">
+                                                <mat-form-field class="selectApplicabilityTableOption" id="selectableTableOption">
+                                                    <mat-select [(ngModel)] = "config.values" (selectionChange)="modifyConfiguration(displayedColumn,element,$event)" multiple>
+                                                        <mat-option *ngFor="let value of element.values" [value]="value">
+                                                            {{value}}
+                                                        </mat-option>
+                                                    </mat-select>
                                                 </mat-form-field>
                                             </div>
                                             <div *ngIf="element.values.length!=0 && !element.multiValued" class="applicabilityTableMatSelect">

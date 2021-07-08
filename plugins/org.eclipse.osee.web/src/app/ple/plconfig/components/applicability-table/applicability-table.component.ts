@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, config, Subject } from 'rxjs';
 import { share, take } from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
@@ -106,9 +106,8 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
   modifyProduct(configuration: string, feature: trackableFeature,event: MatSelectChange) {
     this.requestConfigurationChange(configuration, feature, event);
   }
-  modifyConfiguration(configuration: string, feature: trackableFeature, event: Event) {
-    let inputEvent = (event.target as HTMLInputElement);
-    this.requestConfigurationChange(configuration, feature, inputEvent);
+  modifyConfiguration(configuration: string, feature: trackableFeature, event: MatSelectChange) {
+    this.requestConfigurationChange(configuration, feature, event);
   }
   requestConfigurationChange(configuration: string, feature: trackableFeature, event: HTMLInputElement | MatSelectChange) {
     let selectedFeatureIndex = this.featureMapping.findIndex((value) =>
@@ -118,16 +117,30 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
     let featureIndex=this.views.findIndex((value) =>
       value.name.toLowerCase() === configuration.toLowerCase()
     );
+    
     let featureId = this.views[featureIndex].id;
-    if (selectedFeatureValues.findIndex((value) =>
-      value.toLowerCase() === event.value.toLowerCase()
-    ) > -1) {
+    
+   let values : string[] = [];
+   if (feature.multiValued) {
+      values = event.value;
+    } else {
+      values.push(event.value);
+    }
+    let callModify = true;
+    values.forEach((element: string) => {
+        if (selectedFeatureValues.findIndex((value) => value.toLowerCase() === element.toLowerCase()) === -1) {
+
+          callModify = false;
+          this.uiStateService.error="Error: "+ element + " is not a valid value."
+        }
+        
+      });
+    if (callModify) {
       let body = feature.name + " = " + event.value;
       this.currentBranchService.modifyConfiguration(featureId, body,this.sorter.groupList).pipe(take(1)).subscribe((responses: response[]) => {
-      });
-    } else {
-      this.uiStateService.error="Error: No matching applicability."
+          });
     }
+    
   }
   isSticky(header:string) {
     return header === 'feature';

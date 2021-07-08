@@ -214,7 +214,7 @@ export class PlConfigCurrentBranchService {
           this.uiStateService.error = "";
         }
       }),
-      switchMap((val) => iif(() => val.success&&(typeof body?.configurationGroup!=='undefined')&&(body?.configurationGroup!==''),
+      switchMap((val) => iif(() => val.success&&(typeof body?.configurationGroup!=='undefined')&&(body?.configurationGroup!=='')&&(body?.configurationGroup!=='0'),
         this.synchronizeGroup(body && body.configurationGroup || '').pipe(
           tap((response) => {
             if (response.success) {

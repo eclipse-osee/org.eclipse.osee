@@ -688,13 +688,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   view.getProductApplicabilities());
             }
             tx.commit();
-            newView = getView(vDefArt.getIdString(), branch);
+
             //Had issues trying to set tuple values on a newly created artifact that hadn't yet been committed.
             //so committing first, then adding standard applicabilities
             TransactionBuilder tx2 = orcsApi.getTransactionFactory().createTransaction(branch, user,
                "Create Config and Base applicabilities on New View");
-            tx2.createApplicabilityForView(ArtifactId.valueOf(newView.getId()), "Base");
-            tx2.createApplicabilityForView(ArtifactId.valueOf(newView.getId()), "Config = " + view.getName());
+            tx2.createApplicabilityForView(vDefArt, "Base");
+            tx2.createApplicabilityForView(vDefArt, "Config = " + view.getName());
             tx2.commit();
          } catch (Exception ex) {
             results.errorf(Lib.exceptionToString(ex));
@@ -890,8 +890,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       if (orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
          applicability)) {
-         results.error("Applicability already exists.");
-         return results;
+         String featureName = applicability.substring(0, applicability.indexOf("=") - 1);
+         FeatureDefinition feature = getFeature(featureName, branch);
+         if (!feature.isMultiValued()) {
+            results.error("Applicability already exists.");
+            return results;
+         }
       }
       if (applicability.startsWith("Config =")) {
          TransactionBuilder tx =
@@ -971,40 +975,67 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       } else {
          String featureName = applicability.substring(0, applicability.indexOf("=") - 1);
          String featureValue = applicability.substring(applicability.indexOf("=") + 2);
-         if (orcsApi.getQueryFactory().applicabilityQuery().featureExistsOnBranch(branch,
-            featureName) && orcsApi.getQueryFactory().applicabilityQuery().featureValueIsValid(branch, featureName,
-               featureValue)) {
+         FeatureDefinition feature = getFeature(featureName, branch);
+         if (feature.isInvalid()) {
+            results.error(feature.getName() + " is not a valid feature for given branch");
+         } else if (feature.isMultiValued()) {
+            List<String> newValues = new ArrayList<>();
+
+            for (String val : featureValue.split(",")) {
+               if (!feature.getValues().contains(val)) {
+                  results.error(val + " is not a valid value for " + feature.getName());
+                  return results;
+               } else {
+                  newValues.add(featureName + " = " + val);
+               }
+            }
             List<String> existingValues = new LinkedList<>();
             Iterable<String> existingApps =
                orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
             for (String appl : existingApps) {
-               if (appl.startsWith(featureName + " = ") || appl.contains("| " + featureName + "=")) {
+               if (appl.startsWith(featureName + " = ")) {
                   existingValues.add(appl);
                }
             }
-            TransactionBuilder tx =
+            TransactionBuilder txMv =
                orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
-            boolean multiValued = false;
-            if (existingValues.size() > 0) {
-               List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData(branch);
-               for (FeatureDefinition feat : featureDefinitionData) {
-                  if (feat.getName().toUpperCase().equals(featureName)) {
-                     multiValued = feat.isMultiValued();
-                     break;
+            List<String> removeValues = new ArrayList<>(existingValues);
+            //existingValues minus newValues = values to remove
+            removeValues.removeAll(newValues);
+            for (String val : removeValues) {
+               txMv.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, val);
+            }
+            //newValues minus existingValues = values to add
+            newValues.removeAll(existingValues);
+            for (String val : newValues) {
+               txMv.createApplicabilityForView(viewId, val);
+            }
+            txMv.commit();
+            updateCompoundApplicabilities(branch, viewId, user, true);
+         } else {
+            if (feature.getValues().contains(featureValue)) {
+               List<String> existingValues = new LinkedList<>();
+               Iterable<String> existingApps =
+                  orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+               for (String appl : existingApps) {
+                  if (appl.startsWith(featureName + " = ")) {
+                     existingValues.add(appl);
                   }
                }
-            }
-            if (!multiValued) {
+               TransactionBuilder tx =
+                  orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
+
                for (String existingValue : existingValues) {
                   tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
                }
-            }
-            tx.createApplicabilityForView(viewId, applicability);
-            tx.commit();
-            updateCompoundApplicabilities(branch, viewId, user, true);
 
-         } else {
-            results.error("Feature is not defined or Value is invalid.");
+               tx.createApplicabilityForView(viewId, applicability);
+               tx.commit();
+               updateCompoundApplicabilities(branch, viewId, user, true);
+
+            } else {
+               results.error(featureValue + " is an invalid value");
+            }
          }
 
       }
@@ -1357,6 +1388,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    @Override
    public XResultData syncConfigGroup(BranchId branch, String id, UserId account, XResultData results) {
+      UserId user = account;
+      if (user == null) {
+         user = SystemUser.OseeSystem;
+      }
       if (results == null) {
          results = new XResultData();
       }
@@ -1381,39 +1416,85 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                if (feature.getValues().contains("Included")) {
                   resultApp = feature.getName() + " = Excluded";
                }
+               List<String> memberValues = new ArrayList<>();
+               List<String> groupValues = new ArrayList<>();
                for (ArtifactId viewId : views) {
+                  if (feature.isMultiValued()) {
+                     for (String appl : orcsApi.getQueryFactory().tupleQuery().getTuple2(
+                        CoreTupleTypes.ViewApplicability, branch, viewId)) {
 
-                  String applicability = orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(
-                     branch, viewId, feature.getName());
-
-                  if (feature.getValues().contains("Included")) {
-                     if (applicability.equals(feature.getName() + " = Included")) {
-
-                        resultApp = applicability;
-                        break;
+                        if (!memberValues.contains(appl) & appl.startsWith(
+                           feature.getName() + " =") & !appl.contains("|") & !appl.contains("&")) {
+                           //add to list of values on view
+                           memberValues.add(appl);
+                        }
                      }
+                     for (String appl : orcsApi.getQueryFactory().tupleQuery().getTuple2(
+                        CoreTupleTypes.ViewApplicability, branch, cfgGroup)) {
+
+                        if (!groupValues.contains(appl) & appl.startsWith(
+                           feature.getName() + " =") & !appl.contains("|") & !appl.contains("&")) {
+                           //add to list of values on view
+                           groupValues.add(appl);
+                        }
+                     }
+
                   } else {
-                     if (resultApp == null) {
-                        resultApp = applicability;
+                     String applicability =
+                        orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(branch, viewId,
+                           feature.getName());
+
+                     if (feature.getValues().contains("Included")) {
+                        if (applicability.equals(feature.getName() + " = Included")) {
+
+                           resultApp = applicability;
+                           break;
+                        }
                      } else {
-                        if (!resultApp.equals(applicability)) {
-                           //error
-                           results.error(
-                              "Updating Group: " + cfgGroup.getName() + " (" + views.toString() + "). Applicabilities differ for non-binary feature: " + feature.getName());
+                        if (resultApp == null) {
+                           resultApp = applicability;
+                        } else {
+                           if (!resultApp.equals(applicability)) {
+                              results.error(
+                                 "Updating Group: " + cfgGroup.getName() + " (" + views.toString() + "). Applicabilities differ for non-binary feature: " + feature.getName());
+                           }
                         }
                      }
                   }
-
                }
-               if (results.isSuccess()) {
-                  createApplicabilityForView(cfgGroup, resultApp, account, branch);
+               if (!feature.isMultiValued() && results.isSuccess()) {
+                  String currentValue = orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(
+                     branch, cfgGroup, feature.getName());
+                  if (!currentValue.equals(resultApp)) {
+                     TransactionBuilder tx =
+                        orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
+                     tx.deleteTuple2(CoreTupleTypes.ViewApplicability, cfgGroup, currentValue);
+                     tx.createApplicabilityForView(cfgGroup, resultApp);
+                     tx.commit();
+                  }
+               } else {
+                  TransactionBuilder tx2 =
+                     orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
+
+                  List<String> removeValues = new ArrayList<>(groupValues);
+                  //groupValues minus memberValues = values to remove
+                  removeValues.removeAll(memberValues);
+                  for (String val : removeValues) {
+                     tx2.deleteTuple2(CoreTupleTypes.ViewApplicability, cfgGroup, val);
+                  }
+                  //memberValues minus groupValues = values to add
+                  memberValues.removeAll(groupValues);
+                  for (String val : memberValues) {
+                     tx2.createApplicabilityForView(cfgGroup, val);
+                  }
+                  tx2.commit();
                }
             }
             for (ArtifactId viewId : views) {
                for (ApplicabilityToken applicabilityToken : orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(
                   viewId, branch)) {
                   if (applicabilityToken.getName().contains("|") || applicabilityToken.getName().contains("&")) {
-                     createApplicabilityForView(cfgGroup, applicabilityToken.getName(), account, branch);
+                     createApplicabilityForView(cfgGroup, applicabilityToken.getName(), user, branch);
                   }
                }
             }

@@ -1,3 +1,4 @@
+import { ExtendedNameValuePair } from "../base-types/ExtendedNameValuePair";
 import { NameValuePair } from "../base-types/NameValuePair";
 
 export interface feature {
@@ -21,5 +22,5 @@ export interface trackableFeature extends feature{
     type: null | undefined,
 }
 export interface extendedFeature extends trackableFeature {
-    configurations:NameValuePair[]
+    configurations:ExtendedNameValuePair[]
 }
