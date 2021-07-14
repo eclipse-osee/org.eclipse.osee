@@ -472,6 +472,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getWorkTypes().contains(workType);
    }
 
+   @Override
    public void setTags(List<String> tags) {
       throw new UnsupportedOperationException();
    }

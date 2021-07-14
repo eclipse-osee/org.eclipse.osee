@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
-import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -38,6 +36,7 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
 
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;
+   public static String NOT_SET = "Not Set";
 
    public XHyperlinkLabelValueSelectionDam() {
       super("");
@@ -61,7 +60,7 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
       }
       String value = artifact.getAttributesToString(attributeType);
       if (Strings.isInValid(value)) {
-         value = "No Set";
+         value = NOT_SET;
       }
       return value;
    }
@@ -114,9 +113,15 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
       IStatus status = super.isValid();
       if (status.isOK()) {
          try {
-            if (getArtifact() != null && getAttributeType() != null && Strings.isValid(getCurrentValue())) {
-               status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                  getCurrentValue());
+            if (getArtifact() != null && getAttributeType() != null) {
+               String currValue = getCurrentValue();
+               if (NOT_SET.equals(currValue)) {
+                  currValue = "";
+               }
+               if (isRequiredEntry() && Strings.isInValid(currValue)) {
+                  status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                     String.format("Must select [%s]", getAttributeType().getUnqualifiedName()));
+               }
             }
          } catch (OseeCoreException ex) {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);

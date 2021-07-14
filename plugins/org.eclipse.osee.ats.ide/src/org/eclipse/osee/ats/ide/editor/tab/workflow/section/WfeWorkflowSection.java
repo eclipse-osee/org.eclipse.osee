@@ -88,7 +88,6 @@ public class WfeWorkflowSection extends SectionPart {
       isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), sma,
          page.getStateDefinition(), AtsApiService.get().getUserService());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite();
-      // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
    }
 
    public boolean isCurrentState() {
@@ -104,7 +103,6 @@ public class WfeWorkflowSection extends SectionPart {
       try {
          refreshStateTitle();
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         // section.setBackground(Displays.getSystemColor(SWT.COLOR_MAGENTA));
 
          boolean isCurrentSectionExpanded = isCurrentSectionExpanded(statePage);
          createSection(section);
@@ -177,7 +175,6 @@ public class WfeWorkflowSection extends SectionPart {
       // Create Page
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      // workComp.setBackground(Displays.getSystemColor(SWT.COLOR_GREEN));
 
       if (sma.getWorkDefinition().isShowStateMetrics()) {
          createMetricsHeader(workComp);

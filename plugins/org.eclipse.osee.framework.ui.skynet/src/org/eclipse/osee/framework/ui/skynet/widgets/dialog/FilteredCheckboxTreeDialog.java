@@ -136,7 +136,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
          SWT.CHECK | (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
          patternFilter);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gd.heightHint = 500;
+      gd.heightHint = 350;
       treeViewer.getViewer().getTree().setLayoutData(gd);
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);

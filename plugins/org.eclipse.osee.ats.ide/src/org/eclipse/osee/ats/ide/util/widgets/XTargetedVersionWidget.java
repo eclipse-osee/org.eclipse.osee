@@ -19,18 +19,17 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 /**
  * @author Donald G. Dunne
  */
-public class XIntroducedInVersionWidget extends XHyperlabelVersionSelection {
+public class XTargetedVersionWidget extends XHyperlabelVersionSelection {
 
-   public static final String WIDGET_ID = XIntroducedInVersionWidget.class.getSimpleName();
-   public static RelationTypeSide INTRODUCED_VERSION_RELATION =
-      AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version;
+   public static final String WIDGET_ID = XTargetedVersionWidget.class.getSimpleName();
+   public static RelationTypeSide TARGETED_VERSION_RELATION = AtsRelationTypes.TeamWorkflowTargetedForVersion_Version;
 
-   public XIntroducedInVersionWidget() {
-      this("Introduced In Version");
+   public XTargetedVersionWidget() {
+      this("Targeted Version");
    }
 
-   public XIntroducedInVersionWidget(String label) {
-      super(label, INTRODUCED_VERSION_RELATION);
+   public XTargetedVersionWidget(String label) {
+      super(label, TARGETED_VERSION_RELATION);
    }
 
 }

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -75,7 +76,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
          labelHyperlink.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
-               if (handleSelection()) {
+               if (event.button == 1 && handleSelection()) {
                   refresh();
                   notifyXModifiedListeners();
                }
@@ -145,6 +146,18 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    public void setIncludeColon(boolean includeColon) {
       this.includeColon = includeColon;
+   }
+
+   public void addLabelWidgetListener(MouseListener listener) {
+      if (Widgets.isAccessible(labelHyperlink)) {
+         labelHyperlink.addMouseListener(listener);
+      }
+   }
+
+   public void addLabelMouseListener(MouseListener listener) {
+      if (Widgets.isAccessible(labelHyperlink)) {
+         labelHyperlink.addMouseListener(listener);
+      }
    }
 
 }

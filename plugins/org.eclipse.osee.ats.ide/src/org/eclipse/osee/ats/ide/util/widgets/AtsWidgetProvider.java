@@ -89,6 +89,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XStateSearchCombo();
       } else if (widgetName.equals(XFoundInVersionWidget.WIDGET_ID)) {
          toReturn = new XFoundInVersionWidget(name);
+      } else if (widgetName.equals(XTargetedVersionWidget.WIDGET_ID)) {
+         toReturn = new XTargetedVersionWidget(name);
       } else if (widgetName.equals(XIntroducedInVersionWidget.WIDGET_ID)) {
          toReturn = new XIntroducedInVersionWidget(name);
       } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {

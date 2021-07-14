@@ -24,6 +24,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -34,6 +35,8 @@ public class VersionListDialog extends FilteredTreeDialog {
 
    XCheckBox showReleased = new XCheckBox("Show Released Versions");
    private final Collection<IAtsVersion> verArts;
+   private boolean removeAllAllowed = false;
+   private boolean removeAllSelected = false;
 
    public VersionListDialog(String title, String message, Collection<IAtsVersion> verArts) {
       super(title, message, new VersionContentProvider(false), new VersionLabelProvider(),
@@ -44,13 +47,27 @@ public class VersionListDialog extends FilteredTreeDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
-      Control control = super.createDialogArea(container);
+      Composite composite = new Composite(container, SWT.None);
+      composite.setLayout(new GridLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      Composite comp = new Composite(control.getParent(), SWT.NONE);
-      comp.setLayout(new GridLayout(2, false));
-      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      if (removeAllAllowed) {
+         final Button button = new Button(composite, SWT.PUSH);
+         button.setText("Un-Set and Close");
+         button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               removeAllSelected = true;
+               close();
+            }
+         });
+      }
 
-      showReleased.createWidgets(comp, 2);
+      Composite checkComp = new Composite(composite, SWT.NONE);
+      checkComp.setLayout(new GridLayout(2, false));
+      checkComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      showReleased.createWidgets(checkComp, 2);
       showReleased.set(false);
       showReleased.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -63,7 +80,17 @@ public class VersionListDialog extends FilteredTreeDialog {
          };
       });
 
+      Control control = super.createDialogArea(composite);
+
       return control;
+   }
+
+   public boolean isRemoveAllSelected() {
+      if (!removeAllAllowed) {
+         return false;
+      } else {
+         return removeAllSelected;
+      }
    }
 
    public static class VersionContentProvider extends ArrayTreeContentProvider {
@@ -98,5 +125,13 @@ public class VersionListDialog extends FilteredTreeDialog {
       public void setShowReleased(boolean showReleased) {
          this.showReleased = showReleased;
       }
+   }
+
+   public boolean isRemoveAllAllowed() {
+      return removeAllAllowed;
+   }
+
+   public void setRemoveAllAllowed(boolean removeAllAllowed) {
+      this.removeAllAllowed = removeAllAllowed;
    }
 }
