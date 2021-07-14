@@ -73,7 +73,6 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
    public void create() {
       setLayout(ALayout.getZeroMarginLayout(7, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      //      gd.widthHint = 300;
       setLayoutData(gd);
       editor.getToolkit().adapt(this);
 
@@ -271,7 +270,6 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
 
    public void refresh() {
       if (Widgets.isAccessible(this)) {
-         //         createUpdateLinks();
 
          if (workItem.isTeamWorkflow()) {
             IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;

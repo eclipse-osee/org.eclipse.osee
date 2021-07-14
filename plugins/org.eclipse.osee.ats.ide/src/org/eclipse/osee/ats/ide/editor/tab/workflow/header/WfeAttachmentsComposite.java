@@ -79,7 +79,6 @@ public class WfeAttachmentsComposite extends Composite {
    public void create() {
       setLayout(ALayout.getZeroMarginLayout(1, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      //      gd.widthHint = 300;
       setLayoutData(gd);
       editor.getToolkit().adapt(this);
 
