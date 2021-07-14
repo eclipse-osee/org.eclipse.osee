@@ -48,9 +48,10 @@ public class StagedFileWatcher {
    private WatchService watchService;
    private final Map<WatchKey, Path> keyMap = new HashMap<>();
    private final Map<ArtifactToken, Pair<String, BlockApplicabilityOps>> viewMap = new HashMap<>();
+   private final XResultData results;
 
-   public StagedFileWatcher() {
-      // Do nothing
+   public StagedFileWatcher(XResultData results) {
+      this.results = results;
    }
 
    public void runWatcher(BlockApplicabilityStageRequest data, String directory) {
@@ -89,14 +90,12 @@ public class StagedFileWatcher {
             for (Map.Entry<ArtifactToken, Pair<String, BlockApplicabilityOps>> entry : viewMap.entrySet()) {
                String stagePath = entry.getValue().getFirst();
                BlockApplicabilityOps ops = entry.getValue().getSecond();
-               System.out.println(
-                  String.format("File Watcher has started processing files for %s", entry.getKey().getName()));
-               XResultData results = ops.refreshStagedFiles(directory, stagePath, files);
+               results.logf("File Watcher has started processing files for %s\n", entry.getKey().getName());
+               ops.refreshStagedFiles(results, directory, stagePath, files);
                if (results.isErrors()) {
-                  System.out.println(results.getResults());
+                  results.warningf("See above for errors while refreshing %s\n", entry.getKey().getName());
                }
-               System.out.println(
-                  String.format("File Watcher has completed file processing for %s", entry.getKey().getName()));
+               results.logf("File Watcher has completed file processing for %s\n", entry.getKey().getName());
             }
             key.reset();
          }
@@ -105,7 +104,7 @@ public class StagedFileWatcher {
       } catch (ClosedWatchServiceException ex) {
          return;
       } catch (IOException | InterruptedException ex) {
-         System.out.println(ex.getMessage());
+         results.error(ex.getMessage());
       }
    }
 

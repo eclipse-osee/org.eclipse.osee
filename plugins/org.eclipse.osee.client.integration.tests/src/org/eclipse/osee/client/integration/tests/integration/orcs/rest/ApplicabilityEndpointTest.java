@@ -194,7 +194,8 @@ public class ApplicabilityEndpointTest {
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.BranchView, "Product A", DemoBranches.SAW_PL);
       Map<Long, String> views = new HashMap<>();
       views.put(productA.getId(), "");
-      BlockApplicabilityStageRequest blockApplicabilityData = new BlockApplicabilityStageRequest(views, true, inputPath, stagePath);
+      BlockApplicabilityStageRequest blockApplicabilityData =
+         new BlockApplicabilityStageRequest(views, true, inputPath, stagePath);
       appl.applyBlockVisibility(blockApplicabilityData);
 
       // Traversing the Staging Folders checking to see if each creation was successful

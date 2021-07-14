@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
@@ -51,7 +52,6 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -102,12 +102,12 @@ public class BlockApplicabilityOps {
    private final List<FeatureDefinition> featureDefinition;
    private final Map<String, List<String>> viewApplicabilitiesMap;
    private final boolean useCachedConfig;
-   private BlockApplicabilityRule rule;
+   private BatStagingCreator batCreator;
    private BlockApplicabilityCacheFile cache;
    private String plPreferences;
    private Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap;
    private Map<String, List<String>> configurationMap;
-   private Map<String, Set<String>> fileApplicabilityCache = new HashMap<>();
+   private Map<String, Set<String>> fileApplicabilityCache = new ConcurrentHashMap<>();
 
    public BlockApplicabilityOps(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactToken view, BlockApplicabilityCacheFile cache) {
       this.orcsApi = orcsApi;
@@ -148,15 +148,15 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public XResultData applyApplicabilityToFiles(boolean commentNonApplicableBlocks, String sourcePath, String stagePath) throws OseeCoreException {
-      XResultData results = new XResultData();
-
+   public XResultData applyApplicabilityToFiles(XResultData results, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
       HashSet<String> excludedFiles = new HashSet<>();
       excludedFiles.add("Staging");
 
       setUpBlockApplicability(commentNonApplicableBlocks);
       File sourceFile = new File(sourcePath);
-      rule.process(sourceFile, stagePath, excludedFiles);
+      File stageFile = new File(stagePath);
+
+      batCreator.processDirectory(results, sourceFile, stageFile, excludedFiles);
 
       if (!useCachedConfig) {
          createCacheFile(results, stagePath);
@@ -169,9 +169,7 @@ public class BlockApplicabilityOps {
       return results;
    }
 
-   public XResultData refreshStagedFiles(String sourcePath, String stagePath, List<String> files) {
-      XResultData results = new XResultData();
-
+   public XResultData refreshStagedFiles(XResultData results, String sourcePath, String stagePath, List<String> files) {
       File sourceDir = new File(sourcePath);
       File stageDir = new File(stagePath, sourceDir.getName());
 
@@ -193,7 +191,7 @@ public class BlockApplicabilityOps {
 
          excludedFiles = fileApplicabilityCache.getOrDefault(stageFile.getPath(), Sets.newHashSet("Staging"));
 
-         rule.process(sourceFile, stageFile.getPath(), excludedFiles);
+         batCreator.processDirectory(results, sourceFile, stageFile, excludedFiles);
       }
 
       writeFileApplicabilityCache(results, fileApplicCache);
@@ -203,7 +201,7 @@ public class BlockApplicabilityOps {
    }
 
    /**
-    * This method can be used internally or externally to set up the BlockApplicabilityRule class for the
+    * This method can be used internally or externally to set up the BatStagingCreator class for the
     * BlockApplicabilityTool's use.
     */
    public void setUpBlockApplicability(boolean commentNonApplicableBlocks) {
@@ -217,12 +215,14 @@ public class BlockApplicabilityOps {
          fileTypeApplicabilityDataMap = populateFileTypeApplicabilityDataMap(plPreferences);
       }
 
-      rule = new BlockApplicabilityRule(this, fileTypeApplicabilityDataMap, commentNonApplicableBlocks);
-
       StringBuilder filePattern = new StringBuilder(".*\\.(");
       filePattern.append(Collections.toString("|", fileTypeApplicabilityDataMap.keySet()));
       filePattern.append(")");
-      rule.setFileNamePattern(filePattern.toString());
+      Pattern validFileExtensions = Pattern.compile(filePattern.toString(), Pattern.CASE_INSENSITIVE);
+
+      batCreator =
+         new BatStagingCreator(this, fileTypeApplicabilityDataMap, validFileExtensions, commentNonApplicableBlocks);
+
    }
 
    public String evaluateApplicabilityExpression(ApplicabilityBlock applic) {
@@ -573,7 +573,7 @@ public class BlockApplicabilityOps {
          objMap.writeValue(cacheFile, cache);
 
       } catch (IOException ex) {
-         results.error(String.format("There was a problem while writing the cache file %s", ex.getMessage()));
+         results.errorf("There was a problem while writing the cache file %s\n", ex.getMessage());
       }
    }
 

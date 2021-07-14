@@ -32,13 +32,13 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public abstract class Rule {
    private final String outExtension;
    private String currentOutfileName;
-   protected File inputFile;
+   private File inputFile;
    private String subdirectoryName;
-   protected Pattern fileNamePattern;
+   private Pattern fileNamePattern;
    protected boolean ruleWasApplicable;
    protected Logger logger;
    private int modCount;
-   protected String charsetString = "UTF8";
+   private String charsetString = "UTF8";
 
    public Rule() {
       this("done");
@@ -187,7 +187,7 @@ public abstract class Rule {
    }
 
    public final void setFileNamePattern(String fileNamePattern) {
-      this.fileNamePattern = Pattern.compile(fileNamePattern, Pattern.CASE_INSENSITIVE);
+      this.fileNamePattern = Pattern.compile(fileNamePattern);
    }
 
    public final String getCharsetString() {

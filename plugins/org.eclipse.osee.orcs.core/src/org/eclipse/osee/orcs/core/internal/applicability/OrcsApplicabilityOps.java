@@ -1442,10 +1442,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public XResultData applyApplicabilityToFiles(BlockApplicabilityStageRequest data, BranchId branch) {
       XResultData results = new XResultData();
+      results.setLogToSysErr(true);
       String sourcePath = data.getSourcePath();
       String stagePath = data.getStagePath();
       if (sourcePath == null || stagePath == null) {
-         results.error("Both a source path and stage path are required");
+         results.error("Both a source path and stage path are required\n");
          return results;
       }
 
@@ -1454,7 +1455,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       ArtifactId viewId = ArtifactId.valueOf(viewInfo.getKey());
       String cachePath = viewInfo.getValue();
       BlockApplicabilityOps ops = getBlockApplicabilityOps(results, data, viewId, cachePath, branch);
-      if (ops == null) {
+      if (ops == null || results.isErrors()) {
          return results;
       }
 
@@ -1463,12 +1464,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
 
-      return ops.applyApplicabilityToFiles(commentNonApplicableBlocks, sourcePath, stagePath);
+      return ops.applyApplicabilityToFiles(results, commentNonApplicableBlocks, sourcePath, stagePath);
    }
 
    @Override
    public XResultData refreshStagedFiles(BlockApplicabilityStageRequest data, BranchId branch) {
       XResultData results = new XResultData();
+      results.setLogToSysErr(true);
 
       String sourcePath = data.getSourcePath();
       String stagePath = data.getStagePath();
@@ -1495,15 +1497,16 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       ops.setUpBlockApplicability(commentNonApplicableBlocks);
 
-      return ops.refreshStagedFiles(sourcePath, stagePath, files);
+      return ops.refreshStagedFiles(results, sourcePath, stagePath, files);
    }
 
    @Override
    public XResultData startWatcher(BlockApplicabilityStageRequest data, BranchId branch) {
       XResultData results = new XResultData();
+      results.setLogToSysErr(true);
 
       if (fileWatcher == null) {
-         fileWatcher = new StagedFileWatcher();
+         fileWatcher = new StagedFileWatcher(results);
       }
 
       String sourcePath = data.getSourcePath();
@@ -1583,8 +1586,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
             Long cachedViewId = cache.getViewId();
             if (!cachedViewId.equals(viewId.getId())) {
-               results.error(String.format("The entered view id (%s) does not match up with the cached view id (%s)",
-                  viewId.getId(), cachedViewId));
+               results.errorf("The entered view id (%s) does not match up with the cached view id (%s)\n",
+                  viewId.getId(), cachedViewId);
                return ops;
             }
 
@@ -1594,7 +1597,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
             ops = new BlockApplicabilityOps(orcsApi, logger, branch, viewToken, cache);
          } else {
-            results.error("A cache path was given but no file was found");
+            results.error("A cache path was given but no file was found\n");
             return ops;
          }
       }
@@ -1605,12 +1608,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    private String getFullStagePath(XResultData results, String stagePath, String viewName) {
       File stageDir = new File(stagePath, "Staging");
       if (!stageDir.exists() && !stageDir.mkdir()) {
-         results.error(String.format("Could not create stage directory %s", stageDir.toString()));
+         results.errorf("Could not create stage directory %s\n", stageDir.toString());
          return "";
       }
       File stageViewDir = new File(stageDir.getPath(), viewName.replaceAll(" ", "_"));
       if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
-         results.error(String.format("Could not create stage directory %s", stageViewDir.toString()));
+         results.errorf("Could not create stage directory %s\n", stageViewDir.toString());
          return "";
       }
 
