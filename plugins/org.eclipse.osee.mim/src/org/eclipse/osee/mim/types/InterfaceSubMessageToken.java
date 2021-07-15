@@ -28,7 +28,6 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
    @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225763L)
    private String InterfaceMessageRate;
 
    @OseeArtifactRequiredAttribute()
@@ -48,7 +47,6 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
       this.setName(art.getName());
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setInterfaceSubMessageNumber(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber, ""));
-      this.setInterfaceMessageRate(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, ""));
    }
 
    public InterfaceSubMessageToken(Long id, String name) {

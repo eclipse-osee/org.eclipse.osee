@@ -8,5 +8,9 @@ export interface structure {
     interfaceMaxSimultaneity: string,
     interfaceMinSimultaneity: string,
     interfaceTaskFileType: number,
-    interfaceStructureCategory: string
+    interfaceStructureCategory: string,
+    numElements?: number,
+    sizeInBytes?: number,
+    bytesPerSecondMinimum?: number,
+    bytesPerSecondMaximum?: number,
 }

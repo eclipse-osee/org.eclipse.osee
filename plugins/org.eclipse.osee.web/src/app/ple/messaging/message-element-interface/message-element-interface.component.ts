@@ -47,6 +47,14 @@ export class MessageElementInterfaceComponent implements OnInit {
   headers: string[] = [];
   truncatedSections: string[] = [];
   allowedStructureHeaders: string[] = [];
+  editableStructureHeaders: string[] = [
+    'name',
+    'description',
+    'interfaceMaxSimultaneity',
+    'interfaceMinSimultaneity',
+    'interfaceTaskFileType',
+    'interfaceStructureCategory',];
+  
   allStructureHeaders: string[] = [
     'name',
     'description',
@@ -54,10 +62,10 @@ export class MessageElementInterfaceComponent implements OnInit {
     'interfaceMinSimultaneity',
     'interfaceTaskFileType',
     'interfaceStructureCategory',
-    'AttributeCount',
-    'SizeInBytes',
-    'BytesPerSecondMinimum',
-    'BytesPerSecondMaximum',
+    'numElements',
+    'sizeInBytes',
+    'bytesPerSecondMinimum',
+    'bytesPerSecondMaximum',
     'GenerationIndicator',
   ];
 
@@ -73,8 +81,8 @@ export class MessageElementInterfaceComponent implements OnInit {
     'platformTypeName2',
     'beginWord',
     'endWord',
-    'BeginByte',
-    'EndByte',
+    'beginByte',
+    'endByte',
     'interfaceElementAlterable',
     'description',
     'notes',
@@ -154,12 +162,8 @@ export class MessageElementInterfaceComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.searchTerms = filterValue;
-    if (filterValue.includes('element: ')) {
-      this.filter = filterValue.trim().toLowerCase();
-      this.dataSource.filter = '';
-    } else {
-      this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
+    this.filter = filterValue.trim().toLowerCase();
+    this.structureService.filter=(event.target as HTMLInputElement).value;
   }
   isTruncated(value: string) {
     if (this.truncatedSections.find((x) => x === value)) {

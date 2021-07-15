@@ -30,6 +30,13 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     x: '0',
     y:'0'
   }
+  editableElementHeaders: string[] = [
+    'name',
+    'platformTypeName2',
+    'interfaceElementAlterable',
+    'description',
+    'notes',
+  ];
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
   constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService) {

@@ -224,7 +224,6 @@ public interface CoreArtifactTypes {
       .exactlyOne(InterfaceMessageWriteAccess)
       .exactlyOne(InterfaceMessageType));
    ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, Artifact)
-      .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceSubMessageNumber));
    ArtifactTypeToken InterfaceStructure = osee.add(osee.artifactType(2455059983007225776L, "Interface Structure", false, Artifact)
       .zeroOrOne(InterfaceStructureCategory)

@@ -61,6 +61,15 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
+            double beginWord = 0.0;
+            double endWord = 0.0;
+            double beginWordDisplay = 0.0;
+            double endWordDisplay = 0.0;
+            double beginByte = 0.0;
+            double endByte = 0.0;
+            double beginByteDisplay = 0.0;
+            double endByteDisplay = 0.0;
+            double sizeInBytes = 0.0;
             Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
             elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
@@ -69,9 +78,31 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
                   CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
                   PlatformTypeToken.class);
+               sizeInBytes += Double.parseDouble(platformType.getInterfacePlatformTypeBitSize()) / 8 * (Math.max(1,
+                  element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()));
+               endByte = beginByte + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) % 4;
+               endWord = beginWord + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+               beginByteDisplay = Math.floor(beginByte);
+               endByteDisplay = Math.floor(endByte);
+               element.setBeginByte(beginByteDisplay);
+               element.setEndByte(endByteDisplay);
+               beginByte = (endByte + 1) % 4;
+               beginWordDisplay = Math.floor(beginWord);
+               endWordDisplay = Math.floor(endWord);
+               element.setBeginWord(beginWordDisplay);
+               element.setEndWord(endWordDisplay);
+               beginWord =
+                  beginWord + (((Double.parseDouble(platformType.getInterfacePlatformTypeBitSize())) / 8) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
             }
+            structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
          }
 
@@ -86,15 +117,112 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
    @Override
    public Collection<InterfaceStructureToken> getStructures(String filter) {
       try {
+         /**
+          * Gets total list of all related structures for lookup later
+          */
+         List<InterfaceStructureToken> totalStructureList =
+            (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
+         for (InterfaceStructureToken structure : totalStructureList) {
+            double beginWord = 0.0;
+            double endWord = 0.0;
+            double beginWordDisplay = 0.0;
+            double endWordDisplay = 0.0;
+            double beginByte = 0.0;
+            double endByte = 0.0;
+            double beginByteDisplay = 0.0;
+            double endByteDisplay = 0.0;
+            double sizeInBytes = 0.0;
+            Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
+            elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
+               InterfaceStructureElementToken.class));
+            for (InterfaceStructureElementToken element : elements) {
+               PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
+                  PlatformTypeToken.class);
+               sizeInBytes += Double.parseDouble(platformType.getInterfacePlatformTypeBitSize()) / 8 * (Math.max(1,
+                  element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()));
+               endByte = beginByte + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) % 4;
+               endWord = beginWord + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+               beginByteDisplay = Math.floor(beginByte);
+               endByteDisplay = Math.floor(endByte);
+               element.setBeginByte(beginByteDisplay);
+               element.setEndByte(endByteDisplay);
+               beginByte = (endByte + 1) % 4;
+               beginWordDisplay = Math.floor(beginWord);
+               endWordDisplay = Math.floor(endWord);
+               element.setBeginWord(beginWordDisplay);
+               element.setEndWord(endWordDisplay);
+               beginWord =
+                  beginWord + (((Double.parseDouble(platformType.getInterfacePlatformTypeBitSize())) / 8) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+
+               element.setPlatformTypeId(platformType.getId());
+               element.setPlatformTypeName(platformType.getName());
+            }
+            structure.setSizeInBytes(sizeInBytes);
+            structure.setElements(elements);
+         }
+         /**
+          * Gets all structures that match filter conditions
+          */
          List<InterfaceStructureToken> structureList =
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelationAndFilter(branch,
                CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter,
                InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
-            structure.setElements(interfaceElementApi.getAccessor().getAllByRelation(branch,
+            double beginWord = 0.0;
+            double endWord = 0.0;
+            double beginWordDisplay = 0.0;
+            double endWordDisplay = 0.0;
+            double beginByte = 0.0;
+            double endByte = 0.0;
+            double beginByteDisplay = 0.0;
+            double endByteDisplay = 0.0;
+            double sizeInBytes = 0.0;
+            Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
+            elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
                InterfaceStructureElementToken.class));
+            for (InterfaceStructureElementToken element : elements) {
+               PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
+                  PlatformTypeToken.class);
+               sizeInBytes += Double.parseDouble(platformType.getInterfacePlatformTypeBitSize()) / 8 * (Math.max(1,
+                  element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()));
+               endByte = beginByte + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) % 4;
+               endWord = beginWord + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+               beginByteDisplay = Math.floor(beginByte);
+               endByteDisplay = Math.floor(endByte);
+               element.setBeginByte(beginByteDisplay);
+               element.setEndByte(endByteDisplay);
+               beginByte = (endByte + 1) % 4;
+               beginWordDisplay = Math.floor(beginWord);
+               endWordDisplay = Math.floor(endWord);
+               element.setBeginWord(beginWordDisplay);
+               element.setEndWord(endWordDisplay);
+               beginWord =
+                  beginWord + (((Double.parseDouble(platformType.getInterfacePlatformTypeBitSize())) / 8) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+
+               element.setPlatformTypeId(platformType.getId());
+               element.setPlatformTypeName(platformType.getName());
+            }
+            structure.setSizeInBytes(sizeInBytes);
+            structure.setElements(elements);
          }
+         /**
+          * Gets all elements that match filter conditions, then find their related structures and attach
+          */
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.interfaceElementApi.getAccessor().getAllByFilter(branch, filter,
                InterfaceStructureElementToken.class);
@@ -104,20 +232,38 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                   CoreRelationTypes.InterfaceStructureContent_DataElement, ArtifactId.valueOf(element.getId()),
                   InterfaceStructureToken.class);
             for (InterfaceStructureToken alternateStructure : subStructureList) {
-               List<InterfaceStructureElementToken> alternateElements =
-                  (List<InterfaceStructureElementToken>) interfaceElementApi.getAccessor().getAllByRelationAndFilter(
-                     branch, CoreRelationTypes.InterfaceStructureContent_Structure,
-                     ArtifactId.valueOf(alternateStructure.getId()), filter, InterfaceStructureElementToken.class);
-               for (InterfaceStructureElementToken element1 : alternateElements) {
-                  PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
-                     CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element1.getId()),
-                     PlatformTypeToken.class);
-                  element1.setPlatformTypeId(platformType.getId());
-                  element1.setPlatformTypeName(platformType.getName());
+               PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
+                  PlatformTypeToken.class);
+               element.setPlatformTypeId(platformType.getId());
+               element.setPlatformTypeName(platformType.getName());
+               if (totalStructureList.indexOf(alternateStructure) != -1 && totalStructureList.get(
+                  totalStructureList.indexOf(alternateStructure)).getElements().indexOf(element) != -1) {
+                  InterfaceStructureElementToken tempElement =
+                     totalStructureList.get(totalStructureList.indexOf(alternateStructure)).getElements().get(
+                        totalStructureList.get(totalStructureList.indexOf(alternateStructure)).getElements().indexOf(
+                           element));
+                  element.setBeginByte(tempElement.getBeginByte());
+                  element.setEndByte(tempElement.getEndByte());
+                  element.setBeginWord(tempElement.getBeginWord());
+                  element.setEndWord(tempElement.getEndWord());
                }
-               alternateStructure.setElements(alternateElements);
-               if (!structureList.contains(alternateStructure)) {
-                  structureList.add(alternateStructure);
+               List<InterfaceStructureElementToken> elementList = new LinkedList<InterfaceStructureElementToken>();
+               elementList.add(element);
+               alternateStructure.setElements(elementList);
+               if (totalStructureList.indexOf(alternateStructure) != -1) {
+                  InterfaceStructureToken tempStructure =
+                     totalStructureList.get(totalStructureList.indexOf(alternateStructure));
+                  alternateStructure.setSizeInBytes(tempStructure.getSizeInBytes());
+                  if (!structureList.contains(alternateStructure)) {
+                     structureList.add(alternateStructure);
+                  } else {
+                     InterfaceStructureToken tempStructure2 =
+                        structureList.get(structureList.indexOf(alternateStructure));
+                     structureList.remove(alternateStructure);
+                     tempStructure2.getElements().add(element);
+                     structureList.add(tempStructure2);
+                  }
                }
             }
          }

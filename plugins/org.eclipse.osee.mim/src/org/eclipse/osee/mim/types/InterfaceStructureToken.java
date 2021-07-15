@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
 import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -46,6 +47,11 @@ public class InterfaceStructureToken extends PLGenericDBObject {
    @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
+   private Integer numElements = 0;
+   private Double sizeInBytes = 0.0;
+   private Double BytesPerSecondMinimum = 0.0;
+   private Double BytesPerSecondMaximum = 0.0;
+
    private Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
 
    public InterfaceStructureToken(ArtifactToken art) {
@@ -62,6 +68,7 @@ public class InterfaceStructureToken extends PLGenericDBObject {
       this.setInterfaceStructureCategory(
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceStructureCategory, ""));
       this.setInterfaceTaskFileType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTaskFileType, 0));
+      this.setNumElements(art.getRelatedCount(CoreRelationTypes.InterfaceStructureContent_DataElement));
    }
 
    /**
@@ -162,6 +169,64 @@ public class InterfaceStructureToken extends PLGenericDBObject {
     */
    public void setElements(Collection<InterfaceStructureElementToken> elements) {
       this.elements = elements;
+   }
+
+   /**
+    * @return the numElements
+    */
+   public Integer getNumElements() {
+      return numElements;
+   }
+
+   /**
+    * @param numElements the numElements to set
+    */
+   public void setNumElements(Integer numElements) {
+      this.numElements = numElements;
+   }
+
+   /**
+    * @return the sizeInBytes
+    */
+   public Double getSizeInBytes() {
+      return sizeInBytes;
+   }
+
+   /**
+    * @return the sizeInBytes
+    */
+   public void setSizeInBytes(Double sizeInBytes) {
+      this.sizeInBytes = sizeInBytes;
+      this.setBytesPerSecondMaximum(this.sizeInBytes * Double.parseDouble(this.getInterfaceMaxSimultaneity()));
+      this.setBytesPerSecondMinimum(this.sizeInBytes * Double.parseDouble(this.getInterfaceMinSimultaneity()));
+   }
+
+   /**
+    * @return the bytesPerSecondMaximum
+    */
+   public Double getBytesPerSecondMaximum() {
+      return BytesPerSecondMaximum;
+   }
+
+   /**
+    * @param bytesPerSecondMaximum the bytesPerSecondMaximum to set
+    */
+   public void setBytesPerSecondMaximum(Double bytesPerSecondMaximum) {
+      BytesPerSecondMaximum = bytesPerSecondMaximum;
+   }
+
+   /**
+    * @return the bytesPerSecondMinimum
+    */
+   public Double getBytesPerSecondMinimum() {
+      return BytesPerSecondMinimum;
+   }
+
+   /**
+    * @param bytesPerSecondMinimum the bytesPerSecondMinimum to set
+    */
+   public void setBytesPerSecondMinimum(Double bytesPerSecondMinimum) {
+      BytesPerSecondMinimum = bytesPerSecondMinimum;
    }
 
 }

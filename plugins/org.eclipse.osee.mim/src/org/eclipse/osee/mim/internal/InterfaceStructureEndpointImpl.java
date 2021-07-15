@@ -63,6 +63,15 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
+            double beginWord = 0.0;
+            double endWord = 0.0;
+            double beginWordDisplay = 0.0;
+            double endWordDisplay = 0.0;
+            double beginByte = 0.0;
+            double endByte = 0.0;
+            double beginByteDisplay = 0.0;
+            double endByteDisplay = 0.0;
+            double sizeInBytes = 0.0;
             Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
             elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
@@ -71,9 +80,31 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
                PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
                   CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
                   PlatformTypeToken.class);
+               sizeInBytes += Double.parseDouble(platformType.getInterfacePlatformTypeBitSize()) / 8 * (Math.max(1,
+                  element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()));
+               endByte = beginByte + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) % 4;
+               endWord = beginWord + (((Double.parseDouble(
+                  platformType.getInterfacePlatformTypeBitSize()) / 8) - 1.0) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+               beginByteDisplay = Math.floor(beginByte);
+               endByteDisplay = Math.floor(endByte);
+               element.setBeginByte(beginByteDisplay);
+               element.setEndByte(endByteDisplay);
+               beginByte = (endByte + 1) % 4;
+               beginWordDisplay = Math.floor(beginWord);
+               endWordDisplay = Math.floor(endWord);
+               element.setBeginWord(beginWordDisplay);
+               element.setEndWord(endWordDisplay);
+               beginWord =
+                  beginWord + (((Double.parseDouble(platformType.getInterfacePlatformTypeBitSize())) / 8) * (Math.max(1,
+                     element.getInterfaceElementIndexEnd() - element.getInterfaceElementIndexStart()))) / 4;
+
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
             }
+            structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
          }
 

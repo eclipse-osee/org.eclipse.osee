@@ -42,6 +42,11 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
    @OseeArtifactAttribute(attributeId = 2455059983007225802L)
    private Integer InterfaceElementIndexEnd;
 
+   private Double beginByte = 0.0;
+   private Double endByte = 0.0;
+   private Double beginWord = 0.0;
+   private Double endWord = 0.0;
+
    public InterfaceStructureElementArrayToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -129,6 +134,62 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
     */
    public void setInterfaceElementIndexEnd(Integer interfaceElementIndexEnd) {
       InterfaceElementIndexEnd = interfaceElementIndexEnd;
+   }
+
+   /**
+    * @return the beginByte
+    */
+   public Double getBeginByte() {
+      return beginByte;
+   }
+
+   /**
+    * @param beginByte the beginByte to set
+    */
+   public void setBeginByte(Double beginByte) {
+      this.beginByte = beginByte;
+   }
+
+   /**
+    * @return the endByte
+    */
+   public Double getEndByte() {
+      return endByte;
+   }
+
+   /**
+    * @param endByte the endByte to set
+    */
+   public void setEndByte(Double endByte) {
+      this.endByte = endByte;
+   }
+
+   /**
+    * @return the beginWord
+    */
+   public Double getBeginWord() {
+      return beginWord;
+   }
+
+   /**
+    * @param beginWord the beginWord to set
+    */
+   public void setBeginWord(Double beginWord) {
+      this.beginWord = beginWord;
+   }
+
+   /**
+    * @return the endWord
+    */
+   public Double getEndWord() {
+      return endWord;
+   }
+
+   /**
+    * @param endWord the endWord to set
+    */
+   public void setEndWord(Double endWord) {
+      this.endWord = endWord;
    }
 
 }

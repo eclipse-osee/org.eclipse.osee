@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { share } from 'rxjs/operators';
+import { share, shareReplay } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class EnumsService {
   private _periodicities = this.http.get<string[]>(this.baseURL + 'MessagePeriodicities').pipe(share());
   private _rates = this.http.get<string[]>(this.baseURL + 'MessageRates').pipe(share());
   private _types = this.http.get<string[]>(this.baseURL + 'MessageTypes').pipe(share());
-  private _categories = this.http.get<string[]>(this.baseURL + 'StructureCategories').pipe(share());
+  private _categories = this.http.get<string[]>(this.baseURL + 'StructureCategories').pipe(share(),shareReplay(1));
   
   get baseURL() {
     return this._baseURL;

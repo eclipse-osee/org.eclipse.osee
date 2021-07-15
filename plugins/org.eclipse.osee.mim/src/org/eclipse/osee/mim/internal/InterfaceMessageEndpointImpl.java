@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -49,9 +50,14 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
          List<InterfaceMessageToken> messageList =
             (List<InterfaceMessageToken>) messageApi.getAccessor().getAll(branch, InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
-            message.setSubMessages((List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelation(
-               branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
-               InterfaceSubMessageToken.class));
+            List<InterfaceSubMessageToken> submessages = new LinkedList<InterfaceSubMessageToken>();
+            for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
+               InterfaceSubMessageToken.class)) {
+               submessage.setInterfaceMessageRate(message.getInterfaceMessageRate());
+               submessages.add(submessage);
+            }
+            message.setSubMessages(submessages);
          }
          return messageList;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -71,9 +77,14 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
       try {
          InterfaceMessageToken message =
             this.messageApi.getAccessor().get(branch, messageId, InterfaceMessageToken.class);
-         message.setSubMessages((List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelation(
-            branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
-            InterfaceSubMessageToken.class));
+         List<InterfaceSubMessageToken> submessages = new LinkedList<InterfaceSubMessageToken>();
+         for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
+            InterfaceSubMessageToken.class)) {
+            submessage.setInterfaceMessageRate(message.getInterfaceMessageRate());
+            submessages.add(submessage);
+         }
+         message.setSubMessages(submessages);
          return message;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

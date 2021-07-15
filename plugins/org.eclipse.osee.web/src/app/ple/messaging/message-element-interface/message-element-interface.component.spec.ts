@@ -164,7 +164,7 @@ describe('MessageElementInterfaceComponent', () => {
     const control = await form.getControl(MatInputHarness);
     await control?.setValue('CCS Audio File');
     expect(
-      fixture.componentInstance.dataSource.filter ===
+      fixture.componentInstance.filter ===
         'CCS Audio File'.trim().toLowerCase()
     ).toBeTruthy();
   });

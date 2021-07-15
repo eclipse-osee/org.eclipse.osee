@@ -30,7 +30,9 @@
                         <ng-container *ngIf="header==='name'">
                             <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))">V</button>
                         </ng-container>
-                        <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]"></osee-messaging-edit-structure-field>
+                        <ng-container *ngIf="editableStructureHeaders.includes(header); else no_edit">
+                            <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]"></osee-messaging-edit-structure-field>
+                        </ng-container>
                     </ng-container>
                     <ng-template #no_edit>
                         <ng-container *ngIf="header==='name'">

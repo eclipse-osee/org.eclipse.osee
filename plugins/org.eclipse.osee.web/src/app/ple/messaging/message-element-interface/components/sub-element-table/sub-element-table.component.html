@@ -7,7 +7,9 @@
                 <osee-messaging-edit-element-field [header]="subHeader" [structureId]="element.id" [elementId]="value['id']" [elementStart]="value['interfaceElementIndexStart']" [elementEnd]="value['interfaceElementIndexEnd']" [value]="value['platformTypeName2'].toString()"></osee-messaging-edit-element-field>
             </ng-container>
             <ng-container *ngIf="subHeader!=='platformTypeName2'">
-                <osee-messaging-edit-element-field [header]="subHeader" [structureId]="element.id" [elementId]="value['id']" [elementStart]="value['interfaceElementIndexStart']" [elementEnd]="value['interfaceElementIndexEnd']" [value]="value[subHeader]"></osee-messaging-edit-element-field>
+                <ng-container *ngIf="editableElementHeaders.includes(subHeader);else no_edit">
+                    <osee-messaging-edit-element-field [header]="subHeader" [structureId]="element.id" [elementId]="value['id']" [elementStart]="value['interfaceElementIndexStart']" [elementEnd]="value['interfaceElementIndexEnd']" [value]="value[subHeader]"></osee-messaging-edit-element-field>
+                </ng-container>
             </ng-container>
         </ng-container>
         <ng-template #no_edit>
@@ -19,10 +21,10 @@
             </div>
             <div *ngIf="subHeader==='name'">
                 <ng-container *ngIf="value['interfaceElementIndexEnd']-value['interfaceElementIndexStart']>0">
-                    {{value[subHeader]+"["+value['interfaceElementIndexStart']+"..."+value['interfaceElementIndexEnd']+"]"}}
+                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]+'['+value['interfaceElementIndexStart']+'...'+value['interfaceElementIndexEnd']+']'" classToApply="ple-message-element-interface-table-highlighted-text"></div>
                 </ng-container>
                 <ng-container *ngIf="value['interfaceElementIndexEnd']-value['interfaceElementIndexStart']<=0">
-                    {{value[subHeader]}}
+                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]" classToApply="ple-message-element-interface-table-highlighted-text"></div>
                 </ng-container>
             </div>
             <ng-container *ngIf="subHeader==='platformTypeName2'">
