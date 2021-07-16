@@ -106,4 +106,9 @@ public interface IAtsWorkDefinitionService {
 
    IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem, boolean useAttr);
 
+   /**
+    * @return widget defintions from header and all states
+    */
+   Collection<IAtsWidgetDefinition> getWidgets(IAtsWorkDefinition workDef);
+
 }

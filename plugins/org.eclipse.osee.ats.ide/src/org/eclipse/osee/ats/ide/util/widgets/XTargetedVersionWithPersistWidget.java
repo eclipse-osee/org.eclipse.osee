@@ -17,18 +17,20 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
+ * Select and persist with clear button
+ *
  * @author Donald G. Dunne
  */
-public class XTargetedVersionWidget extends XHyperlabelVersionSelection {
+public class XTargetedVersionWithPersistWidget extends XHyperlabelVersionSelectionWithPersist {
 
-   public static final String WIDGET_ID = XTargetedVersionWidget.class.getSimpleName();
+   public static final String WIDGET_ID = XTargetedVersionWithPersistWidget.class.getSimpleName();
    public static RelationTypeSide TARGETED_VERSION_RELATION = AtsRelationTypes.TeamWorkflowTargetedForVersion_Version;
 
-   public XTargetedVersionWidget() {
+   public XTargetedVersionWithPersistWidget() {
       this("Targeted Version");
    }
 
-   public XTargetedVersionWidget(String label) {
+   public XTargetedVersionWithPersistWidget(String label) {
       super(label, TARGETED_VERSION_RELATION);
    }
 

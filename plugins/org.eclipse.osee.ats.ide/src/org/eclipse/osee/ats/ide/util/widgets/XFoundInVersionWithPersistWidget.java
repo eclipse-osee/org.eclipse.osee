@@ -17,15 +17,17 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
+ * Select and persist with clear button
+ *
  * @author Jeremy A. Midvidy
  * @author Donald G. Dunne
  */
-public class XFoundInVersionWidget extends XHyperlabelVersionSelection {
+public class XFoundInVersionWithPersistWidget extends XHyperlabelVersionSelectionWithPersist {
 
-   public static final String WIDGET_ID = XFoundInVersionWidget.class.getSimpleName();
+   public static final String WIDGET_ID = XFoundInVersionWithPersistWidget.class.getSimpleName();
    public static RelationTypeSide FOUND_VERSION_RELATION = AtsRelationTypes.TeamWorkflowToFoundInVersion_Version;
 
-   public XFoundInVersionWidget(String label) {
+   public XFoundInVersionWithPersistWidget(String label) {
       super("Found In Version", FOUND_VERSION_RELATION);
    }
 

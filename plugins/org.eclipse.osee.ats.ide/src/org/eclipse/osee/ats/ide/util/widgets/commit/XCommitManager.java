@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -375,23 +375,27 @@ public class XCommitManager extends GenericXWidget implements ArtifactWidget, IB
 
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            redrawComposite();
-         }
-      });
+      if (Widgets.isAccessible(mainComp)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               redrawComposite();
+            }
+         });
+      }
    }
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isModified(getTeamArt())) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               loadTable();
-            }
-         });
+      if (Widgets.isAccessible(mainComp)) {
+         if (artifactEvent.isModified(getTeamArt())) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  loadTable();
+               }
+            });
+         }
       }
    }
 

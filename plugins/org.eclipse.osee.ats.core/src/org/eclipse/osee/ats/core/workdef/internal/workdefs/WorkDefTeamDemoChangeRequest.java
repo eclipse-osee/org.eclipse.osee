@@ -48,7 +48,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
 
-            new WidgetDefinition("Found-In Version", "XFoundInVersionWidget"), //
+            new WidgetDefinition("Found-In Version", "XFoundInVersionWithPersistWidget"), //
             new WidgetDefinition("Create/Open Change Request Analysis Workflow", "XCreateEscapementDemoWfXButton"), //
 
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
@@ -69,7 +69,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
 
-            new WidgetDefinition("Found-In Version", "XFoundInVersionWidget"), //
+            new WidgetDefinition("Found-In Version", "XFoundInVersionWithPersistWidget"), //
             new WidgetDefinition("Create/Open Change Request Analysis Workflow", "XCreateEscapementDemoWfXButton"), //
 
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
@@ -115,7 +115,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowEditToAll, RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Sibling Workflows", "XSiblingWorldWidget"));
+            new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"));
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
          .andRules(RuleDefinitionOption.AllowEditToAll) //

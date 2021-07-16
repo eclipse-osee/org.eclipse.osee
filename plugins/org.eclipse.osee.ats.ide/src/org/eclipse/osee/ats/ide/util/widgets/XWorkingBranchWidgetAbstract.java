@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListene
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -136,23 +136,25 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    }
 
    private void updateBranchState() {
-      workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt, true);
-      workingBranchCreationInProgress =
-         AtsApiService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt);
-      workingBranchInWork = AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt);
+      if (teamArt != null) {
+         workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt, true);
+         workingBranchCreationInProgress =
+            AtsApiService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt);
+         workingBranchInWork = AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt);
 
-      if (workingBranch.isInvalid()) {
-         workingBranchCommitInProgress = false;
-      } else {
-         BranchState state = BranchManager.getState(workingBranch);
-         workingBranchCreationInProgress |= state.isCreationInProgress();
-         workingBranchCommitInProgress = AtsApiService.get().getBranchService().isWorkingBranchCommitInProgress(
-            teamArt) || state.isCommitInProgress();
-         workingBranchCommitWithMergeInProgress =
-            BranchManager.hasMergeBranches(workingBranch) && !state.isRebaselineInProgress();
+         if (workingBranch.isInvalid()) {
+            workingBranchCommitInProgress = false;
+         } else {
+            BranchState state = BranchManager.getState(workingBranch);
+            workingBranchCreationInProgress |= state.isCreationInProgress();
+            workingBranchCommitInProgress = AtsApiService.get().getBranchService().isWorkingBranchCommitInProgress(
+               teamArt) || state.isCommitInProgress();
+            workingBranchCommitWithMergeInProgress =
+               BranchManager.hasMergeBranches(workingBranch) && !state.isRebaselineInProgress();
+         }
+         committedBranchExists = AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt);
+         disableAll = workingBranchCommitInProgress;
       }
-      committedBranchExists = AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt);
-      disableAll = workingBranchCommitInProgress;
    }
 
    protected BranchStatus getStatus() {

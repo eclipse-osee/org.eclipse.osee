@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.column.FoundInVersionColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.util.widgets.XFoundInVersionWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XFoundInVersionWithPersistWidget;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -45,7 +45,7 @@ public class FoundInVersionColumnTest {
 
       // FIV set
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Update Found-In-Version Test");
-      changes.setRelation(codeArt, XFoundInVersionWidget.FOUND_VERSION_RELATION, demoVersion);
+      changes.setRelation(codeArt, XFoundInVersionWithPersistWidget.FOUND_VERSION_RELATION, demoVersion);
       changes.executeIfNeeded();
       Assert.assertEquals(demoVersion.toString(),
          FoundInVersionColumnUI.getInstance().getColumnText(codeArt, FoundInVersionColumnUI.getInstance(), 0));

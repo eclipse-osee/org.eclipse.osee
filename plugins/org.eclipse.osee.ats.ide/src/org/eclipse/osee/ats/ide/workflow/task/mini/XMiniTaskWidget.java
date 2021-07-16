@@ -299,20 +299,22 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       try {
-         // Handle case where new task created/deleted
-         if (artifactEvent.isHasEvent((Artifact) teamWf.getStoreObject())) {
-            refresh();
-            return;
-         }
-         // Handle case where task changed
-         for (IAtsTask task : atsApi.getTaskService().getTasks(teamWf)) {
-            if (artifactEvent.isHasEvent((Artifact) task.getStoreObject())) {
+         if (teamWf != null && Widgets.isAccessible(mainComp)) {
+            // Handle case where new task created/deleted
+            if (artifactEvent.isHasEvent((Artifact) teamWf.getStoreObject())) {
                refresh();
                return;
             }
-            if (artifactEvent.isReloaded((Artifact) task.getStoreObject())) {
-               refresh();
-               return;
+            // Handle case where task changed
+            for (IAtsTask task : atsApi.getTaskService().getTasks(teamWf)) {
+               if (artifactEvent.isHasEvent((Artifact) task.getStoreObject())) {
+                  refresh();
+                  return;
+               }
+               if (artifactEvent.isReloaded((Artifact) task.getStoreObject())) {
+                  refresh();
+                  return;
+               }
             }
          }
       } catch (Exception ex) {

@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsWorkDefinitionServiceImplTest.class})
+@Suite.SuiteClasses({AtsWorkDefinitionServiceImplTest.class, AtsWorkDefinitionXWidgetTest.class})
 
 /**
  * @author Donald G. Dunne

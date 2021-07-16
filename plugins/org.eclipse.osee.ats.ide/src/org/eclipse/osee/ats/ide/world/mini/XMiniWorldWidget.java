@@ -54,7 +54,7 @@ public abstract class XMiniWorldWidget extends GenericXWidget {
    private Label extraInfoLabel;
    private int lastSize = 0;
    private final int MAX_TABLE_SIZE = 10;
-   private Composite mainComp;
+   protected Composite mainComp;
    private Composite parentComp;
    protected final AtsApi atsApi;
    private Collection<IAtsWorkItem> workItems;

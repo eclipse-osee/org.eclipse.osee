@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -131,20 +132,22 @@ public abstract class XSiblingWorldWidget extends XMiniWorldWidget implements Ar
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       try {
-         // Handle case where new sibling created/deleted
-         if (artifactEvent.isHasEvent((Artifact) teamWf.getParentAction().getStoreObject())) {
-            refresh();
-            return;
-         }
-         // Handle case where sibling changed
-         for (IAtsTeamWorkflow siblingWf : atsApi.getActionService().getSiblingTeamWorkflows(teamWf)) {
-            if (artifactEvent.isHasEvent((Artifact) siblingWf.getStoreObject())) {
+         if (teamWf != null && Widgets.isAccessible(mainComp)) {
+            // Handle case where new sibling created/deleted
+            if (artifactEvent.isHasEvent((Artifact) teamWf.getParentAction().getStoreObject())) {
                refresh();
                return;
             }
-            if (artifactEvent.isReloaded((Artifact) siblingWf.getStoreObject())) {
-               refresh();
-               return;
+            // Handle case where sibling changed
+            for (IAtsTeamWorkflow siblingWf : atsApi.getActionService().getSiblingTeamWorkflows(teamWf)) {
+               if (artifactEvent.isHasEvent((Artifact) siblingWf.getStoreObject())) {
+                  refresh();
+                  return;
+               }
+               if (artifactEvent.isReloaded((Artifact) siblingWf.getStoreObject())) {
+                  refresh();
+                  return;
+               }
             }
          }
       } catch (Exception ex) {

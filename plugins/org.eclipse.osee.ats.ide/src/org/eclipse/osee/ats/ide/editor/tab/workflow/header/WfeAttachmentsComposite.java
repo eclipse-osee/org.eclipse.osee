@@ -68,6 +68,7 @@ public class WfeAttachmentsComposite extends Composite {
    private final Map<Long, Composite> relIdToComp = new HashMap<>();
    private final Set<Long> existingRels = new HashSet<>();
    private final AtsApi atsApi;
+   private Label label;
 
    public WfeAttachmentsComposite(Composite parent, int style, WorkflowEditor editor) {
       super(parent, style);
@@ -82,8 +83,8 @@ public class WfeAttachmentsComposite extends Composite {
       setLayoutData(gd);
       editor.getToolkit().adapt(this);
 
-      Label label = new Label(this, SWT.NONE);
-      label.setText("Attachments: ");
+      label = new Label(this, SWT.NONE);
+      label.setText("No Attachments");
       label.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
       label.setFont(FontManager.getCourierNew12Bold());
 
@@ -137,6 +138,7 @@ public class WfeAttachmentsComposite extends Composite {
             createDeleteHyperlink(thisArt, thatArt, relation, lComp, editor);
 
             linkHandled.add(supportEntry.getKey().getId());
+            label.setText("Attachments: ");
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Error showing link " + supportEntry.getKey(), ex);
          }

@@ -17,19 +17,21 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
+ * Select and persist with clear button
+ *
  * @author Donald G. Dunne
  */
-public class XIntroducedInVersionWidget extends XHyperlabelVersionSelection {
+public class XIntroducedInVersionWithPersistWidget extends XHyperlabelVersionSelectionWithPersist {
 
-   public static final String WIDGET_ID = XIntroducedInVersionWidget.class.getSimpleName();
+   public static final String WIDGET_ID = XIntroducedInVersionWithPersistWidget.class.getSimpleName();
    public static RelationTypeSide INTRODUCED_VERSION_RELATION =
       AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version;
 
-   public XIntroducedInVersionWidget() {
+   public XIntroducedInVersionWithPersistWidget() {
       this("Introduced In Version");
    }
 
-   public XIntroducedInVersionWidget(String label) {
+   public XIntroducedInVersionWithPersistWidget(String label) {
       super(label, INTRODUCED_VERSION_RELATION);
    }
 

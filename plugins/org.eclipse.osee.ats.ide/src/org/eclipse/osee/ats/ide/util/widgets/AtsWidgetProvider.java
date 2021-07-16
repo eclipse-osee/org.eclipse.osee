@@ -87,12 +87,12 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XStateCombo();
       } else if (widgetName.equals(XStateSearchCombo.WIDGET_ID)) {
          toReturn = new XStateSearchCombo();
-      } else if (widgetName.equals(XFoundInVersionWidget.WIDGET_ID)) {
-         toReturn = new XFoundInVersionWidget(name);
-      } else if (widgetName.equals(XTargetedVersionWidget.WIDGET_ID)) {
-         toReturn = new XTargetedVersionWidget(name);
-      } else if (widgetName.equals(XIntroducedInVersionWidget.WIDGET_ID)) {
-         toReturn = new XIntroducedInVersionWidget(name);
+      } else if (widgetName.equals(XFoundInVersionWithPersistWidget.WIDGET_ID)) {
+         toReturn = new XFoundInVersionWithPersistWidget(name);
+      } else if (widgetName.equals(XTargetedVersionWithPersistWidget.WIDGET_ID)) {
+         toReturn = new XTargetedVersionWithPersistWidget(name);
+      } else if (widgetName.equals(XIntroducedInVersionWithPersistWidget.WIDGET_ID)) {
+         toReturn = new XIntroducedInVersionWithPersistWidget(name);
       } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {
          toReturn = new XCommitManager();
       } else if (widgetName.equals(XWorkingBranchLabel.WIDGET_NAME)) {
