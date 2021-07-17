@@ -98,8 +98,12 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       KeyValueModule keyValueModule = new KeyValueModule(jdbcClient);
 
-      String oseeDb = properties.getValue("osee.db");
-      System.setProperty("osee.db", oseeDb);
+      try {
+         String oseeDb = properties.getValue("osee.db");
+         System.setProperty("osee.db", oseeDb);
+      } catch (Exception ex) {
+         // do nothing
+      }
 
       dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, keyValueModule,
          txModule, adminModule, resourceManager);
