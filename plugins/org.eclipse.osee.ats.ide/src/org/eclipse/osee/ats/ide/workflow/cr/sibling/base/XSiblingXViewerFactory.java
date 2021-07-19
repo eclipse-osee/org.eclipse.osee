@@ -10,15 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates;
+package org.eclipse.osee.ats.ide.workflow.cr.sibling.base;
 
-import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
+import org.eclipse.osee.ats.ide.world.mini.MiniWorldXViewerFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public interface TaskEstNameProvider {
+public abstract class XSiblingXViewerFactory extends MiniWorldXViewerFactory {
 
-   public String getTaskName(TaskEstDefinition ted);
+   public XSiblingXViewerFactory(String namespace) {
+      super(namespace);
+   }
 
 }

@@ -10,17 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.sibling;
+package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
-import org.eclipse.osee.ats.ide.world.mini.MiniWorldXViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
+import org.eclipse.osee.ats.ide.world.WorldXViewer;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class XSiblingXViewerFactory extends MiniWorldXViewerFactory {
+public class XTaskEstSiblingWorldXViewer extends WorldXViewer {
 
-   public XSiblingXViewerFactory(String namespace) {
-      super(namespace);
+   public XTaskEstSiblingWorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
+      super(parent, style, xViewerFactory, editor);
    }
 
 }

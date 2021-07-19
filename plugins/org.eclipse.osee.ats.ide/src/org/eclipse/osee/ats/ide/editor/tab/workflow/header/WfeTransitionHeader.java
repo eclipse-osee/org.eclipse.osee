@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingActionBar;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingActionBar;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.framework.core.operation.Operations;

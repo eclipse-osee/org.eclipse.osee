@@ -10,20 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
+package org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingWorldWidget;
+import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
-public class XTaskEstSiblingWorldXViewer extends WorldXViewer {
+public abstract class XTaskEstSiblingWorldWidget extends XSiblingWorldWidget {
 
-   public XTaskEstSiblingWorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
-      super(parent, style, xViewerFactory, editor);
+   public XTaskEstSiblingWorldWidget() {
+      super(new XTaskEstSiblingXViewerFactory());
+
+   }
+
+   @Override
+   protected WorldLabelProvider createWorldLabelProvider(WorldXViewer worldXViewer) {
+      return new XTaskEstSiblingLabelProvider(worldXViewer);
    }
 
 }

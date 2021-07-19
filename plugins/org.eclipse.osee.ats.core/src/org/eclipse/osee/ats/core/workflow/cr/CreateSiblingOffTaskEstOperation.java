@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.cr;
+package org.eclipse.osee.ats.core.workflow.cr;
 
 import java.util.ArrayList;
 import java.util.Arrays;

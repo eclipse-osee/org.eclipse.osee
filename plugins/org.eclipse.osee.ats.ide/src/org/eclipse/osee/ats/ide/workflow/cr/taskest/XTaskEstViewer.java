@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates;
+package org.eclipse.osee.ats.ide.workflow.cr.taskest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
-import org.eclipse.osee.ats.core.cr.CreateSiblingOffTaskEstOperation;
+import org.eclipse.osee.ats.core.workflow.cr.CreateSiblingOffTaskEstOperation;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemCheckboxStateDialog;

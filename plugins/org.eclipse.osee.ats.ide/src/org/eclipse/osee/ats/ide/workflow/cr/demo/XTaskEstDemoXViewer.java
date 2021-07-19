@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
+package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstViewer;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstViewer;
+import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
 

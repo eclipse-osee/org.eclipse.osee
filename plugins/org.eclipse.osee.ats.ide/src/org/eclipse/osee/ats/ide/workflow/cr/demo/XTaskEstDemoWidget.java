@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
+package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstWidget;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.XTaskEstXViewerFactory;
+import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstXViewerFactory;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;

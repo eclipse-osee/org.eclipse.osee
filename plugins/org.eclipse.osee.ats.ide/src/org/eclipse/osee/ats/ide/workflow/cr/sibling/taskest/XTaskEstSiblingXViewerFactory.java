@@ -10,13 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.sibling;
+package org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest;
 
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingXViewerFactory;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingXViewerFactory;
 
 /**
  * @author Donald G. Dunne

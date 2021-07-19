@@ -10,17 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.sibling;
+package org.eclipse.osee.ats.ide.workflow.cr.taskest;
 
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingActionBar;
+import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class XTaskEstSiblingActionBar extends XSiblingActionBar {
+public interface TaskEstNameProvider {
 
-   public XTaskEstSiblingActionBar(XTaskEstSiblingWorldWidget siblingWorldWidget) {
-      super(siblingWorldWidget);
-   }
+   public String getTaskName(TaskEstDefinition ted);
 
 }

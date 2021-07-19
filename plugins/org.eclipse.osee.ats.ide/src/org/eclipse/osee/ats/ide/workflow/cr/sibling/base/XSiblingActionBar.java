@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.sibling;
+package org.eclipse.osee.ats.ide.workflow.cr.sibling.base;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;

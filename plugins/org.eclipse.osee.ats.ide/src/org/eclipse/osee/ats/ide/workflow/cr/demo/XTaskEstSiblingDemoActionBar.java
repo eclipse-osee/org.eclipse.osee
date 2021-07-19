@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
+package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.core.cr.CreateSiblingOffTaskEstOperation;
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.XSiblingActionBar;
+import org.eclipse.osee.ats.core.workflow.cr.CreateSiblingOffTaskEstOperation;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingActionBar;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;

@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr.estimates.demo;
+package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.osee.ats.ide.workflow.cr.estimates.sibling.XTaskEstSiblingWorldWidget;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest.XTaskEstSiblingWorldWidget;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.swt.SWT;
