@@ -88,6 +88,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was created.");
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", MediaType.TEXT_PLAIN, "Current state of workflow state machine.");
    AttributeTypeString CurrentStateType = ats.createString(1152921504606847147L, "ats.Current State Type", MediaType.TEXT_PLAIN, "Type of Current State: InWork, Completed or Cancelled.");
+   AttributeTypeBoolean CrashOrBlankDisplay = ats.createBoolean(1601107563L, "ats.Crash or Blank Display", MediaType.TEXT_PLAIN, "F/A-18 E/F, G crash OR cockpit displays are blank");
    AttributeTypeString Decision = ats.createString(1152921504606847221L, "ats.Decision", MediaType.TEXT_PLAIN, "Option selected during decision review.");
    AttributeTypeString DecisionReviewOptions = ats.createString(1152921504606847220L, "ats.Decision Review Options", MediaType.TEXT_PLAIN, "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>\")");
    AttributeTypeBoolean Default = ats.createBoolean(1152921875139002538L, "ats.Default", MediaType.TEXT_PLAIN, "Default");
@@ -106,7 +107,9 @@ public interface AtsAttributeTypes {
    AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", MediaType.TEXT_PLAIN, "Reason for action being held");
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString HowToReproduceProblem = ats.createString(836807199L, "ats.How to reproduce the problem", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", MediaType.TEXT_PLAIN, "Is Direct Commercial Sale");
+   AttributeTypeString ImpactToMissionOrCrew = ats.createString(1442232314L, "ats.Impact to Mission or Crew", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Journal = ats.createString(4323598592300832478L, "ats.Journal", MediaType.TEXT_PLAIN, "");
    AttributeTypeArtifactId JournalSubscriber = ats.createArtifactId(42051756273953L, "ats.Journal Subscriber",MediaType.TEXT_PLAIN,  "Artifact Id of User Subscribed to Journal Notifications");
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", MediaType.TEXT_PLAIN, "");
@@ -126,6 +129,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean NextVersion = ats.createBoolean(1152921504606847157L, "ats.Next Version", MediaType.TEXT_PLAIN, "True if version artifact is \"Next\" version to be released.");
    AttributeTypeDouble Numeric1 = ats.createDouble(1152921504606847184L, "ats.Numeric1", MediaType.TEXT_PLAIN, "Open field for user to be able to enter numbers for sorting.");
    AttributeTypeDouble Numeric2 = ats.createDouble(1152921504606847185L, "ats.Numeric2", MediaType.TEXT_PLAIN, Numeric1.getDescription());
+   AttributeTypeBoolean NonFunctionalProblem = ats.createBoolean(950275235L, "ats.Non Functional Problem", MediaType.TEXT_PLAIN, "NAWC testers do not need to test this issue");
    AttributeTypeString OperationalImpact = ats.createString(1152921504606847213L, "ats.Operational Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OperationalImpactDescription = ats.createString(1152921504606847214L, "ats.Operational Impact Description", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OperationalImpactWorkaround = ats.createString(1152921504606847215L, "ats.Operational Impact Workaround", MediaType.TEXT_PLAIN, "");
@@ -143,6 +147,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", MediaType.TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.");
    PriorityAttributeType Priority = ats.createEnum(new PriorityAttributeType());
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", MediaType.TEXT_PLAIN, "Problem found during analysis.");
+   AttributeTypeDate ProblemFirstObserved = ats.createDate(8431670117014503949L, "ats.Problem First Observed", AttributeTypeToken.TEXT_CALENDAR, "Date of Problem First Observed");
    AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", MediaType.TEXT_PLAIN, "");
@@ -191,6 +196,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean VersionLocked = ats.createBoolean(1152921504606847156L, "ats.Version Locked", MediaType.TEXT_PLAIN, "True if version artifact is locked.");
    AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", MediaType.TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact");
    AttributeTypeDouble WeeklyBenefit = ats.createDouble(1152921504606847186L, "ats.Weekly Benefit", MediaType.TEXT_PLAIN, "Estimated number of hours that will be saved over a single year if this change is completed.");
+   AttributeTypeString WorkaroundDescription = ats.createString(1311070965L, "ats.Workaround Description", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
    AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", MediaType.TEXT_PLAIN, "");

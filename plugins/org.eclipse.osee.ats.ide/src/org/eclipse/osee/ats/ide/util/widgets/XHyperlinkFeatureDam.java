@@ -61,7 +61,7 @@ public class XHyperlinkFeatureDam extends XHyperlinkLabelValueSelection implemen
    private IAtsTeamWorkflow teamWf;
    private AttributeTypeToken attributeTypeToken;
    private final AtsApi atsApi;
-   private String value = "<Not Set>";
+   private String value = "Not Set";
    private Collection<Object> values;
 
    public XHyperlinkFeatureDam(String label) {
@@ -151,7 +151,7 @@ public class XHyperlinkFeatureDam extends XHyperlinkLabelValueSelection implemen
    public void refresh() {
       values = atsApi.getAttributeResolver().getAttributeValues(teamWf, attributeTypeToken);
       if (values.isEmpty()) {
-         value = "<Not Set>";
+         value = "Not Set";
          super.refresh();
       } else {
          List<IOperation> ops = new ArrayList<>();

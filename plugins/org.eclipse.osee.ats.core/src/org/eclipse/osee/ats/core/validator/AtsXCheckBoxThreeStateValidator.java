@@ -23,12 +23,12 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 /**
  * @author Donald G. Dunne
  */
-public class AtsXHyperlinkLabelValueSelectionDamValidator extends AtsXWidgetValidator {
+public class AtsXCheckBoxThreeStateValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if ("XHyperlinkLabelValueSelectionDam".equals(widgetDef.getXWidgetName())) {
+      if ("XCheckBoxThreeStateDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isSuccess()) {
             return result;

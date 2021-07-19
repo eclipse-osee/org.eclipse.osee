@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.util.Result;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 public abstract class XHyperlabelVersionSelectionWithPersist extends XHyperlinkLabelValueSelection implements ArtifactWidget {
 
    public static final String WIDGET_ID = XHyperlabelVersionSelectionWithPersist.class.getSimpleName();
-   Version selectedVersion = null;
    Collection<IAtsVersion> selectableVersions;
    VersionListDialog dialog = null;
    private Artifact artifact;
@@ -58,7 +58,11 @@ public abstract class XHyperlabelVersionSelectionWithPersist extends XHyperlinkL
    }
 
    public Version getSelectedVersion() {
-      return selectedVersion;
+      ArtifactToken related = atsApi.getRelationResolver().getRelatedOrSentinel(artifact, relType);
+      if (related.isValid()) {
+         atsApi.getVersionService().createVersion(related);
+      }
+      return null;
    }
 
    @Override
@@ -68,25 +72,19 @@ public abstract class XHyperlabelVersionSelectionWithPersist extends XHyperlinkL
 
    @Override
    public String getCurrentValue() {
-      if (selectedVersion == null) {
-         return "Not Set";
+      ArtifactToken related = atsApi.getRelationResolver().getRelatedOrSentinel(artifact, relType);
+      if (related.isValid()) {
+         return related.getName();
       }
-      return selectedVersion.getName();
+      return "Not Set";
    }
 
    public boolean handleClear() {
-      selectedVersion = null;
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Update " + relType.getName());
       changes.unrelateAll(getArtifact(), relType);
       changes.executeIfNeeded();
       notifyXModifiedListeners();
       return true;
-   }
-
-   public void setSelectedVersions(Version selectedVersion) {
-      this.selectedVersion = selectedVersion;
-      refresh();
-      notifyXModifiedListeners();
    }
 
    @Override
@@ -134,7 +132,7 @@ public abstract class XHyperlabelVersionSelectionWithPersist extends XHyperlinkL
 
    @Override
    public boolean isEmpty() {
-      return selectedVersion == null;
+      return getSelectedVersion() != null;
    }
 
    public void setEnableHyperLink() {

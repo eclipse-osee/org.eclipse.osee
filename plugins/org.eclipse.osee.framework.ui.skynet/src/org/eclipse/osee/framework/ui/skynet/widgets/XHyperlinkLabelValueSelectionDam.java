@@ -56,7 +56,10 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
       // Dates are almost always just date and not timestamp; default to that for value
       if (attributeType.isDate()) {
          Date date = artifact.getSoleAttributeValue(attributeType, null);
-         return DateUtil.getMMDDYY(date);
+         if (date != null) {
+            return DateUtil.getMMDDYY(date);
+         }
+         return NOT_SET;
       }
       String value = artifact.getAttributesToString(attributeType);
       if (Strings.isInValid(value)) {

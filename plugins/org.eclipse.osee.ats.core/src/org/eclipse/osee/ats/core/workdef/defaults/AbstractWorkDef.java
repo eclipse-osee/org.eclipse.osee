@@ -13,12 +13,17 @@
 
 package org.eclipse.osee.ats.core.workdef.defaults;
 
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -33,6 +38,32 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
       if (workDef == null) {
          workDef = build();
       }
+   }
+
+   public void addCompositeHeader(WorkDefBuilder workDefBld) {
+      if (workDefToken.equals(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request)) {
+         workDefBld.andHeader() //
+            .andLayout(getHeaderComposite()) //
+            .isShowWorkPackageHeader(false) //
+            .isShowMetricsHeader(false); //
+      } else {
+         workDefBld.andHeader() //
+            .andLayout(getHeaderComposite()) //
+            .isShowWorkPackageHeader(false) //
+            .isShowMetricsHeader(false); //
+      }
+   }
+
+   public CompositeLayoutItem getHeaderComposite() {
+      return new CompositeLayoutItem(8, //
+         new WidgetDefinition(AtsAttributeTypes.ChangeType, "XHyperlinkLabelValueSelectionDam", REQUIRED_FOR_TRANSITION,
+            AUTO_SAVE), //
+         new WidgetDefinition("   ", "XLabel"), //
+         new WidgetDefinition(AtsAttributeTypes.Priority, "XHyperlinkLabelValueSelectionDam", REQUIRED_FOR_TRANSITION,
+            AUTO_SAVE), //
+         new WidgetDefinition("   ", "XLabel"), //
+         new WidgetDefinition(AtsAttributeTypes.Points, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE) //
+      );
    }
 
    //should be Overriden in sub-classes
