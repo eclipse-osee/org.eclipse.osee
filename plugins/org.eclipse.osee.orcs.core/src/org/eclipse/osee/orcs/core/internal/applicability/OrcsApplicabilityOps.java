@@ -1272,6 +1272,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             tx1.deleteTuple2(CoreTupleTypes.ViewApplicability, view, "ConfigurationGroup = " + currentGroup.getName());
             tx1.deleteTuple2(CoreTupleTypes.ViewApplicability, currentGroup, "Config = " + view.getName());
             tx1.commit();
+            syncConfigGroup(branch, currentGroup.getIdString(), account, results);
          }
 
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
@@ -1280,6 +1281,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          tx.createApplicabilityForView(view, "ConfigurationGroup = " + cfgGroup.getName());
          tx.createApplicabilityForView(cfgGroup, "Config = " + view.getName());
          tx.commit();
+         syncConfigGroup(branch, cfgGroup.getIdString(), account, results);
+
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
@@ -1406,98 +1409,109 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).andNameEquals(
                   id).asArtifact();
       }
-
       if (cfgGroup.isValid()) {
          List<ArtifactReadable> views =
-            cfgGroup.getRelated(CoreRelationTypes.PlConfigurationGroup_BranchView).getList();
-         if (!views.isEmpty()) {
-            for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).andRelatedTo(
+               CoreRelationTypes.PlConfigurationGroup_Group, cfgGroup).asArtifacts();
+         ApplicabilityBranchConfig current = getConfig(branch, false);
+         ConfigurationGroupDefinition currentGroup =
+            current.getGroups().stream().filter(p -> p.getId().equals(id)).findFirst().get();
+         if (!currentGroup.getConfigurations().isEmpty()) {
+            for (ExtendedFeatureDefinition feature : current.getFeatures()) {
                String resultApp = null;
-               if (feature.getValues().contains("Included")) {
-                  resultApp = feature.getName() + " = Excluded";
-               }
-               List<String> memberValues = new ArrayList<>();
-               List<String> groupValues = new ArrayList<>();
-               for (ArtifactId viewId : views) {
-                  if (feature.isMultiValued()) {
-                     for (String appl : orcsApi.getQueryFactory().tupleQuery().getTuple2(
-                        CoreTupleTypes.ViewApplicability, branch, viewId)) {
+               List<String> memberApps = new ArrayList<>();
+               List<String> groupApps = new ArrayList<>();
+               String currentApp = "";
+               //applicability is the full text of [feature] = [value]
+               //the values stored in NameValuePair is just the right hand of the syntax
+               //in order to update the tuple the applicability must be constructed
 
-                        if (!memberValues.contains(appl) & appl.startsWith(
-                           feature.getName() + " =") & !appl.contains("|") & !appl.contains("&")) {
-                           //add to list of values on view
-                           memberValues.add(appl);
+               if (feature.isMultiValued()) {
+                  for (NameValuePair pair : feature.getConfigurations()) {
+
+                     //if the current name/value is for the group use this to populate the current apps in the group
+                     if (pair.getName().equals(cfgGroup.getName())) {
+                        for (String val : pair.getValues()) {
+                           groupApps.add(feature.getName() + " = " + val);
                         }
                      }
-                     for (String appl : orcsApi.getQueryFactory().tupleQuery().getTuple2(
-                        CoreTupleTypes.ViewApplicability, branch, cfgGroup)) {
+                     boolean isInGroup = !views.stream().noneMatch(v -> v.getName().equals(pair.getName()));
 
-                        if (!groupValues.contains(appl) & appl.startsWith(
-                           feature.getName() + " =") & !appl.contains("|") & !appl.contains("&")) {
-                           //add to list of values on view
-                           groupValues.add(appl);
+                     //if current name is not the group name populate the memberValues array which
+                     //represents what should be in the group
+                     if (isInGroup) {
+                        for (String val : pair.getValues()) {
+                           String applicability = feature.getName() + " = " + val;
+
+                           if (!memberApps.contains(applicability)) {
+                              memberApps.add(applicability);
+                           }
                         }
                      }
+                  }
+               } else {
+                  if (feature.getValues().contains("Included")) {
+                     resultApp = feature.getName() + " = Excluded";
+                  }
+                  for (NameValuePair pair : feature.getConfigurations()) {
+                     boolean isInGroup = false;
 
-                  } else {
-                     String applicability =
-                        orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(branch, viewId,
-                           feature.getName());
-
-                     if (feature.getValues().contains("Included")) {
-                        if (applicability.equals(feature.getName() + " = Included")) {
-
-                           resultApp = applicability;
-                           break;
-                        }
+                     if (pair.getName().equals(cfgGroup.getName())) {
+                        currentApp = feature.getName() + " = " + pair.getValue();
                      } else {
-                        if (resultApp == null) {
-                           resultApp = applicability;
+                        isInGroup = !views.stream().noneMatch(v -> v.getName().equals(pair.getName()));
+                     }
+                     views.get(0).getName();
+                     if (isInGroup) {
+                        String applicability = feature.getName() + " = " + pair.getValue();
+                        if (feature.getValues().contains("Included")) {
+                           if (pair.getValue().equals("Included")) {
+
+                              resultApp = applicability;
+                              break;
+                           }
                         } else {
-                           if (!resultApp.equals(applicability)) {
-                              results.error(
-                                 "Updating Group: " + cfgGroup.getName() + " (" + views.toString() + "). Applicabilities differ for non-binary feature: " + feature.getName());
+                           if (resultApp == null) {
+                              resultApp = applicability;
+                           } else {
+                              if (!resultApp.equals(applicability)) {
+                                 results.error(
+                                    "Updating Group: " + cfgGroup.getName() + ". Applicabilities differ for non-binary feature: " + feature.getName());
+                              }
                            }
                         }
                      }
                   }
                }
-               if (!feature.isMultiValued() && results.isSuccess()) {
-                  String currentValue = orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(
-                     branch, cfgGroup, feature.getName());
-                  if (!currentValue.equals(resultApp)) {
+
+               if (!feature.isMultiValued()) {
+
+                  if (!currentApp.equals(resultApp) && results.isSuccess()) {
                      TransactionBuilder tx =
                         orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
-                     tx.deleteTuple2(CoreTupleTypes.ViewApplicability, cfgGroup, currentValue);
+                     tx.deleteTuple2(CoreTupleTypes.ViewApplicability, cfgGroup, currentApp);
                      tx.createApplicabilityForView(cfgGroup, resultApp);
                      tx.commit();
                   }
-               } else {
+               } else if (results.isSuccess()) {
                   TransactionBuilder tx2 =
                      orcsApi.getTransactionFactory().createTransaction(branch, user, "Set applicability for view");
 
-                  List<String> removeValues = new ArrayList<>(groupValues);
+                  List<String> removeValues = new ArrayList<>(groupApps);
                   //groupValues minus memberValues = values to remove
-                  removeValues.removeAll(memberValues);
+                  removeValues.removeAll(memberApps);
                   for (String val : removeValues) {
                      tx2.deleteTuple2(CoreTupleTypes.ViewApplicability, cfgGroup, val);
                   }
                   //memberValues minus groupValues = values to add
-                  memberValues.removeAll(groupValues);
-                  for (String val : memberValues) {
+                  memberApps.removeAll(groupApps);
+                  for (String val : memberApps) {
                      tx2.createApplicabilityForView(cfgGroup, val);
                   }
                   tx2.commit();
                }
             }
-            for (ArtifactId viewId : views) {
-               for (ApplicabilityToken applicabilityToken : orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(
-                  viewId, branch)) {
-                  if (applicabilityToken.getName().contains("|") || applicabilityToken.getName().contains("&")) {
-                     createApplicabilityForView(cfgGroup, applicabilityToken.getName(), user, branch);
-                  }
-               }
-            }
+            updateCompoundApplicabilities(branch, cfgGroup, user, true);
          }
       } else {
          results.error("Invalid Configuration Group name.");
