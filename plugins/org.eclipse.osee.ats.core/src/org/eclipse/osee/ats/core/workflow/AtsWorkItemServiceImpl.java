@@ -85,10 +85,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    protected final AtsApi atsApi;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
-   private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();
+   private static Set<IAtsTransitionHook> transitionHooks = null;
 
    @Override
    public void addTransitionHook(IAtsTransitionHook hook) {
+      getTransitionHooks();
       transitionHooks.add(hook);
    }
 
@@ -105,14 +106,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public AtsWorkItemServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
-
-      transitionHooks.add(new DecisionReviewOnTransitionToHook());
-      transitionHooks.add(new PeerReviewOnTransitionToHook());
-      transitionHooks.add(new AtsNotificationTransitionHook());
-      transitionHooks.add(new AtsDecisionReviewPrepareWorkItemHook());
-      transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
-      transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
-      transitionHooks.add(new AtsCommitBranchWhenCompleteHook());
    }
 
    @Override
@@ -179,6 +172,16 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public Collection<IAtsTransitionHook> getTransitionHooks() {
+      if (transitionHooks == null) {
+         transitionHooks = new HashSet<>();
+         transitionHooks.add(new DecisionReviewOnTransitionToHook());
+         transitionHooks.add(new PeerReviewOnTransitionToHook());
+         transitionHooks.add(new AtsNotificationTransitionHook());
+         transitionHooks.add(new AtsDecisionReviewPrepareWorkItemHook());
+         transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
+         transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
+         transitionHooks.add(new AtsCommitBranchWhenCompleteHook());
+      }
       return transitionHooks;
    }
 
@@ -467,7 +470,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public void removeListener(IAtsTransitionHook hook) {
-      transitionHooks.remove(hook);
+      if (transitionHooks != null) {
+         transitionHooks.remove(hook);
+      }
    }
 
    @Override
