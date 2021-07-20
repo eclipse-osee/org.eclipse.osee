@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.workflow.cr.CreateNewDemoChangeRequestBlam;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -88,6 +89,10 @@ public class CreateNewDemoChangeRequestTest {
       ArtifactToken artifactByName =
          atsApi.getQueryService().getArtifactByName(AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow, TITLE);
       Assert.assertNotNull(artifactByName);
+
+      IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
+      Assert.assertEquals("CR1001", teamWf.getAtsId());
+
    }
 
 }

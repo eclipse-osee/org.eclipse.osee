@@ -62,30 +62,31 @@ public final class AtsIdProvider {
    }
 
    public String getNextAtsId() {
-      String seqName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdSequenceName);
-      if (!Strings.isValid(seqName)) {
-         if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+      String seqName = "";
+      if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         seqName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdSequenceName);
+         if (Strings.isInValid(seqName)) {
             seqName = DEFAULT_WORKFLOW_SEQ_NAME;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
-            seqName = DEFAULT_ACTION_SEQ_NAME;
-         } else if (newObject.isOfType(AtsArtifactTypes.AbstractReview)) {
-            seqName = DEFAULT_REVIEW_SEQ_NAME;
-         } else if (newObject.isOfType(AtsArtifactTypes.Task)) {
-            seqName = DEFAULT_TASK_SEQ_NAME;
-         } else {
-            seqName = DEFAULT_SEQ_NAME;
          }
+      } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
+         seqName = DEFAULT_ACTION_SEQ_NAME;
+      } else if (newObject.isOfType(AtsArtifactTypes.AbstractReview)) {
+         seqName = DEFAULT_REVIEW_SEQ_NAME;
+      } else if (newObject.isOfType(AtsArtifactTypes.Task)) {
+         seqName = DEFAULT_TASK_SEQ_NAME;
+      } else {
+         seqName = DEFAULT_SEQ_NAME;
       }
       String prefixName = null;
       if (workItemListener != null) {
          prefixName = workItemListener.getWorkItemAtsIdPrefix(newObject);
       }
       if (Strings.isInValid(prefixName)) {
-         prefixName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix);
-      }
-      if (Strings.isInValid(prefixName)) {
          if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            prefixName = DEFAULT_WORKFLOW_ID_PREFIX;
+            prefixName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix);
+            if (Strings.isInValid(prefixName)) {
+               prefixName = DEFAULT_WORKFLOW_ID_PREFIX;
+            }
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             prefixName = DEFAULT_ACTION_ID_PREFIX;
          } else if (newObject.isOfType(AtsArtifactTypes.AbstractReview)) {

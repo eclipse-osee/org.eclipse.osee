@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class AtsIdProviderTest {
    // @formatter:off
    @Mock private ISequenceProvider sequenceProvider;
    @Mock private IAttributeResolver attrResolver;
-   @Mock private IAtsObject newObject;
+   @Mock private IAtsTeamWorkflow newObject;
    @Mock private IAtsTeamDefinition teamDef;
    @Mock private IAtsTeamDefinition parentTeamDef;
    @Mock private IAtsChangeSet changes;
@@ -59,6 +60,7 @@ public class AtsIdProviderTest {
 
       atsIdProvider = new AtsIdProvider(sequenceProvider, attrResolver, newObject, teamDef);
 
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
       when(sequenceProvider.getNext("ATS_SEQ")).thenReturn(345L);
       when(teamDef.getAtsApi()).thenReturn(atsApi);
       when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);

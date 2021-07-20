@@ -71,6 +71,21 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       cfgTx.execute();
 
       createSawPlCrTaskEstUserGroups();
+      createSawPlCrSequenceConfig();
+   }
+
+   private void createSawPlCrSequenceConfig() {
+      // Setup Blk3 Issues sequence number
+      IAtsTeamDefinition crTeamDef =
+         atsApi.getTeamDefinitionService().getTeamDefinitionById(DemoArtifactToken.SAW_PL_CR_TeamDef);
+      ArtifactToken teamDefArt = atsApi.getQueryService().getArtifact(crTeamDef);
+      IAtsChangeSet changes = atsApi.createChangeSet("createSawPlCrSequenceConfig");
+      changes.setSoleAttributeValue(teamDefArt, AtsAttributeTypes.AtsIdPrefix, "CR");
+      changes.setSoleAttributeValue(teamDefArt, AtsAttributeTypes.AtsIdSequenceName, "CR_SEQ");
+      changes.execute();
+      atsApi.getQueryService().runUpdate(
+         "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (1000, 'CR_SEQ')");
+
    }
 
    private void createSawPlCrTaskEstUserGroups() {
