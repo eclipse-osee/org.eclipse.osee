@@ -14,17 +14,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefXWidgetOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.FrameworkXWidgetProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,27 +31,10 @@ public class AtsWorkDefinitionXWidgetTest {
    public void workDefXWidgetTest() {
 
       AtsApi atsApi = AtsApiService.get();
-      XResultData rd = new XResultData();
-      for (IAtsWorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
-         for (IAtsWidgetDefinition widgetDef : atsApi.getWorkDefinitionService().getWidgets(workDef)) {
-            String xWidgetName = widgetDef.getXWidgetName();
-            if (Strings.isValid(xWidgetName)) {
-               XWidget widget = getWidget(xWidgetName);
-               if (widget == null || widget.getLabel().contains("Unhandled XWidget")) {
-                  rd.errorf("Widget not found for [%s] in WorkDef %s\n", xWidgetName, workDef.toStringWithId());
-               }
-            }
-         }
-      }
+      ValidateWorkDefXWidgetOperation op = new ValidateWorkDefXWidgetOperation(atsApi);
+      XResultData rd = op.run();
       Assert.assertTrue(rd.toString(), rd.isSuccess());
 
-   }
-
-   public XWidget getWidget(String xWidgetName) {
-      SwtXWidgetRenderer dynamicXWidgetLayout = new SwtXWidgetRenderer(null, new DefaultXWidgetOptionResolver());
-      XWidgetRendererItem dummyItem = new XWidgetRendererItem(dynamicXWidgetLayout, XOption.NONE);
-      XWidget widget = FrameworkXWidgetProvider.getXWidget(dummyItem, xWidgetName, "IsInTest", null);
-      return widget;
    }
 
 }
