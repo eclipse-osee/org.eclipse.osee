@@ -34,21 +34,24 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
 
    private final BranchId branch;
    private final UserId account;
+   private final ArtifactId ConnectionId;
    private final InterfaceMessageApi messageApi;
    private final InterfaceSubMessageApi subMessageApi;
 
-   public InterfaceMessageEndpointImpl(BranchId branch, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi) {
+   public InterfaceMessageEndpointImpl(BranchId branch, ArtifactId connectionId, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi) {
       this.account = account;
       this.branch = branch;
       this.messageApi = interfaceMessageApi;
       this.subMessageApi = interfaceSubMessageApi;
+      this.ConnectionId = connectionId;
    }
 
    @Override
    public Collection<InterfaceMessageToken> getAllMessages() {
       try {
          List<InterfaceMessageToken> messageList =
-            (List<InterfaceMessageToken>) messageApi.getAccessor().getAll(branch, InterfaceMessageToken.class);
+            (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
             List<InterfaceSubMessageToken> submessages = new LinkedList<InterfaceSubMessageToken>();
             for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
@@ -69,14 +72,17 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
 
    @Override
    public XResultData addMessage(InterfaceMessageToken token) {
-      return messageApi.getInserter().addArtifact(token, account, branch);
+      XResultData createResults = messageApi.getInserter().addArtifact(token, account, branch);
+      createResults.merge(messageApi.getInserter().relateArtifact(ArtifactId.valueOf(createResults.getIds().get(0)),
+         ConnectionId, CoreRelationTypes.InterfaceConnectionContent_Message, branch, account));
+      return createResults;
    }
 
    @Override
    public InterfaceMessageToken getInterfaceMessage(ArtifactId messageId) {
       try {
-         InterfaceMessageToken message =
-            this.messageApi.getAccessor().get(branch, messageId, InterfaceMessageToken.class);
+         InterfaceMessageToken message = this.messageApi.getAccessor().getByRelation(branch, messageId,
+            CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, InterfaceMessageToken.class);
          List<InterfaceSubMessageToken> submessages = new LinkedList<InterfaceSubMessageToken>();
          for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),

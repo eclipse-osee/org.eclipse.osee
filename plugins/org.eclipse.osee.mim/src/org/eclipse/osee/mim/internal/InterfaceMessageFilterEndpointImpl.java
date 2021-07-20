@@ -33,21 +33,24 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
 
    private final BranchId branch;
    private final UserId account;
+   private final ArtifactId ConnectionId;
    private final InterfaceMessageApi messageApi;
    private final InterfaceSubMessageApi subMessageApi;
 
-   public InterfaceMessageFilterEndpointImpl(BranchId branch, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi) {
+   public InterfaceMessageFilterEndpointImpl(BranchId branch, ArtifactId connectionId, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi) {
       this.account = account;
       this.branch = branch;
       this.messageApi = interfaceMessageApi;
       this.subMessageApi = interfaceSubMessageApi;
+      this.ConnectionId = connectionId;
    }
 
    @Override
    public Collection<InterfaceMessageToken> getMessages() {
       try {
          List<InterfaceMessageToken> messageList =
-            (List<InterfaceMessageToken>) messageApi.getAccessor().getAll(branch, InterfaceMessageToken.class);
+            (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
             List<InterfaceSubMessageToken> submessages = new LinkedList<InterfaceSubMessageToken>();
             for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
@@ -70,7 +73,8 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
    public Collection<InterfaceMessageToken> getMessages(String filter) {
       try {
          List<InterfaceMessageToken> messageList =
-            (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByFilter(branch, filter,
+            (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelationAndFilter(branch,
+               CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, filter,
                InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
             message.setSubMessages((List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelation(

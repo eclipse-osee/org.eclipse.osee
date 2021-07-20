@@ -259,7 +259,7 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
-      return null;
+      return results;
    }
 
    private boolean replaceExistingArtifact(T newArtifact, BranchId branch, TransactionBuilder tx, XResultData results) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

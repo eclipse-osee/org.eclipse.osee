@@ -216,7 +216,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken DirectSoftwareRequirement = osee.add(osee.artifactType(22L, "Direct Software Requirement", true, AbstractSoftwareRequirement));
    ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, Artifact));
-   ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, Artifact));
+   ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, Artifact)
+      .exactlyOne(InterfaceTransportType));
    ArtifactTypeToken InterfaceMessage = osee.add(osee.artifactType(2455059983007225775L, "Interface Message", false, Artifact)
       .exactlyOne(InterfaceMessageNumber)
       .exactlyOne(InterfaceMessagePeriodicity)

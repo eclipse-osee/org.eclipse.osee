@@ -22,10 +22,14 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
+import org.eclipse.osee.mim.InterfaceConnectionModificationEndpoint;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
+import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
+import org.eclipse.osee.mim.InterfaceNodeEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
@@ -57,45 +61,45 @@ public class BranchAccessor {
       return new PlatformTypesFilterEndpointImpl(branch, accountId, mimApi.getInterfacePlatformTypeApi());
    }
 
-   @Path("{branch}/messages")
+   @Path("{branch}/connections/{connectionId}/messages")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceMessageEndpoint getMessageEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new InterfaceMessageEndpointImpl(branch, accountId, mimApi.getInterfaceMessageApi(),
+   public InterfaceMessageEndpoint getMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceMessageEndpointImpl(branch, connectionId, accountId, mimApi.getInterfaceMessageApi(),
          mimApi.getInterfaceSubMessageApi());
    }
 
-   @Path("{branch}/messages/filter")
+   @Path("{branch}/connections/{connectionId}/messages/filter")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceMessageFilterEndpoint getMessageFilterEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new InterfaceMessageFilterEndpointImpl(branch, accountId, mimApi.getInterfaceMessageApi(),
+   public InterfaceMessageFilterEndpoint getMessageFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceMessageFilterEndpointImpl(branch, connectionId, accountId, mimApi.getInterfaceMessageApi(),
          mimApi.getInterfaceSubMessageApi());
    }
 
-   @Path("{branch}/messages/{messageId}/submessages")
+   @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceSubMessageEndpoint getSubMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("messageId") ArtifactId messageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+   public InterfaceSubMessageEndpoint getSubMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceSubMessageEndpointImpl(branch, accountId, messageId, mimApi.getInterfaceSubMessageApi());
    }
 
-   @Path("{branch}/messages/{messageId}/submessages/{submessageId}/structures")
+   @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceStructureEndpoint getStructureEndpoint(@PathParam("branch") BranchId branch, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+   public InterfaceStructureEndpoint getStructureEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceStructureEndpointImpl(branch, accountId, messageId, subMessageId,
          mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
          mimApi.getInterfacePlatformTypeApi());
    }
 
-   @Path("{branch}/messages/{messageId}/submessages/{submessageId}/structures/filter")
+   @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/filter")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceStructureFilterEndpoint getStructureFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+   public InterfaceStructureFilterEndpoint getStructureFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceStructureFilterEndpointImpl(branch, accountId, messageId, subMessageId,
          mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
          mimApi.getInterfacePlatformTypeApi());
    }
 
-   @Path("{branch}/messages/{messageId}/submessages/{submessageId}/structures/{structureId}/elements")
+   @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/{structureId}/elements")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceElementEndpoint getElementEndpoint(@PathParam("branch") BranchId branch, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @PathParam("structureId") ArtifactId structureId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+   public InterfaceElementEndpoint getElementEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @PathParam("structureId") ArtifactId structureId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceElementEndpointImpl(branch, accountId, messageId, subMessageId, structureId,
          mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
    }
@@ -112,5 +116,33 @@ public class BranchAccessor {
    public InterfaceStructureSearchEndpoint getStructureSearchEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceStructureSearchEndpointImpl(branch, accountId, mimApi.getInterfaceStructureApi(),
          mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
+   }
+
+   @Path("{branch}/graph")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceGraphEndpoint getGraphEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceGraphEndpointImpl(branch, accountId, mimApi.getInterfaceNodeViewApi(),
+         mimApi.getInterfaceConnectionViewApi());
+   }
+
+   @Path("{branch}/nodes")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceNodeEndpoint getNodeEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceNodeEndpointImpl(branch, accountId, mimApi.getInterfaceNodeViewApi(),
+         mimApi.getInterfaceConnectionViewApi());
+   }
+
+   @Path("{branch}/connections")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceConnectionEndpoint getConnectionEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceConnectionEndpointImpl(branch, accountId, mimApi.getInterfaceNodeViewApi(),
+         mimApi.getInterfaceConnectionViewApi());
+   }
+
+   @Path("{branch}/nodes/{nodeId}/connections")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceConnectionModificationEndpoint getConnectionModificationEndpoint(@PathParam("branch") BranchId branch, @PathParam("nodeId") ArtifactId nodeId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceConnectionModificationEndpointImpl(branch, accountId, nodeId,
+         mimApi.getInterfaceNodeViewApi(), mimApi.getInterfaceConnectionViewApi());
    }
 }

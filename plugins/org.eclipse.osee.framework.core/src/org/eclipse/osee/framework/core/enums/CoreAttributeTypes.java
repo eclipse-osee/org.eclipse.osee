@@ -150,6 +150,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString InterfacePlatformTypeBitsResolution = osee.createString(3899709087455064786L, "Interface Platform Type Bits Resolution", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeCompRate = osee.createString(3899709087455064787L, "Interface Platform Type Comp Rate", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeAnalogAccuracy = osee.createString(3899709087455064788L, "Interface Platform Type Analog Accuracy", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString InterfaceTransportType = osee.createString(4522496963078776538L, "Interface Transport Type", MediaType.TEXT_PLAIN, "Transport Type of Interface Connection");
    AttributeTypeInputStream ImageContent = osee.createInputStreamNoTag(1152921504606847868L, "Image Content", AttributeTypeToken.IMAGE, "Binary Image content");
    AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java");
    LegacyDalAttributeType LegacyDal = osee.createEnum(new LegacyDalAttributeType());
