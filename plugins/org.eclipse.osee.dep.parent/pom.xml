@@ -78,7 +78,7 @@
  	 <repository>
 			<id>jetty</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.39.v20210325/</url>
+			<url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.43.v20210629/</url>
 	  </repository>	
           
     <repository>
@@ -104,7 +104,7 @@
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
 	  </repository>
-		
+		 
      <repository>
 			<id>polarion</id>
 			<layout>p2</layout>
