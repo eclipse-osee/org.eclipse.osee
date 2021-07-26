@@ -48,6 +48,7 @@ public class CreateSiblingOffTaskEstOperation {
    private final IAtsTeamWorkflow teamWf;
    private final AtsApi atsApi;
    private final Collection<TaskEstDefinition> taskEstDefs;
+   private boolean debug = false;
 
    public CreateSiblingOffTaskEstOperation(IAtsTeamWorkflow teamWf, Collection<TaskEstDefinition> taskEstDefs) {
       this.teamWf = teamWf;
@@ -68,7 +69,9 @@ public class CreateSiblingOffTaskEstOperation {
 
             if (!TaskEstUtil.hasTask(teamWf, ted, atsApi)) {
                teds.remove(ted);
-               rd.logf("Task Est Def [%s] has no estimating task\n", ted.toStringWithId());
+               if (isDebug()) {
+                  rd.logf("Task Est Def [%s] has no estimating task\n", ted.toStringWithId());
+               }
             }
 
             // if TED and task and estimate <= 0, do nothing
@@ -91,11 +94,15 @@ public class CreateSiblingOffTaskEstOperation {
                   Double pts = Double.valueOf(ptsStr);
                   if (pts > 0) {
                      if (TaskEstUtil.hasWorkflow(teamWf, ted, atsApi)) {
-                        rd.logf("Workflow exists for task %s; skipping\n", task.toStringWithId());
+                        if (isDebug()) {
+                           rd.logf("Workflow exists for task %s; skipping\n", task.toStringWithId());
+                        }
                         teds.remove(ted);
                      }
                   } else {
-                     rd.logf("Estimate 0 for task %s; skipping\n", task.toStringWithId());
+                     if (isDebug()) {
+                        rd.logf("Estimate 0 for task %s; skipping\n", task.toStringWithId());
+                     }
                      teds.remove(ted);
                   }
                }
@@ -172,6 +179,14 @@ public class CreateSiblingOffTaskEstOperation {
 
       changes.addAttribute(newTeamWf, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
       return newTeamWf;
+   }
+
+   public boolean isDebug() {
+      return debug;
+   }
+
+   public void setDebug(boolean debug) {
+      this.debug = debug;
    }
 
 }

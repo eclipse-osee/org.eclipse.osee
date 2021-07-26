@@ -66,6 +66,11 @@ public interface AtsConfigEndpointApi {
    public AtsUser getUserByLogin(@PathParam("loginId") String loginId);
 
    @GET
+   @Path("userid/{userId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public AtsUser getUserByUserId(@PathParam("userId") String userId);
+
+   @GET
    @Path("image")
    @Produces(MediaType.APPLICATION_JSON)
    public List<ArtifactImage> getArtifactImages();

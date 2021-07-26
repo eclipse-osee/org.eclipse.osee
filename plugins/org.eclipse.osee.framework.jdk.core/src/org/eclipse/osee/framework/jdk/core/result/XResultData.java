@@ -398,4 +398,8 @@ public class XResultData {
       }
    }
 
+   public boolean isWarnings() {
+      return getNumWarnings() > 0;
+   }
+
 }
