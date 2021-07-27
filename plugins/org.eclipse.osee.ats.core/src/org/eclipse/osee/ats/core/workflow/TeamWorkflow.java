@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.ats.core.workflow;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -64,5 +67,10 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
          }
       }
       return teamDef;
+   }
+
+   @Override
+   public List<WorkType> getWorkTypes() {
+      return new ArrayList<>(getTeamDefinition().getWorkTypes());
    }
 }

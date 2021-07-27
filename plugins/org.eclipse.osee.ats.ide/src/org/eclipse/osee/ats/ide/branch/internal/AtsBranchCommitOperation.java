@@ -15,15 +15,12 @@ package org.eclipse.osee.ats.ide.branch.internal;
 
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
-import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+import org.eclipse.osee.ats.core.branch.BranchOperationsUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
@@ -62,29 +59,13 @@ public class AtsBranchCommitOperation {
          rd = new XResultData();
       }
       Branch branch = BranchManager.getBranch(destinationBranch);
-      rd.logf("Committing %s to desination %s\n\n", teamArt.toStringWithId(), branch.toStringWithId());
       BranchId workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
          AtsApiService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
-         if (workflowWorkingBranch.isInvalid()) {
-            rd.errorf("Commit Branch Failed: Can not locate branch for workflow [%s]", teamArt.getAtsId());
+         BranchOperationsUtil.validateBranchCommit(teamArt, branch, overrideStateValidation, rd, AtsApiService.get());
+         if (rd.isErrors()) {
             return rd;
          }
-
-         /**
-          * Confirm that all blocking reviews are completed. Loop through this state's blocking reviews to confirm
-          * complete
-          */
-         for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
-            AbstractReviewArtifact reviewArt =
-               (AbstractReviewArtifact) AtsApiService.get().getQueryService().getArtifact(review);
-            if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
-               rd.error(
-                  "All blocking reviews must be completed before committing the working branch.  Please complete all blocking reviews in order to continue.");
-               return rd;
-            }
-         }
-
          if (!overrideStateValidation) {
             final MutableBoolean adminOverride = new MutableBoolean(false);
             // Check extension points for valid commit

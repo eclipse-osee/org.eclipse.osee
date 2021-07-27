@@ -132,6 +132,11 @@ public interface AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
 
+   @Path("branch/commit")
+   @PUT
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData commitWorkingBranch(@QueryParam("teamWfId") String teamWfId, @QueryParam("branchId") BranchId destinationBranch);
+
    @Path("createEmpty")
    @POST
    @Produces(MediaType.APPLICATION_JSON)

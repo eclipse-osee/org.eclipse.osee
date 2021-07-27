@@ -21,9 +21,11 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
+import org.eclipse.osee.ats.rest.internal.workitem.operations.AtsBranchCommitOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -247,6 +249,15 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public BranchData createBranch(BranchData branchData) {
       AtsBranchOperations ops = new AtsBranchOperations(atsApi, orcsApi);
       return ops.createBranch(branchData);
+   }
+
+   @Override
+   public XResultData commitBranch(IAtsTeamWorkflow teamWf, BranchId destinationBranch, AtsUser asUser, XResultData rd) {
+
+      AtsBranchCommitOperation commitOp =
+         new AtsBranchCommitOperation(asUser, teamWf, atsApi, orcsApi, false, destinationBranch, rd);
+      return commitOp.run();
+
    }
 
 }

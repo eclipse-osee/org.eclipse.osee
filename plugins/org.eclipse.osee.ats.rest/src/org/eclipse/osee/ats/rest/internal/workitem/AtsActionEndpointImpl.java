@@ -547,6 +547,28 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    }
 
+   @Override
+   public XResultData commitWorkingBranch(String teamWfId, BranchId destinationBranch) {
+      XResultData rd = new XResultData();
+      try {
+         IAtsTeamWorkflow teamWf =
+            atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(teamWfId));
+         if (teamWf.isInvalid()) {
+            rd.errorf("[%s] is not a valid workflow.", teamWfId);
+         }
+         AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
+         if (asUser.isInvalid()) {
+            rd.errorf("asUser [%s] not valid", accountId.toString());
+            return rd;
+         }
+         atsApi.getBranchService().commitBranch(teamWf, destinationBranch, asUser, rd);
+      } catch (Exception ex) {
+         rd.errorf("Exception committing working branch [%s]", Lib.exceptionToString(ex));
+      }
+      return rd;
+
+   }
+
    private NewActionResult createNewAction(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
       try {

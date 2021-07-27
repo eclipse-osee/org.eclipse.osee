@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -220,6 +221,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchData createBranch(BranchData branchData) {
       return atsApi.getServerEndpoints().getConfigEndpoint().createBranch(branchData);
+   }
+
+   @Override
+   public XResultData commitBranch(IAtsTeamWorkflow teamWf, BranchId destinationBranch, AtsUser user, XResultData rd) {
+      return null;
    }
 
 }
