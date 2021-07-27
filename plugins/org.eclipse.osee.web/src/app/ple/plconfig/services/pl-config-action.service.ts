@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
-import { action, actionableItem, newActionInterface, newActionResponse, targetedVersion, teamWorkflow, transitionAction } from '../types/pl-config-actions';
-import { transitionResponse } from '../types/pl-config-responses';
+import { action, actionableItem, newActionInterface, newActionResponse, targetedVersion, teamWorkflow, teamWorkflowImpl, transitionAction } from '../types/pl-config-actions';
+import { response, transitionResponse } from '../types/pl-config-responses';
 import { user } from '../types/pl-config-users';
 
 @Injectable({
@@ -36,5 +36,11 @@ export class PlConfigActionService {
   }
   public createBranch(body: newActionInterface): Observable<newActionResponse> {
     return this.http.post<newActionResponse>(apiURL+'/ats/action/branch', body);
+  }
+  public commitBranch(teamWf: string, branchId: string | number): Observable<response> {
+    return this.http.put<response>(apiURL+'/ats/action/branch/commit?teamWfId='+teamWf+'&branchId='+branchId,null);
+  }
+  public getBranchApproved(teamWf: string | number): Observable<response> {
+    return this.http.get<response>(apiURL+'/ats/ple/action/'+teamWf+'/approval');
   }
 }

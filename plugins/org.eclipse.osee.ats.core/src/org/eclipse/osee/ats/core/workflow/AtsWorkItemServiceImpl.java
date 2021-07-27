@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsCommitBranchWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
+import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -95,6 +96,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public void addWorkItemHook(IAtsWorkItemHook hook) {
+      getWorkItemHooks();
       workflowHooks.add(hook);
    }
 
@@ -465,6 +467,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public Collection<IAtsWorkItemHook> getWorkItemHooks() {
+      if (workflowHooks.isEmpty()) {
+         workflowHooks.add(new ConfirmPlarbApprovalHook());
+      }
       return workflowHooks;
    }
 

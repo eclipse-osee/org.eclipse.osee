@@ -20,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Audrey E Denk
@@ -32,4 +33,8 @@ public interface AtsProductLineEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<BranchToken> getBranches(@PathParam("branchQueryType") String branchQueryType);
 
+   @GET
+   @Path("action/{id}/approval")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData checkPlarbApproval(@PathParam("id") String id);
 }

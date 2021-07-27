@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,7 +7,7 @@ import { PlConfigActionService } from '../../services/pl-config-action.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { action, CreateAction, PLConfigCreateAction, transitionAction, TransitionActionDialogData } from '../../types/pl-config-actions';
-import { commitResponse } from '../../types/pl-config-responses';
+import { commitResponse, response } from '../../types/pl-config-responses';
 import { CommitBranchDialogComponent } from '../commit-branch-dialog/commit-branch-dialog.component';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
 import { TransitionActionToReviewDialogComponent } from '../transition-action-to-review-dialog/transition-action-to-review-dialog.component';
@@ -115,35 +116,40 @@ export class ActionDropDownComponent implements OnInit {
     })
   }
   commitBranch(): void {
-    let dialogData = {
-      actions: this.actions,
-    };
-    const dialogRef = this.dialog.open(CommitBranchDialogComponent, {
-      data: dialogData,
-      minWidth: '60%'
-    })
-    dialogRef.afterClosed().subscribe((result: TransitionActionDialogData) => {
-      if (result?.selectedUser?.artifactId != null && result?.selectedUser?.artifactId!=undefined) {
-        let body = {
-          committer: result.selectedUser.artifactId,
-          archive:"false"
-        }
-        this.currentBranchService.commitBranch(this.parentBranch,body).subscribe((commitResponse: commitResponse) => {
-          if (commitResponse.success) {
-            this.actionService.validateTransitionAction(new transitionAction("Completed", "Transition to Completed", result)).subscribe((validateResponse) => {
-              if (validateResponse.results.length === 0) {
-                this.actionService.transitionAction(new transitionAction("Completed", "Transition to Completed", result)).subscribe((response) => {
-                  if (response.results.length > 0) {
-                    this.uiStateService.error = response.results[0];
+    this.actionService.getBranchApproved(this.actions[0].TeamWfAtsId).subscribe((approveResponse: response) => {
+      if (approveResponse.errorCount > 0) {
+        this.uiStateService.error = approveResponse.results[0];
+      } else {
+        this.uiStateService.error = "";
+        let dialogData = {
+          actions: this.actions,
+        };
+        const dialogRef = this.dialog.open(CommitBranchDialogComponent, {
+          data: dialogData,
+          minWidth: '60%'
+        })
+        dialogRef.afterClosed().subscribe((result: TransitionActionDialogData) => {
+          if (result?.selectedUser?.artifactId != null && result?.selectedUser?.artifactId!=undefined) {
+            this.actionService.commitBranch(result.actions[0].TeamWfAtsId,this.parentBranch).subscribe((commitResponse: response) => {
+              if (commitResponse.success) {
+                this.actionService.validateTransitionAction(new transitionAction("Completed", "Transition to Completed", result)).subscribe((validateResponse) => {
+                  if (validateResponse.results.length === 0) {
+                    this.actionService.transitionAction(new transitionAction("Completed", "Transition to Completed", result)).subscribe((response) => {
+                      if (response.results.length > 0) {
+                        this.uiStateService.error = response.results[0];
+                      }
+                      this.uiStateService.updateReqConfig = true;
+                    })  
+                  } else {
+                    this.uiStateService.error = validateResponse.results[0];
                   }
-                  this.uiStateService.updateReqConfig = true;
-                })  
+                })
               } else {
-                this.uiStateService.error = validateResponse.results[0];
+                this.uiStateService.error = commitResponse.results.toString();
               }
-            })
+            }) 
           }
-        }) 
+        })
       }
     })
 }

@@ -17,9 +17,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsProductLineEndpointApi;
+import org.eclipse.osee.ats.api.workflow.Attribute;
+import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -27,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -72,7 +76,20 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
          }
       }
       Collections.sort(pleBranchList);
+
       return pleBranchList;
+   }
+
+   @Override
+   public XResultData checkPlarbApproval(String id) {
+      XResultData rd = new XResultData();
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
+      Attribute approval = ops.getActionAttributeValues(AtsAttributeTypes.ProductLineApprovedBy, workItem);
+      if (approval.getValues().isEmpty()) {
+         rd.error("Working branch has not yet been approved by PLARB");
+      }
+      return rd;
    }
 
 }
