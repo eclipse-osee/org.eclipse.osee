@@ -623,6 +623,10 @@ public class BlockApplicabilityOps {
       Map<String, FileTypeApplicabilityData> fileTypeApplicabilityDataMap = new HashMap<>();
 
       JsonNode preferencesJson = orcsApi.jaxRsApi().readTree(plPreferences);
+      // Product Line preferences should be set in the GlobalPreferences on every installed OSEE
+      if (preferencesJson == null) {
+         return fileTypeApplicabilityDataMap;
+      }
       JsonNode commentStyles = preferencesJson.findValue("FileExtensionCommentStyle");
       Iterator<JsonNode> iter = commentStyles.elements();
 
