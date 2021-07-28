@@ -66,8 +66,6 @@ public final class SessionContributionItem extends OseeStatusContributionItem {
                   boolean result = MessageDialog.openQuestion(AWorkbench.getActiveShell(), "Log Off...",
                      "Are you sure you want to log off and exit OSEE?");
                   if (result) {
-                     ClientSessionManager.releaseSession();
-
                      PlatformUI.getWorkbench().close();
                   }
                } else {
