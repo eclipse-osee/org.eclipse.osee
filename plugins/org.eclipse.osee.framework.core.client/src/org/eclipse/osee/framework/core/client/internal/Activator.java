@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.client.internal;
 
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
@@ -41,6 +42,7 @@ public class Activator extends OseeActivator {
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
       HttpServer.stopServer();
+      ClientSessionManager.releaseSession();
       context = null;
    }
 
