@@ -97,7 +97,9 @@ public class WfeAssigneesHeader extends Composite {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "";
          try {
-            if (workItem.getStateMgr().getAssignees().isEmpty()) {
+            if (workItem.isCompletedOrCancelled()) {
+               value = "N/A";
+            } else if (workItem.getStateMgr().getAssignees().isEmpty()) {
                value = "Error: State has no assignees";
             } else {
                valueLabel.setToolTipText(workItem.getStateMgr().getAssigneesStr());
