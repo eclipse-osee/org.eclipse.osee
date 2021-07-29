@@ -94,6 +94,9 @@ public class CreateSiblingOffTaskEstOperation {
                         rd.logf("Workflow exists for task %s; skipping\n", task.toStringWithId());
                         teds.remove(ted);
                      }
+                  } else {
+                     rd.logf("Estimate 0 for task %s; skipping\n", task.toStringWithId());
+                     teds.remove(ted);
                   }
                }
             }
