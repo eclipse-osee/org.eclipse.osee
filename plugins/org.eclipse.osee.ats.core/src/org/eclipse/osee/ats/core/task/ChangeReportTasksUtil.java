@@ -78,7 +78,7 @@ public class ChangeReportTasksUtil {
       }
       crtd.setWorkOrParentBranch(workOrParentBranch);
       if (changeItems == null) {
-         crtd.getResults().error("No Change Items (Change Report or Commit) Found");
+         crtd.getResults().warning("No Change Items (Change Report or Commit) Found");
          return;
       } else {
          crtd.setChangeItems(changeItems);
