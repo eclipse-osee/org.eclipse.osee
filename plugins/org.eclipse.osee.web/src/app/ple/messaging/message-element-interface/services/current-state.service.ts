@@ -14,7 +14,7 @@ import { UiService } from './ui.service';
 })
 export class CurrentStateService {
 
-  private _structures = combineLatest(this.ui.filter, this.ui.BranchId, this.ui.messageId, this.ui.subMessageId).pipe(
+  private _structures = combineLatest(this.ui.filter, this.ui.BranchId, this.ui.messageId, this.ui.subMessageId,this.ui.connectionId).pipe(
     share(),
     debounceTime(500),
     distinctUntilChanged(),
@@ -71,13 +71,21 @@ export class CurrentStateService {
     this.ui.subMessageIdString = value;
   }
 
+  set connection(id: string) {
+    this.ui.connectionIdString = id;
+  }
+
+  get connectionId() {
+    return this.ui.connectionId;
+  }
+
   private get structureObservable(){
-    return this.messages.getMessages(this.BranchId.getValue()).pipe(
+    return this.messages.getMessages(this.BranchId.getValue(),this.connectionId.getValue()).pipe(
       mergeMap(messages => from(messages).pipe(
         mergeMap(message => of(message?.subMessages).pipe(
           mergeMap(submessage => from(submessage).pipe(
             distinct((x) => { return x.id }),
-            mergeMap((submessage) => this.structure.getFilteredStructures("", this.BranchId.getValue(), message?.id, submessage?.id).pipe(
+            mergeMap((submessage) => this.structure.getFilteredStructures("", this.BranchId.getValue(), message?.id, submessage?.id,this.connectionId.getValue()).pipe(
               mergeMap(structures => from(structures).pipe(
                 distinct((structure)=>{return structure.id})
               ))
@@ -107,7 +115,7 @@ export class CurrentStateService {
   }
 
   createStructure(body:Partial<structure>) {
-    return this.structure.createStructure(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue()).pipe(
+    return this.structure.createStructure(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(),this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -115,14 +123,14 @@ export class CurrentStateService {
   }
 
   relateStructure(structureId:string) {
-    return this.structure.relateStructure(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId).pipe(
+    return this.structure.relateStructure(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
     );
   }
   partialUpdateStructure(body:Partial<structure>) {
-    return this.structure.partialUpdateStructure(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue()).pipe(
+    return this.structure.partialUpdateStructure(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(),this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -130,7 +138,7 @@ export class CurrentStateService {
   }
 
   partialUpdateElement(body: Partial<element>, structureId: string) {
-    return this.elements.partialUpdateElement(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId).pipe(
+    return this.elements.partialUpdateElement(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -138,20 +146,20 @@ export class CurrentStateService {
   }
 
   createNewElement(body: Partial<element>, structureId:string, typeId: string) {
-    return this.elements.createNewElement(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId).pipe(
+    return this.elements.createNewElement(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,this.connectionId.getValue()).pipe(
       switchMap((val) => this.changeElementPlatformType(structureId, val.ids[0], typeId)),
       first()
     )
   }
   relateElement(structureId: string, elementId: string) {
-    return this.elements.relateElement(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,elementId).pipe(
+    return this.elements.relateElement(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,elementId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
     )
   }
   changeElementPlatformType(structureId:string,elementId:string,typeId:string) {
-    return this.elements.relateElementToPlatformType(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, elementId, typeId).pipe(
+    return this.elements.relateElementToPlatformType(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, elementId, typeId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })

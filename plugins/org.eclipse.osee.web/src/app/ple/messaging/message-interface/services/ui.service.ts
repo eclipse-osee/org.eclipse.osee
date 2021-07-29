@@ -10,6 +10,7 @@ export class UiService {
 
   private _UpdateRequired: Subject<boolean> = new Subject<boolean>();
   private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
+  private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   constructor() { }
 
   get filter() {
@@ -36,5 +37,13 @@ export class UiService {
 
   set BranchIdString(value: string) {
     this._branchId.next(value);
+  }
+
+  get connectionId() {
+    return this._connectionId;
+  }
+
+  set connectionIdString(value: string) {
+    this._connectionId.next(value);
   }
 }

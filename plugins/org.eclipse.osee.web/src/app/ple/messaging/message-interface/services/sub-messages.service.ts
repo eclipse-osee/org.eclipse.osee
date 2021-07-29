@@ -12,23 +12,23 @@ export class SubMessagesService {
 
   constructor (private http: HttpClient) { }
   
-  addSubMessage(body: subMessage, branchId: string, messageId: string):Observable<MessageApiResponse> {
-    return this.http.post<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages", body);
+  addSubMessage(body: subMessage, branchId: string, messageId: string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.post<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages", body);
   }
 
-  partialUpdateSubMessage(body: Partial<subMessage>, branchId: string, messageId: string):Observable<MessageApiResponse> {
-    return this.http.patch<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages", body);
+  partialUpdateSubMessage(body: Partial<subMessage>, branchId: string, messageId: string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.patch<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages", body);
   }
 
-  relateSubMessage(branchId: string, messageId: string, subMessageId:string):Observable<MessageApiResponse> {
-    return this.http.patch<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/" + subMessageId, null);
+  relateSubMessage(branchId: string, messageId: string, subMessageId:string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.patch<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId, null);
   }
 
-  unRelateSubMessage(branchId: string, messageId: string, subMessageId:string):Observable<MessageApiResponse> {
-    return this.http.delete<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/" + subMessageId);
+  unRelateSubMessage(branchId: string, messageId: string, subMessageId:string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.delete<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId);
   }
 
-  getSubMessage(branchId: string, messageId: string, subMessageId:string):Observable<subMessage> {
-    return this.http.get<subMessage>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/" + subMessageId);
+  getSubMessage(branchId: string, messageId: string, subMessageId:string,connectionId:string):Observable<subMessage> {
+    return this.http.get<subMessage>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages//" + messageId + "/submessages/" + subMessageId);
   }
 }

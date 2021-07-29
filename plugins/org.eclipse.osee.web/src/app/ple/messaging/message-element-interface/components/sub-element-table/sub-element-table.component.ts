@@ -44,7 +44,9 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     this.dataSource.data = this.data;
   }
   ngOnChanges(changes: SimpleChanges): void {
-    this.dataSource.data = this.data;
+    if (Array.isArray(this.data)) {
+      this.dataSource.data = this.data; 
+    }
     if (this.filter !== "") {
       this.dataSource.filter = this.filter.replace('element: ', '');
       this.filter = this.filter.replace('element: ', "");
@@ -55,7 +57,9 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.dataSource.data = this.data;
+    if (Array.isArray(this.data)) {
+      this.dataSource.data = this.data; 
+    }
     if (this.filter !== "") {
       this.dataSource.filter = this.filter.replace('element: ','');
     }

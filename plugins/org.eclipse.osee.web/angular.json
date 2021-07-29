@@ -122,7 +122,8 @@
             "codeCoverageExclude": [
               "src/app/ple/plconfig/types/**",
               "src/app/ple/plconfig/testing/**",
-              "src/app/ple/messaging/connection-view/mock/**"
+              "src/app/ple/messaging/connection-view/mock/**",
+              "**/*.mock.*"
             ],
             "assets": [
               "src/favicon.ico",

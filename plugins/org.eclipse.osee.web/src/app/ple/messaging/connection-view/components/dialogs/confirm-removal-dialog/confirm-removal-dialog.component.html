@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Remove {{data.type |titlecase}}</h1>
+<div mat-dialog-content>
+<mat-label>
+    Are you sure you want to remove {{data.type}} {{data.name}} 
+    <ng-container *ngIf="data.extraNames.length>0">and it's associated relationships: </ng-container> 
+    <ng-container *ngFor="let value of data.extraNames">
+        <br>
+        {{value}}
+    </ng-container>
+    <ng-container *ngIf="data.extraNames.length>0"><br></ng-container>?
+</mat-label>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()"> Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0">Ok</button>
+</div>

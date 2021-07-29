@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Create Connection to Node: {{title}}</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Add a Name</mat-label>
+        <input matInput type="text" [(ngModel)]="newConnection.connection.name" #input required>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Add a Description</mat-label>
+        <input matInput type="text" [(ngModel)]="newConnection.connection.description" #input>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Select a Transport Type</mat-label>
+        <mat-select [(ngModel)]="newConnection.connection.transportType" required>
+            <mat-option *ngFor="let option of ['ETHERNET','MILSTD1553_B']" [value]="option">
+                {{option}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Select a Node to Connect To</mat-label>
+        <mat-select [(ngModel)]="newConnection.nodeId">
+            <mat-option *ngFor="let option of (nodes |async)" [value]="option.id">
+                {{option.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="newConnection" color="primary" [disabled]="newConnection.connection.name.length ===0 || newConnection.nodeId.length ===0">Ok</button>
+</div>
+<!--
+
+-->

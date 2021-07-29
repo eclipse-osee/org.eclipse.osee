@@ -12,19 +12,19 @@ import { UiService } from './ui.service';
 })
 export class CurrentMessagesService {
 
-  private _messages = combineLatest(this.ui.filter,this.BranchId).pipe(
+  private _messages = combineLatest(this.ui.filter,this.BranchId,this.connectionId).pipe(
     share(),
     debounceTime(500),
     distinctUntilChanged(),
-    switchMap(x => this.messageService.getFilteredMessages(x[0], x[1]).pipe(
+    switchMap(x => this.messageService.getFilteredMessages(x[0], x[1],x[2]).pipe(
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
     ))
   )
   
-  private _allMessages = combineLatest(this.BranchId).pipe(
+  private _allMessages = combineLatest(this.BranchId,this.connectionId).pipe(
     share(),
-    switchMap(x => this.messageService.getFilteredMessages("", x[0]).pipe(
+    switchMap(x => this.messageService.getFilteredMessages("", x[0],x[1]).pipe(
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
     ))
@@ -52,8 +52,16 @@ export class CurrentMessagesService {
     return this.ui.BranchId;
   }
 
+  set connection(id: string) {
+    this.ui.connectionIdString = id;
+  }
+
+  get connectionId() {
+    return this.ui.connectionId;
+  }
+
   partialUpdateSubMessage(body:Partial<subMessage>,messageId:string) {
-    return this.subMessageService.partialUpdateSubMessage(body, this.BranchId.getValue(), messageId).pipe(
+    return this.subMessageService.partialUpdateSubMessage(body, this.BranchId.getValue(), messageId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -61,7 +69,7 @@ export class CurrentMessagesService {
   }
 
   partialUpdateMessage(body: Partial<message>) {
-    return this.messageService.partialUpdateMessage(body, this.BranchId.getValue()).pipe(
+    return this.messageService.partialUpdateMessage(body, this.BranchId.getValue(),this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -69,7 +77,7 @@ export class CurrentMessagesService {
   }
 
   relateSubMessage(messageId:string,subMessageId:string) {
-    return this.subMessageService.relateSubMessage(this.BranchId.getValue(), messageId, subMessageId).pipe(
+    return this.subMessageService.relateSubMessage(this.BranchId.getValue(), messageId, subMessageId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -77,7 +85,7 @@ export class CurrentMessagesService {
   }
 
   createSubMessage(body:subMessage,messageId:string) {
-    return this.subMessageService.addSubMessage(body, this.BranchId.getValue(), messageId).pipe(
+    return this.subMessageService.addSubMessage(body, this.BranchId.getValue(), messageId,this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })
@@ -85,7 +93,7 @@ export class CurrentMessagesService {
   }
 
   createMessage(body:message) {
-    return this.messageService.addMessage(body,this.BranchId.getValue()).pipe(
+    return this.messageService.addMessage(body,this.BranchId.getValue(),this.connectionId.getValue()).pipe(
       tap(() => {
         this.ui.updateMessages = true;
       })

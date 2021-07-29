@@ -16,7 +16,7 @@ export class MessagesService {
    * @param branchId branch to look for messages on
    * @returns Observable of an array of messages matching filter condition
    */
-   getMessages(branchId: string):Observable<message[]> {
-    return this.http.get<message[]>(apiURL + "/mim/branch/" + branchId + "/messages");
+   getMessages(branchId: string,connectionId:string):Observable<message[]> {
+    return this.http.get<message[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages");
   }
 }

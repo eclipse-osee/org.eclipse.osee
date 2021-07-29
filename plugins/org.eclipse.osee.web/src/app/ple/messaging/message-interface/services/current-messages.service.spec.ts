@@ -30,9 +30,10 @@ describe('CurrentMessagesService', () => {
     const testData: message[] = [];
     service.filter = 'filter';
     service.branch = '10';
+    service.connection = '10';
     service.messages.subscribe();
     tick(500);
-    const req=httpTestingController.expectOne(apiURL + "/mim/branch/" + '10' + "/messages/filter/" + 'filter');
+    const req=httpTestingController.expectOne(apiURL + "/mim/branch/" + '10' + "/connections/"+'10'+"/messages/filter/" + 'filter');
     expect(req.request.method).toEqual("GET");
     req.flush(testData);
     httpTestingController.verify();

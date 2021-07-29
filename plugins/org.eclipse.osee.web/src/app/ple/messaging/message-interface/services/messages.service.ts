@@ -18,8 +18,8 @@ export class MessagesService {
    * @param branchId branch to look for messages on
    * @returns Observable of an array of messages matching filter condition
    */
-  getFilteredMessages(filter: string, branchId: string):Observable<message[]> {
-    return this.http.get<message[]>(apiURL + "/mim/branch/" + branchId + "/messages/filter/" + filter);
+  getFilteredMessages(filter: string, branchId: string,connectionId:string):Observable<message[]> {
+    return this.http.get<message[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/filter/" + filter);
   }
 
   /**
@@ -28,8 +28,8 @@ export class MessagesService {
    * @param branchId branch to look for messages on
    * @returns api response of whether or not the insertion was successful
    */
-  addMessage(body: message, branchId:string):Observable<MessageApiResponse> {
-    return this.http.post<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages", body);
+  addMessage(body: message, branchId:string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.post<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages", body);
   }
 
   /**
@@ -38,8 +38,8 @@ export class MessagesService {
    * @param branchId branch to look for messages on
    * @returns api response of whether or not the element was updated successfully
    */
-  partialUpdateMessage(body: Partial<message>, branchId: string):Observable<MessageApiResponse> {
-    return this.http.patch<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages", body);
+  partialUpdateMessage(body: Partial<message>, branchId: string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.patch<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages", body);
   }
 
   /**
@@ -48,8 +48,8 @@ export class MessagesService {
    * @param messageId id of message to delete
    * @returns api response of whether or not the message was removed
    */
-  removeMessage(branchId: string, messageId: string):Observable<MessageApiResponse> {
-    return this.http.delete<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/"+messageId);
+  removeMessage(branchId: string, messageId: string,connectionId:string):Observable<MessageApiResponse> {
+    return this.http.delete<MessageApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/"+messageId);
   }
 
   /**
@@ -58,8 +58,8 @@ export class MessagesService {
    * @param messageId id of message to find
    * @returns message contents, if found
    */
-  getMessage(branchId: string, messageId: string):Observable<message> {
-    return this.http.get<message>(apiURL + "/mim/branch/" + branchId + "/messages/"+messageId);
+  getMessage(branchId: string, messageId: string,connectionId:string):Observable<message> {
+    return this.http.get<message>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/"+messageId);
   }
 
 }

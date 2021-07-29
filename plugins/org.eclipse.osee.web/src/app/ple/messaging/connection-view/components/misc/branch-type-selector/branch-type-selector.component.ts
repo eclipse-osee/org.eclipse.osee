@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { MatRadioChange } from '@angular/material/radio';
 import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
-import { RouteStateService } from '../../../services/route-state-service.service';
 
 @Component({
   selector: 'osee-connectionview-branch-type-selector',

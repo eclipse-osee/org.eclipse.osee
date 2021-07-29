@@ -17,6 +17,7 @@ export class MessageInterfaceComponent implements OnInit {
     this.route.paramMap.subscribe((values) => {
       this.messageService.filter = values.get('type')?.trim().toLowerCase() || '';
       this.messageService.branch = values.get('branchId') || '';
+      this.messageService.connection = values.get('connection') || '';
     })
   }
 

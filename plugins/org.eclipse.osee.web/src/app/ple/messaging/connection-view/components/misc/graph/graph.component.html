@@ -1,5 +1,5 @@
 <ng-container *ngIf="(data|async) as graphData">
-    <div style="width:100vw;height:80vh">
+    <div style="width:100vw;height:80vh" (contextmenu)="openGraphDialog($event)">
         <ngx-graph class="chart-container" layout="dagre"
         [nodes]="graphData.nodes" [links]="graphData.edges" [update$]="update">
 
@@ -18,16 +18,22 @@
           </ng-template>
   
           <ng-template #nodeTemplate let-node>
-            <svg:g class="node">
-              <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+            <svg:g class="node" (contextmenu)="openNodeDialog($event,node,graphData.edges)">
+              <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.bgColor" />
               <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}</svg:text>
             </svg:g>
           </ng-template>
   
           <ng-template #linkTemplate let-link>
-            <svg:g class="edge" (click)="navigateToMessages(link.id)">
-              <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+            <svg:g class="edge" (click)="navigateToMessages(link.id.split('a')[1])" (contextmenu)="openLinkDialog($event,link,graphData.nodes)">
+              <ng-container *ngIf="link.data.dashed">
+                <svg:path class="line" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" marker-start="url(#arrow)">
               </svg:path>
+              </ng-container>
+              <ng-container *ngIf="!link.data.dashed">
+                <svg:path class="line" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrow)">
+                </svg:path>
+              </ng-container>
               <svg:text class="edge-label" text-anchor="middle">
                 <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
                   {{link.label}}
@@ -38,3 +44,54 @@
         </ngx-graph>
     </div>
 </ng-container>
+<mat-menu #linkMenu="matMenu">
+  <ng-template matMenuContent let-data="data" let-source="source" let-target="target">
+    <button mat-menu-item (click)="navigateToMessages(data.id)"> Go to {{data.name}}</button>
+    <button mat-menu-item (click)="navigateToMessagesInNewTab(data.id)"> Go to {{data.name}} in new tab</button>
+    <ng-container *ngIf="editMode">
+      <button mat-menu-item (click)="openConnectionEditDialog(data)"> Edit {{data.name}}</button>
+      <button mat-menu-item (click)="openRemoveConnectionDialog(data,source,target)"> Remove connection {{data.name}}</button>
+    </ng-container>
+  </ng-template>
+</mat-menu>
+<mat-menu #nodeMenu="matMenu">
+  <ng-template matMenuContent let-data="data" let-sources="sources" let-targets="targets">
+    <ng-container *ngIf="editMode">
+      <button mat-menu-item (click)="openEditNodeDialog(data)">Edit {{data.name}}</button>
+      <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)">Remove {{data.name}} & Connection</button>
+      <button mat-menu-item (click)="createConnectionToNode(data)">Create Connection To {{data.name}}</button>
+    </ng-container>
+    <ng-container *ngIf="!editMode">
+      <mat-label>
+        No Viewing Options Available for Node {{data.name}}.
+      </mat-label>
+    </ng-container>
+  </ng-template>
+</mat-menu>
+<mat-menu #graphMenu="matMenu">
+  <ng-template matMenuContent>
+    <ng-container *ngIf="editMode">
+      <button mat-menu-item (click)="createNewNode()">Create New Node</button>
+    </ng-container>
+    <ng-container *ngIf="!editMode">
+      <mat-label>
+        No Viewing Options Available.
+      </mat-label>
+    </ng-container>
+  </ng-template>
+</mat-menu>
+<div #linkMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed;"
+[style.left]="linkPosition.x" 
+[style.top]="linkPosition.y" 
+[matMenuTriggerFor]="linkMenu">
+</div>
+<div #nodeMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed;"
+[style.left]="nodePosition.x" 
+[style.top]="nodePosition.y" 
+[matMenuTriggerFor]="nodeMenu">
+</div>
+<div #graphMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed;"
+[style.left]="graphMenuPosition.x" 
+[style.top]="graphMenuPosition.y" 
+[matMenuTriggerFor]="graphMenu">
+</div>

@@ -41,8 +41,9 @@ describe('CurrentStateService', () => {
     service.filter = "0";
     service.messageId = "1";
     service.subMessageId = "2";
+    service.connection="3"
     tick(500);
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 0 + "/messages/" + 1 + "/submessages/" + 2 + "/structures/filter/" + 0);
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 0 + "/connections/"+"3"+"/messages/" + 1 + "/submessages/" + 2 + "/structures/filter/" + 0);
     expect(req.request.method).toEqual('GET');
     req.flush(testData);
     httpTestingController.verify();

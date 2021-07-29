@@ -12,6 +12,7 @@ export class UiService {
   private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _messageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _subMessageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
+  private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   constructor() { }
 
   get filter() {
@@ -54,5 +55,13 @@ export class UiService {
 
   set subMessageIdString(value: string) {
     this._subMessageId.next(value);
+  }
+
+  get connectionId() {
+    return this._connectionId;
+  }
+
+  set connectionIdString(value: string) {
+    this._connectionId.next(value);
   }
 }

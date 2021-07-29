@@ -119,6 +119,7 @@ export class MessageElementInterfaceComponent implements OnInit {
       this.structureService.branchId = values.get('branchId') || '';
       this.structureService.messageId = values.get('messageId') || '';
       this.structureService.subMessageId = values.get('subMessageId') || '';
+      this.structureService.connection = values.get('connection') || '';
     });
     //@todo: remove when user preferences are available on backend
     let branchStorage = JSON.parse(

@@ -84,7 +84,8 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         configurations: [
           {
             id: "12345",
-            name:"group1"
+            name: "group1",
+            values:[]
           }
         ],
         setValueStr(): void {
@@ -116,7 +117,8 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         configurations: [
           {
             id: "12345",
-            name:"group1"
+            name: "group1",
+            values:[]
           }
         ],
         setValueStr(): void {
@@ -148,7 +150,8 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         configurations: [
           {
             id: "12345",
-            name:"group1"
+            name: "group1",
+            values:[]
           }
         ],
         setValueStr(): void {
@@ -181,7 +184,8 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         configurations: [
           {
             id: "12345",
-            name:"group1"
+            name: "group1",
+            values:[]
           }
         ],
         setValueStr(): void {

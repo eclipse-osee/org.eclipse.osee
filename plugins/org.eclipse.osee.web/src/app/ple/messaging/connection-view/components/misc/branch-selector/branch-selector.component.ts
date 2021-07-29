@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { BranchListService } from '../../../services/branch-list.service';
 import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
-import { RouteStateService } from '../../../services/route-state-service.service';
 
 @Component({
   selector: 'osee-connectionview-branch-selector',

@@ -1,18 +1,16 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, of } from 'rxjs';
-import { filter, share } from 'rxjs/operators';
-import { data } from '../mock/mock-graph-data'
+import { Node,Edge } from '@swimlane/ngx-graph';
+import { apiURL } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GraphService {
 
-  constructor () { }
+  constructor (private http: HttpClient) { }
   
   getNodes(id: string) {
-    return from(data).pipe(
-      filter((val) => val.id === id),
-    )
+    return this.http.get<{nodes:Node[],edges:Edge[]}>(apiURL+'/mim/branch/'+id+"/graph")
   }
 }

@@ -43,9 +43,10 @@ describe('EditStructureFieldComponent', () => {
     uiService.BranchIdString = '8';
     uiService.messageIdString = '10';
     uiService.subMessageIdString = '20';
+    uiService.connectionIdString = '10';
     component.updateStructure('description', 'v2');
     tick(500);
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + "8" + "/messages/" + '10' + "/submessages/"+ '20'+"/structures");
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + "8" + "/connections/"+"10"+"/messages/" + '10' + "/submessages/"+ '20'+"/structures");
     expect(req.request.method).toEqual('PATCH');
   }));
 });

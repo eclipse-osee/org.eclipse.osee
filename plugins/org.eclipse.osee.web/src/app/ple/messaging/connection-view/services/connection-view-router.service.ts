@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouteStateService } from './route-state-service.service';
 
 @Injectable({
@@ -41,5 +41,11 @@ export class ConnectionViewRouterService {
   set connection(value: string) {
     let baseUrl = this.router.url.split("connections")[0];
     this.router.navigate([baseUrl,this.routerState.type.getValue(),this.routerState.id.getValue(),value,"messages"])
+  }
+
+  set connectionInNewTab(value: string) {
+    let baseUrl = this.router.url.split("connections")[0];
+    let url = this.router.serializeUrl(this.router.createUrlTree([baseUrl,this.routerState.type.getValue(),this.routerState.id.getValue(),value,"messages"]))
+    window.open(url, '_blank');
   }
 }

@@ -25,8 +25,4 @@ export class ColumnPreferencesDialogComponent implements OnInit {
   onNoClick() {
     this.dialogRef.close();
   }
-
-  log(value: any) {
-    console.log(value);
-  }
 }

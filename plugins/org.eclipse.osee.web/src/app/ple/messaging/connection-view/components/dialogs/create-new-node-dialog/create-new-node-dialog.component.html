@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Create New Node</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Add a name</mat-label>
+        <input matInput [(ngModel)]="result.name" required>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Add a description</mat-label>
+        <input matInput [(ngModel)]="result.description">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="result" color="primary" [disabled]="result.name.length===0">Ok</button>
+</div>
+<!--
+    mat-dialog-content:
+    input(name)
+    input(description)
+-->

@@ -41,8 +41,8 @@ describe('StructuresService', () => {
       interfaceStructureCategory: '1',
       interfaceTaskFileType:1
     }]
-    service.getFilteredStructures('0', '0', '1', '2').subscribe();
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 0 + "/messages/" + 1 + "/submessages/" + 2 + "/structures/filter/" + 0);
+    service.getFilteredStructures('0', '0', '1', '2','3').subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 0 + "/connections/"+'3'+"/messages/" + 1 + "/submessages/" + 2 + "/structures/filter/" + 0);
     expect(req.request.method).toEqual('GET');
     req.flush(testData);
     httpTestingController.verify();

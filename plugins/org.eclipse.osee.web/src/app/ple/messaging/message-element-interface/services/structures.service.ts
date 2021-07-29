@@ -12,16 +12,16 @@ export class StructuresService {
 
   constructor (private http: HttpClient) { }
   
-  getFilteredStructures(filter: string, branchId: string, messageId:string,subMessageId:string): Observable<structure[]> {
-    return this.http.get<structure[]>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/" + subMessageId + "/structures/filter/" + filter);
+  getFilteredStructures(filter: string, branchId: string, messageId:string,subMessageId:string,connectionId:string): Observable<structure[]> {
+    return this.http.get<structure[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/filter/" + filter);
   }
-  createStructure(body:Partial<structure>,branchId: string,messageId: string, subMessageId: string) {
-    return this.http.post<StructureApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/" + subMessageId + "/structures", body);
+  createStructure(body:Partial<structure>,branchId: string,messageId: string, subMessageId: string,connectionId:string) {
+    return this.http.post<StructureApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures", body);
   }
-  relateStructure(branchId: string, messageId: string, subMessageId: string, structureId: string) {
-    return this.http.patch<StructureApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/" + subMessageId + "/structures/"+structureId,null);
+  relateStructure(branchId: string, messageId: string, subMessageId: string, structureId: string,connectionId:string) {
+    return this.http.patch<StructureApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/"+structureId,null);
   }
-  partialUpdateStructure(body: Partial<structure>, branchId: string, messageId: string,subMessageId: string):Observable<StructureApiResponse> {
-    return this.http.patch<StructureApiResponse>(apiURL + "/mim/branch/" + branchId + "/messages/" + messageId + "/submessages/"+ subMessageId+"/structures", body);
+  partialUpdateStructure(body: Partial<structure>, branchId: string, messageId: string,subMessageId: string,connectionId:string):Observable<StructureApiResponse> {
+    return this.http.patch<StructureApiResponse>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/"+ subMessageId+"/structures", body);
   }
 }
