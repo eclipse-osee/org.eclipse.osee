@@ -22,6 +22,7 @@ public class DisplayHint extends NamedIdBase {
    public static DisplayHint SingleLine = new DisplayHint(1L, "Single Line");
    public static DisplayHint MultiLine = new DisplayHint(2L, "Multiline");
    public static DisplayHint NoGeneralEdit = new DisplayHint(3L, "No General Edit");
+   public static DisplayHint NoGeneralRender = new DisplayHint(4L, "No General Render");
 
    private DisplayHint(Long id, String name) {
       super(id, name);

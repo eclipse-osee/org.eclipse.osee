@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -38,14 +40,23 @@ public final class ArtifactPrompt {
 
    public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean toReturn = false;
-      XResultData rd =
-         OseeApiService.get().getAccessControlService().hasAttributeTypePermission(artifacts, attributeType,
-            PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute", artifacts, attributeType));
+      XResultData rd = OseeApiService.get().getAccessControlService().hasAttributeTypePermission(artifacts,
+         attributeType, PermissionEnum.WRITE,
+         AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute", artifacts, attributeType));
 
       if (rd.isErrors()) {
          XResultDataDialog.open(rd, "Change Attribute", "Permission Denied Changing Attribute %s",
             attributeType.toStringWithId());
+
          return false;
+      }
+
+      if (attributeType.notRenderable()) {
+         if (!MessageDialog.openConfirm(Displays.getActiveShell(), attributeType.getUnqualifiedName(), String.format(
+            "Attribute %s is set as non-renderable: it may render very slowly or incorrectly. Continue with editing anyway?",
+            attributeType.getUnqualifiedName()))) {
+            return false;
+         }
       }
 
       IHandlePromptChange promptChange =

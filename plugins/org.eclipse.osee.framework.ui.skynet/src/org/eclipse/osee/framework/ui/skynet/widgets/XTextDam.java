@@ -86,11 +86,19 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
 
    @Override
    public void refresh() {
-      super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
+      if (this.attributeType.notRenderable()) {
+         super.set("Attribute not displayable");
+         super.setEditable(false);
+      } else {
+         super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
+      }
    }
 
    @Override
    public void saveToArtifact() {
+      if (!this.isEditable()) {
+         return;
+      }
       String value = get();
       if (!Strings.isValid(value)) {
          getArtifact().deleteSoleAttribute(getAttributeType());

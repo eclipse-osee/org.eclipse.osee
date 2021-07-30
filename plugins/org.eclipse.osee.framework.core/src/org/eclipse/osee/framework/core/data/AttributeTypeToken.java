@@ -168,4 +168,12 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    default boolean isMultiLine() {
       return getDisplayHints().contains(DisplayHint.MultiLine);
    }
+
+   default boolean notEditable() {
+      return getDisplayHints().contains(DisplayHint.NoGeneralEdit);
+   }
+
+   default boolean notRenderable() {
+      return getDisplayHints().contains(DisplayHint.NoGeneralRender);
+   }
 }
