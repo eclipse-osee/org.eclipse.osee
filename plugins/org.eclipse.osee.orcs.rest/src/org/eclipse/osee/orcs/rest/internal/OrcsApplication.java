@@ -21,6 +21,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.TransactionBuilderMessageReader;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityUiEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.types.TypesEndpointImpl;
@@ -35,7 +36,7 @@ import org.osgi.service.event.EventAdmin;
 @ApplicationPath("orcs")
 public class OrcsApplication extends Application {
 
-   private final Set<Object> resources = new HashSet<>();
+   private final Set<Object> singletons = new HashSet<>();
    private OrcsApi orcsApi;
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
@@ -62,28 +63,30 @@ public class OrcsApplication extends Application {
    }
 
    public void start() {
-      resources.add(new BranchesResource(orcsApi));
-      resources.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
-      resources.add(new ApplicabilityUiEndpointImpl(orcsApi));
-      resources.add(new OrcsWriterEndpointImpl(orcsApi));
-      resources.add(new TransactionEndpointImpl(orcsApi));
-      resources.add(new TypesEndpointImpl(orcsApi, jdbcService));
+      // Add all root resource, provider and feature instances.
+      singletons.add(new BranchesResource(orcsApi));
+      singletons.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
+      singletons.add(new ApplicabilityUiEndpointImpl(orcsApi));
+      singletons.add(new OrcsWriterEndpointImpl(orcsApi));
+      singletons.add(new TransactionEndpointImpl(orcsApi));
+      singletons.add(new TypesEndpointImpl(orcsApi, jdbcService));
 
-      resources.add(new IndexerEndpointImpl(orcsApi));
-      resources.add(new ResourcesEndpointImpl(resourceManager));
-      resources.add(new DatastoreEndpointImpl(orcsApi, activityLog));
-      resources.add(new KeyValueResource(orcsApi));
+      singletons.add(new IndexerEndpointImpl(orcsApi));
+      singletons.add(new ResourcesEndpointImpl(resourceManager));
+      singletons.add(new DatastoreEndpointImpl(orcsApi, activityLog));
+      singletons.add(new KeyValueResource(orcsApi));
 
-      resources.add(new LinkUpdateResource(orcsApi));
-      resources.add(new ReportEndpointImpl(orcsApi));
+      singletons.add(new LinkUpdateResource(orcsApi));
+      singletons.add(new ReportEndpointImpl(orcsApi));
+      singletons.add(new TransactionBuilderMessageReader(orcsApi));
    }
 
    public void stop() {
-      resources.clear();
+      singletons.clear();
    }
 
    @Override
    public Set<Object> getSingletons() {
-      return resources;
+      return singletons;
    }
 }

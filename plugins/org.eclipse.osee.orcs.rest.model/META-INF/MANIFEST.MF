@@ -26,4 +26,5 @@ Import-Package: com.fasterxml.jackson.databind,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
- org.eclipse.osee.orcs.search
+ org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.transaction

@@ -21,11 +21,13 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -53,6 +55,11 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public Transaction getTx(TransactionId tx) {
       return OrcsRestUtil.asTransaction(orcsApi.getTransactionFactory().getTx(tx));
+   }
+
+   @Override
+   public TransactionToken create(TransactionBuilder tx) {
+      return tx.commit();
    }
 
    @Override

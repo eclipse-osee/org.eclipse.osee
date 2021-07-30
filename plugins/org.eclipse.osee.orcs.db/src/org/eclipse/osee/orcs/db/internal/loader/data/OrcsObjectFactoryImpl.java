@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataImpl;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -170,10 +170,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setBaseModType(baseModType);
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);
-      Conditions.assertNotNull(rationale,
-         "rationale can't be null for RelationData id [%s], type [%s], aArtId [%s], bArtId", id, relationType, aArtId,
-         bArtId);
-      data.setRationale(rationale);
+      if (Strings.isValid(rationale)) {
+         data.setRationale(rationale);
+      }
       data.setApplicabilityId(applicId);
       return data;
    }

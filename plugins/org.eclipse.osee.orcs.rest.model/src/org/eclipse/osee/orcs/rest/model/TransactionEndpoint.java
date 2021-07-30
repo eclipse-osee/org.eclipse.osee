@@ -14,8 +14,10 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,8 +27,10 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -47,6 +51,11 @@ public interface TransactionEndpoint {
    @Path("{tx-id1}/diff/{tx-id2}")
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> compareTxs(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
+
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces({MediaType.APPLICATION_JSON})
+   TransactionToken create(TransactionBuilder tx);
 
    @PUT
    @Path("{tx-id}/comment")

@@ -149,7 +149,19 @@ public class TxDataManager {
          } else {
             ResultSet<Artifact> result =
                loader.loadArtifacts(txData.getSession(), txData.getGraph(), singleton(artifactId));
-            node = result.getExactlyOne();
+            List<Artifact> artifacts = result.getList();
+            if (artifacts.size() == 1) {
+               node = artifacts.get(0);
+            } else {
+               if (artifacts.isEmpty()) {
+                  throw new OseeStateException("Artifact with id %s not found during transaction creation.",
+                     artifactId);
+               } else {
+                  throw new OseeStateException(
+                     "More than one artifact (%s) found with id %s during transaction creation.", artifacts.size(),
+                     artifactId);
+               }
+            }
          }
       }
       checkAndAdd(txData, node);

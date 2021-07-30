@@ -13,18 +13,25 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 import org.eclipse.osee.client.demo.DemoChoice;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -38,11 +45,13 @@ import org.junit.Test;
 public class TransactionEndpointTest {
 
    private static TransactionEndpoint transactionEndpoint;
+   private static JaxRsApi jaxRsApi;
 
    @BeforeClass
    public static void testSetup() {
       OseeClient oseeClient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
       transactionEndpoint = oseeClient.getTransactionEndpoint();
+      jaxRsApi = oseeClient.jaxRsApi();
    }
 
    /**
@@ -87,4 +96,11 @@ public class TransactionEndpointTest {
       assertTrue(branches.size() > 1);
    }
 
+   @Test
+   public void testCreateTransaction() {
+      // test transactionEndpoint.create(tx);
+      String json = OseeInf.getResourceContents("create_tx.json", getClass());
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+   }
 }

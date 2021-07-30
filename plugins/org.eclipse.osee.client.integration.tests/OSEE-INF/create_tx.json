@@ -1,0 +1,60 @@
+{
+	"branch": "8",
+   "txComment": "Created by TransactionEndpointTest.testCreateTransaction",
+   "createArtifacts": [
+   	{"type": "Folder", "name": "Child1", "applicabilityId": "1"},
+      {"type": "Folder", "name": "Child2"},
+      {"type": "5",
+      	"name": "Ryan D. Brooks",
+			"attributes": {
+       		"Email": "ryan.d.brooks@eclipse.org",
+            "Content URL": "http://www.gravatar.com/avatar/cf09a26f842f99de287d367069d2a908.png",
+            "Notes": ["I love\nnew lines", "Multiple values are cool"],
+            "1152921504606847065": false
+         },
+         "relations": {
+         	"2305843009213694292": {"sideB": ["Child1", "Child2"], "sideA": ["Software Requirements"]},
+            "Dependency": {"sideB": "Child1", "rationale": "because I said so"},
+            "Users": {"sideA": ["Child2"]}
+         }
+		},
+		{"type": "85",
+			"name": "base.qual.nav.Airspeed",
+			"attributes": {
+				"1152921504606847306": "Build Id is Freetext from TestManager or CI",
+				"1152921504606847296": "0:08:15",
+				"1152921504606847295": "1611130340000",
+				"1152921504606847298": 2,
+				"1152921504606847303": true,
+				"1152921504606847285": "Michael P. Masterson",
+				"1152921504606847286": "1617984497000",
+				"1152921504606847287": "amd64",
+				"1152921504606847288": "Linux",
+				"1152921504606847289": "4.9.130",
+				"1152921504606847292": "0.25.3.v202004201000-DEV",
+				"1152921504606847291": "HUDSON_CI_JOB",
+				"1152921504606847290": "0.25.3.v201804101651-REL",
+				"Outfile URL": "TBD",
+				"1152921504606847297": 103,
+				"1152921504606847293": "AMCE Aircraft Block II",
+				"1152921504606847305": "Development",
+				"1152921504606847283": "44aad495e9e5dc4b833ffd14ac1391ed8db17126",
+				"1152921504606847300": false,
+				"1152921504606847294": "1611129845000",
+				"Test Script URL": "TBD",
+				"1152921504606847299": 105
+			}
+		}
+	],
+	"modifyArtifacts": [{"id": "37334", "applicabilityId": "1", "setAttributes": {
+                                "Content URL": "http://www.gravatar.com/avatar/gone.png",
+                                "Description": [
+                                        "I am the updated system user"
+                                ]
+                        },
+                        "addAttributes": {"Annotation": ["Yet again 1", "Yet again 2"]},
+                        "deleteAttributes": ["Notes"]
+                }
+        ],
+	"deleteArtifacts": [239420308]
+}
