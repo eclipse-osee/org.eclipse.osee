@@ -263,11 +263,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             results.error("Features Folder cannot be null");
             return fDefArt;
          }
-         Long artId = featureDef.getId();
-         if (artId == null || artId <= 0) {
-            artId = Lib.generateArtifactIdAsInt();
-         }
-         fDefArt = tx.createArtifact(featuresFolder, CoreArtifactTypes.Feature, featureDef.getName(), artId);
+         fDefArt = tx.createArtifact(featuresFolder, CoreArtifactTypes.Feature, featureDef.getName());
       }
       updateFeatureDefinition(fDefArt, featureDef, tx);
 
@@ -1152,10 +1148,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(branch, user, "Create PL Configuration Group");
          ArtifactToken vDefArt = null;
-         Long artId = Lib.generateArtifactIdAsInt();
 
          vDefArt = tx.createArtifact(getPlConfigurationGroupsFolder(tx.getBranch()), CoreArtifactTypes.GroupArtifact,
-            group.getName(), artId);
+            group.getName());
          tx.setName(vDefArt, group.getName());
          // reload artifact to return
          tx.commit();

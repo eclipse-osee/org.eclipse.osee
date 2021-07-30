@@ -640,14 +640,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artifactType, String name, Long id) {
-      validateBuilder();
-      ArtifactToken art = createArtifact(artifactType, name, id);
-      txManager.addChild(txData, parent, art);
-      return art;
-   }
-
-   @Override
    public ArtifactToken getWriteable(ArtifactId artifact) {
       ArtifactToken art = txData.getWriteable(artifact);
       if (art == null) {

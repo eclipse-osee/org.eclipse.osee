@@ -199,8 +199,6 @@ public interface TransactionBuilder {
 
    void addKeyValueOps(Long id, String name);
 
-   ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artifactType, String name, Long id);
-
    /**
     * @return writable artifact or sentinal
     */
