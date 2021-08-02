@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityEndpointImpl;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
@@ -86,5 +87,10 @@ public class BranchesResource {
    @Path("{branch}/artifact")
    public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new ArtifactEndpointImpl(orcsApi, branch, accountId, uriInfo);
+   }
+
+   @Path("{branch}/relation")
+   public RelationEndpoint getRelation(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new RelationEndpointImpl(orcsApi, branch, accountId, uriInfo);
    }
 }

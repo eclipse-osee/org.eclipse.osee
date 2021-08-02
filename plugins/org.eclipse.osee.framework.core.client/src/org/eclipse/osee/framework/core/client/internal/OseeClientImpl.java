@@ -43,6 +43,7 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
+import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -122,6 +123,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public TransactionEndpoint getTransactionEndpoint() {
       return getOrcsEndpoint(TransactionEndpoint.class);
+   }
+
+   @Override
+   public RelationEndpoint getRelationEndpoint(BranchId branch) {
+      return getOrcsBranchEndpoint(RelationEndpoint.class, branch);
    }
 
    @Override
