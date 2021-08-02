@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.server.ide.internal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
@@ -25,6 +26,8 @@ import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 
 /**
@@ -87,7 +90,8 @@ public class SessionEndpointImpl implements SessionEndpoint {
                credential.getClientPort(), credential.getUserName(), oseeSessionGrant.getUserToken().getUserId(),
                oseeSessionGrant.getSessionId()));
       } catch (Exception ex) {
-         // do nothing
+         OseeLog.logf(SessionEndpointImpl.class, Level.SEVERE, "Exception in logSessionCreated %s",
+            Lib.exceptionToString(ex));
       }
    }
 
@@ -105,7 +109,8 @@ public class SessionEndpointImpl implements SessionEndpoint {
                + "}", //
                sessionId, duration, userId));
       } catch (Exception ex) {
-         // do nothing
+         OseeLog.logf(SessionEndpointImpl.class, Level.SEVERE, "Exception in logSessionReleased %s",
+            Lib.exceptionToString(ex));
       }
    }
 

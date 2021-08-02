@@ -40,7 +40,7 @@ public final class ActivityConstants {
 
    public static long DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS = 3000L;
    public static int DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT = 5;
-   public static int DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS = 30;
+   public static int DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS = 365;
    public static boolean DEFAULT_ACTIVITY_LOGGER__ENABLED = true;
 
    public static final String HTTP_HEADER__ACTIVITY_ENTRY_ID = "X-osee-activity-log-entryId";
