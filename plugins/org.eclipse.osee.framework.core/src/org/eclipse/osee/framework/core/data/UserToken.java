@@ -48,6 +48,15 @@ public interface UserToken extends ArtifactToken, UserId {
       return new UserTokenImpl(id, name, userId, active, email, java.util.Collections.singleton(userId), roles);
    }
 
+   public static UserToken create(String name, String email, String userId, boolean active, IUserGroupArtifactToken... roles) {
+      return new UserTokenImpl(ArtifactId.SENTINEL.getId(), name, userId, active, email,
+         java.util.Collections.singleton(userId), roles);
+   }
+
+   public static @NonNull UserToken create(ArtifactId id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
+      return new UserTokenImpl(id.getId(), name, userId, active, email, loginIds, roles);
+   }
+
    public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles);
    }

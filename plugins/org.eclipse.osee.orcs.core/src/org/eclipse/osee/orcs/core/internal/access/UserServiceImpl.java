@@ -186,7 +186,12 @@ public class UserServiceImpl implements UserService {
          if (existingUsers.contains(userToken)) {
             throw new OseeStateException("User %s already exists", userToken);
          }
-         ArtifactId user = tx.createArtifact(userToken);
+         ArtifactId user = null;
+         if (userToken.isValid()) {
+            user = tx.createArtifact(userToken);
+         } else {
+            user = tx.createArtifact(CoreArtifactTypes.User, userToken.getName());
+         }
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
