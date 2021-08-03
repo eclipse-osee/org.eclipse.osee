@@ -13,51 +13,49 @@
 
 package org.eclipse.osee.framework.core.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 
-/*
- * Created on May 5, 2020
- *
+/**
  * @author Baily Roberts
  */
-
 public class ManifestTest {
 
    @Test
    public void ManifestVersionTest() {
-      boolean hasVersion = false;
       int pluginIndex = System.getProperty("user.dir").indexOf("plugins");
       String pluginsPath = System.getProperty("user.dir").substring(0, pluginIndex + 8);
 
-      File pluginsDir = new File(pluginsPath);
-      File[] fileDir = pluginsDir.listFiles();
-      File manifestDir;
-      for (int i = 0; i < fileDir.length; i++) {
-         if (hasVersion == true) {
+      File pluginsRoot = new File(pluginsPath);
+      File[] pluginDirs = pluginsRoot.listFiles();
+      List<File> hasVersions = new ArrayList<>();
+      for (File pluginDir : pluginDirs) {
+
+         if (pluginDir.getAbsolutePath().contains("jms")) {
             continue;
          }
-         if (fileDir[i].getAbsolutePath().contains("jms")) {
-            continue;
+         File manifestDir = new File(pluginDir, "META-INF" + File.separator + "MANIFEST.MF");
+         if (checkManifestForVersion(manifestDir)) {
+            hasVersions.add(pluginDir);
          }
-         manifestDir = new File(fileDir[i] + "/META-INF/" + "MANIFEST.MF");
-         hasVersion = checkManifestForVersion(manifestDir);
       }
 
-      assertEquals("A Manifest file had version added. Please remove.", hasVersion, false);
+      assertTrue("The Manifests for following plugins contain at least one version " + hasVersions,
+         hasVersions.isEmpty());
    }
 
    private boolean checkManifestForVersion(File path) {
-
-      if (path.isFile() == false) {
+      if (!path.isFile()) {
          return false;
       }
-      try {
-         BufferedReader br = new BufferedReader(new FileReader(path));
+      try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+
          String line = br.readLine();
          while (line != null) {
             if (line.contains(";version")) {
@@ -66,7 +64,6 @@ public class ManifestTest {
 
             line = br.readLine();
          }
-         br.close();
       } catch (IOException ex) {
          System.out.println("Exception: " + ex);
       }
