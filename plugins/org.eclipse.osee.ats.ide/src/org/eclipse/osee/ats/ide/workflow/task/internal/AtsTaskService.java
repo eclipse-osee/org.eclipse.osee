@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -117,7 +116,7 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
             String title = ed.getEntry();
             JaxAtsTask task =
                JaxAtsTask.create(newTaskData, title, atsApi.getUserService().getCurrentUser(), new Date());
-            task.setId(Lib.generateArtifactIdAsInt());
+            task.setId(ArtifactId.SENTINEL.getId());
             if (ed2 != null) {
                task.setTaskWorkDef(((IAtsWorkDefinition) ed2.getSelection2()).getIdString());
             } else if (taskWorkDefs.size() == 1) {

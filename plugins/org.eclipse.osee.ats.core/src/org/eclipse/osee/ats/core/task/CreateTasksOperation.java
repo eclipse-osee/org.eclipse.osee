@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -269,12 +268,6 @@ public class CreateTasksOperation {
       for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
          for (JaxAtsTask jaxTask : newTaskData.getTasks()) {
 
-            Long id = jaxTask.getId();
-            if (id == null || id <= 0L) {
-               id = Lib.generateArtifactIdAsInt();
-               jaxTask.setId(id);
-            }
-
             IAtsWorkDefinition workDefinition = null;
             IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());
 
@@ -293,7 +286,15 @@ public class CreateTasksOperation {
                artType = workDefinition.getArtType();
             }
 
-            ArtifactToken taskArt = changes.createArtifact(artType, jaxTask.getName(), id);
+            ArtifactToken taskArt = null;
+
+            if (jaxTask.isValid()) {
+               taskArt = changes.createArtifact(artType, jaxTask.getName(), jaxTask.getId());
+            } else {
+               taskArt = changes.createArtifact(artType, jaxTask.getName());
+            }
+            jaxTask.setId(taskArt.getId());
+
             IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
             atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
 
