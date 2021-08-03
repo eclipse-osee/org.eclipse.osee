@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.ClosureStateMultiChoiceSelec
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionMultiChoiceSelect;
 import org.eclipse.osee.ats.ide.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.ats.ide.util.widgets.task.XCreateChangeReportTasksXButton;
-import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapementDemoWfXButton;
+import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapeDemoWfXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstSiblingWorldDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
@@ -212,8 +212,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XSprintHyperlinkWidget();
       } else if (widgetName.equals(XCheckBoxesWithTaskGenExample.WIDGET_ID)) {
          return new XCheckBoxesWithTaskGenExample();
-      } else if (widgetName.equals(XCreateEscapementDemoWfXButton.WIDGET_ID)) {
-         return new XCreateEscapementDemoWfXButton();
+      } else if (widgetName.equals(XCreateEscapeDemoWfXButton.WIDGET_ID)) {
+         return new XCreateEscapeDemoWfXButton();
       } else if (widgetName.equals(XHyperlinkFeatureDam.WIDGET_ID)) {
          return new XHyperlinkFeatureDam(name);
       } else if (widgetName.equals(XDateWithValidateDam.WIDGET_ID)) {

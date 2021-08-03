@@ -54,7 +54,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.ExternalReference, "XTextDam", AUTO_SAVE), //
 
-            new WidgetDefinition("Create/Open Great Escapement Workflow", "XCreateEscapementDemoWfXButton"), //
+            new WidgetDefinition("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
 
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
                AUTO_SAVE), //
@@ -92,7 +92,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andRules(AllowAssigneeToAll, AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Create/Open Great Escapement Workflow", "XCreateEscapementDemoWfXButton"), //
+            new WidgetDefinition("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
 
             new CompositeLayoutItem(8, //
                new WidgetDefinition(AtsAttributeTypes.RiskAnalysis, "XHyperlinkLabelValueSelectionDam"), //

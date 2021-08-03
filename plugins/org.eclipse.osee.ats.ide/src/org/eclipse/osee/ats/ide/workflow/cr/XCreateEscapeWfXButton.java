@@ -53,13 +53,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  *
  * @author Donald G. Dunne
  */
-public abstract class XCreateEscapementWfXButton extends XButton implements ArtifactWidget {
+public abstract class XCreateEscapeWfXButton extends XButton implements ArtifactWidget {
 
    private TeamWorkFlowArtifact teamWf;
    boolean creating = false;
    protected AtsApi atsApi;
 
-   public XCreateEscapementWfXButton(String name) {
+   public XCreateEscapeWfXButton(String name) {
       super(name);
       setImage(ImageManager.getImage(AtsImage.PLAY_GREEN));
       setToolTip(getToolTip());
@@ -72,7 +72,7 @@ public abstract class XCreateEscapementWfXButton extends XButton implements Arti
     */
    @Override
    public String getToolTip() {
-      return "Click to Create/Open Escapement Analysis Workflow";
+      return "Click to Create/Open Escape Analysis Workflow";
    }
 
    public String getTitle() {
@@ -144,7 +144,7 @@ public abstract class XCreateEscapementWfXButton extends XButton implements Arti
                IAtsTeamWorkflow newTeamWf =
                   AtsApiService.get().getActionService().createTeamWorkflow(teamWf.getParentAction(), teamDef,
                      Collections.singleton(getAi()), getAssignees(), changes, createdDate, currentUser,
-                     Collections.singleton(new NewEscapmentActionListener()), CreateTeamOption.Duplicate_If_Exists);
+                     Collections.singleton(new NewEscapeActionListener()), CreateTeamOption.Duplicate_If_Exists);
 
                if (!changes.isEmpty()) {
                   changes.execute();
@@ -172,7 +172,7 @@ public abstract class XCreateEscapementWfXButton extends XButton implements Arti
       return AtsArtifactTypes.TeamWorkflow;
    }
 
-   private class NewEscapmentActionListener implements INewActionListener {
+   private class NewEscapeActionListener implements INewActionListener {
       @Override
       public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();

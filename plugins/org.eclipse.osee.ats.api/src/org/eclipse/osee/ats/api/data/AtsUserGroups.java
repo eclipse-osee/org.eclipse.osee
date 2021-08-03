@@ -27,5 +27,4 @@ public class AtsUserGroups {
    public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "AtsTemp Admin");
    public static IUserGroupArtifactToken peerReviewCreationNotify =
       UserGroupArtifactToken.valueOf(8742803L, "Peer Review Creation");
-
 }

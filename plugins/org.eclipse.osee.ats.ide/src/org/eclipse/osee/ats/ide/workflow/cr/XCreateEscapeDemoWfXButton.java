@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 /**
  * @author Donald G. Dunne
  */
-public class XCreateEscapementDemoWfXButton extends XCreateEscapementWfXButton {
+public class XCreateEscapeDemoWfXButton extends XCreateEscapeWfXButton {
 
-   public static final String WIDGET_ID = XCreateEscapementDemoWfXButton.class.getSimpleName();
+   public static final String WIDGET_ID = XCreateEscapeDemoWfXButton.class.getSimpleName();
 
-   public XCreateEscapementDemoWfXButton() {
-      super("Create Demo Escapment Analysis Workflow");
+   public XCreateEscapeDemoWfXButton() {
+      super("Create Demo Escape Analysis Workflow");
    }
 
    @Override
