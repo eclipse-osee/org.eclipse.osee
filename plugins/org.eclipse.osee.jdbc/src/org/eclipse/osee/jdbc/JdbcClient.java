@@ -119,6 +119,10 @@ public interface JdbcClient {
       return getDbType().areHintsSupported() ? "/*+ ordered */" : "";
    }
 
+   default String getMultiTableHint(String hint, String aliases) {
+      return getDbType().areHintsSupported() ? "/*+ " + hint + "(" + aliases + ") */" : "";
+   }
+
    void vacuum();
 
 }

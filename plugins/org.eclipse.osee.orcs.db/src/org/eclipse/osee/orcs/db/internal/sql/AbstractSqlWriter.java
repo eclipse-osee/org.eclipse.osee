@@ -54,6 +54,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected QueryData queryDataCursor;
    private String tupleAlias;
    private String tupleTxsAlias;
+   private String multiTableHintParameter = "";
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData rootQueryData) {
       this.joinFactory = joinFactory;
@@ -90,6 +91,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       aliasManager.reset();
       level = 0;
       firstCte = true;
+      multiTableHintParameter = "";
    }
 
    protected void write(Iterable<SqlHandler<?>> handlers) {
@@ -408,7 +410,16 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public String addTable(SqlTable table, ObjectType objectType) {
       String alias = getNextAlias(table.getPrefix(), objectType);
       tableEntries.add(String.format("%s %s", table.getName(), alias));
+      if (multiTableHintParameter.length() > 0) {
+         multiTableHintParameter = multiTableHintParameter + " " + alias;
+      } else {
+         multiTableHintParameter = alias;
+      }
       return alias;
+   }
+
+   public String getMultiTableHintParameter() {
+      return multiTableHintParameter;
    }
 
    public String getMainTableAlias(SqlTable table) {
@@ -509,6 +520,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
    @Override
    public Options getOptions() {
       return getContext().getOptions();
+   }
+
+   protected void writeUseNlTableHint(String hintParams) {
+      writeSelectAndMultiTableHint("USE_NL", hintParams);
+   }
+
+   protected void writeSelectAndMultiTableHint(String hint, String hintParams) {
+      write("SELECT");
+      write(jdbcClient.getMultiTableHint(hint, hintParams));
+      write(" ");
+      firstField = true;
    }
 
    protected void writeSelectAndHint() {
