@@ -222,10 +222,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    private String writeAttsCommonTableExpression(String artWithAlias) {
       String attsAlias = startCommonTableExpression("atts");
-      writeSelectAndHint();
       String attAlias = "att";
       String attTxsAlias = "txs";
-
+      writeUseNlTableHint(attAlias + " " + attTxsAlias);
       writeSelectFields(artWithAlias, "*", attAlias, "attr_type_id AS type_id", attAlias, "value", attAlias, "uri",
          attAlias, "attr_id");
       write(", 0 AS other_art_id");
@@ -244,10 +243,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    private void writeRelsCommonTableExpression(String artWithAlias) {
       relsAlias = startCommonTableExpression("rels");
-      writeSelectAndHint();
       String relAlias = "rel";
       String relTxsAlias = "txs";
-
+      writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
       write(
          ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id");
@@ -277,7 +275,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
-      writeSelectAndHint();
+      String multiHint = this.getMultiTableHintParameter();
+      if (multiHint.split(" ").length > 1) {
+         writeUseNlTableHint(multiHint);
+      } else {
+         writeSelectAndHint();
+      }
       if (rootQueryData.isCountQueryType()) {
          writeSelectFields(getMainTableAlias(SqlTable.ARTIFACT_TABLE), "art_id");
       } else {
