@@ -567,7 +567,7 @@ public class SqlTable extends NamedBase {
    public static final SqlColumn OSEE_ACTIVITY_SERVER_ID = OSEE_ACTIVITY_TABLE.addColumn("SERVER_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ACTIVITY_MSG_ARGS = OSEE_ACTIVITY_TABLE.addVarCharColumn("MSG_ARGS", 4000, true);
    public static final SqlColumn OSEE_ACTIVITY_START_TIME =
-      OSEE_ACTIVITY_TABLE.addColumn("START_TIME", JDBCType.BIGINT);
+      OSEE_ACTIVITY_TABLE.addColumn("START_TIMESTAMP", JDBCType.TIMESTAMP);
    public static final SqlColumn OSEE_ACTIVITY_STATUS = OSEE_ACTIVITY_TABLE.addColumn("STATUS", JDBCType.SMALLINT);
    public static final SqlColumn OSEE_ACTIVITY_PARENT_ID = OSEE_ACTIVITY_TABLE.addColumn("PARENT_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ACTIVITY_DURATION = OSEE_ACTIVITY_TABLE.addColumn("DURATION", JDBCType.BIGINT);

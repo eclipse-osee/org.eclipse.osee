@@ -34,9 +34,11 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -61,6 +63,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
 
@@ -93,6 +96,9 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
          }
          if (obj instanceof Id) {
             return ((Id) obj).getId();
+         }
+         if (obj instanceof Timestamp) {
+            return ((Timestamp) obj).getTime();
          }
          throw new OseeArgumentException(
             "LogEntryIndex.from called with agrgument of unsupported type " + obj.getClass());
@@ -316,7 +322,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    private Object[] createEntry(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
       Object[] entry;
       Long entryId = Lib.generateUuid();
-      Long startTime = System.currentTimeMillis();
+      Date startTime = GlobalTime.GreenwichMeanTimestamp();
 
       String msg;
       String fullMsg = null;

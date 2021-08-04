@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.activity.api;
 
+import java.sql.Timestamp;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,7 +26,7 @@ public class ActivityEntry extends ActivityEntryId {
    private Long accountId;
    private Long serverId;
    private Long clientId;
-   private Long startTime;
+   private Timestamp startTime;
    private Long duration;
    private Integer status;
    private String messageArgs;
@@ -54,7 +55,7 @@ public class ActivityEntry extends ActivityEntryId {
       return clientId;
    }
 
-   public Long getStartTime() {
+   public Timestamp getStartTime() {
       return startTime;
    }
 
@@ -90,7 +91,7 @@ public class ActivityEntry extends ActivityEntryId {
       this.clientId = clientId;
    }
 
-   public void setStartTime(Long startTime) {
+   public void setStartTime(Timestamp startTime) {
       this.startTime = startTime;
    }
 

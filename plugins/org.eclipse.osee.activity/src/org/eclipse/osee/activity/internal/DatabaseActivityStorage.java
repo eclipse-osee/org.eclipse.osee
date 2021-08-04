@@ -36,7 +36,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
    private static final String SELECT_ENTRY = "SELECT * FROM osee_activity WHERE entry_id = ?";
 
    private static final String INSERT_ENTRIES =
-      "INSERT INTO osee_activity (entry_id, parent_id, type_id, account_id, server_id, client_id, start_time, duration, status, msg_args) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO osee_activity (entry_id, parent_id, type_id, account_id, server_id, client_id, start_timestamp, duration, status, msg_args) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
    private static final String UPDATE_ENTRIES = "UPDATE osee_activity set status = ?, duration = ? where entry_id = ?";
 
@@ -45,7 +45,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
    private static final String INSERT_TYPE =
       "INSERT INTO osee_activity_type (type_id, log_level, module, msg_format) SELECT (?,?,?,?) where NOT EXISTS (SELECT 1 from osee_activity_type where type_id = ?)";
 
-   private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_time <= ?";
+   private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_timestamp <= ?";
 
    private JdbcClient jdbcClient;
    private JdbcService jdbcService;
@@ -67,7 +67,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
          entry.setMessageArgs(stmt.getString("msg_args"));
          entry.setParentId(stmt.getLong("parent_id"));
          entry.setServerId(stmt.getLong("server_id"));
-         entry.setStartTime(stmt.getLong("start_time"));
+         entry.setStartTime(stmt.getTimestamp("start_timestamp"));
          entry.setStatus(stmt.getInt("status"));
          entry.setTypeId(stmt.getLong("type_id"));
          found.setValue(true);
@@ -75,7 +75,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
       jdbcClient.runQuery(consumer, SELECT_ENTRY, entryId);
       if (!found.getValue()) {
-         throw new OseeNotFoundException("Activity Log entry [%s] not found", entryId.getIdString());
+         throw new OseeNotFoundException("Activity Log entry [%s] not found", entryId.toString());
       }
       return entry;
    }
@@ -112,7 +112,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
          daysToKeep = -daysToKeep;
       }
       cal.add(Calendar.DATE, daysToKeep);
-      jdbcClient.runPreparedUpdate(DELETE_ENTRIES, cal.getTimeInMillis());
+      jdbcClient.runPreparedUpdate(DELETE_ENTRIES, cal.getTime());
    }
 
    @Override
