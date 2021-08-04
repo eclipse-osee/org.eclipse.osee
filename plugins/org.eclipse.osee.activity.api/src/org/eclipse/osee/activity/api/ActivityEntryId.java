@@ -29,4 +29,8 @@ public class ActivityEntryId extends BaseId {
    public ActivityEntryId(Long id) {
       super(id);
    }
+
+   public static ActivityEntryId valueOf(Long id) {
+      return new ActivityEntryId(id);
+   }
 }

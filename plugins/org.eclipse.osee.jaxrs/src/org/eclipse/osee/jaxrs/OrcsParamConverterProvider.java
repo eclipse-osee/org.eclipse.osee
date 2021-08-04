@@ -17,6 +17,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.Provider;
+import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -51,6 +52,7 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
    private final ParamConverter<AttributeId> attributeIdConverter;
    private final ParamConverter<ActivityTypeId> activityTypeIdConverter;
    private final ParamConverter<ApplicabilityId> applicabilityIdConverter;
+   private final ParamConverter<ActivityEntryId> activityEntryIdConverter;
 
    private final ParamConverter<BranchState> branchStateConverter;
    private final ParamConverter<BranchType> branchTypeConverter;
@@ -88,6 +90,7 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       branchTypeConverter = new IdParamConverter<>(BranchType::valueOf);
       attributeIdConverter = new IdParamConverter<>(AttributeId::valueOf);
       applicabilityIdConverter = new IdParamConverter<>(ApplicabilityId::valueOf);
+      activityEntryIdConverter = new IdParamConverter<>(ActivityEntryId::valueOf);
    }
 
    @SuppressWarnings("unchecked")
@@ -139,6 +142,11 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       if (ApplicabilityId.class.isAssignableFrom(rawType)) {
          return (ParamConverter<T>) applicabilityIdConverter;
       }
+      if (ActivityEntryId.class.isAssignableFrom(rawType)) {
+         return (ParamConverter<T>) activityEntryIdConverter;
+      }
+
+      // This condition should be last, enter any new types above this
       if (Id.class.isAssignableFrom(rawType)) {
          return (ParamConverter<T>) idConverter;
       }
