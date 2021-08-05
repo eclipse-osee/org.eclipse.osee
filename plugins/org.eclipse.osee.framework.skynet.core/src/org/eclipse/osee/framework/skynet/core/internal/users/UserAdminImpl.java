@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserAdmin;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Roberto E. Escobar
@@ -40,7 +39,6 @@ public class UserAdminImpl implements UserAdmin {
    private UserKeysProvider keysProvider;
    private LazyObject<Cache<String, User>> cacheProvider;
    private CurrentUserProvider currentUserProvider;
-   private UserDataWriter userWriteAccessor;
    private UserArtifactEventListener userArtifactEventListener;
 
    private CacheAdmin cacheAdmin;
@@ -52,8 +50,7 @@ public class UserAdminImpl implements UserAdmin {
    public void start() {
       keysProvider = new UserKeysProvider();
       cacheProvider = new UserCacheProvider(cacheAdmin, new UserDataLoader(), keysProvider);
-      userWriteAccessor = new UserDataWriter(cacheProvider);
-      currentUserProvider = new CurrentUserProvider(cacheProvider, userWriteAccessor);
+      currentUserProvider = new CurrentUserProvider(cacheProvider);
       userArtifactEventListener = new UserArtifactEventListener(cacheProvider, keysProvider);
 
       OseeEventManager.addListener(userArtifactEventListener);
@@ -68,10 +65,6 @@ public class UserAdminImpl implements UserAdmin {
       if (currentUserProvider != null) {
          currentUserProvider.invalidate();
          currentUserProvider = null;
-      }
-
-      if (userWriteAccessor != null) {
-         userWriteAccessor = null;
       }
 
       if (cacheProvider != null) {
@@ -298,15 +291,4 @@ public class UserAdminImpl implements UserAdmin {
       }
       return toReturn;
    }
-
-   @Override
-   public User createUser(UserToken userToken, String comment) {
-      return userWriteAccessor.createUser(userToken, comment);
-   }
-
-   @Override
-   public User createUser(UserToken userToken, SkynetTransaction transaction) {
-      return userWriteAccessor.createUser(userToken, transaction);
-   }
-
 }

@@ -41,15 +41,13 @@ import org.eclipse.osee.jaxrs.JaxRsClient;
  */
 public class CurrentUserProvider extends LazyObject<User> {
    private final LazyObject<Cache<String, User>> cacheProvider;
-   private final UserDataWriter writer;
 
    private final AtomicBoolean duringCreateUser = new AtomicBoolean(false);
    private final AtomicBoolean isAnonymousAuthenticationAllowed = new AtomicBoolean(true);
    private final AtomicBoolean isAnonymousNotificationAllowed = new AtomicBoolean(true);
 
-   public CurrentUserProvider(LazyObject<Cache<String, User>> cacheProvider, UserDataWriter writer) {
+   public CurrentUserProvider(LazyObject<Cache<String, User>> cacheProvider) {
       this.cacheProvider = cacheProvider;
-      this.writer = writer;
    }
 
    @Override

@@ -23,14 +23,18 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -158,6 +162,10 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
-      throw new UnsupportedOperationException();
+      DatastoreEndpoint datastoreEndpoint = ServiceUtil.getOseeClient().getDatastoreEndpoint();
+      UserTokens userToks = new UserTokens();
+      userToks.setAccount(SystemUser.OseeSystem);
+      users.forEach(userToks::addUser);
+      return datastoreEndpoint.createUsers(userToks);
    }
 }

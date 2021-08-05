@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.internal.users.UserAdminImpl;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Roberto E. Escobar
@@ -176,10 +175,6 @@ public final class UserManager {
     */
    public static boolean duringMainUserCreation() {
       return getUserAdmin().isDuringCurrentUserCreation();
-   }
-
-   public static User createUser(UserToken userToken, SkynetTransaction transaction) {
-      return getUserAdmin().createUser(userToken, transaction);
    }
 
    public static String getSetting(String key) {

@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Roberto E. Escobar
@@ -50,10 +49,6 @@ public interface UserAdmin {
    String getUserNameById(ArtifactId userArtifactId);
 
    User getUserByArtId(ArtifactId userArtifactId);
-
-   User createUser(UserToken userToken, String comment);
-
-   User createUser(UserToken userToken, SkynetTransaction transaction);
 
    boolean isDuringCurrentUserCreation();
 
