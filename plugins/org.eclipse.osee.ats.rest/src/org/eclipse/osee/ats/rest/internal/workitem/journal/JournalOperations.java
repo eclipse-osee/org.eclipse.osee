@@ -36,6 +36,7 @@ public class JournalOperations {
    private IAtsWorkItem workItem;
    private final JournalData journalData;
    private final String atsId;
+   private final String CONFIG_KEY = "JournalUrl";
 
    public JournalOperations(JournalData journalData, String atsId, AtsApi atsApi) {
       this.journalData = journalData;
@@ -97,6 +98,11 @@ public class JournalOperations {
    public JournalData sendNotifications() {
       try {
          Collection<AtsUser> subscribedUsers = atsApi.getNotificationService().getJournalSubscribedUsers(workItem);
+         // Don't email user who added journal entry
+         subscribedUsers.remove(journalData.getUser());
+         if (subscribedUsers.isEmpty()) {
+            return journalData;
+         }
          String fromEmail = atsApi.getConfigValue("NoReplyEmail");
 
          if (EmailUtil.isEmailValid(fromEmail)) {
@@ -112,14 +118,19 @@ public class JournalOperations {
    }
 
    private String getBody(AtsUser user) {
+      String journalUrl = atsApi.getConfigValue(CONFIG_KEY);
+      if (Strings.isValid(journalUrl)) {
+         journalUrl = journalUrl.replaceFirst("ATSID", workItem.getAtsId());
+         journalUrl = journalUrl.replaceFirst("USERARTID", user.getIdString());
+      }
       StringBuilder sb = new StringBuilder();
-      sb.append(
-         "<html><body><b>Do not respond or forward this email!</b><br/><br/><a href=\"http://localhost:8089/ats/ui/action/");
-      sb.append(workItem.getAtsId());
-      sb.append("/journal/");
-      sb.append(user.getIdString());
-      sb.append("\">Select to Respond</a>");
-      sb.append("<br/>");
+      sb.append("<html><body><b>Do not respond or forward this email!</b><br/><br/>");
+      if (Strings.isValid(journalUrl)) {
+         sb.append("<a href=\"");
+         sb.append(journalUrl);
+         sb.append("\">Select to Respond</a>");
+         sb.append("<br/>");
+      }
       sb.append("<br/>");
       sb.append("<pre>");
       JournalData jData = atsApi.getWorkItemService().getJournalData(workItem, new JournalData());
@@ -131,7 +142,7 @@ public class JournalOperations {
    }
 
    private String getSubject() {
-      return String.format("ATS Journal for \"%s\"", workItem.toStringWithAtsId());
+      return String.format("OSEE ATS Journal for \"%s\"", workItem.toStringWithAtsId());
    }
 
 }
