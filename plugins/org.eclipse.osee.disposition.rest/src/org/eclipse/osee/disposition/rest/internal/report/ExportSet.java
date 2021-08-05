@@ -324,15 +324,20 @@ public class ExportSet {
          Object[] coverSheetHeaders = coverSheetHeadersList.toArray();
          sheetWriter.writeRow(coverSheetHeaders);
          Object[] row = new String[CoverageLevel.values().length + 1];
+         Object[] uncoveredRow = new String[CoverageLevel.values().length + 1];
+
          row[0] = "All Coverage Methods";
+         uncoveredRow[0] = "Uncovered";
 
          int index = 1;
          // send correct numbers according to level for second param
          Iterator<CoverageLevel> iterator = levelsInList.iterator();
          while (iterator.hasNext()) {
             CoverageLevel lvl = iterator.next();
-            row[index++] =
+            row[index] =
                getPercent(levelToCoveredTotalCount.get(lvl).getValue(), levelToTotalCount.get(lvl).getValue(), false);
+            uncoveredRow[index++] =
+               getPercent((levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue()), levelToTotalCount.get(lvl).getValue(), false);
          }
          sheetWriter.writeRow(row);
 
@@ -397,6 +402,7 @@ public class ExportSet {
             }
          }
 
+         sheetWriter.writeRow(uncoveredRow);
          sheetWriter.endSheet();
          // END COVER SHEET
 
