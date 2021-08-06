@@ -94,6 +94,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
    @Override
    public void start() {
+      bindUserService(orcsApi.userService());
+
       configurationsService = new AtsConfigurationsService(this, orcsApi);
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
       super.start();

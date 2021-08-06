@@ -7,4 +7,5 @@
    <reference bind="setJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
    <reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
    <reference bind="bindAccessControlService" cardinality="1..1" interface="org.eclipse.osee.framework.core.access.IAccessControlService" name="IAccessControlService" policy="static"/>
+   <reference bind="bindUserService" cardinality="1..1" interface="org.eclipse.osee.framework.core.data.UserService" name="UserService" policy="static"/>
 </scr:component>
