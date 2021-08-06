@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util;
 
-import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;

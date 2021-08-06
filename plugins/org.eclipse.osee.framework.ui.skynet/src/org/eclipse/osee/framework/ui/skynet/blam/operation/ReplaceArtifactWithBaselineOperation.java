@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
 /**

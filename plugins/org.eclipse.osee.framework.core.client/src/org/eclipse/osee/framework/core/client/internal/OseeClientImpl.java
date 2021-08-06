@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.client.internal;
+package org.eclipse.osee.framework.core.client.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,8 @@ import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.client.QueryBuilder;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -34,13 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.mail.api.MailEndpoint;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.client.QueryBuilder;
-import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
-import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
-import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
-import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
-import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;

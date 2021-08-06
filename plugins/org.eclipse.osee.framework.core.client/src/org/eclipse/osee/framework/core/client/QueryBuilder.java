@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.client;
+package org.eclipse.osee.framework.core.client;
 
 import java.util.Collection;
 import java.util.List;

@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 
 /**

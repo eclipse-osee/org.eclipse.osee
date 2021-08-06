@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.internal;
 
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 @SuppressWarnings("deprecation")

@@ -82,8 +82,7 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.osee.framework.ui.skynet.widgets.util,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.jdbc,
- org.eclipse.osee.orcs.rest.client,
- org.eclipse.osee.orcs.rest.model,
+  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.support.test.util
 Export-Package: 
  org.eclipse.osee.ats.ide.demo,
