@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.framework.core.client.OseeClient;
 
 /**
  * @author Donald G. Dunne

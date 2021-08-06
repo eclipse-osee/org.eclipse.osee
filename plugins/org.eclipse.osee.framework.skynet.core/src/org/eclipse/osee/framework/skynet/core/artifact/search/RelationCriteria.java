@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import org.eclipse.osee.framework.core.client.QueryBuilder;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 
 /**
  * @author Ryan D. Brooks

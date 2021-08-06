@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Roberto E. Escobar

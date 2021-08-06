@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.AnonymousCredentialProvider;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Roberto E. Escobar

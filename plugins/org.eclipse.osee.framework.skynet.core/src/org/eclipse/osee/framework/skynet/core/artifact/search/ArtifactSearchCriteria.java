@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import org.eclipse.osee.orcs.rest.client.QueryBuilder;
+import org.eclipse.osee.framework.core.client.QueryBuilder;
 
 /**
  * @author Ryan D. Brooks

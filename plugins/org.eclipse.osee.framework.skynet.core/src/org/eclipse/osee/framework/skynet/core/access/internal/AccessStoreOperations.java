@@ -116,7 +116,7 @@ public class AccessStoreOperations implements IAccessStoreOperations {
 
          BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
-         org.eclipse.osee.orcs.rest.client.OseeClient client = ServiceUtil.getOseeClient();
+         org.eclipse.osee.framework.core.client.OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint proxy = client.getBranchEndpoint();
          proxy.setBranchPermission(data.getSubject(), branchAccessObject.getBranch(), data.getPermission());
 

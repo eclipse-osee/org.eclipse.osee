@@ -11,9 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.client.internal.search;
-
-import org.eclipse.osee.orcs.rest.client.internal.Options;
+package org.eclipse.osee.framework.core.client.internal;
 
 /**
  * @author Roberto E. Escobar

@@ -18,9 +18,9 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.client.QueryBuilder;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.junit.Test;
 
 /**

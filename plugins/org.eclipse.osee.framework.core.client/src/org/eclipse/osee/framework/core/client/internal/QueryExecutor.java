@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.client.internal.search;
+package org.eclipse.osee.framework.core.client.internal;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;

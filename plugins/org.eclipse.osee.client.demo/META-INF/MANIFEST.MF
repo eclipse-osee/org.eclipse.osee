@@ -35,7 +35,6 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.osee.framework.skynet.core.utility,
  org.eclipse.osee.framework.ui.skynet.Import,
  org.eclipse.osee.jdbc,
- org.eclipse.osee.orcs.rest.client,
- org.eclipse.osee.orcs.rest.model
+  org.eclipse.osee.orcs.rest.model
 Export-Package: org.eclipse.osee.client.demo
 Require-Bundle: org.eclipse.core.runtime
