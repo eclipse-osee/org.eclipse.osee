@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -60,6 +61,7 @@ import org.eclipse.osee.jaxrs.OAuth2Flows.OwnerCredentials;
  */
 public final class JaxRsApiImpl implements JaxRsApi {
    private OrcsTokenService tokenService;
+   private UserService userService;
    private ObjectMapper mapper;
    private TypeFactory typeFactory;
    private String baseUrl;
@@ -69,6 +71,10 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    public void setOrcsTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
+   }
+
+   public void bindUserService(UserService userService) {
+      this.userService = userService;
    }
 
    public void start() {

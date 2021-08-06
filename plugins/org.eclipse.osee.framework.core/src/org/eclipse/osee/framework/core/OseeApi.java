@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core;
 
 import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.data.UserService;
 
 /**
  * @author Ryan D. Brooks
@@ -25,5 +26,7 @@ public interface OseeApi {
    OrcsTokenService tokenService();
 
    IAccessControlService getAccessControlService();
+
+   UserService userService();
 
 }

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core;
 
+import org.eclipse.osee.framework.core.data.UserService;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -20,6 +22,7 @@ public abstract class OseeApiBase implements OseeApi {
 
    private JaxRsApi jaxRsApi;
    private OrcsTokenService tokenService;
+   private UserService userService;
 
    public void setOrcsTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
@@ -27,6 +30,10 @@ public abstract class OseeApiBase implements OseeApi {
 
    public void setJaxRsApi(JaxRsApi jaxRsApi) {
       this.jaxRsApi = jaxRsApi;
+   }
+
+   public void bindUserService(UserService userService) {
+      this.userService = userService;
    }
 
    @Override
@@ -39,4 +46,8 @@ public abstract class OseeApiBase implements OseeApi {
       return tokenService;
    }
 
+   @Override
+   public UserService userService() {
+      return userService;
+   }
 }
