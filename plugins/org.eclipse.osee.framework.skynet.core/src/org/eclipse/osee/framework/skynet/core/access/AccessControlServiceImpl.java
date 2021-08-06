@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.skynet.core.access.internal;
+package org.eclipse.osee.framework.skynet.core.access;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -37,12 +37,13 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
+import org.eclipse.osee.framework.skynet.core.access.internal.AccessStoreOperations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
@@ -54,20 +55,20 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
    // for ReviewOsgiXml public void addOseeAccessProvider(IOseeAccessProvider provider)
    // for ReviewOsgiXml public void addArtifactCheck(ArtifactCheck artifactCheck)
 
-   protected JdbcClient jdbcClient;
+   private JdbcClient jdbcClient;
+   private OrcsTokenService tokenService;
 
-   public AccessControlServiceImpl() {
-      super(null, null);
-      // for jax-rs
+   public void bindJdbcService(JdbcService jdbcService) {
+      this.jdbcClient = jdbcService.getClient();
    }
 
-   /**
-    * Instantiated through OseeApi by client/server as needed
-    */
-   public AccessControlServiceImpl(JdbcClient jdbcClient, OrcsTokenService tokenService) {
-      super(tokenService, new AccessStoreOperations(jdbcClient));
-      this.jdbcClient = jdbcClient;
-      this.storeOps.setCache(cache);
+   public void bindTokenService1(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
+
+   public void start() {
+      setStoreOperations(new AccessStoreOperations(jdbcClient));
+      storeOps.setCache(cache);
    }
 
    @Override
@@ -155,7 +156,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
       try {
          OseeEventManager.kickAccessTopicEvent(this, payload, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
       } catch (Exception ex) {
-         OseeLog.log(AccessControlServiceImpl.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }
 

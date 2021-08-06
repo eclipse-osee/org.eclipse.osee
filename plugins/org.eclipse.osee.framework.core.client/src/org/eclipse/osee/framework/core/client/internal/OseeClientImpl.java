@@ -62,6 +62,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
 
    private PredicateFactory predicateFactory;
+   private IAccessControlService accessControlService;
+
+   public void bindAccessControlService(IAccessControlService accessControlService) {
+      this.accessControlService = accessControlService;
+   }
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
@@ -225,6 +230,6 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    @Override
    public IAccessControlService getAccessControlService() {
-      throw new UnsupportedOperationException("Not supported yet");
+      return accessControlService;
    }
 }

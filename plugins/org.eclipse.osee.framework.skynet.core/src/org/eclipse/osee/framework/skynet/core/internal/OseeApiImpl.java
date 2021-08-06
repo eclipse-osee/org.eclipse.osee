@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.skynet.core.internal;
 
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
-import org.eclipse.osee.framework.skynet.core.access.internal.AccessControlServiceImpl;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Donald G. Dunne
@@ -22,18 +20,14 @@ public class OseeApiImpl extends OseeApiBase {
 
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
-   IAccessControlService accessControlService;
+   private IAccessControlService accessControlService;
 
-   public OseeApiImpl() {
-      // for jas-rs
+   public void bindAccessControlService(IAccessControlService accessControlService) {
+      this.accessControlService = accessControlService;
    }
 
    @Override
    public IAccessControlService getAccessControlService() {
-      if (accessControlService == null) {
-         accessControlService = new AccessControlServiceImpl(ConnectionHandler.getJdbcClient(), tokenService());
-      }
       return accessControlService;
    }
-
 }

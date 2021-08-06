@@ -35,8 +35,7 @@ public class OseeApiImpl extends OseeApiBase {
    @Override
    public IAccessControlService getAccessControlService() {
       if (accessControlService == null) {
-         accessControlService =
-            new AccessControlServiceImpl(orcsApi, orcsApi.getJdbcService().getClient(), tokenService());
+         accessControlService = new AccessControlServiceImpl(orcsApi);
       }
       return accessControlService;
    }

@@ -43,9 +43,9 @@ public class AccessStoreOperations implements IAccessStoreOperations {
    private final JdbcClient jdbcClient;
    private final OrcsApi orcsApi;
 
-   public AccessStoreOperations(OrcsApi orcsApi, JdbcClient jdbcClient) {
+   public AccessStoreOperations(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      this.jdbcClient = jdbcClient;
+      this.jdbcClient = orcsApi.getJdbcService().getClient();
    }
 
    @Override

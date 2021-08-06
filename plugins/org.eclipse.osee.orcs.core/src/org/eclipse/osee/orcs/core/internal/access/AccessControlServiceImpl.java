@@ -40,25 +40,22 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
+ * This service in not implement (on the server) as an OSGi component so that OrcsApi can reference it even through
+ * OrcsApi is also a dependency of this service.
+ *
  * @author Donald G. Dunne
  */
 public class AccessControlServiceImpl extends AbstractAccessControlService {
 
-   // for ReviewOsgiXml public void addOseeAccessProvider(IOseeAccessProvider provider)
-   // for ReviewOsgiXml public void addArtifactCheck(ArtifactCheck artifactCheck)
-
    protected JdbcClient jdbcClient;
-   private OrcsApi orcsApi;
+   private final OrcsApi orcsApi;
+   private final OrcsTokenService tokenService;
 
-   public AccessControlServiceImpl() {
-      super(null, null);
-      // for jax-rs
-   }
-
-   public AccessControlServiceImpl(OrcsApi orcsApi, JdbcClient jdbcClient, OrcsTokenService tokenService) {
-      super(tokenService, new AccessStoreOperations(orcsApi, jdbcClient));
+   public AccessControlServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      this.jdbcClient = jdbcClient;
+      this.tokenService = orcsApi.tokenService();
+      this.jdbcClient = orcsApi.getJdbcService().getClient();
+      setStoreOperations(new AccessStoreOperations(orcsApi));
    }
 
    // Caches not needed on server, load as needed

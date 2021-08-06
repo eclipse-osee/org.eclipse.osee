@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
-import org.eclipse.osee.ats.ide.internal.OseeApiService;
 import org.eclipse.osee.ats.ide.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
@@ -130,7 +129,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
       agileService = new AgileService(logger, this);
       notificationService = new AtsNotificationServiceImpl(this);
-
    }
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {
@@ -286,6 +284,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    @Override
    public IAccessControlService getAccessControlService() {
-      return OseeApiService.get().getAccessControlService();
+      return getOseeClient().getAccessControlService();
    }
 }
