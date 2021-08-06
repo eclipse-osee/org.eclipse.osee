@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.object.AccessObject;
 import org.eclipse.osee.framework.core.access.object.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.access.object.BranchAccessObject;
@@ -51,30 +50,31 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public abstract class AbstractAccessControlService implements IAccessControlService {
 
-   protected OrcsTokenService tokenService;
    protected final static Collection<IOseeAccessProvider> oseeAccessProviders = new HashSet<>();
-   private List<ArtifactCheck> artifactChecks = null;
    protected final BranchAclOperations brchAclOps;
    protected final UserGroupOperations userGrpOps;
-   protected final ArtifactAclOperations artAclOps;
    protected final ContextIdOperations contextIdOps;
+   protected ArtifactAclOperations artAclOps;
    protected AccessCache cache;
    protected IAccessStoreOperations storeOps;
    private final AccessRankOperations rankOps;
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
+   private final List<ArtifactCheck> artifactChecks = new ArrayList<>();
 
-   public AbstractAccessControlService(OrcsTokenService tokenService, IAccessStoreOperations storeOps) {
-      this.tokenService = tokenService;
-      this.storeOps = storeOps;
+   public AbstractAccessControlService() {
       cache = new AccessCache(this);
       rankOps = new AccessRankOperations(cache);
       contextIdOps = new ContextIdOperations(this);
       userGrpOps = new UserGroupOperations(cache, this);
       cache.setUserGrpOps(userGrpOps);
-      artAclOps = new ArtifactAclOperations(cache, storeOps, this, rankOps);
       cache.setArtAclOps(artAclOps);
       brchAclOps = new BranchAclOperations(cache, rankOps, this);
       cache.setBrchAclOps(brchAclOps);
+   }
+
+   public void setStoreOperations(IAccessStoreOperations storeOps) {
+      this.storeOps = storeOps;
+      artAclOps = new ArtifactAclOperations(cache, storeOps, this, rankOps);
    }
 
    public synchronized void addArtifactCheck(ArtifactCheck artifactCheck) {
@@ -84,10 +84,8 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    public synchronized void addOseeAccessProvider(IOseeAccessProvider provider) {
       AccessControlUtil.errorf("%s - Register: %s", getClass().getSimpleName(), provider.getClass().getSimpleName());
       oseeAccessProviders.add(provider);
-      // If artifactChecks has already been populated, clear so it will be re-populated on next call
-      if (artifactChecks != null) {
-         artifactChecks.clear();
-      }
+      // clear so it will be re-populated before next usage
+      artifactChecks.clear();
    }
 
    ////////////////////////////////////
@@ -539,8 +537,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    abstract public ArtifactToken getArtifactFromId(ArtifactId subjectId, BranchToken common);
 
    public Collection<ArtifactCheck> getArtifactChecks() {
-      if (artifactChecks == null) {
-         artifactChecks = new ArrayList<>();
+      if (artifactChecks.isEmpty()) {
          for (IOseeAccessProvider provider : oseeAccessProviders) {
             artifactChecks.addAll(provider.getArtifactChecks());
          }

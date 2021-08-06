@@ -287,5 +287,4 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    public IAccessControlService getAccessControlService() {
       return orcsApi.getAccessControlService();
    }
-
 }

@@ -175,6 +175,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
       applicability = new OrcsApplicabilityOps(this, logger);
       userService = new UserServiceImpl(this);
+      accessControlService = new AccessControlServiceImpl(this);
    }
 
    public void stop() {
@@ -278,10 +279,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    @Override
    public IAccessControlService getAccessControlService() {
-      if (accessControlService == null) {
-         accessControlService =
-            new AccessControlServiceImpl(this, dataStore.getJdbcService().getClient(), tokenService());
-      }
       return accessControlService;
    }
 }

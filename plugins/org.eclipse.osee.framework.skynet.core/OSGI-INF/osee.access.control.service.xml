@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
-   <implementation class="org.eclipse.osee.framework.skynet.core.access.internal.AccessControlServiceImpl"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start">
+   <implementation class="org.eclipse.osee.framework.skynet.core.access.AccessControlServiceImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.core.access.IAccessControlService"/>
+   </service>
+   <reference bind="bindJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
+   <reference bind="bindTokenService1" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
    <reference bind="addOseeAccessProvider" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.IOseeAccessProvider" name="IOseeAccessProvider" policy="dynamic"/>
    <reference bind="addArtifactCheck" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.ArtifactCheck" name="ArtifactCheck" policy="dynamic"/>
 </scr:component>

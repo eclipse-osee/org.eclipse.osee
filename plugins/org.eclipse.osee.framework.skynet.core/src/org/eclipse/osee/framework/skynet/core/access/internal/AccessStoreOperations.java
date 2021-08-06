@@ -63,7 +63,7 @@ public class AccessStoreOperations implements IAccessStoreOperations {
          event.setBranch(branch);
          OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_BRANCH_MODIFIED);
       } catch (Exception ex) {
-         OseeLog.log(AccessControlServiceImpl.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }
 
@@ -173,9 +173,8 @@ public class AccessStoreOperations implements IAccessStoreOperations {
                      event);
                }
             }
-
          } catch (OseeCoreException ex) {
-            OseeLog.log(AccessControlServiceImpl.class, Level.SEVERE, ex);
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
       }
    }
