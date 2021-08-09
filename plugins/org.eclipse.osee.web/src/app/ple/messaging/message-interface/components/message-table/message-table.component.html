@@ -27,9 +27,16 @@
                         <osee-messaging-edit-message-field [messageId]="element.id" [header]="header" [value]="element[header]"></osee-messaging-edit-message-field>
                     </ng-container>
                     <ng-template #no_edit>
-                        <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-interface-table-highlighted-text">
-                            {{element[header]}}
-                        </div>
+                        <ng-container *ngIf="header==='applicability'">
+                            <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header].name" classToApply="ple-message-interface-table-highlighted-text">
+                                {{element[header]}}
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="header!=='applicability'">
+                            <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-interface-table-highlighted-text">
+                                {{element[header]}}
+                            </div>
+                        </ng-container>
                     </ng-template>
                 </div>
             </td>

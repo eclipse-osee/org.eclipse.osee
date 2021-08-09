@@ -29,5 +29,6 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
     createNewNode(node: node) {
         return of(response)
     },
-    nodeOptions:of([])
+  nodeOptions: of([]),
+  applic: of([{ id: '1', name:'Base'},{id:'2',name:'Second'}])
   }

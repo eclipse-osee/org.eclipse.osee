@@ -9,12 +9,17 @@
                         {{value[header] | displayTruncatedStringWithFieldOverflow:75}}
                     </div>
                 </ng-container>
-                <ng-container *ngIf="header!=='description' && header!==' '">
+                <ng-container *ngIf="header!=='description' && header!==' ' && header!=='applicability'">
                     <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header]" classToApply="ple-message-interface-table-highlighted-text">
                         {{value[header]}}
                     </div>
                 </ng-container>
                 <ng-container *ngIf="header===' '"><button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])" (contextmenu)="openMenu($event,element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                </ng-container>
+                <ng-container *ngIf="header==='applicability'">
+                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header].name" classToApply="ple-message-interface-table-highlighted-text">
+                        {{value[header]}}
+                    </div>
                 </ng-container>
             </ng-container>
             <ng-template #edit_Mode>

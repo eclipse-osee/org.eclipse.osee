@@ -1,5 +1,5 @@
 <mat-form-field *ngIf="header !== 'interfaceMessageWriteAccess';else writeAccess">
-    <ng-container *ngIf="header === 'interfaceMessageRate' || header === 'interfaceMessagePeriodicity' || header === 'interfaceMessageType';else generalEdit">
+    <ng-container *ngIf="header === 'interfaceMessageRate' || header === 'interfaceMessagePeriodicity' || header === 'interfaceMessageType' || header === 'applicability';else generalEdit">
         <ng-container *ngIf="header ==='interfaceMessageRate'">
             <mat-select [(ngModel)]="value" (ngModelChange)="updateMessage(header,value)" required>
                 <mat-option *ngFor="let option of (rates|async)" [value]="option" >
@@ -18,6 +18,13 @@
             <mat-select [(ngModel)]="value" (ngModelChange)="updateMessage(header,value)" required>
                 <mat-option *ngFor="let option of (periodicities|async)" [value]="option" >
                     {{option}}
+                </mat-option>
+            </mat-select>
+        </ng-container>
+        <ng-container *ngIf="header ==='applicability'">
+            <mat-select [(ngModel)]="value" (ngModelChange)="updateMessage(header,value)" [compareWith]="compareApplics" required>
+                <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
+                    {{option.name}}
                 </mat-option>
             </mat-select>
         </ng-container>

@@ -1,7 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -62,7 +64,7 @@ describe('SubElementTableComponent', () => {
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
     await TestBed.configureTestingModule({
-      imports:[MatTableModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
+      imports:[CommonModule,MatDialogModule,MatTableModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
       declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent],
       providers: [{ provide: Router, useValue: router }, {
         provide: ActivatedRoute, useValue: {

@@ -12,7 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
 import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -29,12 +31,15 @@ public class InterfaceNode extends PLGenericDBObject {
    @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
+   private ApplicabilityToken applicability;
+
    public InterfaceNode(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
 
    public InterfaceNode(ArtifactReadable art) {
       super(art);
+      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
    }
 
    public InterfaceNode(Long id, String name) {
@@ -56,6 +61,20 @@ public class InterfaceNode extends PLGenericDBObject {
     */
    public void setDescription(String description) {
       this.Description = description;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
    }
 
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, tap } from 'rxjs/operators';
+import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, tap, shareReplay } from 'rxjs/operators';
+import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { message } from '../types/messages';
 import { subMessage } from '../types/sub-messages';
 import { MessagesService } from './messages.service';
@@ -30,7 +31,16 @@ export class CurrentMessagesService {
     ))
   )
 
-  constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: UiService) { }
+  private _applics = this.ui.BranchId.pipe(
+    share(),
+    switchMap(id => this.applicabilityService.getApplicabilities(id).pipe(
+      repeatWhen(_ => this.ui.UpdateRequired),
+      share(),
+      shareReplay(1),
+    )),
+    shareReplay(1),
+  )
+  constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: UiService, private applicabilityService: ApplicabilityListService) { }
 
   get messages() {
     return this._messages;
@@ -58,6 +68,9 @@ export class CurrentMessagesService {
 
   get connectionId() {
     return this.ui.connectionId;
+  }
+  get applic() {
+    return this._applics;
   }
 
   partialUpdateSubMessage(body:Partial<subMessage>,messageId:string) {

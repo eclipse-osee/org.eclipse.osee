@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Node,Edge } from '@swimlane/ngx-graph';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map, repeatWhen, share, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionService } from './connection.service';
 import { GraphService } from './graph.service';
 import { NodeService } from './node.service';
@@ -9,6 +9,7 @@ import { RouteStateService } from './route-state-service.service';
 import { connection } from '../types/connection'
 import { node } from '../types/node'
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
+import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +33,17 @@ export class CurrentGraphService {
       share()
     ))
   )
+  private _applics = this.routeStateService.id.pipe(
+    share(),
+    switchMap(id => this.applicabilityService.getApplicabilities(id).pipe(
+      repeatWhen(_ => this.updated),
+      share(),
+      shareReplay(1),
+    )),
+    shareReplay(1),
+  ) 
   private _update = new Subject<boolean>();
-  constructor (private graphService: GraphService,private nodeService:NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService) { }
+  constructor (private graphService: GraphService,private nodeService:NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService) { }
   
   get nodes() {
     return this._nodes;
@@ -49,6 +59,10 @@ export class CurrentGraphService {
 
   get nodeOptions() {
     return this._nodeOptions;
+  }
+
+  get applic() {
+    return this._applics;
   }
 
   updateConnection(connection: Partial<connection>) {

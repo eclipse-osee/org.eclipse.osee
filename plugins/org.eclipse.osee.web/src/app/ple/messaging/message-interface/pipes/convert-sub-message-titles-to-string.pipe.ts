@@ -3,7 +3,7 @@ const transformMatrix: any = {
   name: "SubMessage Name",
   description: "SubMessage Description",
   interfaceSubMessageNumber: "SubMessage Number",
-  interfaceMessageRate: "SubMessage Tx Rate",
+  applicability:'Applicability'
 }
 @Pipe({
   name: 'convertSubMessageTitlesToString'

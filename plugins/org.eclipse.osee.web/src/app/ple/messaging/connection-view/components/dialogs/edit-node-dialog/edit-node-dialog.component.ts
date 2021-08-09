@@ -1,5 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { applic } from 'src/app/ple/messaging/shared/types/NamedId.applic';
+import { CurrentGraphService } from '../../../services/current-graph.service';
 import { node } from '../../../types/node';
 
 @Component({
@@ -9,8 +11,9 @@ import { node } from '../../../types/node';
 })
 export class EditNodeDialogComponent implements OnInit {
 
-  title:string=""
-  constructor (public dialogRef: MatDialogRef<EditNodeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: node) {
+  title: string = "";
+  applics = this.graphService.applic;
+  constructor (public dialogRef: MatDialogRef<EditNodeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: node, private graphService: CurrentGraphService) {
     this.title = data.name;
    }
 
@@ -19,5 +22,9 @@ export class EditNodeDialogComponent implements OnInit {
 
   onNoClick() {
     this.dialogRef.close();
+  }
+
+  compareApplics(o1:applic,o2:applic) {
+    return o1?.id === o2?.id && o1?.name === o2?.name;
   }
 }

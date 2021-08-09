@@ -44,4 +44,12 @@ describe('UiService', () => {
     })
   });
   
+  it('should set update value', () => {
+    scheduler.run(({ cold }) => {
+      const expectedfilterValues = { a: true, b:false };
+      const expectedMarble = '-a'
+      cold(expectedMarble).subscribe(() => service.updateMessages = true);
+      scheduler.expectObservable(service.UpdateRequired).toBe(expectedMarble, expectedfilterValues);
+    })
+  })
 });

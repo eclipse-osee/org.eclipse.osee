@@ -4,7 +4,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { iif } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { message } from '../../types/messages';
@@ -33,7 +33,7 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   matMenuTrigger!: MatMenuTrigger;
   constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService) {
     this.dataSource.data = this.data;
-    this.headers=["name","description","interfaceSubMessageNumber","interfaceMessageRate", " "]
+    this.headers=["name","description","interfaceSubMessageNumber","applicability", " "]
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.data;

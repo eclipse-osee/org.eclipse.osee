@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
 import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
@@ -38,7 +39,7 @@ public class NodeView extends PLGenericDBObject {
    }
 
    public NodeView(InterfaceNode node) {
-      this(node.getId(), node.getName(), node.getDescription());
+      this(node.getId(), node.getName(), node.getDescription(), node.getApplicability());
    }
 
    public NodeView(ArtifactReadable art) {
@@ -46,11 +47,12 @@ public class NodeView extends PLGenericDBObject {
       this.setData(new NodeViewData(art));
    }
 
-   public NodeView(Long id, String name, String description) {
+   public NodeView(Long id, String name, String description, ApplicabilityToken applicability) {
       this(id, name);
       this.setLabel(name);
-      this.setDescription(description);
       this.setData(new NodeViewData(id, name));
+      this.setApplicability(applicability);
+      this.setDescription(description);
    }
 
    public NodeView(Long id, String name) {
@@ -91,14 +93,14 @@ public class NodeView extends PLGenericDBObject {
     */
    @JsonIgnore
    public String getDescription() {
-      return Description;
+      return data.getDescription();
    }
 
    /**
     * @param description the description to set
     */
    public void setDescription(String description) {
-      this.Description = description;
+      this.data.setDescription(description);
    }
 
    /**
@@ -129,6 +131,10 @@ public class NodeView extends PLGenericDBObject {
    @JsonIgnore
    public void setbgColor(String color) {
       this.data.setbgColor(color);
+   }
+
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.data.setApplicability(applicability);
    }
 
 }

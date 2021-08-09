@@ -10,7 +10,8 @@ const transformMatrix: any = {
   interfaceMessagePeriodicity: "Periodicity",
   interfaceMessageRate: "Tx Rate",
   interfaceMessageWriteAccess: "Read/Write",
-  interfaceMessageType:"Type"
+  interfaceMessageType: "Type",
+  applicability:'Applicability'
 }
 @Pipe({
   name: 'convertMessageTableTitlesToString'

@@ -23,7 +23,7 @@ export class CurrentElementSearchService {
           ))
         )),
         distinct((val) => { return val.id }),
-        toArray()))
+        scan((acc, curr) => [...acc, curr], [] as element[])))
     )),
   )
   constructor (private idService: BranchIdService, private platformTypesService: PlatformTypesService, private elementSearch: ElementSearchService, private searchService: SearchService) { }

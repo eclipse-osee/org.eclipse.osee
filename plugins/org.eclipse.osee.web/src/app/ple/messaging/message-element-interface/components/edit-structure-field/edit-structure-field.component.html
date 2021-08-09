@@ -1,10 +1,22 @@
 <mat-form-field>
-    <ng-container *ngIf="header==='interfaceStructureCategory';else generalEdit">
-        <mat-select [(ngModel)]="value" (ngModelChange)="updateStructure(header,value)">
-            <mat-option *ngFor="let option of (categories|async)" [value]="option" >
-                {{option}}
-            </mat-option>
-        </mat-select>
+    <ng-container *ngIf="header==='interfaceStructureCategory' || header ==='applicability';else generalEdit">
+        
+        <ng-container *ngIf="header==='interfaceStructureCategory'">
+            <mat-select [(ngModel)]="value" (ngModelChange)="updateStructure(header,value)">
+                <mat-option *ngFor="let option of (categories|async)" [value]="option" >
+                    {{option}}
+                </mat-option>
+            </mat-select>
+        </ng-container>
+
+        <ng-container *ngIf="header ==='applicability'">
+            <!-- applicability changes go here -->
+            <mat-select [(ngModel)]="value" (ngModelChange)="updateStructure(header,value)" [compareWith]="compareApplics">
+                <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
+                    {{option.name}}
+                </mat-option>
+            </mat-select>
+        </ng-container>
     </ng-container>
     <ng-template #generalEdit>
         <input matInput [(ngModel)]="value" (ngModelChange)="updateStructure(header,value)">

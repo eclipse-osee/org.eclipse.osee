@@ -4,8 +4,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { iif } from 'rxjs';
-import { forkJoin, of } from 'rxjs';
-import { filter, first, map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
 import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
@@ -36,6 +35,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     'interfaceElementAlterable',
     'description',
     'notes',
+    'applicability'
   ];
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;

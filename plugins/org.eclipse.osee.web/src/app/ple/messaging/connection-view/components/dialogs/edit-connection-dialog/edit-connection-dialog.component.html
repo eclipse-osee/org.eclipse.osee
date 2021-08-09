@@ -18,6 +18,15 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Select an Applicability</mat-label>
+        <mat-select [(ngModel)]="data.applicability" [compareWith]="compareApplics" required>
+            <mat-option *ngFor="let applic of (applics|async)" [value]="applic">
+                {{applic.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Cancel</button>
