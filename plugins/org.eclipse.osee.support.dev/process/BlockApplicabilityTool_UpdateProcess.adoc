@@ -1,0 +1,16 @@
+= BlockApplicabilityTool =
+
+Branden W. Phillips<branden.w.phillips@boeing.com>
+
+The BlockApplicabilityTool is used for instrumenting applicability tags on non Microsoft Word based documents, primarily code files such as Java/C++/C# etc.  The tool is utilized by launching a local runtime of the OSEE server on the users machine, which can then be interacted with via a REST API.  Because this tool is not included with the normal installation of OSEE and is distributed to individual developers, it must also be updated differently from the rest of OSEE.  The tool is compiled using a modified version of an OSEE runtime server and its' updates start by taking new build artifacts of that zip file on Jenkins.  
+
+== Updating Process
+
+1. Go to the below link to access the most recent build of the OSEE runtime server.  Select org.eclipse.osee.server.runtime.zip.
+	a. https://ci.eclipse.org/osee/job/osee_dev/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/
+2. Unzip this file.
+3. In the current BlockApplicabilityTool folder, remove the 'configuration' and 'plugins' folder.  Replace these with the corresponding folders in the newly unzipped osee.server.runtime.zip folder. 
+4. In the 'plugins' folder, remove any jar that contains 'icteam', and the jar with 'slf4j.impl.log4j12' in the title.
+5. Under 'configuration/config.ini', remove the corresponding lines for the jar files deleted from 'plugins'.
+6. Zip up the 'BlockApplicabilityTool' folder.
+7. Distribute as needed.
