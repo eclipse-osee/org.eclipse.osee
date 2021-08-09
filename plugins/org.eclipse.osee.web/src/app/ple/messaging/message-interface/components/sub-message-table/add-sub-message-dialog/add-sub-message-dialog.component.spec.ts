@@ -23,7 +23,6 @@ describe('AddSubMessageDialogComponent', () => {
     subMessage: {
       name: '',
       description: '',
-      interfaceMessageRate: '',
       interfaceSubMessageNumber:''
     }
   }
@@ -31,7 +30,6 @@ describe('AddSubMessageDialogComponent', () => {
     id: '10',
     name: '',
     description: '',
-    interfaceMessageRate: '',
     interfaceSubMessageNumber:''
   }
   let httpTestingController: HttpTestingController;

@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
@@ -45,6 +46,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
    private Double endByte = 0.0;
    private Double beginWord = 0.0;
    private Double endWord = 0.0;
+
+   private ApplicabilityToken applicability;
 
    /**
     * @param art
@@ -235,6 +238,20 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    public void setEndWord(Double endWord) {
       this.endWord = endWord;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
    }
 
 }

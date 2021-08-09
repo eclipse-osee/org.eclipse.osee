@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +36,7 @@ describe('AddMessageDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatDialogModule,FormsModule,MatFormFieldModule,MatInputModule,MatSelectModule,MatButtonModule,MatSlideToggleModule,NoopAnimationsModule],
+      imports:[CommonModule,MatDialogModule,FormsModule,MatFormFieldModule,MatInputModule,MatSelectModule,MatButtonModule,MatSlideToggleModule,NoopAnimationsModule],
       declarations: [AddMessageDialogComponent],
       providers: [{
         provide: MatDialogRef, useValue: dialogRef

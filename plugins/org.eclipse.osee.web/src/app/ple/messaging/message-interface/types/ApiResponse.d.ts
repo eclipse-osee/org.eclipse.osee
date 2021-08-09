@@ -7,7 +7,7 @@
     errors: boolean,
     failed: boolean,
     ids: string[],
-    infoCount: boolean,
+    infoCount: number,
     numErrors: number,
     numErrorsViaSearch: number,
     numWarnings: number,

@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.types;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
@@ -53,6 +54,7 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
+   private ApplicabilityToken applicability;
 
    public InterfaceMessageToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -173,5 +175,19 @@ public class InterfaceMessageToken extends PLGenericDBObject {
     */
    public void setDescription(String description) {
       this.Description = description;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
    }
 }

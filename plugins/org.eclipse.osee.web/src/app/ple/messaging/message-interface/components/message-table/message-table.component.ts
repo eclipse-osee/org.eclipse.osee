@@ -6,7 +6,7 @@ import { ColumnPreferencesDialogComponent } from '../../../shared/components/dia
 import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { message } from '../../types/messages';
-import {branchStorage} from '../../../shared/types/branchstorage'
+import { branchStorage } from '../../../shared/types/branchstorage'
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { filter, first, switchMap } from 'rxjs/operators';
@@ -42,7 +42,7 @@ export class MessageTableComponent implements OnInit {
     this.messageData.subscribe((value) => {
       this.dataSource.data = value;
     })
-    this.headers = ["name","description","interfaceMessageNumber","interfaceMessagePeriodicity","interfaceMessageRate","interfaceMessageWriteAccess","interfaceMessageType"];
+    this.headers = ["name","description","interfaceMessageNumber","interfaceMessagePeriodicity","interfaceMessageRate","interfaceMessageWriteAccess","interfaceMessageType",'applicability'];
    }
 
   ngOnInit(): void {

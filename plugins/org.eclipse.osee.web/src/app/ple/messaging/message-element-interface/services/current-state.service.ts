@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first } from 'rxjs/operators';
+import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { element } from '../types/element';
 import { structure } from '../types/structure';
 import { ElementService } from './element.service';
@@ -37,7 +38,17 @@ export class CurrentStateService {
     shareReplay(1),
   )
 
-  constructor (private ui: UiService, private structure: StructuresService, private messages:MessagesService, private elements:ElementService, private typeService: PlatformTypeService) { }
+  private _applics = this.ui.BranchId.pipe(
+    share(),
+    switchMap(id => this.applicabilityService.getApplicabilities(id).pipe(
+      repeatWhen(_ => this.ui.UpdateRequired),
+      share(),
+      shareReplay(1),
+    )),
+    shareReplay(1),
+  )
+
+  constructor (private ui: UiService, private structure: StructuresService, private messages:MessagesService, private elements:ElementService, private typeService: PlatformTypeService, private applicabilityService: ApplicabilityListService) { }
   
   get structures() {
     return this._structures;
@@ -112,6 +123,10 @@ export class CurrentStateService {
 
   get types() {
     return this._types;
+  }
+
+  get applic() {
+    return this._applics;
   }
 
   createStructure(body:Partial<structure>) {

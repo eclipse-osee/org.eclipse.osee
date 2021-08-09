@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -35,4 +36,6 @@ public interface ArtifactInserter<T> {
    XResultData patchArtifact(T newArtifact, UserId account, BranchId branch);
 
    XResultData removeArtifact(ArtifactId artifactToRemove, UserId account, BranchId branch);
+
+   XResultData setApplicability(ArtifactId artifactId, ApplicabilityId applicId, UserId account, BranchId branch);
 }

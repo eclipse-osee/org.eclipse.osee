@@ -8,7 +8,9 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { dialogRef } from '../../../mocks/dialogRef.mock';
+import { CurrentGraphService } from '../../../services/current-graph.service';
 import { connection, transportType } from '../../../types/connection';
 
 import { EditConnectionDialogComponent } from './edit-connection-dialog.component';
@@ -19,7 +21,8 @@ describe('EditConnectionDialogComponent', () => {
   let loader: HarnessLoader;
   let dialogData: connection = {
     name: '',
-    transportType:transportType.Ethernet
+    transportType: transportType.Ethernet,
+    applicability:{id:'1',name:'Base'}
   }
 
   beforeEach(async () => {
@@ -27,7 +30,8 @@ describe('EditConnectionDialogComponent', () => {
       imports: [MatDialogModule,MatInputModule,MatSelectModule,MatButtonModule,NoopAnimationsModule,FormsModule],
       declarations: [EditConnectionDialogComponent],
       providers: [{ provide: MatDialogRef, useValue: dialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: dialogData}]
+        { provide: MAT_DIALOG_DATA, useValue: dialogData },
+        { provide: CurrentGraphService, useValue: graphServiceMock }]
     })
     .compileComponents();
   });

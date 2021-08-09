@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -21,6 +22,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class ConnectionViewData extends PLGenericDBObject {
    private ConnectionViewType TransportType = ConnectionViewType.ETHERNET; //will need logic for both of these or data stored in DB
    private boolean isDashed = true;
+   private ApplicabilityToken applicability;
+   private String Description;
 
    public ConnectionViewData(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -63,6 +66,34 @@ public class ConnectionViewData extends PLGenericDBObject {
     */
    public void setDashed(boolean isDashed) {
       this.isDashed = isDashed;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
+   }
+
+   /**
+    * @return the description
+    */
+   public String getDescription() {
+      return Description;
+   }
+
+   /**
+    * @param description the description to set
+    */
+   public void setDescription(String description) {
+      this.Description = description;
    }
 
 }

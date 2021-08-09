@@ -7,13 +7,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { MessageInterfaceComponent } from '../../message-interface.component';
 import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-message-table-titles-to-string.pipe';
 import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
-import { MessageTableComponent } from '../message-table/message-table.component';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
 import { EditSubMessageFieldComponent } from './edit-sub-message-field/edit-sub-message-field.component';
 
@@ -69,6 +66,12 @@ describe('SubMessageTableComponent', () => {
     fixture.detectChanges();
   });
 
+  beforeEach(function () {
+    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+      return null;
+    })
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -86,4 +89,8 @@ describe('SubMessageTableComponent', () => {
     })
     expect(component.dataSource.filter === component.filter.replace('sub message: ', ''));
   });
+
+  it('should open the menu', () => {
+    
+  })
 });

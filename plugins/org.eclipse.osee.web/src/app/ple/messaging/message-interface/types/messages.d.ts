@@ -1,3 +1,4 @@
+import { applic } from "../../shared/types/NamedId.applic";
 import { subMessage } from "./sub-messages";
 
 export interface message {
@@ -9,5 +10,6 @@ export interface message {
     interfaceMessagePeriodicity: string ,
     interfaceMessageWriteAccess: boolean ,
     interfaceMessageType: string ,
-    interfaceMessageNumber:string 
+    interfaceMessageNumber: string,
+    applicability?:applic
 }

@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.concurrent.ThreadLocalRandom;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -22,6 +23,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class NodeViewData extends PLGenericDBObject {
 
+   private String Description;
+   private ApplicabilityToken applicability;
    private String bgColor = generateColor() ? "#81d4fa" : "#c5e1a5"; //has to be called bgColor due to @swimlane/ngx-graph having weird handling behavior of node.data.color
 
    public NodeViewData(ArtifactToken art) {
@@ -56,6 +59,34 @@ public class NodeViewData extends PLGenericDBObject {
    @JsonIgnore
    private boolean generateColor() {
       return ThreadLocalRandom.current().nextInt(1, 3) > 1 ? true : false;
+   }
+
+   /**
+    * @return the description
+    */
+   public String getDescription() {
+      return Description;
+   }
+
+   /**
+    * @param description the description to set
+    */
+   public void setDescription(String description) {
+      Description = description;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
    }
 
 }

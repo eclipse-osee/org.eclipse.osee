@@ -12,17 +12,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { AddMessageDialogComponent } from './components/message-table/add-message-dialog/add-message-dialog.component';
-import { EditMessageFieldComponent } from './components/message-table/edit-message-field/edit-message-field.component';
-import { MessageTableComponent } from './components/message-table/message-table.component';
-import { AddSubMessageDialogComponent } from './components/sub-message-table/add-sub-message-dialog/add-sub-message-dialog.component';
-import { EditSubMessageFieldComponent } from './components/sub-message-table/edit-sub-message-field/edit-sub-message-field.component';
-import { SubMessageTableComponent } from './components/sub-message-table/sub-message-table.component';
 
 import { MessageInterfaceComponent } from './message-interface.component';
 import { MessageTableComponentMock } from './mocks/components/MessageTableComponent.mock';
-import { ConvertMessageTableTitlesToStringPipe } from './pipes/convert-message-table-titles-to-string.pipe';
-import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message-titles-to-string.pipe';
 import { CurrentMessagesService } from './services/current-messages.service';
 import { message } from './types/messages';
 
@@ -42,8 +34,11 @@ describe('MessageInterfaceComponent', () => {
       id: '0',
       name: 'sub message name',
       description: '',
-      interfaceMessageRate: '50Hz',
-      interfaceSubMessageNumber:'0'
+      interfaceSubMessageNumber: '0',
+      applicability: {
+        id: '1',
+        name:'Base'
+      }
     }]
   }];
 

@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -40,6 +41,8 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    private Long secondaryNode;
 
+   private ApplicabilityToken applicability;
+
    public InterfaceConnection(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -51,6 +54,7 @@ public class InterfaceConnection extends PLGenericDBObject {
       this.setSecondaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
          ArtifactReadable.SENTINEL).getId());
       this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTransportType, "ETHERNET"));
+      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
    }
 
    public InterfaceConnection(Long id, String name) {
@@ -116,6 +120,20 @@ public class InterfaceConnection extends PLGenericDBObject {
    @JsonIgnore
    public void setTransportType(String transportType) {
       TransportType = transportType;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
    }
 
 }

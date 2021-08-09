@@ -14,7 +14,7 @@ import { CurrentStateService } from './services/current-state.service';
 import { settingsDialogData } from '../shared/types/settingsdialog';
 import { structure } from './types/structure';
 import { branchStorage } from '../shared/types/branchstorage';
-import { fromEvent, iif } from 'rxjs';
+import { iif } from 'rxjs';
 import { AddStructureDialogComponent } from './components/add-structure-dialog/add-structure-dialog.component';
 import { AddStructureDialog } from './types/AddStructureDialog';
 import { filter, first, switchMap } from 'rxjs/operators';
@@ -53,7 +53,8 @@ export class MessageElementInterfaceComponent implements OnInit {
     'interfaceMaxSimultaneity',
     'interfaceMinSimultaneity',
     'interfaceTaskFileType',
-    'interfaceStructureCategory',];
+    'interfaceStructureCategory',
+  'applicability'];
   
   allStructureHeaders: string[] = [
     'name',
@@ -67,6 +68,7 @@ export class MessageElementInterfaceComponent implements OnInit {
     'bytesPerSecondMinimum',
     'bytesPerSecondMaximum',
     'GenerationIndicator',
+    'applicability'
   ];
 
   allowedElementHeaders: string[] = [
@@ -86,6 +88,7 @@ export class MessageElementInterfaceComponent implements OnInit {
     'interfaceElementAlterable',
     'description',
     'notes',
+    'applicability'
   ];
   expandedElement: Array<any> = [];
   filter: string = '';

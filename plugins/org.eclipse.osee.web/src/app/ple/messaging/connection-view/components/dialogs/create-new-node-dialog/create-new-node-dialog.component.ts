@@ -13,7 +13,7 @@ export class CreateNewNodeDialogComponent implements OnInit {
     name: '',
     description:''
   };
-  constructor(public dialogRef: MatDialogRef<CreateNewNodeDialogComponent> ) { }
+  constructor(public dialogRef: MatDialogRef<CreateNewNodeDialogComponent>) { }
 
   ngOnInit(): void {
   }
@@ -21,4 +21,5 @@ export class CreateNewNodeDialogComponent implements OnInit {
   onNoClick() {
     this.dialogRef.close();
   }
+
 }

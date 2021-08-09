@@ -209,7 +209,7 @@ describe('CurrentElementSearchService', () => {
             }
           ],
       }
-      const marble ='(e)'
+      const marble ='(abcde)'
       scheduler.expectObservable(service.elements).toBe(marble,values)
     })
   });

@@ -25,17 +25,17 @@
                 <mat-label>Description</mat-label>
                 <input matInput [(ngModel)]="data.subMessage.description" required>
             </mat-form-field>
-            <mat-form-field>
+            <!-- <mat-form-field>
                 <mat-label>Message Rate</mat-label>
                 <input matInput [(ngModel)]="data.subMessage.interfaceMessageRate" required>
-            </mat-form-field>
+            </mat-form-field> -->
             <mat-form-field>
                 <mat-label>Sub Message Number</mat-label>
                 <input matInput [(ngModel)]="data.subMessage.interfaceSubMessageNumber" required>
             </mat-form-field>
         </div>
         <button mat-raised-button matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0 && data.subMessage.interfaceMessageRate.length>0 && data.subMessage.interfaceSubMessageNumber.length>0" matStepperNext>Next</button>
+        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0  && data.subMessage.interfaceSubMessageNumber.length>0" matStepperNext>Next</button>
     </mat-step>
     <mat-step label="Review" #step3>
         <div style="display:flex;flex-direction:column">
@@ -43,7 +43,6 @@
             <mat-label>{{data.name}}</mat-label> with the following properties:
             <mat-label>Sub Message Name: {{data.subMessage?.name}}</mat-label>
             <mat-label>Sub Message Description: {{data.subMessage?.description}}</mat-label>
-            <mat-label>Sub Message Rate: {{data.subMessage?.interfaceMessageRate}}</mat-label>
             <mat-label>Sub Message Number: {{data.subMessage?.interfaceSubMessageNumber}}</mat-label>
         </div>
         <mat-dialog-actions align="end">

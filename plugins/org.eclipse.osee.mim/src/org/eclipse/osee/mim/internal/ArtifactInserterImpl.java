@@ -18,6 +18,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -262,6 +264,24 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
       return results;
    }
 
+   @Override
+   public XResultData setApplicability(ArtifactId artifactId, ApplicabilityId applicId, UserId account, BranchId branch) {
+      XResultData results = new XResultData();
+      try {
+         UserId user = account;
+         if (user == null) {
+            user = SystemUser.OseeSystem;
+         }
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(branch, user, "Set Applicability for Artifact.");
+         tx.setApplicability(artifactId, applicId);
+         tx.commit();
+      } catch (Exception ex) {
+         results.error(Lib.exceptionToString(ex));
+      }
+      return results;
+   }
+
    private boolean replaceExistingArtifact(T newArtifact, BranchId branch, TransactionBuilder tx, XResultData results) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       ArtifactToken defArt = ArtifactToken.SENTINEL;
       T foundArtifact = accessor.get(tx.getBranch(),
@@ -300,6 +320,10 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
             }
          }
       }
+      if (hasGetApplic(newArtifact.getClass())) {
+         ApplicabilityToken applic = (ApplicabilityToken) getGetApplic(newArtifact.getClass()).invoke(newArtifact);
+         tx.setApplicability(defArt, ApplicabilityId.valueOf(applic.getId()));
+      }
       return true;
    }
 
@@ -336,6 +360,10 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
                   getter.invoke(newArtifact));
             }
          }
+      }
+      if (hasGetApplic(newArtifact.getClass())) {
+         ApplicabilityToken applic = (ApplicabilityToken) getGetApplic(newArtifact.getClass()).invoke(newArtifact);
+         tx.setApplicability(defArt, ApplicabilityId.valueOf(applic.getId()));
       }
       return true;
    }
@@ -380,6 +408,17 @@ public class ArtifactInserterImpl<T> implements ArtifactInserter<T> {
       }
 
       return fields;
+   }
+
+   private boolean hasGetApplic(Class<?> type) {
+      if (getGetApplic(type) != null) {
+         return true;
+      }
+      return false;
+   }
+
+   private Method getGetApplic(Class<?> type) {
+      return getGetter(type, "Applicability");
    }
 
 }

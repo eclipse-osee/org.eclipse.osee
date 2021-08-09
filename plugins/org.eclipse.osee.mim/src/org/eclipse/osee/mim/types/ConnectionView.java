@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
@@ -45,21 +46,22 @@ public class ConnectionView extends PLGenericDBObject {
       this(connection.getId(), connection.getName(), connection.getDescription(), connection.getTransportType());
       this.setSource(connection.getPrimaryNode().toString());
       this.setTarget(connection.getSecondaryNode().toString());
+      this.setApplicability(connection.getApplicability());
    }
 
    public ConnectionView(ArtifactReadable art) {
       this();
       this.setId(art.getId());
       this.setName(art.getName());
-      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setData(new ConnectionViewData(art));
+      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
    }
 
    public ConnectionView(Long id, String name, String description, String transportType) {
       this(id, name);
       this.setLabel(name);
-      this.setDescription(description);
       this.setData(new ConnectionViewData(id, name));
+      this.setDescription(description);
       this.setType(ConnectionViewType.valueOf(transportType));
    }
 
@@ -75,14 +77,14 @@ public class ConnectionView extends PLGenericDBObject {
     */
    @JsonIgnore
    public String getDescription() {
-      return Description;
+      return data.getDescription();
    }
 
    /**
     * @param description the description to set
     */
    public void setDescription(String description) {
-      this.Description = description;
+      this.data.setDescription(description);
    }
 
    @Override
@@ -183,5 +185,20 @@ public class ConnectionView extends PLGenericDBObject {
    @JsonIgnore
    public void setIsDashed(boolean isDashed) {
       this.data.setDashed(isDashed);
+   }
+
+   /**
+    * @return the applicability
+    */
+   @JsonIgnore
+   public ApplicabilityToken getApplicability() {
+      return data.getApplicability();
+   }
+
+   /**
+    * @param applicabilityToken the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicabilityToken) {
+      this.data.setApplicability(applicabilityToken);
    }
 }

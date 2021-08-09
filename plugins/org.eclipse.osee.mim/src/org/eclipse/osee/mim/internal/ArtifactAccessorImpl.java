@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +47,12 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
       ArtifactReadable artifact =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).andId(artId).asArtifactOrSentinel();
       if (artifact.isValid()) {
-         return clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         if (hasSetApplic(clazz)) {
+            getSetApplic(clazz).invoke(returnObj,
+               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch));
+         }
+         return returnObj;
       }
       return clazz.newInstance();
    }
@@ -57,7 +63,13 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
          artifactType).asArtifacts()) {
          if (artifact.isValid()) {
-            artifactList.add(clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact));
+            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+            if (hasSetApplic(clazz)) {
+               getSetApplic(clazz).invoke(returnObj,
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
+                     ArtifactId.valueOf(artifact.getId()), branch));
+            }
+            artifactList.add(returnObj);
          }
       }
       return artifactList;
@@ -68,7 +80,12 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
       ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(relation, relatedId).andId(
          artId).asArtifactOrSentinel();
       if (artifact.isValid()) {
-         return clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         if (hasSetApplic(clazz)) {
+            getSetApplic(clazz).invoke(returnObj,
+               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch));
+         }
+         return returnObj;
       }
       return clazz.newInstance();
    }
@@ -79,7 +96,13 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
          artifactType).andRelatedTo(relation, relatedId).asArtifacts()) {
          if (artifact.isValid()) {
-            artifactList.add(clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact));
+            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+            if (hasSetApplic(clazz)) {
+               getSetApplic(clazz).invoke(returnObj,
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
+                     ArtifactId.valueOf(artifact.getId()), branch));
+            }
+            artifactList.add(returnObj);
          }
       }
       return artifactList;
@@ -103,7 +126,13 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
          attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_MATCH_ORDER__ANY).getResults().getList()) { //asArtifacts() doesn't work for and() currently
          if (artifact.isValid()) {
-            artifactList.add(clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact));
+            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+            if (hasSetApplic(clazz)) {
+               getSetApplic(clazz).invoke(returnObj,
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
+                     ArtifactId.valueOf(artifact.getId()), branch));
+            }
+            artifactList.add(returnObj);
          }
       }
       return artifactList;
@@ -126,7 +155,13 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
          relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
             QueryOption.TOKEN_MATCH_ORDER__ANY).getResults().getList()) { //asArtifacts() doesn't work for and() currently
          if (artifact.isValid()) {
-            artifactList.add(clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact));
+            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+            if (hasSetApplic(clazz)) {
+               getSetApplic(clazz).invoke(returnObj,
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
+                     ArtifactId.valueOf(artifact.getId()), branch));
+            }
+            artifactList.add(returnObj);
          }
       }
       return artifactList;
@@ -151,9 +186,34 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
       ArtifactReadable artifact =
          orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(relation, relatedId).asArtifactOrSentinel();
       if (artifact.isValid()) {
-         return clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         if (hasSetApplic(clazz)) {
+            getSetApplic(clazz).invoke(returnObj, orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
+               ArtifactId.valueOf(artifact.getId()), branch));
+         }
+         return returnObj;
       }
       return clazz.newInstance();
+   }
+
+   private boolean hasSetApplic(Class<?> type) {
+      if (getSetApplic(type) != null) {
+         return true;
+      }
+      return false;
+   }
+
+   private Method getSetApplic(Class<?> type) {
+      for (Method method : type.getMethods()) {
+         if (method.getName().startsWith("set") && method.getParameterTypes().length == 1 && void.class.equals(
+            method.getReturnType())) {
+            //is a setter
+            if (method.getName().endsWith("Applicability")) {
+               return method;
+            }
+         }
+      }
+      return null;
    }
 
 }

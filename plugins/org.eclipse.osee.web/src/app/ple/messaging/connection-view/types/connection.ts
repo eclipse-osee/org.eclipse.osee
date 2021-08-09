@@ -1,8 +1,11 @@
+import { applic } from "../../shared/types/NamedId.applic";
+
 export interface connection {
     id?: string,
     name: string,
     description?: string,
     transportType: transportType
+    applicability?:applic
 }
 
 export enum transportType {

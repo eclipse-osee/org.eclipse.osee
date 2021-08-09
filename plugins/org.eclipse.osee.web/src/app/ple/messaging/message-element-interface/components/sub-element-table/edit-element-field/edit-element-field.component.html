@@ -1,5 +1,5 @@
 <mat-form-field>
-    <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2'">
+    <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2' && header!=='applicability'">
     <ng-container *ngIf="header==='name'">
         <ng-container *ngIf="elementEnd-elementStart>0">
             <p matSuffix>
@@ -7,17 +7,26 @@
             </p>
         </ng-container>
     </ng-container>
-    <ng-container *ngIf="header==='platformTypeName2'">
+    <ng-container *ngIf="header==='platformTypeName2' || header === 'applicability'">
+        <ng-container *ngIf="header ==='applicability'">
+            <mat-select [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" [compareWith]="compareApplics">
+                <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
+                    {{option.name}}
+                </mat-option>
+            </mat-select>
+        </ng-container>
         <!-- <mat-select [(ngModel)]="value" (selectionChange)="updateType($event.value)">
             <mat-option *ngFor="let option of (availableTypes|async)" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
                 {{option.name}}
             </mat-option>
         </mat-select> -->
-        <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
+        <ng-container *ngIf="header==='platformTypeName2'">
+            <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
             <mat-option *ngFor="let option of filteredTypes | async" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''">
               {{option.name}}
             </mat-option>
         </mat-autocomplete>
+        </ng-container>
     </ng-container>
 </mat-form-field>

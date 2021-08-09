@@ -90,9 +90,18 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    @Override
    public Collection<InterfaceStructureElementToken> getElementsOfType(ArtifactId platformTypeId) {
       try {
-         return elementApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceElementPlatformType_PlatformType, platformTypeId,
-            InterfaceStructureElementToken.class);
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) elementApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceElementPlatformType_PlatformType, platformTypeId,
+               InterfaceStructureElementToken.class);
+         for (InterfaceStructureElementToken element : elements) {
+            PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+               CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
+               PlatformTypeToken.class);
+            element.setPlatformTypeId(platformType.getId());
+            element.setPlatformTypeName(platformType.getName());
+         }
+         return elements;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          return new LinkedList<InterfaceStructureElementToken>();

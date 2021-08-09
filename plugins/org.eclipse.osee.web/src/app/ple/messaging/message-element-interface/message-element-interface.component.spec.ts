@@ -22,7 +22,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CurrentStateService } from './services/current-state.service';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { EditElementFieldComponent } from './components/sub-element-table/edit-element-field/edit-element-field.component';
-import { EditStructureFieldComponent } from './components/edit-structure-field/edit-structure-field.component';
 import { EditStructureFieldComponentMock } from './mocks/components/EditStructureField.mock';
 
 let loader: HarnessLoader;
@@ -113,7 +112,7 @@ describe('MessageElementInterfaceComponent', () => {
   });
 
   beforeEach(function () {
-    var store:any = {};
+    var store:any = {10:'{mim:{editMode:true}}'};
   
     spyOn(localStorage, 'getItem').and.callFake(function (key) {
       return store[key];

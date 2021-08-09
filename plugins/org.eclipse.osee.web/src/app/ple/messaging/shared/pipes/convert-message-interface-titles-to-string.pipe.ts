@@ -27,7 +27,8 @@ const transformMatrix:any = {
   notes: "Notes",
   DefaultValue: "Default Value",
   isArray: "Is An Array",
-  platformTypeName2: "Type"
+  platformTypeName2: "Type",
+  applicability: "Applicability"
 }
 
 @Pipe({

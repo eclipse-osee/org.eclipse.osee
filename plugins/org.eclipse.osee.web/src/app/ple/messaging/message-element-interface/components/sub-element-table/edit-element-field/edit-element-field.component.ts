@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest } from 'rxjs';
-import { BehaviorSubject, from, of, Subject } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, map, tap, switchMap, mergeMap, filter, scan, repeatWhen } from 'rxjs/operators';
+import { BehaviorSubject, from, Subject } from 'rxjs';
+import { share, debounceTime, distinctUntilChanged, map, tap, switchMap, filter, scan } from 'rxjs/operators';
 import { CurrentStateService } from '../../../services/current-state.service';
 import { element } from '../../../types/element';
 import { PlatformType } from '../../../types/platformtype';
@@ -48,6 +48,7 @@ export class EditElementFieldComponent implements OnInit {
     switchMap(val=>this.structureService.changeElementPlatformType(this.structureId,this.elementId,val))
   )
 
+  applics = this.structureService.applic;
   constructor (private structureService: CurrentStateService) {
     this._sendValue.subscribe();
     this._sendType.subscribe();
@@ -64,12 +65,11 @@ export class EditElementFieldComponent implements OnInit {
     this._type.next(value);
   }
 
-  log(value: any) {
-    console.log(value);
-  }
-
   updateTypeAhead(value: any) {
     this._typeValue.next(value);
   }
 
+  compareApplics(o1:any,o2:any) {
+    return o1.id===o2.id && o1.name===o2.name
+  }
 }

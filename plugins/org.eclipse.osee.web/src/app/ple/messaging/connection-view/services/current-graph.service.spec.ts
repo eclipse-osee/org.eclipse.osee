@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import {  of, } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
+import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
+import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { response } from '../mocks/Response.mock';
 import { connection, transportType } from '../types/connection';
 import { node } from '../types/node';
@@ -54,7 +55,8 @@ describe('CurrentGraphService', () => {
     TestBed.configureTestingModule({
       providers: [{ provide: GraphService, useValue: graphService },
         { provide: NodeService, useValue: nodeService },
-      {provide:ConnectionService,useValue:connectionService}]
+        { provide: ConnectionService, useValue: connectionService },
+      {provide:ApplicabilityListService,useValue:applicabilityListServiceMock}]
     });
     service = TestBed.inject(CurrentGraphService);
     routeState = TestBed.inject(RouteStateService)

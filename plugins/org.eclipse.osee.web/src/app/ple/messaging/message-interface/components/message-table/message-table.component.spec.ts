@@ -15,25 +15,35 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-message-table-titles-to-string.pipe';
-import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 
 import { MessageTableComponent } from './message-table.component';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { message } from '../../types/messages';
 import { BehaviorSubject, of } from 'rxjs';
-import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EditMessageFieldComponentMock } from '../../mocks/components/EditMessageField.mock';
 import { SubMessageTableComponentMock } from '../../mocks/components/SubMessageTable.mock';
+import { EditAuthService } from '../../../shared/services/edit-auth-service.service';
+import { editAuthServiceMock } from '../../../connection-view/mocks/EditAuthService.mock';
+import { EnumsService } from '../../../shared/services/http/enums.service';
+import { enumsServiceMock } from '../../../shared/mocks/EnumsService.mock';
+import { CommonModule } from '@angular/common';
+import { AddMessageDialogComponentMock } from '../../mocks/components/AddMessageDialog.mock';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { UiService } from '../../services/ui.service'
 
 let loader: HarnessLoader;
 
 describe('MessageTableComponent', () => {
   let component: MessageTableComponent;
+  let uiService: UiService;
   let fixture: ComponentFixture<MessageTableComponent>;
   let expectedData: message[] = [{
-    id:'-1',
+    id:'10',
     name: 'name',
     description: 'description',
     interfaceMessageRate: '50Hz',
@@ -42,21 +52,32 @@ describe('MessageTableComponent', () => {
     interfaceMessageWriteAccess: true,
     interfaceMessageType: 'Connection',
     subMessages: [{
-      id: '0',
+      id: '5',
       name: 'sub message name',
       description: '',
-      interfaceMessageRate: '50Hz',
-      interfaceSubMessageNumber:'0'
-    }]
+      interfaceSubMessageNumber: '0',
+      applicability: {
+        id: '1',
+        name: 'Base',
+      }
+    }],
+    applicability: {
+      id: '1',
+      name:'Base'
+    }
   }];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        CommonModule,
         FormsModule,
         MatFormFieldModule,
         MatInputModule,
+        MatSelectModule,
         MatTableModule,
+        MatSlideToggleModule,
+        MatButtonModule,
         OseeStringUtilsDirectivesModule,
         OseeStringUtilsPipesModule,
         NoopAnimationsModule,
@@ -65,25 +86,31 @@ describe('MessageTableComponent', () => {
         MatDialogModule,
         RouterTestingModule
       ],
-      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock],
+      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent],
       providers: [{
         provide: CurrentMessagesService, useValue: {
           messages: of(expectedData),
           BranchId:new BehaviorSubject("10")
-      }}]
+        }
+      },
+        { provide: EditAuthService, useValue: editAuthServiceMock },
+      {provide:EnumsService,useValue:enumsServiceMock}]
     })
-    .compileComponents();
+      .compileComponents();
+    uiService=TestBed.inject(UiService)
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MessageTableComponent);
+    uiService.BranchIdString = '10';
     component = fixture.componentInstance;
     loader = TestbedHarnessEnvironment.loader(fixture);
+    component.editMode = true;
     fixture.detectChanges();
   });
 
   beforeEach(function () {
-    var store:any = {};
+    var store:any = {10:'{mim:{editMode:true}}'};
   
     spyOn(localStorage, 'getItem').and.callFake(function (key) {
       return store[key];
@@ -115,11 +142,27 @@ describe('MessageTableComponent', () => {
     expect(hideRow).toHaveBeenCalled();
   });
 
-  it('should filter the top level table', async () => {
-    let form = await loader.getHarness(MatFormFieldHarness);
-    let input = await form.getControl(MatInputHarness);
-    await input?.focus();
-    //await input?.setValue('Hello');
+  // it('should filter the top level table', async () => {
+  //   let spy=spyOn(component,'applyFilter').and.callThrough()
+  //   let form = await loader.getHarness(MatFormFieldHarness);
+  //   let input = await form.getControl(MatInputHarness);
+  //   await input?.focus();
+  //   //await input?.setValue('Hello');
+  //   //expect(spy).toHaveBeenCalled();
+  // })
+
+  it('should open a settings dialog', async () => {
+    let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
+    let button = await loader.getHarness(MatButtonHarness.with({ text: 'Settings' }));
+    await button.click();
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('should open the create new message dialog', async () => {
+    let spy = spyOn(component, 'openNewMessageDialog').and.callThrough();
+    let button = await loader.getHarness(MatButtonHarness.with({ text: '+' }));
+    await button.click();
+    expect(spy).toHaveBeenCalled();
   })
 
   // it('should filter the sub level table', async () => {

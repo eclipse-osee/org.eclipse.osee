@@ -38,10 +38,13 @@
                         <ng-container *ngIf="header==='name'">
                             <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))">V</button>
                         </ng-container>
+                        <ng-container *ngIf="header==='applicability'">
+                            {{element[header].name}}
+                        </ng-container>
                         <div *ngIf="header==='description'" [matTooltip]="element[header]" [matTooltipDisabled]="element[header].length<15" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header] | displayTruncatedStringWithFieldOverflow:15" classToApply="ple-message-element-interface-table-highlighted-text">
                             {{element[header] | displayTruncatedStringWithFieldOverflow:15}}
                         </div>
-                        <div *ngIf="header!=='description'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
+                        <div *ngIf="header!=='description' && header!=='applicability'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
                             {{element[header]}}
                         </div>
                     </ng-template>
