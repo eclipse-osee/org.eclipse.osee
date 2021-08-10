@@ -93,7 +93,7 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
     * @return String.format for related task name
     */
    public String getTaskNameFormat() {
-      return "Estimate for %s";
+      return "Estimate for [%s]";
    }
 
    @Override

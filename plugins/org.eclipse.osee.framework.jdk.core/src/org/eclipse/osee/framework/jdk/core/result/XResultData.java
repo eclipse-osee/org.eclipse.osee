@@ -402,4 +402,8 @@ public class XResultData {
       return getNumWarnings() > 0;
    }
 
+   public void sortResults() {
+      java.util.Collections.sort(results);
+   }
+
 }
