@@ -11,28 +11,33 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.access.event;
+package org.eclipse.osee.framework.core.client.internal;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.internal.OseeApiService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Handler for {@link AccessTopicEvent.ACCESS_BRANCH_MODIFIED}
+ * Handler for {@link AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED}
  *
  * @author Donald G. Dunne
  */
-public class AccessBranchTopicEventHandler implements EventHandler {
+public class AccessArtifactTopicLockEventHandler implements EventHandler {
+   private IAccessControlService accessControlService;
+
+   public void bindAccessControlService(IAccessControlService accessControlService) {
+      this.accessControlService = accessControlService;
+   }
 
    @Override
    public void handleEvent(Event event) {
       try {
-         OseeApiService.get().getAccessControlService().clearCaches();
+         accessControlService.clearCaches();
       } catch (Exception ex) {
-         OseeLog.log(AccessBranchTopicEventHandler.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }
-
 }

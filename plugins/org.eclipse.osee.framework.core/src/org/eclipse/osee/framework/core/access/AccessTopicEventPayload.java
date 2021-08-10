@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.access.event;
+package org.eclipse.osee.framework.core.access;
 
 import java.util.ArrayList;
 import java.util.List;

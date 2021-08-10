@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.access.event.AccessTopicEvent;
+import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.event.EventUtil;

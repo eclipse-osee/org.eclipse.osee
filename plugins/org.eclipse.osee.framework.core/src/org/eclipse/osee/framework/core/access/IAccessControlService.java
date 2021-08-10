@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.core.access;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.access.event.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
