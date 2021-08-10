@@ -3,8 +3,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { from } from 'rxjs';
 import { filter, scan, share, switchMap } from 'rxjs/operators';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { newConnection, transportType } from '../../../types/connection';
-import { node } from '../../../types/node';
+import { newConnection, transportType } from '../../../../shared/types/connection';
+import { node } from '../../../../shared/types/node';
+import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 
 @Component({
   selector: 'app-create-connection-dialog',
@@ -28,7 +29,8 @@ export class CreateConnectionDialogComponent implements OnInit {
       transportType:transportType.Ethernet
     }
   }
-  constructor (private graphService: CurrentGraphService, public dialogRef: MatDialogRef<CreateConnectionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: node) {
+  transportTypes = this.enumService.connectionTypes;
+  constructor (private graphService: CurrentGraphService,private enumService: EnumsService, public dialogRef: MatDialogRef<CreateConnectionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: node) {
     this.title = data.name;
    }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, from, Observable, of } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first } from 'rxjs/operators';
+import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, take, map } from 'rxjs/operators';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { element } from '../types/element';
 import { structure } from '../types/structure';
@@ -114,7 +114,7 @@ export class CurrentStateService {
 
   get availableElements(): Observable<element[]>{
     return this.structureObservable.pipe(
-      mergeMap((value) => from(value.elements).pipe(
+      mergeMap((value) => from(value?.elements||[]).pipe(
         distinct()
       )),
       scan((acc, curr) => [...acc, curr], [] as element[]),
@@ -129,55 +129,108 @@ export class CurrentStateService {
     return this._applics;
   }
 
-  createStructure(body:Partial<structure>) {
-    return this.structure.createStructure(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(),this.connectionId.getValue()).pipe(
-      tap(() => {
-        this.ui.updateMessages = true;
-      })
-    );
+  createStructure(body: Partial<structure>) {
+    return this.messages.getSubMessage(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue()).pipe(
+      switchMap((submessage)=>this.structure.createSubMessageRelation(submessage.name).pipe(
+        take(1),
+        switchMap((relation) => this.structure.createStructure(body, this.BranchId.getValue(), [relation]).pipe(
+          take(1),
+          switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
+        )
+        )
+      ) 
+      )
+    )
   }
 
-  relateStructure(structureId:string) {
-    return this.structure.relateStructure(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,this.connectionId.getValue()).pipe(
-      tap(() => {
-        this.ui.updateMessages = true;
-      })
+  relateStructure(structureId: string) {
+    return this.structure.createSubMessageRelation(this.SubMessageId.getValue(), structureId).pipe(
+      take(1),
+      switchMap((relation) => this.structure.addRelation(this.BranchId.getValue(), relation).pipe(
+        take(1),
+        switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
     );
   }
-  partialUpdateStructure(body:Partial<structure>) {
-    return this.structure.partialUpdateStructure(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(),this.connectionId.getValue()).pipe(
-      tap(() => {
-        this.ui.updateMessages = true;
-      })
-    );
+  partialUpdateStructure(body: Partial<structure>) {
+    return this.structure.changeStructure(body, this.BranchId.getValue()).pipe(
+      take(1),
+      switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+        tap(() => {
+          this.ui.updateMessages = true;
+        })
+      ))
+    )
   }
 
   partialUpdateElement(body: Partial<element>, structureId: string) {
-    return this.elements.partialUpdateElement(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,this.connectionId.getValue()).pipe(
-      tap(() => {
-        this.ui.updateMessages = true;
-      })
+    return this.elements.changeElement(body, this.BranchId.getValue()).pipe(
+      take(1),
+      switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+        tap(() => {
+          this.ui.updateMessages = true;
+        })
+      ))
     )
   }
 
-  createNewElement(body: Partial<element>, structureId:string, typeId: string) {
-    return this.elements.createNewElement(body, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,this.connectionId.getValue()).pipe(
-      switchMap((val) => this.changeElementPlatformType(structureId, val.ids[0], typeId)),
-      first()
+  createNewElement(body: Partial<element>, structureId: string, typeId: string) {
+    return combineLatest([this.structure.getStructure(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+      take(1),
+      switchMap((structure) => this.elements.createStructureRelation(structure.name))),
+      this.typeService.getType(this.BranchId.getValue(), typeId).pipe(take(1), switchMap((type) => this.elements.createPlatformTypeRelation(type.name)))]).pipe(
+      take(1),
+      map((latest)=>[latest[0],latest[1]]),
+      switchMap((relations) => this.elements.createElement(body, this.BranchId.getValue(), relations).pipe(
+        take(1),
+        switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
     )
   }
+
   relateElement(structureId: string, elementId: string) {
-    return this.elements.relateElement(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId,elementId,this.connectionId.getValue()).pipe(
-      tap(() => {
-        this.ui.updateMessages = true;
-      })
+    return this.elements.createStructureRelation(structureId, elementId).pipe(
+      take(1),
+      switchMap((relation) => this.structure.addRelation(this.BranchId.getValue(), relation).pipe(
+        take(1),
+        switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
     )
   }
-  changeElementPlatformType(structureId:string,elementId:string,typeId:string) {
-    return this.elements.relateElementToPlatformType(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, elementId, typeId,this.connectionId.getValue()).pipe(
-      tap(() => {
-        this.ui.updateMessages = true;
-      })
+
+  changeElementPlatformType(structureId: string, elementId: string, typeId: string) {
+    return this.elements.getElement(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, elementId, this.connectionId.getValue()).pipe(
+      take(1),
+      switchMap((element) => combineLatest([this.elements.createPlatformTypeRelation("" + (element.platformTypeId || -1), elementId),this.elements.createPlatformTypeRelation(typeId, elementId)]).pipe( //create relations for delete/add ops
+        take(1),
+        switchMap(([deleteRelation, addRelation]) => this.elements.deleteRelation(this.BranchId.getValue(), deleteRelation).pipe( //create delete transaction
+          take(1),
+          switchMap((deleteTransaction) => this.elements.addRelation(this.BranchId.getValue(), addRelation, deleteTransaction).pipe( //create add transaction and merge with delete transaction
+            take(1),
+            switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+              tap(() => {
+                this.ui.updateMessages = true;
+              })
+            ))
+          ))
+        ))
+      ))
     )
   }
 }

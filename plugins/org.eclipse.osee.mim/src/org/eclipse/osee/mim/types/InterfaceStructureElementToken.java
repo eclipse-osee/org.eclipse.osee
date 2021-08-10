@@ -15,8 +15,6 @@ package org.eclipse.osee.mim.types;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -25,14 +23,12 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class InterfaceStructureElementToken extends PLGenericDBObject {
    public static final InterfaceStructureElementToken SENTINEL = new InterfaceStructureElementToken();
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name;
-   @OseeArtifactAttribute(attributeId = 2455059983007225788L)
+
    private Boolean InterfaceElementAlterable;
-   @OseeArtifactAttribute(attributeId = 1152921504606847085L)
+
    private String Notes;
-   @OseeArtifactAttribute(attributeId = 1152921504606847090L)
+
    private String Description;
 
    private Integer InterfaceElementIndexStart;

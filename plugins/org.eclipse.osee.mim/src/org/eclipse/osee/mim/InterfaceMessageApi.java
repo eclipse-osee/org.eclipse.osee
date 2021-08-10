@@ -20,6 +20,4 @@ import org.eclipse.osee.mim.types.InterfaceMessageToken;
  */
 public interface InterfaceMessageApi {
    ArtifactAccessor<InterfaceMessageToken> getAccessor();
-
-   ArtifactInserter<InterfaceMessageToken> getInserter();
 }

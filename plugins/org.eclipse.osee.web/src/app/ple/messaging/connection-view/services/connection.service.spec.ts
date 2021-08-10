@@ -1,12 +1,16 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TestScheduler } from 'rxjs/testing';
+import { transaction } from 'src/app/transactions/transaction';
+import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { apiURL } from 'src/environments/environment';
-import { transportType } from '../types/connection';
+import { transportType } from '../../shared/types/connection';
 
 import { ConnectionService } from './connection.service';
 
 describe('ConnectionService', () => {
   let service: ConnectionService;
+  let scheduler: TestScheduler;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
@@ -20,91 +24,101 @@ describe('ConnectionService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+  }));
 
   describe('Core Functionality', () => {
 
-    describe('Fetching data', () => {
-
-      it('should get all connections', () => {
-        service.getConnections('10').subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/connections/');
-        expect(req.request.method).toEqual('GET');
-        req.flush([]);
-        httpTestingController.verify();
-      })
-
-      it('should get a connection', () => {
-        service.getConnection('10','10').subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/connections/'+10);
-        expect(req.request.method).toEqual('GET');
-        req.flush({});
-        httpTestingController.verify();
-      })
-    })
-    describe('Adding data', () => {
+    describe('Modifying data', () => {
       
-      it('should add a connection', () => {
-        service.addConnection('10', {}).subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/connections/');
-        expect(req.request.method).toEqual('POST');
-        req.flush({});
-        httpTestingController.verify();
+      describe('should create a valid node relation', () => {
+        it('should create a secondary node relation', () => {
+          scheduler.run(() => {
+            let relation = {
+              typeName: 'Interface Connection Secondary Node',
+              sideB: '10',
+              sideA:undefined
+            }
+            const expectedObservable = { a: relation }
+            const expectedMarble = '(a|)'
+            scheduler.expectObservable(service.createNodeRelation('10', true)).toBe(expectedMarble, expectedObservable);
+          })
+        })
+
+        it('should create a primary node relation', () => {
+          scheduler.run(() => {
+            let relation = {
+              typeName: 'Interface Connection Primary Node',
+              sideB: '10',
+              sideA:undefined
+            }
+            const expectedObservable = { a: relation }
+            const expectedMarble = '(a|)'
+            scheduler.expectObservable(service.createNodeRelation('10', false)).toBe(expectedMarble, expectedObservable);
+          })
+        })
       })
 
       it('should create a valid connection', () => {
-        service.createConnection('10','10','primary', {id:'',name:'',description:'',transportType:transportType.Ethernet}).subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/nodes/'+10+'/connections/'+'primary');
+        scheduler.run(() => {
+          let extransaction: transaction = {
+            branch: '10',
+            txComment: "Create Connection and Relate to Node(s): " +"Hello"+ " , "+"Hello",
+            createArtifacts: [{
+              typeId: '126164394421696910',
+              name: 'connection',
+              applicabilityId: undefined,
+              attributes: [{typeName:"Interface Transport Type",value:transportType.Ethernet}],
+              relations:[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}]
+            }]
+          }
+          const expectedfilterValues = { a: extransaction };
+          const expectedMarble = '(a|)'
+          scheduler.expectObservable(service.createConnection('10',{name:'connection',transportType:transportType.Ethernet},[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}])).toBe(expectedMarble, expectedfilterValues)
+        })
+      })
+
+      it('should create a valid connection change', () => {
+        scheduler.run(() => {
+          let extransaction: transaction = {
+            branch: '10',
+            txComment: "Change connection attributes",
+            modifyArtifacts: [{
+              id: '1',
+              applicabilityId:undefined,
+              setAttributes:[{typeName:'Interface Transport Type',value:transportType.Ethernet}]
+            }]
+          }
+          const expectedfilterValues = { a: extransaction };
+          const expectedMarble = '(a|)'
+          scheduler.expectObservable(service.changeConnection('10',{id:'1',name:'connection',transportType:transportType.Ethernet})).toBe(expectedMarble, expectedfilterValues)
+        })
+      })
+
+      it('should perform a mutation', () => {
+        service.performMutation('10', { branch: '10', txComment: '' }).subscribe();
+        const req = httpTestingController.expectOne(apiURL+'/orcs/txs');
         expect(req.request.method).toEqual('POST');
         req.flush({});
         httpTestingController.verify();
       })
+
     })
 
-    describe('Modifying data', () => {
-      
-      it('should replace connection', () => {
-        service.replaceConnection('10', {}).subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/connections/');
-        expect(req.request.method).toEqual('PUT');
-        req.flush({});
-        httpTestingController.verify();
-      })
-
-      it('should update connection', () => {
-        service.updateConnection('10', {id:'',name:'',description:'',transportType:transportType.Ethernet}).subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/connections/');
-        expect(req.request.method).toEqual('PATCH');
-        req.flush({});
-        httpTestingController.verify();
-      })
-    })
-
-    describe('Removing data', () => {
-      it('should delete a connection', () => {
-        service.deleteConnection('10','10').subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/connections/'+10);
-        expect(req.request.method).toEqual('DELETE');
-        req.flush({});
-        httpTestingController.verify();
-      })
-    })
-
-    describe('Relationship modification', () => {
-      
-      it('should relate to a new node', () => {
-        service.relateConnection('10','10','primary','10', {id:'',name:'',description:'',transportType:transportType.Ethernet}).subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/nodes/'+10+'/connections/'+10+'/primary');
-        expect(req.request.method).toEqual('PATCH');
-        req.flush({});
-        httpTestingController.verify();  
-      })
-
-      it('should un-relate from node', () => {
-        service.unrelateConnection('10', '10', '10').subscribe();
-        const req = httpTestingController.expectOne(apiURL+'/mim/branch/'+10+'/nodes/'+10+'/connections/'+10);
-        expect(req.request.method).toEqual('DELETE');
-        req.flush({});
-        httpTestingController.verify();  
+    it('should create a delete relation transaction', () => {
+      scheduler.run(() => {
+        let relation = {
+          typeName: 'Interface Connection Secondary Node',
+          sideB: '10',
+          sideA:undefined
+        }
+        let transaction = transactionMock;
+        transaction.txComment = "Relating Element";
+        transaction.deleteRelations = [{ typeName: 'Interface Connection Secondary Node', typeId: undefined, aArtId: undefined, bArtId: '10', rationale: undefined }];
+        const expectedObservable = { a: transaction }
+        const expectedMarble = '(a|)'
+        scheduler.expectObservable(service.deleteRelation('10',relation)).toBe(expectedMarble, expectedObservable);
       })
     })
   })

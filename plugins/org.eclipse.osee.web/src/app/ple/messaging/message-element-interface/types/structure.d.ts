@@ -3,7 +3,7 @@ import { element } from "./element";
 export interface structure {
     id: string,
     name: string,
-    elements: element[],
+    elements?: element[],
     description: string,
     interfaceMaxSimultaneity: string,
     interfaceMinSimultaneity: string,

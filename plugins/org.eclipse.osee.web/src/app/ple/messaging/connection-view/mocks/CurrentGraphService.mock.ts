@@ -1,8 +1,8 @@
 import { of, BehaviorSubject } from "rxjs";
 import { OSEEWriteApiResponse } from "../../shared/types/ApiWriteResponse";
 import { CurrentGraphService } from "../services/current-graph.service";
-import { connection } from '../types/connection'
-import { node } from '../types/node'
+import { connection } from '../../shared/types/connection'
+import { node } from '../../shared/types/node'
 import { response } from "./Response.mock";
 
 export const graphServiceMock: Partial<CurrentGraphService> = {
@@ -21,7 +21,7 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
         return of(response);
     },
     deleteNodeAndUnrelate(nodeId: string, edges: []) {
-        return of([response])
+        return of(response)
     },
     createNewConnection(connection: connection, sourceId: string, targetId: string) {
         return of(response)
@@ -29,6 +29,6 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
     createNewNode(node: node) {
         return of(response)
     },
-  nodeOptions: of([]),
+  nodeOptions: of([{id:'1',name:'First'},{id:'2',name:'Second'}]),
   applic: of([{ id: '1', name:'Base'},{id:'2',name:'Second'}])
   }

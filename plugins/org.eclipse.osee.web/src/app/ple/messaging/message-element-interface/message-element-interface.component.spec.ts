@@ -23,6 +23,7 @@ import { CurrentStateService } from './services/current-state.service';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { EditElementFieldComponent } from './components/sub-element-table/edit-element-field/edit-element-field.component';
 import { EditStructureFieldComponentMock } from './mocks/components/EditStructureField.mock';
+import { CurrentStateServiceMock } from './mocks/services/CurrentStateService.mock';
 
 let loader: HarnessLoader;
 
@@ -65,29 +66,7 @@ describe('MessageElementInterfaceComponent', () => {
           },
         },
         {
-          provide: CurrentStateService, useValue: {
-            structures: of([{
-              id: '0',
-              name: 'name',
-              elements: [{
-                id: '1',
-                name: 'name2',
-                description: 'description2',
-                notes: 'notes',
-                interfaceElementIndexEnd: 1,
-                interfaceElementIndexStart: 0,
-                interfaceElementAlterable: true,
-                platformTypeName: 'boolean',
-                platformTypeId:9
-              }],
-              description: 'description',
-              interfaceMaxSimultaneity: '0',
-              interfaceMinSimultaneity: '1',
-              interfaceTaskFileType: 1,
-              interfaceStructureCategory: 'Category 1'
-            }]),
-            BranchId:new BehaviorSubject("10")
-          }
+          provide: CurrentStateService, useValue: CurrentStateServiceMock
         },
       ],
     }).compileComponents();

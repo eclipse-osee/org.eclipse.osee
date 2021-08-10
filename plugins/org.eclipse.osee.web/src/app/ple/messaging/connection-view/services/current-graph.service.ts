@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Node,Edge } from '@swimlane/ngx-graph';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { combineLatest, from, iif, Observable, Subject } from 'rxjs';
+import { catchError, filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionService } from './connection.service';
 import { GraphService } from './graph.service';
 import { NodeService } from './node.service';
 import { RouteStateService } from './route-state-service.service';
-import { connection } from '../types/connection'
-import { node } from '../types/node'
-import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
+import { connection } from '../../shared/types/connection'
+import { node } from '../../shared/types/node'
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 
 @Injectable({
@@ -22,16 +21,20 @@ export class CurrentGraphService {
     switchMap((val) => this.graphService.getNodes(val).pipe(
       map((split) => this.transform(split)),
       repeatWhen(_=>this.updated),
-      share()
+      share(),
+      shareReplay(1),
     )),
+    shareReplay(1),
   )
   private _nodeOptions = this.routeStateService.id.pipe(
     share(),
     filter((val) => val !== "" && val !== '-1'),
     switchMap((val) => this.nodeService.getNodes(val).pipe(
       repeatWhen(_ => this.updated),
-      share()
-    ))
+      share(),
+      shareReplay(1),
+    )),
+    shareReplay(1),
   )
   private _applics = this.routeStateService.id.pipe(
     share(),
@@ -66,82 +69,107 @@ export class CurrentGraphService {
   }
 
   updateConnection(connection: Partial<connection>) {
-    return this.connectionService.updateConnection(this.routeStateService.id.getValue(), connection).pipe(
-      tap((value) => {
-        if (!value.errors) {
+    return this.connectionService.changeConnection(this.routeStateService.id.getValue(), connection).pipe(
+      take(1),
+      switchMap(transaction => this.connectionService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+        tap(() => {
           this.update = true;
-        }
-      })
+        })
+      ))
     )
   }
 
-  unrelateConnection(nodeId:string,id:string) {
-    return this.connectionService.unrelateConnection(this.routeStateService.id.getValue(),nodeId,id).pipe(
-      tap((value) => {
-        if (!value.errors) {
-          this.update = true;
-        }
-      })
+  unrelateConnection(nodeId: string, id: string) {
+    return this.nodes.pipe(
+      take(1),
+      switchMap((nodesArray) => from(nodesArray.edges).pipe( //turn into multi-emission
+        filter((edge) => edge.source === nodeId || edge.target === nodeId), //only emit source/target edges
+        switchMap((edge) => this.nodeService.getNode(this.routeStateService.id.getValue(), nodeId).pipe( //get node information
+          take(1),
+          switchMap((node) => iif(() => edge.source === nodeId, this.connectionService.createNodeRelation((node?.id)||'', false,id), this.connectionService.createNodeRelation((node?.id)||'', true,id)).pipe( //create primary relation if nodeId==source else nodeId==target create secondary relation
+            switchMap((relation) => this.connectionService.deleteRelation(this.routeStateService.id.getValue(), relation).pipe( //turn into transaction
+              switchMap((transaction) => this.connectionService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+                tap(() => {
+                  this.update = true;
+                })
+              )) //send to /orcs/tx
+            ))
+          ))
+        ))
+      ))
     )
   }
 
   updateNode(node: Partial<node>) {
-    return this.nodeService.patchNode(this.routeStateService.id.getValue(),node).pipe(
-      tap((value) => {
-        if (!value.errors) {
-          this.update = true;
-        }
-      })
+    return this.nodeService.changeNode(this.routeStateService.id.getValue(), node).pipe(
+      take(1),
+      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+        tap(() => {
+            this.update = true;
+        })
+      ))
     )
   }
   deleteNode(nodeId: string) {
-    return this.nodeService.deleteNode(this.routeStateService.id.getValue(), nodeId).pipe(
-      tap((value) => {
-        if (!value.errors) {
+    return this.nodeService.deleteArtifact(this.routeStateService.id.getValue(), nodeId).pipe(
+      take(1),
+      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+        tap(() => {
           this.update = true;
-        }
-      })
+        })
+      ))
     )
   }
 
   deleteNodeAndUnrelate(nodeId: string, edges: Edge[]) {
-    //find all ids in edge array where nodeId !== id
-    let relatedResponses: Observable<OSEEWriteApiResponse>[] = [];
-    edges.forEach((edge) => {
-      if (edge.source !== nodeId && edge.id !== undefined && edge.target === nodeId) {
-        //make unrelate observables for each id(source)
-        relatedResponses.push(this.unrelateConnection(edge.source, edge.id.replace('a','')));
-      }
-      if (edge.target !== nodeId && edge.id !== undefined && edge.source === nodeId) {
-        //make unrelate observables for each id(target)
-        relatedResponses.push(this.unrelateConnection(edge.target, edge.id.replace('a','')));
-      }
-    })
-    //return combineLatest with delete node
-    return combineLatest([...relatedResponses, this.deleteNode(nodeId)]);
+    return this.deleteNode(nodeId);
   }
 
-  createNewConnection(connection:connection,sourceId:string,targetId:string) {
-    return this.connectionService.createConnection(this.routeStateService.id.getValue(), sourceId, 'primary', connection).pipe(
+  createNewConnection(connection: connection, sourceId: string, targetId: string) {
+    return this.nodeOptions.pipe(
       take(1),
-      switchMap((val) => this.connectionService.relateConnection(this.routeStateService.id.getValue(), targetId, 'secondary', val.ids[0], connection).pipe(
-        tap((value) => {
-          if (!value.errors) {
-            this.update = true;
-          }
-        })
+      switchMap((nodes) => from(nodes.sort((a, b) =>((a?.id || '-1') < (b?.id || '-1') ? -1 : (a?.id || '-1') === (b?.id || '-1')?0:1))).pipe( //sorts nodes array
+        filter((val) => val.id === sourceId || val.id === targetId),
+        reduce((acc, curr) => [...acc, curr], [] as node[]),
+        switchMap((nodeArray) => iif(() => nodeArray[0]?.id === sourceId && nodeArray[1]?.id === targetId,
+          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].name, false), this.connectionService.createNodeRelation(nodeArray[1].name, true)]).pipe(
+            take(1),
+            map(latest => [latest[0], latest[1]]),
+            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, relations).pipe(
+              take(1),
+              switchMap((newConnection) => this.connectionService.performMutation(this.routeStateService.id.getValue(), newConnection).pipe(
+                tap(() => {
+                  this.update = true;
+                })
+              ))
+            ))
+          ),//else flip order of target/source
+          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].name, true), this.connectionService.createNodeRelation(nodeArray[1].name, false)]).pipe(
+            take(1),
+            map(latest => [latest[0], latest[1]]),
+            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, relations).pipe(
+              take(1),
+              switchMap((newConnection) => this.connectionService.performMutation(this.routeStateService.id.getValue(), newConnection).pipe(
+                tap(() => {
+                  this.update = true;
+                })
+              ))
+            ))
+          )
+        ))
       ))
     )
   }
 
   createNewNode(node: node) {
     return this.nodeService.createNode(this.routeStateService.id.getValue(), node).pipe(
-      tap((value) => {
-        if (!value.errors) {
-          this.update = true;
-        }
-      })
-    );
+      take(1),
+      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+        tap(() => {
+            this.update = true;
+        })
+      ))
+    )
   }
   /**
    * Changes edges to have an id containing a+id

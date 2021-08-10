@@ -17,8 +17,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
@@ -114,8 +116,32 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
       }
    }
 
+   private List<AttributeTypeId> createStructureAttributeList() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceStructureCategory);
+      attributes.add(CoreAttributeTypes.InterfaceMinSimultaneity);
+      attributes.add(CoreAttributeTypes.InterfaceMaxSimultaneity);
+      attributes.add(CoreAttributeTypes.InterfaceTaskFileType);
+      return attributes;
+   }
+
+   private List<AttributeTypeId> createElementAttributeList() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.Notes);
+      attributes.add(CoreAttributeTypes.InterfaceElementAlterable);
+      attributes.add(CoreAttributeTypes.InterfaceElementIndexEnd);
+      attributes.add(CoreAttributeTypes.InterfaceElementIndexStart);
+      return attributes;
+   }
+
    @Override
    public Collection<InterfaceStructureToken> getStructures(String filter) {
+      List<AttributeTypeId> structureAttributes = this.createStructureAttributeList();
+      List<AttributeTypeId> elementAttributes = this.createElementAttributeList();
       try {
          /**
           * Gets total list of all related structures for lookup later
@@ -173,7 +199,7 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
           */
          List<InterfaceStructureToken> structureList =
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelationAndFilter(branch,
-               CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter,
+               CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, structureAttributes,
                InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
             double beginWord = 0.0;
@@ -225,7 +251,7 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
           */
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.interfaceElementApi.getAccessor().getAllByFilter(branch, filter,
-               InterfaceStructureElementToken.class);
+               elementAttributes, InterfaceStructureElementToken.class);
          for (InterfaceStructureElementToken element : elements) {
             List<InterfaceStructureToken> subStructureList =
                (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,

@@ -1,8 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { of } from 'rxjs';
+import { relation, transaction } from '../../../../transactions/transaction';
+import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
-import { connection } from '../types/connection';
+import { connection } from '../../shared/types/connection';
+import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
 
 
 @Injectable({
@@ -10,41 +14,41 @@ import { connection } from '../types/connection';
 })
 export class ConnectionService {
 
-  constructor (private http: HttpClient) { }
+  constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
   
-  getConnections(branchId: string) {
-    return this.http.get<connection[]>(apiURL + '/mim/branch/' + branchId + '/connections/');
+  /**
+   * 
+   * @param nodeId Id of node to create a connection-node relationship
+   * @param type 0=primary 1=secondary
+   */
+  createNodeRelation(nodeId:string,type:boolean, connectionId?:string) {
+    if (type) {
+      let relation: relation = {
+        typeName: 'Interface Connection Secondary Node',
+        sideB: nodeId,
+        sideA:connectionId
+      }
+      return of(relation);
+    }
+    let relation: relation = {  
+      typeName: 'Interface Connection Primary Node',
+      sideB: nodeId,
+      sideA:connectionId
+    }
+    return of(relation)
   }
 
-  addConnection(branchId: string, body: any) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/connections/', body);
+  createConnection(branchId:string,connection:connection,relations:relation[]) {
+    return of(this.builder.createArtifact(connection, ARTIFACTTYPEID.CONNECTION, relations, undefined, branchId, "Create Connection and Relate to Node(s): " + relations[0].sideB + " , " + relations[1].sideB));
   }
 
-  replaceConnection(branchId: string, body: any) {
-    return this.http.put<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/connections/', body);
+  changeConnection(branchId: string, connection: Partial<connection>) {
+    return of(this.builder.modifyArtifact(connection,undefined,branchId,"Change connection attributes"));
   }
-
-  updateConnection(branchId: string, body: Partial<connection>) {
-    return this.http.patch<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/connections/', body);
+  deleteRelation(branchId:string,relation:relation,transaction?:transaction) {
+    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,'10','Relating Element'))
   }
-
-  getConnection(branchId: string,connectionId:string) {;
-    return this.http.get<connection>(apiURL + '/mim/branch/' + branchId + '/connections/' + connectionId);
-  }
-  
-  deleteConnection(branchId: string,connectionId:string) {
-    return this.http.delete<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/connections/' + connectionId);
-  }
-
-  createConnection(branchId: string,nodeId:string,type:string, body: connection) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/nodes/' + nodeId + '/connections/' + type, body);
-  }
-
-  relateConnection(branchId: string,nodeId:string,type:string,connectionId:string, body: connection) {
-    return this.http.patch<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/nodes/' + nodeId + '/connections/' + connectionId +"/"+ type, body);
-  }
-
-  unrelateConnection(branchId: string,nodeId:string,id:string) {
-    return this.http.delete<OSEEWriteApiResponse>(apiURL + '/mim/branch/' + branchId + '/nodes/' + nodeId + '/connections/' + id);
+  performMutation(branchId:string,body:transaction) {
+    return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)
   }
 }

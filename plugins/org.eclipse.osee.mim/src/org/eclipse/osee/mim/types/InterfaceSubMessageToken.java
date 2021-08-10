@@ -15,8 +15,6 @@ package org.eclipse.osee.mim.types;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -25,17 +23,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class InterfaceSubMessageToken extends PLGenericDBObject {
    public static final InterfaceSubMessageToken SENTINEL = new InterfaceSubMessageToken();
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name;
 
-   private String InterfaceMessageRate;
-
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 2455059983007225769L)
    private String InterfaceSubMessageNumber; //required
 
-   @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
    private ApplicabilityToken applicability;
@@ -72,20 +63,6 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
     */
    public void setInterfaceSubMessageNumber(String interfaceSubMessageNumber) {
       InterfaceSubMessageNumber = interfaceSubMessageNumber;
-   }
-
-   /**
-    * @return the interfaceMessageRate
-    */
-   public String getInterfaceMessageRate() {
-      return InterfaceMessageRate;
-   }
-
-   /**
-    * @param interfaceMessageRate the interfaceMessageRate to set
-    */
-   public void setInterfaceMessageRate(String interfaceMessageRate) {
-      InterfaceMessageRate = interfaceMessageRate;
    }
 
    /**

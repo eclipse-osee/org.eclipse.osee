@@ -13,7 +13,6 @@
 package org.eclipse.osee.mim.internal;
 
 import org.eclipse.osee.mim.ArtifactAccessor;
-import org.eclipse.osee.mim.ArtifactInserter;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -24,15 +23,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
 
    private ArtifactAccessor<InterfaceSubMessageToken> accessor;
-   private ArtifactInserter<InterfaceSubMessageToken> inserter;
 
    InterfaceSubMessageApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceSubMessageAccessor(orcsApi));
-      this.setInserter(new InterfaceSubMessageInserter(orcsApi, this.getAccessor()));
-   }
-
-   private void setInserter(InterfaceSubMessageInserter interfaceSubMessageInserter) {
-      this.inserter = interfaceSubMessageInserter;
    }
 
    private void setAccessor(InterfaceSubMessageAccessor interfaceSubMessageAccessor) {
@@ -42,11 +35,6 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    @Override
    public ArtifactAccessor<InterfaceSubMessageToken> getAccessor() {
       return this.accessor;
-   }
-
-   @Override
-   public ArtifactInserter<InterfaceSubMessageToken> getInserter() {
-      return this.inserter;
    }
 
 }

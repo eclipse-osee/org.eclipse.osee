@@ -6,6 +6,11 @@ import { HttpClient } from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
 import { structure } from '../types/structure';
 import { apiURL } from 'src/environments/environment';
+import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
+import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
+import { transactionMock } from 'src/app/transactions/transaction.mock';
+import { relation } from 'src/app/transactions/transaction';
+import { structuresMock } from '../mocks/ReturnObjects/structure.mock';
 
 describe('StructuresService', () => {
   let service: StructuresService;
@@ -15,6 +20,7 @@ describe('StructuresService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers:[{provide:TransactionBuilderService,useValue:transactionBuilderMock}],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(StructuresService);
@@ -45,6 +51,62 @@ describe('StructuresService', () => {
     const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 0 + "/connections/"+'3'+"/messages/" + 1 + "/submessages/" + 2 + "/structures/filter/" + 0);
     expect(req.request.method).toEqual('GET');
     req.flush(testData);
+    httpTestingController.verify();
+  })
+  
+  it('should create a transaction for a structure', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.createStructure({},'10', [])).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should create a transaction for a structure modification', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.changeStructure({},'10')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should create a sub message relation', () => {
+    scheduler.run(() => {
+      let relation: relation = {
+        typeName: "Interface SubMessage Content",
+        sideA: '10',
+        sideB:undefined
+      }
+      let expectedObservable = { a: relation };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.createSubMessageRelation('10')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+  it('should create an add Relation transaction', () => {
+    scheduler.run(() => {
+      let relation: relation = {
+        typeName: "Interface SubMessage Content",
+        sideA: '10',
+        sideB:undefined
+      }
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.addRelation('10',relation)).toBe(expectedMarble, expectedObservable);
+    })
+  })
+  it('should fetch a structure', () => {
+    service.getStructure('10','10','10','10','10').subscribe()
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 10 + "/connections/"+10+"/messages/" + 10 + "/submessages/" + 10 + "/structures/" + 10);
+    expect(req.request.method).toEqual('GET');
+    req.flush(structuresMock[0]);
+    httpTestingController.verify();
+  })
+
+  it('should perform a mutation on the structure endpoint', () => {
+    service.performMutation('10', '10', '10','10', transactionMock).subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
+    expect(req.request.method).toEqual('POST');
+    req.flush({});
     httpTestingController.verify();
   })
 });

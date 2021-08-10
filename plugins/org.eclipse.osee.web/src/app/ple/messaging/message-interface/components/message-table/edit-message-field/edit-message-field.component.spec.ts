@@ -48,7 +48,7 @@ describe('EditMessageFieldComponent', () => {
     uiService.connectionIdString='10'
     component.updateMessage('description', 'v2');
     tick(500);
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + '8' + "/connections/10/messages");
-    expect(req.request.method).toEqual('PATCH');
+    const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
+    expect(req.request.method).toEqual('POST');
   }));
 });

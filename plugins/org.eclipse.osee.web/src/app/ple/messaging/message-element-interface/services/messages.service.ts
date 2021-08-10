@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
 import { message } from '../../message-interface/types/messages';
+import { subMessage } from '../../message-interface/types/sub-messages';
 
 @Injectable({
   providedIn: 'root'
@@ -18,5 +19,9 @@ export class MessagesService {
    */
    getMessages(branchId: string,connectionId:string):Observable<message[]> {
     return this.http.get<message[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages");
+   }
+  
+   getSubMessage(branchId: string, messageId: string, subMessageId:string,connectionId:string):Observable<subMessage> {
+    return this.http.get<subMessage>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId);
   }
 }

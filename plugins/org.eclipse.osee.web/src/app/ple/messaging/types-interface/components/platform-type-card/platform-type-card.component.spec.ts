@@ -2,15 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { MatCardHarness } from '@angular/material/card/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDialogHarness } from '@angular/material/dialog/testing';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { By } from '@angular/platform-browser';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { PlatformTypeCardComponent } from './platform-type-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { Observable, of } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';

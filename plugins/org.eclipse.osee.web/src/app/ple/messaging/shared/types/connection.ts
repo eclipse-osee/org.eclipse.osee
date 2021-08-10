@@ -9,6 +9,7 @@ export interface connection {
 }
 
 export enum transportType {
+    HSDN = "HSDN",
     Ethernet = "ETHERNET",
     MILSTD1553 ="MILSTD1553_B"
 }

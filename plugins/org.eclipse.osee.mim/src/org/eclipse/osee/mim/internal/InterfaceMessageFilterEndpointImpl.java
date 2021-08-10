@@ -17,8 +17,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
@@ -56,7 +58,6 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
             for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
                InterfaceSubMessageToken.class)) {
-               submessage.setInterfaceMessageRate(message.getInterfaceMessageRate());
                submessages.add(submessage);
             }
             message.setSubMessages(submessages);
@@ -69,12 +70,34 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
       }
    }
 
+   private List<AttributeTypeId> createMessageAttributes() {
+      List<AttributeTypeId> messageAttributes = new LinkedList<AttributeTypeId>();
+      messageAttributes.add(CoreAttributeTypes.Name);
+      messageAttributes.add(CoreAttributeTypes.Description);
+      messageAttributes.add(CoreAttributeTypes.InterfaceMessageNumber);
+      messageAttributes.add(CoreAttributeTypes.InterfaceMessagePeriodicity);
+      messageAttributes.add(CoreAttributeTypes.InterfaceMessageRate);
+      messageAttributes.add(CoreAttributeTypes.InterfaceMessageWriteAccess);
+      messageAttributes.add(CoreAttributeTypes.InterfaceMessageType);
+      return messageAttributes;
+   }
+
+   private List<AttributeTypeId> createSubmessageAttributes() {
+      List<AttributeTypeId> subMessageAttributes = new LinkedList<AttributeTypeId>();
+      subMessageAttributes.add(CoreAttributeTypes.Name);
+      subMessageAttributes.add(CoreAttributeTypes.Description);
+      subMessageAttributes.add(CoreAttributeTypes.InterfaceSubMessageNumber);
+      return subMessageAttributes;
+   }
+
    @Override
    public Collection<InterfaceMessageToken> getMessages(String filter) {
+      List<AttributeTypeId> messageAttributes = this.createMessageAttributes();
+      List<AttributeTypeId> subMessageAttributes = this.createSubmessageAttributes();
       try {
          List<InterfaceMessageToken> messageList =
             (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelationAndFilter(branch,
-               CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, filter,
+               CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, filter, messageAttributes,
                InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
             message.setSubMessages((List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelation(
@@ -84,7 +107,7 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
 
          List<InterfaceSubMessageToken> subMessages =
             (List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByFilter(branch, filter,
-               InterfaceSubMessageToken.class);
+               subMessageAttributes, InterfaceSubMessageToken.class);
          for (InterfaceSubMessageToken subMessage : subMessages) {
             List<InterfaceMessageToken> alternateMessageList =
                (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelation(branch,
@@ -94,7 +117,8 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
                alternateMessage.setSubMessages(
                   (List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelationAndFilter(branch,
                      CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-                     ArtifactId.valueOf(alternateMessage.getId()), filter, InterfaceSubMessageToken.class));
+                     ArtifactId.valueOf(alternateMessage.getId()), filter, subMessageAttributes,
+                     InterfaceSubMessageToken.class));
                if (!messageList.contains(alternateMessage)) {
                   messageList.add(alternateMessage);
                }

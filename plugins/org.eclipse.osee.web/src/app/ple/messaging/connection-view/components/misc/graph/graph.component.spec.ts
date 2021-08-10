@@ -25,6 +25,8 @@ import { CreateConnectionDialogComponent } from '../../dialogs/create-connection
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
 import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-node-dialog.component';
+import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
+import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
@@ -41,6 +43,7 @@ describe('GraphComponent', () => {
         [
           { provide: Router, useValue: router },
           { provide: CurrentGraphService, useValue: graphServiceMock },
+          {provide: EnumsService,useValue:enumsServiceMock}
       ],
       declarations: [ GraphComponent,ConfirmRemovalDialogComponent,CreateConnectionDialogComponent,CreateNewNodeDialogComponent,EditConnectionDialogComponent,EditNodeDialogComponent ]
     })

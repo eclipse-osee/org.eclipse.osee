@@ -19,6 +19,4 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
  */
 public interface InterfaceSubMessageApi {
    ArtifactAccessor<InterfaceSubMessageToken> getAccessor();
-
-   ArtifactInserter<InterfaceSubMessageToken> getInserter();
 }

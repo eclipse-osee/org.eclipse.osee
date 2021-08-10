@@ -11,9 +11,14 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { dialogRef } from '../../../mocks/dialogRef.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { connection, transportType } from '../../../types/connection';
+import { connection, transportType } from '../../../../shared/types/connection';
 
 import { EditConnectionDialogComponent } from './edit-connection-dialog.component';
+import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
+import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
+import { MatFormFieldHarness } from '@angular/material/form-field/testing';
+import { MatInputHarness } from '@angular/material/input/testing';
+import { MatSelectHarness } from '@angular/material/select/testing';
 
 describe('EditConnectionDialogComponent', () => {
   let component: EditConnectionDialogComponent;
@@ -31,7 +36,8 @@ describe('EditConnectionDialogComponent', () => {
       declarations: [EditConnectionDialogComponent],
       providers: [{ provide: MatDialogRef, useValue: dialogRef },
         { provide: MAT_DIALOG_DATA, useValue: dialogData },
-        { provide: CurrentGraphService, useValue: graphServiceMock }]
+        { provide: CurrentGraphService, useValue: graphServiceMock },
+        {provide:EnumsService,useValue:enumsServiceMock}]
     })
     .compileComponents();
   });
@@ -39,6 +45,14 @@ describe('EditConnectionDialogComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EditConnectionDialogComponent);
     component = fixture.componentInstance;
+    component.data = {
+      name: 'Connection',
+      transportType: transportType.Ethernet,
+      applicability: {
+        id: '1',
+        name:'Base'
+      }
+    }
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
@@ -54,5 +68,39 @@ describe('EditConnectionDialogComponent', () => {
       await buttons[0].click();
       expect(spy).toHaveBeenCalled() 
     }
+  })
+
+  it('should select a new transport type', async() => {
+    let form = loader.getHarness(MatFormFieldHarness.with({ selector: '#connection-transport-type-selector' }));
+    let select = (await (await form).getControl(MatSelectHarness));
+    await select?.open();
+    expect((await select?.getOptions())?.length).toEqual(3);
+    await select?.clickOptions({ text: 'HSDN' });
+    expect(await select?.getValueText()).toEqual('HSDN')
+  })
+
+  it('should select an applicability', async() => {
+    let form = loader.getHarness(MatFormFieldHarness.with({ selector: '#connection-applicability-selector' }));
+    let select = (await (await form).getControl(MatSelectHarness));
+    await select?.open();
+    expect((await select?.getOptions())?.length).toEqual(2);
+    await select?.clickOptions({ text: 'Second' });
+    expect(await select?.getValueText()).toEqual('Second')
+  })
+
+  it('should enter a description', async() => {
+    let form = loader.getHarness(MatFormFieldHarness.with({ selector: '#connection-description-field' }));
+    let input = (await (await form).getControl(MatInputHarness));
+    expect(await input?.getType()).toEqual("text");
+    await input?.setValue('Description');
+    expect(await input?.getValue()).toEqual('Description');
+  })
+
+  it('should enter a name', async() => {
+    let form = loader.getHarness(MatFormFieldHarness.with({ selector: '#connection-name-field' }));
+    let input = (await (await form).getControl(MatInputHarness));
+    expect(await input?.getType()).toEqual("text");
+    await input?.setValue('Name');
+    expect(await input?.getValue()).toEqual('Name');
   })
 });

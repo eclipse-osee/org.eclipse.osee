@@ -16,8 +16,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -25,12 +23,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ConnectionView extends PLGenericDBObject {
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    @JsonIgnore
    private String Name; //required
 
-   @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
    private String source = "";//source node to reference

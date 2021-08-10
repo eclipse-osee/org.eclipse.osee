@@ -18,5 +18,9 @@ export class PlatformTypeService {
    */
    getTypes(branchId: string): Observable<PlatformType[]> {
     return this.http.get<PlatformType[]>(apiURL + "/mim/branch/" + branchId + "/types");
+   }
+  
+  getType(branchId: string, typeId: string) {
+    return this.http.get<PlatformType>(apiURL + "/mim/branch/" + branchId + "/types/"+typeId)
   }
 }

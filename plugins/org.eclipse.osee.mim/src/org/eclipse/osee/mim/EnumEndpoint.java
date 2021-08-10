@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.mim.types.ConnectionViewType;
 
 /**
  * @author Luciano T. Vaglienti
@@ -43,4 +44,9 @@ public interface EnumEndpoint {
    @Path("StructureCategories")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<String> getStructureCategories();
+
+   @GET()
+   @Path("ConnectionTypes")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<ConnectionViewType> getConnectionTypes();
 }

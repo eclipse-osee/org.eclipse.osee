@@ -17,8 +17,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
@@ -78,12 +80,24 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
       }
    }
 
+   private List<AttributeTypeId> createStructureAttributeList() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceStructureCategory);
+      attributes.add(CoreAttributeTypes.InterfaceMinSimultaneity);
+      attributes.add(CoreAttributeTypes.InterfaceMaxSimultaneity);
+      attributes.add(CoreAttributeTypes.InterfaceTaskFileType);
+      return attributes;
+   }
+
    @Override
    public Collection<InterfaceStructureToken> getFilteredStructures(String filter) {
+      List<AttributeTypeId> structureAttributes = this.createStructureAttributeList();
       try {
          List<InterfaceStructureToken> structureList =
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByFilter(branch, filter,
-               InterfaceStructureToken.class);
+               structureAttributes, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
             Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
             elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,

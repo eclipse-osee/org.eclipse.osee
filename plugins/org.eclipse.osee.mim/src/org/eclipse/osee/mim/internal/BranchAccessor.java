@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
-import org.eclipse.osee.mim.InterfaceConnectionModificationEndpoint;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
@@ -137,12 +136,5 @@ public class BranchAccessor {
    public InterfaceConnectionEndpoint getConnectionEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceConnectionEndpointImpl(branch, accountId, mimApi.getInterfaceNodeViewApi(),
          mimApi.getInterfaceConnectionViewApi());
-   }
-
-   @Path("{branch}/nodes/{nodeId}/connections")
-   @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceConnectionModificationEndpoint getConnectionModificationEndpoint(@PathParam("branch") BranchId branch, @PathParam("nodeId") ArtifactId nodeId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new InterfaceConnectionModificationEndpointImpl(branch, accountId, nodeId,
-         mimApi.getInterfaceNodeViewApi(), mimApi.getInterfaceConnectionViewApi());
    }
 }

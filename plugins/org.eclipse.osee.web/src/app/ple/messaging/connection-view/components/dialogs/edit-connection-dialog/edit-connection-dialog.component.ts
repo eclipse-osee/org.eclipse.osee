@@ -2,7 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { applic } from 'src/app/ple/messaging/shared/types/NamedId.applic';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { connection } from '../../../types/connection';
+import { connection } from '../../../../shared/types/connection';
+import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 
 @Component({
   selector: 'app-edit-connection-dialog',
@@ -13,7 +14,8 @@ export class EditConnectionDialogComponent implements OnInit {
 
   title: string = "";
   applics = this.graphService.applic;
-  constructor (public dialogRef: MatDialogRef<EditConnectionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: connection, private graphService: CurrentGraphService) {
+  transportTypes = this.enumService.connectionTypes;
+  constructor (public dialogRef: MatDialogRef<EditConnectionDialogComponent>,private enumService:EnumsService, @Inject(MAT_DIALOG_DATA) public data: connection, private graphService: CurrentGraphService) {
     this.title = data.name;
   }
 

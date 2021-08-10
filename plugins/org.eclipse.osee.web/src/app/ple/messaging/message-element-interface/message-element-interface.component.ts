@@ -229,7 +229,6 @@ export class MessageElementInterfaceComponent implements OnInit {
       structure: {
         id: '-1',
         name: '',
-        elements: [],
         description: '',
         interfaceMaxSimultaneity: '',
         interfaceMinSimultaneity: '',

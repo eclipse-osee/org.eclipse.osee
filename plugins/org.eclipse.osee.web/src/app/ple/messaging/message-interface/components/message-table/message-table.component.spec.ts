@@ -35,6 +35,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiService } from '../../services/ui.service'
+import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
 
 let loader: HarnessLoader;
 
@@ -88,10 +89,7 @@ describe('MessageTableComponent', () => {
       ],
       declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent],
       providers: [{
-        provide: CurrentMessagesService, useValue: {
-          messages: of(expectedData),
-          BranchId:new BehaviorSubject("10")
-        }
+        provide: CurrentMessagesService, useValue: CurrentMessageServiceMock
       },
         { provide: EditAuthService, useValue: editAuthServiceMock },
       {provide:EnumsService,useValue:enumsServiceMock}]

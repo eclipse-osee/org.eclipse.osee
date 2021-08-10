@@ -16,8 +16,6 @@ package org.eclipse.osee.mim.types;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -28,50 +26,32 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class PlatformTypeToken extends PLGenericDBObject {
    public static final PlatformTypeToken SENTINEL = new PlatformTypeToken();
 
-   @OseeArtifactRequiredAttribute
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name; //required
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225803L)
    private String InterfacePlatformTypeEnumLiteral;
 
-   @OseeArtifactAttribute(attributeId = 4026643196432874344L)
    private String InterfacePlatformTypeUnits;
 
-   @OseeArtifactAttribute(attributeId = 2121416901992068417L)
    private String InterfacePlatformTypeValidRangeDescription;
 
-   @OseeArtifactAttribute(attributeId = 3899709087455064782L)
    private String InterfacePlatformTypeMinval;
 
-   @OseeArtifactAttribute(attributeId = 3899709087455064783L)
    private String InterfacePlatformTypeMaxval;
 
-   @OseeArtifactRequiredAttribute
-   @OseeArtifactAttribute(attributeId = 2455059983007225786L)
    private String InterfacePlatformTypeBitSize; //required
 
-   @OseeArtifactAttribute(attributeId = 2886273464685805413L)
    private String InterfacePlatformTypeDefaultValue;
 
-   @OseeArtifactAttribute(attributeId = 3899709087455064785L)
    private String InterfacePlatformTypeMsbValue;
 
-   @OseeArtifactAttribute(attributeId = 3899709087455064786L)
    private String InterfacePlatformTypeBitsResolution;
 
-   @OseeArtifactAttribute(attributeId = 3899709087455064787L)
    private String InterfacePlatformTypeCompRate;
 
-   @OseeArtifactAttribute(attributeId = 3899709087455064788L)
    private String InterfacePlatformTypeAnalogAccuracy;
 
-   @OseeArtifactRequiredAttribute
-   @OseeArtifactAttribute(attributeId = 2455059983007225762L)
    private String InterfaceLogicalType; //required
 
-   @OseeArtifactRequiredAttribute
-   @OseeArtifactAttribute(attributeId = 3899709087455064784L)
    private String InterfacePlatformType2sComplement; //required
 
    public PlatformTypeToken(ArtifactToken art) {

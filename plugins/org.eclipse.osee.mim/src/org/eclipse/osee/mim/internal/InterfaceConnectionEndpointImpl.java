@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
@@ -52,21 +51,6 @@ public class InterfaceConnectionEndpointImpl implements InterfaceConnectionEndpo
    }
 
    @Override
-   public XResultData createNewConnection(InterfaceConnection ConnectionToCreate) {
-      return interfaceConnectionApi.getInserter().addArtifact(ConnectionToCreate, account, branch);
-   }
-
-   @Override
-   public XResultData updateConnection(InterfaceConnection ConnectionToUpdate) {
-      return interfaceConnectionApi.getInserter().replaceArtifact(ConnectionToUpdate, account, branch);
-   }
-
-   @Override
-   public XResultData patchConnection(InterfaceConnection ConnectionToPatch) {
-      return interfaceConnectionApi.getInserter().patchArtifact(ConnectionToPatch, account, branch);
-   }
-
-   @Override
    public InterfaceConnection getConnection(ArtifactId ConnectionId) {
       try {
          return interfaceConnectionApi.getAccessor().get(branch, ConnectionId, InterfaceConnection.class);
@@ -75,11 +59,6 @@ public class InterfaceConnectionEndpointImpl implements InterfaceConnectionEndpo
          System.out.println(ex);
       }
       return null;
-   }
-
-   @Override
-   public XResultData deleteConnection(ArtifactId ConnectionId) {
-      return interfaceConnectionApi.getInserter().removeArtifact(ConnectionId, account, branch);
    }
 
 }

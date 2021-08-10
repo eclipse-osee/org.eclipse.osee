@@ -7,7 +7,15 @@
             <!-- <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
               <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
             </svg:marker> -->
-            <svg:marker id="arrow" viewBox="0 0 200 200" refX="160" refY="100" markerWidth="4" markerHeight="4" orient="auto">
+            <svg:marker id="ethEnd" viewBox="0 0 200 200" refX="160" refY="100" markerWidth="4" markerHeight="4" orient="auto" orient="90deg">
+              <svg:line x1="0" y1="0" x2="200" y2="0" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="0" y1="0" x2="0" y2="200" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="0" y1="200" x2="200" y2="200" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="200" y1="0" x2="200" y2="200" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="0" y1="50" x2="200" y2="50" stroke="black" stroke-width="4"></svg:line>
+              <svg:line x1="100" y1="50" x2="100" y2="150" stroke="black" stroke-width="4"></svg:line>
+            </svg:marker>
+            <svg:marker id="ethBeg" viewBox="0 0 200 200" refX="160" refY="100" markerWidth="4" markerHeight="4" orient="auto" orient="-90deg">
               <svg:line x1="0" y1="0" x2="200" y2="0" stroke="black" stroke-width="4"></svg:line>
               <svg:line x1="0" y1="0" x2="0" y2="200" stroke="black" stroke-width="4"></svg:line>
               <svg:line x1="0" y1="200" x2="200" y2="200" stroke="black" stroke-width="4"></svg:line>
@@ -27,11 +35,11 @@
           <ng-template #linkTemplate let-link>
             <svg:g class="edge" (click)="navigateToMessages(link.id.split('a')[1])" (contextmenu)="openLinkDialog($event,link,graphData.nodes)">
               <ng-container *ngIf="link.data.dashed">
-                <svg:path class="line" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4" marker-start="url(#arrow)">
+                <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" stroke-dasharray="4" marker-start="url(#ethBeg)">
               </svg:path>
               </ng-container>
               <ng-container *ngIf="!link.data.dashed">
-                <svg:path class="line" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrow)">
+                <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" marker-start="url(#ethBeg)">
                 </svg:path>
               </ng-container>
               <svg:text class="edge-label" text-anchor="middle">
@@ -39,6 +47,14 @@
                   {{link.label}}
                 </textPath>
               </svg:text>
+              <!--
+                  Labels to denote what transport type is in use
+                -->
+                <svg:text class="edge-label" text-anchor="middle">
+                  <textPath class="text-path" [attr.href]="'#' + link.id" dominant-baseline="hanging" startOffset="50%" side="left">
+                    {{link.data.transportType}}
+                  </textPath>
+                </svg:text>
             </svg:g>
           </ng-template>
         </ngx-graph>

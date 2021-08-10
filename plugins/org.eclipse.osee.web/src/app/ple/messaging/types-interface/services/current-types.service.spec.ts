@@ -1,6 +1,7 @@
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
+import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
 import { apiURL } from 'src/environments/environment';
 import { TypesApiResponse } from '../types/ApiResponse';
 import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
@@ -36,6 +37,7 @@ describe('CurrentTypesServiceService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers:[{provide:TransactionBuilderService,useValue:transactionBuilderMock}],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(CurrentTypesService);
@@ -73,7 +75,7 @@ describe('CurrentTypesServiceService', () => {
     expect(uiService.singleLineAdjustment.getValue()).toEqual(0);
   }));
 
-  it('should send a patch request', () => {
+  it('should send a modification request', () => {
     uiService.BranchIdString = "10";
     service.partialUpdate({}).subscribe();
     let testData: TypesApiResponse = {
@@ -94,8 +96,8 @@ describe('CurrentTypesServiceService', () => {
       txId: '',
       warningCount: 0
     };
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + "10" + "/types");
-    expect(req.request.method).toEqual('PATCH');
+    const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
+    expect(req.request.method).toEqual('POST');
     req.flush(testData);
     httpTestingController.verify();
   });
@@ -121,7 +123,7 @@ describe('CurrentTypesServiceService', () => {
       txId: '',
       warningCount: 0
     };
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + "10" + "/types");
+    const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
     expect(req.request.method).toEqual('POST');
     req.flush(testData);
     httpTestingController.verify();

@@ -1,6 +1,6 @@
-import { StructureApiResponse } from "../../types/ApiResponse";
+import { OSEEWriteApiResponse } from "../../../shared/types/ApiWriteResponse";
 
-export const elementResponseMock:StructureApiResponse = {
+export const elementResponseMock:OSEEWriteApiResponse = {
     empty: false,
     errorCount: 0,
     errors: false,
