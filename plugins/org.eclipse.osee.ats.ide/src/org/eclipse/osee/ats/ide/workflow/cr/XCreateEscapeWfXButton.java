@@ -76,7 +76,7 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
    }
 
    public String getTitle() {
-      return "Analyze the Excapement for this Change Request";
+      return "Analyze the Escape for this Change Request";
    }
 
    abstract public IAtsActionableItem getAi();
