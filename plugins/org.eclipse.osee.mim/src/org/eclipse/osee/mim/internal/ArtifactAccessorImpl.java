@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.mim.ArtifactAccessor;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
+import org.eclipse.osee.mim.types.PLGenericDBObject;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -33,7 +32,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Luciano T. Vaglienti
  * @param <T> Class for storing/presenting artifact
  */
-public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
+public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements ArtifactAccessor<T> {
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private final OrcsApi orcsApi;
 
@@ -109,18 +108,8 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
    }
 
    @Override
-   public Collection<T> getAllByFilter(BranchId branch, String filter, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       List<T> artifactList = new LinkedList<T>();
-      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
-      for (Field field : clazz.getDeclaredFields()) {
-         field.setAccessible(true);
-         if (field.isAnnotationPresent(OseeArtifactAttribute.class)) {
-            if (field.getDeclaredAnnotation(OseeArtifactAttribute.class).attributeId() != -1) {
-               attributes.add(
-                  AttributeTypeId.valueOf(field.getDeclaredAnnotation(OseeArtifactAttribute.class).attributeId()));
-            }
-         }
-      }
 
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).and(
          attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
@@ -139,18 +128,8 @@ public class ArtifactAccessorImpl<T> implements ArtifactAccessor<T> {
    }
 
    @Override
-   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       List<T> artifactList = new LinkedList<T>();
-      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
-      for (Field field : clazz.getDeclaredFields()) {
-         field.setAccessible(true);
-         if (field.isAnnotationPresent(OseeArtifactAttribute.class)) {
-            if (field.getDeclaredAnnotation(OseeArtifactAttribute.class).attributeId() != -1) {
-               attributes.add(
-                  AttributeTypeId.valueOf(field.getDeclaredAnnotation(OseeArtifactAttribute.class).attributeId()));
-            }
-         }
-      }
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(relation,
          relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
             QueryOption.TOKEN_MATCH_ORDER__ANY).getResults().getList()) { //asArtifacts() doesn't work for and() currently

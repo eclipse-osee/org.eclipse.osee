@@ -19,6 +19,4 @@ import org.eclipse.osee.mim.types.InterfaceConnection;
  */
 public interface InterfaceConnectionViewApi {
    ArtifactAccessor<InterfaceConnection> getAccessor();
-
-   ArtifactInserter<InterfaceConnection> getInserter();
 }

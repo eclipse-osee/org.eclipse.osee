@@ -13,7 +13,6 @@
 package org.eclipse.osee.mim.internal;
 
 import org.eclipse.osee.mim.ArtifactAccessor;
-import org.eclipse.osee.mim.ArtifactInserter;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -24,11 +23,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    private ArtifactAccessor<PlatformTypeToken> accessor;
-   private ArtifactInserter<PlatformTypeToken> inserter;
 
    InterfacePlatformTypeApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new PlatformTypeAccessor(orcsApi));
-      this.setInserter(new PlatformTypeInserter(orcsApi, this.getAccessor()));
    }
 
    @Override
@@ -41,18 +38,6 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
     */
    private void setAccessor(ArtifactAccessor<PlatformTypeToken> accessor) {
       this.accessor = accessor;
-   }
-
-   @Override
-   public ArtifactInserter<PlatformTypeToken> getInserter() {
-      return this.inserter;
-   }
-
-   /**
-    * @param inserter the inserter to set
-    */
-   private void setInserter(ArtifactInserter<PlatformTypeToken> inserter) {
-      this.inserter = inserter;
    }
 
 }

@@ -119,7 +119,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     let createElement = dialogRef.afterClosed().pipe(
       filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
       switchMap((value:AddElementDialog) =>
-        iif(() => value.element.id !== '-1' && value.element.id.length > 0 && value.type.id!==''&&value.type.name!=='',
+        iif(() => value.element.id !== '-1' && value.element.id.length > 0,
           this.structureService.relateElement(this.element.id, value.element.id),
           this.structureService.createNewElement(value.element, this.element.id,value.type.id))
       ),

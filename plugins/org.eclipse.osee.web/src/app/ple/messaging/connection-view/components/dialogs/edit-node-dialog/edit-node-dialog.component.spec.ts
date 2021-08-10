@@ -12,7 +12,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { dialogRef } from '../../../mocks/dialogRef.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { node } from '../../../types/node';
+import { node } from '../../../../shared/types/node';
 
 import { EditNodeDialogComponent } from './edit-node-dialog.component';
 

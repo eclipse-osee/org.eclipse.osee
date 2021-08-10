@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { node } from '../../../types/node';
+import { node } from '../../../../shared/types/node';
 
 @Component({
   selector: 'app-create-new-node-dialog',

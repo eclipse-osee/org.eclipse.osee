@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { defer, Observable, of } from 'rxjs';
+import { defer, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { OSEEWriteApiResponse } from '../../../shared/types/ApiWriteResponse';
 import { CurrentTypesService } from '../../services/current-types.service';
-import { TypesApiResponse } from '../../types/ApiResponse';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { PlatformType } from '../../types/platformType';
@@ -51,9 +51,9 @@ export class PlatformTypeCardComponent implements OnInit {
    * Gets an observable for updating the attributes of a platform type
    * @param copy Initial values of the platform type PRIOR to the dialog being opened
    * @param result Changed values of the platform type + mode AFTER the dialog is closed
-   * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
+   * @returns @type {Observable<OSEEWriteApiResponse>} observable containing results (see @type {OSEEWriteApiResponse} and @type {Observable})
    */
-  getEditObservable(copy: PlatformType, result: editPlatformTypeDialogData): Observable<TypesApiResponse> {
+  getEditObservable(copy: PlatformType, result: editPlatformTypeDialogData): Observable<OSEEWriteApiResponse> {
     let newType: any = new Object();
     Object.keys(copy).forEach((value) => {
       if (copy[value as keyof PlatformType] !== result.type[value as keyof PlatformType]) {

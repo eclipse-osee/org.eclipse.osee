@@ -19,13 +19,10 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
-import org.eclipse.osee.mim.types.InterfaceStructureElementArrayToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
@@ -76,48 +73,6 @@ public class InterfaceElementEndpointImpl implements InterfaceElementEndpoint {
    }
 
    @Override
-   public XResultData createNewElement(InterfaceStructureElementToken token) {
-      if (token.getInterfaceElementIndexEnd() != null && token.getInterfaceElementIndexEnd() > 0) {
-         XResultData createResults =
-            elementArrayApi.getInserter().addArtifact(new InterfaceStructureElementArrayToken(token), account, branch);
-         if (!createResults.isErrors()) {
-            createResults.merge(
-               elementArrayApi.getInserter().relateArtifact(ArtifactId.valueOf(createResults.getIds().get(0)),
-                  structureId, CoreRelationTypes.InterfaceStructureContent_DataElement, branch, account));
-         }
-         return createResults;
-      } else {
-         XResultData createResults = elementApi.getInserter().addArtifact(token, account, branch);
-         if (!createResults.isErrors()) {
-            createResults.merge(
-               elementApi.getInserter().relateArtifact(ArtifactId.valueOf(createResults.getIds().get(0)), structureId,
-                  CoreRelationTypes.InterfaceStructureContent_DataElement, branch, account));
-         }
-         return createResults;
-      }
-   }
-
-   @Override
-   public XResultData updateElement(InterfaceStructureElementToken token) {
-      if (token.getInterfaceElementIndexEnd() != null && token.getInterfaceElementIndexEnd() > 0) {
-         return elementArrayApi.getInserter().replaceArtifact(new InterfaceStructureElementArrayToken(token), account,
-            branch);
-      } else {
-         return elementApi.getInserter().replaceArtifact(token, account, branch);
-      }
-   }
-
-   @Override
-   public XResultData patchElement(InterfaceStructureElementToken token) {
-      if (token.getInterfaceElementIndexEnd() != null && token.getInterfaceElementIndexEnd() > 0) {
-         return elementArrayApi.getInserter().patchArtifact(new InterfaceStructureElementArrayToken(token), account,
-            branch);
-      } else {
-         return elementApi.getInserter().patchArtifact(token, account, branch);
-      }
-   }
-
-   @Override
    public InterfaceStructureElementToken getElement(ArtifactId elementId) {
       try {
          InterfaceStructureElementToken element = this.elementApi.getAccessor().getByRelation(branch, elementId,
@@ -132,39 +87,6 @@ public class InterfaceElementEndpointImpl implements InterfaceElementEndpoint {
          System.out.println(ex);
          return null;
       }
-   }
-
-   @Override
-   public XResultData relateElement(ArtifactId elementId) {
-      return elementApi.getInserter().relateArtifact(elementId, structureId,
-         CoreRelationTypes.InterfaceStructureContent_DataElement, branch, account);
-   }
-
-   @Override
-   public XResultData removeElement(ArtifactId elementId) {
-      return elementApi.getInserter().unrelateArtifact(elementId, structureId,
-         CoreRelationTypes.InterfaceStructureContent_DataElement, branch, account);
-   }
-
-   @Override
-   public XResultData relatePlatformType(ArtifactId elementId, ArtifactId platformTypeId) {
-      XResultData results = new XResultData();
-      try {
-         Collection<PlatformTypeToken> platformTypes = platformApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceElementPlatformType_Element, elementId, PlatformTypeToken.class);
-         if (platformTypes.size() > 0) {
-            for (PlatformTypeToken token : platformTypes) {
-               results.merge(elementApi.getInserter().unrelateArtifact(ArtifactId.valueOf(token.getId()), elementId,
-                  CoreRelationTypes.InterfaceElementPlatformType_PlatformType, branch, account));
-            }
-         }
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         results.error(Lib.exceptionToString(ex));
-      }
-      results.merge(elementApi.getInserter().relateArtifact(platformTypeId, elementId,
-         CoreRelationTypes.InterfaceElementPlatformType_PlatformType, branch, account));
-      return results;
    }
 
 }

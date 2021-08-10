@@ -18,8 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -28,30 +26,18 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class InterfaceMessageToken extends PLGenericDBObject {
    public static final InterfaceMessageToken SENTINEL = new InterfaceMessageToken();
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name; //required
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 2455059983007225768L)
    private String InterfaceMessageNumber; //required
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 3899709087455064789L)
    private String InterfaceMessagePeriodicity; //required
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225763L)
    private String InterfaceMessageRate;
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 2455059983007225754L)
    private Boolean InterfaceMessageWriteAccess; //required
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 2455059983007225770L)
    private String InterfaceMessageType; //required
 
-   @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
    private ApplicabilityToken applicability;

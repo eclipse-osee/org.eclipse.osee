@@ -18,7 +18,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
@@ -53,16 +52,6 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
    }
 
    @Override
-   public XResultData updatePlatformType(PlatformTypeToken platformTypeToken) {
-      return platformApi.getInserter().replaceArtifact(platformTypeToken, account, branch);
-   }
-
-   @Override
-   public XResultData createPlatformType(PlatformTypeToken platformTypeToken) {
-      return platformApi.getInserter().addArtifact(platformTypeToken, account, branch);
-   }
-
-   @Override
    public PlatformTypeToken getPlatformType(ArtifactId typeId) {
       try {
          return platformApi.getAccessor().get(branch, typeId, PlatformTypeToken.class);
@@ -71,16 +60,6 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
          System.out.println(ex);
          return null;
       }
-   }
-
-   @Override
-   public XResultData removePlatformType(ArtifactId typeId) {
-      return platformApi.getInserter().removeArtifact(typeId, account, branch);
-   }
-
-   @Override
-   public XResultData patchPlatformType(PlatformTypeToken platformTypeToken) {
-      return platformApi.getInserter().patchArtifact(platformTypeToken, account, branch);
    }
 
 }

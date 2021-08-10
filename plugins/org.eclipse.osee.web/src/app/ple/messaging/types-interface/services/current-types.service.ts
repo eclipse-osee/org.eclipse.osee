@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { iif, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, repeatWhen, share, switchMap, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, repeatWhen, share, switchMap, take, tap } from 'rxjs/operators';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 import { TypesService } from './types.service';
 import { PlatformType } from '../types/platformType'
-import { TypesApiResponse } from '../types/ApiResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +46,14 @@ export class CurrentTypesService {
    * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
    */
   partialUpdate(body: Partial<PlatformType>) {
-    return this.typesService.partialUpdateTypes(body, this.uiService.BranchId.getValue());
+    return this.typesService.changePlatformType(this.uiService.BranchId.getValue(), body).pipe(
+      take(1),
+      switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.BranchId.getValue()).pipe(
+        tap(() => {
+          this.uiService.updateTypes = true;
+        })
+      ))
+    )
   }
 
   /**
@@ -57,11 +63,14 @@ export class CurrentTypesService {
    */
   createType(body: PlatformType|Partial<PlatformType>) {
     delete body.id;
-    return this.typesService.createType(body, this.uiService.BranchId.getValue()).pipe(
-      tap((response) => {
-        this.uiService.updateTypes = true;
-      })
-    );
+    return this.typesService.createPlatformType(this.uiService.BranchId.getValue(), body, []).pipe(
+      take(1),
+      switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.BranchId.getValue()).pipe(
+        tap(() => {
+          this.uiService.updateTypes = true;
+        })
+      ))
+    )
   }
 
   get logicalTypes() {

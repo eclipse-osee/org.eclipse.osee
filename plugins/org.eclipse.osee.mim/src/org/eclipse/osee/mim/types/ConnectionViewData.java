@@ -20,8 +20,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Luciano T. Vaglienti
  */
 public class ConnectionViewData extends PLGenericDBObject {
-   private ConnectionViewType TransportType = ConnectionViewType.ETHERNET; //will need logic for both of these or data stored in DB
-   private boolean isDashed = true;
+   private ConnectionViewType TransportType; //will need logic for both of these or data stored in DB
+   private boolean isDashed;
    private ApplicabilityToken applicability;
    private String Description;
 
@@ -52,6 +52,11 @@ public class ConnectionViewData extends PLGenericDBObject {
     */
    public void setTransportType(ConnectionViewType type) {
       this.TransportType = type;
+      if (type.equals(ConnectionViewType.ETHERNET) || type.equals(ConnectionViewType.HSDN)) {
+         setDashed(false);
+      } else {
+         setDashed(true);
+      }
    }
 
    /**

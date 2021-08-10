@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { applic } from 'src/app/ple/messaging/shared/types/NamedId.applic';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { node } from '../../../types/node';
+import { node } from '../../../../shared/types/node';
 
 @Component({
   selector: 'app-edit-node-dialog',

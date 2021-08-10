@@ -16,6 +16,7 @@ package org.eclipse.osee.mim.types;
  * @author Luciano T. Vaglienti
  */
 public enum ConnectionViewType {
+   HSDN, //sub-type of ETHERNET
    ETHERNET,
    MILSTD1553_B,
 }

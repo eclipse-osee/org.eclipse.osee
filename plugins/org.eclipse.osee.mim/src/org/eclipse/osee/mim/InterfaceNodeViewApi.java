@@ -19,6 +19,4 @@ import org.eclipse.osee.mim.types.InterfaceNode;
  */
 public interface InterfaceNodeViewApi {
    ArtifactAccessor<InterfaceNode> getAccessor();
-
-   ArtifactInserter<InterfaceNode> getInserter();
 }

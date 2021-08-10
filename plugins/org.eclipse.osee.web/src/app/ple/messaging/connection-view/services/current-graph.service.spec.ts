@@ -1,17 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-import {  of, } from 'rxjs';
+import { iif, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { response } from '../mocks/Response.mock';
-import { connection, transportType } from '../types/connection';
-import { node } from '../types/node';
+import { connection, transportType } from '../../shared/types/connection';
+import { node } from '../../shared/types/node';
 import { ConnectionService } from './connection.service';
 
 import { CurrentGraphService } from './current-graph.service';
 import { GraphService } from './graph.service';
 import { NodeService } from './node.service';
 import { RouteStateService } from './route-state-service.service';
+import { transactionMock } from 'src/app/transactions/transaction.mock';
+import { relation, transaction } from 'src/app/transactions/transaction';
 
 describe('CurrentGraphService', () => {
   let service: CurrentGraphService;
@@ -23,30 +25,45 @@ describe('CurrentGraphService', () => {
   }
   let nodeService: Partial<NodeService> = {
     getNodes(branchId: string) {
-      return of([])
+      return of([{id:'1',name:'1'},{id:'2',name:'2'}])
     },
-    patchNode(branchId: string, body: Partial<node>) {
+    getNode(branchId: string, nodeId: string) {
+      return of({id:'1',name:'1'})
+    },
+    createNode(branchId: string, body: Partial<node>) {
+      return of(transactionMock)
+    },
+    changeNode(branchId: string, node: Partial<node>) {
+      return of(transactionMock)
+    },
+    performMutation(branchId: string, body: transaction) {
       return of(response);
     },
-    deleteNode(branchId: string, nodeId: string) {
-      return of(response);
-    },
-    createNode(branchId: string, body: node) {
-      return of(response)
+    deleteArtifact(branchId: string, artId: string) {
+      return of(transactionMock);
     }
   }
   let connectionService: Partial<ConnectionService> = {
-    updateConnection(branchId: string, body: Partial<connection>) {
+    createConnection(branchId: string, connection:connection, relations:relation[]) {
+      return of(transactionMock);
+    },
+    createNodeRelation(nodeId: string, type: boolean) {
+      return iif(() => type, of({
+        typeName: 'Interface Connection Secondary Node',
+        sideB: nodeId
+      }), of({
+        typeName: 'Interface Connection Primary Node',
+        sideB: nodeId
+      }));
+    },
+    changeConnection(branchId: string, connection: Partial<connection>) {
+      return of(transactionMock);
+    },
+    performMutation(branchId: string, body: transaction) {
       return of(response);
     },
-    unrelateConnection(branchId: string, nodeId: string, id: string) {
-      return of(response);
-    },
-    createConnection(branchId: string, nodeId: string, id: string) {
-      return of(response);
-    },
-    relateConnection(branchId: string, nodeId: string, id: string) {
-      return of(response);
+    deleteRelation(branchId: string, relation: relation, transaction?: transaction) {
+      return of(transactionMock);
     }
   }
   let routeState: RouteStateService;
@@ -79,12 +96,21 @@ describe('CurrentGraphService', () => {
     })
   })
 
-  it('should return a response when unrelating connection', () => {
+  it('should return a response when unrelating connection(source)', () => {
     scheduler.run(() => {
       const expectedfilterValues = { a: response };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.unrelateConnection('10','10')).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.unrelateConnection('1','1')).toBe(expectedMarble, expectedfilterValues);
+    })
+  })
+
+  it('should return a response when unrelating connection(target)', () => {
+    scheduler.run(() => {
+      const expectedfilterValues = { a: response };
+      const expectedMarble = '(a|)'
+      routeState.branchId='10'
+      scheduler.expectObservable(service.unrelateConnection('2','2')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -99,7 +125,7 @@ describe('CurrentGraphService', () => {
 
   it('should return a response when deleting a node and unrelating', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: [response,response,response] };
+      const expectedfilterValues = { a: response };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.deleteNodeAndUnrelate('10', [{id:'20',source:'15',target:'10'},{id:'20',source:'10',target:'15'}])).toBe(expectedMarble, expectedfilterValues);
@@ -107,11 +133,22 @@ describe('CurrentGraphService', () => {
   })
 
   it('should return a response when creating a connection', () => {
+    routeState.branchId = '10';
     scheduler.run(() => {
       const expectedfilterValues = { a: response };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'10','15')).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'1','2')).toBe(expectedMarble, expectedfilterValues);
+    })
+  })
+
+  it('should return a response when creating a connection(and flip the target and source)', () => {
+    routeState.branchId = '10';
+    scheduler.run(() => {
+      const expectedfilterValues = { a: response };
+      const expectedMarble = '(a|)'
+      routeState.branchId='10'
+      scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'2','1')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -133,9 +170,9 @@ describe('CurrentGraphService', () => {
     })
   })
 
-  it('should fetch empty array of nodes', () => {
+  it('should fetch array of nodes', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: [] };
+      const expectedfilterValues = { a: [{id:'1',name:'1'},{id:'2',name:'2'}] };
       const expectedMarble = 'a'
       routeState.branchId='10'
       scheduler.expectObservable(service.nodeOptions).toBe(expectedMarble, expectedfilterValues);

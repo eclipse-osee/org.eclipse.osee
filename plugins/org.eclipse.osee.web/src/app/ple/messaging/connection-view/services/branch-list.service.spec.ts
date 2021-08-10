@@ -1,7 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { messageBranch } from '../types/branches';
+import { messageBranch } from '../../shared/types/branches';
 
 import { BranchListService } from './branch-list.service';
 import { RouteStateService } from './route-state-service.service';

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
@@ -57,7 +56,6 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
             for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
                InterfaceSubMessageToken.class)) {
-               submessage.setInterfaceMessageRate(message.getInterfaceMessageRate());
                submessages.add(submessage);
             }
             message.setSubMessages(submessages);
@@ -71,14 +69,6 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
    }
 
    @Override
-   public XResultData addMessage(InterfaceMessageToken token) {
-      XResultData createResults = messageApi.getInserter().addArtifact(token, account, branch);
-      createResults.merge(messageApi.getInserter().relateArtifact(ArtifactId.valueOf(createResults.getIds().get(0)),
-         ConnectionId, CoreRelationTypes.InterfaceConnectionContent_Message, branch, account));
-      return createResults;
-   }
-
-   @Override
    public InterfaceMessageToken getInterfaceMessage(ArtifactId messageId) {
       try {
          InterfaceMessageToken message = this.messageApi.getAccessor().getByRelation(branch, messageId,
@@ -87,7 +77,6 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
          for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
             InterfaceSubMessageToken.class)) {
-            submessage.setInterfaceMessageRate(message.getInterfaceMessageRate());
             submessages.add(submessage);
          }
          message.setSubMessages(submessages);
@@ -97,21 +86,6 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
          System.out.println(ex);
          return null;
       }
-   }
-
-   @Override
-   public XResultData updateMessage(InterfaceMessageToken token) {
-      return this.messageApi.getInserter().replaceArtifact(token, account, branch);
-   }
-
-   @Override
-   public XResultData patchMessage(InterfaceMessageToken token) {
-      return this.messageApi.getInserter().patchArtifact(token, account, branch);
-   }
-
-   @Override
-   public XResultData removeInterfaceMessage(ArtifactId messageId) {
-      return this.messageApi.getInserter().removeArtifact(messageId, account, branch);
    }
 
 }

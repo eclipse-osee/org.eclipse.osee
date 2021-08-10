@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
@@ -52,21 +51,6 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
    }
 
    @Override
-   public XResultData createNewNode(InterfaceNode nodeToCreate) {
-      return interfaceNodeApi.getInserter().addArtifact(nodeToCreate, account, branch);
-   }
-
-   @Override
-   public XResultData updateNode(InterfaceNode nodeToUpdate) {
-      return interfaceNodeApi.getInserter().replaceArtifact(nodeToUpdate, account, branch);
-   }
-
-   @Override
-   public XResultData patchNode(InterfaceNode nodeToPatch) {
-      return interfaceNodeApi.getInserter().patchArtifact(nodeToPatch, account, branch);
-   }
-
-   @Override
    public InterfaceNode getNode(ArtifactId nodeId) {
       try {
          return interfaceNodeApi.getAccessor().get(branch, nodeId, InterfaceNode.class);
@@ -75,11 +59,6 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
          System.out.println(ex);
       }
       return null;
-   }
-
-   @Override
-   public XResultData deleteNode(ArtifactId nodeId) {
-      return interfaceNodeApi.getInserter().removeArtifact(nodeId, account, branch);
    }
 
 }

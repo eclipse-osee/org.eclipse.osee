@@ -13,7 +13,6 @@
 package org.eclipse.osee.mim.internal;
 
 import org.eclipse.osee.mim.ArtifactAccessor;
-import org.eclipse.osee.mim.ArtifactInserter;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -24,11 +23,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    private ArtifactAccessor<InterfaceStructureToken> accessor;
-   private ArtifactInserter<InterfaceStructureToken> inserter;
 
    InterfaceStructureApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceStructureAccessor(orcsApi));
-      this.setInserter(new InterfaceStructureInserter(orcsApi, this.getAccessor()));
    }
 
    @Override
@@ -36,23 +33,11 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return this.accessor;
    }
 
-   @Override
-   public ArtifactInserter<InterfaceStructureToken> getInserter() {
-      return this.inserter;
-   }
-
    /**
     * @param accessor the accessor to set
     */
    public void setAccessor(ArtifactAccessor<InterfaceStructureToken> accessor) {
       this.accessor = accessor;
-   }
-
-   /**
-    * @param inserter the inserter to set
-    */
-   public void setInserter(ArtifactInserter<InterfaceStructureToken> inserter) {
-      this.inserter = inserter;
    }
 
 }

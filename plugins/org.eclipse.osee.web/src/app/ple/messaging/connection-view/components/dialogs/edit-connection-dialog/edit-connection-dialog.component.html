@@ -1,25 +1,25 @@
 <h1 mat-dialog-title>Editing {{title}}</h1>
 <div mat-dialog-content>
-    <mat-form-field>
+    <mat-form-field id='connection-name-field'>
         <mat-label>Add a Name</mat-label>
         <input matInput type="text" [(ngModel)]="data.name" #input required>
     </mat-form-field>
     <br>
-    <mat-form-field>
+    <mat-form-field id='connection-description-field'>
         <mat-label>Add a Description</mat-label>
         <input matInput type="text" [(ngModel)]="data.description" #input required>
     </mat-form-field>
     <br>
-    <mat-form-field>
+    <mat-form-field id='connection-transport-type-selector'>
         <mat-label>Select a Transport Type</mat-label>
         <mat-select [(ngModel)]="data.transportType" required>
-            <mat-option *ngFor="let option of ['ETHERNET','MILSTD1553_B']" [value]="option">
+            <mat-option *ngFor="let option of (transportTypes | async)" [value]="option">
                 {{option}}
             </mat-option>
         </mat-select>
     </mat-form-field>
     <br>
-    <mat-form-field>
+    <mat-form-field id='connection-applicability-selector'>
         <mat-label>Select an Applicability</mat-label>
         <mat-select [(ngModel)]="data.applicability" [compareWith]="compareApplics" required>
             <mat-option *ngFor="let applic of (applics|async)" [value]="applic">

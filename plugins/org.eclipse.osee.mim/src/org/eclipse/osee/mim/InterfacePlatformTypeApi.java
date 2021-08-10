@@ -20,6 +20,4 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
 public interface InterfacePlatformTypeApi {
 
    ArtifactAccessor<PlatformTypeToken> getAccessor();
-
-   ArtifactInserter<PlatformTypeToken> getInserter();
 }

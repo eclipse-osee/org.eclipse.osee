@@ -15,8 +15,6 @@ package org.eclipse.osee.mim.types;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -24,11 +22,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class InterfaceNode extends PLGenericDBObject {
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name; //required
 
-   @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
    private ApplicabilityToken applicability;

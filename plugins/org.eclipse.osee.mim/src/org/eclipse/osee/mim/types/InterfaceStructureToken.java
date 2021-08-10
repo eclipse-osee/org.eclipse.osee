@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.mim.annotations.OseeArtifactAttribute;
-import org.eclipse.osee.mim.annotations.OseeArtifactRequiredAttribute;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -29,23 +27,16 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class InterfaceStructureToken extends PLGenericDBObject {
    public static final InterfaceStructureToken SENTINEL = new InterfaceStructureToken();
 
-   @OseeArtifactRequiredAttribute()
-   @OseeArtifactAttribute(attributeId = 1152921504606847088L)
    private String Name;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225764L)
    private String InterfaceStructureCategory;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225755L)
    private String InterfaceMinSimultaneity;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225756L)
    private String InterfaceMaxSimultaneity;
 
-   @OseeArtifactAttribute(attributeId = 2455059983007225760L)
    private Integer InterfaceTaskFileType;
 
-   @OseeArtifactAttribute(attributeId = 1152921504606847090L)
    private String Description;
 
    private Integer numElements = 0;

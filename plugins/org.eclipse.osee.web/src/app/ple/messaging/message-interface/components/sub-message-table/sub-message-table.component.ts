@@ -84,7 +84,6 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
         subMessage: {
           name: '',
           description: '',
-          interfaceMessageRate: '',
           interfaceSubMessageNumber:''
         }
       }

@@ -1,17 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { relation, transaction } from '../../../../transactions/transaction';
+import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
+import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { TypesApiResponse } from '../types/ApiResponse';
 import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
 import { PlatformType } from '../types/platformType';
+import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TypesService {
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private builder: TransactionBuilderService) { }
 
   /**
    * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
@@ -23,24 +27,15 @@ export class TypesService {
     return this.http.get<PlatformType[]>(apiURL + "/mim/branch/" + branchId + "/types/filter/" + filter);
   }
 
-  /**
-   * Updates the attributes of a platform type using the platform types PATCH API, id is required
-   * @param body @type {Partial<PlatformType>} attributes to update + id of platform type
-   * @param branchId @type {string} branch to fetch from
-   * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
-   */
-  partialUpdateTypes(body: Partial<PlatformType>, branchId: string) :Observable<TypesApiResponse> {
-    return this.http.patch<TypesApiResponse>(apiURL + "/mim/branch/" + branchId + "/types", body);
+  createPlatformType(branchId:string,type:PlatformType|Partial<PlatformType>,relations:relation[]) {
+    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.PLATFORMTYPE, relations, undefined, branchId, "Create Platform Type"));
   }
 
-  /**
-   * Creates a new PlatformType using the platform types POST API
-   * @param body @type {PlatformType} platform type to create
-   * @param branchId @type {string} branch to fetch from
-   * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
-   */
-  createType(body: PlatformType|Partial<PlatformType>, branchId: string): Observable<TypesApiResponse> {
-    return this.http.post<TypesApiResponse>(apiURL + "/mim/branch/" + branchId + "/types", body);
+  changePlatformType(branchId: string, type: Partial<PlatformType>) {
+    return of<transaction>(this.builder.modifyArtifact(type,undefined,branchId,"Change platform type attributes"));
+  }
+  performMutation(body: transaction,branchId:string) {
+    return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",body)
   }
 
   get logicalTypes() {

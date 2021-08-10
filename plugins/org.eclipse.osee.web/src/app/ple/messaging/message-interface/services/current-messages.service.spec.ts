@@ -1,6 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
+import { response } from '../../connection-view/mocks/Response.mock';
 import { messagesMock } from '../mocks/ReturnObjects/messages.mock';
 import { messageResponseMock } from '../mocks/ReturnObjects/response.mock';
 import { messageServiceMock } from '../mocks/services/MessageService.mock';
@@ -61,7 +62,7 @@ describe('CurrentMessagesService', () => {
     scheduler.run(() => {
       service.branch = '10';
       service.connection = '10';
-      let expectedObservable = { a: messageResponseMock }
+      let expectedObservable = { a: response }
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.partialUpdateMessage({})).toBe(expectedMarble,expectedObservable)
     })
@@ -70,7 +71,7 @@ describe('CurrentMessagesService', () => {
     scheduler.run(() => {
       service.branch = '10';
       service.connection = '10';
-      let expectedObservable = { a: messageResponseMock }
+      let expectedObservable = { a: response }
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.partialUpdateSubMessage({},'10')).toBe(expectedMarble,expectedObservable)
     })
@@ -80,7 +81,7 @@ describe('CurrentMessagesService', () => {
     scheduler.run(() => {
       service.branch = '10';
       service.connection = '10';
-      let expectedObservable = { a: messageResponseMock }
+      let expectedObservable = { a: response }
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.relateSubMessage('15','10')).toBe(expectedMarble,expectedObservable)
     })
@@ -90,7 +91,7 @@ describe('CurrentMessagesService', () => {
     scheduler.run(() => {
       service.branch = '10';
       service.connection = '10';
-      let expectedObservable = { a: messageResponseMock }
+      let expectedObservable = { a: response }
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.createSubMessage(messagesMock[0].subMessages[0],'10')).toBe(expectedMarble,expectedObservable)
     })
@@ -100,7 +101,7 @@ describe('CurrentMessagesService', () => {
     scheduler.run(() => {
       service.branch = '10';
       service.connection = '10';
-      let expectedObservable = { a: messageResponseMock }
+      let expectedObservable = { a: response }
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.createMessage(messagesMock[0])).toBe(expectedMarble,expectedObservable)
     })

@@ -21,5 +21,4 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 public interface InterfaceElementApi {
    ArtifactAccessor<InterfaceStructureElementToken> getAccessor();
 
-   ArtifactInserter<InterfaceStructureElementToken> getInserter();
 }

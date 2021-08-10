@@ -1,20 +1,29 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TestScheduler } from 'rxjs/testing';
+import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
+import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
+import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { apiURL } from 'src/environments/environment';
 
 import { NodeService } from './node.service';
 
 describe('NodeService', () => {
   let service: NodeService;
-  let httpTestingController:HttpTestingController
+  let scheduler: TestScheduler;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers:[{provide:TransactionBuilderService,useValue:transactionBuilderMock}],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(NodeService);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
+  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+  }));
 
   it('should be created', () => {
     expect(service).toBeTruthy();
@@ -43,38 +52,36 @@ describe('NodeService', () => {
     describe('Adding data', () => {
       
       it('should add a node', () => {
-        service.createNode('10', {id:'',name:'',description:''}).subscribe();
-        const req = httpTestingController.expectOne(apiURL + '/mim/branch/' + 10 + '/nodes/');
-        expect(req.request.method).toEqual('POST');
-        req.flush({});
-        httpTestingController.verify();
+        scheduler.run(() => {
+          const expectedfilterValues = { a: transactionMock };
+          const expectedMarble = '(a|)'
+          scheduler.expectObservable(service.createNode('10', {id:'',name:'',description:''})).toBe(expectedMarble, expectedfilterValues)
+        })
       })
     })
 
     describe('Modifying data', () => {
       
-      it('should replace node', () => {
-        service.replaceNode('10', {id:'',name:'',description:''}).subscribe();
-        const req = httpTestingController.expectOne(apiURL + '/mim/branch/' + 10 + '/nodes/');
-        expect(req.request.method).toEqual('PUT');
-        req.flush({});
-        httpTestingController.verify();
+      it('should create a transaction to change a node', () => {
+        scheduler.run(() => {
+          const expectedfilterValues = { a: transactionMock };
+          const expectedMarble = '(a|)'
+          scheduler.expectObservable(service.changeNode('10', {id:'',name:'',description:''})).toBe(expectedMarble, expectedfilterValues)
+        })
       })
 
-      it('should update node', () => {
-        service.patchNode('10', {}).subscribe();
-        const req = httpTestingController.expectOne(apiURL + '/mim/branch/' + 10 + '/nodes/');
-        expect(req.request.method).toEqual('PATCH');
-        req.flush({});
-        httpTestingController.verify();
+      it('should create a transaction to delete a node', () => {
+        scheduler.run(() => {
+          const expectedfilterValues = { a: transactionMock };
+          const expectedMarble = '(a|)'
+          scheduler.expectObservable(service.deleteArtifact('10','15')).toBe(expectedMarble, expectedfilterValues)
+        })
       })
-    })
 
-    describe('Removing data', () => {
-      it('should delete a node', () => {
-        service.deleteNode('10', '10').subscribe();
-        const req = httpTestingController.expectOne(apiURL + '/mim/branch/' + 10 + '/nodes/' + 10);
-        expect(req.request.method).toEqual('DELETE');
+      it('should perform a mutation', () => {
+        service.performMutation('10', { branch: '10', txComment: '' }).subscribe();
+        const req = httpTestingController.expectOne(apiURL+'/orcs/txs');
+        expect(req.request.method).toEqual('POST');
         req.flush({});
         httpTestingController.verify();
       })

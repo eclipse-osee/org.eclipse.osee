@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
@@ -117,27 +116,6 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
    }
 
    @Override
-   public XResultData createNewStructure(InterfaceStructureToken token) {
-      XResultData createResults = interfaceStructureApi.getInserter().addArtifact(token, account, branch);
-      if (!createResults.isErrors()) {
-         createResults.merge(
-            interfaceStructureApi.getInserter().relateArtifact(ArtifactId.valueOf(createResults.getIds().get(0)),
-               subMessageId, CoreRelationTypes.InterfaceSubMessageContent_Structure, branch, account));
-      }
-      return createResults;
-   }
-
-   @Override
-   public XResultData updateStructure(InterfaceStructureToken token) {
-      return interfaceStructureApi.getInserter().replaceArtifact(token, account, branch);
-   }
-
-   @Override
-   public XResultData patchStructure(InterfaceStructureToken token) {
-      return interfaceStructureApi.getInserter().patchArtifact(token, account, branch);
-   }
-
-   @Override
    public InterfaceStructureToken getStructure(ArtifactId structureId) {
       try {
          return this.interfaceStructureApi.getAccessor().getByRelation(branch, structureId,
@@ -147,18 +125,6 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
          System.out.println(ex);
          return null;
       }
-   }
-
-   @Override
-   public XResultData relateStructure(ArtifactId structureId) {
-      return interfaceStructureApi.getInserter().relateArtifact(structureId, subMessageId,
-         CoreRelationTypes.InterfaceSubMessageContent_Structure, branch, account);
-   }
-
-   @Override
-   public XResultData removeStructure(ArtifactId structureId) {
-      return interfaceStructureApi.getInserter().unrelateArtifact(structureId, subMessageId,
-         CoreRelationTypes.InterfaceSubMessageContent_Structure, branch, account);
    }
 
 }

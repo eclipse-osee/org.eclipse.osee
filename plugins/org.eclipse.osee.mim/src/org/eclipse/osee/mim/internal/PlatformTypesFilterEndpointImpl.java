@@ -15,8 +15,12 @@ package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
@@ -39,10 +43,31 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
       this.platformApi = interfacePlatformTypeApi;
    }
 
+   private List<AttributeTypeId> createAttributeList() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceLogicalType);
+      attributes.add(CoreAttributeTypes.InterfacePlatformType2sComplement);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeAnalogAccuracy);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitSize);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitsResolution);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeCompRate);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeDefaultValue);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeMaxval);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeMinval);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeMsbValue);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeUnits);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription);
+      return attributes;
+   }
+
    @Override
    public Collection<PlatformTypeToken> getPlatformTypes(String filter) {
+      List<AttributeTypeId> attributes = this.createAttributeList();
       try {
-         return platformApi.getAccessor().getAllByFilter(branch, filter, PlatformTypeToken.class);
+         return platformApi.getAccessor().getAllByFilter(branch, filter, attributes, PlatformTypeToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);

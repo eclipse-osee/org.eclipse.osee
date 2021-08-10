@@ -13,7 +13,6 @@
 package org.eclipse.osee.mim.internal;
 
 import org.eclipse.osee.mim.ArtifactAccessor;
-import org.eclipse.osee.mim.ArtifactInserter;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -24,21 +23,14 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewApi {
 
    private ArtifactAccessor<InterfaceConnection> accessor;
-   private ArtifactInserter<InterfaceConnection> inserter;
 
    InterfaceConnectionViewApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceConnectionAccessor(orcsApi));
-      this.setInserter(new InterfaceConnectionInserter(orcsApi, this.getAccessor()));
    }
 
    @Override
    public ArtifactAccessor<InterfaceConnection> getAccessor() {
       return this.accessor;
-   }
-
-   @Override
-   public ArtifactInserter<InterfaceConnection> getInserter() {
-      return this.inserter;
    }
 
    /**
@@ -47,12 +39,4 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    public void setAccessor(ArtifactAccessor<InterfaceConnection> accessor) {
       this.accessor = accessor;
    }
-
-   /**
-    * @param inserter the inserter to set
-    */
-   public void setInserter(ArtifactInserter<InterfaceConnection> inserter) {
-      this.inserter = inserter;
-   }
-
 }
