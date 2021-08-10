@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.internal.access;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.access.AccessControlData;
 import org.eclipse.osee.framework.core.access.AccessQueries;
-import org.eclipse.osee.framework.core.access.event.AccessTopicEventPayload;
+import org.eclipse.osee.framework.core.access.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.access.object.AccessObject;
 import org.eclipse.osee.framework.core.access.object.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.access.object.BranchAccessObject;

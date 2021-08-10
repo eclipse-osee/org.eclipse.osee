@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemRemoteTopicEventHandler;
-import org.eclipse.osee.framework.core.access.event.AccessTopicEvent;
+import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.EventConstants;

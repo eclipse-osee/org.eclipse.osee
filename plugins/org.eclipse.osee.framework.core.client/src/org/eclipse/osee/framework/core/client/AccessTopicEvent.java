@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.access.event;
+package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
@@ -34,5 +34,4 @@ public class AccessTopicEvent extends AbstractTopicEvent {
    private AccessTopicEvent(EventType eventType, String topic) {
       super(eventType, TransactionToken.SENTINEL, topic);
    }
-
 }
