@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.internal.OseeApiService;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.access.AccessControlData;
 import org.eclipse.osee.framework.core.access.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.client.AccessTopicEvent;
@@ -85,7 +85,8 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       if (branch.isInvalid()) {
          noBranch = true;
       } else {
-         someAccessControlSet = !OseeApiService.get().getAccessControlService().getAccessControlList(branch).isEmpty();
+         someAccessControlSet =
+            !ServiceUtil.getOseeClient().getAccessControlService().getAccessControlList(branch).isEmpty();
       }
       button.setImage(ImageManager.getImage(
          noBranch || someAccessControlSet ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));

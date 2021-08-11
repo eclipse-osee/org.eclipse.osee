@@ -26,8 +26,9 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.demo.internal.OseeApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -124,11 +125,11 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    }
 
    private void setBaselineAccessControl(BranchToken branch) {
-      OseeApiService.get().getAccessControlService().removePermissions(branch);
+      IAccessControlService accessControlService = ServiceUtil.getOseeClient().getAccessControlService();
+      accessControlService.removePermissions(branch);
       ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      OseeApiService.get().getAccessControlService().setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
-      OseeApiService.get().getAccessControlService().setPermission(CoreUserGroups.Everyone, branch,
-         PermissionEnum.READ);
+      accessControlService.setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
+      accessControlService.setPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
    }
 
    private void configureRequirementsForImplDetails() {
