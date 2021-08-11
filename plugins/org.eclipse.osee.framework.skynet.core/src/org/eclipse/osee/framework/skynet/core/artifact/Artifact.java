@@ -91,7 +91,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -1246,7 +1246,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final boolean isReadOnly() {
-      boolean result = OseeApiService.get().getAccessControlService().isReadOnly(this);
+      boolean result = ServiceUtil.getOseeClient().getAccessControlService().isReadOnly(this);
       return result;
    }
 

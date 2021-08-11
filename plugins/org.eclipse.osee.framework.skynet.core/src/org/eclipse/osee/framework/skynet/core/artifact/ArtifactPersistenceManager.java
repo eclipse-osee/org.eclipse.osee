@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -65,12 +65,12 @@ public class ArtifactPersistenceManager {
 
    // Confirm artifacts are fit to delete
    private static XResultData performDeleteChecks(Collection<Artifact> artifacts, XResultData rd) {
-      return OseeApiService.get().getAccessControlService().isDeleteable(artifacts, rd);
+      return ServiceUtil.getOseeClient().getAccessControlService().isDeleteable(artifacts, rd);
    }
 
    // Confirm relations are fit to delete
    public static XResultData performDeleteRelationChecks(Artifact artifact, RelationTypeToken relationType, XResultData rd) {
-      return OseeApiService.get().getAccessControlService().isDeleteableRelation(artifact, relationType, rd);
+      return ServiceUtil.getOseeClient().getAccessControlService().isDeleteableRelation(artifact, relationType, rd);
    }
 
    private static void bulkLoadRelatives(Collection<Artifact> artifacts) {
