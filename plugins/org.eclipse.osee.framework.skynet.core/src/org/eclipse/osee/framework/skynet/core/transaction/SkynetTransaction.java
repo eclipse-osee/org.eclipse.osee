@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
-import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
@@ -130,7 +130,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       if (!SkynetTransaction.isOverrideAccess()) {
          for (Attribute<?> attr : artifact.getAttributes()) {
             if (attr.isDirty()) {
-               XResultData rd = OseeApiService.get().getAccessControlService().hasAttributeTypePermission(
+               XResultData rd = ServiceUtil.getOseeClient().getAccessControlService().hasAttributeTypePermission(
                   Collections.singleton(artifact), attr.getAttributeType(), PermissionEnum.WRITE,
                   AccessControlArtifactUtil.getXResultAccessHeader("Skynet Transaction: " + comment, artifact));
                if (rd.isErrors()) {
@@ -140,7 +140,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          }
          for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
             if (rel.isDirty()) {
-               XResultData rd = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+               XResultData rd = ServiceUtil.getOseeClient().getAccessControlService().hasRelationTypePermission(artifact,
                   rel.getRelationType(), Collections.emptyList(), PermissionEnum.WRITE,
                   AccessControlArtifactUtil.getXResultAccessHeader("Skynet Transaction: " + comment, artifact));
                if (rd.isErrors()) {
@@ -182,7 +182,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
             RelationSide sideToCheck = link.getSide(artifact).oppositeSide();
             RelationTypeSide relTypeSide = new RelationTypeSide(link.getRelationType(), sideToCheck);
             XResultData rd =
-               OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact, relTypeSide, null,
+               ServiceUtil.getOseeClient().getAccessControlService().hasRelationTypePermission(artifact, relTypeSide, null,
                   PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Relation Access Denied",
                      Collections.singleton(artifact), relTypeSide));
             if (rd.isErrors()) {

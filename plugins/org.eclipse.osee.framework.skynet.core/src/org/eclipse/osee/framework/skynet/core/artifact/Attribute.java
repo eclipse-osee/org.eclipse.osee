@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -140,7 +140,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    private void checkIsRenameable(T value) {
       if (getAttributeType().equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
-         XResultData results = OseeApiService.get().getAccessControlService().isRenamable(
+         XResultData results = ServiceUtil.getOseeClient().getAccessControlService().isRenamable(
             Collections.singleton(getArtifact()), new XResultData());
          if (results.isErrors()) {
             throw new OseeStateException(results.toString());

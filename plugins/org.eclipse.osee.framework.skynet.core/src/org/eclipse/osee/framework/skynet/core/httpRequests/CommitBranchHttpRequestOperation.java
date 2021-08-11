@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -106,7 +105,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleResponse(TransactionToken newTransaction, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) {
-      OseeApiService.get().getAccessControlService().removePermissions(sourceBranch);
+      ServiceUtil.getOseeClient().getAccessControlService().removePermissions(sourceBranch);
 
       // Update commit artifact cache with new information
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
