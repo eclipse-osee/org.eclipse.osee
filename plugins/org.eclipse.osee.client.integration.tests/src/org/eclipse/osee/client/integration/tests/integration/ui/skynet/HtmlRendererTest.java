@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.HTMLRenderer;
 import org.junit.After;
 import org.junit.Assert;
@@ -87,8 +87,8 @@ public class HtmlRendererTest {
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
-      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBranch,
-         PermissionEnum.FULLACCESS);
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+         rootBranch, PermissionEnum.FULLACCESS);
 
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(rootBranch);
 

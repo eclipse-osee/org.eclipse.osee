@@ -16,7 +16,6 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -39,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpReques
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.LocalRelationLink;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.After;
 import org.junit.Assert;
@@ -71,7 +71,7 @@ public class RelationIntegrityCheckTest {
    @Before
    public void setUp() throws Exception {
       parentBranch = BranchManager.createTopLevelBranch("1");
-      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
          parentBranch, PermissionEnum.FULLACCESS);
 
       Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");

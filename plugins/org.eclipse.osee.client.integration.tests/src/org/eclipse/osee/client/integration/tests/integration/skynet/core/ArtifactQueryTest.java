@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -61,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifa
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -193,8 +193,8 @@ public class ArtifactQueryTest {
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
-         PermissionEnum.FULLACCESS);
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+         branch, PermissionEnum.FULLACCESS);
 
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
@@ -208,8 +208,8 @@ public class ArtifactQueryTest {
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
-         PermissionEnum.FULLACCESS);
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+         branch, PermissionEnum.FULLACCESS);
 
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
@@ -234,8 +234,8 @@ public class ArtifactQueryTest {
    @Test
    public void testQueryById() {
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
-         PermissionEnum.FULLACCESS);
+      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+         branch, PermissionEnum.FULLACCESS);
 
       List<ArtifactId> newIdsInOrder = new LinkedList<>();
       createArtifactFortestQueryById(newIdsInOrder, branch);
