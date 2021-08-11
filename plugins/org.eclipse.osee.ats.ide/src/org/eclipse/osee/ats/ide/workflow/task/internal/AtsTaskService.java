@@ -125,12 +125,13 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
             if (Strings.isValid(ed.getSelection())) {
                task.setRelatedToState(ed.getSelection());
             }
-            atsApi.getTaskService().createTasks(newTaskSet);
+            NewTaskSet taskSet = atsApi.getTaskService().createTasks(newTaskSet);
             if (newTaskSet.isErrors()) {
                XResultDataUI.report(newTaskSet.getResults(), title);
                return null;
             } else {
-               taskArt = (TaskArtifact) atsApi.getQueryService().getArtifact(task.getId());
+               JaxAtsTask jTask = taskSet.getTaskData().getTasks().iterator().next();
+               taskArt = (TaskArtifact) atsApi.getQueryService().getArtifact(jTask.getId());
             }
          }
       } catch (Exception ex) {
