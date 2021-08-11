@@ -48,19 +48,19 @@ public final class OsgiUtil {
       }
    }
 
-   public static <T> T getService(Class<?> classFromBundle, Class<T> clazz) {
+   public static <T> T getService(Class<?> classFromBundle, Class<T> serviceClass) {
 
       BundleContext context = FrameworkUtil.getBundle(classFromBundle).getBundleContext();
       if (context == null) {
          throw new OseeCoreException("BundleContext is null for " + classFromBundle);
       }
-      ServiceReference<T> serviceReference = context.getServiceReference(clazz);
+      ServiceReference<T> serviceReference = context.getServiceReference(serviceClass);
       if (serviceReference == null) {
-         throw new OseeCoreException("ServiceReference is null for " + clazz);
+         throw new OseeCoreException("ServiceReference is null for " + serviceClass);
       }
       T service = context.getService(serviceReference);
       if (service == null) {
-         throw new OseeCoreException("getService is null for " + clazz);
+         throw new OseeCoreException("getService is null for " + serviceClass);
       }
       return service;
    }

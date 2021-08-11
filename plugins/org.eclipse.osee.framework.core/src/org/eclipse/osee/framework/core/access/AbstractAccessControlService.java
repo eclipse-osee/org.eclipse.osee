@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.internal.OseeApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -134,8 +133,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
          } else {
             boolean objectHasAccessSet = !getAccessControlList(branch).isEmpty();
             if (objectHasAccessSet) {
-               XResultData rd2 = OseeApiService.get().getAccessControlService().hasBranchPermission(subject, branch,
-                  PermissionEnum.FULLACCESS, null);
+               XResultData rd2 = hasBranchPermission(subject, branch, PermissionEnum.FULLACCESS, null);
                if (rd2.isErrors()) {
                   rd.errorf("User %s DOES NOT have Access Modify rights for Branch %s: Reason [No FULL_ACCESS]",
                      subject.getName(), branch.toStringWithId());
@@ -232,8 +230,8 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
                artifactAccess = false;
             }
             if (objectHasAccessSet) {
-               XResultData rd2 = OseeApiService.get().getAccessControlService().hasArtifactPermission(subject,
-                  Collections.singleton(artifact), PermissionEnum.FULLACCESS, null);
+               XResultData rd2 =
+                  hasArtifactPermission(subject, Collections.singleton(artifact), PermissionEnum.FULLACCESS, null);
                if (rd2.isErrors()) {
                   rd.errorf("User %s DOES NOT have Access Modify rights for Artifact %s: Reason [No FULL_ACCESS]",
                      subject.getName(), artifact.toStringWithId());
@@ -573,5 +571,4 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    public Collection<IOseeAccessProvider> getOseeAccessProviders() {
       return oseeAccessProviders;
    }
-
 }
