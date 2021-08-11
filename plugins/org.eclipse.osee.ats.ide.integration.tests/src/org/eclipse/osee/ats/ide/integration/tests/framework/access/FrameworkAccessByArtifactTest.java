@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.ide.integration.tests.OseeApiService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -33,8 +33,9 @@ import org.junit.Test;
  */
 public class FrameworkAccessByArtifactTest {
 
-   public static AtsApi atsApi;
-   private static BranchToken reqWorkBrch;
+   private AtsApi atsApi;
+   private BranchToken reqWorkBrch;
+   private IAccessControlService accessControlService;
 
    /**
     * With the ATS CM system, access control uses branch and artifact access control, but the context id based access
@@ -50,31 +51,31 @@ public class FrameworkAccessByArtifactTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith only has read
-      XResultData rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder),
          PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS,
+         new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.WRITE,
+         new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Kay Jones has read
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Kay Jones does have full or write cause Artifact ACL and Contexts Ids do not kick in
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Same
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
    }
@@ -83,10 +84,10 @@ public class FrameworkAccessByArtifactTest {
    public void testAccessPermissionForAtsWorkingBranchNoContextIds() {
       ensureLoaded();
 
-      OseeApiService.get().getAccessControlService().removePermissions(reqWorkBrch);
+      accessControlService.removePermissions(reqWorkBrch);
       ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      OseeApiService.get().getAccessControlService().setPermission(kayJones, reqWorkBrch, PermissionEnum.FULLACCESS);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.setPermission(kayJones, reqWorkBrch, PermissionEnum.FULLACCESS);
+      accessControlService.clearCaches();
 
       ArtifactToken softReqFolder =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SoftwareRequirementsFolder, reqWorkBrch);
@@ -94,60 +95,59 @@ public class FrameworkAccessByArtifactTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith has NO access
-      XResultData rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder),
          PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS,
+         new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.WRITE,
+         new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Kay Jones only has READ access cause no ATS Context Ids
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Joe Smith has no access
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Add Everyone Read Access
-      OseeApiService.get().getAccessControlService().setPermission(CoreUserGroups.Everyone, reqWorkBrch,
-         PermissionEnum.READ);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.setPermission(CoreUserGroups.Everyone, reqWorkBrch, PermissionEnum.READ);
+      accessControlService.clearCaches();
 
       // Joe Smith has read access cause Everyone Read
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
    }
@@ -159,7 +159,7 @@ public class FrameworkAccessByArtifactTest {
    public void testAccessPermissionForNonAtsBranch() {
       ensureLoaded();
 
-      BranchToken branch = FrameworkAccessByAtttributeTypeTest.getOrCreateAccessBranch();
+      BranchToken branch = FrameworkAccessTestUtil.getOrCreateAccessBranch(accessControlService);
 
       Assert.assertNotNull(branch);
       Assert.assertTrue(branch.isValid());
@@ -170,62 +170,61 @@ public class FrameworkAccessByArtifactTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith and Kay Jones have all access
-      XResultData rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder),
          PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS,
+         new XResultData());
+      Assert.assertTrue(rd.isSuccess());
+
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.WRITE,
+         new XResultData());
+      Assert.assertTrue(rd.isSuccess());
+
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.READ, new XResultData());
+      Assert.assertTrue(rd.isSuccess());
+
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
          PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
          PermissionEnum.WRITE, new XResultData());
-      Assert.assertTrue(rd.isSuccess());
-
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.READ, new XResultData());
-      Assert.assertTrue(rd.isSuccess());
-
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS, new XResultData());
-      Assert.assertTrue(rd.isSuccess());
-
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Change the access control
-      OseeApiService.get().getAccessControlService().removePermissions(branch);
+      accessControlService.removePermissions(branch);
       ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      OseeApiService.get().getAccessControlService().setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
-      OseeApiService.get().getAccessControlService().setPermission(CoreUserGroups.Everyone, branch,
-         PermissionEnum.READ);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
+      accessControlService.setPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
+      accessControlService.clearCaches();
 
       // Joe Smith should be read only
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.READ,
+         new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS,
+         new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(Collections.singleton(softReqFolder),
-         PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(Collections.singleton(softReqFolder), PermissionEnum.WRITE,
+         new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Kay has full access cause not an ATS branch so ATS context ids aren't in play and branch ACL wins
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
    }
@@ -235,8 +234,8 @@ public class FrameworkAccessByArtifactTest {
       ensureLoaded();
 
       // Clear Branch Access entries
-      OseeApiService.get().getAccessControlService().removePermissions(reqWorkBrch);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.removePermissions(reqWorkBrch);
+      accessControlService.clearCaches();
 
       ArtifactToken virtualFixesSoftReq =
          atsApi.getQueryService().getArtifact(DemoArtifactToken.VirtualFixes, reqWorkBrch);
@@ -244,86 +243,86 @@ public class FrameworkAccessByArtifactTest {
       Assert.assertNotNull(virtualFixesSoftReq);
 
       // Kay Jones has READ access
-      XResultData rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
+      XResultData rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones,
          Collections.singleton(virtualFixesSoftReq), PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Kay Jones has WRITE access
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Joe Smith does have READ access and NOT cause of lock
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
       Assert.assertFalse(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Lock Software Req by Joe Smith
-      atsApi.getAccessControlService().lockArtifacts(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq));
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.lockArtifacts(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq));
+      accessControlService.clearCaches();
 
-      Assert.assertTrue(atsApi.getAccessControlService().hasLock(virtualFixesSoftReq));
+      Assert.assertTrue(accessControlService.hasLock(virtualFixesSoftReq));
 
       // Joe Smith does have READ access cause of USER_LOCK
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Joe Smith does have WRITE access cause of USER_LOCK
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Same
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Kay Jones does have READ access cause of USER_LOCK
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Kay Jones does NOT have WRITE access cause of USER_LOCK
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
       Assert.assertTrue(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Same
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Kay_Jones,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Kay_Jones, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
       Assert.assertTrue(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
       // Joe Smith SHOULD be able to unlock
-      Assert.assertTrue(atsApi.getAccessControlService().canUnlockObject(DemoUsers.Joe_Smith, virtualFixesSoftReq));
+      Assert.assertTrue(accessControlService.canUnlockObject(DemoUsers.Joe_Smith, virtualFixesSoftReq));
 
       // Kay Jones SHOULD NOT be able to unlock
-      Assert.assertFalse(atsApi.getAccessControlService().canUnlockObject(DemoUsers.Kay_Jones, virtualFixesSoftReq));
+      Assert.assertFalse(accessControlService.canUnlockObject(DemoUsers.Kay_Jones, virtualFixesSoftReq));
 
       // UnLock Software Req by Joe Smith
-      atsApi.getAccessControlService().unLockArtifacts(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq));
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.unLockArtifacts(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq));
+      accessControlService.clearCaches();
 
       // Joe Smith does have READ access and NOT cause of lock
-      rd = atsApi.getAccessControlService().hasArtifactPermission(DemoUsers.Joe_Smith,
-         Collections.singleton(virtualFixesSoftReq), PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasArtifactPermission(DemoUsers.Joe_Smith, Collections.singleton(virtualFixesSoftReq),
+         PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
       Assert.assertFalse(rd.toString().contains(PermissionEnum.USER_LOCK.name()));
 
-      Assert.assertFalse(atsApi.getAccessControlService().hasLock(virtualFixesSoftReq));
+      Assert.assertFalse(accessControlService.hasLock(virtualFixesSoftReq));
    }
 
    private void ensureLoaded() {
       FrameworkAccessTestUtil.ensureLoaded();
       atsApi = FrameworkAccessTestUtil.getAtsApi();
+      accessControlService = atsApi.getAccessControlService();
       reqWorkBrch = FrameworkAccessTestUtil.getReqWorkBrch();
    }
-
 }

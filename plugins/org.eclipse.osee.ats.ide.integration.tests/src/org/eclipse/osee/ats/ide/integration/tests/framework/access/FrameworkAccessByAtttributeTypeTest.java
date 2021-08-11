@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.ide.integration.tests.OseeApiService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,8 +33,9 @@ import org.junit.Test;
  */
 public class FrameworkAccessByAtttributeTypeTest {
 
-   public static AtsApi atsApi;
-   private static BranchToken reqWorkBrch;
+   private AtsApi atsApi;
+   private BranchToken reqWorkBrch;
+   private IAccessControlService accessControlService;
 
    /**
     * With the ATS CM system, access control uses branch and artifact access control, but the context id based access
@@ -53,31 +53,31 @@ public class FrameworkAccessByAtttributeTypeTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith only has read
-      XResultData rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Kay Jones has read
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Kay Jones does have full or write cause Artifact ACL and Contexts Ids do not kick in
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Same
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
    }
@@ -86,10 +86,10 @@ public class FrameworkAccessByAtttributeTypeTest {
    public void testAccessPermissionForAtsWorkingBranchNoContextIds() {
       ensureLoaded();
 
-      OseeApiService.get().getAccessControlService().removePermissions(reqWorkBrch);
+      accessControlService.removePermissions(reqWorkBrch);
       ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      OseeApiService.get().getAccessControlService().setPermission(kayJones, reqWorkBrch, PermissionEnum.FULLACCESS);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.setPermission(kayJones, reqWorkBrch, PermissionEnum.FULLACCESS);
+      accessControlService.clearCaches();
 
       ArtifactToken softReqFolder =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SoftwareRequirementsFolder, reqWorkBrch);
@@ -97,60 +97,59 @@ public class FrameworkAccessByAtttributeTypeTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith has NO access
-      XResultData rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Kay Jones only has READ access cause no ATS Context Ids
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Joe Smith has no access
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Add Everyone Read Access
-      OseeApiService.get().getAccessControlService().setPermission(CoreUserGroups.Everyone, reqWorkBrch,
-         PermissionEnum.READ);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.setPermission(CoreUserGroups.Everyone, reqWorkBrch, PermissionEnum.READ);
+      accessControlService.clearCaches();
 
       // Joe Smith has read access cause Everyone Read
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Joe_Smith,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Joe_Smith, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
    }
@@ -162,7 +161,7 @@ public class FrameworkAccessByAtttributeTypeTest {
    public void testAccessPermissionForNonAtsBranch() {
       ensureLoaded();
 
-      BranchToken branch = getOrCreateAccessBranch();
+      BranchToken branch = FrameworkAccessTestUtil.getOrCreateAccessBranch(accessControlService);
 
       Assert.assertNotNull(branch);
       Assert.assertTrue(branch.isValid());
@@ -173,75 +172,63 @@ public class FrameworkAccessByAtttributeTypeTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith and Kay Jones have all access
-      XResultData rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
-      Assert.assertTrue(rd.isSuccess());
-
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
-      Assert.assertTrue(rd.isSuccess());
-
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
-      Assert.assertTrue(rd.isSuccess());
-
-      // Change the access control
-      OseeApiService.get().getAccessControlService().removePermissions(branch);
-      ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      OseeApiService.get().getAccessControlService().setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
-      OseeApiService.get().getAccessControlService().setPermission(CoreUserGroups.Everyone, branch,
-         PermissionEnum.READ);
-      atsApi.getAccessControlService().clearCaches();
-
-      // Joe Smith should be read only
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
+      Assert.assertTrue(rd.isSuccess());
+
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
+      Assert.assertTrue(rd.isSuccess());
+
+      // Change the access control
+      accessControlService.removePermissions(branch);
+      ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
+      accessControlService.setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
+      accessControlService.setPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
+      accessControlService.clearCaches();
+
+      // Joe Smith should be read only
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
+      Assert.assertTrue(rd.isSuccess());
+
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isErrors());
 
       // Kay has full access cause not an ATS branch so ATS context ids aren't in play and branch ACL wins
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.FULLACCESS, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(DemoUsers.Kay_Jones,
-         Collections.singleton(softReqFolder), CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
+      rd = accessControlService.hasAttributeTypePermission(DemoUsers.Kay_Jones, Collections.singleton(softReqFolder),
+         CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
-   }
-
-   public static BranchToken getOrCreateAccessBranch() {
-      BranchToken branch = BranchManager.getBranch(DemoBranches.SAW_PL_Access_Baseline_Test);
-      if (branch == null) {
-         branch = BranchManager.createBaselineBranch(DemoBranches.SAW_PL, DemoBranches.SAW_PL_Access_Baseline_Test);
-      } else {
-         OseeApiService.get().getAccessControlService().removePermissions(branch);
-         atsApi.getAccessControlService().clearCaches();
-      }
-      return branch;
    }
 
    @Test
@@ -249,8 +236,8 @@ public class FrameworkAccessByAtttributeTypeTest {
       ensureLoaded();
 
       // Clear Branch Access entries
-      OseeApiService.get().getAccessControlService().removePermissions(reqWorkBrch);
-      atsApi.getAccessControlService().clearCaches();
+      accessControlService.removePermissions(reqWorkBrch);
+      accessControlService.clearCaches();
 
       ArtifactToken softReqFolder =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SoftwareRequirementsFolder, reqWorkBrch);
@@ -258,12 +245,12 @@ public class FrameworkAccessByAtttributeTypeTest {
       Assert.assertNotNull(softReqFolder);
 
       // Joe Smith has READ access
-      XResultData rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      XResultData rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.READ, new XResultData());
       Assert.assertTrue(rd.isSuccess());
 
       // Joe Smith has WRITE access
-      rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(softReqFolder),
+      rd = accessControlService.hasAttributeTypePermission(Collections.singleton(softReqFolder),
          CoreAttributeTypes.Name, PermissionEnum.WRITE, new XResultData());
       Assert.assertTrue(rd.isSuccess());
    }
@@ -271,7 +258,7 @@ public class FrameworkAccessByAtttributeTypeTest {
    private void ensureLoaded() {
       FrameworkAccessTestUtil.ensureLoaded();
       atsApi = FrameworkAccessTestUtil.getAtsApi();
+      accessControlService = atsApi.getAccessControlService();
       reqWorkBrch = FrameworkAccessTestUtil.getReqWorkBrch();
    }
-
 }

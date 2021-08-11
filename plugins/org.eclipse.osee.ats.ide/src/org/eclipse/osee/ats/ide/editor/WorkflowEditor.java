@@ -50,8 +50,8 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeOutlinePage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.internal.OseeApiService;
 import org.eclipse.osee.ats.ide.navigate.RecentlyVisitedNavigateItems;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalMemberProvider;
@@ -619,7 +619,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    }
 
    public boolean isAccessControlWrite() {
-      return OseeApiService.get().getAccessControlService().hasArtifactPermission(workItem, PermissionEnum.WRITE,
+      return ServiceUtil.getOseeClient().getAccessControlService().hasArtifactPermission(workItem, PermissionEnum.WRITE,
          null).isSuccess();
    }
 

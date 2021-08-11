@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.ide.integration.tests.OseeApiService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -31,14 +31,16 @@ import org.junit.Test;
  */
 public class FrameworkAccessByContextIdsTest {
 
-   public static AtsApi atsApi;
-   private static BranchToken reqWorkBrch, testWorkBrch;
+   private AtsApi atsApi;
+   private BranchToken reqWorkBrch;
+   private BranchToken testWorkBrch;
+   private IAccessControlService accessControlService;
 
    @Test
    public void testAccessPermissionForAtsWorkingBranchContextIds_SoftwareRequirementsAndChildren() {
       ensureLoaded();
 
-      OseeApiService.get().getAccessControlService().removePermissions(reqWorkBrch);
+      accessControlService.removePermissions(reqWorkBrch);
       atsApi.getAccessControlService().clearCaches();
 
       /**
@@ -94,7 +96,7 @@ public class FrameworkAccessByContextIdsTest {
    public void testAccessPermissionForAtsWorkingBranchContextIds_SystemRequirementsAndChildren() {
       ensureLoaded();
 
-      OseeApiService.get().getAccessControlService().removePermissions(reqWorkBrch);
+      accessControlService.removePermissions(reqWorkBrch);
       atsApi.getAccessControlService().clearCaches();
 
       /**
@@ -150,7 +152,7 @@ public class FrameworkAccessByContextIdsTest {
    public void testAccessPermissionForAtsWorkingBranchContextIds_SoftwareReqTestWithQualAttrType() {
       ensureLoaded();
 
-      OseeApiService.get().getAccessControlService().removePermissions(testWorkBrch);
+      accessControlService.removePermissions(testWorkBrch);
       atsApi.getAccessControlService().clearCaches();
 
       /**
@@ -196,7 +198,7 @@ public class FrameworkAccessByContextIdsTest {
    public void testAccessPermissionForAtsWorkingBranchContextIds_SoftwareReqTestWithValidationRelType() {
       ensureLoaded();
 
-      OseeApiService.get().getAccessControlService().removePermissions(testWorkBrch);
+      accessControlService.removePermissions(testWorkBrch);
       atsApi.getAccessControlService().clearCaches();
 
       /**
@@ -250,8 +252,8 @@ public class FrameworkAccessByContextIdsTest {
    private void ensureLoaded() {
       FrameworkAccessTestUtil.ensureLoaded();
       atsApi = FrameworkAccessTestUtil.getAtsApi();
+      accessControlService = atsApi.getAccessControlService();
       reqWorkBrch = FrameworkAccessTestUtil.getReqWorkBrch();
       testWorkBrch = FrameworkAccessTestUtil.getTestWorkBrch();
    }
-
 }

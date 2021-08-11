@@ -14,25 +14,17 @@
 package org.eclipse.osee.ats.ide.util;
 
 import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Donald G. Dunne
  */
 public class ServiceUtil {
-   @SuppressWarnings({"rawtypes", "unchecked"})
-   public static <T> T getService(Class<T> clazz) {
-      BundleContext context = getContext();
-      if (context == null) {
-         return null;
-      }
-      ServiceReference serviceReference = context.getServiceReference(clazz.getName());
-      if (serviceReference == null) {
-         return null;
-      }
-      return (T) getContext().getService(serviceReference);
+
+   private static <T> T getService(Class<T> serviceClass) {
+      return OsgiUtil.getService(ServiceUtil.class, serviceClass);
    }
 
    public static OseeClient getOseeClient() {

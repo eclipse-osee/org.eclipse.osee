@@ -31,9 +31,12 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
 
 /**
@@ -160,4 +163,14 @@ public class FrameworkAccessTestUtil {
       return testTeamWf;
    }
 
+   public static BranchToken getOrCreateAccessBranch(IAccessControlService accessControlService) {
+      BranchToken branch = BranchManager.getBranch(DemoBranches.SAW_PL_Access_Baseline_Test);
+      if (branch == null) {
+         branch = BranchManager.createBaselineBranch(DemoBranches.SAW_PL, DemoBranches.SAW_PL_Access_Baseline_Test);
+      } else {
+         accessControlService.removePermissions(branch);
+         accessControlService.clearCaches();
+      }
+      return branch;
+   }
 }
