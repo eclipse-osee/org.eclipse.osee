@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -83,8 +85,8 @@ public class AddRequirementData implements IDbInitializationTask {
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          BranchId childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
-         OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-            SAW_Bld_2, PermissionEnum.FULLACCESS);
+         OsgiUtil.getService(getClass(), OseeClient.class).getAccessControlService().setPermission(
+            UserManager.getUser(DemoUsers.Joe_Smith), SAW_Bld_2, PermissionEnum.FULLACCESS);
 
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE, childBranch);
