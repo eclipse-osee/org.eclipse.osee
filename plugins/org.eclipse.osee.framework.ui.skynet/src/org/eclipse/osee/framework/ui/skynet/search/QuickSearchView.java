@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -248,7 +248,7 @@ public class QuickSearchView extends GenericViewPart {
          panel.setLayout(gL);
          panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-         if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+         if (ServiceUtil.accessControlService().isOseeAdmin()) {
             idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
             idSearchComposite.addListener(idSearchListener);
          }
@@ -276,7 +276,7 @@ public class QuickSearchView extends GenericViewPart {
 
          applicability = new QuickSearchApplicabilityToken(appSearchGroup, this);
          applicability.create();
-         if (!OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+         if (!ServiceUtil.accessControlService().isOseeAdmin()) {
             idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
             idSearchComposite.addListener(idSearchListener);
          }
@@ -352,7 +352,7 @@ public class QuickSearchView extends GenericViewPart {
                branchLabel.setText("Error: Must Select a Branch");
             }
 
-            XResultData rd = OseeApiService.get().getAccessControlService().hasBranchPermission(branch,
+            XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(branch,
                PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Select Branch", branch));
             if (rd.isErrors()) {
                XResultDataDialog.open(rd, "Branch Select Failed", "Access Denied for branch [%s]", branch);
@@ -402,7 +402,7 @@ public class QuickSearchView extends GenericViewPart {
             final BranchToken branch = branchSelect.getData();
             if (branch == null) {
                branchLabel.setText("Error: Must Select a Branch");
-            } else if (!OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+            } else if (!ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
                null).isSuccess()) {
                // since AttributeSearchListener is called when Select Branch is selected, only display if this is the guid search button
                if (event.widget instanceof Button && ((Button) event.widget).getText().equals("Search")) {

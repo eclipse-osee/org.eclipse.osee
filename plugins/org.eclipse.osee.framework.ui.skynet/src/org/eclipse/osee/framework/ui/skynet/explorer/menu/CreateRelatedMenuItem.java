@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.explorer.MenuPermissions;
@@ -96,7 +96,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
                relationTypeSide = RelationTypeSide.create(relationType, RelationSide.SIDE_A);
             }
 
-            XResultData rd = OseeApiService.get().getAccessControlService().hasRelationTypePermission(existingArtifact,
+            XResultData rd = ServiceUtil.accessControlService().hasRelationTypePermission(existingArtifact,
                relationTypeSide, null, PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Related",
                   Collections.singleton(existingArtifact), relationTypeSide));
 
@@ -109,7 +109,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
          } else if (obj instanceof Artifact) {
             Artifact parentArt = (Artifact) obj;
 
-            boolean hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(parentArt,
+            boolean hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(parentArt,
                CoreRelationTypes.DefaultHierarchical_Child, null, PermissionEnum.WRITE, null).isSuccess();
 
             if (!hasPermission) {
@@ -223,7 +223,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
          MenuPermissions permiss = new MenuPermissions(artifact);
 
-         boolean hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+         boolean hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
             relationSide, Collections.emptyList(), PermissionEnum.WRITE, null).isSuccess();
 
          menuItem.setEnabled(permiss.isWritePermission() && hasPermission);

@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -569,7 +569,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    private static XResultData isBranchReadable(BranchToken branch) {
       if (branch != null) {
-         return OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+         return ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
             AccessControlArtifactUtil.getXResultAccessHeader("Branch Selection", branch));
       }
       return null;

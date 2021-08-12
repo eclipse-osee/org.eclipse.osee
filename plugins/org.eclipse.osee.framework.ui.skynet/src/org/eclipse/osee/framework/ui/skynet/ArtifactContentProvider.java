@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -86,7 +86,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
          try {
-            if (OseeApiService.get().getAccessControlService().hasArtifactPermission(parentItem, PermissionEnum.READ,
+            if (ServiceUtil.accessControlService().hasArtifactPermission(parentItem, PermissionEnum.READ,
                null).isSuccess()) {
                Collection<Artifact> children = parentItem.getChildren();
                List<RelationLink> relationsAll = parentItem.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
@@ -181,7 +181,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
          try {
-            if (OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
+            if (ServiceUtil.accessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
                null).isSuccess()) {
                if (artifact.isDeleted()) {
                   return false;

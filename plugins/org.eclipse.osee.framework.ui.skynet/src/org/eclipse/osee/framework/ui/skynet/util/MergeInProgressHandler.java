@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -173,7 +173,7 @@ public class MergeInProgressHandler {
       String[] choices;
       boolean isAdmin = false;
       try {
-         if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+         if (ServiceUtil.accessControlService().isOseeAdmin()) {
             isAdmin = true;
          }
       } catch (OseeCoreException ex) {

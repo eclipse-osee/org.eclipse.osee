@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
@@ -40,7 +40,7 @@ public final class ArtifactPrompt {
 
    public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean toReturn = false;
-      XResultData rd = OseeApiService.get().getAccessControlService().hasAttributeTypePermission(artifacts,
+      XResultData rd = ServiceUtil.accessControlService().hasAttributeTypePermission(artifacts,
          attributeType, PermissionEnum.WRITE,
          AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute", artifacts, attributeType));
 

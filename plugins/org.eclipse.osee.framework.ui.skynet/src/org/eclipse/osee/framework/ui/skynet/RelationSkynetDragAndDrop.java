@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.HandleImport;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
@@ -147,7 +147,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                   }
                }
 
-               boolean hadPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+               boolean hadPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
                   relTypeSorter, relatedArts, PermissionEnum.WRITE, null).isSuccess();
 
                if (canRelate) {
@@ -186,7 +186,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
                boolean hasPermission = false;
                try {
-                  hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+                  hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
                      relTypeSide, relatedArts, PermissionEnum.WRITE, null).isSuccess();
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -209,7 +209,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                List<Artifact> related = Arrays.asList(
                   artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA());
 
-               hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact, rts,
+               hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, rts,
                   related, PermissionEnum.WRITE, null).isSuccess();
 
             } catch (OseeCoreException ex) {

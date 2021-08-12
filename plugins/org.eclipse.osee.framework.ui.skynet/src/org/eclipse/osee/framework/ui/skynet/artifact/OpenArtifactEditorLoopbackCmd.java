@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.BaseArtifactLoopbackCmd;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -47,7 +47,7 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
          try {
             boolean hasPermissionToRead = false;
             try {
-               hasPermissionToRead = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact,
+               hasPermissionToRead = ServiceUtil.accessControlService().hasArtifactPermission(artifact,
                   PermissionEnum.READ, null).isSuccess();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

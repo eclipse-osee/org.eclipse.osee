@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
@@ -318,7 +318,7 @@ public class ArtifactFormPage extends FormPage {
    }
 
    private String getLockedString(Artifact artifact) {
-      ArtifactToken subject = OseeApiService.get().getAccessControlService().getSubjectFromLockedObject(artifact);
+      ArtifactToken subject = ServiceUtil.accessControlService().getSubjectFromLockedObject(artifact);
       if (subject.isValid()) {
          return "<b>LOCKED:</b> " + subject.getName() + " ";
       }

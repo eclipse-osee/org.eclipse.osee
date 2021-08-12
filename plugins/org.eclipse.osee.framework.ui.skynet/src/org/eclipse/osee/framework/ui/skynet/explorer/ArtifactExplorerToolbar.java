@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -109,8 +109,8 @@ public class ArtifactExplorerToolbar {
 
                   @Override
                   protected IStatus run(IProgressMonitor monitor) {
-                     OseeApiService.get().getAccessControlService().clearCaches();
-                     OseeApiService.get().getAccessControlService().ensurePopulated();
+                     ServiceUtil.accessControlService().clearCaches();
+                     ServiceUtil.accessControlService().ensurePopulated();
 
                      Displays.ensureInDisplayThread(new Runnable() {
 
@@ -119,7 +119,7 @@ public class ArtifactExplorerToolbar {
                            artifactExplorer.setRefreshing(false);
                            artifactExplorer.refreshBranchWarning();
                            ArtifactExplorer.exploreBranch(artifactExplorer.getBranch());
-                           if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+                           if (ServiceUtil.accessControlService().isOseeAdmin()) {
                               CheckBoxDialog dialog =
                                  new CheckBoxDialog("Admin - Enable Debug", "Enable Branch Access Debug",
                                     "Check to enable Branch Access Debug if instructed to do so");

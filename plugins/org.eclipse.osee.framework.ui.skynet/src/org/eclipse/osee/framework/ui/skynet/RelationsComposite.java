@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -402,7 +402,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
                Set<Artifact> relArts = java.util.Collections.singleton(
                   data.getArtifactA().equals(artifact) ? data.getArtifactB() : data.getArtifactA());
 
-               valid = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact, relationTypeSide,
+               valid = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, relationTypeSide,
                   relArts, PermissionEnum.WRITE, null).isSuccess();
 
             } catch (OseeCoreException ex) {
@@ -554,7 +554,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
             artifacts.add(group.getArtifact());
          }
 
-         hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(toCheck, relationTypeSide,
+         hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(toCheck, relationTypeSide,
             artifacts, PermissionEnum.WRITE, null).isSuccess();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

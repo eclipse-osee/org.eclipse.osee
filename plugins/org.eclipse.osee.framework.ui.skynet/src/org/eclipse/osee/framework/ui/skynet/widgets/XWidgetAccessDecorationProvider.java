@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator.Decorator;
@@ -59,7 +59,7 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          final XResultData rd = AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute",
             Collections.singleton(artifact), attributeType);
          try {
-            OseeApiService.get().getAccessControlService().hasAttributeTypePermission(Collections.singleton(artifact),
+            ServiceUtil.accessControlService().hasAttributeTypePermission(Collections.singleton(artifact),
                attributeType, PermissionEnum.WRITE, rd);
          } catch (OseeCoreException ex) {
             rd.errorf("Error computing access permissions %s", Lib.exceptionToString(ex));

@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -320,7 +320,7 @@ public final class ArtifactImageManager {
          } else {
             KeyedImage imageKey = getArtifactTypeImage(type);
             if (imageKey != null) {
-               if (OseeApiService.get().getAccessControlService().hasLock(artifact)) {
+               if (ServiceUtil.accessControlService().hasLock(artifact)) {
                   return getLockedImage(imageKey, artifact);
                }
                return ImageManager.setupImage(imageKey);
@@ -338,7 +338,7 @@ public final class ArtifactImageManager {
       try {
          baseImageEnum = BaseImage.getBaseImageEnum(artifact);
 
-         if (OseeApiService.get().getAccessControlService().hasLock(artifact)) {
+         if (ServiceUtil.accessControlService().hasLock(artifact)) {
             return getLockedImage(baseImageEnum, artifact);
          }
 
@@ -355,7 +355,7 @@ public final class ArtifactImageManager {
 
    private static String getLockedImage(KeyedImage baseImageEnum, Artifact artifact) {
       KeyedImage locked = FrameworkImage.LOCKED_NO_ACCESS;
-      if (OseeApiService.get().getAccessControlService().isReadOnly(artifact)) {
+      if (ServiceUtil.accessControlService().isReadOnly(artifact)) {
          locked = FrameworkImage.LOCKED_WITH_ACCESS;
       }
       return ImageManager.setupImageWithOverlay(baseImageEnum, locked, Location.TOP_LEFT).getImageKey();

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.PlatformUI;
 
@@ -70,7 +70,7 @@ public class PurgeArtifactHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return OseeApiService.get().getAccessControlService().isOseeAdmin() && OseeApiService.get().getAccessControlService().hasArtifactPermission(
+      return ServiceUtil.accessControlService().isOseeAdmin() && ServiceUtil.accessControlService().hasArtifactPermission(
          artifacts, PermissionEnum.WRITE, null).isSuccess();
    }
 }

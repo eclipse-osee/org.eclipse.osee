@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.PolicyTableXViewerFactory;
 import org.eclipse.swt.SWT;
@@ -128,7 +128,7 @@ public class PolicyTableViewer {
    public void removeDataFromDB() {
       try {
          for (AccessControlData data : deleteControlList) {
-            OseeApiService.get().getAccessControlService().removeAccessControlDataIf(true, data);
+            ServiceUtil.accessControlService().removeAccessControlDataIf(true, data);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -164,8 +164,8 @@ public class PolicyTableViewer {
          boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
 
          boolean canUnlockObject =
-            OseeApiService.get().getAccessControlService().canUnlockObject(artifact, UserManager.getUser());
-         boolean isUserFullAccess = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact,
+            ServiceUtil.accessControlService().canUnlockObject(artifact, UserManager.getUser());
+         boolean isUserFullAccess = ServiceUtil.accessControlService().hasArtifactPermission(artifact,
             PermissionEnum.FULLACCESS, null).isSuccess();
          return isOseeAccessAdmin || canUnlockObject || isUserFullAccess;
       }

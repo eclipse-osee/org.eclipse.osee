@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
@@ -63,7 +63,7 @@ public final class ChangeUiUtil {
     */
    public static boolean permissionsDeniedWithDialog(BranchToken branch) {
       XResultData rd =
-         OseeApiService.get().getAccessControlService().hasBranchPermission(BranchManager.getBranch(branch),
+         ServiceUtil.accessControlService().hasBranchPermission(BranchManager.getBranch(branch),
             PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Branch Access Denied", branch));
       if (rd.isErrors()) {
          XResultDataDialog.open(rd, "Branch Access Denied", "Access denied to branch:\n\n%s",

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
@@ -155,7 +155,7 @@ public class DatabaseHealth extends AbstractBlam {
       protected void doWork(IProgressMonitor monitor) throws Exception {
          int totalTasks = fixOperations.size() + verifyOperations.size();
          double workPercentage = 1.0 / totalTasks;
-         if (!OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+         if (!ServiceUtil.accessControlService().isOseeAdmin()) {
             throw new OseeAccessDeniedException("Must be a Developer to run this BLAM");
          } else {
             for (DatabaseHealthOperation operation : fixOperations) {

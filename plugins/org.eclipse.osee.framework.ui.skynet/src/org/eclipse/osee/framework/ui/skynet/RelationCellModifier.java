@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Item;
@@ -48,7 +48,7 @@ public class RelationCellModifier implements ICellModifier {
          RelationTypeSide relationTypeSide = new RelationTypeSide(relLink.getRelationType(), relLink.getRelationSide());
 
          boolean canModify =
-            OseeApiService.get().getAccessControlService().hasRelationTypePermission(relLink.getArtifactA(),
+            ServiceUtil.accessControlService().hasRelationTypePermission(relLink.getArtifactA(),
                relationTypeSide, Arrays.asList(relLink.getArtifactB()), PermissionEnum.WRITE, null).isSuccess();
 
          return canModify;

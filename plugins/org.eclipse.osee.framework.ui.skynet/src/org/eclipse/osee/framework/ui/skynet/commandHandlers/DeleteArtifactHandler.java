@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -62,7 +62,7 @@ public class DeleteArtifactHandler extends CommandHandler {
       boolean enabled = false;
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {
-         enabled = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts, PermissionEnum.WRITE,
+         enabled = ServiceUtil.accessControlService().hasArtifactPermission(artifacts, PermissionEnum.WRITE,
             null).isSuccess();
       }
       return enabled;

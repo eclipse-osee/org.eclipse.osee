@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.action.DeleteAction;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
@@ -150,7 +150,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
          if (obj instanceof Artifact) {
             isArtifact = true;
             Artifact art = (Artifact) obj;
-            canModifyDH = OseeApiService.get().getAccessControlService().hasRelationTypePermission(art,
+            canModifyDH = ServiceUtil.accessControlService().hasRelationTypePermission(art,
                CoreRelationTypes.DefaultHierarchical_Child, java.util.Collections.emptyList(), PermissionEnum.WRITE,
                null).isSuccess();
             permiss = new MenuPermissions(art);
@@ -158,7 +158,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
             permiss = new MenuPermissions((Artifact) null);
          }
          boolean isBranchEditable =
-            BranchManager.isEditable(getBranch()) && OseeApiService.get().getAccessControlService().hasBranchPermission(
+            BranchManager.isEditable(getBranch()) && ServiceUtil.accessControlService().hasBranchPermission(
                getBranch(), PermissionEnum.WRITE, null).isSuccess();
 
          boolean locked = permiss.isLocked();
@@ -280,7 +280,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
                   parent = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
                }
 
-               XResultData rd = OseeApiService.get().getAccessControlService().hasArtifactPermission(parent,
+               XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(parent,
                   PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Child Error", parent));
                if (rd.isErrors()) {
                   XResultDataDialog.open(rd, "New Child Error",
@@ -640,11 +640,11 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
             try {
                if (!unlockArtifacts.isEmpty()) {
-                  OseeApiService.get().getAccessControlService().unLockArtifacts(UserManager.getUser(),
+                  ServiceUtil.accessControlService().unLockArtifacts(UserManager.getUser(),
                      Collections.castAll(unlockArtifacts));
                }
                if (!lockArtifacts.isEmpty()) {
-                  OseeApiService.get().getAccessControlService().lockArtifacts(UserManager.getUser(), lockArtifacts);
+                  ServiceUtil.accessControlService().lockArtifacts(UserManager.getUser(), lockArtifacts);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

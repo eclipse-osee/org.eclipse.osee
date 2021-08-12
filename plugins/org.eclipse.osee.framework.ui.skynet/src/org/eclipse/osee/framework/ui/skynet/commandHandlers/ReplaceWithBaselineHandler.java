@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceAttributeWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
@@ -85,7 +85,7 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
 
          try {
             isEnabled =
-               isEnabled && OseeApiService.get().getAccessControlService().hasArtifactPermission(change.getChangeArtifact(),
+               isEnabled && ServiceUtil.accessControlService().hasArtifactPermission(change.getChangeArtifact(),
                   PermissionEnum.WRITE, null).isSuccess();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading changes for change report handler");

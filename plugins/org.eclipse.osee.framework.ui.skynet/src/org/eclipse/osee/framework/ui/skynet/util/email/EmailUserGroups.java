@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
@@ -57,7 +57,7 @@ public class EmailUserGroups extends XNavigateItemAction {
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup, COMMON,
          DeletionFlag.EXCLUDE_DELETED)) {
          // Only add group if have read permissions
-         if (!art.getName().equals("Root Artifact") && OseeApiService.get().getAccessControlService().hasArtifactPermission(art,
+         if (!art.getName().equals("Root Artifact") && ServiceUtil.accessControlService().hasArtifactPermission(art,
             PermissionEnum.READ, null).isSuccess()) {
             artifacts.add(art);
          }

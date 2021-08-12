@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CompareArtifactAction;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorAction;
@@ -243,7 +243,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       final MenuItem replaceWithMenu = new MenuItem(popupMenu, SWT.CASCADE);
       replaceWithMenu.setText("&Replace Attribute with Version");
       try {
-         replaceWithMenu.setEnabled(OseeApiService.get().getAccessControlService().isOseeAdmin());
+         replaceWithMenu.setEnabled(ServiceUtil.accessControlService().isOseeAdmin());
       } catch (Exception ex) {
          replaceWithMenu.setEnabled(false);
       }

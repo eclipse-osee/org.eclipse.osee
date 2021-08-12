@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
@@ -43,9 +43,9 @@ public class CompressWordAttributesHandler extends CommandHandler {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
       if (!artifacts.isEmpty()) {
-         boolean writePermission = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts.get(0),
+         boolean writePermission = ServiceUtil.accessControlService().hasArtifactPermission(artifacts.get(0),
             PermissionEnum.WRITE, null).isSuccess();
-         enabled = writePermission && OseeApiService.get().getAccessControlService().isOseeAdmin();
+         enabled = writePermission && ServiceUtil.accessControlService().isOseeAdmin();
       }
       return enabled;
    }

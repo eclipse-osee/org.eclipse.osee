@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
@@ -47,7 +47,7 @@ public class CommitIntoHandler extends CommitHandler {
       BranchId sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       BranchType[] allowedTypes;
-      if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+      if (ServiceUtil.accessControlService().isOseeAdmin()) {
          allowedTypes = new BranchType[] {BranchType.WORKING, BranchType.BASELINE};
       } else {
          allowedTypes = new BranchType[] {BranchType.WORKING};
