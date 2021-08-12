@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -42,7 +42,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
       changes = new ArrayList<>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
       if (changes.size() == 1) {
          Artifact sampleArtifact = changes.iterator().next().getChangeArtifact();
-         return OseeApiService.get().getAccessControlService().hasArtifactPermission(sampleArtifact, PermissionEnum.READ,
+         return ServiceUtil.accessControlService().hasArtifactPermission(sampleArtifact, PermissionEnum.READ,
             null).isSuccess();
       }
       return false;

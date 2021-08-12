@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Donald G. Dunne
@@ -51,21 +51,21 @@ public class MenuPermissions {
 
       for (Artifact objectArtifact : artifacts) {
          writePermission =
-            writePermission && OseeApiService.get().getAccessControlService().hasArtifactPermission(objectArtifact,
+            writePermission && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
                PermissionEnum.WRITE, null).isSuccess() && BranchManager.isEditable(objectArtifact.getBranch());
          readPermission =
-            readPermission && OseeApiService.get().getAccessControlService().hasArtifactPermission(objectArtifact,
+            readPermission && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
                PermissionEnum.READ, null).isSuccess();
-         fullAccess = fullAccess && OseeApiService.get().getAccessControlService().hasArtifactPermission(objectArtifact,
+         fullAccess = fullAccess && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
             PermissionEnum.FULLACCESS, null).isSuccess();
-         isLocked = isLocked || OseeApiService.get().getAccessControlService().hasLock(objectArtifact);
+         isLocked = isLocked || ServiceUtil.accessControlService().hasLock(objectArtifact);
          accessToRemoveLock =
-            accessToRemoveLock && OseeApiService.get().getAccessControlService().canUnlockObject(objectArtifact,
+            accessToRemoveLock && ServiceUtil.accessControlService().canUnlockObject(objectArtifact,
                UserManager.getUser());
 
          // acquire the name of the subject that has the lock
          ArtifactToken subject =
-            OseeApiService.get().getAccessControlService().getSubjectFromLockedObject(objectArtifact);
+            ServiceUtil.accessControlService().getSubjectFromLockedObject(objectArtifact);
 
          if (isLocked && subject.isValid()) {
             if (combinationSubject == null) {
@@ -103,7 +103,7 @@ public class MenuPermissions {
    }
 
    public boolean isBranchReadable(BranchId branch) {
-      return OseeApiService.get().getAccessControlService().hasBranchPermission(BranchManager.getBranch(branch),
+      return ServiceUtil.accessControlService().hasBranchPermission(BranchManager.getBranch(branch),
          PermissionEnum.READ, null).isSuccess();
    }
 

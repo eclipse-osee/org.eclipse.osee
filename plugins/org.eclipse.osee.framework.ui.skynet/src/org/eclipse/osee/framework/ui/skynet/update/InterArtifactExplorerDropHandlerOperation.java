@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IntroduceArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
@@ -130,12 +130,12 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    }
 
    private XResultData isAccessAllowed(BranchToken sourceBranch, BranchToken destinationBranch) {
-      XResultData rd = OseeApiService.get().getAccessControlService().hasBranchPermission(destinationBranch,
+      XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(destinationBranch,
          PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Drag/Drop Artifact", sourceBranch));
       if (rd.isErrors()) {
          return rd;
       }
-      rd = OseeApiService.get().getAccessControlService().hasBranchPermission(sourceBranch, PermissionEnum.READ,
+      rd = ServiceUtil.accessControlService().hasBranchPermission(sourceBranch, PermissionEnum.READ,
          AccessControlArtifactUtil.getXResultAccessHeader("Drag/Drop Artifact", sourceBranch));
       return rd;
    }

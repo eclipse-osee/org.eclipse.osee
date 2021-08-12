@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -61,16 +61,15 @@ public class AccessControlDetails extends Action {
 
       // Need new XResultData for each or Errors will collide with each other
       rd.logf("Read Access: \n\n");
-      rd.addRaw(OseeApiService.get().getAccessControlService().hasAttributeTypePermission(
-         Collections.singleton(artifact), attrType, PermissionEnum.READ, new XResultData()).toString());
+      rd.addRaw(ServiceUtil.accessControlService().hasAttributeTypePermission(Collections.singleton(artifact), attrType,
+         PermissionEnum.READ, new XResultData()).toString());
 
       rd.logf("\n\nWrite Access: \n\n");
-      rd.addRaw(OseeApiService.get().getAccessControlService().hasAttributeTypePermission(
-         Collections.singleton(artifact), attrType, PermissionEnum.WRITE, new XResultData()).toString());
+      rd.addRaw(ServiceUtil.accessControlService().hasAttributeTypePermission(Collections.singleton(artifact), attrType,
+         PermissionEnum.WRITE, new XResultData()).toString());
 
       rd.logf("\n\nFull Access: \n\n");
-      rd.addRaw(OseeApiService.get().getAccessControlService().hasAttributeTypePermission(
-         Collections.singleton(artifact), attrType, PermissionEnum.FULLACCESS, new XResultData()).toString());
+      rd.addRaw(ServiceUtil.accessControlService().hasAttributeTypePermission(Collections.singleton(artifact), attrType,
+         PermissionEnum.FULLACCESS, new XResultData()).toString());
    }
-
 }

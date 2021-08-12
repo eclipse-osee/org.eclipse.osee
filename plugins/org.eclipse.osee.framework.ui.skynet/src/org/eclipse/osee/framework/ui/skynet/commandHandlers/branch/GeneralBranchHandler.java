@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -64,7 +64,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       List<BranchToken> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
       for (BranchToken branch : selectedBranches) {
          confirmDialogResults.logf("Branch: %s\n", branch.toStringWithId());
-         if (!OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.WRITE,
+         if (!ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.WRITE,
             errorResults).isSuccess()) {
             errorResults.errorf("No write permission for Branch %s.\n\n", branch.toStringWithId());
          }
@@ -87,7 +87,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return !branches.isEmpty() && (OseeApiService.get().getAccessControlService().isOseeAdmin() || canEnableBranches(
+      return !branches.isEmpty() && (ServiceUtil.accessControlService().isOseeAdmin() || canEnableBranches(
          branches));
    }
 

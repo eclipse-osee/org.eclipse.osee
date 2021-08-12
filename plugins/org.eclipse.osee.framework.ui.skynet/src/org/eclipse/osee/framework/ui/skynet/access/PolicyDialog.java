@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -155,7 +155,7 @@ public class PolicyDialog extends Dialog {
       setMaxModificationLevel();
 
       if (accessControlledObject instanceof ArtifactAccessObject) {
-         isArtifactLockedBeforeDialog = OseeApiService.get().getAccessControlService().hasLock(
+         isArtifactLockedBeforeDialog = ServiceUtil.accessControlService().hasLock(
             ((ArtifactAccessObject) accessControlledObject).getArtifact());
       }
 
@@ -260,10 +260,10 @@ public class PolicyDialog extends Dialog {
    private void setMaxModificationLevel() {
       PermissionEnum permission = null;
       if (accessControlledObject.isArtifact()) {
-         permission = OseeApiService.get().getAccessControlService().getPermission(
+         permission = ServiceUtil.accessControlService().getPermission(
             ((ArtifactAccessObject) accessControlledObject).getArtifact());
       } else if (accessControlledObject.isBranch()) {
-         permission = OseeApiService.get().getAccessControlService().getPermission(
+         permission = ServiceUtil.accessControlService().getPermission(
             ((BranchAccessObject) accessControlledObject).getBranch());
       } else {
          throw new OseeArgumentException("Unhandled object %s", accessControlledObject);
@@ -292,10 +292,10 @@ public class PolicyDialog extends Dialog {
    private boolean isAccessEnabled() {
       accessModifyEnabled = new XResultData();
       if (accessControlledObject.isArtifact()) {
-         OseeApiService.get().getAccessControlService().isModifyAccessEnabled(UserManager.getUser(),
+         ServiceUtil.accessControlService().isModifyAccessEnabled(UserManager.getUser(),
             ((ArtifactAccessObject) accessControlledObject).getArtifact(), accessModifyEnabled);
       } else if (accessControlledObject.isBranch()) {
-         OseeApiService.get().getAccessControlService().isModifyAccessEnabled(UserManager.getUser(),
+         ServiceUtil.accessControlService().isModifyAccessEnabled(UserManager.getUser(),
             accessControlledObject.getBranch(), accessModifyEnabled);
       } else {
          accessModifyEnabled.errorf("User %s DOES NOT have Access Modify rights for %s: Reason [Unhandled Object]",
@@ -309,17 +309,17 @@ public class PolicyDialog extends Dialog {
       for (AccessControlData data : policyTableViewer.getAccessControlList().values()) {
          if (data.isDirty()) {
             boolean isRecursionAllowed = chkChildrenPermission.getSelection();
-            OseeApiService.get().getAccessControlService().persistPermission(data, isRecursionAllowed);
+            ServiceUtil.accessControlService().persistPermission(data, isRecursionAllowed);
          }
       }
       policyTableViewer.removeDataFromDB();
-      OseeApiService.get().getAccessControlService().clearCaches();
+      ServiceUtil.accessControlService().clearCaches();
 
       // Send artifact locked event if changed in dialog
       if (isArtifactLockedBeforeDialog != null) {
          try {
             Artifact artifact = (Artifact) ((ArtifactAccessObject) accessControlledObject).getArtifact();
-            boolean isArtifactLockedAfterDialog = OseeApiService.get().getAccessControlService().hasLock(artifact);
+            boolean isArtifactLockedAfterDialog = ServiceUtil.accessControlService().hasLock(artifact);
             if (isArtifactLockedAfterDialog != isArtifactLockedBeforeDialog) {
                AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
                event.setBranch(artifact.getBranch());

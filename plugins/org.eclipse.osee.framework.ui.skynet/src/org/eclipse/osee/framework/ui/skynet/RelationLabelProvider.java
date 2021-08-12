@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -67,7 +67,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       boolean isLocked = true;
       try {
 
-         boolean hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+         boolean hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
             relationTypeSide, Collections.emptyList(), PermissionEnum.WRITE, null).isSuccess();
          isLocked = !hasPermission;
       } catch (OseeCoreException ex) {

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
@@ -52,7 +52,7 @@ public class ArtifactClipboard {
       // Remove Artifact that do not have write permission.
       while (artIterator.hasNext()) {
          Artifact art = artIterator.next();
-         if (!OseeApiService.get().getAccessControlService().hasArtifactPermission(art, permission, null).isSuccess()) {
+         if (!ServiceUtil.accessControlService().hasArtifactPermission(art, permission, null).isSuccess()) {
             artIterator.remove();
          }
       }

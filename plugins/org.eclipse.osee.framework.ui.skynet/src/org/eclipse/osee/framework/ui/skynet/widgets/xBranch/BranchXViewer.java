@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.PromptChangeUtil;
@@ -58,7 +58,7 @@ public class BranchXViewer extends XViewer {
       ArrayList<BranchToken> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
          for (BranchToken branch : branches) {
-            OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.READ, rd);
+            ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ, rd);
             if (rd.isSuccess()) {
                if (branch.notEqual(CoreBranches.SYSTEM_ROOT)) {
                   if (!BranchManager.getType(branch).isMergeBranch()) {

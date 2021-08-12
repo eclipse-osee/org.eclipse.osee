@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -37,7 +37,7 @@ public class ArchiveBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return !branches.isEmpty() && OseeApiService.get().getAccessControlService().isOseeAdmin();
+      return !branches.isEmpty() && ServiceUtil.accessControlService().isOseeAdmin();
    }
 
    @Override

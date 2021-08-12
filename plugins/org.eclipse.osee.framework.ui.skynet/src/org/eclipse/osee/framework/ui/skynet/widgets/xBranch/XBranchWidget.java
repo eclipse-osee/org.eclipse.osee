@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -262,7 +262,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                }
             });
 
-            if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+            if (ServiceUtil.accessControlService().isOseeAdmin()) {
                allButton = new ToolItem(toolBar, SWT.CHECK);
                allButton.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
                allButton.setToolTipText("Show All Branches (Admin)");

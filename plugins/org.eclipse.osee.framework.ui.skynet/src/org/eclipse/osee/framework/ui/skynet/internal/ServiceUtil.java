@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.internal;
 
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -65,5 +66,9 @@ public final class ServiceUtil {
          // Do Nothing;
       }
       return result;
+   }
+
+   public static IAccessControlService accessControlService() {
+      return getOseeClient().getAccessControlService();
    }
 }

@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.IArtifactExplorerEventHandler;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.explorer.menu.ArtifactExplorerMenu;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -334,7 +334,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                BranchId branch = BranchId.valueOf(memento.getString(ROOT_BRANCH));
 
                if (BranchManager.branchExists(branch) && !BranchManager.isArchived(
-                  branch) || OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+                  branch) || ServiceUtil.accessControlService().isOseeAdmin()) {
                   Artifact previousArtifact =
                      ArtifactQuery.checkArtifactFromId(ArtifactId.valueOf(memento.getString(ROOT_UUID)), branch);
                   if (previousArtifact != null) {

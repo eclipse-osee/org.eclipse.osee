@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
@@ -197,7 +197,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    private void createAttributesTab() {
-      if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+      if (ServiceUtil.accessControlService().isOseeAdmin()) {
          attrTab = new ArtEdAttrTab(this, getArtifactFromEditorInput());
          try {
             addPage(attrTab);

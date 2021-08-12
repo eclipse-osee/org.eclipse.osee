@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParame
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -133,7 +133,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   }
                }
 
-               valid = OseeApiService.get().getAccessControlService().hasRelationTypePermission(dropTarget,
+               valid = ServiceUtil.accessControlService().hasRelationTypePermission(dropTarget,
                   CoreRelationTypes.DefaultHierarchical_Child, artsOnSameBranchAsDestination, PermissionEnum.WRITE,
                   null).isSuccess();
 
@@ -142,7 +142,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   for (Artifact art : artsOnSameBranchAsDestination) {
                      if (art.hasParent()) {
                         valid =
-                           OseeApiService.get().getAccessControlService().hasRelationTypePermission(art.getParent(),
+                           ServiceUtil.accessControlService().hasRelationTypePermission(art.getParent(),
                               CoreRelationTypes.DefaultHierarchical_Child, Collections.emptyList(),
                               PermissionEnum.WRITE, null).isSuccess();
                      }

@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -91,7 +91,7 @@ public class ArtifactExplorerUtil {
                Control control = treeViewer.getTree();
                if (branch.isValid()) {
                   String warningStr = null;
-                  boolean branchReadable = OseeApiService.get().getAccessControlService().hasBranchPermission(branch,
+                  boolean branchReadable = ServiceUtil.accessControlService().hasBranchPermission(branch,
                      PermissionEnum.READ, new XResultData()).isSuccess();
                   if (artifactExplorer.isRefreshing()) {
                      warningStr = "Refreshing Artifact Explorer";

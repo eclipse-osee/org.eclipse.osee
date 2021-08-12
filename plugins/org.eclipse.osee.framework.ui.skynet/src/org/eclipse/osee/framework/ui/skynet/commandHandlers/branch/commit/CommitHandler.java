@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.MergeInProgressHandler;
@@ -141,7 +141,7 @@ public abstract class CommitHandler extends CommandHandler {
       if (branches.size() == 1) {
          BranchToken branch = branches.iterator().next();
          return useParentBranchValid(
-            branch) || !useParentBranch && OseeApiService.get().getAccessControlService().isOseeAdmin();
+            branch) || !useParentBranch && ServiceUtil.accessControlService().isOseeAdmin();
       }
       return false;
    }

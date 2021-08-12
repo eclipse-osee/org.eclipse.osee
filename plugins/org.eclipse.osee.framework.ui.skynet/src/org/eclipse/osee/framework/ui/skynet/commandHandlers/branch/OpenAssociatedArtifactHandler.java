@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -54,7 +54,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          AWorkbench.popup("ERROR", "No Associated Artifact");
          return null;
       }
-      if (OseeApiService.get().getAccessControlService().hasArtifactPermission(associatedArtifact, PermissionEnum.READ,
+      if (ServiceUtil.accessControlService().hasArtifactPermission(associatedArtifact, PermissionEnum.READ,
          null).isSuccess()) {
          IOseeCmService cmService = ServiceUtil.getOseeCmService();
          if (cmService.isPcrArtifact(associatedArtifact)) {

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
@@ -106,9 +106,9 @@ public class BlamContributionManager implements IXNavigateCommonItem {
             // Create categories first (so can have them up top)
             for (String category : blamOperation.getCategories()) {
                try {
-                  if (OseeApiService.get().getAccessControlService().isOseeAdmin() || !category.contains(
+                  if (ServiceUtil.accessControlService().isOseeAdmin() || !category.contains(
                      "Admin") || category.contains(
-                        "Admin") && OseeApiService.get().getAccessControlService().isOseeAdmin()) {
+                        "Admin") && ServiceUtil.accessControlService().isOseeAdmin()) {
                      createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
                   }
                } catch (OseeCoreException ex) {

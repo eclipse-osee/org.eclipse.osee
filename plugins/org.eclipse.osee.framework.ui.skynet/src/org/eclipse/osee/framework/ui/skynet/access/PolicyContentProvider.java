@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.access.AccessControlData;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 public class PolicyContentProvider implements ITreeContentProvider {
 
@@ -48,14 +48,14 @@ public class PolicyContentProvider implements ITreeContentProvider {
    public Object[] getElements(Object object) {
 
       Collection<AccessControlData> data =
-         OseeApiService.get().getAccessControlService().getAccessControlList(accessControlledObject);
+         ServiceUtil.accessControlService().getAccessControlList(accessControlledObject);
       for (AccessControlData entry : data) {
          if (!deleteControlList.contains(entry)) {
             accessControlList.put(entry.getSubject(), entry);
          }
       }
 
-      for (AccessControlData lockData : OseeApiService.get().getAccessControlService().getAccessControlList(
+      for (AccessControlData lockData : ServiceUtil.accessControlService().getAccessControlList(
          accessControlledObject)) {
          accessControlList.put(lockData.getSubject(), lockData);
       }
