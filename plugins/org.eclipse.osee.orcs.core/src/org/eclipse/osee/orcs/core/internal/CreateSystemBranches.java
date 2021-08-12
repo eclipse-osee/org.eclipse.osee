@@ -65,7 +65,7 @@ public class CreateSystemBranches {
    }
 
    private void populateSystemBranch() {
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.SYSTEM_ROOT, SystemUser.OseeSystem,
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.SYSTEM_ROOT,
          "Add System Root branch artifacts");
       tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
       tx.createArtifact(CoreArtifactTokens.UniversalGroupRoot);
@@ -73,7 +73,7 @@ public class CreateSystemBranches {
    }
 
    private TransactionId populateCommonBranch() {
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
+      TransactionBuilder tx = txFactory.createTransaction(COMMON, "Add Common branch artifacts");
 
       orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
       orcsApi.tokenService().getAttributeTypeJoins().forEach(tx::addOrcsTypeJoin);

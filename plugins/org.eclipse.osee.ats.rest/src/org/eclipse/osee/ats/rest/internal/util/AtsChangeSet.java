@@ -69,7 +69,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (branch == null) {
             branch = atsApi.getAtsBranch();
          }
-         transaction = orcsApi.getTransactionFactory().createTransaction(branch, asUser, comment);
+         transaction = orcsApi.getTransactionFactory().createTransaction(branch, comment);
       }
       return transaction;
    }

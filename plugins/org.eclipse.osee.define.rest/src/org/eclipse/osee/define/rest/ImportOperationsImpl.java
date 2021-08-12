@@ -70,7 +70,7 @@ public class ImportOperationsImpl implements ImportOperations {
             new SourceToRoughArtifactOperation(orcsApi, results, extractor, new File(wordURI), collector);
          sourceOp.importFiles();
          TransactionBuilder transaction =
-            orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Server word import");
+            orcsApi.getTransactionFactory().createTransaction(branch, "Server word import");
          ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
          IArtifactImportResolver resolver =
             ArtifactResolverFactory.createResolver(transaction, ArtifactCreationStrategy.CREATE_NEW_ALWAYS,

@@ -59,7 +59,6 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final TransactionQuery transactionQuery;
 
    public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, OrcsApi orcsApi, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
-      super();
       this.session = session;
       this.txDataManager = txDataManager;
       this.txCallableFactory = txCallableFactory;
@@ -74,6 +73,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public CancellableCallable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions) {
       return txCallableFactory.purgeTransactions(session, transactions);
+   }
+
+   @Override
+   public TransactionBuilder createTransaction(BranchId branch, String comment) {
+      return createTransaction(branch, orcsApi.userService().getUser(), comment);
    }
 
    @Override

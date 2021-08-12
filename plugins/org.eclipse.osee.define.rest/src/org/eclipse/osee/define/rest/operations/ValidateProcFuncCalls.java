@@ -288,7 +288,7 @@ public class ValidateProcFuncCalls {
       BranchId branch = BranchId.valueOf(8203443705848388493L);
       TransactionBuilder tx = null;
       if (!reportOnly) {
-         tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
+         tx = orcsApi.getTransactionFactory().createTransaction(branch,
             "Fix UI names in SoftReq word content.");
       }
       String wasPath = "C:/UserData/SrsConversion/was/";

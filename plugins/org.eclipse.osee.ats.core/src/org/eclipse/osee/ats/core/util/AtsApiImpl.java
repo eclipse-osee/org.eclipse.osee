@@ -253,7 +253,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    public void setUserConfigValue(String key, String value) {
       ArtifactId userArt = getUserService().getCurrentUser();
       IAtsChangeSet changes =
-         getStoreService().createAtsChangeSet("Set User AtsConfig Value", getUserService().getCurrentUser());
+         storeService.createAtsChangeSet("Set User AtsConfig Value", getUserService().getCurrentUser());
       if (userArt != null) {
          String keyValue = String.format("%s=%s", key, value);
          boolean found = false;
@@ -277,8 +277,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public void setConfigValue(String key, String value) {
       ArtifactId atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
-      IAtsChangeSet changes =
-         getStoreService().createAtsChangeSet("Set AtsConfig Value", getUserService().getCurrentUser());
+      IAtsChangeSet changes = storeService.createAtsChangeSet("Set AtsConfig Value", getUserService().getCurrentUser());
       if (atsConfig != null) {
          String keyValue = String.format("%s=%s", key, value);
          boolean found = false;
@@ -505,7 +504,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    @Override
    public IAtsChangeSet createChangeSet(String comment, AtsUser user) {
-      return getStoreService().createAtsChangeSet(comment, user);
+      return storeService.createAtsChangeSet(comment, user);
    }
 
    @Override
@@ -579,7 +578,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    @Override
    public IAtsChangeSet createChangeSet(String comment) {
-      return getStoreService().createAtsChangeSet(comment, userService.getCurrentUser());
+      return storeService.createAtsChangeSet(comment, userService.getCurrentUser());
    }
 
    @Override

@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoverageOseeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -86,7 +85,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public UserId findUser() {
-      return SystemUser.OseeSystem;
+      return orcsApi.userService().getUser();
    }
 
    @Override

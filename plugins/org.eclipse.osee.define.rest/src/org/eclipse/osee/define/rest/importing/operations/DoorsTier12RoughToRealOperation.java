@@ -56,7 +56,7 @@ public class DoorsTier12RoughToRealOperation {
       setupAllKnownArtifacts();
       String operationComment = String.format("Modify Safety Hazard for %s", destinationArtifact.getName());
       TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, operationComment);
+         orcsApi.getTransactionFactory().createTransaction(branch, operationComment);
       for (RoughArtifact roughArtifact : rawData.getRoughArtifacts()) {
          String name = roughArtifact.getName();
          if (name.length() > 32) {

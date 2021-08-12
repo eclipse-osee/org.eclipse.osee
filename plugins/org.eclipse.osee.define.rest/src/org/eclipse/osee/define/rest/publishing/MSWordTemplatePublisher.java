@@ -557,8 +557,7 @@ public class MSWordTemplatePublisher {
     * during this publish.
     */
    protected void updateParagraphNumbers() {
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(publishingOptions.branch,
-         SystemUser.OseeSystem, "Update paragraph number on artifact");
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(publishingOptions.branch, "Update paragraph number on artifact");
       int count = 0;
 
       for (Map.Entry<ArtifactReadable, CharSequence> art : artParagraphNumbers.entrySet()) {
