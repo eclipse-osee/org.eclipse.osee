@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
@@ -107,7 +106,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       console.writeln("Consolidating relations:");
       init();
       try {
-         getJdbcClient().runQuery(this::findObsoleteRelations, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATIONS);
+         getJdbcClient().runQueryWithMaxFetchSize(this::findObsoleteRelations, SELECT_RELATIONS);
 
          console.writeln("gamma join size: [%s]", gammaJoin.size());
 
@@ -156,8 +155,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
       console.writeln("counter: [%s]", counter);
       console.writeln("query id: [%s]", gammaJoin.getQueryId());
-      getJdbcClient().runQuery(this::determineAffectedAddressing, JdbcConstants.JDBC__MAX_FETCH_SIZE,
-         SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
+      getJdbcClient().runQueryWithMaxFetchSize(this::determineAffectedAddressing, SELECT_RELATION_ADDRESSING,
+         gammaJoin.getQueryId());
    }
 
    private void determineAffectedAddressing(JdbcStatement stmt) {

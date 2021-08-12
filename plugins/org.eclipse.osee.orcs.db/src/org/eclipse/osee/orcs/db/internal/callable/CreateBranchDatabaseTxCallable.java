@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
@@ -242,7 +241,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
+         chStmt.runPreparedQueryWithMaxFetchSize(query, parameters);
          BranchId branchId = newBranchData.getBranch();
          while (chStmt.next()) {
             Long gamma = chStmt.getLong("gamma_id");

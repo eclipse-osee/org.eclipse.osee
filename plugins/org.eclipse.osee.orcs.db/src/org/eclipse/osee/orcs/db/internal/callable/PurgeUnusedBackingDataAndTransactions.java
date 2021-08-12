@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.function.BiConsumer;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -96,7 +95,7 @@ public class PurgeUnusedBackingDataAndTransactions {
 
    private int purgeData(JdbcConnection connection, String selectSql, String purgeSQL, BiConsumer<OseePreparedStatement, JdbcStatement> consumer) {
       OseePreparedStatement purgeStmt = jdbcClient.getBatchStatement(connection, purgeSQL);
-      jdbcClient.runQuery(connection, stmt -> consumer.accept(purgeStmt, stmt), JDBC__MAX_FETCH_SIZE, selectSql);
+      jdbcClient.runQueryWithMaxFetchSize(connection, stmt -> consumer.accept(purgeStmt, stmt), selectSql);
       return purgeStmt.execute();
    }
 

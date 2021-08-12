@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -158,9 +157,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                   previousItem = currentItem;
                }
             };
-
-            getJdbcClient().runQuery(connection, consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query,
-               joinQuery.getQueryId(), branch);
+            getJdbcClient().runQuery(connection, consumer, joinQuery.size() * 2, query, joinQuery.getQueryId(), branch);
          }
       }
    }
@@ -172,7 +169,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       try {
          for (Object[] bindData : bindDataList) {
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
-            statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, bindData);
+            statement.runPreparedQueryWithMaxFetchSize(query, bindData);
             IdJoinQuery joinId = joinFactory.createIdJoinQuery();
             items.put((BranchId) bindData[0], joinId);
 

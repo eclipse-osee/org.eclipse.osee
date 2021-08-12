@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -97,7 +96,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
       List<Long> gammaIds = new LinkedList<>();
       for (Long attributeType : attrTypeIds) {
          try (JdbcStatement chStmt = jdbcClient.getStatement()) {
-            chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, GAMMAS_BY_TYPE, attributeType);
+            chStmt.runPreparedQueryWithMaxFetchSize(GAMMAS_BY_TYPE, attributeType);
             while (chStmt.next()) {
                gammaIds.add(chStmt.getLong("gamma_id"));
             }
@@ -121,7 +120,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
             attrTypeIds) + ") AND att.GAMMA_ID = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id) AND length(value) > 1";
       List<Long> gammaIds = new LinkedList<>();
       try (JdbcStatement chStmt = jdbcClient.getStatement()) {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, MISSING_GAMMAS_BY_TYPE);
+         chStmt.runPreparedQueryWithMaxFetchSize(MISSING_GAMMAS_BY_TYPE);
          while (chStmt.next()) {
             gammaIds.add(chStmt.getLong("gamma_id"));
          }

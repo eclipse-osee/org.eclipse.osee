@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
@@ -45,14 +44,14 @@ public final class BranchInheritACLCallable extends JdbcTransaction {
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<>();
-      jdbcClient.runQuery(stmt -> {
+      jdbcClient.runQueryWithMaxFetchSize(stmt -> {
          int permissionId = stmt.getInt("permission_id");
          Long priviledgeId = stmt.getLong("privilege_entity_id");
          if (branchData.getAuthor().equals(priviledgeId) && permissionId < lock && permissionId != deny) {
             permissionId = lock;
          }
          data.add(new Object[] {permissionId, priviledgeId, branchData.getBranch()});
-      }, JdbcConstants.JDBC__MAX_FETCH_SIZE, GET_BRANCH_ACCESS_CONTROL_LIST, branchData.getParentBranch());
+      }, GET_BRANCH_ACCESS_CONTROL_LIST, branchData.getParentBranch());
 
       if (!data.isEmpty()) {
          jdbcClient.runBatchUpdate(INSERT_INTO_BRANCH_ACL, data);

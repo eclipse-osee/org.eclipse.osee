@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -187,7 +186,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
          addresses.add(address);
          previousAddress[0] = address;
       };
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
+      getJdbcClient().runQueryWithMaxFetchSize(consumer, sql);
       fixIssues();
       return null;
    }

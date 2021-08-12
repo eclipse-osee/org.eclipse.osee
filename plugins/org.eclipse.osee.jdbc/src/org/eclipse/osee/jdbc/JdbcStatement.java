@@ -32,6 +32,8 @@ public interface JdbcStatement extends AutoCloseable {
 
    void runPreparedQuery(String query, Object... data);
 
+   void runPreparedQueryWithMaxFetchSize(String query, Object... data);
+
    /**
     * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
     * to 10,000

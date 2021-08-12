@@ -266,7 +266,7 @@ public class LDAPConnector {
 
       try {
     	  statement = LDAPAuthenticationProvider.getAtsApi().getJdbcService().getClient().getStatement();
-        statement.runPreparedQuery(0, FETCH_USER_COMMAND);
+        statement.runPreparedQuery(FETCH_USER_COMMAND);
 
         while (statement.next()) {
           String ServerName = statement.getString("server_name");
@@ -332,7 +332,7 @@ public class LDAPConnector {
 
     try {
     	statement = LDAPAuthenticationProvider.getAtsApi().getJdbcService().getClient().getStatement();
-      statement.runPreparedQuery(0, FETCH_USER_COMMAND);
+      statement.runPreparedQuery(FETCH_USER_COMMAND);
 
       while (statement.next()) {
         String SearchBase = statement.getString("search_base");

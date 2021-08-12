@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -102,7 +101,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
    private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
+         chStmt.runPreparedQueryWithMaxFetchSize(query, parameters);
          while (chStmt.next()) {
             Long gamma = chStmt.getLong("gamma_id");
             if (!gammas.contains(gamma)) {

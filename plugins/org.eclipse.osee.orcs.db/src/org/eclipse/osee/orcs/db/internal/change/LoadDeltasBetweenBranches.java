@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -220,8 +219,8 @@ public class LoadDeltasBetweenBranches {
 
       String sql = String.format(SELECT_ALL_SOURCE_ADDRESSING, txsTable, txsTable);
 
-      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, sql, sourceBranch, TxCurrent.NOT_CURRENT,
-         sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
+      jdbcClient.runQueryWithMaxFetchSize(consumer, sql, sourceBranch, TxCurrent.NOT_CURRENT, sourceBaselineTxId,
+         sourceBranch, sourceBaselineTxId);
 
       return hashChangeData;
    }
@@ -265,11 +264,10 @@ public class LoadDeltasBetweenBranches {
             " osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
             " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
-      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
-         TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
+      jdbcClient.runQueryWithMaxFetchSize(consumer, query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
          idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
          txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(),
-         TxCurrent.NOT_CURRENT, txBranchId, txId);
+         TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId);
 
    }
 
@@ -296,11 +294,10 @@ public class LoadDeltasBetweenBranches {
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
                ") t order by t.id2, t.transaction_id asc";
 
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
-            sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
-            TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
+         chStmt.runPreparedQueryWithMaxFetchSize(query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
             idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
-            sourceBranch);
+            sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
+            TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch);
 
          Long previousItemId = -1L;
          boolean isFirstSet = false;

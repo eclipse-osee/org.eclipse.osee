@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.RelationRow;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
@@ -128,8 +127,8 @@ public final class TransactionManager {
    public static List<TransactionRecord> getTransactionsForBranch(BranchId branch) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       ArrayList<TransactionRecord> transactions = new ArrayList<>();
-      jdbcClient.runQuery(stmt -> transactions.add(loadTransaction(branch, stmt)), JdbcConstants.JDBC__MAX_FETCH_SIZE,
-         SELECT_TRANSACTIONS, branch);
+      jdbcClient.runQueryWithMaxFetchSize(stmt -> transactions.add(loadTransaction(branch, stmt)), SELECT_TRANSACTIONS,
+         branch);
       return transactions;
    }
 
