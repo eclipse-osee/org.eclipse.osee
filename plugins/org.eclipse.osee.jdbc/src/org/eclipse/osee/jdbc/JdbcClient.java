@@ -34,7 +34,11 @@ public interface JdbcClient {
 
    int runQuery(Consumer<JdbcStatement> consumer, String query, Object... data);
 
+   int runQueryWithMaxFetchSize(Consumer<JdbcStatement> consumer, String query, Object... data);
+
    int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data);
+
+   int runQueryWithMaxFetchSize(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data);
 
    int runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
 
@@ -116,4 +120,5 @@ public interface JdbcClient {
    }
 
    void vacuum();
+
 }

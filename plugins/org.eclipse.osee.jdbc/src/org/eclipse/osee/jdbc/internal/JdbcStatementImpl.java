@@ -77,7 +77,12 @@ public final class JdbcStatementImpl implements JdbcStatement {
 
    @Override
    public void runPreparedQuery(String query, Object... data) throws JdbcException {
-      runPreparedQuery(0, query, data);
+      runPreparedQuery(JdbcConstants.JDBC_STANDARD_FETCH_SIZE, query, data);
+   }
+
+   @Override
+   public void runPreparedQueryWithMaxFetchSize(String query, Object... data) {
+      runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, data);
    }
 
    /**
@@ -510,4 +515,5 @@ public final class JdbcStatementImpl implements JdbcStatement {
       }
       return toReturn;
    }
+
 }

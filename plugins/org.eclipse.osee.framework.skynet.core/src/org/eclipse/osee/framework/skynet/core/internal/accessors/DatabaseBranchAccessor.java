@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
-import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +54,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       String sql = String.format(SELECT_BRANCHES, jdbcClient.getDbType().getRecursiveWithSql(),
          jdbcClient.getDbType().getCteRecursiveUnion());
       Map<MergeBranch, Long> mergeIdMap = new HashMap<>();
-      jdbcClient.runQuery(stmt -> cache.cache(load(cache, stmt, mergeIdMap)), JDBC__MAX_FETCH_SIZE, sql);
+      jdbcClient.runQueryWithMaxFetchSize(stmt -> cache.cache(load(cache, stmt, mergeIdMap)), sql);
       for (MergeBranch branch : mergeIdMap.keySet()) {
          Long destId = mergeIdMap.get(branch);
          Branch destBranch = cache.getById(destId);

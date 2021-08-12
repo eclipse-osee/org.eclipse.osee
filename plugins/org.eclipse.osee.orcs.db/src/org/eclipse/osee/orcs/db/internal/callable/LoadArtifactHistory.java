@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -231,8 +230,8 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
       };
 
       String query = String.format(LoadArtifactHistory.query, getJdbcClient().getDbType().getRecursiveWithSql());
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, branch, artifact, artifact, branch,
-         artifact, artifact, branch, artifact, artifact, branch, artifact, artifact, branch);
+      getJdbcClient().runQueryWithMaxFetchSize(consumer, query, branch, artifact, artifact, branch, artifact, artifact,
+         branch, artifact, artifact, branch, artifact, artifact, branch);
 
       return changeItems;
    }

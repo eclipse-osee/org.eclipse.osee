@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.sql;
 
-import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -91,7 +90,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          if (rootQueryData.isCountQueryType()) {
             return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
          } else {
-            getJdbcClient().runQuery(consumer, JDBC__MAX_FETCH_SIZE, toSql(), parameters.toArray());
+            getJdbcClient().runQueryWithMaxFetchSize(consumer, toSql(), parameters.toArray());
          }
       } finally {
          for (AbstractJoinQuery join : joinTables) {

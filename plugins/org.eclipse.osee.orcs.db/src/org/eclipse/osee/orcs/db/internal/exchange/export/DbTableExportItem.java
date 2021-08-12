@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
@@ -94,8 +93,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
 
    @Override
    protected void doWork(Appendable appendable) {
-      getJdbcClient().runQuery(stmt -> processData(appendable, stmt), JdbcConstants.JDBC__MAX_FETCH_SIZE, query,
-         bindData);
+      getJdbcClient().runQueryWithMaxFetchSize(stmt -> processData(appendable, stmt), query, bindData);
    }
 
    private void processData(Appendable appendable, JdbcStatement chStmt) {

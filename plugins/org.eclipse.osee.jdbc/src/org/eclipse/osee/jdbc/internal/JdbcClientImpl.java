@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcMigrationOptions;
@@ -311,12 +312,22 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data) {
-      return runQuery(connection, consumer, 0, query, data);
+      return runQuery(connection, consumer, JdbcConstants.JDBC_STANDARD_FETCH_SIZE, query, data);
    }
 
    @Override
    public int runQuery(Consumer<JdbcStatement> consumer, String query, Object... data) {
-      return runQuery(consumer, 0, query, data);
+      return runQuery(consumer, JdbcConstants.JDBC_STANDARD_FETCH_SIZE, query, data);
+   }
+
+   @Override
+   public int runQueryWithMaxFetchSize(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data) {
+      return runQuery(connection, consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, data);
+   }
+
+   @Override
+   public int runQueryWithMaxFetchSize(Consumer<JdbcStatement> consumer, String query, Object... data) {
+      return runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, data);
    }
 
    @Override

@@ -39,6 +39,7 @@ public final class JdbcConstants {
    // @formatter:off
    public static final int JDBC__MAX_VARCHAR_LENGTH = 4000;
    public static final int JDBC__MAX_FETCH_SIZE = 10000;
+   public static final int JDBC_STANDARD_FETCH_SIZE = 1000;
    public static final int JDBC__MAX_TX_ROW_COUNT = 47662;   // experimentally determined that above 47662 rows Oracle splits into multiple batches at the lower level
 
    public static final int DEFAULT_JDBC__CONNECTION_POOL_SIZE = 30;

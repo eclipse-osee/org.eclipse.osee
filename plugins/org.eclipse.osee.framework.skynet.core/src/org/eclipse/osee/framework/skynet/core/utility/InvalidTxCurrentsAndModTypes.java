@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
@@ -202,7 +201,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          addresses.add(address);
          previousAddress[0] = address;
       };
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
+      getJdbcClient().runQueryWithMaxFetchSize(consumer, sql);
       monitor.worked(calculateWork(0.5));
       fixIssues(monitor);
       log("Completed " + getName());

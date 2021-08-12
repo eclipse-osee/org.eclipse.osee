@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -170,8 +169,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
          }
       };
       String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, SqlTable.getTxsTable(isArchived));
-      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, destinationTx.getBranch(), sourceTx,
-         destinationTx);
+      jdbcClient.runQueryWithMaxFetchSize(consumer, query, destinationTx.getBranch(), sourceTx, destinationTx);
 
       return hashChangeData;
    }
@@ -228,11 +226,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             " ORDER BY transaction_id",
          archiveTable, archiveTable, archiveTable, archiveTable, archiveTable, archiveTable);
 
-      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, transactionLimit.getBranch(),
-         transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit, queryId,
-         transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit,
+      jdbcClient.runQueryWithMaxFetchSize(consumer, query, queryId, transactionLimit.getBranch(), transactionLimit,
          queryId, transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(),
-         transactionLimit);
+         transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit, queryId,
+         transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit);
    }
 
    public List<ChangeItem> compareTransactions() {
