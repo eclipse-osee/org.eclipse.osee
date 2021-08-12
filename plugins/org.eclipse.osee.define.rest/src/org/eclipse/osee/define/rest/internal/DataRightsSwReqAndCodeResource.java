@@ -195,7 +195,7 @@ public final class DataRightsSwReqAndCodeResource {
    }
 
    private TransactionBuilder createTxBuilder(String comment, BranchId branchId) {
-      return orcsApi.getTransactionFactory().createTransaction(branchId, SystemUser.OseeSystem, comment);
+      return orcsApi.getTransactionFactory().createTransaction(branchId, comment);
    }
 
    private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeToken attributeType, StringBuilder strb) {

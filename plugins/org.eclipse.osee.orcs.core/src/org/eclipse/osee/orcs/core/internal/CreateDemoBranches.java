@@ -64,6 +64,8 @@ public class CreateDemoBranches {
       UserId account = DemoUsers.Joe_Smith;
       orcsApi.userService().createUsers(DemoUsers.values(), "Create Demo Users");
 
+      UserId betterAccount = orcsApi.userService().getUser();
+
       createDemoProgramBranch(SAW_Bld_1, account);
 
       createDemoProgramBranch(CIS_Bld_1, account);
@@ -82,7 +84,7 @@ public class CreateDemoBranches {
 
    private void createProductLineConfig(BranchId branch, UserId account) {
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, OseeSystem, "Create Product Line folders");
+      TransactionBuilder tx = txFactory.createTransaction(branch, "Create Product Line folders");
 
       ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder,
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);

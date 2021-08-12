@@ -32,6 +32,8 @@ public interface TransactionFactory {
 
    TransactionBuilder createTransaction(BranchId branch, UserId userArtifact, String comment);
 
+   TransactionBuilder createTransaction(BranchId branch, String comment);
+
    Callable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions);
 
    int[] purgeUnusedBackingDataAndTransactions();

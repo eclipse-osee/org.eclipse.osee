@@ -64,7 +64,7 @@ public abstract class AbstractConvertGuidToId implements IAtsDatabaseConversion 
    protected TransactionBuilder createTransactionBuilder() {
       TransactionFactory txFactory = getOrcsApi().getTransactionFactory();
       Conditions.checkNotNull(txFactory, "transaction factory");
-      return txFactory.createTransaction(COMMON, SystemUser.OseeSystem, getName());
+      return txFactory.createTransaction(COMMON, getName());
    }
 
    /**

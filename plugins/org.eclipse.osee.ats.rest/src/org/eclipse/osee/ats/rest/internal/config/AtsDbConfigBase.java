@@ -162,8 +162,7 @@ public class AtsDbConfigBase {
 
       changes.execute();
 
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes,
-         SystemUser.OseeSystem, "Import Peer Checklist");
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes, "Import Peer Checklist");
       File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDbConfigBase.class);
       importChecklist(file, transaction, AtsArtifactToken.PeerAttachmentFolder);
 
@@ -187,8 +186,7 @@ public class AtsDbConfigBase {
 
       changes.execute();
 
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes,
-         SystemUser.OseeSystem, "Import Walkthrough Checklist");
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes, "Import Walkthrough Checklist");
       File file =
          OseeInf.getResourceAsFile("demoWalkthroughChecklists/W_Document_Checklist.xlsx", AtsDbConfigBase.class);
       importChecklist(file, transaction, AtsArtifactToken.WalkthroughAttachmentFolder);

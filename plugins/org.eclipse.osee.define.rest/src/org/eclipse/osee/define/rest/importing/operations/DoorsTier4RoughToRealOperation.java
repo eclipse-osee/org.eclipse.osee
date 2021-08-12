@@ -64,7 +64,7 @@ public class DoorsTier4RoughToRealOperation {
       setupAllKnownArtifacts();
       String operationComment = String.format("Add or Modify %s", destinationArtifact.getName());
       TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, operationComment);
+         orcsApi.getTransactionFactory().createTransaction(branch, operationComment);
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          String name = roughArtifact.getName();
          if (name.length() > 32) {
@@ -83,7 +83,7 @@ public class DoorsTier4RoughToRealOperation {
 
    private void sortModifiedArtifacts() {
       TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Sort Modified Artifacts");
+         orcsApi.getTransactionFactory().createTransaction(branch, "Sort Modified Artifacts");
       for (ArtifactToken parentArtifact : modifiedParents) {
          sortChildren(parentArtifact, transaction);
       }

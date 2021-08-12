@@ -42,7 +42,7 @@ public class WordTemplateAttributeUpdater {
             return results;
          } else {
             TransactionBuilder transaction =
-               orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Replace word graphic");
+               orcsApi.getTransactionFactory().createTransaction(branch, "Replace word graphic");
             transaction.setAttributeById(art, attrId, newWordTemplateContent);
             transaction.commit();
          }

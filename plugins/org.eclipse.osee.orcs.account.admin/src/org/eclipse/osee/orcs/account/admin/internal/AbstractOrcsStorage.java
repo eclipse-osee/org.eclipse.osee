@@ -76,7 +76,7 @@ public abstract class AbstractOrcsStorage {
 
    protected TransactionBuilder newTransaction(String comment) {
       TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
-      return transactionFactory.createTransaction(getBranch(), SystemUser.OseeSystem, comment);
+      return transactionFactory.createTransaction(getBranch(), comment);
    }
 
    protected boolean isInitialized() {

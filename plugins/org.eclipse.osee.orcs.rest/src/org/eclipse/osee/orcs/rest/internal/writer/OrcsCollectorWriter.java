@@ -469,17 +469,8 @@ public class OrcsCollectorWriter {
 
    public TransactionBuilder getTransaction() {
       if (transaction == null) {
-         transaction =
-            orcsApi.getTransactionFactory().createTransaction(branch, getUser(), collector.getPersistComment());
+         transaction = orcsApi.getTransactionFactory().createTransaction(branch, collector.getPersistComment());
       }
       return transaction;
    }
-
-   private UserId getUser() {
-      if (user == null) {
-         user = UserId.valueOf(collector.getAsUserId());
-      }
-      return user;
-   }
-
 }

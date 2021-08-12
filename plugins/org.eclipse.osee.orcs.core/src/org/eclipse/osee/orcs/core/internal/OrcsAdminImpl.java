@@ -81,7 +81,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
    @Override
    public void registerMissingOrcsTypeJoins() {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem,
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON,
          "Add missing orcs type joins.");
 
       addMissingJoins(tx, CoreTupleTypes.ArtifactTypeJoin, orcsApi.tokenService().getArtifactTypeJoins());
