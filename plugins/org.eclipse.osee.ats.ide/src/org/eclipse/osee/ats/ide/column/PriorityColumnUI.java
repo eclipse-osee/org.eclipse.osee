@@ -22,8 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -52,12 +51,10 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
    public static PriorityColumnUI getInstance() {
       if (instance == null) {
-         for (INewActionPageAttributeFactoryProvider provider : AtsApiService.get().getAttributeProviders()) {
-            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-               if (factory.useFactory()) {
-                  instance = new PriorityColumnUI(factory.getPrioirtyColumnToken(), factory.getPrioirtyAttrToken());
-                  return instance;
-               }
+         for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
+            if (provider.useFactory()) {
+               instance = new PriorityColumnUI(provider.getPrioirtyColumnToken(), provider.getPrioirtyAttrType());
+               return instance;
             }
          }
          instance = new PriorityColumnUI(AtsColumnToken.PriorityColumn, AtsAttributeTypes.Priority);

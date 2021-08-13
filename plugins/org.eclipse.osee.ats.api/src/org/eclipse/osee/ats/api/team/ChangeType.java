@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.team;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType.ChangeTypeEnum;
 
 /**
@@ -50,5 +51,13 @@ public enum ChangeType {
          }
       }
       return None;
+   }
+
+   public static String[] valueArray() {
+      List<String> values = new ArrayList<>();
+      for (String type : getChangeTypes()) {
+         values.add(type);
+      }
+      return values.toArray(new String[values.size()]);
    }
 }

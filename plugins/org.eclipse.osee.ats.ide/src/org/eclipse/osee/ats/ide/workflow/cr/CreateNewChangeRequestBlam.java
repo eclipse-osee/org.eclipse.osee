@@ -13,7 +13,6 @@
 package org.eclipse.osee.ats.ide.workflow.cr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -189,7 +189,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
          changeWidget = (XCombo) xWidget;
-         changeWidget.setDataStrings(Arrays.asList("Improvement", "Problem"));
+         setChangeTypeWidget(changeWidget);
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XCombo) xWidget;
       } else if (xWidget.getLabel().equals(PROGRAM)) {
@@ -217,6 +217,18 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
 
          });
       }
+   }
+
+   public static void setChangeTypeWidget(XCombo changeWidget) {
+      String[] array = ChangeType.valueArray();
+      for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
+         if (provider.useFactory()) {
+            if (provider.getChangeTypeValues() != null) {
+               array = provider.getChangeTypeArray();
+            }
+         }
+      }
+      changeWidget.setDataStrings(array);
    }
 
    public void handlePopulateWithDebugInfo() {

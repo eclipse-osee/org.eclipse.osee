@@ -19,13 +19,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
-import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +36,7 @@ public class ActionArtifactRollup {
 
    private final IAtsAction action;
    private final AtsApiIde atsApi;
-   private static AttributeTypeEnum<?> priorityAttrType;
+   private static AttributeTypeToken priorityAttrType;
 
    public ActionArtifactRollup(IAtsAction action) {
       this.action = action;
@@ -134,14 +133,12 @@ public class ActionArtifactRollup {
       }
    }
 
-   private AttributeTypeEnum<?> getPrioirtyAttrType() {
+   private AttributeTypeToken getPrioirtyAttrType() {
       if (priorityAttrType == null) {
-         for (INewActionPageAttributeFactoryProvider provider : atsApi.getAttributeProviders()) {
-            for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-               if (factory.useFactory()) {
-                  priorityAttrType = factory.getPrioirtyAttrToken();
-                  return priorityAttrType;
-               }
+         for (IAtsDatabaseTypeProvider provider : atsApi.getDatabaseTypeProviders()) {
+            if (provider.useFactory()) {
+               priorityAttrType = provider.getPrioirtyAttrType();
+               return priorityAttrType;
             }
          }
          priorityAttrType = AtsAttributeTypes.Priority;
@@ -150,7 +147,7 @@ public class ActionArtifactRollup {
    }
 
    private void resetPriorityOffChildren() {
-      AttributeTypeEnum<?> attrType = getPrioirtyAttrType();
+      AttributeTypeToken attrType = getPrioirtyAttrType();
       String priorityType = null;
       Collection<IAtsTeamWorkflow> teamArts = atsApi.getWorkItemService().getTeams(action);
       if (teamArts.size() == 1) {

@@ -13,7 +13,6 @@
 package org.eclipse.osee.ats.ide.actions.newaction;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -41,6 +40,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XActionableItemWidget;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -271,7 +271,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
          changeWidget = (XCombo) xWidget;
-         changeWidget.setDataStrings(Arrays.asList("Improvement", "Problem"));
+         CreateNewChangeRequestBlam.setChangeTypeWidget(changeWidget);
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XCombo) xWidget;
       } else if (xWidget instanceof XActionableItemWidget) {

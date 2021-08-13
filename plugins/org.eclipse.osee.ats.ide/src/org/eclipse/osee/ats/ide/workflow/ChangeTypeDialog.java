@@ -19,8 +19,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -55,12 +54,10 @@ public class ChangeTypeDialog extends ListDialog {
    }
 
    private ChangeType[] getValues() {
-      for (INewActionPageAttributeFactoryProvider provider : AtsApiService.get().getAttributeProviders()) {
-         for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-            if (factory.useFactory()) {
-               if (factory.getChangeTypeValues() != null) {
-                  return factory.getChangeTypeValues();
-               }
+      for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
+         if (provider.useFactory()) {
+            if (provider.getChangeTypeValues() != null) {
+               return provider.getChangeTypeValues().toArray(new ChangeType[provider.getChangeTypeValues().size()]);
             }
          }
       }
