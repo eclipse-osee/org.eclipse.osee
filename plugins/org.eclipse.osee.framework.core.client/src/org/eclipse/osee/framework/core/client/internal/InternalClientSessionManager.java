@@ -44,12 +44,17 @@ public class InternalClientSessionManager {
 
    private OseeSessionGrant oseeSessionGrant;
    private IdeClientSession oseeSession;
+   private SessionEndpoint sessionEndpoint;
 
    private InternalClientSessionManager() {
       // do nothing
    }
 
    public static InternalClientSessionManager getInstance() {
+      if (instance.sessionEndpoint == null) {
+         instance.sessionEndpoint =
+            OsgiUtil.getService(InternalClientSessionManager.class, OseeClient.class).getSessionEndpoint();
+      }
       return instance;
    }
 
@@ -104,6 +109,8 @@ public class InternalClientSessionManager {
             clearData();
             oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
             if (oseeSessionGrant == null) {
+               OseeLog.logf(InternalClientSessionManager.class, Level.SEVERE,
+                  "Session Grant came back null from createIdeClientSession in authentication");
                return;
             } else if (SystemUser.UnAuthenticated.getUserId().equals(oseeSessionGrant.getUserToken().getUserId())) {
                throw new OseeArgumentException("User [%s] is not authenticated.", credential.getUserName());
@@ -171,6 +178,6 @@ public class InternalClientSessionManager {
    }
 
    private SessionEndpoint getSessionEndpoint() {
-      return OsgiUtil.getService(getClass(), OseeClient.class).getSessionEndpoint();
+      return sessionEndpoint;
    }
 }
