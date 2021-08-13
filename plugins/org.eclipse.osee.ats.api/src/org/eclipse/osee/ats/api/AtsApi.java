@@ -51,7 +51,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -243,6 +243,6 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
       getAttributeResolver().setStaticIdValue(workItem, key, value, changes);
    }
 
-   List<INewActionPageAttributeFactoryProvider> getAttributeProviders();
+   List<IAtsDatabaseTypeProvider> getDatabaseTypeProviders();
 
 }

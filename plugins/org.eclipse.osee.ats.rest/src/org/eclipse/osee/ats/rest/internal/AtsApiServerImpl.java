@@ -90,7 +90,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
    // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
-   // for ReviewOsgiXml public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider)
+   // for ReviewOsgiXml public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider)
 
    @Override
    public void start() {

@@ -53,9 +53,9 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -79,8 +79,8 @@ import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -133,7 +133,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsLogFactory logFactory;
    protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
    protected IAtsNotificationService notificationService;
-   protected List<INewActionPageAttributeFactoryProvider> attributeFactoryProviders = new LinkedList<>();
+   protected List<IAtsDatabaseTypeProvider> databaseTypeProviders = new LinkedList<>();
    protected IAtsAccessService atsAccessService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
@@ -178,13 +178,13 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
    }
 
-   public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider) {
-      attributeFactoryProviders.add(provider);
+   public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider) {
+      databaseTypeProviders.add(provider);
    }
 
    @Override
-   public List<INewActionPageAttributeFactoryProvider> getAttributeProviders() {
-      return attributeFactoryProviders;
+   public List<IAtsDatabaseTypeProvider> getDatabaseTypeProviders() {
+      return databaseTypeProviders;
    }
 
    public void start() {

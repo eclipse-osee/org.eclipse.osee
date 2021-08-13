@@ -50,8 +50,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
-import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -585,14 +583,6 @@ public class AtsActionService implements IAtsActionService {
     * Set Team Workflow attributes off given action artifact
     */
    public void setArtifactIdentifyData(IAtsAction fromAction, IAtsTeamWorkflow toTeam, IAtsChangeSet changes) {
-      for (INewActionPageAttributeFactoryProvider provider : atsApi.getAttributeProviders()) {
-         for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-            if (factory.useFactory()) {
-               factory.setArtifactIdentifyData(atsApi.getAttributeResolver(), fromAction, toTeam, changes);
-               return;
-            }
-         }
-      }
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
@@ -610,15 +600,6 @@ public class AtsActionService implements IAtsActionService {
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
    public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
-      for (INewActionPageAttributeFactoryProvider provider : atsApi.getAttributeProviders()) {
-         for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
-            if (factory.useFactory()) {
-               factory.setArtifactIdentifyData(atsApi.getAttributeResolver(), atsObject, title, desc, changeType,
-                  priority, validationRequired, needByDate, changes);
-               return;
-            }
-         }
-      }
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);

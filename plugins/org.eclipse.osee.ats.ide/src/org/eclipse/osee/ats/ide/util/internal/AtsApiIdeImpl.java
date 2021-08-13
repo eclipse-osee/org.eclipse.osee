@@ -104,7 +104,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
-   // for ReviewOsgiXml public void addActionFactoryProvider(INewActionPageAttributeFactoryProvider provider)
+   // for ReviewOsgiXml public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider)
 
    @Override
    public void start() {
