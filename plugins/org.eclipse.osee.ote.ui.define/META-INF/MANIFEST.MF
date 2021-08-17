@@ -58,4 +58,3 @@ Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.logging,
  org.eclipse.ui.forms.widgets,
  org.osgi.service.event
-Service-Component: OSGI-INF/*.xml
