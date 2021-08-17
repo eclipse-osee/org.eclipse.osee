@@ -13,11 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -25,8 +26,10 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,19 +38,20 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.ListDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class EnumSingletonSelectionDialog extends ListDialog {
+public class EnumSingletonSelectionDialog extends FilteredTreeDialog {
 
    private boolean removeAllAllowed = true;
    private boolean removeAllSelected = false;
 
    public EnumSingletonSelectionDialog(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
-      super(Displays.getActiveShell());
+      super("Select Option", "Select Option", new ArrayTreeContentProvider(), new StringLabelProvider(),
+         new StringNameComparator());
       Set<String> options = new HashSet<>();
+      setMultiSelect(false);
       try {
 
          Artifact artifact = artifacts.iterator().next();
@@ -62,15 +66,10 @@ public class EnumSingletonSelectionDialog extends ListDialog {
       } catch (OseeCoreException ex) {
          options.add(ex.getLocalizedMessage());
       }
-      setInput(options);
-      setTitle("Select Option (Singleton)");
-      if (removeAllAllowed) {
-         setMessage("OR Select Option");
-      } else {
-         setMessage("Select Option");
-      }
-      setContentProvider(new ArrayContentProvider());
-      setLabelProvider(new StringLabelProvider());
+      List<String> optsList = new ArrayList<>();
+      optsList.addAll(options);
+      Collections.sort(optsList);
+      setInput(optsList);
    }
 
    @Override
@@ -80,7 +79,7 @@ public class EnumSingletonSelectionDialog extends ListDialog {
       if (removeAllAllowed) {
          Composite composite = new Composite(container, SWT.None);
          composite.setLayout(new GridLayout(1, false));
-         composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
          final Button button = new Button(composite, SWT.PUSH);
          button.setText("Remove All and Close");
@@ -111,10 +110,7 @@ public class EnumSingletonSelectionDialog extends ListDialog {
       if (removeAllSelected) {
          return "";
       }
-      if (getResult().length == 0) {
-         return "";
-      }
-      return (String) getResult()[0];
+      return (String) getSelectedFirst();
    }
 
    public boolean isRemoveAllAllowed() {
