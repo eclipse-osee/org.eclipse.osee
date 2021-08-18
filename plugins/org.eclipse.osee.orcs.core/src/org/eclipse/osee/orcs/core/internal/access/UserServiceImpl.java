@@ -168,6 +168,7 @@ public class UserServiceImpl implements UserService {
       }
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, getUser(), comment);
@@ -177,11 +178,12 @@ public class UserServiceImpl implements UserService {
 
       // Create users and relate to user groups
       Map<ArtifactToken, ArtifactToken> userGroupToArtifact = new HashMap<>();
-      List<ArtifactReadable> defaultGroups =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(CoreAttributeTypes.DefaultGroup,
-            "true").getResults().getList();
+      List<ArtifactReadable> defaultGroups = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+         CoreArtifactTypes.UserGroup).andAttributeIs(CoreAttributeTypes.DefaultGroup, "true").getResults().getList();
+
       List<ArtifactReadable> existingUsers = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
          CoreArtifactTypes.User).getResults().getList();
+
       for (UserToken userToken : users) {
          if (existingUsers.contains(userToken)) {
             throw new OseeStateException("User %s already exists", userToken);
@@ -195,35 +197,21 @@ public class UserServiceImpl implements UserService {
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Active, userToken.isActive());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
+         for (String loginId : userToken.getLoginIds()) {
+            tx.createAttribute(user, CoreAttributeTypes.LoginId, loginId);
+         }
 
-         Collection<ArtifactToken> roles = userToken.getRoles();
-         for (ArtifactToken userGroup : roles) {
+         for (ArtifactToken userGroup : userToken.getRoles()) {
             ArtifactToken userGroupArt = getOrCreate(userGroup, userGroupToArtifact, tx, userGroupHeader);
             tx.relate(userGroupArt, CoreRelationTypes.Users_User, user);
          }
+
          for (ArtifactToken userGroup : defaultGroups) {
             ArtifactToken userGroupArt = getOrCreate(userGroup, userGroupToArtifact, tx, userGroupHeader);
             tx.relate(userGroupArt, CoreRelationTypes.Users_User, user);
          }
-         setUserInfo(tx, userToken, defaultGroups);
       }
       return tx.commit();
-   }
-
-   private void setUserInfo(TransactionBuilder tx, UserToken userToken, List<? extends ArtifactId> defaultGroups) {
-      ArtifactId userId = tx.createArtifact(userToken);
-      tx.setSoleAttributeValue(userId, CoreAttributeTypes.Active, userToken.isActive());
-      tx.setSoleAttributeValue(userId, CoreAttributeTypes.UserId, userToken.getUserId());
-      tx.setSoleAttributeValue(userId, CoreAttributeTypes.Email, userToken.getEmail());
-      for (ArtifactToken userRole : userToken.getRoles()) {
-         tx.relate(userRole, CoreRelationTypes.Users_User, userId);
-      }
-      for (ArtifactId userGroup : defaultGroups) {
-         tx.relate(userGroup, CoreRelationTypes.Users_User, userId);
-      }
-      for (String loginId : userToken.getLoginIds()) {
-         tx.createAttribute(userToken, CoreAttributeTypes.LoginId, loginId);
-      }
    }
 
    private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact, TransactionBuilder tx, ArtifactToken userGroupHeader) {

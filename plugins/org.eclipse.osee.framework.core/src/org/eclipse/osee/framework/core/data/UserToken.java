@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -150,6 +151,24 @@ public interface UserToken extends ArtifactToken, UserId {
       @Override
       public void setArtifact(ArtifactToken artifact) {
          this.artifact = artifact;
+      }
+
+      @Override
+      public int hashCode() {
+         if (Strings.isValid(userId)) {
+            userId.hashCode();
+         }
+         return id.hashCode();
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         if (obj instanceof UserToken) {
+            if (Strings.isValid(userId) && Strings.isValid(((UserToken) obj).getUserId())) {
+               return userId.equals(((UserToken) obj).getUserId());
+            }
+         }
+         return super.equals(obj);
       }
 
    }
