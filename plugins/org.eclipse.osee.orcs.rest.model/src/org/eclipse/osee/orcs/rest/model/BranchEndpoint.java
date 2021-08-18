@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 @Path("branches")
 public interface BranchEndpoint {
 
-   @GET
+   @POST
    @Path("query")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)

@@ -116,14 +116,9 @@ public class BranchLoadComposite extends Composite {
          public void mouseUp(MouseEvent e) {
             boolean byId = asIdButton.getSelection();
             branchData.setAsIds(byId);
-            if (byId) {
-               nameText.setLabel("Srch Id: ");
-            } else {
-               nameText.setLabel("Srch String: ");
-            }
-            nameText.getLabelWidget().getParent().layout(true);
-            setSearchString();
+            refreshNameText();
          }
+
       });
 
       Button resetButton = new Button(this, SWT.PUSH);
@@ -135,6 +130,7 @@ public class BranchLoadComposite extends Composite {
          public void mouseUp(MouseEvent e) {
             nameText.setText("");
             asIdButton.setSelection(false);
+            refreshNameText();
             branchView.getXBranchWidget().resetButtons();
             branchView.loadData(Collections.emptyList());
          }
@@ -152,6 +148,17 @@ public class BranchLoadComposite extends Composite {
          }
       });
 
+   }
+
+   private void refreshNameText() {
+      boolean byId = asIdButton.getSelection();
+      if (byId) {
+         nameText.setLabel("Srch Id: ");
+      } else {
+         nameText.setLabel("Srch String: ");
+      }
+      nameText.getLabelWidget().getParent().layout(true);
+      setSearchString();
    }
 
    private void setSearchString() {
