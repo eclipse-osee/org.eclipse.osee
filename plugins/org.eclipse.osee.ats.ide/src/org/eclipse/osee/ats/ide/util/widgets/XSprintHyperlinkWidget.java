@@ -16,9 +16,11 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.agile.SprintFilteredListDialog;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
 /**
@@ -28,6 +30,7 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
    IAgileSprint sprint;
    IAtsTeamWorkflow teamWf;
+   IAtsTeamDefinition teamDef;
    public static final String WIDGET_ID = XSprintHyperlinkWidget.class.getSimpleName();
    AtsApi atsApi;
 
@@ -43,7 +46,16 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
    @Override
    public boolean handleSelection() {
-      IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
+      IAgileTeam agileTeam = null;
+      if (teamWf != null) {
+         agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
+      } else if (teamDef != null) {
+         agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
+      }
+      if (agileTeam == null) {
+         AWorkbench.popup("No Agile Team configured for this ATS Team");
+         return false;
+      }
       Collection<IAgileSprint> agileSprints = atsApi.getAgileService().getAgileSprints(agileTeam);
 
       final SprintFilteredListDialog dialog =
@@ -73,6 +85,14 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
    public void setTeamWf(IAtsTeamWorkflow teamWf) {
       this.teamWf = teamWf;
+   }
+
+   public IAtsTeamDefinition getTeamDef() {
+      return teamDef;
+   }
+
+   public void setTeamDef(IAtsTeamDefinition teamDef) {
+      this.teamDef = teamDef;
    }
 
 }

@@ -96,9 +96,10 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    private XWidgetPage page;
    private Composite teamComp;
    private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<>();
-   private static Set<IAtsWizardItem> handledExtensionItems = new HashSet<>();
+   private final Set<IAtsWizardItem> handledExtensionItems = new HashSet<>();
    private IManagedForm form;
    private Section section;
+   private Composite comp;
 
    public CreateNewActionBlam() {
       super("Create New Action (Beta)", BLAM_DESCRIPTION, null);
@@ -193,6 +194,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
     */
    @Override
    public void createWidgets(Composite comp, IManagedForm form, Section section) {
+      this.comp = comp;
       this.form = form;
       this.section = section;
       teamComp = new Composite(comp, SWT.NONE);
@@ -202,26 +204,31 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    private void updateTeamComposites() {
       try {
+         teamComp.dispose();
+         createWidgets(comp, form, section);
+         handledExtensionItems.clear();
+
          getWizardXWidgetExtensions();
+
+         List<XWidget> allWidgets = new ArrayList<>();
+
+         // Add XWidgets declared via widget xml
          StringBuffer stringBuffer = new StringBuffer(500);
          stringBuffer.append("<WorkPage>");
          IDynamicWidgetLayoutListener dynamicWidgetLayoutListener = null;
-         // Add any descriptions
          for (IAtsWizardItem item : wizardExtensionItems) {
-            if (!handledExtensionItems.contains(item)) {
-               boolean hasWizardXWidgetExtensions =
-                  item.hasWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems());
-               if (hasWizardXWidgetExtensions) {
-                  stringBuffer.append(
-                     "<XWidget displayName=\"--- Extra fields for " + item.getName() + " ---\" xwidgetType=\"XLabel\" horizontalLabel=\"true\" toolTip=\"These fields are available for only the team workflow specified here.\"/>");
-                  try {
-                     if (item instanceof IDynamicWidgetLayoutListener) {
-                        dynamicWidgetLayoutListener = (IDynamicWidgetLayoutListener) item;
-                     }
-                     item.getWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems(), stringBuffer);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            boolean hasWizardXWidgetExtensions =
+               item.hasWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems());
+            if (hasWizardXWidgetExtensions) {
+               stringBuffer.append(
+                  "<XWidget displayName=\"--- Extra fields for " + item.getName() + " ---\" xwidgetType=\"XLabel\" horizontalLabel=\"true\" toolTip=\"These fields are available for only the team workflow specified here.\"/>");
+               try {
+                  if (item instanceof IDynamicWidgetLayoutListener) {
+                     dynamicWidgetLayoutListener = (IDynamicWidgetLayoutListener) item;
                   }
+                  item.getWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems(), stringBuffer);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          }
@@ -229,10 +236,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          page = new XWidgetPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance(),
             dynamicWidgetLayoutListener);
          page.createBody(null, teamComp, null, null, true);
-         List<XWidget> allWidgets = new ArrayList<>();
          allWidgets.addAll(page.getDynamicXWidgetLayout().getXWidgets());
 
-         // Add widgets
+         // Add XWidgets directly added to composite
          for (IAtsWizardItem item : wizardExtensionItems) {
             if (!handledExtensionItems.contains(item)) {
                boolean hasWizardXWidgetExtensions =

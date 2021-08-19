@@ -14,7 +14,10 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
@@ -26,9 +29,12 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
    IAtsVersion version;
    Collection<IAtsVersion> selectable = new HashSet<>();
    public static final String WIDGET_ID = XTargetedVersionHyperlinkWidget.class.getSimpleName();
+   IAtsTeamDefinition teamDef;
+   AtsApi atsApi;
 
    public XTargetedVersionHyperlinkWidget() {
       super("Targeted Version", true, 50);
+      atsApi = AtsApiService.get();
    }
 
    @Override
@@ -38,7 +44,19 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
 
    @Override
    public boolean handleSelection() {
-      final VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version", selectable);
+      VersionListDialog dialog = null;
+      if (!selectable.isEmpty()) {
+         dialog = new VersionListDialog("Select Version", "Select Version", selectable);
+      } else if (teamDef != null) {
+         IAtsTeamDefinition definitionHoldingVersions =
+            atsApi.getVersionService().getTeamDefinitionHoldingVersions(teamDef);
+         Collection<IAtsVersion> versions =
+            AtsApiService.get().getVersionService().getVersions(definitionHoldingVersions);
+         dialog = new VersionListDialog("Select Version", "Select Version", versions);
+      }
+      if (dialog == null) {
+         return false;
+      }
       int result = dialog.open();
       if (result != 0) {
          return false;
@@ -68,6 +86,14 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
 
    public void setVersion(IAtsVersion version) {
       this.version = version;
+   }
+
+   public IAtsTeamDefinition getTeamDef() {
+      return teamDef;
+   }
+
+   public void setTeamDef(IAtsTeamDefinition teamDef) {
+      this.teamDef = teamDef;
    }
 
 }

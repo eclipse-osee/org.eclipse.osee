@@ -26,11 +26,11 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * @author Donald G. Dunne
  */
-public class DemoPlWizardItem extends AbstractWizardItem {
+public class DemoPlAndSawWizardItem extends AbstractWizardItem {
 
    private static Collection<IAtsTeamDefinition> demoTeamDefs;
 
-   public DemoPlWizardItem() {
+   public DemoPlAndSawWizardItem() {
       super(AtsApiService.get());
    }
 
@@ -77,11 +77,19 @@ public class DemoPlWizardItem extends AbstractWizardItem {
    private Collection<IAtsTeamDefinition> getDemoTeamDefs() {
       if (demoTeamDefs == null) {
          demoTeamDefs = new ArrayList<>();
-         for (IAtsTeamDefinitionArtifactToken tok : Arrays.asList(DemoArtifactToken.SAW_PL_ARB_TeamDef,
-            DemoArtifactToken.SAW_PL_TeamDef, DemoArtifactToken.SAW_PL_CR_TeamDef, DemoArtifactToken.SAW_PL_HW_TeamDef,
-            DemoArtifactToken.SAW_PL_Code_TeamDef, DemoArtifactToken.SAW_PL_Test_TeamDef,
-            DemoArtifactToken.SAW_PL_SW_Design_TeamDef, DemoArtifactToken.SAW_PL_Requirements_TeamDef,
-            DemoArtifactToken.SAW_PL_ARB_TeamDef)) {
+         for (IAtsTeamDefinitionArtifactToken tok : Arrays.asList(
+
+            // SAW PL
+            DemoArtifactToken.SAW_PL_ARB_TeamDef, DemoArtifactToken.SAW_PL_TeamDef, DemoArtifactToken.SAW_PL_CR_TeamDef,
+            DemoArtifactToken.SAW_PL_HW_TeamDef, DemoArtifactToken.SAW_PL_Code_TeamDef,
+            DemoArtifactToken.SAW_PL_Test_TeamDef, DemoArtifactToken.SAW_PL_SW_Design_TeamDef,
+            DemoArtifactToken.SAW_PL_Requirements_TeamDef, DemoArtifactToken.SAW_PL_ARB_TeamDef,
+
+            // SAW
+            DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW, DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test,
+            DemoArtifactToken.SAW_SW_Design, DemoArtifactToken.SAW_Requirements
+
+         )) {
             IAtsTeamDefinition teamDef = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(tok);
             demoTeamDefs.add(teamDef);
          }

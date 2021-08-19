@@ -192,4 +192,6 @@ public interface IAgileService {
 
    String getPointsStr(IAtsWorkItem workItem);
 
+   AttributeTypeToken getPointsAttrType(IAtsTeamDefinition teamDef);
+
 }

@@ -166,6 +166,8 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
          updated = true;
       }
       if (updated) {
+         valueLabel.redraw();
+         valueLabel.requestLayout();
          valueLabel.getParent().layout();
       }
       validate();
