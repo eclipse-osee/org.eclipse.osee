@@ -134,6 +134,7 @@ public class MSWordTemplatePublisher {
    protected final Map<ArtifactTypeToken, List<ArtifactReadable>> oseeLinkedArtifactMap = new HashMap<>();
    protected List<ArtifactId> changedArtifacts = new LinkedList<>();
    protected final Map<ArtifactId, String> wordContentMap = new HashMap<>();
+   protected final Set<String> headerGuids = new HashSet<>();
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -870,6 +871,9 @@ public class MSWordTemplatePublisher {
          getWordTemplateContentData(attributeType, artifact, presentationType, wordMl, format, label, footer);
 
       wordContentMap.put(artifact, data);
+      if (artifact.isOfType(HeadingMsWord)) {
+         headerGuids.add(artifact.getGuid());
+      }
    }
 
    /**
@@ -1002,11 +1006,9 @@ public class MSWordTemplatePublisher {
     * HyperlinkedIds tracks the artifacts that have been linked to from another artifact
     */
    protected void processLinkErrors(ArtifactReadable artifact, String data, Set<String> unknownIds) {
-      Pattern bookmarkHyperlinkPattern = Pattern.compile(
-         "(^<aml:annotation[^<>]+w:name=\"OSEE\\.[^\"]*\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/>)|" + "(<w:instrText>\\s+HYPERLINK[^<>]+\"OSEE\\.[^\"]*\"\\s+</w:instrText>)");
-      Pattern oseeLinkPattern = Pattern.compile("\"OSEE\\.[^\"]*\"");
+      Pattern bookmarkHyperlinkPattern =
+         Pattern.compile("(" + WordCoreUtil.OSEE_BOOKMARK_REGEX + ")|(" + WordCoreUtil.OSEE_HYPERLINK_REGEX + ")");
       Matcher match = bookmarkHyperlinkPattern.matcher(data);
-      Matcher linkMatch = null;
       String id = "";
 
       if (!unknownIds.isEmpty()) {
@@ -1017,20 +1019,17 @@ public class MSWordTemplatePublisher {
       }
 
       while (match.find()) {
-         String foundMatch = match.group(0);
-         if (Strings.isValid(foundMatch)) {
-            linkMatch = oseeLinkPattern.matcher(foundMatch);
-            if (linkMatch.find()) {
-               id = foundMatch.substring(linkMatch.start() + 6, linkMatch.end() - 1);
-               if (foundMatch.contains("Bookmark")) {
-                  if (!bookmarkedIds.contains(id)) {
-                     bookmarkedIds.add(id);
-                  }
-               } else if (foundMatch.contains("HYPERLINK")) {
-                  if (!hyperlinkedIds.containsKey(id)) {
-                     hyperlinkedIds.put(id, artifact);
-                  }
-               }
+         String bookmarkMatch = match.group(1);
+         String hyperlinkMatch = match.group(3);
+         if (bookmarkMatch != null) {
+            id = match.group(2); // Group 2 is the OSEE id group in OSEE_BOOKMARK_REGEX
+            if (!bookmarkedIds.contains(id)) {
+               bookmarkedIds.add(id);
+            }
+         } else if (hyperlinkMatch != null) {
+            id = match.group(4); // Group 4 is the OSEE id group in OSEE_HYPERLINK_REGEX
+            if (!hyperlinkedIds.containsKey(id)) {
+               hyperlinkedIds.put(id, artifact);
             }
          }
       }
@@ -1062,22 +1061,16 @@ public class MSWordTemplatePublisher {
    }
 
    protected String removeUnusedBookmark(String data) {
-      Pattern bookmarkHyperlinkPattern = Pattern.compile(
-         "^<aml:annotation[^<>]+w:name=\"OSEE\\.[^\"]*\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/><aml:annotation[^<>]+Word.Bookmark.End\\\"/>");
-      Pattern oseeLinkPattern = Pattern.compile("\"OSEE\\.[^\"]*\"");
+      Pattern bookmarkHyperlinkPattern = Pattern.compile(WordCoreUtil.OSEE_BOOKMARK_REGEX);
       Matcher match = bookmarkHyperlinkPattern.matcher(data);
-      Matcher linkMatch = null;
       String id = "";
 
       while (match.find()) {
          String foundMatch = match.group(0);
          if (Strings.isValid(foundMatch)) {
-            linkMatch = oseeLinkPattern.matcher(foundMatch);
-            if (linkMatch.find()) {
-               id = foundMatch.substring(linkMatch.start() + 6, linkMatch.end() - 1);
-               if (!hyperlinkedIds.containsKey(id)) {
-                  data = data.substring(match.end(0));
-               }
+            id = match.group(1);
+            if (!hyperlinkedIds.containsKey(id)) {
+               data = data.substring(match.end(0));
             }
          }
       }
@@ -1108,6 +1101,21 @@ public class MSWordTemplatePublisher {
       }
    }
 
+   /**
+    * Uses the in place getWordMlBookmark but splits the results into a length 2 string array. The regex used to split
+    * the string is a positive lookbehind on a closing tag, this technically retrieves 2 matches but due to the split
+    * limit, only the first one will be used. This works assuming the bookmark only has a start and end aml:annotation
+    * tag.
+    */
+   protected String[] getSplitWordMlBookmark(ArtifactReadable artifact) {
+      String wordMlBookmark = getWordMlBookmark(artifact);
+      return wordMlBookmark.split("(?<=>)", 2);
+   }
+
+   /**
+    * Creates a new bookmark using a given artifact for use in the document as necessary. This method will handle the
+    * bookmark/hyperlink storages to reflect that the given artifact has a bookmark.
+    */
    protected String getWordMlBookmark(ArtifactReadable artifact) {
       String bookmark = linkBuilder.getWordMlBookmark(artifact);
       bookmark = WordUtilities.reassignBookMarkID(bookmark);
@@ -1121,8 +1129,62 @@ public class MSWordTemplatePublisher {
       return bookmark;
    }
 
+   protected String addChapterNumToCaption(String data) {
+      String[] emptySplitBookmark = {"", ""};
+      return addChapterNumToCaptionAndBookmark(data, emptySplitBookmark);
+   }
+
+   protected String addChapterNumToCaptionAndBookmark(String data, String[] splitBookmark) {
+      Pattern oldCaptionPattern = Pattern.compile(
+         "(<w:p(( [^>]*?>)|>))(.*?)<w:fldSimple w:instr=\" SEQ (Figure|Table) \\\\\\* ARABIC \">.*?</w:fldSimple>(.*?)(</w:p[^>]*?>)");
+      String newCaptionTemplate =
+         "%s%s%s<w:fldSimple w:instr=\" STYLEREF 1 \\s \"><w:r><w:rPr><w:noProof/></w:rPr><w:t> #</w:t></w:r></w:fldSimple><w:r><w:noBreakHyphen/></w:r><w:fldSimple w:instr=\" SEQ %s \\* ARABIC \\s 1 \"><w:r><w:rPr><w:noProof/></w:rPr><w:t> #</w:t></w:r></w:fldSimple>%s<w:r><w:t>%s</w:t></w:r>%s";
+
+      Matcher matcher = oldCaptionPattern.matcher(data);
+      int matcherIndex = 0;
+      while (matcher.find(matcherIndex)) {
+         String paraStart = matcher.group(1);
+         String preStyleRefTags = matcher.group(4); // Normally contains figure or table text
+         String seqType = matcher.group(5); // Figure or Table
+         String captionText = Strings.xmlToText(matcher.group(6));
+         String paraEnd = matcher.group(7);
+
+         String newCaption = String.format(newCaptionTemplate, paraStart, splitBookmark[0], preStyleRefTags, seqType,
+            splitBookmark[1], captionText, paraEnd);
+
+         data = data.replace(matcher.group(0), newCaption);
+         matcherIndex = matcher.start() + newCaption.length();
+         matcher = oldCaptionPattern.matcher(data);
+      }
+
+      return data;
+   }
+
+   protected String changeHyperlinksToReferences(String data) {
+      Pattern internalDocLinkRegex = Pattern.compile(
+         "<w:r><w:fldChar w:fldCharType=\"begin\"/>.*?<w:instrText>\\s+HYPERLINK[^<>]+\"OSEE\\.([^\"]*)\"\\s+</w:instrText>.*?<w:fldChar w:fldCharType=\"separate\"/>.*?<w:rStyle w:val=\"Hyperlink\"/>(.*?)<w:fldChar w:fldCharType=\"end\"/></w:r>");
+
+      Matcher matcher = internalDocLinkRegex.matcher(data);
+      int matcherIndex = 0;
+      while (matcher.find(matcherIndex)) {
+         String guid = matcher.group(1);
+         String referenceText = Strings.xmlToText(matcher.group(2));
+         boolean isHeader = headerGuids.contains(guid);
+
+         String newReference = linkBuilder.getWordMlReference(guid, isHeader, referenceText);
+
+         data = data.replace(matcher.group(0), newReference);
+         matcherIndex = matcher.start() + newReference.length();
+         matcher = internalDocLinkRegex.matcher(data);
+      }
+
+      return data;
+   }
+
    protected void startOutlineSubSectionAndBookmark(WordMLWriter wordMl, ArtifactReadable artifact) {
+      String[] splitBookmark = getSplitWordMlBookmark(artifact);
+      wordMl.addWordMl(splitBookmark[0]);
       wordMl.startOutlineSubSection(FONT, artifact.getName(), null);
-      wordMl.addWordMl(getWordMlBookmark(artifact));
+      wordMl.addWordMl(splitBookmark[1]);
    }
 }
