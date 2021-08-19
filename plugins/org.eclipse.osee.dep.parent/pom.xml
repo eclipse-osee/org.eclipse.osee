@@ -90,11 +90,17 @@
 	  </repository>
  	
  	<repository>
-			<id>orbit_newer</id>
+			<id>orbit_new</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/repository</url>
 	  </repository>
- 		   
+
+ 	 <repository>
+			<id>orbit_old</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20181128170323/repository</url>
+	  </repository>	   
+    
      <repository>
 			<id>findbugs</id>
 			<layout>p2</layout>
