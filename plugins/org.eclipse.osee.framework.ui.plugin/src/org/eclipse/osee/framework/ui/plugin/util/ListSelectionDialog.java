@@ -31,6 +31,7 @@ public class ListSelectionDialog extends MessageDialog {
    private final Object[] choose;
    private Button saveSelection;
    private boolean isChecked = true;
+   private boolean showSaveSelection = true;
 
    /**
     * @return Returns the isChecked.
@@ -48,18 +49,22 @@ public class ListSelectionDialog extends MessageDialog {
    @Override
    protected Control createCustomArea(Composite parent) {
       selections = new List(parent, SWT.SINGLE);
-      saveSelection = new Button(parent, SWT.CHECK);//.setText("Checkbox 1");
-      saveSelection.setText("Remember Selection");
-      saveSelection.setSelection(true);
 
-      saveSelection.addSelectionListener(new SelectionAdapter() {
+      if (showSaveSelection) {
+         saveSelection = new Button(parent, SWT.CHECK);
+         saveSelection.setText("Remember Selection");
+         saveSelection.setSelection(true);
 
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            isChecked = saveSelection.getSelection();
-         }
+         saveSelection.addSelectionListener(new SelectionAdapter() {
 
-      });
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               isChecked = saveSelection.getSelection();
+            }
+
+         });
+      }
+
       for (int i = 0; i < choose.length; i++) {
          selections.add(choose[i].toString());
       }
@@ -81,5 +86,13 @@ public class ListSelectionDialog extends MessageDialog {
 
    public int getSelection() {
       return selectionIndex;
+   }
+
+   public boolean isShowSaveSelection() {
+      return showSaveSelection;
+   }
+
+   public void setShowSaveSelection(boolean showSaveSelection) {
+      this.showSaveSelection = showSaveSelection;
    }
 }

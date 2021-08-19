@@ -48,7 +48,7 @@
    <extension
          point="org.eclipse.osee.ats.ide.AtsWizardItem">
       <AtsWizardItem
-            classname="org.eclipse.osee.ats.ide.demo.workflow.DemoPlWizardItem">
+            classname="org.eclipse.osee.ats.ide.demo.workflow.DemoPlAndSawWizardItem">
       </AtsWizardItem>
    </extension>
 </plugin>

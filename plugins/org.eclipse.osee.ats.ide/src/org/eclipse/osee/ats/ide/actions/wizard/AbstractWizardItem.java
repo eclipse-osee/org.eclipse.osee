@@ -15,15 +15,11 @@ package org.eclipse.osee.ats.ide.actions.wizard;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -35,13 +31,15 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.XAgileFeatureHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkLabelValuePointsSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XOriginatorHyperlinkWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XSprintHyperlinkWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XTargetedVersionHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XWorkPackageHyperlinkWidget;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -49,8 +47,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -68,7 +64,6 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    private final AtsApi atsApi;
    private XComboViewer versionCombo;
    private XCheckBox createBranchCheck;
-   private IAtsVersion previousVersion;
 
    public AbstractWizardItem(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -110,7 +105,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
                } else if (field.equals(WizardFields.Sprint)) {
                   createSprintWidget(teamComp, teamDef);
                } else if (field.equals(WizardFields.TargetedVersion)) {
-                  createTargetedVersionAndBranchWidgets(teamComp, teamDef);
+                  createTargetedVersionWidget(teamComp, teamDef);
                } else if (field.equals(WizardFields.UnPlannedWork)) {
                   createUnplannedWorkWidget(teamComp, teamDef);
                } else if (field.equals(WizardFields.FeatureGroup)) {
@@ -151,13 +146,9 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       pointsComp.setLayout(layout);
       pointsComp.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
-      XComboViewer pointsCombo = new XComboViewer("Points", SWT.NONE);
-      Collection<Object> objects = new LinkedList<>();
-      objects.addAll(AtsAttributeTypes.Points.getEnumStrValues());
-      pointsCombo.setInput(objects);
-      pointsCombo.setFillHorizontally(false);
-      pointsCombo.createWidgets(pointsComp, 2);
-      teamDefFieldToWidget.put(teamDef, WizardFields.Points, pointsCombo);
+      XHyperlinkLabelValuePointsSelection widget = new XHyperlinkLabelValuePointsSelection(teamDef);
+      widget.createWidgets(pointsComp, 1);
+      teamDefFieldToWidget.put(teamDef, WizardFields.Points, widget);
    }
 
    private void createAssigneeWidget(IAtsTeamDefinition teamDef, Composite teamComp) {
@@ -175,84 +166,11 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       teamDefFieldToWidget.put(teamDef, WizardFields.Originator, originatorWidget);
    }
 
-   private void createTargetedVersionAndBranchWidgets(Composite parent, IAtsTeamDefinition teamDef) {
-      IAtsTeamDefinition teamDefHoldingVersions =
-         atsApi.getTeamDefinitionService().getTeamDefinitionHoldingVersions(teamDef);
-      if (teamDefHoldingVersions != null) {
-         List<IAtsVersion> versions = new LinkedList<>();
-         for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDefHoldingVersions)) {
-            if (!version.isReleased()) {
-               versions.add(version);
-            }
-         }
-         if (!versions.isEmpty()) {
-            Collections.sort(versions, new Comparator<IAtsVersion>() {
-
-               @Override
-               public int compare(IAtsVersion arg0, IAtsVersion arg1) {
-                  return arg0.getName().compareTo(arg1.getName());
-               }
-            });
-
-            Composite comp = new Composite(parent, SWT.NONE);
-            comp.setLayout(ALayout.getZeroMarginLayout(2, false));
-            comp.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-
-            versionCombo = new XComboViewer("Targeted Version", SWT.NONE);
-            Collection<Object> objects = new LinkedList<>();
-            objects.addAll(versions);
-            versionCombo.setInput(objects);
-            versionCombo.setFillHorizontally(false);
-            versionCombo.createWidgets(comp, 2);
-            previousVersion = (IAtsVersion) versionCombo.getSelected();
-            teamDefFieldToWidget.put(teamDef, WizardFields.TargetedVersion, versionCombo);
-
-            Composite comp2 = new Composite(parent, SWT.NONE);
-            comp2.setLayout(ALayout.getZeroMarginLayout(2, false));
-            comp2.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-
-            createBranchCheck = new XCheckBox("Create Branch Automatically");
-            createBranchCheck.setToolTip(
-               "Branch will be completed after Action Creation (Valid Targeted Version must be selected)");
-            createBranchCheck.setEditable(false);
-            createBranchCheck.setFillHorizontally(false);
-            createBranchCheck.createWidgets(comp2, 2);
-            teamDefFieldToWidget.put(teamDef, WizardFields.CreateBranch, createBranchCheck);
-
-            versionCombo.addXModifiedListener(new XModifiedListener() {
-
-               @Override
-               public void widgetModified(XWidget widget) {
-                  //Initialize so not to get the last state.
-                  //Both the targeted version and branch has
-                  //to be valid for auto branch to be selectable.
-                  createBranchCheck.setEditable(false);
-
-                  IAtsVersion version = (IAtsVersion) versionCombo.getSelected();
-
-                  if (previousVersion != null && version != null) {
-                     //Uncheck auto branch if previously selected.
-                     if (!previousVersion.equals(version)) {
-                        createBranchCheck.set(false);
-                     }
-                  }
-
-                  if (version == null) {
-                     createBranchCheck.setEditable(false);
-                  } else {
-                     BranchId branch = AtsApiService.get().getVersionService().getBranch(version);
-                     if (branch != null && branch.isValid()) {
-                        createBranchCheck.setEditable(true);
-                     }
-                  }
-
-                  previousVersion = version;
-                  comp2.layout();
-               }
-
-            });
-         }
-      }
+   private void createTargetedVersionWidget(Composite parent, IAtsTeamDefinition teamDef) {
+      XTargetedVersionHyperlinkWidget widget = new XTargetedVersionHyperlinkWidget();
+      widget.setTeamDef(teamDef);
+      widget.createWidgets(parent, 1);
+      teamDefFieldToWidget.put(teamDef, WizardFields.TargetedVersion, widget);
    }
 
    private void createUnplannedWorkWidget(Composite parent, IAtsTeamDefinition teamDef) {
@@ -267,72 +185,17 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void createSprintWidget(Composite parent, IAtsTeamDefinition teamDef) {
-      ArtifactToken agileTeam =
-         atsApi.getRelationResolver().getRelatedOrSentinel(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (agileTeam.isValid()) {
-         List<IAgileSprint> sprints = new LinkedList<>();
-         for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(agileTeam,
-            AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-            IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
-            if (sprint.isInWork()) {
-               sprints.add(sprint);
-            }
-         }
-         if (!sprints.isEmpty()) {
-            Collections.sort(sprints, new Comparator<IAgileSprint>() {
-
-               @Override
-               public int compare(IAgileSprint arg0, IAgileSprint arg1) {
-                  return arg0.getName().compareTo(arg1.getName());
-               }
-            });
-            Composite comp = new Composite(parent, SWT.NONE);
-            comp.setLayout(ALayout.getZeroMarginLayout(2, false));
-            comp.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-
-            XComboViewer sprintCombo = new XComboViewer("Sprint", SWT.NONE);
-            Collection<Object> objects = new LinkedList<>();
-            objects.addAll(sprints);
-            sprintCombo.setInput(objects);
-            sprintCombo.setFillHorizontally(false);
-            sprintCombo.createWidgets(comp, 2);
-            teamDefFieldToWidget.put(teamDef, WizardFields.Sprint, sprintCombo);
-
-         }
-      }
+      XSprintHyperlinkWidget widget = new XSprintHyperlinkWidget();
+      widget.setTeamDef(teamDef);
+      widget.createWidgets(parent, 1);
+      teamDefFieldToWidget.put(teamDef, WizardFields.Sprint, widget);
    }
 
    private void createFeatureGroupWidget(Composite parent, IAtsTeamDefinition teamDef) {
-      ArtifactToken agileTeam =
-         atsApi.getRelationResolver().getRelatedOrSentinel(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (agileTeam.isValid()) {
-         List<IAgileFeatureGroup> featureGroups = new LinkedList<>();
-         for (ArtifactToken featureGroupArt : atsApi.getRelationResolver().getRelated(agileTeam,
-            AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup)) {
-            IAgileFeatureGroup featureGroup = atsApi.getAgileService().getAgileFeatureGroup(featureGroupArt);
-            featureGroups.add(featureGroup);
-         }
-         if (!featureGroups.isEmpty()) {
-            Collections.sort(featureGroups, new Comparator<IAgileFeatureGroup>() {
-
-               @Override
-               public int compare(IAgileFeatureGroup arg0, IAgileFeatureGroup arg1) {
-                  return arg0.getName().compareTo(arg1.getName());
-               }
-            });
-            Composite comp = new Composite(parent, SWT.NONE);
-            comp.setLayout(ALayout.getZeroMarginLayout(2, false));
-            comp.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-
-            XComboViewer featureGroupCombo = new XComboViewer("Feature Group", SWT.NONE);
-            Collection<Object> objects = new LinkedList<>();
-            objects.addAll(featureGroups);
-            featureGroupCombo.setInput(objects);
-            featureGroupCombo.setFillHorizontally(false);
-            featureGroupCombo.createWidgets(comp, 2);
-            teamDefFieldToWidget.put(teamDef, WizardFields.FeatureGroup, featureGroupCombo);
-         }
-      }
+      XAgileFeatureHyperlinkWidget widget = new XAgileFeatureHyperlinkWidget();
+      widget.setTeamDef(teamDef);
+      widget.createWidgets(parent, 1);
+      teamDefFieldToWidget.put(teamDef, WizardFields.FeatureGroup, widget);
    }
 
    @Override
@@ -365,19 +228,20 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedFeatureGroup(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XComboViewer featureCombo = (XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.FeatureGroup);
+      XAgileFeatureHyperlinkWidget featureCombo =
+         (XAgileFeatureHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.FeatureGroup);
       if (featureCombo != null) {
-         IAgileFeatureGroup featureGroup = (IAgileFeatureGroup) featureCombo.getSelected();
-         if (featureGroup != null) {
+         for (IAgileFeatureGroup featureGroup : featureCombo.getFeatures()) {
             changes.relate(featureGroup, AtsRelationTypes.AgileFeatureToItem_AtsItem, teamWf);
          }
       }
    }
 
    private void wizardCompletedTargetedVersion(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XComboViewer versionCombo = (XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.TargetedVersion);
-      if (versionCombo != null) {
-         IAtsVersion version = (IAtsVersion) versionCombo.getSelected();
+      XTargetedVersionHyperlinkWidget widget =
+         (XTargetedVersionHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.TargetedVersion);
+      if (widget != null) {
+         IAtsVersion version = widget.getSelected();
          if (version != null) {
             atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
          }
@@ -385,9 +249,10 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedSprint(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XComboViewer sprintCombo = (XComboViewer) teamDefFieldToWidget.get(teamDef, WizardFields.Sprint);
+      XSprintHyperlinkWidget sprintCombo =
+         (XSprintHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Sprint);
       if (sprintCombo != null) {
-         IAgileSprint sprint = (IAgileSprint) sprintCombo.getSelected();
+         IAgileSprint sprint = sprintCombo.getSelected();
          if (sprint != null) {
             changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
          }
@@ -416,30 +281,14 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedPoints(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      ArtifactToken agileTeamArt = AtsApiService.get().getRelationResolver().getRelatedOrSentinel(teamDef,
-         AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      if (agileTeamArt.isValid()) {
-         IAgileTeam agileTeam = AtsApiService.get().getAgileService().getAgileTeam(agileTeamArt);
-         AttributeTypeToken agileTeamPointsAttributeType =
-            AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
-         XWidget widget = (XWidget) teamDefFieldToWidget.get(teamDef, agileTeamPointsAttributeType.equals(
-            AtsAttributeTypes.Points) ? WizardFields.Points : WizardFields.PointsNumeric);
-         if (widget != null) {
-            if (widget instanceof XFloat) {
-               XFloat xFloat = (XFloat) widget;
-               String pointsStr = xFloat.get();
-               if (Strings.isNumeric(pointsStr)) {
-                  Double points = Double.valueOf(pointsStr);
-                  changes.setSoleAttributeValue(teamWf, agileTeamPointsAttributeType, points);
-               }
-            } else if (widget instanceof XComboViewer) {
-               XComboViewer pointsCombo = (XComboViewer) widget;
-               String pointsStr = (String) pointsCombo.getSelected();
-               if (Strings.isValid(pointsStr)) {
-                  changes.setSoleAttributeValue(teamWf, agileTeamPointsAttributeType, pointsStr);
-               }
-            }
-         }
+      XHyperlinkLabelValuePointsSelection pointsWidget =
+         (XHyperlinkLabelValuePointsSelection) teamDefFieldToWidget.get(teamDef, WizardFields.Points);
+      AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamDef);
+      String value = pointsWidget.getValue();
+      if (pointsAttrType.equals(AtsAttributeTypes.Points)) {
+         changes.setSoleAttributeValue(teamWf, pointsAttrType, value);
+      } else {
+         changes.setSoleAttributeValue(teamWf, pointsAttrType, Double.valueOf(value));
       }
    }
 

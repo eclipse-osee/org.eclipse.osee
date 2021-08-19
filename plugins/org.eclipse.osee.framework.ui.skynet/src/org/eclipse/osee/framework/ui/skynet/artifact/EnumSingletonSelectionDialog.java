@@ -16,20 +16,14 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredListDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,33 +36,21 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class EnumSingletonSelectionDialog extends FilteredTreeDialog {
+public class EnumSingletonSelectionDialog extends FilteredListDialog<EnumToken> {
 
    private boolean removeAllAllowed = true;
    private boolean removeAllSelected = false;
 
    public EnumSingletonSelectionDialog(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
-      super("Select Option", "Select Option", new ArrayTreeContentProvider(), new StringLabelProvider(),
-         new StringNameComparator());
-      Set<String> options = new HashSet<>();
-      setMultiSelect(false);
-      try {
-
-         Artifact artifact = artifacts.iterator().next();
-         ArtifactTypeToken artType = artifact.getArtifactType();
-         @SuppressWarnings("unchecked")
-         List<EnumToken> validEnumValues = artType.getValidEnumValues((AttributeTypeEnum<EnumToken>) attributeType);
-         for (EnumToken enumTok : validEnumValues) {
-            options.add(enumTok.getName());
-         }
-         removeAllAllowed = AttributeTypeManager.checkIfRemovalAllowed(attributeType, artifacts);
-
-      } catch (OseeCoreException ex) {
-         options.add(ex.getLocalizedMessage());
-      }
-      List<String> optsList = new ArrayList<>();
-      optsList.addAll(options);
-      Collections.sort(optsList);
+      super("Select Option", "Select Option");
+      Artifact artifact = artifacts.iterator().next();
+      ArtifactTypeToken artType = artifact.getArtifactType();
+      @SuppressWarnings("unchecked")
+      List<EnumToken> validEnumValues = artType.getValidEnumValues((AttributeTypeEnum<EnumToken>) attributeType);
+      removeAllAllowed = AttributeTypeManager.checkIfRemovalAllowed(attributeType, artifacts);
+      List<EnumToken> optsList = new ArrayList<>();
+      optsList.addAll(validEnumValues);
+      Collections.sort(validEnumValues);
       setInput(optsList);
    }
 
@@ -110,7 +92,7 @@ public class EnumSingletonSelectionDialog extends FilteredTreeDialog {
       if (removeAllSelected) {
          return "";
       }
-      return (String) getSelectedFirst();
+      return getSelected().getName();
    }
 
    public boolean isRemoveAllAllowed() {

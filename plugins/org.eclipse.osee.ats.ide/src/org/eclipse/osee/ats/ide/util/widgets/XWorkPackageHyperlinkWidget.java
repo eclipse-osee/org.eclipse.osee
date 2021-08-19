@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.ide.ev.WorkPackageCollectionProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
 /**
@@ -42,8 +43,11 @@ public class XWorkPackageHyperlinkWidget extends XHyperlinkLabelCmdValueSelectio
 
    @Override
    public boolean handleSelection() {
-      Collection<IAtsWorkPackage> options =
-         AtsApiService.get().getEarnedValueService().getWorkPackageOptions(teamDef);
+      Collection<IAtsWorkPackage> options = AtsApiService.get().getEarnedValueService().getWorkPackageOptions(teamDef);
+      if (options.isEmpty()) {
+         AWorkbench.popup("No Work Packages configured for this Team");
+         return false;
+      }
 
       WorkPackageFilterTreeDialog dialog = new WorkPackageFilterTreeDialog("Select Work Package", "Select Work Package",
          new WorkPackageCollectionProvider(options));

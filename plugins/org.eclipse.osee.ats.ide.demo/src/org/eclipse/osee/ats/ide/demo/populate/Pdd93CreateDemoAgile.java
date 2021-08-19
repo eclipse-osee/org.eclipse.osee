@@ -136,8 +136,7 @@ public class Pdd93CreateDemoAgile {
 
       JaxAgileProgramFeature jaxFeature =
          JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
-      IAgileProgramFeature feature =
-         AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+      IAgileProgramFeature feature = AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
 
       JaxAgileStory jaxStory1 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_1);
       IAgileStory story1 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory1);
@@ -161,8 +160,7 @@ public class Pdd93CreateDemoAgile {
 
       // relate story to agile team and sprint
       ArtifactToken story1Art = AtsApiService.get().getQueryService().getArtifact(story1);
-      ArtifactToken agileTeamArt =
-         AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+      ArtifactToken agileTeamArt = AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
       changes.relate(story1Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
       ArtifactToken sprint2Art = AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
       changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
@@ -237,8 +235,7 @@ public class Pdd93CreateDemoAgile {
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
-      Artifact sawAgileTeam =
-         AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.CIS_Agile_Team);
+      Artifact sawAgileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.CIS_Agile_Team);
       changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
          AtsAttributeTypes.Points.getName());
       changes.execute();
@@ -270,18 +267,21 @@ public class Pdd93CreateDemoAgile {
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
-      Artifact sawAgileTeam =
-         AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+      Artifact sawAgileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Agile_Team);
       changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
          AtsAttributeTypes.Points.getName());
       changes.execute();
 
       // Assigne ATS Team to Agile Team
-      Artifact sawCodeArt = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Code);
-      Conditions.assertNotNull(sawCodeArt, "sawCodeArt");
       Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(newTeam.getId());
-      agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawCodeArt);
-      agileTeam.persist("Assigne ATS Team to Agile Team");
+      for (ArtifactToken tok : Arrays.asList(DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW,
+         DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_SW_Design,
+         DemoArtifactToken.SAW_Requirements)) {
+         Artifact sawTeamDef = AtsApiService.get().getQueryServiceIde().getArtifact(tok);
+         Conditions.assertNotNull(sawTeamDef, "sawCodeArt");
+         agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawTeamDef);
+         agileTeam.persist("Assigne ATS Team to Agile Team");
+      }
 
       // Add team members to agile team
       Artifact joeUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Joe_Smith);

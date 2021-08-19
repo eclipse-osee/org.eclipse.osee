@@ -140,9 +140,11 @@ public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
    public void setInput() {
       try {
          if (showAll != null && showAll.isChecked()) {
-            super.setInput(workPackageProvider.getAllWorkPackages());
+            Collection<IAtsWorkPackage> allWorkPackages = workPackageProvider.getAllWorkPackages();
+            super.setInput(allWorkPackages);
          } else {
-            super.setInput(workPackageProvider.getActiveWorkPackages());
+            Collection<IAtsWorkPackage> activeWorkPackages = workPackageProvider.getActiveWorkPackages();
+            super.setInput(activeWorkPackages);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
