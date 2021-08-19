@@ -35,6 +35,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class OseeLinkBuilder {
    private static final String WORDML_INTERNAL_DOC_LINK_FORMAT =
       "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> HYPERLINK \\l \"OSEE.%s\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>";
+   private static final String WORDML_INTERNAL_DOC_REFERENCE_FORMAT =
+      "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> REF OSEE.%s \\h %s</w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Sec#</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r><w:r><w:t> %s</w:t></w:r>";
    private static final String WORDML_LINK_FORMAT =
       "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
    private static final String WORDML_BOOKMARK_FORMAT =
@@ -153,6 +155,11 @@ public class OseeLinkBuilder {
       String linkId = getLinkId(destLinkType, artifact, txId, presentationType, permanentUrl);
       String linkText = getLinkText(destLinkType, artifact);
       return String.format(linkFormat, linkId, linkText);
+   }
+
+   public String getWordMlReference(String linkId, boolean addParagraphNumber, String linkText) {
+      String paragraphNumSwitch = addParagraphNumber ? "\\n " : "";
+      return String.format(WORDML_INTERNAL_DOC_REFERENCE_FORMAT, linkId, paragraphNumSwitch, linkText);
    }
 
    private String getLinkFormat(LinkType destLinkType) {

@@ -97,6 +97,11 @@ public class WordCoreUtil {
    public static String EMPTY_LIST_REGEX =
       "<w:p wsp:rsidP=\"[^\"]*?\" wsp:rsidR=\"[^\"]*?\" wsp:rsidRDefault=\"[^\"]*?\"><w:pPr><w:pStyle w:val=\"[^\"]*?\"></w:pStyle><w:listPr><wx:t wx:val=\"([^>]*?)\"></wx:t><wx:font wx:val=\"[^\"]*?\"></wx:font></w:listPr></w:pPr><w:r><w:t></w:t></w:r></w:p>";
 
+   public static String OSEE_BOOKMARK_REGEX =
+      "^<aml:annotation[^<>]+w:name=\"OSEE\\.([^\"]*)\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/><aml:annotation[^<>]+Word.Bookmark.End\\\"/>";
+
+   public static String OSEE_HYPERLINK_REGEX = "<w:instrText>\\s+HYPERLINK[^<>]+\"OSEE\\.([^\"]*)\"\\s+</w:instrText>";
+
    private static final Pattern tagKiller =
       Pattern.compile("<.*?>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern =
