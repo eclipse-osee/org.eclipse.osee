@@ -34,12 +34,11 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -282,10 +281,10 @@ public class DefectXViewerMenu {
    }
 
    private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
-      int result = ld.open();
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
+      int result = dialog.open();
       if (result == 0) {
-         modified = setUser(defectItems, ld.getSelection());
+         modified = setUser(defectItems, dialog.getSelection());
       }
       return modified;
    }
@@ -383,12 +382,11 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean setUser(Collection<ReviewDefectItem> defectItems, User user) {
+   private boolean setUser(Collection<ReviewDefectItem> defectItems, AtsUser user) {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUserId().equals(user.getUserId())) {
-            AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
-            defectItem.setUser(atsUser);
+            defectItem.setUser(user);
             // at least one in the list has been changed.
             if (!modified) {
                modified = true;

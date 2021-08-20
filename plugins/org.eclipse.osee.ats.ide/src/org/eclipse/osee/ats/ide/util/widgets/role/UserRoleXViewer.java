@@ -31,14 +31,13 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -196,12 +195,11 @@ public class UserRoleXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setUser(Collection<UserRole> userRoles, User user) {
+   private boolean setUser(Collection<UserRole> userRoles, AtsUser user) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(userRole.getUserId());
-         if (user != null && atsUser.notEqual(user)) {
-            userRole.setUserId(atsUser.getUserId());
+         if (user != null && user.notEqual(user)) {
+            userRole.setUserId(user.getUserId());
             if (!modified) {
                modified = true;
             }
@@ -237,10 +235,10 @@ public class UserRoleXViewer extends XViewer {
          } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             modified = setCompleted(userRoles);
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
-            int result = ld.open();
+            UserListDialog diaglog = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
+            int result = diaglog.open();
             if (result == 0) {
-               modified = setUser(userRoles, ld.getSelection());
+               modified = setUser(userRoles, diaglog.getSelection());
             }
          } else if (xCol.equals(UserRoleXViewerFactory.Role_Col)) {
             Collection<String> roleStrValues = new ArrayList<>();
