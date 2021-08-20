@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -118,10 +118,10 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    }
 
    public static boolean promptChangeOriginator(final Collection<IAtsWorkItem> workItems, boolean persist) {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
-      int result = ld.open();
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
+      int result = dialog.open();
       if (result == 0) {
-         AtsUser selectedUser = AtsApiService.get().getUserService().getUserById(ld.getSelection());
+         AtsUser selectedUser = dialog.getSelection();
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Originator");
          for (IAtsWorkItem workItem : workItems) {
             workItem.getStateMgr().setCreatedBy(selectedUser, true, null, changes);

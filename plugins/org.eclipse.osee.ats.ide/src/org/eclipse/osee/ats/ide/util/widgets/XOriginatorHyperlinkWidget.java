@@ -14,10 +14,9 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -42,7 +41,7 @@ public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         originator = AtsApiService.get().getUserService().getUserById(ld.getSelection());
+         originator = ld.getSelection();
          return true;
       }
       return false;

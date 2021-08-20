@@ -17,11 +17,11 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -113,10 +113,10 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedUser != null) {
          return;
       }
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select User", active);
-      int result = ld.open();
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", active);
+      int result = dialog.open();
       if (result == 0) {
-         selectedUser = AtsApiService.get().getUserService().getUserById(ld.getSelection());
+         selectedUser = dialog.getSelection();
          return;
       }
       cancelled = true;

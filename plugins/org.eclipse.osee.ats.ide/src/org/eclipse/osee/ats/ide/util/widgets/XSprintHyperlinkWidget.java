@@ -12,7 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -56,10 +57,15 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
          AWorkbench.popup("No Agile Team configured for this ATS Team");
          return false;
       }
-      Collection<IAgileSprint> agileSprints = atsApi.getAgileService().getAgileSprints(agileTeam);
+      List<IAgileSprint> activeSprints = new LinkedList<>();
+      for (IAgileSprint agileSprint : atsApi.getAgileService().getAgileSprints(agileTeam)) {
+         if (agileSprint.isActive()) {
+            activeSprints.add(agileSprint);
+         }
+      }
 
       final SprintFilteredListDialog dialog =
-         new SprintFilteredListDialog("Select Sprint", "Select Sprint", agileSprints);
+         new SprintFilteredListDialog("Select Sprint", "Select Sprint", activeSprints);
       int result = dialog.open();
       if (result != 0) {
          return false;
