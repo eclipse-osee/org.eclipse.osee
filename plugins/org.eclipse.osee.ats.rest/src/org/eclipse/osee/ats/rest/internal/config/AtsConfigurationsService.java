@@ -14,15 +14,21 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
@@ -32,6 +38,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.core.agile.AgileFactory;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -100,7 +107,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return atsConfigurations;
    }
 
-   @SuppressWarnings("unlikely-arg-type")
    private AtsConfigurations getAtsConfigurationsFromDb() {
 
       // load ats branch configurations
@@ -116,9 +122,32 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       ElapsedTime time2 = new ElapsedTime("Server ACS - query", debugOn);
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
       ResultSet<ArtifactReadable> results =
-         query.andTypeEquals(TeamDefinition, ActionableItem, Version, CoreArtifactTypes.User).getResults();
+         query.andTypeEquals(TeamDefinition, ActionableItem, Version, User, AgileTeam, AgileFeatureGroup).getResults();
+      processConfigQueryResults(configs, idToArtifact, time2, results);
       time2.end();
 
+      time2.start("Server ACS - setConfigValues");
+      Map<String, String> configValues = setConfigValues(configs);
+      time2.end();
+
+      time2.start("Server ACS - views/cols/states");
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
+      AtsViews views = update.getConfigViews(configValues.get(UpdateAtsConfiguration.VIEWS_KEY));
+      // load views
+      configs.setViews(views);
+      // load color column config
+      configs.setColorColumns(update.getColorColumns(configValues.get(UpdateAtsConfiguration.COLOR_COLUMN_KEY)));
+      // load valid state names
+      configs.setValidStateNames(
+         update.getValidStateNames(configValues.get(UpdateAtsConfiguration.VALID_STATE_NAMES_KEY)));
+      time2.end();
+
+      time.end();
+
+      return configs;
+   }
+
+   private void processConfigQueryResults(AtsConfigurations configs, Map<Long, ArtifactReadable> idToArtifact, ElapsedTime time2, ResultSet<ArtifactReadable> results) {
       time2.start("Server ACS - process configs");
       for (ArtifactReadable art : results) {
          try {
@@ -149,6 +178,24 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                user.setAtsApi(atsApi);
                user.getTags().addAll(
                   atsApi.getAttributeResolver().getAttributeValues(art, CoreAttributeTypes.StaticId));
+            } else if (art.isOfType(AtsArtifactTypes.AgileTeam)) {
+               JaxAgileTeam agileTeam = AgileFactory.createJaxTeam(atsApi.getAgileService().getAgileTeam(art));
+               configs.getIdToAgileTeam().put(agileTeam.getId(), agileTeam);
+               Collection<ArtifactToken> atsTeams =
+                  atsApi.getRelationResolver().getRelated(art, AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam);
+               for (ArtifactToken teamDef : atsTeams) {
+                  configs.getTeamDefToAgileTeam().put(teamDef.getId(), agileTeam.getId());
+               }
+            } else if (art.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+               JaxAgileFeatureGroup feature =
+                  AgileFactory.createJaxAgileFeatureGroup(atsApi.getAgileService().getAgileFeatureGroup(art));
+               configs.getIdToAgileFeature().put(feature.getId(), feature);
+               Collection<ArtifactToken> agileTeams =
+                  atsApi.getRelationResolver().getRelated(art, AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam);
+               if (!agileTeams.isEmpty()) {
+                  ArtifactToken agileTeam = agileTeams.iterator().next();
+                  configs.getFeatureToAgileTeam().put(feature.getId(), agileTeam.getId());
+               }
             }
             idToArtifact.put(art.getId(), art);
          } catch (Exception ex) {
@@ -156,26 +203,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          }
       }
       time2.end();
-
-      time2.start("Server ACS - setConfigValues");
-      Map<String, String> configValues = setConfigValues(configs);
-      time2.end();
-
-      time2.start("Server ACS - views/cols/states");
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
-      AtsViews views = update.getConfigViews(configValues.get(UpdateAtsConfiguration.VIEWS_KEY));
-      // load views
-      configs.setViews(views);
-      // load color column config
-      configs.setColorColumns(update.getColorColumns(configValues.get(UpdateAtsConfiguration.COLOR_COLUMN_KEY)));
-      // load valid state names
-      configs.setValidStateNames(
-         update.getValidStateNames(configValues.get(UpdateAtsConfiguration.VALID_STATE_NAMES_KEY)));
-      time2.end();
-
-      time.end();
-
-      return configs;
    }
 
    private Map<String, String> setConfigValues(AtsConfigurations configs) {

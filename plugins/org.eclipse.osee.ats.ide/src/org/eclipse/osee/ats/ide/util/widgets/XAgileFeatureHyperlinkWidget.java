@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
@@ -66,14 +65,13 @@ public class XAgileFeatureHyperlinkWidget extends XHyperlinkLabelCmdValueSelecti
          AWorkbench.popup("No Agile Team configured for this ATS Team");
          return false;
       }
-      AgileEndpointApi agileEp = atsApi.getServerEndpoints().getAgileEndpoint();
 
       List<AbstractWorkflowArtifact> awas = new ArrayList<>();
       if (teamWf != null) {
          awas.add((AbstractWorkflowArtifact) teamWf);
       }
       FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog =
-         AgileFeatureGroupColumn.openSelectionDialog(agileEp, agileTeam.getId(), awas);
+         AgileFeatureGroupColumn.openSelectionDialog(agileTeam.getId(), awas);
 
       if (dialog != null) {
          for (JaxAgileFeatureGroup grp : dialog.getChecked()) {

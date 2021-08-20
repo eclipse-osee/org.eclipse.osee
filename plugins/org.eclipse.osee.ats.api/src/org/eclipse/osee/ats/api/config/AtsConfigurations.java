@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -39,8 +41,12 @@ public class AtsConfigurations {
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, Version> idToVersion = new HashMap<>();
    private Map<Long, AtsUser> idToUser = new HashMap<>();
+   private Map<Long, JaxAgileTeam> idToAgileTeam = new HashMap<>();
+   private Map<Long, JaxAgileFeatureGroup> idToAgileFeature = new HashMap<>();
    private Map<String, Long> userIdToUserArtId = new HashMap<>();
    private Map<String, Long> userNameToUserArtId = new HashMap<>();
+   private Map<Long, Long> teamDefToAgileTeam = new HashMap<>();
+   private Map<Long, Long> featureToAgileTeam = new HashMap<>();
    private Map<String, String> atsConfig = new HashMap<>();
 
    public AtsViews getViews() {
@@ -176,6 +182,38 @@ public class AtsConfigurations {
    @JsonIgnore
    public String getConfigValue(String key) {
       return this.atsConfig.get(key);
+   }
+
+   public Map<Long, Long> getTeamDefToAgileTeam() {
+      return teamDefToAgileTeam;
+   }
+
+   public void setTeamDefToAgileTeam(Map<Long, Long> teamDefToAgileTeam) {
+      this.teamDefToAgileTeam = teamDefToAgileTeam;
+   }
+
+   public Map<Long, JaxAgileTeam> getIdToAgileTeam() {
+      return idToAgileTeam;
+   }
+
+   public void setIdToAgileTeam(Map<Long, JaxAgileTeam> idToAgileTeam) {
+      this.idToAgileTeam = idToAgileTeam;
+   }
+
+   public Map<Long, JaxAgileFeatureGroup> getIdToAgileFeature() {
+      return idToAgileFeature;
+   }
+
+   public void setIdToAgileFeature(Map<Long, JaxAgileFeatureGroup> idToAgileFeature) {
+      this.idToAgileFeature = idToAgileFeature;
+   }
+
+   public Map<Long, Long> getFeatureToAgileTeam() {
+      return featureToAgileTeam;
+   }
+
+   public void setFeatureToAgileTeam(Map<Long, Long> featureToAgileTeam) {
+      this.featureToAgileTeam = featureToAgileTeam;
    }
 
 }
