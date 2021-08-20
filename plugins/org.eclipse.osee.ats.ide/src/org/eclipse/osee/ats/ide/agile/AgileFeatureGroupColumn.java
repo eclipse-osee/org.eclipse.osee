@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -32,9 +33,11 @@ import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.agile.AgileFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.column.IAtsXViewerPreComputedColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -123,7 +126,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
       long teamId = items.getCommonBacklog().getTeamId();
 
-      FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog = openSelectionDialog(agileEp, teamId, awas);
+      FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog = openSelectionDialog(teamId, awas);
 
       JaxAgileItem updateItem = new JaxAgileItem();
       if (dialog == null) {
@@ -151,17 +154,18 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       return true;
    }
 
-   public static FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> openSelectionDialog(AgileEndpointApi agileEp, long teamId, Collection<? extends AbstractWorkflowArtifact> awas) {
+   public static FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> openSelectionDialog(long teamId, Collection<? extends AbstractWorkflowArtifact> awas) {
+      AtsConfigurations configurations = AtsApiService.get().getConfigService().getConfigurations();
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
-      try {
-         for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(teamId)) {
+      for (Entry<Long, Long> entry : configurations.getFeatureToAgileTeam().entrySet()) {
+         Long featureId = entry.getKey();
+         Long agileTeamId = entry.getValue();
+         if (agileTeamId.equals(teamId)) {
+            JaxAgileFeatureGroup feature = configurations.getIdToAgileFeature().get(featureId);
             if (feature.isActive()) {
                activeFeatureGroups.add(feature);
             }
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return null;
       }
 
       FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog =
@@ -188,20 +192,11 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
             AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
             IAgileFeatureGroup featureGroup = AtsApiService.get().getAgileService().getAgileFeatureGroup(featureArt);
             if (featureGroup.isActive()) {
-               selected.add(createJaxAgileFeatureGroupFromAgileFeatureGroup(featureGroup));
+               selected.add(AgileFactory.createJaxAgileFeatureGroup(featureGroup));
             }
          }
       }
       return selected;
-   }
-
-   public static JaxAgileFeatureGroup createJaxAgileFeatureGroupFromAgileFeatureGroup(IAgileFeatureGroup group) {
-      JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
-      newGroup.setName(group.getName());
-      newGroup.setId(group.getId());
-      newGroup.setActive(group.isActive());
-      newGroup.setTeamId(group.getTeamId());
-      return newGroup;
    }
 
    @Override

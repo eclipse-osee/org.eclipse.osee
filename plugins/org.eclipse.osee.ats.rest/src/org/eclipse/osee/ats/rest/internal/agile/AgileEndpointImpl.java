@@ -89,6 +89,7 @@ import org.eclipse.osee.ats.api.util.UpdateLocation;
 import org.eclipse.osee.ats.api.util.UpdateType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
+import org.eclipse.osee.ats.core.agile.AgileFactory;
 import org.eclipse.osee.ats.core.agile.SprintUtil;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
@@ -400,7 +401,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public List<JaxAgileTeam> team() throws Exception {
       List<JaxAgileTeam> teams = new ArrayList<>();
       for (IAgileTeam team : atsApi.getAgileService().getTeams()) {
-         teams.add(toJaxTeam(team));
+         teams.add(AgileFactory.createJaxTeam(team));
       }
       return teams;
    }
@@ -408,7 +409,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public JaxAgileTeam getTeam(long teamId) {
       IAgileTeam team = atsApi.getAgileService().getAgileTeamById(teamId);
-      return toJaxTeam(team);
+      return AgileFactory.createJaxTeam(team);
    }
 
    @Override
@@ -507,7 +508,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       IAgileTeam updatedTeam = atsApi.getAgileService().createAgileTeam(newTeam);
-      JaxAgileTeam created = toJaxTeam(updatedTeam);
+      JaxAgileTeam created = AgileFactory.createJaxTeam(updatedTeam);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(created.getId())).build();
@@ -518,24 +519,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public Response updateTeam(JaxAgileTeam team) {
       IAgileTeam updatedTeam = atsApi.getAgileService().updateAgileTeam(team);
-      JaxAgileTeam created = toJaxTeam(updatedTeam);
+      JaxAgileTeam created = AgileFactory.createJaxTeam(updatedTeam);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(created.getId())).build();
       Response response = Response.created(location).entity(created).build();
       return response;
-   }
-
-   private JaxAgileTeam toJaxTeam(IAgileTeam updatedTeam) {
-      JaxAgileTeam created = new JaxAgileTeam();
-      created.setName(updatedTeam.getName());
-      created.setId(updatedTeam.getId());
-      created.setActive(updatedTeam.isActive());
-      created.getAtsTeamIds().addAll(updatedTeam.getAtsTeamIds());
-      created.setBacklogId(updatedTeam.getBacklogId());
-      created.setSprintId(updatedTeam.getSprintId());
-      created.setDescription(updatedTeam.getDescription());
-      return created;
    }
 
    @Override

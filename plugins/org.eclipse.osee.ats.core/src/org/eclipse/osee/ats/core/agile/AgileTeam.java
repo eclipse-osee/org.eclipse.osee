@@ -16,10 +16,11 @@ package org.eclipse.osee.ats.core.agile;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -60,9 +61,12 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    public ArtifactId getSprintId() {
       ArtifactId sprintId = ArtifactId.SENTINEL;
       try {
-         for (IAgileSprint sprint : atsApi.getAgileService().getSprintsForTeam(artifact.getId())) {
-            if (sprint.isInWork()) {
-               sprintId = sprint.getStoreObject();
+         for (ArtifactToken sprint : atsApi.getRelationResolver().getRelated(artifact,
+            AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+            if (atsApi.getAttributeResolver().getSoleAttributeValue(sprint, AtsAttributeTypes.CurrentStateType,
+               "").equals(StateType.Working.name())) {
+               sprintId = sprint;
+               break;
             }
          }
       } catch (Exception ex) {

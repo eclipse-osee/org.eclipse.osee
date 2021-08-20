@@ -262,4 +262,25 @@ public class AgileFactory {
       return null;
    }
 
+   public static JaxAgileTeam createJaxTeam(IAgileTeam agileTeam) {
+      JaxAgileTeam created = new JaxAgileTeam();
+      created.setName(agileTeam.getName());
+      created.setId(agileTeam.getId());
+      created.setActive(agileTeam.isActive());
+      created.getAtsTeamIds().addAll(agileTeam.getAtsTeamIds());
+      created.setBacklogId(agileTeam.getBacklogId());
+      created.setSprintId(agileTeam.getSprintId());
+      created.setDescription(agileTeam.getDescription());
+      return created;
+   }
+
+   public static JaxAgileFeatureGroup createJaxAgileFeatureGroup(IAgileFeatureGroup agileFeatureGroup) {
+      JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
+      newGroup.setName(agileFeatureGroup.getName());
+      newGroup.setId(agileFeatureGroup.getId());
+      newGroup.setActive(agileFeatureGroup.isActive());
+      newGroup.setTeamId(agileFeatureGroup.getTeamId());
+      return newGroup;
+   }
+
 }
