@@ -61,9 +61,9 @@ public class AccountResourceTest {
 
    @Test
    public void testDeleteAccount() {
-      Response actual = resource.deleteAccount();
-      assertEquals(Status.OK.getStatusCode(), actual.getStatus());
-
+      try (Response actual = resource.deleteAccount()) {
+         assertEquals(Status.OK.getStatusCode(), actual.getStatus());
+      }
       verify(accountOps).deleteAccount(ACCOUNT_ID);
    }
 
@@ -113,16 +113,18 @@ public class AccountResourceTest {
          ACCOUNT_ID.getUuid());
       when(uriInfo.getRequestUri()).thenReturn(uri);
 
-      Response response = resource.getSubscriptions(uriInfo);
+      try (Response response = resource.getSubscriptions(uriInfo)) {
 
-      int status = response.getStatus();
-      assertEquals(Status.SEE_OTHER.getStatusCode(), status);
+         int status = response.getStatus();
+         assertEquals(Status.SEE_OTHER.getStatusCode(), status);
 
-      URI location = (URI) response.getMetadata().getFirst(HttpHeaders.LOCATION);
-      URI expectedLocation =
-         UriBuilder.fromUri(uri).path("..").path("..").path("..").path("subscriptions").path("for-account").path(
-            "{account-id}").build(ACCOUNT_ID.getUuid());
-      assertEquals(expectedLocation, location);
+         URI location = (URI) response.getMetadata().getFirst(HttpHeaders.LOCATION);
+
+         URI expectedLocation =
+            UriBuilder.fromUri(uri).path("..").path("..").path("..").path("subscriptions").path("for-account").path(
+               "{account-id}").build(ACCOUNT_ID.getUuid());
+         assertEquals(expectedLocation, location);
+      }
    }
 
 }

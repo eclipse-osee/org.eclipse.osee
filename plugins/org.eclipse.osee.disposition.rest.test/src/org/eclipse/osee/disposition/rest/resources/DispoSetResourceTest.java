@@ -70,12 +70,13 @@ public class DispoSetResourceTest {
       when(dispositionApi.getDispoSetById(branch, id1AsString)).thenReturn(expected);
       when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(true);
 
-      Response postResponse = resource.postDispoSet(descriptor, "");
-      DispoSetData returnedEntity = (DispoSetData) postResponse.getEntity();
-      assertEquals(Response.Status.CREATED.getStatusCode(), postResponse.getStatus());
-      assertEquals(id1AsString, returnedEntity.getGuid());
-      assertEquals("Name", returnedEntity.getName());
-      assertEquals("c:", returnedEntity.getImportPath());
+      try (Response postResponse = resource.postDispoSet(descriptor, "")) {
+         DispoSetData returnedEntity = (DispoSetData) postResponse.getEntity();
+         assertEquals(Response.Status.CREATED.getStatusCode(), postResponse.getStatus());
+         assertEquals(id1AsString, returnedEntity.getGuid());
+         assertEquals("Name", returnedEntity.getName());
+         assertEquals("c:", returnedEntity.getImportPath());
+      }
    }
 
    @Test
@@ -84,19 +85,23 @@ public class DispoSetResourceTest {
       DispoSetDescriptorData badNameDescriptor = new DispoSetDescriptorData();
       badNameDescriptor.setName("");
       badNameDescriptor.setImportPath("c:");
-      Response postResponseBadName = resource.postDispoSet(badNameDescriptor, "");
-      String returnedEntityBadName = (String) postResponseBadName.getEntity();
-      assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadName.getStatus());
-      assertEquals(DispoMessages.Set_EmptyNameOrPath, returnedEntityBadName);
+      try (Response postResponseBadName = resource.postDispoSet(badNameDescriptor, "")) {
+         String returnedEntityBadName = (String) postResponseBadName.getEntity();
+         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadName.getStatus());
+
+         assertEquals(DispoMessages.Set_EmptyNameOrPath, returnedEntityBadName);
+      }
 
       // Try to do post with invalid name
       DispoSetDescriptorData badPathDescriptor = new DispoSetDescriptorData();
       badPathDescriptor.setName("name");
       badPathDescriptor.setImportPath("");
-      Response postResponseBadPath = resource.postDispoSet(badPathDescriptor, "");
-      String returnedEntityBadPath = (String) postResponseBadPath.getEntity();
-      assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadPath.getStatus());
-      assertEquals(DispoMessages.Set_EmptyNameOrPath, returnedEntityBadPath);
+      try (Response postResponseBadPath = resource.postDispoSet(badPathDescriptor, "")) {
+         String returnedEntityBadPath = (String) postResponseBadPath.getEntity();
+
+         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadPath.getStatus());
+         assertEquals(DispoMessages.Set_EmptyNameOrPath, returnedEntityBadPath);
+      }
    }
 
    @Test
@@ -107,11 +112,11 @@ public class DispoSetResourceTest {
       descriptor.setDispoType("testScript");
 
       when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(false);
-
-      Response postResponse = resource.postDispoSet(descriptor, "");
-      String returnedEntity = (String) postResponse.getEntity();
-      assertEquals(Response.Status.CONFLICT.getStatusCode(), postResponse.getStatus());
-      assertEquals(DispoMessages.Set_ConflictingNames, returnedEntity);
+      try (Response postResponse = resource.postDispoSet(descriptor, "")) {
+         String returnedEntity = (String) postResponse.getEntity();
+         assertEquals(Response.Status.CONFLICT.getStatusCode(), postResponse.getStatus());
+         assertEquals(DispoMessages.Set_ConflictingNames, returnedEntity);
+      }
    }
 
    @Test
@@ -170,5 +175,6 @@ public class DispoSetResourceTest {
       when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(false);
       response = resource.deleteDispoSet(id1AsString, "");
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+      response.close();
    }
 }

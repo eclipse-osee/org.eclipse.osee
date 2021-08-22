@@ -106,13 +106,15 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
                boolean compressOnSave = false;
 
                String resourceName = String.format("%s.zip", getAttribute().getArtifact().getGuid());
-               Response response = endpoint.saveResource(new ByteArrayInputStream(compressed),
+               try (Response response = endpoint.saveResource(new ByteArrayInputStream(compressed),
                   BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId, resourceName, overwriteAllowed,
-                  compressOnSave);
-               String location = BinaryContentUtils.getAttributeLocation(response);
-               if (location != null) {
-                  this.remoteUri = location;
-                  this.localUri = null;
+                  compressOnSave);) {
+                  String location = BinaryContentUtils.getAttributeLocation(response);
+
+                  if (location != null) {
+                     this.remoteUri = location;
+                     this.localUri = null;
+                  }
                }
             } finally {
                Lib.close(inputStream);
@@ -121,6 +123,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
+
    }
 
    @Override
@@ -130,14 +133,16 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
             String path = BinaryContentUtils.asResourcePath(remoteUri);
 
             ResourcesEndpoint endpoint = getResourcesEndpoint();
-            Response response = endpoint.deleteResource(path);
-            if (Status.OK.getStatusCode() == response.getStatus()) {
-               remoteUri = null;
-               if (isBackingFileValid()) {
-                  backingFile.delete(true, null);
+            try (Response response = endpoint.deleteResource(path)) {
+               if (Status.OK.getStatusCode() == response.getStatus()) {
+                  remoteUri = null;
+                  if (isBackingFileValid()) {
+                     backingFile.delete(true, null);
+                  }
                }
             }
          }
+
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }

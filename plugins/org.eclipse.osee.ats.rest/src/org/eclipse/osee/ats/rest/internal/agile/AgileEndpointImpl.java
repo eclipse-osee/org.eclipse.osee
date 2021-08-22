@@ -523,14 +523,15 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(created.getId())).build();
-      Response response = Response.created(location).entity(created).build();
-      return response;
+      return Response.created(location).entity(created).build();
+
    }
 
    @Override
    public Response deleteTeam(long teamId) {
       atsApi.getAgileService().deleteAgileTeam(teamId);
       return Response.ok().build();
+
    }
 
    /********************************
@@ -632,6 +633,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamId())).path("syncSprints").path(
          String.valueOf(sprint.getId())).build();
       return Response.created(location).entity(created).build();
+
    }
 
    private JaxAgileSprint toJaxSprint(IAgileSprint sprint) {
@@ -854,6 +856,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response deleteSprint(long teamId, long sprintId) {
       atsApi.getAgileService().deleteSprint(sprintId);
       return Response.ok().build();
+
    }
 
    @Override

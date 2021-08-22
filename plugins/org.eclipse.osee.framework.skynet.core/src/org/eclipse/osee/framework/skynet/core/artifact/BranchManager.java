@@ -328,19 +328,22 @@ public final class BranchManager {
 
    public static void setType(BranchId branch, BranchType type) {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Response response = proxy.setBranchType(branch, type);
-      if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
-         BranchManager.getBranch(branch).setBranchType(type);
-         OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.TypeUpdated, branch));
+      try (Response response = proxy.setBranchType(branch, type)) {
+         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+            BranchManager.getBranch(branch).setBranchType(type);
+            OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.TypeUpdated, branch));
+         }
       }
    }
 
    public static void setState(BranchId branch, BranchState state) {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Response response = proxy.setBranchState(branch, state);
-      if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
-         BranchManager.getBranch(branch).setBranchState(state);
-         OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.StateUpdated, branch));
+      try (Response response = proxy.setBranchState(branch, state)) {
+         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+            BranchManager.getBranch(branch).setBranchState(state);
+            OseeEventManager.kickBranchEvent(BranchManager.class,
+               new BranchEvent(BranchEventType.StateUpdated, branch));
+         }
       }
    }
 
@@ -363,10 +366,12 @@ public final class BranchManager {
             IStatus status = event.getResult();
             if (status.equals(Status.OK_STATUS)) {
                ArchiveUnArchiveBranchJob job = (ArchiveUnArchiveBranchJob) event.getJob();
-               Response response = job.getResponse();
-               if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
-                  BranchManager.getBranch(branch).setArchived(setArchived);
-                  OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
+               try (Response response = job.getResponse()) {
+                  if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+                     BranchManager.getBranch(branch).setArchived(setArchived);
+                     OseeEventManager.kickBranchEvent(this,
+                        new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
+                  }
                }
             }
          }
@@ -378,10 +383,11 @@ public final class BranchManager {
 
    public static void setName(BranchId branch, String newBranchName) {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Response response = proxy.setBranchName(branch, newBranchName);
-      if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
-         BranchManager.getBranch(branch).setName(newBranchName);
-         OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.Renamed, branch));
+      try (Response response = proxy.setBranchName(branch, newBranchName)) {
+         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+            BranchManager.getBranch(branch).setName(newBranchName);
+            OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.Renamed, branch));
+         }
       }
    }
 
@@ -624,9 +630,10 @@ public final class BranchManager {
    public static void setAssociatedArtifactId(BranchId branch, ArtifactId artifactId) {
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
-      Response response = proxy.associateBranchToArtifact(branch, artifactId);
-      if (javax.ws.rs.core.Response.Status.OK.getStatusCode() == response.getStatus()) {
-         getBranch(branch).setAssociatedArtifact(artifactId);
+      try (Response response = proxy.associateBranchToArtifact(branch, artifactId)) {
+         if (javax.ws.rs.core.Response.Status.OK.getStatusCode() == response.getStatus()) {
+            getBranch(branch).setAssociatedArtifact(artifactId);
+         }
       }
    }
 

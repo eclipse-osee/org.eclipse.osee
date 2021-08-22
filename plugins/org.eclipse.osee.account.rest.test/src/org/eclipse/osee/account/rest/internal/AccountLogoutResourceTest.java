@@ -26,7 +26,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AccountLogoutResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountLogoutResourceTest {
@@ -53,9 +53,9 @@ public class AccountLogoutResourceTest {
       when(session.getToken()).thenReturn(token);
       when(ops.doLogout(token)).thenReturn(true);
 
-      Response response = resource.logout(session);
-
-      assertEquals(Status.OK.getStatusCode(), response.getStatus());
+      try (Response response = resource.logout(session)) {
+         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+      }
       verify(ops).doLogout(token);
    }
 
@@ -66,9 +66,9 @@ public class AccountLogoutResourceTest {
       when(session.getToken()).thenReturn(token);
       when(ops.doLogout(token)).thenReturn(false);
 
-      Response response = resource.logout(session);
-
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      try (Response response = resource.logout(session)) {
+         assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      }
       verify(ops).doLogout(token);
    }
 

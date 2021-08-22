@@ -150,8 +150,10 @@ public final class SkynetTransactionTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testRelationMultiplicity() {
-      Artifact parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "parent1");
-      Artifact parent2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "parent2");
+      Artifact parent1 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "parent1");
+      Artifact parent2 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "parent2");
       Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "child");
       try {
          parent1.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child);
@@ -243,11 +245,12 @@ public final class SkynetTransactionTest {
             SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
 
             try {
-               for (Artifact artifact : data) {
-                  artifact.persist(transaction);
-               }
-               if (WorkerType.PRIMARY == workerType) {
-                  synchronized (lock) {
+               synchronized (lock) {
+                  for (Artifact artifact : data) {
+                     artifact.persist(transaction);
+                  }
+                  if (WorkerType.PRIMARY == workerType) {
+
                      try {
                         lock.wait();
                      } catch (InterruptedException ex) {

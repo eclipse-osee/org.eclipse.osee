@@ -106,36 +106,37 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
          protected IStatus run(IProgressMonitor monitor) {
             try {
                final Path dir = new File(System.getProperty("user.home")).toPath();
-               final WatchService watcher = FileSystems.getDefault().newWatchService();
+               try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
 
-               WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
-               for (;;) {
+                  WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
+                  for (;;) {
 
-                  // pend for change to the home directory
-                  try {
-                     key = watcher.take();
-                  } catch (InterruptedException ex) {
-                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
-                  }
+                     // pend for change to the home directory
+                     try {
+                        key = watcher.take();
+                     } catch (InterruptedException ex) {
+                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+                     }
 
-                  for (WatchEvent<?> event : key.pollEvents()) {
+                     for (WatchEvent<?> event : key.pollEvents()) {
 
-                     @SuppressWarnings("unchecked")
-                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                     Path filename = ev.context();
+                        @SuppressWarnings("unchecked")
+                        WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                        Path filename = ev.context();
 
-                     for (FileChangedListener listener : listeners) {
-                        listener.fileChanged(filename.toString());
+                        for (FileChangedListener listener : listeners) {
+                           listener.fileChanged(filename.toString());
+                        }
+                     }
+
+                     // Reset the key
+                     boolean valid = key.reset();
+                     if (!valid) {
+                        break;
                      }
                   }
-
-                  // Reset the key
-                  boolean valid = key.reset();
-                  if (!valid) {
-                     break;
-                  }
+                  return Status.OK_STATUS;
                }
-               return Status.OK_STATUS;
             } catch (IOException ex) {
                OseeLog.log(EditLinksNavigateItem.class, Level.SEVERE, ex);
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);

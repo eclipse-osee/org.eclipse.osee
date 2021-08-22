@@ -39,7 +39,9 @@ public class StatusCallback implements OseeMessagingStatusCallback {
 
    @Override
    public void success() {
-      currentCount++;
+      synchronized (this) {
+         currentCount++;
+      }
       if (currentCount == expectedCount) {
          synchronized (this) {
             wasUpdateReceived = true;

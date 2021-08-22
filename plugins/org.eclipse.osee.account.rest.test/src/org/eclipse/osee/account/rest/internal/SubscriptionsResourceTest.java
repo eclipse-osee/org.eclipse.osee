@@ -131,9 +131,9 @@ public class SubscriptionsResourceTest {
       when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
       when(manager.setSubscriptionActive(subscription, true)).thenReturn(true);
 
-      Response response = resource.setSubscriptionActive(SUBSCRIPTION_ENCODED);
-      assertEquals(Status.OK.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setSubscriptionActive(SUBSCRIPTION_ENCODED)) {
+         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+      }
       verify(manager).setSubscriptionActive(subscription, true);
    }
 
@@ -142,9 +142,9 @@ public class SubscriptionsResourceTest {
       when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
       when(manager.setSubscriptionActive(subscription, true)).thenReturn(false);
 
-      Response response = resource.setSubscriptionActive(SUBSCRIPTION_ENCODED);
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setSubscriptionActive(SUBSCRIPTION_ENCODED)) {
+         assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      }
       verify(manager).setSubscriptionActive(subscription, true);
    }
 
@@ -153,9 +153,9 @@ public class SubscriptionsResourceTest {
       when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
       when(manager.setSubscriptionActive(subscription, false)).thenReturn(true);
 
-      Response response = resource.setSubscriptionInactive(SUBSCRIPTION_ENCODED);
-      assertEquals(Status.OK.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setSubscriptionInactive(SUBSCRIPTION_ENCODED)) {
+         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+      }
       verify(manager).setSubscriptionActive(subscription, false);
    }
 
@@ -164,9 +164,9 @@ public class SubscriptionsResourceTest {
       when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
       when(manager.setSubscriptionActive(subscription, false)).thenReturn(false);
 
-      Response response = resource.setSubscriptionInactive(SUBSCRIPTION_ENCODED);
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setSubscriptionInactive(SUBSCRIPTION_ENCODED)) {
+         assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      }
       verify(manager).setSubscriptionActive(subscription, false);
    }
 
@@ -199,9 +199,9 @@ public class SubscriptionsResourceTest {
    public void testDeleteSubscriptionGroup() {
       when(manager.deleteSubscriptionById(GROUP_ID)).thenReturn(true);
 
-      Response actual = resource.deleteSubscriptionGroup(GROUP_ID.getId());
-      assertEquals(Status.OK.getStatusCode(), actual.getStatus());
-
+      try (Response actual = resource.deleteSubscriptionGroup(GROUP_ID.getId())) {
+         assertEquals(Status.OK.getStatusCode(), actual.getStatus());
+      }
       verify(manager).deleteSubscriptionById(GROUP_ID);
    }
 

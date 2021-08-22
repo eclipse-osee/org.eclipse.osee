@@ -37,7 +37,9 @@ public class TestMessageListener extends OseeMessagingListener {
 
    @Override
    public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
-      currentCount++;
+      synchronized (this) {
+         currentCount++;
+      }
       data.add(new Data((TestMessage) message, headers, replyConnection));
       if (currentCount == expectedCount) {
          synchronized (this) {

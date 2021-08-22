@@ -71,12 +71,12 @@ public class AnnotationResourceTest {
       expectedAnnotation.setLocationRefs(annotationToCreate.getLocationRefs());
       expectedAnnotation.setId(mockId);
       when(dispositionApi.getDispoAnnotationById(branch, id1.getGuid(), mockId)).thenReturn(expectedAnnotation);
-
-      Response postResponse = resource.postDispoAnnotation(annotationToCreate, "name");
-      DispoAnnotationData returnedEntity = (DispoAnnotationData) postResponse.getEntity();
-      assertEquals(Response.Status.CREATED.getStatusCode(), postResponse.getStatus());
-      assertEquals(mockId, returnedEntity.getGuid());
-      assertEquals("1-10", returnedEntity.getLocationRefs());
+      try (Response postResponse = resource.postDispoAnnotation(annotationToCreate, "name")) {
+         DispoAnnotationData returnedEntity = (DispoAnnotationData) postResponse.getEntity();
+         assertEquals(Response.Status.CREATED.getStatusCode(), postResponse.getStatus());
+         assertEquals(mockId, returnedEntity.getGuid());
+         assertEquals("1-10", returnedEntity.getLocationRefs());
+      }
    }
 
    @Test
@@ -84,10 +84,11 @@ public class AnnotationResourceTest {
       // Try to do post with invalid name
       DispoAnnotationData badAnnotationToCreate = new DispoAnnotationData();
       badAnnotationToCreate.setLocationRefs("");
-      Response postResponseBadName = resource.postDispoAnnotation(badAnnotationToCreate, "name");
-      String returnedEntityBadName = (String) postResponseBadName.getEntity();
-      assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadName.getStatus());
-      assertEquals(DispoMessages.Annotation_EmptyLocRef, returnedEntityBadName);
+      try (Response postResponseBadName = resource.postDispoAnnotation(badAnnotationToCreate, "name")) {
+         String returnedEntityBadName = (String) postResponseBadName.getEntity();
+         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadName.getStatus());
+         assertEquals(DispoMessages.Annotation_EmptyLocRef, returnedEntityBadName);
+      }
    }
 
    @Test
@@ -137,6 +138,7 @@ public class AnnotationResourceTest {
          false)).thenReturn(false);
       response = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      response.close();
    }
 
    @Test
@@ -156,5 +158,6 @@ public class AnnotationResourceTest {
             false);
       response = resource.deleteDispoAnnotation(annotationToEdit.getGuid(), "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      response.close();
    }
 }
