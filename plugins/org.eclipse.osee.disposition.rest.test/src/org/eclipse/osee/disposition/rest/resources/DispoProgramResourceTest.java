@@ -46,11 +46,12 @@ public class DispoProgramResourceTest {
       // No Sets
       when(dispoApi.getDispoPrograms()).thenReturn(Collections.emptyList());
 
-      Response noProgramsResponse = resource.getAllPrograms();
-      String messageActual = (String) noProgramsResponse.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
-      assertEquals("[ ]", messageActual);
+      try (Response noProgramsResponse = resource.getAllPrograms()) {
+         String messageActual = (String) noProgramsResponse.getEntity();
+         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
 
+         assertEquals("[ ]", messageActual);
+      }
       when(dispoApi.getDispoPrograms()).thenReturn(Collections.singletonList(SYSTEM_ROOT));
 
       Response oneSetResponse = resource.getAllPrograms();

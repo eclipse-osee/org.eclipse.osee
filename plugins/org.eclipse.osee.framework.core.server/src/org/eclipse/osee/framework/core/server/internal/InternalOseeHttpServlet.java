@@ -69,8 +69,11 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
          start = System.currentTimeMillis();
       }
       try {
-         this.processingState = ProcessingStateEnum.BUSY;
-         this.request = request;
+         synchronized (this) {
+            this.processingState = ProcessingStateEnum.BUSY;
+            this.request = request;
+
+         }
          try {
             checkAccessControl(request);
             super.service(request, response);
@@ -85,8 +88,11 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
             getLogger().info("[%s] [%s - %s] serviced in [%s] ms", request.getMethod(), request.getContextPath(),
                request.getQueryString(), elapsed);
          }
-         this.processingState = ProcessingStateEnum.IDLE;
-         this.request = null;
+         synchronized (this) {
+            this.processingState = ProcessingStateEnum.IDLE;
+            this.request = null;
+         }
+
       }
    }
 }

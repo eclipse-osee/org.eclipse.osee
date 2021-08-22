@@ -98,7 +98,6 @@ public class BranchPurgeTest {
 
       BranchManager.purgeBranch(branch);
       txEndpoint.purgeUnusedBackingDataAndTransactions();
-
       // Count rows and check that same as when began
       // TODO looks like artifacts are not being removed when purge a branch
       assertThatEquals(initialRowCount, TestUtil.getTableRowCounts(TABLES));

@@ -70,10 +70,11 @@ public class AttributeResourceProcessor {
          }
          String resourceName = builder.toString();
 
-         Response response = endpoint.saveResource(inputStream, BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL,
-            resourceId, resourceName, overwriteAllowed, compressOnSave);
-         String location = BinaryContentUtils.getAttributeLocation(response);
-         dataStore.setLocator(location);
+         try (Response response = endpoint.saveResource(inputStream, BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL,
+            resourceId, resourceName, overwriteAllowed, compressOnSave)) {
+            String location = BinaryContentUtils.getAttributeLocation(response);
+            dataStore.setLocator(location);
+         }
       } finally {
          Lib.close(inputStream);
       }
@@ -82,8 +83,8 @@ public class AttributeResourceProcessor {
    public void acquire(DataStore dataStore) {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
       String path = BinaryContentUtils.asResourcePath(dataStore.getLocator());
-      try {
-         Response response = endpoint.getResource(path, false, false);
+      try (Response response = endpoint.getResource(path, false, false)) {
+
          if (Status.OK.getStatusCode() == response.getStatus()) {
             InputStream inputStream = null;
             try {
@@ -126,9 +127,10 @@ public class AttributeResourceProcessor {
    public void purge(DataStore dataStore) {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
       String path = BinaryContentUtils.asResourcePath(dataStore.getLocator());
-      Response response = endpoint.deleteResource(path);
-      if (Status.OK.getStatusCode() == response.getStatus()) {
-         dataStore.clear();
+      try (Response response = endpoint.deleteResource(path)) {
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            dataStore.clear();
+         }
       }
    }
 }

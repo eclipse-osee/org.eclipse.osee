@@ -734,6 +734,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
       return asResponse(modified);
    }
 

@@ -223,6 +223,7 @@ public class Pdd93CreateDemoAgile {
       backlog.setTeamId(newTeam.getId());
       response = agileEp.createBacklog(teamId, backlog);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      response.close();
    }
 
    private void createCisAgileTeam(IAgileProgram aProgram) {
@@ -247,6 +248,7 @@ public class Pdd93CreateDemoAgile {
       backlog.setTeamId(newTeam.getId());
       response = agileEp.createBacklog(DemoArtifactToken.CIS_Agile_Team.getId(), backlog);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      response.close();
    }
 
    private IAgileProgram createAgileProgram() {
@@ -382,7 +384,7 @@ public class Pdd93CreateDemoAgile {
          response = agile.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup);
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
       }
-
+      response.close();
       setupSprint2ForBurndown(DemoArtifactToken.SAW_Sprint_2.getId());
    }
 

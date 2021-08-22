@@ -72,9 +72,10 @@ public class AccountPreferencesResourceTest {
       when(input.getMap()).thenReturn(map);
       when(accountOps.setAccountPreferences(ACCOUNT_ID, input)).thenReturn(true);
 
-      Response actual = resource.setAccountPreferences(input);
+      try (Response actual = resource.setAccountPreferences(input)) {
 
-      assertEquals(Status.OK.getStatusCode(), actual.getStatus());
+         assertEquals(Status.OK.getStatusCode(), actual.getStatus());
+      }
       verify(accountOps).setAccountPreferences(ACCOUNT_ID, input);
    }
 
@@ -88,9 +89,10 @@ public class AccountPreferencesResourceTest {
       when(input.getMap()).thenReturn(map);
       when(accountOps.setAccountPreferences(ACCOUNT_ID, input)).thenReturn(false);
 
-      Response actual = resource.setAccountPreferences(input);
+      try (Response actual = resource.setAccountPreferences(input)) {
 
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), actual.getStatus());
+         assertEquals(Status.NOT_MODIFIED.getStatusCode(), actual.getStatus());
+      }
       verify(accountOps).setAccountPreferences(ACCOUNT_ID, input);
    }
 

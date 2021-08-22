@@ -452,6 +452,7 @@ public final class Lib {
          outputStream = new FileOutputStream(outFile);
          inputStreamToOutputStream(inputStream, outputStream);
       } finally {
+         Lib.close(inputStream);
          Lib.close(outputStream);
       }
    }
@@ -1341,7 +1342,9 @@ public final class Lib {
       if (jars != null) {
          for (int i = 0; i < jars.length; i++) {
             JarFile jar = new JarFile(jars[i]);
+
             Attributes attributes = jar.getManifest().getMainAttributes();
+            jar.close();
             String jarTitle = attributes.getValue("Implementation-Title");
             String jarVersion = attributes.getValue("Implementation-Version");
             if (jarTitle != null && jarVersion != null && jarTitle.equals(title) && jarVersion.equals(version)) {
@@ -1377,7 +1380,9 @@ public final class Lib {
             Lib.close(jis);
          }
       } else {
-         manifest = new JarFile(jarFile).getManifest();
+         JarFile jf = new JarFile(jarFile);
+         manifest = jf.getManifest();
+         jf.close();
       }
       return manifest.getMainAttributes().getValue("Implementation-Version");
    }

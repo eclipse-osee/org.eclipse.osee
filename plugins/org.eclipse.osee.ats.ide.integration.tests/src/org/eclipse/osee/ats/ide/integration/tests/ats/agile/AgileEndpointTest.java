@@ -63,9 +63,9 @@ public class AgileEndpointTest {
    public void testTeamCRUD() {
       // Test Create
       JaxNewAgileTeam newTeam = newJaxAgileTeam();
-      Response response = agile.createTeam(newTeam);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-
+      try (Response response = agile.createTeam(newTeam)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+      }
       // Test Get
       JaxAgileTeam team = agile.getTeam(teamId);
       Assert.assertNotNull(team);
@@ -100,18 +100,18 @@ public class AgileEndpointTest {
    @Test
    public void testSprintCRUD() {
       JaxNewAgileTeam newTeam = newJaxAgileTeam();
-      Response response = agile.createTeam(newTeam);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-
+      try (Response response = agile.createTeam(newTeam)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+      }
       // Test Create
       JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
       newSprint.setName("My Sprint");
       Long id = Lib.generateArtifactIdAsInt();
       newSprint.setId(id);
       newSprint.setTeamId(teamId);
-      Response response2 = agile.createSprint(teamId, newSprint);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
-
+      try (Response response2 = agile.createSprint(teamId, newSprint)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
+      }
       // Test Get
       List<JaxAgileSprint> sprints = agile.getSprints(teamId);
       Assert.assertEquals(1, sprints.size());
@@ -129,9 +129,9 @@ public class AgileEndpointTest {
    @Test
    public void testFeatureGroupCRUD() {
       JaxNewAgileTeam newTeam = newJaxAgileTeam();
-      Response response = agile.createTeam(newTeam);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-
+      try (Response response = agile.createTeam(newTeam)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+      }
       // Test Create
       JaxNewAgileFeatureGroup group = new JaxNewAgileFeatureGroup();
       group.setName("Communications");
@@ -139,9 +139,9 @@ public class AgileEndpointTest {
       Long id = Lib.generateArtifactIdAsInt();
       group.setId(id);
 
-      Response response2 = agile.createFeatureGroup(teamId, group);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
-
+      try (Response response2 = agile.createFeatureGroup(teamId, group)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
+      }
       // Test Get
       List<JaxAgileFeatureGroup> groups = agile.getFeatureGroups(teamId);
       Assert.assertEquals(1, groups.size());
@@ -160,9 +160,9 @@ public class AgileEndpointTest {
    @Test
    public void testBacklogCR() {
       JaxNewAgileTeam newTeam = newJaxAgileTeam();
-      Response response = agile.createTeam(newTeam);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-
+      try (Response response = agile.createTeam(newTeam)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+      }
       JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
       backlog.setName("My Backlog");
       backlog.setTeamId(teamId);
@@ -170,9 +170,9 @@ public class AgileEndpointTest {
       backlog.setId(id);
 
       // Test Create
-      Response response2 = agile.createBacklog(teamId, backlog);
-      Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
-
+      try (Response response2 = agile.createBacklog(teamId, backlog)) {
+         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
+      }
       // Test Get
       JaxAgileBacklog newBacklog = agile.getBacklog(teamId);
       Assert.assertEquals("My Backlog", newBacklog.getName());

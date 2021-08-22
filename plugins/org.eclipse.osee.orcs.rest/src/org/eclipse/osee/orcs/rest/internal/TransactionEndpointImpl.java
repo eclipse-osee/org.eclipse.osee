@@ -75,18 +75,21 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public Response purgeTxs(String txIds) {
       return asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
+
    }
 
    @Override
    public Response purgeUnusedBackingDataAndTransactions() {
       orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions();
       return Response.ok().build();
+
    }
 
    @Override
    public Response replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, ArtifactId artId, String comment) {
       return OrcsRestUtil.asResponse(
          orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId, txId, artId, comment));
+
    }
 
    @Override

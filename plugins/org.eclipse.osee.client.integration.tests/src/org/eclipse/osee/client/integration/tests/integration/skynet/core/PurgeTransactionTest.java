@@ -82,8 +82,8 @@ public class PurgeTransactionTest {
 
    private TransactionId createArtifacts() throws Exception {
       SkynetTransaction createTransaction = TransactionManager.createTransaction(SAW_Bld_2, "Purge Transaction Test");
-      softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10, getClass().getSimpleName(),
-         SAW_Bld_2);
+      softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10,
+         getClass().getSimpleName(), SAW_Bld_2);
       for (Artifact softArt : softArts) {
          softArt.persist(createTransaction);
       }

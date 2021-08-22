@@ -110,6 +110,7 @@ public class DispoItemResourceTest {
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
       assertEquals(DispoMessages.Item_NotFound, returnedMessage);
+      response.close();
    }
 
    @Test
@@ -125,5 +126,6 @@ public class DispoItemResourceTest {
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
       assertEquals(DispoMessages.Item_NotFound, returnedMessage);
+      response.close();
    }
 }

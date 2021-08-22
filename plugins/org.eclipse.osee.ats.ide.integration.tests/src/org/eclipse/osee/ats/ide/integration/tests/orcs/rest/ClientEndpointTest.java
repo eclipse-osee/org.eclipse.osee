@@ -43,10 +43,11 @@ public class ClientEndpointTest {
    @Test
    public void testGetAll() {
       ClientEndpoint clientEp = AtsApiService.get().getOseeClient().getClientEndpoint();
-      Response response = clientEp.getAll();
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      Sessions sessions = response.readEntity(Sessions.class);
-      Assert.assertTrue(sessions.sessions.size() >= 1);
+      try (Response response = clientEp.getAll()) {
+         Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+         Sessions sessions = response.readEntity(Sessions.class);
+         Assert.assertTrue(sessions.sessions.size() >= 1);
+      }
    }
 
    @Test
@@ -68,6 +69,7 @@ public class ClientEndpointTest {
 
       Assert.assertTrue(sessions.toString(),
          sessions.sessions.iterator().next().getUserId().equals(DemoUsers.Joe_Smith.getUserId()));
+      response.close();
    }
 
    @Test

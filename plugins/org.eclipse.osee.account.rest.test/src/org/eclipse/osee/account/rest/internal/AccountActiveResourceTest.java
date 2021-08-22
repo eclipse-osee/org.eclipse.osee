@@ -61,9 +61,9 @@ public class AccountActiveResourceTest {
    public void testSetActiveOk() {
       when(ops.setAccountActive(accountId, true)).thenReturn(true);
 
-      Response response = resource.setActive();
-      assertEquals(Status.OK.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setActive()) {
+         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+      }
       verify(ops).setAccountActive(accountId, true);
    }
 
@@ -71,9 +71,9 @@ public class AccountActiveResourceTest {
    public void testSetActiveNotModified() {
       when(ops.setAccountActive(accountId, true)).thenReturn(false);
 
-      Response response = resource.setActive();
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setActive()) {
+         assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      }
       verify(ops).setAccountActive(accountId, true);
    }
 
@@ -81,9 +81,9 @@ public class AccountActiveResourceTest {
    public void testSetInactiveOk() {
       when(ops.setAccountActive(accountId, false)).thenReturn(true);
 
-      Response response = resource.setInactive();
-      assertEquals(Status.OK.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setInactive()) {
+         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+      }
       verify(ops).setAccountActive(accountId, false);
    }
 
@@ -91,9 +91,9 @@ public class AccountActiveResourceTest {
    public void testSetInactiveMotModified() {
       when(ops.setAccountActive(accountId, false)).thenReturn(false);
 
-      Response response = resource.setInactive();
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
-
+      try (Response response = resource.setInactive()) {
+         assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      }
       verify(ops).setAccountActive(accountId, false);
    }
 

@@ -37,7 +37,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AccountLoginResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountLoginResourceTest {
@@ -72,16 +72,14 @@ public class AccountLoginResourceTest {
       when(ops.doLogin(any(RequestInfo.class), eq(data))).thenReturn(session);
       when(uriInfo.getBaseUri()).thenReturn(new URI(ACCOUNT_BASE));
 
-      Response response = resource.login(request, uriInfo, data);
-      assertEquals(Status.OK.getStatusCode(), response.getStatus());
-
-      AccountSessionData actual = (AccountSessionData) response.getEntity();
-      assertEquals(session, actual);
-
-      URI location = (URI) response.getMetadata().getFirst(HttpHeaders.CONTENT_LOCATION);
-      assertNotNull(location);
-      assertEquals(ACCOUNT_BASE + "/" + ACCOUNT_ID, location.toASCIIString());
-
+      try (Response response = resource.login(request, uriInfo, data)) {
+         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+         AccountSessionData actual = (AccountSessionData) response.getEntity();
+         assertEquals(session, actual);
+         URI location = (URI) response.getMetadata().getFirst(HttpHeaders.CONTENT_LOCATION);
+         assertNotNull(location);
+         assertEquals(ACCOUNT_BASE + "/" + ACCOUNT_ID, location.toASCIIString());
+      }
       verify(ops).asRequestInfo(request);
       verify(ops).doLogin(reqInfoCaptor.capture(), eq(data));
       verify(uriInfo).getBaseUri();

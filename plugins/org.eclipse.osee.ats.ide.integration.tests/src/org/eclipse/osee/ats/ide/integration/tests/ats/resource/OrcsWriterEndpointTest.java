@@ -53,18 +53,22 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
    }
 
    private OwCollector getDefaultOwCollector() throws Exception {
-      Response response = writer.getOrcsWriterInputDefaultJson();
-      assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
-      OwCollector collector = response.readEntity(OwCollector.class);
-      return collector;
+      try (Response response = writer.getOrcsWriterInputDefaultJson()) {
+         assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+
+         OwCollector collector = response.readEntity(OwCollector.class);
+         return collector;
+      }
    }
 
    @Test
    public void testGetOrcsWriterInputDefault() throws Exception {
-      Response response = writer.getOrcsWriterInputDefault();
-      assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
-      String excelXml = response.readEntity(String.class);
-      assertTrue(excelXml.contains("Orcs Writer Import Folder"));
+      try (Response response = writer.getOrcsWriterInputDefault()) {
+         assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+         String excelXml = response.readEntity(String.class);
+
+         assertTrue(excelXml.contains("Orcs Writer Import Folder"));
+      }
    }
 
    @Test
@@ -72,8 +76,9 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       OwCollector collector = getDefaultOwCollector();
       collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
       collector.setPersistComment(getClass().getSimpleName() + " - testValidate");
-      Response response = writer.getOrcsWriterValidate(collector);
-      assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+      try (Response response = writer.getOrcsWriterValidate(collector)) {
+         assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+      }
    }
 
    @Test
@@ -81,9 +86,9 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       OwCollector collector = getDefaultOwCollector();
       collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
       collector.setPersistComment(getClass().getSimpleName() + " - testPersist");
-      Response response = writer.getOrcsWriterPersist(collector);
-      assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
-
+      try (Response response = writer.getOrcsWriterPersist(collector)) {
+         assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+      }
       for (OwArtifact art : collector.getCreate()) {
          long artTypeId = art.getType().getId();
          if (CoreArtifactTypes.Folder.equals(artTypeId)) {
@@ -129,9 +134,9 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
       collector.setPersistComment(getClass().getSimpleName() + " - testValidate");
 
-      Response response = writer.getOrcsWriterPersist(collector);
-      assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
-
+      try (Response response = writer.getOrcsWriterPersist(collector)) {
+         assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+      }
       ArtifactCache.deCache(artifactFromId1);
 
       Artifact artifactReloaded = ArtifactQuery.getArtifactFromToken(artifact, DeletionFlag.INCLUDE_DELETED);

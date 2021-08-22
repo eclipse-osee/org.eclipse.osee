@@ -74,15 +74,18 @@ public class RendererEndpointTest {
 
    @Test
    public void testImport() throws IOException {
-      Response response = renderEndpoint.msWordTemplatePublish(branch, template, parent, ArtifactId.SENTINEL);
-      Object attachment = response.getEntity();
-      File wordPublish = folder.newFile("wordPublish.xml");
-      if (attachment instanceof GZIPInputStream) {
-         GZIPInputStream gzi = (GZIPInputStream) attachment;
-         saveAttachement(gzi, wordPublish);
+      try (Response response = renderEndpoint.msWordTemplatePublish(branch, template, parent, ArtifactId.SENTINEL)) {
+         Object attachment = response.getEntity();
+
+         File wordPublish = folder.newFile("wordPublish.xml");
+         if (attachment instanceof GZIPInputStream) {
+            GZIPInputStream gzi = (GZIPInputStream) attachment;
+            saveAttachement(gzi, wordPublish);
+         }
+         String fileContents = Lib.fileToString(wordPublish);
+
+         Assert.assertTrue(fileContents.contains("Communication Subsystem Crew Interface"));
       }
-      String fileContents = Lib.fileToString(wordPublish);
-      Assert.assertTrue(fileContents.contains("Communication Subsystem Crew Interface"));
    }
 
    private static void setUpSWReq(Artifact swReqFolder, BranchToken branch) {
