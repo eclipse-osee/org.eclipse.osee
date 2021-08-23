@@ -1,14 +1,6 @@
 <h1 mat-dialog-title>Create Action</h1>
 <div mat-dialog-content>
-    <mat-form-field [style.fontSize.px]="18">
-        <mat-label>Select Originator</mat-label>
-        <mat-select [(ngModel)]="data.originator" required>
-            <mat-option *ngFor="let user of (users |async)" [value]="user">
-                {{user.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <br>
+    
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Select Actionable Item</mat-label>
         <mat-select [(ngModel)]="data.actionableItem" (selectionChange)="selectActionableItem()" required>

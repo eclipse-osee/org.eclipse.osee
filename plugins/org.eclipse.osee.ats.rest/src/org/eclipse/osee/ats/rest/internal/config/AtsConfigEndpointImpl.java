@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
@@ -295,6 +296,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public TeamDefinition getTeamDefinition(ArtifactId teamDefId) {
       return atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDefId);
+   }
+
+   @Override
+   public List<ArtifactToken> getTeamLeads(ArtifactId teamDefId) {
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andRelatedTo(
+         AtsRelationTypes.TeamLead_Team, teamDefId).asArtifactTokens();
    }
 
    @Override
