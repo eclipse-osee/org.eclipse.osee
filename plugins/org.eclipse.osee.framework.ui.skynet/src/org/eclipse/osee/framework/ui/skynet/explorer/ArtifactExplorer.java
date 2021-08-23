@@ -53,9 +53,9 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.IArtifactExplorerEventHandler;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.explorer.menu.ArtifactExplorerMenu;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -141,17 +141,15 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
             // TODO: Trigger User Loading to prevent lock up -- Need to remove this once accessControlService based
             UserManager.getUser();
-            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-            gridData.heightHint = 1000;
-            gridData.widthHint = 1000;
 
-            parent.setLayout(new GridLayout(1, false));
-            parent.setLayoutData(gridData);
+            Composite comp = new Composite(parent, SWT.BORDER);
+            comp.setLayout(new GridLayout(1, false));
+            comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
             branchSelect = new XBranchSelectWidget("");
             branchSelect.setDisplayLabel(false);
             branchSelect.setSelection(branch);
-            branchSelect.createWidgets(parent, 1);
+            branchSelect.createWidgets(comp, 1);
 
             branchSelect.addListener(new Listener() {
                @Override
@@ -172,10 +170,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
             });
 
-            view = new ArtifactExplorerViewApplicability(parent, this);
+            view = new ArtifactExplorerViewApplicability(comp, this);
             view.create();
 
-            stackComposite = new Composite(parent, SWT.NONE);
+            stackComposite = new Composite(comp, SWT.NONE);
             stackLayout = new StackLayout();
             stackComposite.setLayout(stackLayout);
             stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -197,7 +195,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             treeViewer.setContentProvider(new ArtifactContentProvider(artifactDecorator));
             treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
             treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
-            treeViewer.getControl().setLayoutData(gridData);
+            treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
             treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
                @Override
@@ -333,8 +331,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             if (memento != null && memento.getString(ROOT_UUID) != null && memento.getString(ROOT_BRANCH) != null) {
                BranchId branch = BranchId.valueOf(memento.getString(ROOT_BRANCH));
 
-               if (BranchManager.branchExists(branch) && !BranchManager.isArchived(
-                  branch) || ServiceUtil.accessControlService().isOseeAdmin()) {
+               if (BranchManager.branchExists(
+                  branch) && !BranchManager.isArchived(branch) || ServiceUtil.accessControlService().isOseeAdmin()) {
                   Artifact previousArtifact =
                      ArtifactQuery.checkArtifactFromId(ArtifactId.valueOf(memento.getString(ROOT_UUID)), branch);
                   if (previousArtifact != null) {
