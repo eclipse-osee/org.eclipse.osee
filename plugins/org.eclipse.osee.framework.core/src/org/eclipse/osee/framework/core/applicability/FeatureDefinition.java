@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core.applicability;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -36,11 +36,22 @@ public class FeatureDefinition extends NamedIdBase {
    private List<String> productApplicabilities;
 
    public FeatureDefinition() {
-      super();
+      super(ArtifactId.SENTINEL.getId(), "");
+      // Not doing anything
+   }
+
+   public FeatureDefinition(Long id, String name, String valueType, List<String> values, String defaultValue, boolean multiValued, String description, List<String> productApplicabilities) {
+      super(id, name);
+      this.valueType = valueType;
+      this.values = values;
+      this.defaultValue = defaultValue;
+      this.multiValued = multiValued;
+      this.description = description;
+      this.productApplicabilities = productApplicabilities;
    }
 
    public FeatureDefinition(String name, String valueType, List<String> values, String defaultValue, boolean multiValued, String description, List<String> productApplicabilities) {
-      super(Id.SENTINEL, name);
+      super(ArtifactId.SENTINEL.getId(), name);
       this.valueType = valueType;
       this.values = values;
       this.defaultValue = defaultValue;

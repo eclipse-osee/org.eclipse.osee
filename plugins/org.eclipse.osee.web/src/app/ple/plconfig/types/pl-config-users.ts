@@ -16,7 +16,7 @@ export interface userInterface {
     idIntValue: number,
     uuid:number
 }
-export class user implements userInterface {
+export class pluser implements userInterface {
     id = '';
     name = '';
     guid = null;

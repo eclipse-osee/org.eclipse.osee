@@ -1,7 +1,8 @@
+import { user } from "src/app/userdata/types/user-data-user";
 import { NameValuePair } from "./base-types/NameValuePair";
 import { PlConfigBranchListingBranch } from "./pl-config-branch";
 import { response } from "./pl-config-responses";
-import { user } from "./pl-config-users";
+import { pluser } from "./pl-config-users";
 
 export interface PLConfigCreateActionInterface {
     originator: user,
@@ -11,7 +12,10 @@ export interface PLConfigCreateActionInterface {
     description:string,
 }
 export class PLConfigCreateAction implements PLConfigCreateActionInterface{
-    originator: user = new user();
+    constructor(currentUser: user) {
+        this.originator = currentUser;
+    }
+    originator: user;
     actionableItem: actionableItem = new actionableItem();
     targetedVersion: string = '';
     title: string = '';
@@ -53,12 +57,12 @@ export interface transitionActionInterface {
     workItemIds:workItem[]
 }
 export class transitionAction implements transitionActionInterface{
-    constructor(toStateName?: string,name?:string,transition?: TransitionActionDialogData) {
+    constructor(toStateName?: string,name?:string,actions?: action[], currentUser?: user) {
         this.toStateName = toStateName || '';
         this.name = name || '';
-        this.transitionUserArtId = transition && transition.selectedUser.artifactId || '';
-        if (transition?.actions) {
-            transition.actions.forEach((element) => {
+        this.transitionUserArtId = currentUser && currentUser.id || '';
+        if (actions?.values) {
+            actions?.forEach((element) => {
                 this.workItemIds.push({
                     id: element.id.toString(),
                     name: element.Name
@@ -103,8 +107,8 @@ export class CreateAction implements newActionInterface{
         if (config) {
             this.aiIds=[config.actionableItem.id]    
         }
-        this.asUserId = config && config.originator.userId || '';
-        this.createdByUserId= config && config.originator.userId || '';
+        this.asUserId = config && config.originator.id || '';
+        this.createdByUserId= config && config.originator.id || '';
         this.versionId= config && config.targetedVersion || '';
     }
     title: string ='';

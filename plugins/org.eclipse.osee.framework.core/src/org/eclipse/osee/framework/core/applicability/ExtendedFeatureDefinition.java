@@ -25,12 +25,12 @@ public class ExtendedFeatureDefinition extends FeatureDefinition {
       super();
    }
 
-   public ExtendedFeatureDefinition(String name, String valueType, List<String> values, String defaultValue, boolean multiValued, String description, List<String> productApplicabilities) {
-      super(name, valueType, values, defaultValue, multiValued, description, productApplicabilities);
+   public ExtendedFeatureDefinition(Long id, String name, String valueType, List<String> values, String defaultValue, boolean multiValued, String description, List<String> productApplicabilities) {
+      super(id, name, valueType, values, defaultValue, multiValued, description, productApplicabilities);
    }
 
    public ExtendedFeatureDefinition(FeatureDefinition fD) {
-      super(fD.getName(), fD.getValueType(), fD.getValues(), fD.getDefaultValue(), fD.isMultiValued(),
+      super(fD.getId(), fD.getName(), fD.getValueType(), fD.getValues(), fD.getDefaultValue(), fD.isMultiValued(),
          fD.getDescription(), fD.getProductApplicabilities());
    }
 

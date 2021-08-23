@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.List;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,4 +38,9 @@ public interface AtsProductLineEndpointApi {
    @Path("action/{id}/approval")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData checkPlarbApproval(@PathParam("id") String id);
+
+   @POST
+   @Path("action/{id}/approval")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData setPlarbApproval(@PathParam("id") String id);
 }

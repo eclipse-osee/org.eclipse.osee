@@ -1,37 +1,33 @@
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { PlConfigActionService } from '../../services/pl-config-action.service';
+import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { testBranchAction, testWorkFlow } from '../../testing/mockActionService';
-import { testBranchInfo } from '../../testing/mockBranchService';
-
+import { plActionServiceMock } from '../../testing/mockActionService';
+import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService';
+import { userDataAccountServiceMock } from '../../testing/mockUserDataAccountService';
 import { ActionDropDownComponent } from './action-drop-down.component';
+
 
 describe('ActionDropDownComponent', () => {
   let component: ActionDropDownComponent;
   let fixture: ComponentFixture<ActionDropDownComponent>;
-
+  let loader: HarnessLoader;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatButtonModule],
       declarations: [ActionDropDownComponent],
       providers: [
         { provide: MatDialog, useValue: {} },
-        {
-          provide: PlConfigCurrentBranchService, useValue: {
-            branchAction: of(testBranchAction),
-            branchState: of(testBranchInfo),
-            branchWorkFlow: of(testWorkFlow),
-          }
-        },
-        {
-          provide: PlConfigActionService, useValue: {
-            getAction(){return of(testBranchAction)}
-          }
-        },
+        { provide: UserDataAccountService, useValue: userDataAccountServiceMock},
+        { provide: PlConfigActionService, useValue: plActionServiceMock},
+        { provide: PlConfigCurrentBranchService, useValue: plCurrentBranchServiceMock},
         { provide: Router, useValue: { navigate: () => { } } },
         {
           provide: ActivatedRoute, useValue: {
@@ -52,6 +48,7 @@ describe('ActionDropDownComponent', () => {
     fixture = TestBed.createComponent(ActionDropDownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('should create', () => {

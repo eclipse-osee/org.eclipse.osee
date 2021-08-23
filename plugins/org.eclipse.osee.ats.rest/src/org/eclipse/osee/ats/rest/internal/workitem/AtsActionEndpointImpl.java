@@ -510,8 +510,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
       NewActionResult result = new NewActionResult();
       try {
-
-         AtsUser asUser = atsApi.getUserService().getUserByUserId(newActionData.getAsUserId());
+         AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
          if (asUser == null) {
             result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
             return result;

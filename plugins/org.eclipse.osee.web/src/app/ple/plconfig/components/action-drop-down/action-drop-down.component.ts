@@ -1,16 +1,14 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { combineLatest, iif, of } from 'rxjs';
+import { share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { PlConfigActionService } from '../../services/pl-config-action.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { action, CreateAction, PLConfigCreateAction, transitionAction, TransitionActionDialogData } from '../../types/pl-config-actions';
-import { commitResponse, response } from '../../types/pl-config-responses';
-import { CommitBranchDialogComponent } from '../commit-branch-dialog/commit-branch-dialog.component';
+import { CreateAction, PLConfigCreateAction, transitionAction } from '../../types/pl-config-actions';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
-import { TransitionActionToReviewDialogComponent } from '../transition-action-to-review-dialog/transition-action-to-review-dialog.component';
 
 @Component({
   selector: 'plconfig-action-dropdown',
@@ -18,140 +16,112 @@ import { TransitionActionToReviewDialogComponent } from '../transition-action-to
   styleUrls: ['./action-drop-down.component.sass']
 })
 export class ActionDropDownComponent implements OnInit {
-  branchInfo = this.currentBranchService.branchState;
-  branchAction = this.currentBranchService.branchAction;
-  branchWorkflow = this.currentBranchService.branchWorkFlow;
-  actions: action[] =[];
-  branchType: string = "";
-  branchName: Observable<string> = new Observable<string>();
-  parentBranch: string = "";
-  workflowState: string = "";
+  branchInfo = this.currentBranchService.branchState.pipe(share(), shareReplay(1));
+  branchAction = this.currentBranchService.branchAction.pipe(share(), shareReplay(1));
+  branchWorkflow = this.currentBranchService.branchWorkFlow.pipe(share(), shareReplay(1));
+  userDisplayable = this.accountService.getUser();
+
+  branchApproved = this.branchAction.pipe(switchMap((action) => iif(() => action.length > 0 && action[0].TeamWfAtsId.length > 0, this.actionService.getBranchApproved(action[0].TeamWfAtsId).pipe(
+    switchMap((approval) => iif(() => approval.errorCount > 0, of('false'), of('true')))
+  ))));
+
+  teamsLeads = this.branchWorkflow.pipe(
+    switchMap((workflow) => iif(() => workflow['ats.Team Definition Reference'].length > 0, this.actionService.getTeamLeads(workflow['ats.Team Definition Reference']), of([]))));
+
+  branchTransitionable = this.branchWorkflow.pipe(
+    switchMap((workflow) => iif(() => workflow.State === "InWork", of('true'), of('false'))));
+
+
+  branchApprovable = combineLatest([this.branchApproved, this.teamsLeads, this.branchWorkflow, this.userDisplayable]).pipe
+    (switchMap(([approved, leads, workflow, currentUser]) => iif(() => leads.filter(e => e.id === currentUser.id).length > 0 && approved === 'false' && workflow.State === 'Review', of('true'), of('false'))));
+
+  branchCommitable = combineLatest([this.branchApproved, this.branchWorkflow]).pipe
+    (switchMap(([approved, workflow]) => iif(() => approved === 'true' && workflow.State === 'Review', of('true'), of('false'))));
+
+  doAddAction = this.userDisplayable.pipe(take(1),switchMap((thisUser) =>
+    this.dialog.open(CreateActionDialogComponent, { data: new PLConfigCreateAction(thisUser), minWidth: '60%' }).afterClosed()
+      .pipe(switchMap((value: PLConfigCreateAction) => iif(() => typeof (value?.description) != 'undefined',
+        this.actionService.createBranch(new CreateAction(value), thisUser)
+          .pipe(tap((createResponse) => {
+            if (createResponse.results.success) {
+              let _branchType = '';
+              if (createResponse.workingBranchId.branchType === '2') {
+                _branchType = 'baseline'
+              } else {
+                _branchType = 'working'
+              }
+              this.router.navigate([_branchType, createResponse.workingBranchId.id], {
+                relativeTo: this.route.parent,
+                queryParamsHandling: 'merge',
+              })
+            }
+          }))
+      )))));
+
+  doApproveBranch = combineLatest([this.branchAction, this.userDisplayable]).pipe(take(1),
+    switchMap((initialObs) => iif(() => initialObs[0].length > 0, this.actionService.approveBranch(initialObs[0][0].TeamWfAtsId, initialObs[1]).pipe(
+      tap((response) => {
+        if (response.results.length > 0) {
+          this.uiStateService.error = response.results[0]
+        } else {
+          this.uiStateService.updateReqConfig = true;
+        }
+      })))));
+
+  doTransition = combineLatest([this.branchAction, this.userDisplayable])
+    .pipe(take(1), switchMap((initialObservable) =>
+      this.actionService.validateTransitionAction(new transitionAction("Review", "Transition to Review", initialObservable[0], initialObservable[1]))
+        .pipe(switchMap((secondObservable) => iif(() => secondObservable.results.length === 0,
+          this.actionService.transitionAction(new transitionAction("Review", "Transition To Review", initialObservable[0], initialObservable[1]))
+            .pipe(tap((response) => {
+              if (response.results.length > 0) {
+                this.uiStateService.error = response.results[0]
+              } else {
+                this.uiStateService.updateReqConfig = true;
+              }
+            })))))));
+  doCommitBranch = combineLatest([this.branchInfo, this.branchAction, this.userDisplayable])
+    .pipe(take(1),
+      switchMap((initialObs) =>
+        iif(() => initialObs[0].parentBranch.id.length > 0 && initialObs[1].length > 0 && initialObs[2].name.length > 0,
+          this.currentBranchService.commitBranch(initialObs[0].parentBranch.id, { committer: initialObs[2].id, archive: 'false' })
+            .pipe(switchMap((commitObs) =>
+              iif(() => commitObs.success,
+                this.actionService.validateTransitionAction(new transitionAction("Completed", "Transition to Completed", initialObs[1], initialObs[2]))
+                  .pipe(switchMap((validateObs) =>
+                    iif(() => validateObs.results.length === 0,
+                      this.actionService.transitionAction(new transitionAction("Completed", "Transition To Completed", initialObs[1], initialObs[2]))
+                        .pipe(tap((transitionResponse) => {
+                          if (transitionResponse.results.length > 0) {
+                            this.uiStateService.error = transitionResponse.results[0]
+                          } else { this.uiStateService.updateReqConfig = true; }
+                        })))))))))));
+
   constructor(public dialog: MatDialog,
     private currentBranchService: PlConfigCurrentBranchService,
     private actionService: PlConfigActionService,
     private uiStateService: PlConfigUIStateService,
+    private accountService: UserDataAccountService,
     private route: ActivatedRoute,
-    private router: Router) { 
-    this.branchAction.subscribe((value) => {
-      this.actions = value;
-    })
-    this.branchInfo.subscribe((response) => {
-      this.branchType = response.branchType;
-      this.branchName = of(response.name);
-      this.parentBranch = response && response.parentBranch && response.parentBranch.id || '-1';
-    });
-    this.branchWorkflow.subscribe((response) => {
-      this.workflowState = response.State;
-    })
+    private router: Router) {
+
   }
 
   ngOnInit(): void {
   }
-  isBranchTransitionable() {
-    if (this.workflowState==='InWork') {
-      return true;
-    }
-    return false;
+
+  addAction(): void {
+    this.doAddAction.subscribe();
   }
-  isBranchCommittable() {
-    if (this.workflowState==='Review') {
-      return true;
-    }
-    return false;
+  transitionToReview(): void {
+    this.doTransition.subscribe();
   }
-  addAction(): void{
-    let dialogData: PLConfigCreateAction = new PLConfigCreateAction(); 
-    const dialogRef = this.dialog.open(CreateActionDialogComponent, {
-      data: dialogData,
-      minWidth: '60%'
-    });
-    dialogRef.afterClosed().subscribe((value: PLConfigCreateAction) => {
-      if (typeof(value?.description)!='undefined') {
-        let formData: CreateAction = new CreateAction(value);
-        this.actionService.createBranch(formData).subscribe((response) => {
-          if (response.results.success) {
-            let _branchType = '';
-            if (response.workingBranchId.branchType === '2') {
-              _branchType='baseline'
-            } else {
-              _branchType='working'
-            }
-            this.router.navigate([_branchType,response.workingBranchId.id], {
-              relativeTo: this.route.parent,
-              queryParamsHandling: 'merge',
-            })
-          }
-        }) 
-      }
-    })
-  }
-  transitionToReview(): void{
-    let dialogData = {
-      actions: this.actions,
-    };
-    const dialogRef = this.dialog.open(TransitionActionToReviewDialogComponent, {
-      data: dialogData,
-      minWidth: '60%'
-    })
-    dialogRef.afterClosed().subscribe((result: TransitionActionDialogData) => {
-      if (result?.selectedUser?.artifactId != null &&
-        result?.selectedUser?.artifactId != undefined &&
-        result?.actions[0]?.id != null &&
-        result?.actions[0]?.id != undefined) {
-        this.actionService.validateTransitionAction(
-          new transitionAction("Review", "Transition To Review", result))
-          .subscribe((response) => {
-            if (response.results.length === 0) {
-              this.actionService.transitionAction(
-                new transitionAction("Review", "Transition To Review", result))
-                .subscribe((response) => {
-                  if (response.results.length === 0) {
-                    this.uiStateService.updateReqConfig = true;
-                  }
-              })
-            }
-          })
-        }
-      
-    })
+  approveBranch(): void {
+    this.doApproveBranch.subscribe();
   }
   commitBranch(): void {
-    this.actionService.getBranchApproved(this.actions[0].TeamWfAtsId).subscribe((approveResponse: response) => {
-      if (approveResponse.errorCount > 0) {
-        this.uiStateService.error = approveResponse.results[0];
-      } else {
-        this.uiStateService.error = "";
-        let dialogData = {
-          actions: this.actions,
-        };
-        const dialogRef = this.dialog.open(CommitBranchDialogComponent, {
-          data: dialogData,
-          minWidth: '60%'
-        })
-        dialogRef.afterClosed().subscribe((result: TransitionActionDialogData) => {
-          if (result?.selectedUser?.artifactId != null && result?.selectedUser?.artifactId!=undefined) {
-            this.actionService.commitBranch(result.actions[0].TeamWfAtsId,this.parentBranch).subscribe((commitResponse: response) => {
-              if (commitResponse.success) {
-                this.actionService.validateTransitionAction(new transitionAction("Completed", "Transition to Completed", result)).subscribe((validateResponse) => {
-                  if (validateResponse.results.length === 0) {
-                    this.actionService.transitionAction(new transitionAction("Completed", "Transition to Completed", result)).subscribe((response) => {
-                      if (response.results.length > 0) {
-                        this.uiStateService.error = response.results[0];
-                      }
-                      this.uiStateService.updateReqConfig = true;
-                    })  
-                  } else {
-                    this.uiStateService.error = validateResponse.results[0];
-                  }
-                })
-              } else {
-                this.uiStateService.error = commitResponse.results.toString();
-              }
-            }) 
-          }
-        })
-      }
-    })
-}
+    this.doCommitBranch.subscribe();
+
+  }
 
 }

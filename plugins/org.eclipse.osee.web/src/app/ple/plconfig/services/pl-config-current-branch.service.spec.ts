@@ -1,11 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
-import { testBranchApplicability } from '../testing/mockBranchService';
-import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
 import { PlConfigActionService } from './pl-config-action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
-
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
+
 
 describe('PlConfigCurrentBranchService', () => {
   let service: PlConfigCurrentBranchService;

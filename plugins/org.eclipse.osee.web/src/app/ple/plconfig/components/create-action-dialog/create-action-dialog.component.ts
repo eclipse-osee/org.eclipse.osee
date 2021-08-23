@@ -5,7 +5,6 @@ import { share} from 'rxjs/operators';
 import { PlConfigActionService } from '../../services/pl-config-action.service';
 import { PlConfigUserService } from '../../services/pl-config-user.service';
 import { actionableItem, PLConfigCreateAction, targetedVersion } from '../../types/pl-config-actions';
-import { user } from '../../types/pl-config-users';
 
 @Component({
   selector: 'app-create-action-dialog',
