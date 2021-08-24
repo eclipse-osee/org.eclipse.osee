@@ -33,4 +33,7 @@ public class CoreUserGroups {
       UserGroupArtifactToken.valueOf(10635662L, "Earner Value User");
    public static IUserGroupArtifactToken DefaultArtifactEditor =
       UserGroupArtifactToken.valueOf(10862351L, "Deault Artifact Editor");
+   public static final IUserGroupArtifactToken UserMgmtAdmin =
+      UserGroupArtifactToken.valueOf(10867527L, "User Mgmt Admin ");
+
 }
