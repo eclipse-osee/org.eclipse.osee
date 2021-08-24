@@ -13,33 +13,28 @@
 
 package org.eclipse.osee.ote.ui.define.views;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.ViewPartUtil;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TestRunViewNavigateItem implements IXNavigateContainer {
+public class TestRunViewNavigateItem implements XNavigateItemProvider {
 
-   public TestRunViewNavigateItem() {
-      super();
+   @Override
+   public boolean isApplicable() {
+      return false;
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<>();
-
-      XNavigateItem msgItem = new XNavigateItem(null, "Test Analysis", PluginUiImage.FOLDER);
-      new XNavigateItemAction(msgItem, new OpenTestRunView(), OteDefineImage.TEST_RUN_VIEW, false);
-      items.add(msgItem);
-
+   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+      items.add(new XNavigateItemAction(new OpenTestRunView(), OteDefineImage.TEST_RUN_VIEW, false, XNavItemCat.TOP));
       return items;
    }
 
@@ -54,4 +49,5 @@ public class TestRunViewNavigateItem implements IXNavigateContainer {
          ViewPartUtil.openOrShowView(TestRunView.class.getName());
       }
    }
+
 }

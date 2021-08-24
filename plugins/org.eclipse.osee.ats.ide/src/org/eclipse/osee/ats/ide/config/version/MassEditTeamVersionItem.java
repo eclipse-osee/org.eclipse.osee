@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -41,12 +41,12 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    private IAtsTeamDefinition selectedTeamDef;
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, KeyedImage oseeImage) {
-      super(parent, name, oseeImage);
+   public MassEditTeamVersionItem(String name, KeyedImage oseeImage) {
+      super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS_ADMIN);
    }
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, AtsImage oseeImage) {
-      super(parent, name, oseeImage);
+   public MassEditTeamVersionItem(String name, AtsImage oseeImage) {
+      super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS_ADMIN);
    }
 
    private IAtsTeamDefinition getTeamDefinition() {

@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Jeff C. Phillips

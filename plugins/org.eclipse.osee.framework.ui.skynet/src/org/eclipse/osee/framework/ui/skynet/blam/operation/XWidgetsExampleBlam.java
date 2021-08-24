@@ -15,12 +15,13 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -28,11 +29,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonTest;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -55,8 +58,18 @@ public class XWidgetsExampleBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("Util");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.UTILITY_EXAMPLES);
+   }
+
+   @Override
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.EXAMPLE);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.EXAMPLE);
    }
 
    @Override
@@ -99,11 +112,6 @@ public class XWidgetsExampleBlam extends AbstractBlam {
          new XRadioButtonTest(sel.getStyledText().getParent(), SWT.BORDER);
 
       }
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.OseeAdmin);
    }
 
 }

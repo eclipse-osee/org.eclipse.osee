@@ -75,18 +75,18 @@ public class XNavigateComposite extends Composite {
    };
 
    private final ToolTipDisplayListener tableListener = new ToolTipDisplayListener();
-   protected final XNavigateViewItems navigateViewItems;
+   protected final NavigateItemCollector navigateItemCollector;
    protected Browser browser;
    protected FilteredTreePlus filteredTree;
    private final String filterText;
 
-   public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
-      this(navigateViewItems, parent, style, null);
+   public XNavigateComposite(NavigateItemCollector navigateItemCollector, Composite parent, int style) {
+      this(navigateItemCollector, parent, style, null);
    }
 
-   public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style, String filterText) {
+   public XNavigateComposite(NavigateItemCollector navigateItemCollector, Composite parent, int style, String filterText) {
       super(parent, style);
-      this.navigateViewItems = navigateViewItems;
+      this.navigateItemCollector = navigateItemCollector;
       this.filterText = filterText;
 
       setLayout(new GridLayout());
@@ -201,7 +201,7 @@ public class XNavigateComposite extends Composite {
 
    public void refresh() {
       ElapsedTime time = new ElapsedTime("Navigate Items - load", false);
-      final List<XNavigateItem> items = navigateViewItems.getSearchNavigateItems();
+      final List<XNavigateItem> items = navigateItemCollector.getComputedNavItems();
       time.end();
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

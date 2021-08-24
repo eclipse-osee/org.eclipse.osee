@@ -14,9 +14,11 @@
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -26,7 +28,29 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public class XNavigateItem {
+public abstract class XNavigateItem {
+
+   public static final XNavItemCat TOP_ADMIN = new XNavItemCat("Admin");
+
+   public static final XNavItemCat REPORTS = new XNavItemCat("Reports");
+   public static final XNavItemCat EMAIL_NOTIFICATIONS = new XNavItemCat("Email & Notifications");
+   public static final XNavItemCat DEMO = new XNavItemCat("Demo");
+
+   public static final XNavItemCat UTILITY = new XNavItemCat("Util");
+   public static final XNavItemCat UTILITY_EXAMPLES = new XNavItemCat("Util.Examples");
+
+   public static final XNavItemCat ADVANCED_SEARCHES = new XNavItemCat("Advanced Searches");
+
+   public static final XNavItemCat USER_MANAGEMENT = new XNavItemCat("User Management");
+   public static final XNavItemCat USER_MANAGEMENT_ADMIN = new XNavItemCat("User Management.Admin");
+
+   public static final XNavItemCat TRACE = new XNavItemCat("Traceability");
+
+   public static final XNavItemCat DEFINE = new XNavItemCat("Define");
+   public static final XNavItemCat DEFINE_HEALTH = new XNavItemCat("Define.Health");
+   public static final XNavItemCat DEFINE_ADMIN = new XNavItemCat("Define.Admin");
+
+   public static final XNavItemCat OTE = new XNavItemCat("OTE");
 
    private final List<XNavigateItem> children = new ArrayList<>();
    private String name;
@@ -36,19 +60,23 @@ public class XNavigateItem {
    private Object data;
    private long id = 0L;
    protected INavigateItemRefresher refresher;
+   protected final Collection<XNavItemCat> categories;
+   Image image;
 
-   public XNavigateItem(XNavigateItem parent, String name, OseeImage oseeImage) {
-      this(parent, name, ImageManager.create(oseeImage));
+   public XNavigateItem(String name, OseeImage oseeImage, XNavItemCat... xNavItemCat) {
+      this(name, ImageManager.create(oseeImage), xNavItemCat);
    }
 
-   public XNavigateItem(XNavigateItem parent, String name, KeyedImage oseeImage) {
-      this.parent = parent;
+   public XNavigateItem(String name, KeyedImage oseeImage, XNavItemCat... xNavItemCat) {
       this.name = name;
       this.oseeImage = oseeImage;
       if (parent != null) {
          parent.addChild(this);
       }
+      this.categories = org.eclipse.osee.framework.jdk.core.util.Collections.asHashSet(xNavItemCat);
    }
+
+   public abstract Collection<IUserGroupArtifactToken> getUserGroups();
 
    public void addChild(XNavigateItem item) {
       children.add(item);
@@ -76,19 +104,19 @@ public class XNavigateItem {
       return "";
    }
 
-   /**
-    * @return the image
-    */
-   public Image getImage() {
-      if (oseeImage != null) {
-         return ImageManager.getImage(oseeImage);
-      }
-      return null;
+   public void setImage(Image image) {
+      this.image = image;
    }
 
-   /**
-    * @param name the name to set
-    */
+   public Image getImage() {
+      if (image == null) {
+         if (oseeImage != null) {
+            image = ImageManager.getImage(oseeImage);
+         }
+      }
+      return image;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -101,16 +129,9 @@ public class XNavigateItem {
       return !getChildren().isEmpty();
    }
 
-   /**
-    * @param parent the parent to set
-    */
-   public void setParent(XNavigateItem parent) {
-      this.parent = parent;
-   }
-
    @Override
    public String toString() {
-      return getName();
+      return String.format("[%s] cats %s", getName(), categories);
    }
 
    public List<IXNavigateMenuItem> getMenuItems() {
@@ -157,6 +178,14 @@ public class XNavigateItem {
 
    public void setRefresher(INavigateItemRefresher refresher) {
       this.refresher = refresher;
+   }
+
+   public void setParent(XNavigateItem parent) {
+      this.parent = parent;
+   }
+
+   public Collection<XNavItemCat> getCategories() {
+      return categories;
    }
 
 }

@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 
 /**
  * Example of using FilteredTreeDialog single-selection
- * 
+ *
  * @author Donald G. Dunne
  */
 public class FilteredTreeDialogSingleExample extends XNavigateItemAction {
 
-   public FilteredTreeDialogSingleExample(XNavigateItem parent) {
-      super(parent, "FilteredTreeDialogSingle Example", FrameworkImage.GEAR);
+   public FilteredTreeDialogSingleExample() {
+      super("FilteredTreeDialogSingle Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

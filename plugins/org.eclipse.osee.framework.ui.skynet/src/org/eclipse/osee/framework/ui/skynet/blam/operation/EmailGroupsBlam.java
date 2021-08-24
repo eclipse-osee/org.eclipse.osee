@@ -26,9 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -37,6 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
@@ -224,11 +224,6 @@ public class EmailGroupsBlam extends AbstractBlam {
       return "Send individual emails to everyone in the selected groups with an unsubscribe option";
    }
 
-   @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("Util");
-   }
-
    private class ModificationListerner implements XModifiedListener {
 
       @Override
@@ -254,8 +249,8 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.EMAIL_NOTIFICATIONS);
    }
 
 }

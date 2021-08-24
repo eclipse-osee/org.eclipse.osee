@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * Create ATS Configuration. See {@link AtsConfig2DataExample} for details.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsConfig2ExampleNavigateItem extends XNavigateItemAction {
 
-   public AtsConfig2ExampleNavigateItem(XNavigateItem parent) {
-      super(parent, "AtsConfig2 Example Configuration", FrameworkImage.GEAR);
+   public AtsConfig2ExampleNavigateItem() {
+      super("AtsConfig2 Example Configuration", FrameworkImage.GEAR, XNavigateItem.DEMO);
    }
 
    @Override

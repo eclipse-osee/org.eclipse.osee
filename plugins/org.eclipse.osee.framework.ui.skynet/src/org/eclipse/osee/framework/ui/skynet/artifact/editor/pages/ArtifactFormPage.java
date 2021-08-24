@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
@@ -53,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesF
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.Import.ExcelAtsActionArtifactExtractor.ActionData;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
@@ -38,6 +40,8 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -51,6 +55,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -275,13 +281,18 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("ATS");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_IMPORT);
    }
 
    @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.IMPORT);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.IMPORT);
    }
 
 }

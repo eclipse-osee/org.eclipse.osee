@@ -13,13 +13,17 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -40,6 +44,8 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Admin only. Create new users by name, each will be given a id as user id. Development use only.
@@ -48,8 +54,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CreateNewUsersByNameItem extends XNavigateItemAction {
 
-   public CreateNewUsersByNameItem(XNavigateItem parent) {
-      super(parent, "Admin - Create New Users by Name (Testing Only)", FrameworkImage.USER);
+   public CreateNewUsersByNameItem() {
+      super("Create New Users by Name (Testing Only)", FrameworkImage.USER, XNavigateItem.USER_MANAGEMENT_ADMIN);
    }
 
    @Override
@@ -109,4 +115,15 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
       }
       return newVersions;
    }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.OseeAdmin);
+   }
+
+   @Override
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.USER_ADD);
+   }
+
 }

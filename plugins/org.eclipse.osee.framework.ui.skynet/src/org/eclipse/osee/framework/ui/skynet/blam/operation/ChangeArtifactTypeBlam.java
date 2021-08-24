@@ -15,11 +15,10 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -45,13 +44,8 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("Util");
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
 }

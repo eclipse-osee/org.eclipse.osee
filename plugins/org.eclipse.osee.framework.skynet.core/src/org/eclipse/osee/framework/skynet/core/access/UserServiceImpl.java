@@ -88,6 +88,9 @@ public class UserServiceImpl implements UserService {
       return userService;
    }
 
+   /**
+    * @return User Groups for current user
+    */
    public static Collection<IUserGroupArtifactToken> getUserGrps() {
       if (userGrps == null) {
          userGrps = new ArrayList<>();

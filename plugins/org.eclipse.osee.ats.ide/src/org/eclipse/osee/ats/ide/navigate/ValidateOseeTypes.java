@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class ValidateOseeTypes extends XNavigateItemAction {
 
-   public ValidateOseeTypes(XNavigateItem parent) {
-      super(parent, "Validate OSEE Types", AtsImage.REPORT);
+   public ValidateOseeTypes() {
+      super("Validate OSEE Types", AtsImage.REPORT, XNavigateItem.UTILITY);
    }
 
    @Override

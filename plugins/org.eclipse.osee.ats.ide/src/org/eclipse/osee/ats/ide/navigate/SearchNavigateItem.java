@@ -23,7 +23,10 @@ import org.eclipse.osee.ats.ide.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.ats.ide.world.search.WorldUISearchItem;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -36,13 +39,13 @@ public class SearchNavigateItem extends XNavigateItem {
 
    private final WorldSearchItem wsi;
 
-   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) {
-      super(parent, wsi.getName(), AtsImage.GLOBE);
+   public SearchNavigateItem(WorldSearchItem wsi, XNavItemCat... xNavItemCat) {
+      super(wsi.getName(), AtsImage.GLOBE, xNavItemCat);
       this.wsi = wsi;
    }
 
-   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi, AtsImage atsImage) {
-      super(parent, wsi.getName(), atsImage);
+   public SearchNavigateItem(WorldSearchItem wsi, AtsImage atsImage, XNavItemCat... xNavItemCat) {
+      super(wsi.getName(), atsImage, xNavItemCat);
       this.wsi = wsi;
    }
 
@@ -78,6 +81,14 @@ public class SearchNavigateItem extends XNavigateItem {
       } else {
          AWorkbench.popup("ERROR", "Unhandled navigate item");
       }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      if (categories.contains(XNavItemCat.OSEE_ADMIN)) {
+         return Arrays.asList(CoreUserGroups.OseeAdmin);
+      }
+      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

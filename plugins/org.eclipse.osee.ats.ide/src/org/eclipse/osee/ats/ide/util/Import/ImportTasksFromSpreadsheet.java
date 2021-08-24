@@ -16,19 +16,18 @@ package org.eclipse.osee.ats.ide.util.Import;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,6 +35,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -45,6 +46,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -192,8 +195,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public NewTaskSet performImport(boolean fixTitles, boolean emailPocs, IAtsTeamWorkflow teamWf, File file) {
       try {
          AtsUtilClient.setEmailEnabled(emailPocs);
-         NewTaskSet newTaskSet = NewTaskSet.createWithData(teamWf,
-            "Import Tasks from Spreadsheet", AtsApiService.get().getUserService().getCurrentUser());
+         NewTaskSet newTaskSet = NewTaskSet.createWithData(teamWf, "Import Tasks from Spreadsheet",
+            AtsApiService.get().getUserService().getCurrentUser());
          newTaskSet.getTaskData().setFixTitles(fixTitles);
 
          XResultData rd = new XResultData();
@@ -215,13 +218,18 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("ATS");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_IMPORT);
    }
 
    @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.IMPORT);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.IMPORT);
    }
 
 }

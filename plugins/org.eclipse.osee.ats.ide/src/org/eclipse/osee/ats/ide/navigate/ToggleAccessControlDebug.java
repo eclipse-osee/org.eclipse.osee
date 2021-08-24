@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ToggleAccessControlDebug extends XNavigateItemAction {
 
-   public ToggleAccessControlDebug(XNavigateItem parent) {
-      super(parent, "Toggle Access Control Debug", FrameworkImage.GEAR);
+   public ToggleAccessControlDebug() {
+      super("Toggle Access Control Debug", FrameworkImage.GEAR, XNavigateItem.UTILITY);
    }
 
    @Override

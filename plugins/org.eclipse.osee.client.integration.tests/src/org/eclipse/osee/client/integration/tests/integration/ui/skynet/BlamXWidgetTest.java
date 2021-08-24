@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public class BlamXWidgetTest {
 
    @Test
    public void testXWidgetsResolved() throws Exception {
-      Collection<AbstractBlam> blams = BlamContributionManager.getBlamOperations();
+      Collection<AbstractBlam> blams = BlamNavigateViewItems.getBlamOperations();
       for (AbstractBlam blam : blams) {
          List<XWidgetRendererItem> datas = blam.getLayoutDatas();
          for (XWidgetRendererItem xWidgetLayoutData : datas) {

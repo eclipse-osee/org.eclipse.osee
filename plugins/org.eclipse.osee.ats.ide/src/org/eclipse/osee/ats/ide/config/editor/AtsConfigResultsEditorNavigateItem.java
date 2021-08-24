@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
 /**
@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
  */
 public class AtsConfigResultsEditorNavigateItem extends XNavigateItemAction {
 
-   public AtsConfigResultsEditorNavigateItem(XNavigateItem parent) {
-      super(parent, "ATS Config Viewer", AtsImage.REPORT);
+   public AtsConfigResultsEditorNavigateItem() {
+      super("ATS Config Viewer", AtsImage.REPORT, AtsNavigateViewItems.ATS_UTIL);
    }
 
    @Override

@@ -15,7 +15,7 @@ import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -27,10 +27,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class LinksNavigateViewItem extends XNavigateItemAction {
 
+   private static final XNavItemCat NAME = new XNavItemCat("Links");
    private static LinksNavigateViewItem topNavigateItem;
 
-   public LinksNavigateViewItem(XNavigateItem parent) {
-      super(parent, "Links", FrameworkImage.LINK);
+   public LinksNavigateViewItem() {
+      super("Links", FrameworkImage.LINK, NAME, XNavItemCat.BOT);
       topNavigateItem = this;
       refresh();
    }
@@ -63,15 +64,15 @@ public class LinksNavigateViewItem extends XNavigateItemAction {
 
    public void load() {
       topNavigateItem.getChildren().clear();
-      XNavigateItem parentItem = this;
-      new AddNewLinkNavigateItem(parentItem);
-      new EditLinksNavigateItem(parentItem, false);
-      new EditLinksNavigateItem(parentItem, true);
+      addChild(new AddNewLinkNavigateItem());
+      addChild(new EditLinksNavigateItem(false));
+      addChild(new EditLinksNavigateItem(true));
       try {
          AccountWebPreferences data = LinkUtil.getAccountsPreferencesData(false);
          for (Link link : data.getLinks().values()) {
-            XNavigateUrlItem urlItem = new XNavigateUrlItem(parentItem, link.getName() + getTagsStr(link, false),
-               link.getUrl(), true, FrameworkImage.LINK);
+            XNavigateUrlItem urlItem = new XNavigateUrlItem(link.getName() + getTagsStr(link, false), link.getUrl(),
+               true, FrameworkImage.LINK, NAME);
+            addChild(urlItem);
             urlItem.addMenuItem(new LinksXNavigateMenuItem());
             urlItem.setData(link);
          }
@@ -82,8 +83,9 @@ public class LinksNavigateViewItem extends XNavigateItemAction {
       try {
          AccountWebPreferences data = LinkUtil.getAccountsPreferencesData(true);
          for (Link link : data.getLinks().values()) {
-            XNavigateUrlItem urlItem = new XNavigateUrlItem(parentItem, link.getName() + getTagsStr(link, true),
-               link.getUrl(), true, FrameworkImage.LINK);
+            XNavigateUrlItem urlItem = new XNavigateUrlItem(link.getName() + getTagsStr(link, true), link.getUrl(),
+               true, FrameworkImage.LINK, NAME);
+            addChild(urlItem);
             urlItem.setData(link);
             urlItem.addMenuItem(new LinksXNavigateMenuItem());
          }

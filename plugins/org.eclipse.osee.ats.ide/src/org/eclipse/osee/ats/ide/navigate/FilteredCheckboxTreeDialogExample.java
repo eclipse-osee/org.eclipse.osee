@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
  */
 public class FilteredCheckboxTreeDialogExample extends XNavigateItemAction {
 
-   public FilteredCheckboxTreeDialogExample(XNavigateItem parent) {
-      super(parent, "FilteredCheckboxTreeDialog Example", FrameworkImage.GEAR);
+   public FilteredCheckboxTreeDialogExample() {
+      super("FilteredCheckboxTreeDialog Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

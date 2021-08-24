@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
  */
 public class CommaDelimitLines extends XNavigateItemAction {
 
-   public CommaDelimitLines(XNavigateItem parent) {
-      super(parent, "Comma Delimit Lines", AtsImage.REPORT);
+   public CommaDelimitLines() {
+      super("Comma Delimit Lines", AtsImage.REPORT, XNavigateItem.UTILITY);
    }
 
    @Override

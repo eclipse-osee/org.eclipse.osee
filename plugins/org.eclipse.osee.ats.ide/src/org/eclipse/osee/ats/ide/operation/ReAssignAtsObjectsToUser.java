@@ -15,36 +15,39 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeAndDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class ReAssignATSObjectsToUser extends AbstractBlam {
+public class ReAssignAtsObjectsToUser extends AbstractBlam {
 
    public final static String FROM_ASSIGNEE = "From Assignee";
    public final static String TO_ASSIGNEE = "To Assignee";
 
    @Override
    public String getName() {
-      return "Admin - Re-Assign ATS Objects To User";
+      return "Re-Assign ATS Objects To User";
    }
 
    @Override
@@ -94,8 +97,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof AbstractWorkflowArtifact) {
                      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-                     awa.getStateMgr().removeAssignee(
-                        AtsApiService.get().getUserService().getUserById(fromUser));
+                     awa.getStateMgr().removeAssignee(AtsApiService.get().getUserService().getUserById(fromUser));
                      awa.getStateMgr().addAssignee(AtsApiService.get().getUserService().getUserById(toUser));
                      changes.add(awa);
                   }
@@ -123,13 +125,18 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("ATS.Admin");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
    @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
+   public Image getImage() {
+      return ImageManager.getImage(AtsImage.ACTION);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.ACTION);
    }
 
 }

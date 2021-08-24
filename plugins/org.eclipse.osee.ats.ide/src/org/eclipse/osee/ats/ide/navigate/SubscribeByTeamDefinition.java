@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class SubscribeByTeamDefinition extends XNavigateItemAction {
 
-   public SubscribeByTeamDefinition(XNavigateItem parent) {
-      super(parent, "Subscribe by Team Definition", FrameworkImage.EMAIL);
+   public SubscribeByTeamDefinition() {
+      super("Subscribe by Team Definition", FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
    }
 
    @Override

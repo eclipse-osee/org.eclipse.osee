@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CompareEditorExample extends XNavigateItemAction {
 
-   public CompareEditorExample(XNavigateItem parent) {
-      super(parent, "Compare Editor Example", FrameworkImage.GEAR);
+   public CompareEditorExample() {
+      super("Compare Editor Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

@@ -14,7 +14,11 @@
 package org.eclipse.osee.ats.ide.util.Import;
 
 import java.io.File;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -34,6 +38,16 @@ public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpread
    @Override
    public File getSampleSpreadsheetFile() throws Exception {
       return OseeInf.getResourceAsFile("atsImport/Agile_Action_Import.xml", getClass());
+   }
+
+   @Override
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.IMPORT);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.IMPORT);
    }
 
 }

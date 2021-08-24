@@ -13,35 +13,27 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.NavigateItemCollector;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNavigateViewItemsOperation extends AbstractOperation {
 
-   private final NavigateView navigateView;
+   private final NavigateItemCollector itemCollector;
 
-   public AtsNavigateViewItemsOperation(NavigateView navigateView) {
+   public AtsNavigateViewItemsOperation(NavigateItemCollector itemCollector) {
       super("Loading ATS Navigate View Items", Activator.PLUGIN_ID);
-      this.navigateView = navigateView;
+      this.itemCollector = itemCollector;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      List<XNavigateItem> navigateItems = NavigateViewItems.getInstance().getSearchNavigateItems();
-      setRefresher(navigateItems);
-   }
-
-   private void setRefresher(List<XNavigateItem> navigateItems) {
-      for (XNavigateItem item : navigateItems) {
-         item.setRefresher(navigateView);
-         setRefresher(item.getChildren());
-      }
+      itemCollector.getComputedNavItems(AtsApiService.get().getUserService().getCurrentUser().getUserGroups());
    }
 
 }

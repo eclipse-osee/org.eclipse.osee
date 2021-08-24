@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorOutlineProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -57,8 +57,8 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
    private IAtsWorkDefinition workDef;
    private WfeOutlinePage outlinePage;
 
-   public WorkDefinitionViewer(XNavigateItem parent) {
-      super(parent, TITLE, PluginUiImage.ADMIN);
+   public WorkDefinitionViewer(XNavItemCat category) {
+      super(TITLE, PluginUiImage.ADMIN, category);
    }
 
    @Override

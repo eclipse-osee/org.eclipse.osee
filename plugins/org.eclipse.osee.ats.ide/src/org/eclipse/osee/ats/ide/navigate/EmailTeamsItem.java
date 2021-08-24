@@ -46,12 +46,11 @@ public class EmailTeamsItem extends XNavigateItemAction {
    /**
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public EmailTeamsItem(XNavigateItem parent, IAtsTeamDefinition teamDef, MemberType... memberType) {
-      super(parent,
-         "Email " + (teamDef == null ? "Team " : "\"" + teamDef + "\" Team ") + (Arrays.asList(memberType).contains(
-            MemberType.Both) ? "Leads / Members" : Arrays.asList(memberType).contains(
-               MemberType.Leads) ? "Leads" : "Members"),
-         FrameworkImage.EMAIL);
+   public EmailTeamsItem(IAtsTeamDefinition teamDef, MemberType... memberType) {
+      super("Email " + (teamDef == null ? "Team " : "\"" + teamDef + "\" Team ") + (Arrays.asList(memberType).contains(
+         MemberType.Both) ? "Leads / Members" : Arrays.asList(memberType).contains(
+            MemberType.Leads) ? "Leads" : "Members"),
+         FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
       memberTypes = Arrays.asList(memberType);
       this.teamDef = teamDef;
    }

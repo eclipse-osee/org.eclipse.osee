@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -37,8 +38,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -57,10 +58,13 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    /**
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public CreateNewVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDefHoldingVersions) {
-      super(parent,
-         "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s) (Admin)",
-         FrameworkImage.VERSION);
+   public CreateNewVersionItem(IAtsTeamDefinition teamDefHoldingVersions) {
+      this(teamDefHoldingVersions, AtsNavigateViewItems.ATS_VERSIONS);
+   }
+
+   public CreateNewVersionItem(IAtsTeamDefinition teamDefHoldingVersions, XNavItemCat xNavItemCat) {
+      super("Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s) (Admin)",
+         FrameworkImage.VERSION, xNavItemCat);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
@@ -96,8 +100,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          }
          changes.execute();
          if (newVersions.size() == 1) {
-            RendererManager.open(
-               AtsApiService.get().getQueryServiceIde().getArtifact(newVersions.iterator().next()),
+            RendererManager.open(AtsApiService.get().getQueryServiceIde().getArtifact(newVersions.iterator().next()),
                PresentationType.DEFAULT_OPEN);
          } else {
             Collection<ArtifactToken> artToks =

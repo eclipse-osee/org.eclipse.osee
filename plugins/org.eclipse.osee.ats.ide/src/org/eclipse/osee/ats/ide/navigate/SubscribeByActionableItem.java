@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class SubscribeByActionableItem extends XNavigateItemAction {
 
-   public SubscribeByActionableItem(XNavigateItem parent) {
-      super(parent, "Subscribe by Actionable Item", FrameworkImage.EMAIL);
+   public SubscribeByActionableItem() {
+      super("Subscribe by Actionable Item", FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
    }
 
    @Override

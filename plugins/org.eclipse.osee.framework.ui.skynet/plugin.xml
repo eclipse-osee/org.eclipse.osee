@@ -1531,18 +1531,15 @@
       </Operation>
    </extension>
    <extension
-         id="BlamContributionManager"
-         name="BlamContributionManager"
-         point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
-      <XCommonNavigateItem
-            classname="org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager">
-      </XCommonNavigateItem>
-      <XCommonNavigateItem
-            classname="org.eclipse.osee.framework.ui.skynet.user.UserNavigateViewItems">
-      </XCommonNavigateItem>
-      <XCommonNavigateItem
+         id="XNavigateItemProvider"
+         name="XNavigateItemProvider"
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider
+            classname="org.eclipse.osee.framework.ui.skynet.blam.BlamNavigateViewItems">
+      </XNavigateItemProvider>
+      <XNavigateItemProvider
             classname="org.eclipse.osee.framework.ui.skynet.links.LinksNavigateViewItems">
-      </XCommonNavigateItem>
+      </XNavigateItemProvider>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -1727,6 +1724,18 @@
                tooltip="Terminate and Re-Launch Selected">
          </action>
       </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
+      </Operation>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam">
+      </Operation>
    </extension>
    
 </plugin>

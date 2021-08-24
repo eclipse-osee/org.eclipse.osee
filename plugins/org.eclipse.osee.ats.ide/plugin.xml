@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="OSEE-INF/extensionPts/AtsNavigateItem.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="OSEE-INF/extensionPts/AtsWizardItem.exsd"/>
    <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="OSEE-INF/extensionPts/AtsWorldEditorItem.exsd"/>
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
@@ -79,12 +78,6 @@
          id="org.eclipse.osee.OseePerspective"
          icon="OSEE-INF/images/osee_16.png">
    </perspective>
-   <perspective
-         class="org.eclipse.osee.ats.ide.workflow.review.ReviewPerspective"
-         icon="OSEE-INF/images/review.gif"
-         id="org.eclipse.osee.ats.ide.review.ReviewPerspective"
-         name="Review">
-   </perspective>
 </extension>
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
@@ -106,10 +99,6 @@
     <category
          name="OSEE"
          id="org.eclipse.osee.category"/>
-    <category
-         id="org.eclipse.osee.ats.ide.review.category"
-         name="OSEE Review">
-    </category>
     <view
          class="org.eclipse.osee.ats.ide.navigate.NavigateView"
          icon="OSEE-INF/images/osee_16.png"
@@ -124,13 +113,6 @@
          name="Action View"
          id="org.eclipse.osee.ats.ide.ActionWalkerView">
     </view>
-   <view
-         category="org.eclipse.osee.ats.ide.review.category"
-         class="org.eclipse.osee.ats.ide.workflow.review.ReviewNavigateView"
-         icon="OSEE-INF/images/review.gif"
-         id="org.eclipse.osee.ats.ide.review.ReviewNavigateView"
-         name="ReviewNavigator">
-   </view>
    </extension>
    <extension
          id="AtsDbConfigBaseIde"
@@ -174,6 +156,22 @@
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
             className="org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSimpleList">
+      </Operation>
+   </extension>
+   <extension
+         id="ActionsViaSpreadsheetBlam"
+         name="ActionsViaSpreadsheetBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam">
+      </Operation>
+   </extension>
+   <extension
+         id="ImportAgileActionsViaSpreadsheetBlam"
+         name="ImportAgileActionsViaSpreadsheetBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam">
       </Operation>
    </extension>
    <extension
@@ -263,16 +261,14 @@
       </Operation>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
-      <XCommonNavigateItem
-            classname="org.eclipse.osee.ats.ide.navigate.NavigateViewItems">
-      </XCommonNavigateItem>
-      <XCommonNavigateItem
-            classname="org.eclipse.osee.ats.ide.workflow.review.ReviewNavigateViewItems">
-      </XCommonNavigateItem>
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider 
+            classname="org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems">
+      </XNavigateItemProvider>
+      <XNavigateItemProvider
+            classname="org.eclipse.osee.ats.ide.agile.navigate.AgileNavigateItemProvider">
+      </XNavigateItemProvider>
    </extension>
-   
-   
    <extension
          point="org.eclipse.ui.commands">
       <category
@@ -340,14 +336,6 @@
       </menuContribution>
       
    </extension>
-      <extension
-            id="AtsUserNavigateItems"
-            name="AtsUserNavigateItems"
-            point="org.eclipse.osee.framework.ui.skynet.UserNavigateItem">
-         <UserNavigateItem
-               classname="org.eclipse.osee.ats.ide.util.AtsUserNavigateItems">
-         </UserNavigateItem>
-      </extension>
    <extension
          id="DetailedTestStatusOld" name="DetailedTestStatusOld"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -432,6 +420,24 @@
       <ArtifactEditorProvider
             classname="org.eclipse.osee.ats.ide.util.widgets.AtsArtifactEditorProvider">
       </ArtifactEditorProvider>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.operation.PurgeUser">
+      </Operation>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.operation.ReAssignAtsObjectsToUser">
+      </Operation>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.operation.MoveTeamWorkflowsBlam">
+      </Operation>
    </extension>
    
 </plugin>

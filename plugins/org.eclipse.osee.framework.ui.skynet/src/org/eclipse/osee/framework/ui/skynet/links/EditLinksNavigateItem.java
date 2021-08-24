@@ -21,6 +21,8 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,6 +33,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -55,8 +59,8 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
    private final boolean global;
    private boolean addedListener = false;
 
-   public EditLinksNavigateItem(XNavigateItem parent, boolean global) {
-      super(parent, "Edit " + (global ? "Global" : "Personal") + " Links", FrameworkImage.EDIT);
+   public EditLinksNavigateItem(boolean global) {
+      super("Edit " + (global ? "Global" : "Personal") + " Links", FrameworkImage.EDIT, AddNewLinkNavigateItem.LINKS);
       this.global = global;
    }
 
@@ -171,6 +175,11 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
       } catch (Exception ex) {
          OseeLog.log(EditLinksNavigateItem.class, Level.SEVERE, ex);
       }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

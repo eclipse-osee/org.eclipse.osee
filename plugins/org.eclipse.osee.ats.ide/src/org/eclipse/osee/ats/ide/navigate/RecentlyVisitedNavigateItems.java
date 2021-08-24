@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;
@@ -41,12 +41,13 @@ import org.eclipse.ui.PlatformUI;
  */
 public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements IWorkbenchListener {
 
+   private static final String NAME = "Recently Visited Workflows";
    private static RecentlyVisitedItems visitedItems;
    private static String RECENTLY_VISITED_TOKENS = "recentlyVisitedTokens";
    private static RecentlyVisitedNavigateItems topNavigateItem;
 
-   public RecentlyVisitedNavigateItems(XNavigateItem parent) {
-      super(parent, "Recently Visited Workflows", AtsImage.GLOBE);
+   public RecentlyVisitedNavigateItems(XNavItemCat category) {
+      super(NAME, AtsImage.GLOBE, category);
       topNavigateItem = this;
       PlatformUI.getWorkbench().addWorkbenchListener(this);
       refresh();
@@ -63,7 +64,8 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
                ensureFirstLoad();
                topNavigateItem.getChildren().clear();
                for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
-                  new RecentlyVisitedNavigateItem(topNavigateItem, item);
+                  RecentlyVisitedNavigateItem navigateItem = new RecentlyVisitedNavigateItem(item);
+                  topNavigateItem.addChild(navigateItem);
                }
                if (refresher != null) {
                   Displays.ensureInDisplayThread(new Runnable() {

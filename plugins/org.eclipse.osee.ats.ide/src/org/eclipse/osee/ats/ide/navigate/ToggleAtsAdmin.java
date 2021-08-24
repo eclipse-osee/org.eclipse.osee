@@ -39,13 +39,12 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ToggleAtsAdmin extends XNavigateItemAction {
 
-   public ToggleAtsAdmin(XNavigateItem parent) {
-      super(parent, "Toggle ATS Admin - Temporary", PluginUiImage.ADMIN);
+   public ToggleAtsAdmin() {
+      super("Toggle ATS Admin - Temporary", PluginUiImage.ADMIN, XNavigateItem.DEMO);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-
       run();
    }
 
@@ -88,7 +87,6 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                }
             }
             AtsApiService.get().clearCaches();
-            NavigateViewItems.getInstance().clearCaches();
 
             for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
                editor.refresh();

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
+import org.eclipse.osee.ats.ide.agile.navigate.AgileNavigateItemProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -51,9 +51,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  */
 public class ConvertVersionToAgileSprint extends XNavigateItemAction {
 
-   public ConvertVersionToAgileSprint(XNavigateItem parent) {
-      super(parent, "Convert Version(s) to Agile Sprint",
-         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT));
+   public ConvertVersionToAgileSprint() {
+      super("Convert Version(s) to Agile Sprint",
+         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT),
+         AgileNavigateItemProvider.AGILE_CONVERSIONS);
    }
 
    @Override
@@ -118,8 +119,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
             if (jaxSprint != null) {
                long id = jaxSprint.getId();
                IAgileSprint sprint = (SprintArtifact) client.getQueryService().getArtifact(id);
-               AtsApiService.get().getQueryServiceIde().getArtifact(
-                  sprint).getParent().reloadAttributesAndRelations();
+               AtsApiService.get().getQueryServiceIde().getArtifact(sprint).getParent().reloadAttributesAndRelations();
 
                IAtsChangeSet changes =
                   client.getStoreService().createAtsChangeSet(getName(), client.getUserService().getCurrentUser());

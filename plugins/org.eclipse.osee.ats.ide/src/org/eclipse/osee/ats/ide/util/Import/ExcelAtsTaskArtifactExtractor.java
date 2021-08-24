@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;

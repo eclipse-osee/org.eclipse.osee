@@ -19,7 +19,6 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -39,8 +39,6 @@ import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager.TraceH
 import org.eclipse.osee.define.ide.utility.IResourceHandler;
 import org.eclipse.osee.define.ide.utility.UriResourceContentFinder;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -48,6 +46,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -57,6 +58,8 @@ import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.progress.UIJob;
 
@@ -72,8 +75,18 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("Define.Trace");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.TRACE);
+   }
+
+   @Override
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.TRACE);
+   }
+
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.TRACE);
    }
 
    @Override
@@ -357,11 +370,6 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
          };
          Jobs.runInJob(getName(), runnable, Activator.class, Activator.PLUGIN_ID);
       }
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

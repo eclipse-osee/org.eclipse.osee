@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -50,7 +51,6 @@ public class AtsExportAction extends Action {
    public AtsExportAction(ISelectedAtsArtifacts selected) {
       this.selected = selected;
       setText("Export Selected ATS Artifacts");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPORT_DATA));
    }
 
    public enum ExportOption {
@@ -143,4 +143,8 @@ public class AtsExportAction extends Action {
       this.popup = popup;
    }
 
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.EXPORT);
+   }
 }

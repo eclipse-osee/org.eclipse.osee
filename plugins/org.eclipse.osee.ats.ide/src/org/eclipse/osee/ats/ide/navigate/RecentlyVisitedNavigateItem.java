@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -34,8 +34,8 @@ public class RecentlyVisitedNavigateItem extends XNavigateItemAction {
 
    private final RecentlyVisistedItem item;
 
-   public RecentlyVisitedNavigateItem(XNavigateItem parent, RecentlyVisistedItem item) {
-      super(parent, item.getIdToken().getName(), FrameworkImage.OPEN);
+   public RecentlyVisitedNavigateItem(RecentlyVisistedItem item) {
+      super(item.getIdToken().getName(), FrameworkImage.OPEN, XNavItemCat.TOP);
       ArtifactTypeToken artifactType = item.getArtifactType();
       if (artifactType != null && artifactType.isValid()) {
          oseeImage = ArtifactImageManager.getArtifactTypeImage(artifactType);

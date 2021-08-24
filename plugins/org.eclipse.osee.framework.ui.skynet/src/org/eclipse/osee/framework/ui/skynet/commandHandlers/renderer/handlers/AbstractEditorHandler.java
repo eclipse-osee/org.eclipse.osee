@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * This abstract class provides the basic functionality for opening renderer editors.

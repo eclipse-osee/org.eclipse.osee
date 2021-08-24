@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,8 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactor
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -59,8 +62,8 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Collections.singletonList("Admin");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.TOP_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
    @Override
@@ -118,11 +121,6 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             resetRelationOrder(child);
          }
       }
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

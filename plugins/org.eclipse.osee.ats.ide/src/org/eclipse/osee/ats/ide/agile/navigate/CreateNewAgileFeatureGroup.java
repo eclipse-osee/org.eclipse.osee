@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
@@ -48,9 +47,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
  */
 public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
 
-   public CreateNewAgileFeatureGroup(XNavigateItem parent) {
-      super(parent, "Create new Agile Feature Group",
-         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_FEATURE_GROUP));
+   public CreateNewAgileFeatureGroup() {
+      super("Create new Agile Feature Group",
+         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_FEATURE_GROUP),
+         AgileNavigateItemProvider.AGILE_CONFIG);
    }
 
    @Override

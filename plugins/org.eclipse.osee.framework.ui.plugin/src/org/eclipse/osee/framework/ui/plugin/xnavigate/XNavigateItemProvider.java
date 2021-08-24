@@ -11,16 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.user;
+package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.util.List;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
+ * XNavigateItems for inclusion in Navigator
+ *
  * @author Donald G. Dunne
  */
-public interface IUserNavigateItem {
+public interface XNavigateItemProvider {
 
-   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem, boolean admin, boolean inUserGroup);
+   /**
+    * @return true if these items should be added to this client.
+    */
+   public boolean isApplicable();
+
+   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items);
 
 }

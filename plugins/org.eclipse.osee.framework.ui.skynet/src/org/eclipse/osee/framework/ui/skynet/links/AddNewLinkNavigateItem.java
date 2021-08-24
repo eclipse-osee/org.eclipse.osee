@@ -13,8 +13,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.links;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -24,8 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class AddNewLinkNavigateItem extends XNavigateItem {
 
-   public AddNewLinkNavigateItem(XNavigateItem parent) {
-      super(parent, "Add New Link", FrameworkImage.GREEN_PLUS);
+   public static final XNavItemCat LINKS = new XNavItemCat("Links");
+
+   public AddNewLinkNavigateItem() {
+      super("Add New Link", FrameworkImage.GREEN_PLUS, LINKS);
    }
 
    @Override
@@ -35,6 +42,11 @@ public class AddNewLinkNavigateItem extends XNavigateItem {
          Link link = new Link();
          LinkUtil.upateLinkFromDialog(dialog, link);
       }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

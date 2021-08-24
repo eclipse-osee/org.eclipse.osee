@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.actions.newaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -42,12 +43,12 @@ import org.eclipse.osee.ats.ide.util.widgets.XActionableItemWidget;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
@@ -368,13 +369,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    }
 
    @Override
-   public boolean showInBlamSection() {
-      return false;
-   }
-
-   @Override
-   public Collection<String> getCategoriesStr() {
-      return Collections.singleton("ATS");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavItemCat.TOP_NEW, XNavItemCat.OSEE_ADMIN);
    }
 
    @Override
@@ -389,11 +385,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    public ActionResult getActionResult() {
       return actionResult;
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.emptyList();
    }
 
    protected void addWidgetAfterPriority() {

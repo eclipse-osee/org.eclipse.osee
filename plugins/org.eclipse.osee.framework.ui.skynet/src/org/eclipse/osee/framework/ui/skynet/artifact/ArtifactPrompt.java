@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 

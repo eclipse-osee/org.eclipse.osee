@@ -13,25 +13,20 @@
 
 package org.eclipse.osee.framework.ui.skynet.links;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
 /**
  * @author Donald G. Dunne
  */
-public class LinksNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
+public class LinksNavigateViewItems implements XNavigateItemProvider {
 
-   private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private static LinksNavigateViewItems navigateItem;
    private boolean ensurePopulatedRanOnce = false;
    private static XNavigateItem linkNavItem;
@@ -40,13 +35,19 @@ public class LinksNavigateViewItems implements XNavigateViewItems, IXNavigateCom
       navigateItem = this;
    }
 
+   @Override
+   public boolean isApplicable() {
+      return true;
+   }
+
    public static LinksNavigateViewItems getInstance() {
       return navigateItem;
    }
 
    @Override
-   public List<XNavigateItem> getSearchNavigateItems() {
+   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
       ensurePopulated();
+      items.add(linkNavItem);
       return items;
    }
 
@@ -58,29 +59,11 @@ public class LinksNavigateViewItems implements XNavigateViewItems, IXNavigateCom
          this.ensurePopulatedRanOnce = true;
 
          try {
-            linkNavItem = new LinksNavigateViewItem(null);
-            items.add(linkNavItem);
-
-            XNavigateCommonItems.addCommonNavigateItems(items, Arrays.asList(getSectionId()));
+            linkNavItem = new LinksNavigateViewItem();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-   }
-
-   @Override
-   public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
-      try {
-         linkNavItem = new LinksNavigateViewItem(null);
-         items.add(linkNavItem);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Can't create OSEE Links section", ex);
-      }
-   }
-
-   @Override
-   public String getSectionId() {
-      return "Links";
    }
 
    public static void reloadLinks() {

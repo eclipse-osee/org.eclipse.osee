@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -55,8 +54,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
    private final static String TITLE = "Search Artifact Impact to Action";
 
-   public ArtifactImpactToActionSearchItem(XNavigateItem parent) {
-      super(parent, TITLE, FrameworkImage.FLASHLIGHT);
+   public ArtifactImpactToActionSearchItem() {
+      super(TITLE, FrameworkImage.FLASHLIGHT, AtsNavigateViewItems.ATS_ADVANCED_SEARCHES);
    }
 
    @Override

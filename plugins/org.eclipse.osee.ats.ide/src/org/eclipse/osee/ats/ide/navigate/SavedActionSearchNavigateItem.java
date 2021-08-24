@@ -14,6 +14,8 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -25,10 +27,12 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * Create Saved Searches navigate item.</br>
@@ -38,14 +42,10 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class SavedActionSearchNavigateItem extends XNavigateItem {
 
    private static SavedActionSearchNavigateItem topNavigateItem;
+   public static final XNavItemCat SAVED_ACTION_SEARCHES = new XNavItemCat("Saved Action Searches");
 
-   public SavedActionSearchNavigateItem() {
-      // for jax-rs
-      super(null, null, (KeyedImage) null);
-   }
-
-   public SavedActionSearchNavigateItem(XNavigateItem parent) {
-      super(parent, "Saved Action Searches", AtsImage.SEARCH);
+   public SavedActionSearchNavigateItem(XNavItemCat category) {
+      super(SAVED_ACTION_SEARCHES.getName(), AtsImage.SEARCH, category);
       topNavigateItem = this;
       refresh();
    }
@@ -96,7 +96,7 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
                   if (!ids.contains(data.getId())) {
                      AtsSearchWorkflowSearchItem searchItem = item.copy();
                      searchItem.setSavedData(data);
-                     SearchNavigateItem navItem = new SearchNavigateItem(topNavigateItem, searchItem);
+                     SearchNavigateItem navItem = new SearchNavigateItem(searchItem, SAVED_ACTION_SEARCHES);
                      navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
                      ids.add(data.getId());
                   }
@@ -106,6 +106,11 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
       } catch (Exception ex) {
          OseeLog.log(SavedActionSearchNavigateItem.class, Level.WARNING, "Error populating searches", ex);
       }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

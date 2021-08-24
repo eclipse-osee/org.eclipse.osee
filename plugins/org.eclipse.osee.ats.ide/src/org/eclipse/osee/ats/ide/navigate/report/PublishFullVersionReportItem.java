@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.config.version.VersionReportJob;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -47,8 +47,8 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
    private final IAtsTeamDefinition teamDef;
    private final String publishToFilename;
 
-   public PublishFullVersionReportItem(XNavigateItem parent, String name, IAtsTeamDefinition teamDef, String publishToFilename) {
-      super(parent, name);
+   public PublishFullVersionReportItem(String name, IAtsTeamDefinition teamDef, String publishToFilename) {
+      super(name, AtsNavigateViewItems.ATS_VERSIONS);
       this.teamDef = teamDef;
       this.publishToFilename = publishToFilename;
    }
