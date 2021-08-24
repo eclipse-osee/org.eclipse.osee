@@ -389,6 +389,13 @@
          download-size="0"
          install-size="0"
          version="9.4.43.v20210629"
-         unpack="false"/>           
+         unpack="false"/>          
+         
+  <plugin
+         id="org.xerial.sqlite"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
               
 </feature>
