@@ -21,6 +21,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
  */
 public interface IUserNavigateItem {
 
-   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem);
+   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem, boolean admin, boolean inUserGroup);
 
 }

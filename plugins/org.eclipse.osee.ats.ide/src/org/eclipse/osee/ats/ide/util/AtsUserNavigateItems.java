@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 public class AtsUserNavigateItems implements IUserNavigateItem {
 
    @Override
-   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) {
+   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem, boolean admin, boolean inUserGroup) {
       List<XNavigateItem> items = new ArrayList<>();
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
          items.add(new XNavigateItemBlam(parentItem, new PurgeUser(), FrameworkImage.X_RED));
