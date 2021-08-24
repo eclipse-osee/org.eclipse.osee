@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="OSEE Client Server Target Platform" sequenceNumber="104">
+<target name="OSEE Client Server Target Platform" sequenceNumber="105">
 <locations>
 <location path="${eclipse_home}" type="Profile"/>
 </locations>
@@ -59,6 +59,7 @@
 <plugin id="javax.servlet.jsp.source"/>
 <plugin id="javax.servlet.source"/>
 <plugin id="javax.wsdl"/>
+<plugin id="javax.ws.rs"/>
 <plugin id="javax.xml"/>
 <plugin id="jms.activemq.launch"/>
 <plugin id="jms.libraries"/>
@@ -82,7 +83,7 @@
 <plugin id="org.apache.batik.css.source"/>
 <plugin id="org.apache.batik.util.source"/>
 <plugin id="org.apache.commons.cli"/>
-<plugin id="org.apache.commons.codec" version="1.13.0.v20200108-0001"/>
+<plugin id="org.apache.commons.codec"/>
 <plugin id="org.apache.commons.compress"/>
 <plugin id="org.apache.commons.dbcp"/>
 <plugin id="org.apache.commons.dbcp.source"/>
@@ -102,6 +103,16 @@
 <plugin id="org.apache.commons.net.source"/>
 <plugin id="org.apache.commons.pool"/>
 <plugin id="org.apache.commons.pool.source"/>
+<plugin id="org.apache.cxf.cxf-core"/>
+<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs"/>
+<plugin id="org.apache.cxf.cxf-rt-rs-client"/>
+<plugin id="org.apache.cxf.cxf-rt-rs-json-basic"/>
+<plugin id="org.apache.cxf.cxf-rt-rs-security-jose"/>
+<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"/>
+<plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2"/>
+<plugin id="org.apache.cxf.cxf-rt-rs-service-description"/>
+<plugin id="org.apache.cxf.cxf-rt-security"/>
+<plugin id="org.apache.cxf.cxf-rt-transports-http"/>
 <plugin id="org.apache.felix.gogo.command"/>
 <plugin id="org.apache.felix.gogo.command.source"/>
 <plugin id="org.apache.felix.gogo.runtime"/>
@@ -117,6 +128,7 @@
 <plugin id="org.apache.oro.source"/>
 <plugin id="org.apache.solr.client.solrj"/>
 <plugin id="org.apache.ws.commons.util"/>
+<plugin id="org.apache.ws.xmlschema.core"/>
 <plugin id="org.apache.xerces"/>
 <plugin id="org.apache.xml.resolver"/>
 <plugin id="org.apache.xml.serializer"/>
