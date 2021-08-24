@@ -13,13 +13,18 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.internal.ui.actions.RelaunchActionDelegate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.TreeModelViewer;
 import org.eclipse.debug.internal.ui.views.launch.LaunchView;
 import org.eclipse.debug.ui.actions.DebugCommandAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IViewActionDelegate;
@@ -29,37 +34,37 @@ import org.eclipse.ui.IViewPart;
  * @author Donald G. Dunne
  */
 @SuppressWarnings("restriction")
-public class CollapseAllCommandAction extends DebugCommandAction implements IViewActionDelegate {
+public class TerminateAndReLaunchSelectedAction extends DebugCommandAction implements IViewActionDelegate {
 
    private IViewPart viewPart;
 
-   public CollapseAllCommandAction() {
-      setActionDefinitionId("org.eclipse.debug.ui.commands.Terminate"); //$NON-NLS-1$
+   public TerminateAndReLaunchSelectedAction() {
+      setActionDefinitionId("org.eclipse.debug.ui.commands.TerminateAndReLaunchSelected"); //$NON-NLS-1$
    }
 
    @Override
    public String getText() {
-      return "Collapse-All";
+      return "Terminate And Re-Launch Selected";
    }
 
    @Override
    public String getId() {
-      return "org.eclipse.debug.ui.debugview.toolbar.collapse"; //$NON-NLS-1$
+      return "org.eclipse.debug.ui.debugview.toolbar.term.and.relaunch.selected"; //$NON-NLS-1$
    }
 
    @Override
    public ImageDescriptor getDisabledImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL);
+      return ImageManager.getImageDescriptor(FrameworkImage.TERMINATE_AND_RELAUNCH);
    }
 
    @Override
    public ImageDescriptor getHoverImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL);
+      return ImageManager.getImageDescriptor(FrameworkImage.TERMINATE_AND_RELAUNCH);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL);
+      return ImageManager.getImageDescriptor(FrameworkImage.TERMINATE_AND_RELAUNCH);
    }
 
    @Override
@@ -89,7 +94,21 @@ public class CollapseAllCommandAction extends DebugCommandAction implements IVie
          Viewer viewer = view.getViewer();
          if (viewer != null && viewer instanceof TreeModelViewer) {
             TreeModelViewer tmv = (TreeModelViewer) viewer;
-            tmv.collapseAll();
+            IStructuredSelection selection = tmv.getStructuredSelection();
+            if (selection.size() == 1) {
+               Object firstElement = selection.getFirstElement();
+               if (firstElement instanceof Launch) {
+                  Launch launch = (Launch) firstElement;
+                  try {
+                     launch.terminate();
+                     RelaunchActionDelegate.relaunch(launch.getLaunchConfiguration(), launch.getLaunchMode());
+                  } catch (DebugException ex) {
+                     // do nothing
+                  }
+               }
+            } else {
+               AWorkbench.popup("Must select only one");
+            }
          }
       }
    }

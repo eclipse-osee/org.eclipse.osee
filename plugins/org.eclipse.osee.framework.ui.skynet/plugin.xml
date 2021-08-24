@@ -1707,14 +1707,24 @@
             targetID="org.eclipse.debug.ui.DebugView"
             id="org.eclipse.debug.ui.debugview.toolbar">
          <action
-               id="org.eclipse.debug.ui.debugview.toolbar.collapseAll"
+               id="org.eclipse.debug.ui.debugview.toolbar.ReLaunch"
                toolbarPath="threadGroup"
-               hoverIcon="$nl$/OSEE-INF/images/collapseAll.gif"
-               class="org.eclipse.osee.framework.ui.skynet.util.CollapseAllCommandAction"
-               disabledIcon="$nl$/OSEE-INF/images/collapseAll.gif"
-               icon="$nl$/OSEE-INF/images/collapseAll.gif"
-               label="Collapse-All"
-               tooltip="Collapse-All">
+               hoverIcon="$nl$/OSEE-INF/images/relaunch.png"
+               class="org.eclipse.osee.framework.ui.skynet.util.ReLaunchSelectedAction"
+               disabledIcon="$nl$/OSEE-INF/images/relaunch.png"
+               icon="$nl$/OSEE-INF/images/relaunch.png"
+               label="Re-Launch Selected"
+               tooltip="Re-Launch Selected">
+         </action>
+         <action
+               id="org.eclipse.debug.ui.debugview.toolbar.TerminateAndReLaunchSelected"
+               toolbarPath="threadGroup"
+               hoverIcon="$nl$/OSEE-INF/images/termAndRelaunch.png"
+               class="org.eclipse.osee.framework.ui.skynet.util.TerminateAndReLaunchSelectedAction"
+               disabledIcon="$nl$/OSEE-INF/images/termAndRelaunch.png"
+               icon="$nl$/OSEE-INF/images/termAndRelaunch.png"
+               label="Terminate and Re-Launch Selected"
+               tooltip="Terminate and Re-Launch Selected">
          </action>
       </viewContribution>
    </extension>

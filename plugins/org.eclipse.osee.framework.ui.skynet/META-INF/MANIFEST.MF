@@ -254,4 +254,5 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column
-Require-Bundle: org.eclipse.ui.workbench
+Require-Bundle: org.eclipse.ui.workbench,
+ org.eclipse.debug.ui
