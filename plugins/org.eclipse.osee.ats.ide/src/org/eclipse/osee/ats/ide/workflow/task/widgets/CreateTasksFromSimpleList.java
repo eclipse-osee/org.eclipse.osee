@@ -46,11 +46,6 @@ public class CreateTasksFromSimpleList extends ImportTasksFromSimpleList {
    }
 
    @Override
-   public boolean showInBlamSection() {
-      return false;
-   }
-
-   @Override
    protected void createTeamWfWidget(StringBuffer buffer) {
       buffer.append(
          "<XWidget xwidgetType=\"XLabelValue\" displayName=\"Team Workflow\" defaultValue=\"" + teamWf.toStringWithId() + " \"/>");

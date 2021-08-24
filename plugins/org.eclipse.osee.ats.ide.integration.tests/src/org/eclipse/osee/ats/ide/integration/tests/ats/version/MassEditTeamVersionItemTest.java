@@ -35,10 +35,10 @@ public class MassEditTeamVersionItemTest {
 
    @Test
    public void test() {
-      IAtsTeamDefinition teamDef = AtsApiService.get().getTeamDefinitionService().getTeamDefinitions(
-         Arrays.asList("SAW SW")).iterator().next();
+      IAtsTeamDefinition teamDef =
+         AtsApiService.get().getTeamDefinitionService().getTeamDefinitions(Arrays.asList("SAW SW")).iterator().next();
 
-      MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", null, AtsImage.ACTION);
+      MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", AtsImage.ACTION);
       search.setSelectedTeamDef(teamDef);
       Collection<Artifact> results = search.getResults();
       Assert.assertEquals(3, results.size());

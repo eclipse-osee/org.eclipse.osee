@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
 /**
@@ -22,12 +22,12 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
  */
 public class WorldXNavigateItemAction extends XNavigateItemAction {
 
-   public WorldXNavigateItemAction(XNavigateItem parent, String name, AtsImage oseeImage) {
-      super(parent, name, oseeImage == null ? determineImage(name) : oseeImage);
+   public WorldXNavigateItemAction(String name, AtsImage oseeImage, XNavItemCat... xNavItemCat) {
+      super(name, oseeImage == null ? determineImage(name) : oseeImage, xNavItemCat);
    }
 
-   public WorldXNavigateItemAction(XNavigateItem parent, String name) {
-      super(parent, name, determineImage(name));
+   public WorldXNavigateItemAction(String name, XNavItemCat... xNavItemCat) {
+      super(name, determineImage(name), xNavItemCat);
    }
 
    private static AtsImage determineImage(String name) {

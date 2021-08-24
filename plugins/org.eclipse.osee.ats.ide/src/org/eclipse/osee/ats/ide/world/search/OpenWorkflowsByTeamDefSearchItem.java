@@ -79,7 +79,7 @@ public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchItem {
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(AtsImage.REVIEW);
+      return ImageManager.getImage(AtsImage.GLOBE);
    }
 
 }

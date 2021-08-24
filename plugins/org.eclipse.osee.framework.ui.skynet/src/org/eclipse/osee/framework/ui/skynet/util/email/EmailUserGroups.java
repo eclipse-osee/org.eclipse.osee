@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.swt.program.Program;
@@ -48,8 +48,8 @@ public class EmailUserGroups extends XNavigateItemAction {
    /**
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public EmailUserGroups(XNavigateItem parent) {
-      super(parent, "Email User Groups", FrameworkImage.EMAIL);
+   public EmailUserGroups() {
+      super("Email User Groups", FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
    }
 
    public static Set<Artifact> getEmailGroupsAndUserGroups(User user) {

@@ -31,7 +31,7 @@ public class GenerateReviewParticipationReportTest {
 
    @Test
    public void test() {
-      GenerateReviewParticipationReport report = new GenerateReviewParticipationReport(null);
+      GenerateReviewParticipationReport report = new GenerateReviewParticipationReport();
       report.setSelectedUser(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       Set<Artifact> results = report.getResults();
       Assert.assertEquals(6, results.size());

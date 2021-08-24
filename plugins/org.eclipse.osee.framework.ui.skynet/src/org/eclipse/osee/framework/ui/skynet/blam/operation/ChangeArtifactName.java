@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -36,11 +36,6 @@ public class ChangeArtifactName extends AbstractBlam {
       String pairs = variableMap.getString(ID_NAME);
       BranchId branch = variableMap.getBranch(BRANCH);
       return new ChangeArtifactNameOperation(logger, pairs, branch);
-   }
-
-   @Override
-   public Collection<String> getCategoriesStr() {
-      return Collections.singletonList("Define");
    }
 
    @Override
@@ -61,8 +56,8 @@ public class ChangeArtifactName extends AbstractBlam {
    }
 
    @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
 }

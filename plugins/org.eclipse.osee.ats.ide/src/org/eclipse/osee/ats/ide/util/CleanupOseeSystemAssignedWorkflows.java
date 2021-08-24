@@ -18,10 +18,11 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
@@ -30,8 +31,9 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class CleanupOseeSystemAssignedWorkflows extends XNavigateItemAction {
 
-   public CleanupOseeSystemAssignedWorkflows(XNavigateItem parent) {
-      super(parent, "Cleanup OSEE System assigned workflows.", PluginUiImage.ADMIN);
+   public CleanupOseeSystemAssignedWorkflows() {
+      super("Cleanup OSEE System assigned workflows.", PluginUiImage.ADMIN, AtsNavigateViewItems.ATS_ADMIN,
+         XNavItemCat.OSEE_ADMIN);
    }
 
    @Override

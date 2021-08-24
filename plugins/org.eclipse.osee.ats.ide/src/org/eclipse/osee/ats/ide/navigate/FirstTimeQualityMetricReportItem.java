@@ -51,8 +51,8 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
-   public FirstTimeQualityMetricReportItem(XNavigateItem parent) {
-      super(parent, "First Time Quality Metric Report", AtsImage.REPORT);
+   public FirstTimeQualityMetricReportItem() {
+      super("First Time Quality Metric Report", AtsImage.REPORT, XNavigateItem.REPORTS);
    }
 
    @Override
@@ -155,8 +155,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             for (TeamWorkFlowArtifact team : arts) {
                String priorityStr = team.getSoleAttributeValue(AtsAttributeTypes.Priority, "");
                if (!team.isCancelled() && ChangeTypeUtil.getChangeType(team,
-                  AtsApiService.get()) == ChangeType.Problem && (priorityStr.equals(
-                     "1") || priorityStr.equals("2"))) {
+                  AtsApiService.get()) == ChangeType.Problem && (priorityStr.equals("1") || priorityStr.equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }
             }

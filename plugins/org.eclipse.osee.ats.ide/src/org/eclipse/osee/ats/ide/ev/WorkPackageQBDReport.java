@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleSearchProvider;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
 /**
@@ -42,8 +42,8 @@ public class WorkPackageQBDReport extends XNavigateItemAction implements IWorldE
    public static final String TITLE = "Work Package QBD Report";
    private IAtsWorkPackage selectedWorkPackage;
 
-   public WorkPackageQBDReport(XNavigateItem parent) {
-      super(parent, TITLE, AtsImage.WORK_PACKAGE);
+   public WorkPackageQBDReport() {
+      super(TITLE, AtsImage.WORK_PACKAGE, AtsNavigateViewItems.ATS_EARNED_VALUE);
    }
 
    @Override
@@ -69,8 +69,7 @@ public class WorkPackageQBDReport extends XNavigateItemAction implements IWorldE
       List<ArtifactToken> workItemTokens = ArtifactQuery.getArtifactTokenListFromSoleAttributeInherited(
          AtsArtifactTypes.AbstractWorkflowArtifact, AtsAttributeTypes.WorkPackageReference,
          selectedWorkPackage.getIdString(), AtsApiService.get().getAtsBranch());
-      List<Artifact> workItems =
-         ArtifactQuery.getArtifactListFrom(workItemTokens, AtsApiService.get().getAtsBranch());
+      List<Artifact> workItems = ArtifactQuery.getArtifactListFrom(workItemTokens, AtsApiService.get().getAtsBranch());
       return workItems;
    }
 

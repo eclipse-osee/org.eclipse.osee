@@ -12,17 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.agile.navigate;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -57,8 +56,8 @@ public class SyncJiraAndOseeByEpicBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Collections.singletonList("Agile");
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AgileNavigateItemProvider.AGILE);
    }
 
    @Override
@@ -75,11 +74,6 @@ public class SyncJiraAndOseeByEpicBlam extends AbstractBlam {
       return "Copy/Paste JIRA report by epic and team from exported Excel spreadsheet.\n" //
          + "Returns differences between JIRA and OSEE for resulting entries.\n" //
          + "Report should have Summary, AMS id, Epic Link, Description, Status, Story Points columns";
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.singleton(CoreUserGroups.Everyone);
    }
 
 }

@@ -33,7 +33,7 @@ public class BlamEditorInputFactory implements IElementFactory {
       try {
          String blamId = memento.getString(BLAM_ID);
          if (Strings.isValid(blamId)) {
-            for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
+            for (AbstractBlam blam : BlamNavigateViewItems.getBlamOperations()) {
                if (blam.getName().equals(blamId)) {
                   return new BlamEditorInput(blam);
                }

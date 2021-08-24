@@ -36,8 +36,8 @@ import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -48,8 +48,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private Date createdDate;
    private AtsUser createdBy;
 
-   public CreateGoalTestDemoArtifacts(XNavigateItem parent) {
-      super(parent, "Create Test Goal Artifacts - Demo", AtsImage.GOAL);
+   public CreateGoalTestDemoArtifacts(XNavItemCat xNavItemCat) {
+      super("Create Test Goal Artifacts - Demo", AtsImage.GOAL, xNavItemCat);
    }
 
    @Override

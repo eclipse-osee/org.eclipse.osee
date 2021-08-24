@@ -13,21 +13,26 @@
 
 package org.eclipse.osee.ats.ide.health;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -36,8 +41,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class AtsHealthCheckNavigateItem extends XNavigateItem {
 
-   public AtsHealthCheckNavigateItem(XNavigateItem parent) {
-      super(parent, "ATS Health Check", PluginUiImage.ADMIN);
+   public AtsHealthCheckNavigateItem() {
+      super("ATS Health Check", FrameworkImage.HEALTH, AtsNavigateViewItems.ATS_HEALTH);
    }
 
    @Override
@@ -72,4 +77,10 @@ public class AtsHealthCheckNavigateItem extends XNavigateItem {
          return Status.OK_STATUS;
       }
    }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsAdmin);
+   }
+
 }

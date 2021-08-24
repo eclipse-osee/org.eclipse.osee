@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.demo.workflow.cr;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -19,8 +20,7 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 
 /**
  * @author Donald G. Dunne
@@ -34,11 +34,6 @@ public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
    @Override
    public String getDescriptionUsage() {
       return "Create program top level Demo Change Request for any new feature or problem found.\nThis will mature into all the work for all teams needed to resolve this request.";
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return java.util.Collections.singleton(CoreUserGroups.Everyone);
    }
 
    @Override
@@ -56,6 +51,11 @@ public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
    @Override
    public boolean isOverrideAccess() {
       return !AtsApiService.get().getStoreService().isProductionDb() && DemoUtil.isDbPopulatedWithDemoData().isTrue();
+   }
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavItemCat.TOP_NEW);
    }
 
 }

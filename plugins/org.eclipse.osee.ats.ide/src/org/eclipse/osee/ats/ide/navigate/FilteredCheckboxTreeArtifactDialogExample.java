@@ -32,14 +32,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeA
  */
 public class FilteredCheckboxTreeArtifactDialogExample extends XNavigateItemAction {
 
-   public FilteredCheckboxTreeArtifactDialogExample(XNavigateItem parent) {
-      super(parent, "FilteredCheckboxTreeArtifactDialog Example", FrameworkImage.GEAR);
+   public FilteredCheckboxTreeArtifactDialogExample() {
+      super("FilteredCheckboxTreeArtifactDialog Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Artifact rootArtifact =
-         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsApiService.get().getAtsBranch());
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsApiService.get().getAtsBranch());
       List<Artifact> initialSelection = new ArrayList<>();
       List<Artifact> children = rootArtifact.getChildren();
       initialSelection.add(children.iterator().next());

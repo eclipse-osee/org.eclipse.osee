@@ -23,14 +23,14 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
@@ -53,8 +53,8 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       Released;
    };
 
-   public ParallelConfigurationView(XNavigateItem parent) {
-      super(parent, TITLE, PluginUiImage.ADMIN);
+   public ParallelConfigurationView() {
+      super(TITLE, AtsImage.VERSION, AtsNavigateViewItems.ATS_VERSIONS);
    }
 
    @Override
@@ -96,8 +96,8 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       }
 
       List<XViewerColumn> columns = Arrays.asList(
-         new XViewerColumn(Columns.AtsVersion.name(), Columns.AtsVersion.name(), 260, XViewerAlign.Left, true, SortDataType.String,
-            false, ""),
+         new XViewerColumn(Columns.AtsVersion.name(), Columns.AtsVersion.name(), 260, XViewerAlign.Left, true,
+            SortDataType.String, false, ""),
          new XViewerColumn(Columns.Branch.name(), Columns.Branch.name(), 260, XViewerAlign.Left, true,
             SortDataType.String, false, ""),
          new XViewerColumn(Columns.AllowCreate.name(), Columns.AllowCreate.name(), 126, XViewerAlign.Left, true,

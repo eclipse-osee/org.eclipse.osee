@@ -25,12 +25,6 @@
    	</DatabaseInitializationTask>
 	</extension>
    <extension
-         point="org.eclipse.osee.ats.ide.AtsNavigateItem">
-      <AtsNavigateItem
-            classname="org.eclipse.osee.ats.ide.demo.navigate.DemoNavigateViewItems">
-      </AtsNavigateItem>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.ide.demo.artifact.DemoArtifactImageProvider">
@@ -50,5 +44,11 @@
       <AtsWizardItem
             classname="org.eclipse.osee.ats.ide.demo.workflow.DemoPlAndSawWizardItem">
       </AtsWizardItem>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider
+            classname="org.eclipse.osee.ats.ide.demo.navigate.DemoNavigateViewItems">
+      </XNavigateItemProvider>
    </extension>
 </plugin>

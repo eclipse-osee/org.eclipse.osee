@@ -93,7 +93,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage TEAM_DEFINITION = new AtsImage("team.gif");
    public static AtsImage WORKFLOW = new AtsImage("workflow.gif");
    public static AtsImage WORKFLOW_DEFINITION = new AtsImage("workDef.gif");
-   public static AtsImage TRACE = new AtsImage("trace.gif");
+   public static AtsImage DEMO = new AtsImage("demo.gif");
    public static AtsImage TRANSITION = new AtsImage("transition.gif");
    public static AtsImage VERSION = new AtsImage("version.gif");
    public static AtsImage VERSION_LOCKED = new AtsImage("yellowV_8_8.gif");

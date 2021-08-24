@@ -39,6 +39,8 @@ import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.Manipulations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
@@ -46,14 +48,17 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.WorkbenchTargetProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.INavigateItemRefresher;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.NavigateItemCollector;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProviders;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.OseeTargetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -87,6 +92,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    private AtsNavigateComposite xNavComp;
    private Composite parent;
    private LoadingComposite loadingComposite;
+   private NavigateItemCollector itemCollector;
+   private XResultData rd;
 
    @Override
    public void createPartControl(Composite parent) {
@@ -103,7 +110,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    public void refreshData() {
       OperationBuilder builder = Operations.createBuilder("Load OSEE Navigator");
-      builder.addOp(new AtsNavigateViewItemsOperation(this));
+      rd = new XResultData();
+      itemCollector = new NavigateItemCollector(XNavigateItemProviders.getProviders(), navView, rd);
+      builder.addOp(new AtsNavigateViewItemsOperation(itemCollector));
       Operations.executeAsJob(builder.build(), false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
@@ -136,8 +145,12 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
                      if (Widgets.isAccessible(parent)) {
 
-                        xNavComp =
-                           new AtsNavigateComposite(NavigateViewItems.getInstance(), parent, SWT.NONE, savedFilterStr);
+                        xNavComp = new AtsNavigateComposite(itemCollector, parent, SWT.NONE, savedFilterStr);
+
+                        if (rd.isErrors()) {
+                           XResultDataUI.report(rd, "OSEE Navigator", Manipulations.ERROR_WARNING_HEADER,
+                              Manipulations.CONVERT_NEWLINES, Manipulations.ERROR_RED);
+                        }
 
                         XNavigateEventManager.register(navView);
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);

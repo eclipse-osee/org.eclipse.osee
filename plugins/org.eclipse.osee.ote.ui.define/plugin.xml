@@ -28,13 +28,6 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
-      <XNavigateItem
-            classname="org.eclipse.osee.ote.ui.define.views.TestRunViewNavigateItem"
-            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
-      </XNavigateItem>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
       <IHttpServerRequest
             classname="org.eclipse.osee.ote.ui.define.reports.HttpReportRequest">

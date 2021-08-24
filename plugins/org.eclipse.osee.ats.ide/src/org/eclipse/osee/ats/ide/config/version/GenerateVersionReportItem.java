@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.ide.config.version;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamVersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class GenerateVersionReportItem extends XNavigateItemAction {
 
-   public GenerateVersionReportItem(XNavigateItem parent) {
-      super(parent, "Generate Version Report", FrameworkImage.VERSION);
+   public GenerateVersionReportItem() {
+      super("Generate Version Report", FrameworkImage.VERSION, AtsNavigateViewItems.ATS_VERSIONS);
    }
 
    @Override

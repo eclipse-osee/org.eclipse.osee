@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -98,7 +99,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       this.source = source != null ? source : BlamUiSource.DEFAULT;
    }
 
-   public abstract Collection<IUserGroupArtifactToken> getUserGroups();
+   /**
+    * Override to limit view by user group(s)
+    */
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Collections.emptyList();
+   }
 
    private String generateNameFromClass() {
       String className = getClass().getSimpleName();
@@ -120,12 +126,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
       return new ExecuteBlamOperation(this, variableMap, logger);
    }
-
-   /**
-    * Return collection of categories that blam belongs to. These will be used to create categories that blams are put
-    * into in UI navigators. BLAM can belong in multiple categories.
-    */
-   public abstract Collection<String> getCategoriesStr();
 
    /**
     * Use WidgetBuilder
@@ -260,10 +260,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       viewId = ArtifactToken.SENTINEL;
    }
 
-   public boolean showInBlamSection() {
-      return true;
-   }
-
    public String getOutputMessage() {
       return "BLAM has not yet run";
    }
@@ -281,6 +277,15 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public void createWidgets(Composite parent, IManagedForm iManagedForm, Section section) {
       // do nothing
+   }
+
+   public abstract Collection<XNavItemCat> getCategories();
+
+   /**
+    * Override to provide other calculations as to whether this BLAM should show
+    */
+   public boolean isApplicable() {
+      return true;
    }
 
 }

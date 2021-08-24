@@ -26,7 +26,8 @@ Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.widgets,
  org.eclipse.osee.framework.ui.plugin.workspace,
  org.eclipse.osee.framework.ui.plugin.xnavigate
-Import-Package: javax.ws.rs.core,
+Import-Package: com.fasterxml.jackson.annotation,
+ javax.ws.rs.core,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
@@ -35,7 +36,7 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.logging,
-  org.junit,
+ org.junit,
  org.junit.rules,
  org.junit.runners.model
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

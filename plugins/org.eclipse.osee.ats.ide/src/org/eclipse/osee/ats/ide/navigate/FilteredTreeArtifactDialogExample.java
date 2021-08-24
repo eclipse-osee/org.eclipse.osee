@@ -27,19 +27,18 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 
 /**
  * Example of using FilteredTreeArtifactDialog
- * 
+ *
  * @author Donald G. Dunne
  */
 public class FilteredTreeArtifactDialogExample extends XNavigateItemAction {
 
-   public FilteredTreeArtifactDialogExample(XNavigateItem parent) {
-      super(parent, "FilteredTreeArtifactDialog Example", FrameworkImage.GEAR);
+   public FilteredTreeArtifactDialogExample() {
+      super("FilteredTreeArtifactDialog Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Artifact rootArtifact =
-         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsApiService.get().getAtsBranch());
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsApiService.get().getAtsBranch());
       List<Artifact> children = rootArtifact.getChildren();
       FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog("My Title", "Message", children,
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());

@@ -13,9 +13,14 @@
 
 package org.eclipse.osee.ats.ide.workdef;
 
+import java.util.Arrays;
+import java.util.Collection;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -25,14 +30,19 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class ValidateWorkDefinitionNavigateItem extends XNavigateItem {
 
-   public ValidateWorkDefinitionNavigateItem(XNavigateItem parent) {
-      super(parent, "Validate Work Definitions", AtsImage.WORKFLOW_DEFINITION);
+   public ValidateWorkDefinitionNavigateItem(XNavItemCat category) {
+      super("Validate Work Definitions", AtsImage.WORKFLOW_DEFINITION, category);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData results = AtsApiService.get().getWorkDefinitionService().validateWorkDefinitions();
       XResultDataUI.report(results, getName());
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsAdmin);
    }
 
 }

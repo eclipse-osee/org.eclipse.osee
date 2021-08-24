@@ -41,16 +41,16 @@ public class ManifestTest {
             continue;
          }
          File manifestDir = new File(pluginDir, "META-INF" + File.separator + "MANIFEST.MF");
-         if (checkManifestForVersion(manifestDir)) {
+         if (manifestHasVersion(manifestDir)) {
             hasVersions.add(pluginDir);
          }
       }
 
-      assertTrue("The Manifests for following plugins contain at least one version " + hasVersions,
+      assertTrue("Manifests should not have version specified.  Found version in " + hasVersions,
          hasVersions.isEmpty());
    }
 
-   private boolean checkManifestForVersion(File path) {
+   private boolean manifestHasVersion(File path) {
       if (!path.isFile()) {
          return false;
       }

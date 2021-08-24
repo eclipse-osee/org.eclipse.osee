@@ -18,10 +18,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
@@ -37,8 +37,8 @@ public class WorkPackageConfigReport extends XNavigateItemAction {
 
    public static final String TITLE = "Work Package Config Report";
 
-   public WorkPackageConfigReport(XNavigateItem parent) {
-      super(parent, TITLE, PluginUiImage.ADMIN);
+   public WorkPackageConfigReport() {
+      super(TITLE, PluginUiImage.ADMIN, AtsNavigateViewItems.ATS_EARNED_VALUE);
    }
 
    @Override

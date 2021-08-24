@@ -14,10 +14,10 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -27,8 +27,8 @@ public class XResultDataTableExample extends XNavigateItemAction {
 
    public static final String TITLE = "XResultData REST Table Example";
 
-   public XResultDataTableExample(XNavigateItem parent) {
-      super(parent, TITLE, PluginUiImage.ADMIN);
+   public XResultDataTableExample() {
+      super(TITLE, FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

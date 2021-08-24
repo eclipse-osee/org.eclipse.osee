@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
@@ -24,8 +23,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  */
 public class ClearAtsConfigCache extends XNavigateItemAction {
 
-   public ClearAtsConfigCache(XNavigateItem parent) {
-      super(parent, "Clear ATS Config Cache", FrameworkImage.GEAR);
+   public ClearAtsConfigCache() {
+      super("Clear ATS Config Cache", FrameworkImage.GEAR, AtsNavigateViewItems.ATS_UTIL);
    }
 
    @Override

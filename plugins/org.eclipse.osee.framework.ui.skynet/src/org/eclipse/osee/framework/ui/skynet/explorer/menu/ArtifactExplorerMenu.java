@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.action.DeleteAction;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;

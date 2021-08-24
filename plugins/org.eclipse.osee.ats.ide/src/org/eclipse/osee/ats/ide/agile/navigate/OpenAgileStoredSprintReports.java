@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentProvider;
@@ -39,8 +38,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
  */
 public class OpenAgileStoredSprintReports extends XNavigateItemAction {
 
-   public OpenAgileStoredSprintReports(XNavigateItem parent) {
-      super(parent, "Open Agile Stored Sprint Reports", AtsImage.REPORT);
+   public OpenAgileStoredSprintReports() {
+      super("Open Agile Stored Sprint Reports", AtsImage.REPORT, AgileNavigateItemProvider.AGILE_REPORTS);
    }
 
    @Override

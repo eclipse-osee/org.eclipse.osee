@@ -18,13 +18,13 @@ import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
 /**
@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
  */
 public class NewPeerToPeerReviewItem extends XNavigateItemAction {
 
-   public NewPeerToPeerReviewItem(XNavigateItem parent) {
-      super(parent, "New Stand-alone Peer To Peer Review", AtsImage.PEER_REVIEW);
+   public NewPeerToPeerReviewItem() {
+      super("New Stand-alone Peer To Peer Review", AtsImage.PEER_REVIEW, AtsNavigateViewItems.REVIEW);
    }
 
    @Override

@@ -68,8 +68,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    ArtifactToken SAW_Bld_2 = ArtifactToken.valueOf(7632957, "SAW_Bld_2", COMMON, AtsArtifactTypes.Version);
    ArtifactToken SAW_Bld_3 = ArtifactToken.valueOf(577781, "SAW_Bld_3", COMMON, AtsArtifactTypes.Version);
 
-   public AtsRemoteEventTestItem(XNavigateItem parent) {
-      super(parent, "ATS Remote Event Test");
+   public AtsRemoteEventTestItem() {
+      super("ATS Remote Event Test", XNavigateItem.DEMO);
    }
 
    @Override
@@ -266,8 +266,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      testEquals("Description", "description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         teamWf, AtsAttributeTypes.Description, null));
+      testEquals("Description", "description",
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamWf, AtsApiService.get()));
       testEquals("Priority", "1",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
@@ -283,13 +283,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      testEquals("Description", "description 4", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         teamWf, AtsAttributeTypes.Description, null));
+      testEquals("Description", "description 4",
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamWf, AtsApiService.get()));
       testEquals("Priority", "3",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
-      testEquals("Validation Required", false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         teamWf, AtsAttributeTypes.ValidationRequired, null));
+      testEquals("Validation Required", false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
+         AtsAttributeTypes.ValidationRequired, null));
 
       IAtsVersion verArt = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       String expectedTargetedVersion;

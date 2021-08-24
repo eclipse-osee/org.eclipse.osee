@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -39,8 +38,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  */
 public class CreateNewAgileTeam extends XNavigateItemAction {
 
-   public CreateNewAgileTeam(XNavigateItem parent) {
-      super(parent, "Create new Agile Team", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_TEAM));
+   public CreateNewAgileTeam() {
+      super("Create new Agile Team", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_TEAM),
+         AgileNavigateItemProvider.AGILE_CONFIG);
    }
 
    @Override
@@ -59,8 +59,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                }
                if (entity != null) {
                   JaxAgileTeam team = (JaxAgileTeam) entity;
-                  Artifact teamArt =
-                     ArtifactQuery.getArtifactFromId(team.getId(), AtsApiService.get().getAtsBranch());
+                  Artifact teamArt = ArtifactQuery.getArtifactFromId(team.getId(), AtsApiService.get().getAtsBranch());
                   teamArt.getParent().reloadAttributesAndRelations();
                   AtsEditors.openArtifact(teamArt, OseeCmEditor.CmPcrEditor);
                } else {

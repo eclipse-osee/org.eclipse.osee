@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class GenerateIdsAndArtId extends XNavigateItemAction {
 
-   public GenerateIdsAndArtId(XNavigateItem parent) {
-      super(parent, "Generate Id and ArtId", AtsImage.REPORT);
+   public GenerateIdsAndArtId() {
+      super("Generate Id and ArtId", AtsImage.REPORT, XNavigateItem.UTILITY);
    }
 
    @Override

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,9 +22,9 @@ import java.util.List;
 public class XNavigateExtensionPointData {
    private final String viewId;
    private final String category;
-   private final IXNavigateContainer navigateItem;
+   private final XNavigateItemProvider navigateItem;
 
-   public XNavigateExtensionPointData(String viewId, String category, IXNavigateContainer navigateItem) {
+   public XNavigateExtensionPointData(String viewId, String category, XNavigateItemProvider navigateItem) {
       this.viewId = viewId;
       this.category = category;
       this.navigateItem = navigateItem;
@@ -38,7 +39,7 @@ public class XNavigateExtensionPointData {
    }
 
    public List<XNavigateItem> getNavigateItems() {
-      return navigateItem.getNavigateItems();
+      return navigateItem.getNavigateItems(new ArrayList<XNavigateItem>());
    }
 
    public String getCategory() {

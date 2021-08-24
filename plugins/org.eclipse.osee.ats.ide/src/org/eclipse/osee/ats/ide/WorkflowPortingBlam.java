@@ -28,16 +28,16 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorRenderer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -77,8 +77,8 @@ public class WorkflowPortingBlam extends AbstractBlam {
             List<AtsUser> assignees = sourceWorkflow.getStateMgr().getAssignees();
 
             destinationWorkflow = AtsApiService.get().getActionService().createTeamWorkflow(
-               sourceWorkflow.getParentAction(), teamDefinition, actionableItems, assignees, changes,
-               createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
+               sourceWorkflow.getParentAction(), teamDefinition, actionableItems, assignees, changes, createdDate,
+               createdBy, null, CreateTeamOption.Duplicate_If_Exists);
 
             changes.setName(destinationWorkflow, sourceWorkflow.getName());
             changes.relate(sourceWorkflow, AtsRelationTypes.Port_To, destinationWorkflow);
@@ -98,8 +98,8 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<IAtsActionableItem> getActionableItems(IAtsActionableItem actionableItem) {
       List<IAtsActionableItem> actionableItems;
       if (actionableItem == null) {
-         actionableItems = new ArrayList<>(
-            AtsApiService.get().getActionableItemService().getActionableItems(sourceWorkflows.get(0)));
+         actionableItems =
+            new ArrayList<>(AtsApiService.get().getActionableItemService().getActionableItems(sourceWorkflows.get(0)));
       } else {
          actionableItems = java.util.Collections.singletonList(actionableItem);
       }
@@ -117,13 +117,8 @@ public class WorkflowPortingBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategoriesStr() {
-      return Arrays.asList("ATS.Admin");
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return java.util.Collections.singleton(CoreUserGroups.Everyone);
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
 }

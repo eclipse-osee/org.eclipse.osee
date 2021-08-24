@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerReviewRoleColumn;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditorInput;
@@ -62,8 +62,8 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    private AtsUser selectedUser = null;
 
-   public GenerateReviewParticipationReport(XNavigateItem parent) {
-      super(parent, "Generate Review Participation Report", AtsImage.REPORT);
+   public GenerateReviewParticipationReport() {
+      super("Generate Review Participation Report", AtsImage.REPORT, AtsNavigateViewItems.REVIEW);
    }
 
    @Override

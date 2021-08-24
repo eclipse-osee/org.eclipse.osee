@@ -12,12 +12,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.operation;
 
-import java.util.Collection;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -65,11 +62,6 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam impleme
    }
 
    @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return java.util.Collections.singleton(CoreUserGroups.Everyone);
-   }
-
-   @Override
    public String getRunText() {
       return "Create Sibling Workflows";
    }
@@ -87,11 +79,6 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam impleme
    @Override
    public String getTitle() {
       return "Create Sibling Workflows";
-   }
-
-   @Override
-   public boolean showInBlamSection() {
-      return false;
    }
 
    @Override

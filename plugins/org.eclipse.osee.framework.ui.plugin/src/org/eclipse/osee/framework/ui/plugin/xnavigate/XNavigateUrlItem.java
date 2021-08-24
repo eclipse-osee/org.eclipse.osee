@@ -40,12 +40,12 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     * @param url to open
     * @param external true to open in system browser; false to open inside Eclipse
     */
-   public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external) {
-      this(parent, name, url, external, PluginUiImage.URL);
+   public XNavigateUrlItem(String name, String url, boolean external, XNavItemCat xNavItemCat) {
+      this(name, url, external, PluginUiImage.URL, xNavItemCat);
    }
 
-   public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external, KeyedImage oseeImage) {
-      super(parent, name, oseeImage);
+   public XNavigateUrlItem(String name, String url, boolean external, KeyedImage oseeImage, XNavItemCat xNavItemCat) {
+      super(name, oseeImage, xNavItemCat);
       this.url = url;
       this.external = external;
    }

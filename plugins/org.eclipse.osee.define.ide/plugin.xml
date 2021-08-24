@@ -146,14 +146,6 @@
 	<Operation className="org.eclipse.osee.define.ide.blam.operation.SubsystemFullTraceReport"></Operation>
  </extension>
  <extension
-       id="DefineNavigateViewItems"
-       name="DefineNavigateViewItems"
-       point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
-    <XCommonNavigateItem
-          classname="org.eclipse.osee.define.ide.navigate.DefineNavigateViewItems">
-    </XCommonNavigateItem>
- </extension>
- <extension
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.define.ide.traceability.report.PublishStdStpTraceability">
