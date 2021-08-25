@@ -1147,6 +1147,7 @@ public class MSWordTemplatePublisher {
          String preStyleRefTags = matcher.group(4); // Normally contains figure or table text
          String seqType = matcher.group(5); // Figure or Table
          String captionText = Strings.xmlToText(matcher.group(6));
+         captionText = Xml.escape(captionText).toString(); // Re-escaping characters such as &, <, >, and "
          String paraEnd = matcher.group(7);
 
          String newCaption = String.format(newCaptionTemplate, paraStart, splitBookmark[0], preStyleRefTags, seqType,
@@ -1169,6 +1170,7 @@ public class MSWordTemplatePublisher {
       while (matcher.find(matcherIndex)) {
          String guid = matcher.group(1);
          String referenceText = Strings.xmlToText(matcher.group(2));
+         referenceText = Xml.escape(referenceText).toString(); // Re-escaping characters such as &, <, >, and "
          boolean isHeader = headerGuids.contains(guid);
 
          String newReference = linkBuilder.getWordMlReference(guid, isHeader, referenceText);
