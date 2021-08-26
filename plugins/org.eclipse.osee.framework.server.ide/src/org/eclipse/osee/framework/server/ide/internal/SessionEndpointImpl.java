@@ -75,6 +75,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
 
    private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
       try {
+         OseeLog.logf(getClass(), Level.FINE, "Logging Session Creation for user [%s]", credential.getUserName());
          activityLog.createEntry(CoreActivityTypes.IDE, ActivityLog.COMPLETE_STATUS,
             String.format("IDE Client Session Created " //
                + "{" //
@@ -90,8 +91,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
                credential.getClientPort(), credential.getUserName(), oseeSessionGrant.getUserToken().getUserId(),
                oseeSessionGrant.getSessionId()));
       } catch (Exception ex) {
-         OseeLog.logf(SessionEndpointImpl.class, Level.SEVERE, "Exception in logSessionCreated %s",
-            Lib.exceptionToString(ex));
+         OseeLog.logf(getClass(), Level.SEVERE, "Exception in logSessionCreated [%s]", Lib.exceptionToString(ex));
       }
    }
 
@@ -109,8 +109,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
                + "}", //
                sessionId, duration, userId));
       } catch (Exception ex) {
-         OseeLog.logf(SessionEndpointImpl.class, Level.SEVERE, "Exception in logSessionReleased %s",
-            Lib.exceptionToString(ex));
+         OseeLog.logf(getClass(), Level.SEVERE, "Exception in logSessionReleased [%s]", Lib.exceptionToString(ex));
       }
    }
 

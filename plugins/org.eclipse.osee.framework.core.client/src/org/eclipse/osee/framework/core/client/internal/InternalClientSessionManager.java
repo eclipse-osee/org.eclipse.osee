@@ -109,10 +109,13 @@ public class InternalClientSessionManager {
             clearData();
             oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
             if (oseeSessionGrant == null) {
-               OseeLog.logf(InternalClientSessionManager.class, Level.SEVERE,
-                  "Session Grant came back null from createIdeClientSession in authentication");
+               OseeLog.logf(getClass(), Level.FINE,
+                  "Session Grant came back null from createIdeClientSession in authentication for user [%s]",
+                  credential.getUserName());
                return;
             } else if (SystemUser.UnAuthenticated.getUserId().equals(oseeSessionGrant.getUserToken().getUserId())) {
+               OseeLog.logf(getClass(), Level.FINE, "User [%s], [%s] is not authenticated.", credential.getUserName(),
+                  oseeSessionGrant.getUserToken().getUserId());
                throw new OseeArgumentException("User [%s] is not authenticated.", credential.getUserName());
             }
             oseeSession = new IdeClientSession();
@@ -124,6 +127,8 @@ public class InternalClientSessionManager {
             oseeSession.setClientVersion(OseeCodeVersion.getVersion());
             oseeSession.setAuthenticationProtocol(oseeSessionGrant.getAuthenticationProtocol());
             oseeSession.setUseOracleHints(String.valueOf(oseeSessionGrant.getUseOracleHints()));
+            OseeLog.logf(getClass(), Level.FINE, "OseeSession Grant was successful for user [%s], [%s]",
+               credential.getUserName(), oseeSessionGrant.getUserToken().getUserId());
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeCoreException.wrapAndThrow(ex);
