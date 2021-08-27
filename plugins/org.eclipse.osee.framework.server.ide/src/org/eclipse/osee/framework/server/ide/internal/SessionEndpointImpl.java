@@ -75,7 +75,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
 
    private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
       try {
-         OseeLog.logf(getClass(), Level.FINE, "Logging Session Creation for user [%s]", credential.getUserName());
+         OseeLog.logf(getClass(), Level.INFO, "Logging Session Creation for user [%s]", credential.getUserName());
          activityLog.createEntry(CoreActivityTypes.IDE, ActivityLog.COMPLETE_STATUS,
             String.format("IDE Client Session Created " //
                + "{" //

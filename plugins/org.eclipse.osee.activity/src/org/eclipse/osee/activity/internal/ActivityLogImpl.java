@@ -289,7 +289,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    @Override
    public Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs) {
       if (type.equals(CoreActivityTypes.IDE)) {
-         logger.debug("Creating IDE Activity Entry. Is enabled: [%s], Arguments: [%s]", isEnabled(),
+         logger.warn("Creating IDE Activity Entry. Is enabled: [%s], Arguments: [%s]", isEnabled(),
             Arrays.deepToString(messageArgs));
       }
       if (isEnabled()) {
