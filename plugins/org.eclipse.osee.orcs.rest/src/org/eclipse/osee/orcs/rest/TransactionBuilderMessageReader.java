@@ -20,9 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.Function;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -138,13 +138,23 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       }
    }
 
+   private <R extends NamedId> R getToken(JsonNode node, Function<Long, R> getById, Function<String, R> getByName) {
+      JsonNode id = node.get("typeId");
+      if (id == null) {
+         JsonNode typeNode = node.get("typeName");
+         if (typeNode == null || Strings.isInValid(typeNode.asText())) {
+            throw new OseeArgumentException("The type must be specified");
+         }
+         return getByName.apply(typeNode.asText());
+      }
+      return getById.apply(id.asLong());
+   }
+
    private void readAttributes(TransactionBuilder tx, JsonNode artifactJson, ArtifactToken artifact, String attributesNodeName) {
       if (artifactJson.has(attributesNodeName)) {
-         Iterator<Entry<String, JsonNode>> attributes = artifactJson.get(attributesNodeName).fields();
-         while (attributes.hasNext()) {
-            Entry<String, JsonNode> attribute = attributes.next();
-            AttributeTypeGeneric<?> attributeType = getAttributeType(attribute.getKey());
-            JsonNode value = attribute.getValue();
+         for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
+            AttributeTypeGeneric<?> attributeType = getAttributeType(attribute);
+            JsonNode value = attribute.get("value");
             if (value.isArray()) {
                ArrayList<String> values = new ArrayList<>();
                for (JsonNode attrValue : value) {
@@ -160,11 +170,9 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
 
    private void addAttributes(TransactionBuilder tx, JsonNode artifactJson, ArtifactToken artifact, String attributesNodeName) {
       if (artifactJson.has(attributesNodeName)) {
-         Iterator<Entry<String, JsonNode>> attributes = artifactJson.get(attributesNodeName).fields();
-         while (attributes.hasNext()) {
-            Entry<String, JsonNode> attribute = attributes.next();
-            AttributeTypeGeneric<?> attributeType = getAttributeType(attribute.getKey());
-            JsonNode value = attribute.getValue();
+         for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
+            AttributeTypeGeneric<?> attributeType = getAttributeType(attribute);
+            JsonNode value = attribute.get("value");
             if (value.isArray()) {
                for (JsonNode attrValue : value) {
                   tx.createAttribute(artifact, attributeType, attrValue);
@@ -178,33 +186,30 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
 
    private void deleteAttributes(TransactionBuilder tx, JsonNode artifactJson, ArtifactToken artifact, String attributesNodeName) {
       if (artifactJson.has(attributesNodeName)) {
-         for (JsonNode attributeTypeString : artifactJson.get(attributesNodeName)) {
-            tx.deleteAttributes(artifact, getAttributeType(attributeTypeString.asText()));
+         for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
+            tx.deleteAttributes(artifact, getAttributeType(attribute));
          }
       }
    }
 
    private void readrelations(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, JsonNode artifactJson, ArtifactToken artifact) {
       if (artifactJson.has("relations")) {
-         Iterator<Entry<String, JsonNode>> relations = artifactJson.get("relations").fields();
-         while (relations.hasNext()) {
-            Entry<String, JsonNode> relation = relations.next();
-            RelationTypeToken relationType = getRelationType(relation.getKey());
-            JsonNode relationNode = relation.getValue();
-            if (relationNode.isTextual() || relationNode.isArray()) {
-               relate(tx, artifactsByName, relationNode, relationType, artifact, RelationSide.SIDE_A, "");
-            } else if (relationNode.isObject()) {
-               String rationale = relationNode.has("rationale") ? relationNode.get("rationale").asText() : "";
-               if (relationNode.has("sideA")) {
-                  relate(tx, artifactsByName, relationNode.get("sideA"), relationType, artifact, RelationSide.SIDE_B,
+         for (JsonNode relation : artifactJson.get("relations")) {
+            RelationTypeToken relationType = getRelationType(relation);
+            if (relation.isTextual() || relation.isArray()) {
+               relate(tx, artifactsByName, relation, relationType, artifact, RelationSide.SIDE_A, "");
+            } else if (relation.isObject()) {
+               String rationale = relation.has("rationale") ? relation.get("rationale").asText() : "";
+               if (relation.has("sideA")) {
+                  relate(tx, artifactsByName, relation.get("sideA"), relationType, artifact, RelationSide.SIDE_B,
                      rationale);
                }
-               if (relationNode.has("sideB")) { //both sides are allowed for the same relation entry
-                  relate(tx, artifactsByName, relationNode.get("sideB"), relationType, artifact, RelationSide.SIDE_A,
+               if (relation.has("sideB")) { //both sides are allowed for the same relation entry
+                  relate(tx, artifactsByName, relation.get("sideB"), relationType, artifact, RelationSide.SIDE_A,
                      rationale);
                }
             } else {
-               throw new OseeStateException("Json Node of unexpected type %s", relationNode.getNodeType());
+               throw new OseeStateException("Json Node of unexpected type %s", relation.getNodeType());
             }
          }
       }
@@ -241,35 +246,14 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
    }
 
    private ArtifactTypeToken getArtifactType(JsonNode artifactJson) {
-      JsonNode typeNode = artifactJson.get("type");
-
-      if (typeNode == null || Strings.isInValid(typeNode.asText())) {
-         throw new OseeArgumentException("The artifact type must be specified");
-      }
-      String typeString = typeNode.asText();
-      if (Strings.isNumeric(typeString)) {
-         return tokenService.getArtifactType(Long.valueOf(typeString));
-      }
-      return tokenService.getArtifactType(typeString);
+      return getToken(artifactJson, tokenService::getArtifactType, tokenService::getArtifactType);
    }
 
-   private AttributeTypeGeneric<?> getAttributeType(String typeString) {
-      if (Strings.isInValid(typeString)) {
-         throw new OseeArgumentException("The attribute type must be specified");
-      }
-      if (Strings.isNumeric(typeString)) {
-         return tokenService.getAttributeType(Long.valueOf(typeString));
-      }
-      return tokenService.getAttributeType(typeString);
+   private AttributeTypeGeneric<?> getAttributeType(JsonNode attribute) {
+      return getToken(attribute, tokenService::getAttributeType, tokenService::getAttributeType);
    }
 
-   private RelationTypeToken getRelationType(String typeString) {
-      if (Strings.isInValid(typeString)) {
-         throw new OseeArgumentException("The relation type must be specified");
-      }
-      if (Strings.isNumeric(typeString)) {
-         return tokenService.getRelationType(Long.valueOf(typeString));
-      }
-      return tokenService.getRelationType(typeString);
+   private RelationTypeToken getRelationType(JsonNode relation) {
+      return getToken(relation, tokenService::getRelationType, tokenService::getRelationType);
    }
 }
