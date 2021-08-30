@@ -86,7 +86,7 @@ public class PurgeAttributesBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Arrays.asList("Admin");
    }
 

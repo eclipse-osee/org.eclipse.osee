@@ -51,7 +51,7 @@ public class DataRightsImporter extends AbstractBlam {
    private Map<String, Artifact> nameToArtifact;
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Arrays.asList("Util");
    }
 
