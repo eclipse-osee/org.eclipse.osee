@@ -131,9 +131,4 @@ public class DatabaseActivityStorage implements ActivityStorage {
          createIfAbsent(type);
       }
    }
-
-   @Override
-   public boolean isAvailable() {
-      return jdbcService.isServerAlive(1000);
-   }
 }

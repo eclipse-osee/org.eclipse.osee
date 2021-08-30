@@ -83,6 +83,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       Callable<OrcsMetaData> callable = adminOps.migrateDatastore();
       OrcsMetaData metaData = executeCallable(callable);
       URI location = getDatastoreLocation(uriInfo);
+      activityLog.setEnabled(true);
       return Response.created(location).entity(asDatastoreInfo(metaData)).build();
    }
 
