@@ -289,8 +289,8 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    @Override
    public Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs) {
       if (type.equals(CoreActivityTypes.IDE)) {
-         logger.warn("Creating IDE Activity Entry. Is enabled: [%s], Storage Avaialable [%s], Arguments: [%s]", enabled,
-            storage.isAvailable(), Arrays.deepToString(messageArgs));
+         logger.warn("Creating IDE Activity Entry. Is enabled: [%s], Arguments: [%s]", isEnabled(),
+            Arrays.deepToString(messageArgs));
       }
       if (isEnabled()) {
          Long parentId = get(ENTRY_ID);
@@ -527,7 +527,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public boolean isEnabled() {
-      return enabled && storage.isAvailable();
+      return enabled;
    }
 
    @Override
