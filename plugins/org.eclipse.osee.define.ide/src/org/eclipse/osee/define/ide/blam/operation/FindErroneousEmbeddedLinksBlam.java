@@ -160,7 +160,7 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Collections.singletonList("Define.Publish.Check");
    }
 

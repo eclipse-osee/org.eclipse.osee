@@ -95,7 +95,7 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Arrays.asList("Define.Trace");
    }
 

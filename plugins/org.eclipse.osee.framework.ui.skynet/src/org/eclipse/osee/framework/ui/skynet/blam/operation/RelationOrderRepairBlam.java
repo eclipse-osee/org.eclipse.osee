@@ -59,7 +59,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Collections.singletonList("Admin");
    }
 

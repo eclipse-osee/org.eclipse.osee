@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Arrays.asList("Define");
    }
 

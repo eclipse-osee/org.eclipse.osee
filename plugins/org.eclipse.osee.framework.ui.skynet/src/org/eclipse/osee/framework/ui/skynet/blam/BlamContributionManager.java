@@ -104,7 +104,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
          if (isUserGroup || !Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
             // Create categories first (so can have them up top)
-            for (String category : blamOperation.getCategories()) {
+            for (String category : blamOperation.getCategoriesStr()) {
                try {
                   if (ServiceUtil.accessControlService().isOseeAdmin() || !category.contains(
                      "Admin") || category.contains(
@@ -125,10 +125,10 @@ public class BlamContributionManager implements IXNavigateCommonItem {
          Collection<IUserGroupArtifactToken> blamUserGroups = blamOperation.getUserGroups();
          if (!Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
             // If categories not specified, add to top level
-            if (blamOperation.getCategories().isEmpty()) {
+            if (blamOperation.getCategoriesStr().isEmpty()) {
                new XNavigateItemBlam(blamOperationItems, blamOperation);
             }
-            for (String category : blamOperation.getCategories()) {
+            for (String category : blamOperation.getCategoriesStr()) {
                // Category will be null if admin category and not admin
                if (nameToParent.get(category) != null) {
                   new XNavigateItemBlam(nameToParent.get(category), blamOperation);

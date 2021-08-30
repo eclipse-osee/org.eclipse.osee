@@ -373,7 +373,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Collections.singleton("ATS");
    }
 

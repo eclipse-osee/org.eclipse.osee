@@ -274,7 +274,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Collections.singleton("ATS");
    }
 

@@ -132,7 +132,7 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Arrays.asList("ATS.Admin");
    }
 

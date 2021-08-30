@@ -238,7 +238,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
    }
 
    @Override
-   public Collection<String> getCategories() {
+   public Collection<String> getCategoriesStr() {
       return Arrays.asList("Define.Publish");
    }
 

@@ -125,7 +125,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     * Return collection of categories that blam belongs to. These will be used to create categories that blams are put
     * into in UI navigators. BLAM can belong in multiple categories.
     */
-   public abstract Collection<String> getCategories();
+   public abstract Collection<String> getCategoriesStr();
 
    /**
     * Use WidgetBuilder
