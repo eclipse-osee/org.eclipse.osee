@@ -59,7 +59,7 @@ public final class OseeDictionary {
 
       @Override
       public boolean isWord(String word) {
-         if (!OseeProperties.isInTest()) {
+         if (OseeProperties.isInTest()) {
             return true;
          }
          String cleanWord = getCleanWord(word);
