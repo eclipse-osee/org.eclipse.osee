@@ -15,8 +15,8 @@
   <DoNotRelyOnCSS/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>11655</WindowHeight>
-  <WindowWidth>21225</WindowWidth>
+  <WindowHeight>8985</WindowHeight>
+  <WindowWidth>20490</WindowWidth>
   <WindowTopX>0</WindowTopX>
   <WindowTopY>0</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
@@ -39,6 +39,7 @@
    <Column ss:Width="102"/>
    <Column ss:AutoFitWidth="0" ss:Width="161.25"/>
    <Column ss:AutoFitWidth="0" ss:Width="83.25" ss:Span="1"/>
+   <Column ss:Index="10" ss:Width="66"/>
    <Row>
     <Cell><Data ss:Type="String">Title</Data></Cell>
     <Cell><Data ss:Type="String">Created By</Data></Cell>
@@ -49,7 +50,7 @@
     <Cell><Data ss:Type="String">Estimated Hours</Data></Cell>
     <Cell><Data ss:Type="String">Percent Complete</Data></Cell>
     <Cell><Data ss:Type="String">Notes</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Category1</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Category 1</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">1st Task</Data></Cell>
@@ -90,8 +91,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>3</ActiveRow>
-     <ActiveCol>2</ActiveCol>
+     <ActiveRow>7</ActiveRow>
+     <ActiveCol>5</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -14,8 +14,8 @@
   <AllowPNG/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>9765</WindowHeight>
-  <WindowWidth>20370</WindowWidth>
+  <WindowHeight>8985</WindowHeight>
+  <WindowWidth>20490</WindowWidth>
   <WindowTopX>0</WindowTopX>
   <WindowTopY>0</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
@@ -40,6 +40,7 @@
    <Column ss:AutoFitWidth="0" ss:Width="124.5" ss:Span="1"/>
    <Column ss:Index="6" ss:Width="60"/>
    <Column ss:Index="8" ss:AutoFitWidth="0" ss:Width="78.75"/>
+   <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="99"/>
    <Row>
     <Cell><Data ss:Type="String">Title</Data></Cell>
     <Cell><Data ss:Type="String">Description</Data></Cell>
@@ -50,7 +51,7 @@
     <Cell><Data ss:Type="String">Priority</Data></Cell>
     <Cell><Data ss:Type="String">Version</Data></Cell>
     <Cell><Data ss:Type="String">EstimatedHours</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Category1</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Category 1</Data></Cell>
     <Cell><Data ss:Type="String">ats.Points</Data></Cell>
    </Row>
    <Row>
@@ -115,8 +116,7 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>3</ActiveRow>
-     <ActiveCol>3</ActiveCol>
+     <ActiveCol>9</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
