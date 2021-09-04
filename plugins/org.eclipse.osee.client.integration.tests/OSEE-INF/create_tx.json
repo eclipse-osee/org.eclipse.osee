@@ -53,5 +53,8 @@
       "deleteAttributes": [{"typeName": "Notes"}]
       }
    ],
-   "deleteArtifacts": [239420308]
+   "deleteArtifacts": [239420308],
+   "deleteRelations": [{"typeName": "Default Hierarchical", "aArtId": "197818", "bArtId": "90872"}],
+   "addRelations": [{"typeName": "Dependency", "aArtId": "197818", "bArtId": "119106", "rationale": "because I said so"},
+      {"typeId": "2305843009213694293", "aArtId": "197818", "bArtId": "90872"}]
 }
