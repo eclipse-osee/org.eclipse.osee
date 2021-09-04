@@ -87,7 +87,9 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
 
       createArtifacts(readTree, artifactsByName, tx);
       modifyArtifacts(readTree, artifactsByName, tx);
-      deleteArtifacts(readTree, artifactsByName, tx);
+      deleteArtifacts(readTree, tx);
+      deleteRelations(readTree, tx);
+      addRelations(readTree, tx);
 
       return tx;
    }
@@ -130,10 +132,34 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       }
    }
 
-   private void deleteArtifacts(JsonNode root, Map<String, ArtifactToken> artifactsByName, TransactionBuilder tx) {
+   private void deleteArtifacts(JsonNode root, TransactionBuilder tx) {
       if (root.has("deleteArtifacts")) {
          for (JsonNode artifactId : root.get("deleteArtifacts")) {
             tx.deleteArtifact(ArtifactId.valueOf(artifactId.asLong()));
+         }
+      }
+   }
+
+   private void deleteRelations(JsonNode root, TransactionBuilder tx) {
+      if (root.has("deleteRelations")) {
+         for (JsonNode relation : root.get("deleteRelations")) {
+            RelationTypeToken relationType = getRelationType(relation);
+            ArtifactId artA = ArtifactId.valueOf(relation.get("aArtId").asLong());
+            ArtifactId artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
+            tx.unrelate(artA, relationType, artB);
+         }
+      }
+   }
+
+   private void addRelations(JsonNode root, TransactionBuilder tx) {
+      if (root.has("addRelations")) {
+         for (JsonNode relation : root.get("addRelations")) {
+            RelationTypeToken relationType = getRelationType(relation);
+
+            String rationale = relation.has("rationale") ? relation.get("rationale").asText() : "";
+            ArtifactId artA = ArtifactId.valueOf(relation.get("aArtId").asLong());
+            ArtifactId artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
+            tx.relate(artA, relationType, artB, rationale);
          }
       }
    }
