@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
@@ -170,5 +171,10 @@ public class UserServiceImpl implements UserService {
       userToks.setAccount(SystemUser.OseeSystem);
       users.forEach(userToks::addUser);
       return datastoreEndpoint.createUsers(userToks);
+   }
+
+   @Override
+   public void setUserForCurrentThread(UserId accountId) {
+      throw new UnsupportedOperationException();
    }
 }
