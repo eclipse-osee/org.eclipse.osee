@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -47,6 +48,8 @@ public class UserServiceImpl implements UserService {
    private final OrcsApi orcsApi;
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<UserId, UserToken> accountIdToUser = new ConcurrentHashMap<>();
+
    private final QueryBuilder query;
 
    public UserServiceImpl(OrcsApi orcsApi) {
@@ -159,6 +162,21 @@ public class UserServiceImpl implements UserService {
       UserToken user = loginIdToUser.get(loginId);
       if (user == null) {
          List<ArtifactReadable> userArtifacts = query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
+         if (userArtifacts.size() == 1) {
+            user = toUser(userArtifacts.get(0));
+         }
+      }
+      if (user != null) {
+         threadToUser.put(Thread.currentThread(), user);
+      }
+   }
+
+   @Override
+   public void setUserForCurrentThread(UserId accountId) {
+      ensureLoaded();
+      UserToken user = accountIdToUser.get(accountId);
+      if (user == null) {
+         List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
          if (userArtifacts.size() == 1) {
             user = toUser(userArtifacts.get(0));
          }

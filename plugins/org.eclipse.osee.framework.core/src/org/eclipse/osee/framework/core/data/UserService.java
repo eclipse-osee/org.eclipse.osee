@@ -46,4 +46,6 @@ public interface UserService {
 
    TransactionId createUsers(Iterable<UserToken> users, String comment);
 
+   void setUserForCurrentThread(UserId accountId);
+
 }
