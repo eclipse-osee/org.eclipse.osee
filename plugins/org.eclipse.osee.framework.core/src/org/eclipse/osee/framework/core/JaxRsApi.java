@@ -95,4 +95,9 @@ public interface JaxRsApi {
 
    JsonFactory getFactory();
 
+   /**
+    * Must only be called once on the client during startup and never on the server.
+    */
+   void createClientFactory();
+
 }
