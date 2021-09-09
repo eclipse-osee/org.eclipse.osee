@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.component';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { CurrentTypesService } from '../../services/current-types.service';
+import { of } from 'rxjs';
 
 let loader: HarnessLoader;
 
@@ -46,7 +47,8 @@ describe('PlatformTypeCardComponent', () => {
             title: "Patching 1",
             txId: "2",
             warningCount:0
-        }
+          },
+          inEditMode:of(true)
       }}
         // {
         //   provide: MatDialog, useValue: {

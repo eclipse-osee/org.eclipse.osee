@@ -8,7 +8,7 @@ import { structuresMock } from "../ReturnObjects/structure.mock";
 
 export const structureServiceMock: Partial<StructuresService> = {
     getFilteredStructures(filter: string, branchId: string, messageId: string, subMessageId: string, connectionId: string) {
-        return of([])
+        return of(structuresMock)
     },
     createSubMessageRelation(subMessageId: string) {
         return of({

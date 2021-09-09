@@ -13,11 +13,10 @@ import { ColumnPreferencesDialogComponent } from '../shared/components/dialogs/c
 import { CurrentStateService } from './services/current-state.service';
 import { settingsDialogData } from '../shared/types/settingsdialog';
 import { structure } from './types/structure';
-import { branchStorage } from '../shared/types/branchstorage';
-import { iif } from 'rxjs';
+import { combineLatest, from, iif, of } from 'rxjs';
 import { AddStructureDialogComponent } from './components/add-structure-dialog/add-structure-dialog.component';
 import { AddStructureDialog } from './types/AddStructureDialog';
-import { filter, first, switchMap } from 'rxjs/operators';
+import { filter, first, map, mergeMap, reduce, share, shareReplay, switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'ple-messaging-message-element-interface',
@@ -44,9 +43,7 @@ export class MessageElementInterfaceComponent implements OnInit {
   messageData = this.structureService.structures;
   dataSource: MatTableDataSource<structure> =
     new MatTableDataSource<structure>();
-  headers: string[] = [];
   truncatedSections: string[] = [];
-  allowedStructureHeaders: string[] = [];
   editableStructureHeaders: string[] = [
     'name',
     'description',
@@ -71,13 +68,6 @@ export class MessageElementInterfaceComponent implements OnInit {
     'applicability'
   ];
 
-  allowedElementHeaders: string[] = [
-    'name',
-    'platformTypeName2',
-    'interfaceElementAlterable',
-    'description',
-    'notes',
-  ];
   allElementHeaders: string[] = [
     'name',
     'platformTypeName2',
@@ -94,7 +84,89 @@ export class MessageElementInterfaceComponent implements OnInit {
   filter: string = '';
   searchTerms: string = '';
   breadCrumb: string = '';
-  editMode: boolean = false;
+  preferences = this.structureService.preferences;
+  isEditing = this.preferences.pipe(
+    map((x) => x.inEditMode),
+    share(),
+    shareReplay(1)
+  )
+  currentElementHeaders = this.preferences.pipe(
+    switchMap((response) => of(response.columnPreferences).pipe(
+      mergeMap((r) => from(r).pipe(
+        filter((column) => this.allElementHeaders.includes(column.name) && column.enabled),
+        map((header) => header.name),
+        reduce((acc, curr) => [...acc, curr], [] as string[])
+      ))
+    )),
+    mergeMap((headers)=>iif(()=>headers.length!==0,of(headers),of(['name',
+    'platformTypeName2',
+    'interfaceElementAlterable',
+    'description',
+    'notes',]))),
+    share(),
+    shareReplay(1)
+  );
+  currentStructureHeaders = this.preferences.pipe(
+    switchMap((response) => of(response.columnPreferences).pipe(
+      mergeMap((r) => from(r).pipe(
+        filter((column) => this.allStructureHeaders.includes(column.name) && column.enabled),
+        map((header) => header.name),
+        reduce((acc, curr) => [...acc, curr], [] as string[])
+      ))
+    )),
+    mergeMap((headers)=>iif(()=>headers.length!==0,of(headers),of(['name',
+    'description',
+    'interfaceMaxSimultaneity',
+    'interfaceMinSimultaneity',
+    'interfaceTaskFileType',
+    'interfaceStructureCategory',]))),
+    share(),
+    shareReplay(1)
+  )
+
+  settingsDialog = combineLatest([this.structureService.BranchId,this.isEditing, this.currentElementHeaders, this.currentStructureHeaders]).pipe(
+    take(1),
+    switchMap(([branch,edit, elements, structures]) => this.dialog.open(ColumnPreferencesDialogComponent, {
+      data: {
+        branchId: branch,
+        allHeaders2: this.allElementHeaders,
+        allowedHeaders2: elements,
+        allHeaders1: this.allStructureHeaders,
+        allowedHeaders1: structures,
+        editable: edit,
+        headers1Label: 'Structure Headers',
+        headers2Label: 'Element Headers',
+        headersTableActive: true,
+      }
+    }).afterClosed().pipe(
+      take(1),
+    switchMap((result)=>this.structureService.updatePreferences(result))))
+  )
+
+  structureDialog = this.structureService.SubMessageId.pipe(
+    take(1),
+    switchMap((submessage)=>this.dialog.open(AddStructureDialogComponent, {
+      data: {
+        id: submessage,
+        name: this.breadCrumb,
+        structure: {
+          id: '-1',
+          name: '',
+          elements: [],
+          description: '',
+          interfaceMaxSimultaneity: '',
+          interfaceMinSimultaneity: '',
+          interfaceStructureCategory: '',
+          interfaceTaskFileType:0
+        }
+      }
+    }).afterClosed().pipe(
+      filter((val) => val !== undefined),
+      take(1),
+      switchMap((value: AddStructureDialog) => iif(() => value.structure.id !== '-1' && value.structure.id.length > 0, this.structureService.relateStructure(value.structure.id), this.structureService.createStructure(value.structure))),
+      first()
+    ))
+  )
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -104,16 +176,7 @@ export class MessageElementInterfaceComponent implements OnInit {
     this.messageData.subscribe((value) => {
       this.dataSource.data = value;
     });
-    this.allowedStructureHeaders = [
-      'name',
-      'description',
-      'interfaceMaxSimultaneity',
-      'interfaceMinSimultaneity',
-      'interfaceTaskFileType',
-      'interfaceStructureCategory',
-    ]; //, "TaskFileType"
     this.truncatedSections = ['description', 'EnumsLiteralsDesc', 'Notes'];
-    //this.hiddenHeaders=["expandoButton"]
   }
 
   ngOnInit(): void {
@@ -124,19 +187,6 @@ export class MessageElementInterfaceComponent implements OnInit {
       this.structureService.subMessageId = values.get('subMessageId') || '';
       this.structureService.connection = values.get('connection') || '';
     });
-    //@todo: remove when user preferences are available on backend
-    let branchStorage = JSON.parse(
-      localStorage.getItem(this.structureService.BranchId.getValue()) || '{}'
-    ) as branchStorage;
-    if (branchStorage?.mim?.editMode) {
-      this.editMode = branchStorage.mim.editMode;
-    }
-    if (branchStorage?.mim?.StructureHeaders?.length > 0) {
-      this.allowedStructureHeaders = branchStorage.mim.StructureHeaders;
-    }
-    if (branchStorage?.mim?.ElementHeaders?.length > 0) {
-      this.allowedElementHeaders = branchStorage.mim.ElementHeaders;
-    }
   }
 
   valueTracker(index: any, item: any) {
@@ -177,72 +227,9 @@ export class MessageElementInterfaceComponent implements OnInit {
   }
 
   openSettingsDialog() {
-    let dialogData: settingsDialogData = {
-      branchId: this.structureService.BranchId.getValue(),
-      allHeaders2: this.allElementHeaders,
-      allowedHeaders2: this.allowedElementHeaders,
-      allHeaders1: this.allStructureHeaders,
-      allowedHeaders1: this.allowedStructureHeaders,
-      editable: this.editMode,
-      headers1Label: 'Structure Headers',
-      headers2Label: 'Element Headers',
-      headersTableActive: true,
-    };
-    const dialogRef = this.dialog.open(ColumnPreferencesDialogComponent, {
-      data: dialogData,
-    });
-    dialogRef.afterClosed().subscribe((result: settingsDialogData) => {
-      this.allowedElementHeaders = result.allowedHeaders2;
-      this.allowedStructureHeaders = result.allowedHeaders1;
-      this.editMode = result.editable;
-      //@todo: remove when user preferences are available on backend
-      if (localStorage.getItem(this.structureService.BranchId.getValue())) {
-        let branchStorage = JSON.parse(
-          localStorage.getItem(this.structureService.BranchId.getValue()) ||
-            '{}'
-        ) as branchStorage;
-        branchStorage.mim['editMode'] = result.editable;
-        branchStorage.mim['StructureHeaders'] = result.allowedHeaders1;
-        branchStorage.mim['ElementHeaders'] = result.allowedHeaders2;
-        localStorage.setItem(
-          this.structureService.BranchId.getValue(),
-          JSON.stringify(branchStorage)
-        );
-      } else {
-        localStorage.setItem(
-          this.structureService.BranchId.getValue(),
-          JSON.stringify({
-            mim: {
-              editMode: result.editable,
-              StructureHeaders: result.allowedHeaders1,
-              ElementHeaders: result.allowedHeaders2,
-            },
-          })
-        );
-      }
-    });
+    this.settingsDialog.subscribe();
   }
   openAddStructureDialog() {
-    let dialogData:AddStructureDialog= {
-      id: this.structureService.subMessageId,
-      name: this.breadCrumb,
-      structure: {
-        id: '-1',
-        name: '',
-        description: '',
-        interfaceMaxSimultaneity: '',
-        interfaceMinSimultaneity: '',
-        interfaceStructureCategory: '',
-        interfaceTaskFileType:0
-      }
-    }
-    let dialogRef=this.dialog.open(AddStructureDialogComponent, {
-      data:dialogData
-    });
-    dialogRef.afterClosed().pipe(
-      filter((val) => val !== undefined),
-      switchMap((value: AddStructureDialog) => iif(() => value.structure.id !== '-1' && value.structure.id.length > 0, this.structureService.relateStructure(value.structure.id), this.structureService.createStructure(value.structure))),
-      first()
-    ).subscribe(() => { },()=>{});
+    this.structureDialog.subscribe();
   }
 }

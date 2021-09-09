@@ -1,4 +1,6 @@
 import { BehaviorSubject, of } from "rxjs";
+import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
+import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentStateService } from "../../services/current-state.service";
 import { structure } from "../../types/structure";
 import { platformTypesMock } from "../ReturnObjects/PlatformTypes.mock";
@@ -21,8 +23,12 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     relateStructure(structureId: string) {
         return of(elementResponseMock)
     },
+    updatePreferences(preferences: settingsDialogData) {
+        return of(elementResponseMock)
+    },
     applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
-    types:of(platformTypesMock),
+    types: of(platformTypesMock),
+    preferences: of(MimPreferencesMock),
     structures: of(structuresMock),
     branchId:"10",
     messageId: "10",

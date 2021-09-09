@@ -1,7 +1,14 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
+import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { response } from '../../connection-view/mocks/Response.mock';
+import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
+import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
+import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
+import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { messagesMock } from '../mocks/ReturnObjects/messages.mock';
 import { messageResponseMock } from '../mocks/ReturnObjects/response.mock';
 import { messageServiceMock } from '../mocks/services/MessageService.mock';
@@ -20,8 +27,12 @@ describe('CurrentMessagesService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: MessagesService, useValue: messageServiceMock },
-      {provide:SubMessagesService,useValue:subMessageServiceMock}],
+      providers: [
+        { provide: MessagesService, useValue: messageServiceMock },
+        { provide: SubMessagesService, useValue: subMessageServiceMock },
+        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
+        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
+        {provide:UserDataAccountService,useValue:userDataAccountServiceMock}],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(CurrentMessagesService);
@@ -107,4 +118,21 @@ describe('CurrentMessagesService', () => {
     })
   })
 
+  it('should fetch preferences', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: MimPreferencesMock };
+      const expectedMarble = 'a';
+      service.branch = '10'
+      scheduler.expectObservable(service.preferences).toBe(expectedMarble, expectedFilterValues);
+    })
+  })
+
+  it('should update user preferences', () => {
+    scheduler.run(() => {
+      service.branch='10'
+      let expectedObservable = { a: response };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
+    })
+  })
 });

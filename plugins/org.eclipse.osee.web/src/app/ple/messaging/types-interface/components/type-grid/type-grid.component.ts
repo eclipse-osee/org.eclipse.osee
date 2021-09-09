@@ -2,6 +2,8 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
+import { take, switchMap } from 'rxjs/operators';
+import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
 import { PlatformType } from '../../types/platformType';
@@ -115,5 +117,26 @@ export class TypeGridComponent implements OnInit, OnChanges {
   }
   getMarginString() {
     return this.gutterSize+'px'
+  }
+
+  openSettingsDialog() {
+    combineLatest([this.typesService.inEditMode, this.uiService.BranchId]).pipe(
+      take(1),
+      switchMap(([edit, id]) => this.dialog.open(ColumnPreferencesDialogComponent, {
+        data: {
+          branchId: id,
+          allHeaders2: [],
+          allowedHeaders2: [],
+          allHeaders1: [],
+          allowedHeaders1: [],
+          editable: edit,
+          headers1Label: '',
+          headers2Label: '',
+          headersTableActive: false,
+        }
+      }).afterClosed().pipe(
+        take(1),
+        switchMap((result) => this.typesService.updatePreferences(result))))
+    ).subscribe();
   }
 }

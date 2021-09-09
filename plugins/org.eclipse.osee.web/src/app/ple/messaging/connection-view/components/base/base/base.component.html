@@ -2,5 +2,5 @@
 <div class="connection-view">
     <osee-connectionview-branch-type-selector></osee-connectionview-branch-type-selector>
     <osee-connectionview-branch-selector></osee-connectionview-branch-selector>
-    <osee-connectionview-graph [editMode]="editMode"></osee-connectionview-graph>
+    <osee-connectionview-graph [editMode]="(inEditMode | async) || false"></osee-connectionview-graph>
 </div>

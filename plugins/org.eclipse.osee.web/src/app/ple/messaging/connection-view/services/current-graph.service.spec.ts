@@ -1,8 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { iif, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
+import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
+import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
+import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
+import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { response } from '../mocks/Response.mock';
 import { connection, transportType } from '../../shared/types/connection';
 import { node } from '../../shared/types/node';
@@ -70,10 +75,14 @@ describe('CurrentGraphService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: GraphService, useValue: graphService },
+      providers: [
+        { provide: GraphService, useValue: graphService },
         { provide: NodeService, useValue: nodeService },
         { provide: ConnectionService, useValue: connectionService },
-      {provide:ApplicabilityListService,useValue:applicabilityListServiceMock}]
+        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
+        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
+        { provide: UserDataAccountService, useValue: userDataAccountServiceMock }
+      ]
     });
     service = TestBed.inject(CurrentGraphService);
     routeState = TestBed.inject(RouteStateService)
@@ -176,6 +185,33 @@ describe('CurrentGraphService', () => {
       const expectedMarble = 'a'
       routeState.branchId='10'
       scheduler.expectObservable(service.nodeOptions).toBe(expectedMarble, expectedfilterValues);
+    })
+  })
+
+  it('should fetch preferences', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: MimPreferencesMock };
+      const expectedMarble = 'a';
+      routeState.branchId = '10'
+      scheduler.expectObservable(service.preferences).toBe(expectedMarble, expectedFilterValues);
+    })
+  })
+
+  it('should fetch applicabilities', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: [{id:'1',name:'Base'},{id:'2',name:'Second'}] };
+      const expectedMarble = 'a';
+      routeState.branchId = '10'
+      scheduler.expectObservable(service.applic).toBe(expectedMarble, expectedFilterValues);
+    })
+  })
+
+  it('should update user preferences', () => {
+    scheduler.run(() => {
+      routeState.branchId='10'
+      let expectedObservable = { a: response };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
     })
   })
 });

@@ -1,14 +1,26 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestScheduler } from 'rxjs/testing';
+import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { apiURL } from 'src/environments/environment';
+import { response } from '../../connection-view/mocks/Response.mock';
+import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
+import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
+import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { platformTypes1 } from '../../type-element-search/testing/MockResponses/PlatformType';
+import { logicalTypeMock } from '../mocks/returnObjects/logicalType.mock';
+import { logicalTypeFormDetailMock } from '../mocks/returnObjects/logicalTypeFormDetail.mock';
+import { typesServiceMock } from '../mocks/services/types.service.mock';
 import { TypesApiResponse } from '../types/ApiResponse';
 import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
 import { PlatformType } from '../types/platformType.d';
 
 import { CurrentTypesService } from './current-types.service';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
+import { TypesService } from './types.service';
 
 class PlatformTypeInstance implements PlatformType{
   id?: string | undefined ='';
@@ -33,11 +45,18 @@ class PlatformTypeInstance implements PlatformType{
 describe('CurrentTypesServiceService', () => {
   let service: CurrentTypesService;
   let uiService: PlMessagingTypesUIService;
+  let scheduler: TestScheduler;
   let httpTestingController:HttpTestingController
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers:[{provide:TransactionBuilderService,useValue:transactionBuilderMock}],
+      providers:
+        [
+          { provide: TransactionBuilderService, useValue: transactionBuilderMock },
+          { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
+          { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
+          {provide: TypesService, useValue: typesServiceMock}
+        ],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(CurrentTypesService);
@@ -45,111 +64,116 @@ describe('CurrentTypesServiceService', () => {
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
+  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+  }));
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch data from backend', fakeAsync(() => {
-    let testData: PlatformType[] = []
-    uiService.BranchIdString = "10";
-    service.typeData.subscribe();
-    uiService.filterString = "A filter";
-    tick(500);
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + "10" + "/types/filter/" + "A filter");
-    expect(req.request.method).toEqual('GET');
-    req.flush(testData);
-    httpTestingController.verify();
-  }));
+  it('should fetch data from backend', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: platformTypes1 };
+      const expectedMarble = '500ms a';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.typeData).toBe(expectedMarble, expectedFilterValues);
+      uiService.filterString = "A filter";
+    })
+  });
 
-  it('should set singleLineAdjustment to 0', fakeAsync(() => {
-    let testData: PlatformType[] = [new PlatformTypeInstance(), new PlatformTypeInstance(), new PlatformTypeInstance()]
-    uiService.columnCountNumber = 2;
-    uiService.BranchIdString = "10";
-    service.typeData.subscribe();
-    uiService.filterString = "A filter";
-    tick(500);
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + "10" + "/types/filter/" + "A filter");
-    //expect(req.request.method).toEqual('GET');
-    req?.flush(testData);
-    httpTestingController.verify();
-    expect(uiService.singleLineAdjustment.getValue()).toEqual(0);
-  }));
+  it('should set singleLineAdjustment to 0', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: 30,b:0 };
+      const expectedMarble = 'b';
+      uiService.columnCountNumber = 2;
+      uiService.BranchIdString = "10";
+      uiService.filterString = "A filter";
+      scheduler.expectObservable(uiService.singleLineAdjustment).toBe(expectedMarble, expectedFilterValues);
+    })
+  });
+  it('should set singleLineAdjustment to 30', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: 30,b:0 };
+      const expectedMarble = 'b 499ms a';
+      uiService.columnCountNumber = 9;
+      uiService.BranchIdString = "10";
+      uiService.filterString = "A filter";
+      scheduler.expectObservable(uiService.singleLineAdjustment).toBe(expectedMarble, expectedFilterValues);
+      const expectedFilterValues2 = { a: platformTypes1 };
+      const expectedMarble2 = '500ms a';
+      scheduler.expectObservable(service.typeData).toBe(expectedMarble2, expectedFilterValues2);
+    })
+  });
 
   it('should send a modification request', () => {
-    uiService.BranchIdString = "10";
-    service.partialUpdate({}).subscribe();
-    let testData: TypesApiResponse = {
-      empty: false,
-      errorCount: 0,
-      errors: false,
-      failed: false,
-      ids: [],
-      infoCount: false,
-      numErrors: 0,
-      numErrorsViaSearch: 0,
-      numWarnings: 0,
-      numWarningsViaSearch: 0,
-      results: [],
-      success: true,
-      tables: [],
-      title: '',
-      txId: '',
-      warningCount: 0
-    };
-    const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
-    expect(req.request.method).toEqual('POST');
-    req.flush(testData);
-    httpTestingController.verify();
+    scheduler.run(() => {
+      const expectedFilterValues = { a: response };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.partialUpdate({})).toBe(expectedMarble, expectedFilterValues);
+    })
+
   });
 
   it('should send a post request', () => {
-    uiService.BranchIdString = "10";
-    service.createType({}).subscribe();
-    let testData: TypesApiResponse = {
-      empty: false,
-      errorCount: 0,
-      errors: false,
-      failed: false,
-      ids: [],
-      infoCount: false,
-      numErrors: 0,
-      numErrorsViaSearch: 0,
-      numWarnings: 0,
-      numWarningsViaSearch: 0,
-      results: [],
-      success: true,
-      tables: [],
-      title: '',
-      txId: '',
-      warningCount: 0
-    };
-    const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
-    expect(req.request.method).toEqual('POST');
-    req.flush(testData);
-    httpTestingController.verify();
+    scheduler.run(() => {
+      const expectedFilterValues = { a: response };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.createType({})).toBe(expectedMarble, expectedFilterValues);
+    })
   });
 
   it('should fetch logical types', () => {
-    service.logicalTypes.subscribe();
-    let testData: logicalType[] = [];
-    const req = httpTestingController.expectOne(apiURL + "/mim/logicalType");
-    expect(req.request.method).toEqual('GET');
-    req.flush(testData);
-    httpTestingController.verify();
+    scheduler.run(() => {
+      const expectedFilterValues = { a: logicalTypeMock };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.logicalTypes).toBe(expectedMarble, expectedFilterValues);
+    })
   });
 
   it('should fetch a specific logical type', () => {
-    service.getLogicalTypeFormDetail("1").subscribe();
-    let testData: logicalTypeFormDetail = {
-      fields: [],
-      id: '1',
-      name: 'name',
-      idString: '1',
-      idIntValue:1
-    }
-    const req = httpTestingController.expectOne(apiURL + "/mim/logicalType/1");
-    expect(req.request.method).toEqual('GET');
-    req.flush(testData);
-    httpTestingController.verify();
+    scheduler.run(() => {
+      const expectedFilterValues = { a: logicalTypeFormDetailMock };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.getLogicalTypeFormDetail("1")).toBe(expectedMarble, expectedFilterValues);
+    })
   });
+  it('should fetch preferences', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: MimPreferencesMock };
+      const expectedMarble = 'a';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.preferences).toBe(expectedMarble, expectedFilterValues);
+    })
+  });
+  it('should fetch branch prefs', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: ['8:true'] };
+      const expectedMarble = 'a';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.BranchPrefs).toBe(expectedMarble, expectedFilterValues);
+    })
+  })
+
+  it('should fetch edit mode', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: MimPreferencesMock.inEditMode };
+      const expectedMarble = 'a';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.inEditMode).toBe(expectedMarble, expectedFilterValues);
+    })
+  });
+
+  it('should update user preferences', () => {
+    scheduler.run(() => {
+      const expectedObservable = { a: response };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
+    })
+  })
 });

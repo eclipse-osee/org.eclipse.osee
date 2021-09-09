@@ -1,14 +1,13 @@
 <div class="message-interface message-element-interface-button-header">
     <button mat-raised-button (click)="openSettingsDialog()" style="float:right">Settings</button>
 </div>
-<button *ngIf="editMode===true" mat-fab (click)="openNewMessageDialog()" class="new-message-button" color="primary">+</button>
+<button *ngIf="(inEditMode | async)===true" mat-fab (click)="openNewMessageDialog()" class="new-message-button" color="primary">+</button>
 <div class="message-interface message-element-interface-top-level-table">
     <mat-form-field class="message-interface-table-view-width-100 message-interface-table-filter-padding">
         <mat-label>Filter Message Information</mat-label>
         <input matInput type="text" (keyup)="applyFilter($event)" #input>
         <mat-hint>Enter text to filter Message Table.
             Only full text matches will display results.
-            <!-- To filter inner tables, use sub message: in the filter. -->
         </mat-hint>
     </mat-form-field>
     <table mat-table  [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
@@ -23,7 +22,7 @@
                     <ng-container *ngIf="header==='name'">
                         <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))">V</button>
                     </ng-container>
-                    <ng-container *ngIf="editMode===true;else no_edit">
+                    <ng-container *ngIf="(inEditMode | async)===true;else no_edit">
                         <osee-messaging-edit-message-field [messageId]="element.id" [header]="header" [value]="element[header]"></osee-messaging-edit-message-field>
                     </ng-container>
                     <ng-template #no_edit>
@@ -46,7 +45,7 @@
                 <div class="sub-message-table-message-table-detail message-element-interface-table-view-width-100"
                    [@detailExpand]="expandedElement.includes(element.id) ? 'expanded' : 'collapsed'">
                    <ng-container *ngIf="expandedElement.includes(element.id)">
-                    <ple-messaging-sub-message-table [data]="element.subMessages" [filter]="filter" [element]="element" (expandRow)="expandRow($event)" [editMode]="editMode"></ple-messaging-sub-message-table>
+                    <ple-messaging-sub-message-table [data]="element.subMessages" [filter]="filter" [element]="element" (expandRow)="expandRow($event)" [editMode]="(inEditMode | async) ||false"></ple-messaging-sub-message-table>
                    </ng-container>
                 </div>
             </td>

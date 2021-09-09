@@ -6,10 +6,10 @@ import { ColumnPreferencesDialogComponent } from '../../../shared/components/dia
 import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { message } from '../../types/messages';
-import { branchStorage } from '../../../shared/types/branchstorage'
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
-import { filter, first, switchMap } from 'rxjs/operators';
+import { filter, first, map, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'ple-messaging-message-table',
@@ -34,10 +34,15 @@ export class MessageTableComponent implements OnInit {
   messageData = this.messageService.messages;
   dataSource: MatTableDataSource<message> = new MatTableDataSource<message>();
   headers: string[] = [];
-  expandedElement: Array<any> = [];
+  expandedElement: string[] = [];
   filter: string = "";
   searchTerms: string = "";
-  editMode: boolean = false;
+  preferences = this.messageService.preferences;
+  inEditMode = this.preferences.pipe(
+    map((r) => r.inEditMode),
+    share(),
+    shareReplay(1)
+  );
   constructor (private messageService: CurrentMessagesService,public dialog: MatDialog) {
     this.messageData.subscribe((value) => {
       this.dataSource.data = value;
@@ -45,27 +50,20 @@ export class MessageTableComponent implements OnInit {
     this.headers = ["name","description","interfaceMessageNumber","interfaceMessagePeriodicity","interfaceMessageRate","interfaceMessageWriteAccess","interfaceMessageType",'applicability'];
    }
 
-  ngOnInit(): void {
-    let branchStorage = JSON.parse(
-      localStorage.getItem(this.messageService.BranchId.getValue()) || '{}'
-    ) as branchStorage;
-    if (branchStorage?.mim?.editMode) {
-      this.editMode = branchStorage.mim.editMode;
-    }
-  }
-  expandRow(value: any) {
+  ngOnInit(): void {}
+  expandRow(value: string) {
     if (this.expandedElement.indexOf(value)===-1) {
       this.expandedElement.push(value);
     }
   }
-  hideRow(value: any) {
+  hideRow(value: string) {
     let index = this.expandedElement.indexOf(value);
     if (index > -1) {
       this.expandedElement.splice(index,1)
     }
   }
 
-  rowChange(value: any, type: boolean) {
+  rowChange(value: string, type: boolean) {
     if (type) {
       this.expandRow(value);
     } else {
@@ -84,46 +82,24 @@ export class MessageTableComponent implements OnInit {
   }
   
   openSettingsDialog() {
-    let dialogData: settingsDialogData = {
-      branchId: this.messageService.BranchId.getValue(),
-      allHeaders2: [],
-      allowedHeaders2: [],
-      allHeaders1: [],
-      allowedHeaders1: [],
-      editable: this.editMode,
-      headers1Label: 'Structure Headers',
-      headers2Label: 'Element Headers',
-      headersTableActive: false,
-    };
-    const dialogRef = this.dialog.open(ColumnPreferencesDialogComponent, {
-      data: dialogData,
-    });
-    dialogRef.afterClosed().subscribe((result: settingsDialogData) => {
-      //this.allowedElementHeaders = result.allowedHeaders2;
-      //this.allowedStructureHeaders = result.allowedHeaders1;
-      this.editMode = result.editable;
-      //@todo: remove when user preferences are available on backend
-      if (localStorage.getItem(this.messageService.BranchId.getValue())) {
-        let branchStorage = JSON.parse(
-          localStorage.getItem(this.messageService.BranchId.getValue()) ||
-            '{}'
-        ) as branchStorage;
-        branchStorage.mim['editMode'] = result.editable;
-        localStorage.setItem(
-          this.messageService.BranchId.getValue(),
-          JSON.stringify(branchStorage)
-        );
-      } else {
-        localStorage.setItem(
-          this.messageService.BranchId.getValue(),
-          JSON.stringify({
-            mim: {
-              editMode: result.editable,
-            },
-          })
-        );
-      }
-    });
+    combineLatest([this.inEditMode, this.messageService.BranchId]).pipe(
+      take(1),
+      switchMap(([edit, branch]) => this.dialog.open(ColumnPreferencesDialogComponent, {
+        data: {
+          branchId: branch,
+          allHeaders2: [],
+          allowedHeaders2: [],
+          allHeaders1: [],
+          allowedHeaders1: [],
+          editable: edit,
+          headers1Label: 'Structure Headers',
+          headers2Label: 'Element Headers',
+          headersTableActive: false,
+        }
+      }).afterClosed().pipe(
+        take(1),
+        switchMap((result) => this.messageService.updatePreferences(result))))
+    ).subscribe();
   }
   openNewMessageDialog() {
     let dialogData: Partial<AddMessageDialog> = {

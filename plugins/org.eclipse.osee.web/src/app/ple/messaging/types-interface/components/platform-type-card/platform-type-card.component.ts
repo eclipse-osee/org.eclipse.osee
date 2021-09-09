@@ -19,6 +19,7 @@ export class PlatformTypeCardComponent implements OnInit {
   @Input() typeData!: PlatformType;
   edit: editPlatformTypeDialogDataMode = editPlatformTypeDialogDataMode.edit;
   copy: editPlatformTypeDialogDataMode = editPlatformTypeDialogDataMode.copy;
+  inEditMode = this.typesService.inEditMode;
   constructor(public dialog: MatDialog, private typesService: CurrentTypesService) { }
 
   ngOnInit(): void {

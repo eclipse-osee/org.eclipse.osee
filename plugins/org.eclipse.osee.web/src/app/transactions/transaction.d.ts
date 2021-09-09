@@ -31,7 +31,7 @@ export interface artifact {
 
 export interface attributeType {
   typeName: string;
-  value: string | number | boolean | string[];
+  value: string | number | boolean | any[];
 }
 
 export interface relation extends relationValue {
@@ -48,12 +48,9 @@ export interface modifyArtifact {
   id: string;
   applicabilityId?: string;
   setAttributes?: attributeType[];
-  addAttributes?: {
-    [x: string]: string | number | boolean | string[];
-  };
-  deleteAttributes?: {
-    [x: string]: string | number | boolean | string[];
-  };
+  addAttributes?: 
+    attributeType[];
+  deleteAttributes?: [{typeName:string}]
 }
 
 export interface transactionToken {
