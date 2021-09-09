@@ -61,12 +61,13 @@ public class XArtifactTypeComboViewer extends XComboViewer {
 
          @Override
          public void widgetModified(XWidget widget) {
-            selectedArtifactType = (ArtifactTypeToken) getSelected();
+            selectedArtifactType = (ArtifactTypeToken) getComboViewer().getStructuredSelection().getFirstElement();
          }
       });
    }
 
-   public ArtifactTypeToken getSelectedTeamDef() {
+   @Override
+   public ArtifactTypeToken getSelected() {
       return selectedArtifactType;
    }
 

@@ -1,4 +1,0 @@
-<xWidgets>
-	<XWidget xwidgetType="XListDropViewer" displayName="artifacts" />
-	<XWidget xwidgetType="XArtifactTypeComboViewer" displayName="New Artifact Type" />
-</xWidgets>

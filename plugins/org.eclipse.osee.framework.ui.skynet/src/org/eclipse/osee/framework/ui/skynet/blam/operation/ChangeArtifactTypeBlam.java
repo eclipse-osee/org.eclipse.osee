@@ -15,12 +15,17 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -30,22 +35,30 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class ChangeArtifactTypeBlam extends AbstractBlam {
 
-   private static final String description =
-      "Start by drag-and-drop or by pasting GUIDs of artifacts. Log what the previous type of each artifact was because that information is loss after running this blam";
-
-   public ChangeArtifactTypeBlam() {
-      super(null, description, BlamUiSource.FILE);
-   }
-
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ChangeArtifactType.changeArtifactType(variableMap.getArtifacts("artifacts"),
-         variableMap.getArtifactType("New Artifact Type"), true);
+      List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
+      ArtifactTypeToken artifactType = variableMap.getArtifactType("Artifact Type");
+      ChangeArtifactType.changeArtifactType(artifacts, artifactType, true);
    }
 
    @Override
    public Collection<XNavItemCat> getCategories() {
       return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+   }
+
+   @Override
+   public List<XWidgetRendererItem> getXWidgetItems() {
+      XWidgetBuilder wb = new XWidgetBuilder();
+      wb.andWidget("Artifacts", "XListDropViewer").endWidget();
+      wb.andWidget("Artifact Type", "XArtifactTypeComboViewer").endWidget();
+      return wb.getItems();
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Start by drag-and-drop or by pasting GUIDs of artifacts. Log what the previous type of each artifact" //
+         + " was because that information is loss after running this blam";
    }
 
 }
