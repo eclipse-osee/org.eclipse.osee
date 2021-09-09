@@ -35,7 +35,12 @@
 							   <plugin id="org.antlr.runtime" />
 							   <plugin id="javaewah" />
 							   <plugin id="org.hamcrest" />
-							   							   <plugin id="com.fasterxml.jackson.core.jackson-core" />
+							   <plugin id="javax.xml.ws" />
+							   <plugin id="javax.xml.rpc" />
+							   <plugin id="javax.xml.soap" />
+							   <plugin id="javax.xml" />
+							   <plugin id="javax.transaction" />
+							   <plugin id="com.fasterxml.jackson.core.jackson-core" />
 							   <plugin id="com.fasterxml.jackson.core.jackson-annotations" />
 							   <plugin id="com.fasterxml.jackson.core.jackson-databind" />
 							   <plugin id="ch.qos.logback.classic" />

@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.client.all.parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.client.all.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.osee.swt.feature</artifactId>
+	<packaging>eclipse-feature</packaging>
+	<name>OSEE SWT All Feature (Incubation)</name>
+
+   <build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>source-feature</id>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+						<configuration>
+							<excludes>
+						
+								<feature id="edu.umd.cs.findbugs.plugin.eclipse" />
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<profiles>
+		<profile>
+			<id>osee-client-skip-source-features</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-client-products</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho.extras</groupId>
+						<artifactId>tycho-source-feature-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<id>source-feature</id>
+								<goals>
+									<goal>source-feature</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<feature id="org.eclipse.osee.client.feature" />
+										<feature id="org.eclipse.osee.client.ote.rdt.feature" />
+										<feature id="org.eclipse.osee.core.runtime.feature" />
+										<feature id="org.eclipse.osee.ats.ide.feature" />
+										<feature id="org.eclipse.osee.ats.ide.demo.feature" />
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

@@ -28,6 +28,60 @@
    <includes
          id="org.eclipse.jgit"
          version="5.0.0.201806131550-r"/>
+
+   <plugin
+         id="com.sun.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+<plugin
+         id="javax.xml.ws"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+
+<plugin
+         id="jakarta.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+                  
+<plugin
+         id="javax.xml.stream"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />         
+  
+   <plugin
+         id="javax.xml.rpc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+     <plugin
+         id="javax.xml.soap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
+         
+   <plugin
+         id="javassist"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
    
    <plugin
          id="io.github.classgraph"
@@ -40,10 +94,9 @@
          id="org.eclipse.egit"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="5.0.0.201806131550-r"
          unpack="false"/>
-         
-         
+             
   <plugin
          id="org.eclipse.jgit"
          download-size="0"
@@ -51,7 +104,13 @@
          version="5.0.0.201806131550-r"
          unpack="false"/>
      
-   
+   <plugin
+         id="javax.transaction"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
+           
    <plugin
          id="javax.activation"
          download-size="0"

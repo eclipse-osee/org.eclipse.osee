@@ -30,7 +30,11 @@
 							   <plugin id="javax.activation" />
 							   <plugin id="ch.qos.logback.slf4j" />
 							   <plugin id="org.antlr.runtime" />
+							   <plugin id="javax.xml.ws" />
+							   <plugin id="javax.xml.rpc" />
+							   <plugin id="javax.xml.soap" />
 							   <plugin id="org.apache.cxf.cxf-core" />
+								<plugin id="javax.transaction" />							   
 							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
 							   <plugin id="org.apache.cxf.cxf-rt-security" />
 							   <plugin id="org.apache.cxf.cxf-rt-transports-http" />

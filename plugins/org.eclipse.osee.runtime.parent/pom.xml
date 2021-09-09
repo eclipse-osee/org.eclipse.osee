@@ -15,7 +15,7 @@
 	<packaging>pom</packaging>
 	<name>OSEE Runtime - Parent (Incubation)</name>
 	<version>0.26.0-SNAPSHOT</version>
-
+	
 	<modules>
 		<module>../../features/org.eclipse.osee.core.runtime.feature</module>
 
@@ -24,7 +24,6 @@
 		<module>../../features/org.eclipse.osee.core.plugin.feature</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.messaging</module>
-        <module>../../plugins/org.eclipse.osee.framework.messaging.test</module> 
       
 		<module>../../plugins/org.eclipse.osee.framework.plugin.core</module>
 
