@@ -45,6 +45,8 @@ public class UserServiceImpl implements UserService {
    private static UserServiceImpl userService;
    private static List<IUserGroupArtifactToken> userGrps;
 
+   private boolean loading = false;
+
    public static UserService instance() {
       return getUserService();
    }
@@ -176,5 +178,18 @@ public class UserServiceImpl implements UserService {
    @Override
    public void setUserForCurrentThread(UserId accountId) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public UserToken getUserIfLoaded() {
+      if (loading) {
+         return UserToken.SENTINEL;
+      }
+      return getUser();
+   }
+
+   @Override
+   public void setUserLoading(boolean loading) {
+      this.loading = loading;
    }
 }

@@ -19,11 +19,14 @@ import java.util.List;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserDataStoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,8 +51,11 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    public void start() {
-      keysProvider = new UserKeysProvider();
-      cacheProvider = new UserCacheProvider(cacheAdmin, new UserDataLoader(), keysProvider);
+
+      UserService userService = OsgiUtil.getService(getClass(), OseeClient.class).userService();
+
+      keysProvider = new UserKeysProvider(userService);
+      cacheProvider = new UserCacheProvider(cacheAdmin, new UserDataLoader(userService), keysProvider);
       currentUserProvider = new CurrentUserProvider(cacheProvider);
       userArtifactEventListener = new UserArtifactEventListener(cacheProvider, keysProvider);
 
