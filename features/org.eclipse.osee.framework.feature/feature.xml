@@ -16,7 +16,7 @@
    <license url="%licenseURL">
       %license
    </license>
-                
+  
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
@@ -34,7 +34,40 @@
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
    </requires>
 
- <plugin
+   <plugin
+         id="javax.transaction"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="org.apache.commons.dbcp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="javax.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javassist"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.swt"
          download-size="0"
          install-size="0"
@@ -180,12 +213,39 @@
          unpack="false"/>
 
 	<plugin
+         id="javax.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+
+	<plugin
          id="javax.xml.stream"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false" />
-  
+   <plugin
+         id="javax.xml.rpc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>  
+     
+    <plugin
+         id="javax.xml.soap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
+   
+   <plugin
+         id="javax.xml.ws"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />   
+   
    <plugin
          id="org.eclipse.sdk"
          download-size="0"
@@ -222,7 +282,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+  
+  <plugin
+         id="jakarta.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+          
    <plugin
          id="javax.annotation"
          download-size="0"

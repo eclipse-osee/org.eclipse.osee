@@ -19,18 +19,33 @@
 			</topic>
 		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Custom_Data_Model" label="Custom Data Model">
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Type_Table" label="Artifact Type Table"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Factory" label="Artifact Factory"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Attribute_Type_Table" label="Attribute Type Table"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Type_.2F_Attribute_Type_Mapping_Table" label="Artifact Type / Attribute Type Mapping Table"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Relation_Type_Table" label="Relation Type Table"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Type_.2F_Relation_Type_Mapping_Table" label="Artifact Type / Relation Type Mapping Table"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Definitions" label="Artifact Definitions"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Attribute_Definitions" label="Attribute Definitions"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Relation_Definitions" label="Relation Definitions"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Making_Types_Changes_in_Production" label="Making Types Changes in Production"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Types_and_Access_Control_Versioning" label="Types and Access Control Versioning">
+				<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_Types_Instructions" label="OSEE Types Instructions"></topic>
+				<topic href="OSEE/Developers_Guide/Developers-Guide.html#Access_Control_Instructions" label="Access Control Instructions"></topic>
+			</topic>
 		</topic>
-		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Importing_an_OSEE_Data_Model" label="Importing an OSEE Data Model"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_Branches" label="OSEE Branches"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Workspace_Setup" label="Workspace Setup"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Downloading_and_Configuring_Eclipse" label="Downloading and Configuring Eclipse"></topic>
-		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Working_with_GIT" label="Working with GIT"></topic>
+		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Working_with_GIT" label="Working with GIT">
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Process_for_completing_changes" label="Process for completing changes"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#When_making_multiple_commits_that_need_to_look_one" label="When making multiple commits that need to look one"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Before_pushing_to_review" label="Before pushing to review"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Push_to_review" label="Push to review"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#If_there_are_comments.2Fchanges_needed_based_on_reviews" label="If there are comments/changes needed based on reviews"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Merge_changes" label="Merge changes"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#After_committer_has_merged_changes_and_it_is_verified_that_they_work" label="After committer has merged changes and it is verified that they work"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#When_you_want_to_reset_repo_to_head_.28ok_with_losing_changes.29" label="When you want to reset repo to head (ok with losing changes)"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#purging_a_branch-_USE_WITH_CAUTION" label="purging a branch- USE WITH CAUTION"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#How_to_push_only_one_commit_of_a_stack_of_commits" label="How to push only one commit of a stack of commits"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#What_to_do_if_server_seems_down" label="What to do if server seems down"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#git_notes" label="git notes"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE.2FDev_Alpha_notes" label="OSEE/Dev Alpha notes"></topic>
+		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Testing" label="Testing"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Location_of_OSEE_Bundles" label="Location of OSEE Bundles"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Migrating_Branches_to_Another_OSEE_Database_.28including_from_previous_OSEE_version.29" label="Migrating Branches to Another OSEE Database (including from previous OSEE version)"></topic>
@@ -58,7 +73,6 @@
 				<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_System_Requirements" label="OSEE System Requirements"></topic>
 			</topic>
 		</topic>
-		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Database_Schema" label="Database Schema"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#How_to_Define_Classes_for_Coverage_Importing" label="How to Define Classes for Coverage Importing"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_Web_Development" label="OSEE Web Development"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Helpful_links" label="Helpful links"></topic>

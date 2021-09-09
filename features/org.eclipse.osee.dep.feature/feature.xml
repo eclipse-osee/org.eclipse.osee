@@ -17,13 +17,18 @@
       %license
    </license>
 
+
   <includes
-         id="org.polarion.eclipse.team.svn.connector"
-         version="0.0.0"/>
+         id="org.eclipse.jgit.lfs"
+         version="5.0.0.201806131550-r"/>
+         
+   <includes
+         id="org.eclipse.jgit.http.apache"
+         version="5.0.0.201806131550-r"/>
 
    <includes
-         id="org.polarion.eclipse.team.svn.connector.svnkit18"
-         version="0.0.0"/>
+         id="org.eclipse.jgit"
+         version="5.0.0.201806131550-r"/>
 
    <includes
          id="org.eclipse.equinox.core.feature"
@@ -100,18 +105,6 @@
     <includes
          id="org.eclipse.graphiti.feature.source"
          version="0.0.0"/>
-
-    <includes
-         id="org.eclipse.jgit.lfs"
-         version="5.0.0.201806131550-r"/>
-         
-   <includes
-         id="org.eclipse.jgit.http.apache"
-         version="5.0.0.201806131550-r"/>
-
-   <includes
-         id="org.eclipse.jgit"
-         version="5.0.0.201806131550-r"/>
             
    <includes
          id="org.eclipse.gef"
@@ -371,7 +364,6 @@
       <import plugin="org.eclipse.equinox.common"/>
       <import plugin="org.eclipse.osgi.util" />
       <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>      
-      <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="0.0.0" match="compatible"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
@@ -390,7 +382,7 @@
          version="0.0.0"
          unpack="false"/>
 
-       <plugin
+   <plugin
          id="org.bouncycastle.bcpg"
          download-size="0"
          install-size="0"
@@ -420,6 +412,13 @@
          
    <plugin
          id="org.apache.commons.compress"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false" />
+
+  <plugin
+         id="jakarta.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -852,13 +851,13 @@
          version="0.0.0"
          unpack="false"/> 
    
-   <plugin      
+    <plugin      
          id="org.eclipse.egit"
          download-size="0"
          install-size="0"
          version="5.0.0.201806131550-r"
          unpack="false"/>
- 								
+         								
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
          download-size="0"
@@ -1896,15 +1895,29 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="com.sun.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="2.2.0.v20201118-1845"
+         unpack="false"/>
+
+   <plugin
+         id="javassist"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
    
-  <plugin
+   <plugin
          id="com.thoughtworks.qdox"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>     
        
-       <plugin
+  <plugin
          id="org.eclipse.wst.xml.ui"
          download-size="0"
          install-size="0"
@@ -2049,6 +2062,41 @@
          download-size="0"
          install-size="0"
          version="1.1.0.v201211130549"
+         unpack="false"/>
+ 
+    <plugin
+         id="org.eclipse.jpt.jaxb.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+ 
+ <plugin
+         id="org.eclipse.jpt.jaxb.eclipselink.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="org.eclipse.jst.ws.jaxb.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="org.eclipse.ptp.rm.jaxb.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="org.eclipse.ptp.rm.jaxb.java11"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

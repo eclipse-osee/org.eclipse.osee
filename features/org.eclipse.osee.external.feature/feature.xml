@@ -28,7 +28,6 @@
       <import plugin="org.eclipse.osgi.util"/>
       <import plugin="org.eclipse.osgi.compatibility.state"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="javax.xml" version="1.3.4" match="compatible"/>
       <import plugin="javax.servlet"/>
       <import plugin="org.apache.xml.resolver" version="1.2.0" match="compatible"/>
       <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
@@ -36,7 +35,6 @@
       <import feature="org.eclipse.nebula.widgets.ganttchart.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.graphiti.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.graphiti.feature.source" version="0.0.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
@@ -58,7 +56,12 @@
          version="0.0.0"
          unpack="false"/>         
      
-
+   <plugin
+         id="javax.transaction"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
   
     <plugin
          id="org.apache.cxf.cxf-rt-rs-json-basic"
@@ -282,6 +285,13 @@
 
    <plugin
          id="javax.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"

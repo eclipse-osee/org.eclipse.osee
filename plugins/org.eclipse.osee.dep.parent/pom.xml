@@ -113,12 +113,6 @@
 			<url>${eclipse-site}</url>
 	  </repository>
 	
-      <repository>
-			<id>polarion</id>
-			<layout>p2</layout>
-			<url>${polarion-site}</url>
-	  </repository>
-	    
 	  <repository>
 			<id>eclipse-ip</id>
 			<layout>p2</layout>
