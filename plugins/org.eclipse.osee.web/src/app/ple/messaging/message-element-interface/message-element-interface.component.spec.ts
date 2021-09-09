@@ -11,19 +11,22 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { SubElementTableComponent } from './components/sub-element-table/sub-element-table.component';
 
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../shared/pipes/convert-message-interface-titles-to-string.pipe';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CurrentStateService } from './services/current-state.service';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { EditElementFieldComponent } from './components/sub-element-table/edit-element-field/edit-element-field.component';
 import { EditStructureFieldComponentMock } from './mocks/components/EditStructureField.mock';
 import { CurrentStateServiceMock } from './mocks/services/CurrentStateService.mock';
+import { MatButtonHarness } from '@angular/material/button/testing';
+import { SubElementTableComponentMock } from './mocks/components/sub-element-table.mock';
+import { EditAuthService } from '../shared/services/edit-auth-service.service';
+import { editAuthServiceMock } from '../connection-view/mocks/EditAuthService.mock';
 
 let loader: HarnessLoader;
 
@@ -48,13 +51,14 @@ describe('MessageElementInterfaceComponent', () => {
       ],
       declarations: [
         MessageElementInterfaceComponent,
-        SubElementTableComponent,
+        SubElementTableComponentMock,
         ConvertMessageInterfaceTitlesToStringPipe,
         EditElementFieldComponent,
         EditStructureFieldComponentMock
       ],
       providers: [
-        { provide: Router, useValue: { navigate: () => {} } },
+        { provide: Router, useValue: { navigate: () => { } } },
+        { provide: EditAuthService,useValue:editAuthServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -73,35 +77,10 @@ describe('MessageElementInterfaceComponent', () => {
   });
 
   beforeEach(() => {
-    localStorage.setItem(
-      '10',
-      JSON.stringify({
-        mim: {
-          editMode: true,
-          StructureHeaders: ["1"],
-          ElementHeaders: ["2"],
-        }
-      }
-      )
-    );
     fixture = TestBed.createComponent(MessageElementInterfaceComponent);
     component = fixture.componentInstance;
     loader = TestbedHarnessEnvironment.loader(fixture);
     fixture.detectChanges();
-  });
-
-  beforeEach(function () {
-    var store:any = {10:'{mim:{editMode:true}}'};
-  
-    spyOn(localStorage, 'getItem').and.callFake(function (key) {
-      return store[key];
-    });
-    spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
-      return store[key] = value + '';
-    });
-    spyOn(localStorage, 'clear').and.callFake(function () {
-        store = {};
-    });
   });
 
   it('should create', () => {
@@ -109,50 +88,88 @@ describe('MessageElementInterfaceComponent', () => {
   });
 
   it('should remove element from expandedElement', () => {
-    //@todo: Refactor once types come in
     component.expandedElement = [1, 2, 3, 4, 5, 7];
     component.hideRow(4);
     expect(!component.expandedElement.includes(4)).toBeTruthy();
   });
 
   it('should add element from expandedElement', () => {
-    //@todo: Refactor once types come in
     component.expandedElement = [1, 2, 3, 4, 5, 7];
     component.expandRow(9);
     expect(component.expandedElement.includes(9)).toBeTruthy();
   });
 
   it('should find a truncatedElement', () => {
-    //@todo: Refactor once types come in
     component.truncatedSections = ['hello', 'world'];
     let result = component.isTruncated('world');
     expect(result).toBeTruthy();
   });
 
   it('should not find a truncatedElement', () => {
-    //@todo: Refactor once types come in
     component.truncatedSections = ['hello', 'world'];
     let result = component.isTruncated('abcdef');
     expect(result).toBeFalsy();
   });
 
   it('should filter text', async () => {
-    //@todo: Refactor once types come in
     const form = await loader.getHarness(MatFormFieldHarness);
     const control = await form.getControl(MatInputHarness);
-    await control?.setValue('CCS Audio File');
+    await control?.setValue('Some text');
     expect(
       fixture.componentInstance.filter ===
-        'CCS Audio File'.trim().toLowerCase()
+        'Some text'.trim().toLowerCase()
     ).toBeTruthy();
   });
 
-  // it('should filter sub-element text',async () => {
-  //   //@todo: Refactor once types come in
-  //throws error?
-  //   const form = await loader.getHarness(MatFormFieldHarness);
-  //   const control = await form.getControl(MatInputHarness);
-  //   await control?.setValue("element: Audio File ID");
-  //   expect(component.filter==="element: Audio File ID".trim().toLowerCase()).toBeTruthy();
-  // });
+  it('should expand row', () => {
+    component.rowChange({
+      id: '1',
+      name: 'name2',
+      description: 'description2',
+      notes: 'notes',
+      interfaceElementIndexEnd: 1,
+      interfaceElementIndexStart: 0,
+      interfaceElementAlterable: true,
+      platformTypeName: 'boolean',
+      platformTypeId: 9
+    }, true);
+    expect(component.expandedElement).toEqual([{
+      id: '1',
+      name: 'name2',
+      description: 'description2',
+      notes: 'notes',
+      interfaceElementIndexEnd: 1,
+      interfaceElementIndexStart: 0,
+      interfaceElementAlterable: true,
+      platformTypeName: 'boolean',
+      platformTypeId: 9
+    }]);
+  });
+
+  it('should open and close a sub table', async () => {
+    const spy = spyOn(component, 'expandRow').and.callThrough();
+    const button = await loader.getHarness(MatButtonHarness.with({ text: 'V' }));
+    await button.click();
+    expect(spy).toHaveBeenCalled();
+    await button.click();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should open settings dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
+    const spy = spyOn(component, 'openSettingsDialog').and.callThrough();
+    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Settings' }));
+    await button.click();
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('should open add structure dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:'10',name:'New Structure',structure:{id:'10216532',name:'New Structure',elements:[],description:'',interfaceMaxSimultaneity:'',interfaceMinSimultaneity:'',interfaceTaskFileType:0,interfaceStructureCategory:'',numElements:'10',sizeInBytes:'10',bytesPerSecondMinimum:10,bytesPerSecondMaximum:10}}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
+    const spy = spyOn(component, 'openAddStructureDialog').and.callThrough();
+    const button = await loader.getHarness(MatButtonHarness.with({ text: '+' }));
+    await button.click();
+    expect(spy).toHaveBeenCalled();
+  })
 });

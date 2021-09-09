@@ -1,7 +1,15 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed} from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
+import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { response } from '../../connection-view/mocks/Response.mock';
+import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
+import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
+import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
+import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { elementsMock } from '../mocks/ReturnObjects/element.mock';
+import { platformTypesMock } from '../mocks/ReturnObjects/PlatformTypes.mock';
 import { structuresMock } from '../mocks/ReturnObjects/structure.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
@@ -25,7 +33,9 @@ describe('CurrentStateService', () => {
         { provide: ElementService, useValue: elementServiceMock },
         { provide: StructuresService, useValue: structureServiceMock },
         { provide: MessagesService, useValue: messageServiceMock },
-        { provide: PlatformTypeService, useValue:platformTypeServiceMock}
+        { provide: PlatformTypeService, useValue: platformTypeServiceMock },
+        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
+        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock}
       ],
       imports:[HttpClientTestingModule]
     });
@@ -48,7 +58,7 @@ describe('CurrentStateService', () => {
       service.messageId = "1";
       service.subMessageId = "2";
       service.connection = "3";
-      const expectedObservable = { a: [] };
+      const expectedObservable = { a: structuresMock };
       const expectedMarble = '500ms a'
       scheduler.expectObservable(service.structures).toBe(expectedMarble, expectedObservable);
     })
@@ -108,4 +118,44 @@ describe('CurrentStateService', () => {
       scheduler.expectObservable(service.relateStructure('10')).toBe(expectedMarble, expectedObservable);
     })
   });
+
+  it('should update user preferences', () => {
+    scheduler.run(() => {
+      service.branchId='10'
+      let expectedObservable = { a: [response,response] };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should get applicabilities', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: [{id:'1',name:'Base'},{id:'2',name:'Second'}] };
+      let expectedMarble = 'a';
+      scheduler.expectObservable(service.applic).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should get types', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: platformTypesMock };
+      let expectedMarble = 'a';
+      scheduler.expectObservable(service.types).toBe(expectedMarble, expectedObservable);
+    })
+  })
+  it('should get available structures', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: structuresMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.availableStructures).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should complete immediately due to a lack of elements in structuresMock', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: elementsMock };
+      let expectedMarble = '|';
+      scheduler.expectObservable(service.availableElements).toBe(expectedMarble, expectedObservable);
+    })
+  })
 });

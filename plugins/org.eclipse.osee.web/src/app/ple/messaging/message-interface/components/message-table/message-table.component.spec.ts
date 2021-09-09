@@ -21,7 +21,7 @@ import { CurrentMessagesService } from '../../services/current-messages.service'
 import { message } from '../../types/messages';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditMessageFieldComponentMock } from '../../mocks/components/EditMessageField.mock';
 import { SubMessageTableComponentMock } from '../../mocks/components/SubMessageTable.mock';
 import { EditAuthService } from '../../../shared/services/edit-auth-service.service';
@@ -35,6 +35,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiService } from '../../services/ui.service'
+import { MimPreferencesMock } from '../../../shared/mocks/MimPreferences.mock';
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
 
 let loader: HarnessLoader;
@@ -103,7 +104,6 @@ describe('MessageTableComponent', () => {
     uiService.BranchIdString = '10';
     component = fixture.componentInstance;
     loader = TestbedHarnessEnvironment.loader(fixture);
-    component.editMode = true;
     fixture.detectChanges();
   });
 
@@ -140,16 +140,23 @@ describe('MessageTableComponent', () => {
     expect(hideRow).toHaveBeenCalled();
   });
 
-  // it('should filter the top level table', async () => {
-  //   let spy=spyOn(component,'applyFilter').and.callThrough()
-  //   let form = await loader.getHarness(MatFormFieldHarness);
-  //   let input = await form.getControl(MatInputHarness);
-  //   await input?.focus();
-  //   //await input?.setValue('Hello');
-  //   //expect(spy).toHaveBeenCalled();
-  // })
+  it('should fail to hide random element', () => {
+    component.hideRow('blah');
+    expect(component.expandedElement.indexOf('blah')).toEqual(-1);
+  })
+
+  it('should filter the top level table', async () => {
+    let spy=spyOn(component,'applyFilter').and.callThrough()
+    let form = await loader.getHarness(MatFormFieldHarness);
+    let input = await form.getControl(MatInputHarness);
+    await input?.focus();
+    await input?.setValue('Hello');
+    expect(spy).toHaveBeenCalled();
+  })
 
   it('should open a settings dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
     let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
     let button = await loader.getHarness(MatButtonHarness.with({ text: 'Settings' }));
     await button.click();
@@ -157,6 +164,14 @@ describe('MessageTableComponent', () => {
   })
 
   it('should open the create new message dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({name: '',
+    description: '',
+    interfaceMessageNumber: '',
+    interfaceMessagePeriodicity: '',
+    interfaceMessageRate: '',
+    interfaceMessageType: '',
+    interfaceMessageWriteAccess: ''}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
     let spy = spyOn(component, 'openNewMessageDialog').and.callThrough();
     let button = await loader.getHarness(MatButtonHarness.with({ text: '+' }));
     await button.click();

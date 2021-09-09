@@ -338,7 +338,9 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Website)
       .any(XViewerCustomization)
       .any(XViewerDefaults)
-      .zeroOrOne(Zip));
+      .zeroOrOne(Zip)
+      .any(MimBranchPreferences)
+      .any(MimColumnPreferences));
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup)
       .any(Email));

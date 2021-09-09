@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { RouteStateService } from '../../../services/route-state-service.service';
-import { branchStorage} from '../../../../shared/types/branchstorage'
 import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
+import { CurrentGraphService } from '../../../services/current-graph.service';
+import { map, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'osee-connectionview-base',
@@ -12,58 +14,37 @@ import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsd
 })
 export class BaseComponent implements OnInit {
 
-  editMode: boolean = false;
-  constructor (private routeState: RouteStateService, public dialog: MatDialog) { }
+  preferences = this.graphService.preferences;
+  inEditMode = this.graphService.preferences.pipe(
+    map((r) => r.inEditMode),
+    share(),
+    shareReplay(1)
+  )
+  constructor (private routeState: RouteStateService, public dialog: MatDialog, private graphService: CurrentGraphService) {
+   }
   
 
-  ngOnInit(): void {
-    let branchStorage = JSON.parse(
-      localStorage.getItem(this.routeState.id.getValue()) || '{}'
-    ) as branchStorage;
-    if (branchStorage?.mim?.editMode) {
-      this.editMode = branchStorage.mim.editMode;
-    }
-  }
+  ngOnInit(): void {}
 
   openSettingsDialog() {
-    let dialogData:settingsDialogData = {
-      branchId: this.routeState.id.getValue(),
-      allHeaders2: [],
-      allowedHeaders2: [],
-      allHeaders1: [],
-      allowedHeaders1: [],
-      editable: this.editMode,
-      headers1Label: '',
-      headers2Label: '',
-      headersTableActive: false,
-    };
-    const dialogRef = this.dialog.open(ColumnPreferencesDialogComponent, {
-      data: dialogData,
-    });
-    dialogRef.afterClosed().subscribe((result:settingsDialogData) => {
-      this.editMode = result.editable;
-      //@todo: remove when user preferences are available on backend
-      if (localStorage.getItem(this.routeState.id.getValue())) {
-        let branchStorage = JSON.parse(
-          localStorage.getItem(this.routeState.id.getValue()) ||
-            '{}'
-        ) as branchStorage;
-        branchStorage.mim['editMode'] = result.editable;
-        localStorage.setItem(
-          this.routeState.id.getValue(),
-          JSON.stringify(branchStorage)
-        );
-      } else {
-        localStorage.setItem(
-          this.routeState.id.getValue(),
-          JSON.stringify({
-            mim: {
-              editMode: result.editable,
-            },
-          })
-        );
-      }
-    });
+    combineLatest([this.inEditMode, this.routeState.id]).pipe(
+      take(1),
+      switchMap(([edit, id]) => this.dialog.open(ColumnPreferencesDialogComponent, {
+        data: {
+          branchId: id,
+          allHeaders2: [],
+          allowedHeaders2: [],
+          allHeaders1: [],
+          allowedHeaders1: [],
+          editable: edit,
+          headers1Label: '',
+          headers2Label: '',
+          headersTableActive: false,
+        }
+      }).afterClosed().pipe(
+        take(1),
+        switchMap((result) => this.graphService.updatePreferences(result))))
+    ).subscribe();
   }
 
 }

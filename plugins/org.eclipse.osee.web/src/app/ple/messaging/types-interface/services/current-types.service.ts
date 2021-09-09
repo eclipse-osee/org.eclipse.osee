@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, repeatWhen, share, switchMap, take, tap } from 'rxjs/operators';
+import { combineLatest, from, iif, Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 import { TypesService } from './types.service';
 import { PlatformType } from '../types/platformType'
+import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { transaction } from 'src/app/transactions/transaction';
+import { settingsDialogData } from '../../shared/types/settingsdialog';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +32,35 @@ export class CurrentTypesService {
     )),
   )
 
-  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService) { }
+  private _preferences = combineLatest([this.uiService.BranchId, this.userService.getUser()]).pipe(
+    share(),
+    filter(([id, user]) => id !== "" && id !== '-1'),
+    switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
+      repeatWhen(_ => this.uiService.typeUpdateRequired),
+      share(),
+      shareReplay(1)
+    )),
+    shareReplay(1)
+  );
+
+  private _inEditMode = this.preferences.pipe(
+    map((x) => x.inEditMode)
+  );
+
+  private _branchPrefs = combineLatest([this.uiService.BranchId, this.userService.getUser()]).pipe(
+    share(),
+    switchMap(([branch, user]) => this.preferenceService.getBranchPrefs(user).pipe(
+      repeatWhen(_ => this.uiService.typeUpdateRequired),
+      share(),
+      switchMap((branchPrefs) => from(branchPrefs).pipe(
+        filter((pref) => !pref.includes(branch + ":")),
+        reduce((acc, curr) => [...acc, curr], [] as string[])
+      )),
+      shareReplay(1)
+    )),
+    shareReplay(1)
+  );
+  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: MimPreferencesService,private userService: UserDataAccountService) { }
 
   /**
    * Returns a list of platform types based on current branch and filter conditions(debounced).
@@ -79,5 +111,70 @@ export class CurrentTypesService {
 
   getLogicalTypeFormDetail(id: string) {
     return this.typesService.getLogicalTypeFormDetail(id);
+  }
+
+  public get preferences() {
+    return this._preferences;
+  }
+  public get inEditMode() {
+    return this._inEditMode;
+  }
+  public get BranchPrefs() {
+    return this._branchPrefs;
+  }
+
+  updatePreferences(preferences: settingsDialogData) {
+    return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
+      take(1),
+      switchMap((transaction) => this.typesService.performMutation(transaction,this.uiService.BranchId.getValue()).pipe(
+        take(1),
+        tap(() => {
+          this.uiService.updateTypes = true;
+        })
+      )
+      )
+    )
+  }
+
+  private createUserPreferenceBranchTransaction(editMode:boolean) {
+    return combineLatest(this.preferences, this.uiService.BranchId, this.BranchPrefs).pipe(
+      take(1),
+      switchMap(([prefs, branch, branchPrefs]) =>
+        iif(
+        () => prefs.hasBranchPref,
+          of<transaction>(
+            {
+              branch: "570",
+              txComment: 'Updating MIM User Preferences',
+              modifyArtifacts:
+                [
+                  {
+                    id: prefs.id,
+                    setAttributes:
+                      [
+                        { typeName: "MIM Branch Preferences", value: [...branchPrefs, `${branch}:${editMode}`] }
+                      ],
+                  }
+                ]
+            }
+          ),
+          of<transaction>(
+            {
+              branch: "570",
+              txComment: "Updating MIM User Preferences",
+              modifyArtifacts:
+                [
+                  {
+                    id: prefs.id,
+                    addAttributes:
+                      [
+                        { typeName: "MIM Branch Preferences", value: `${branch}:${editMode}` }
+                      ]
+                  }
+                ]
+              }
+          ),
+        )
+      ))
   }
 }

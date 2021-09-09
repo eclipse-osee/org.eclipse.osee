@@ -33,12 +33,14 @@
             Analog Accuracy: {{typeData.interfacePlatformTypeAnalogAccuracy}}
         </div>
     </div>
-    <div mat-card-actions>
-        <button mat-stroked-button (click)="openDialog(edit)">
-            Edit
-        </button>
-        <button mat-stroked-button (click)="openDialog(copy)">
-            Create New Type From Base
-        </button>
-    </div>
+    <ng-container *ngIf="(inEditMode|async)===true">
+        <div mat-card-actions>
+            <button mat-stroked-button (click)="openDialog(edit)">
+                Edit
+            </button>
+            <button mat-stroked-button (click)="openDialog(copy)">
+                Create New Type From Base
+            </button>
+        </div>
+    </ng-container>
 </mat-card>

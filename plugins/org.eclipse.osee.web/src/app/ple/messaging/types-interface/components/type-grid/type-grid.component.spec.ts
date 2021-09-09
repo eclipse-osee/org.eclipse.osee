@@ -3,7 +3,7 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
@@ -18,6 +18,9 @@ import { PlatformType } from '../../types/platformType';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
+import { MatButtonHarness } from '@angular/material/button/testing';
+import { settingsDialogData } from '../../../shared/types/settingsdialog';
+import { response } from '../../../connection-view/mocks/Response.mock';
 
 let loader: HarnessLoader;
 
@@ -68,14 +71,19 @@ describe('TypeGridComponent', () => {
       providers: [{
         provide: CurrentTypesService, useValue:
         {
-          typeData:typeData
+          typeData: typeData,
+          inEditMode:of(true),
+          updatePreferences(preferences: settingsDialogData) {
+            return of(response)
+          }
         }
       }, {
         provide: PlMessagingTypesUIService, useValue: {
           filterString: '',
           columnCountNumber: 1,
           columnCount:new BehaviorSubject(1),
-          singleLineAdjustment:of(0)
+          singleLineAdjustment: of(0),
+          BranchId:of('10')
       }}]
     })
     .compileComponents();
@@ -100,4 +108,12 @@ describe('TypeGridComponent', () => {
     //@todo replace with a check to see that the filter value is set
     expect(component).toBeTruthy();
   });
+
+  it('should open settings dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+    let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
+    (await (await loader.getHarness(MatButtonHarness)).click());
+    expect(spy).toHaveBeenCalled();
+  })
 });

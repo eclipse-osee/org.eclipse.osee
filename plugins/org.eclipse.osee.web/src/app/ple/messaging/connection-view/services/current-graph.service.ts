@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Node,Edge } from '@swimlane/ngx-graph';
-import { combineLatest, from, iif, Observable, Subject } from 'rxjs';
+import { combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionService } from './connection.service';
 import { GraphService } from './graph.service';
@@ -9,6 +9,10 @@ import { RouteStateService } from './route-state-service.service';
 import { connection } from '../../shared/types/connection'
 import { node } from '../../shared/types/node'
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { transaction } from 'src/app/transactions/transaction';
+import { settingsDialogData } from '../../shared/types/settingsdialog';
 
 @Injectable({
   providedIn: 'root'
@@ -44,9 +48,34 @@ export class CurrentGraphService {
       shareReplay(1),
     )),
     shareReplay(1),
-  ) 
+  )
+  
+  private _preferences = combineLatest([this.routeStateService.id, this.userService.getUser()]).pipe(
+    share(),
+    filter(([id, user]) => id !== "" && id !== '-1'),
+    switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
+      repeatWhen(_ => this.updated),
+      share(),
+      shareReplay(1)
+    )),
+    shareReplay(1)
+  )
+
+  private _branchPrefs = combineLatest([this.routeStateService.id, this.userService.getUser()]).pipe(
+    share(),
+    switchMap(([branch,user]) => this.preferenceService.getBranchPrefs(user).pipe(
+      repeatWhen(_ => this.updated),
+      share(),
+      switchMap((branchPrefs) => from(branchPrefs).pipe(
+        filter((pref) => !pref.includes(branch + ":")),
+        reduce((acc, curr) => [...acc, curr], [] as string[]),
+      )),
+      shareReplay(1) 
+    )),
+    shareReplay(1),
+  )
   private _update = new Subject<boolean>();
-  constructor (private graphService: GraphService,private nodeService:NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService) { }
+  constructor (private graphService: GraphService,private nodeService:NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService,private preferenceService: MimPreferencesService, private userService: UserDataAccountService) { }
   
   get nodes() {
     return this._nodes;
@@ -66,6 +95,14 @@ export class CurrentGraphService {
 
   get applic() {
     return this._applics;
+  }
+
+  get preferences() {
+    return this._preferences;
+  }
+
+  get BranchPrefs() {
+    return this._branchPrefs;
   }
 
   updateConnection(connection: Partial<connection>) {
@@ -185,5 +222,60 @@ export class CurrentGraphService {
       returnObj.edges.push({ ...edge, id: 'a'+edge?.id?.toString() })
     })
     return returnObj;
+  }
+
+  updatePreferences(preferences: settingsDialogData) {
+    return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
+      take(1),
+      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+        take(1),
+        tap(() => {
+          this.update = true
+        })
+      )
+      )
+    )
+  }
+
+  private createUserPreferenceBranchTransaction(editMode:boolean) {
+    return combineLatest(this.preferences, this.routeStateService.id, this.BranchPrefs).pipe(
+      take(1),
+      switchMap(([prefs, branch, branchPrefs]) =>
+        iif(
+        () => prefs.hasBranchPref,
+          of<transaction>(
+            {
+              branch: "570",
+              txComment: 'Updating MIM User Preferences',
+              modifyArtifacts:
+                [
+                  {
+                    id: prefs.id,
+                    setAttributes:
+                      [
+                        { typeName: "MIM Branch Preferences", value: [...branchPrefs, `${branch}:${editMode}`] }
+                      ],
+                  }
+                ]
+            }
+          ),
+          of<transaction>(
+            {
+              branch: "570",
+              txComment: "Updating MIM User Preferences",
+              modifyArtifacts:
+                [
+                  {
+                    id: prefs.id,
+                    addAttributes:
+                      [
+                        { typeName: "MIM Branch Preferences", value: `${branch}:${editMode}` }
+                      ]
+                  }
+                ]
+              }
+          ),
+        )
+      ))
   }
 }
