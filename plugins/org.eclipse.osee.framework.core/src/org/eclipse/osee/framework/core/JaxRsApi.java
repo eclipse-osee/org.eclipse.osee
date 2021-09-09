@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.Map;
 import javax.ws.rs.client.WebTarget;
+import org.eclipse.osee.framework.core.data.UserService;
 
 /**
  * @author Ryan D. Brooks
@@ -98,6 +99,6 @@ public interface JaxRsApi {
    /**
     * Must only be called once on the client during startup and never on the server.
     */
-   void createClientFactory();
+   void createClientFactory(UserService userService);
 
 }

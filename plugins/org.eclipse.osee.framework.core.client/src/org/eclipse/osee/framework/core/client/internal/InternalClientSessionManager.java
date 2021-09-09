@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -45,9 +46,10 @@ public class InternalClientSessionManager {
    private OseeSessionGrant oseeSessionGrant;
    private IdeClientSession oseeSession;
    private SessionEndpoint sessionEndpoint;
+   private final UserService userService;
 
    private InternalClientSessionManager() {
-      // do nothing
+      userService = OsgiUtil.getService(getClass(), OseeClient.class).userService();
    }
 
    public static InternalClientSessionManager getInstance() {
@@ -105,6 +107,7 @@ public class InternalClientSessionManager {
    public synchronized void authenticate(ICredentialProvider credentialProvider) {
       if (!isSessionValid()) {
          try {
+            userService.setUserLoading(true);
             OseeCredential credential = credentialProvider.getCredential();
             clearData();
             oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
@@ -129,9 +132,12 @@ public class InternalClientSessionManager {
             oseeSession.setUseOracleHints(String.valueOf(oseeSessionGrant.getUseOracleHints()));
             OseeLog.logf(getClass(), Level.INFO, "OseeSession Grant was successful for user [%s], [%s]",
                credential.getUserName(), oseeSessionGrant.getUserToken().getUserId());
+
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeCoreException.wrapAndThrow(ex);
+         } finally {
+            userService.setUserLoading(false);
          }
          OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s", oseeSession));
       }

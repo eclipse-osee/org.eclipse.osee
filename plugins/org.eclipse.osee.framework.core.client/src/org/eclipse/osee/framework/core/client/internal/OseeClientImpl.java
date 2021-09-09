@@ -70,7 +70,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
-      jaxRsApi().createClientFactory();
+      jaxRsApi().createClientFactory(userService());
    }
 
    public void stop() {

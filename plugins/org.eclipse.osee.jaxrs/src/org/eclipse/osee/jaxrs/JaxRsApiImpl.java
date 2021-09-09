@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -266,11 +267,11 @@ public final class JaxRsApiImpl implements JaxRsApi {
     * Must only be called once on the client during startup and never on the server.
     */
    @Override
-   public void createClientFactory() {
+   public void createClientFactory(UserService userService) {
       OAuthFactory oauthFactory = newOAuthFactory();
-      configurator = new CxfJaxRsClientConfigurator(oauthFactory, tokenService);
+      configurator = new CxfJaxRsClientConfigurator(oauthFactory);
       configurator.configureJaxRsRuntime();
-      configurator.configureDefaults(mapper);
+      configurator.configureDefaults(mapper, tokenService, userService);
 
       config = new JaxRsClientConfig();
       config.setCreateThreadSafeProxyClients(true);

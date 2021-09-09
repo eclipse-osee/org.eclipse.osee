@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -35,18 +36,22 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Roberto E. Escobar
  */
 public class UserDataLoader implements CacheDataLoader<String, User> {
+   private final UserService userService;
 
-   public UserDataLoader() {
+   public UserDataLoader(UserService userService) {
+      this.userService = userService;
    }
 
    @Override
    public Map<String, User> load(Iterable<? extends String> keys) {
+      userService.setUserLoading(true);
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
       Map<String, User> result = new HashMap<>();
       for (Artifact artifact : artifacts) {
          User user = (User) artifact;
          result.put(user.getUserId(), user);
       }
+      userService.setUserLoading(false);
       return result;
    }
 
@@ -54,6 +59,7 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    public User load(String userId) {
       User user = null;
       try {
+         userService.setUserLoading(true);
          Artifact artifact = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
             CoreAttributeTypes.UserId, userId, CoreBranches.COMMON);
          user = (User) artifact;
@@ -62,6 +68,8 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
       } catch (MultipleArtifactsExist ex2) {
          throw new UserInDatabaseMultipleTimes(ex2, "Unable to load user with userId[%s] - multiple users found.",
             userId);
+      } finally {
+         userService.setUserLoading(false);
       }
       return user;
    }

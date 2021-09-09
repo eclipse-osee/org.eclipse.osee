@@ -33,6 +33,7 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,11 +58,9 @@ public final class CxfJaxRsClientConfigurator {
    private static final String DEFAULT_JAXRS_CLIENT_BUILDER_IMPL = "org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl";
 
    private final OAuthFactory oauthFactory;
-   private final OrcsTokenService tokenService;
 
-   public CxfJaxRsClientConfigurator(OAuthFactory oauthFactory, OrcsTokenService tokenService) {
+   public CxfJaxRsClientConfigurator(OAuthFactory oauthFactory) {
       this.oauthFactory = oauthFactory;
-      this.tokenService = tokenService;
    }
 
    private List<? extends Object> providers;
@@ -83,7 +82,7 @@ public final class CxfJaxRsClientConfigurator {
       System.setProperty(JAVAX_WS_RS_CLIENT_BUILDER_PROPERTY, DEFAULT_JAXRS_CLIENT_BUILDER_IMPL);
    }
 
-   public void configureDefaults(ObjectMapper mapper) {
+   public void configureDefaults(ObjectMapper mapper, OrcsTokenService tokenService, UserService userService) {
       List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
 
@@ -93,7 +92,7 @@ public final class CxfJaxRsClientConfigurator {
 
       providers.addAll(OAuth2Util.getOAuthProviders());
       providers.add(new OrcsParamConverterProvider(tokenService));
-      providers.add(new OseeAccountClientRequestFilter());
+      providers.add(new OseeAccountClientRequestFilter(userService));
       this.providers = providers;
 
       List<Feature> features = new ArrayList<>(2);

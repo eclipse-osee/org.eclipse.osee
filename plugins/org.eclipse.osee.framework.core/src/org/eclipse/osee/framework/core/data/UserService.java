@@ -39,6 +39,14 @@ public interface UserService {
 
    UserToken getUser();
 
+   default UserToken getUserIfLoaded() {
+      return UserToken.SENTINEL;
+   }
+
+   default void setUserLoading(boolean loading) {
+      // client implementation must override
+   }
+
    /**
     * Must ensure this is only called by legitimate ORCS system
     */
