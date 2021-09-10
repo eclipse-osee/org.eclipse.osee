@@ -37,7 +37,6 @@ import java.lang.management.RuntimeMXBean;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -288,10 +287,6 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs) {
-      if (type.equals(CoreActivityTypes.IDE)) {
-         logger.warn("Creating IDE Activity Entry. Is enabled: [%s], Arguments: [%s]", isEnabled(),
-            Arrays.deepToString(messageArgs));
-      }
       Long parentId = get(ENTRY_ID);
       return createEntry(type, parentId, status, messageArgs);
    }
