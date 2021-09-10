@@ -30,7 +30,7 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
 
    // Direct query to quickly get token prior to framework coming up
    private static final String ART_ID_FROM_LOGIN_ID =
-      "select attr_type_id, value from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = 570 and txs.TX_CURRENT = 1 AND " + //
+      "select art_id, attr_type_id, value from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = 570 and txs.TX_CURRENT = 1 AND " + //
          "txs.gamma_id = attr.gamma_id and attr.art_id " + //
          "IN (select attr.art_id from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = 570 and txs.TX_CURRENT = 1 AND " + //
          "txs.gamma_id = attr.gamma_id and attr.attr_type_id = 239475839435799 AND attr.value = ?) AND attr.attr_type_id " + //
@@ -59,15 +59,18 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
    public UserToken asOseeUserId(OseeCredential credential) {
       String loginId = credential.getUserName();
       try {
+         final Long[] artId = new Long[1];
          final Map<Long, String> typeIdToValue = new HashMap<Long, String>(3);
          jdbcService.getClient().runQuery(stmt -> {
+            artId[0] = stmt.getLong("art_id");
             typeIdToValue.put(stmt.getLong("attr_type_id"), stmt.getString("value"));
          }, ART_ID_FROM_LOGIN_ID, loginId);
          if (typeIdToValue.isEmpty()) {
             throw new OseeArgumentException("Authentication: User with loginId [%s] does not exist.", loginId);
          }
-         UserToken userTok = UserToken.create(typeIdToValue.get(CoreAttributeTypes.Name.getId()),
-            typeIdToValue.get(CoreAttributeTypes.Email.getId()), typeIdToValue.get(CoreAttributeTypes.UserId.getId()));
+         UserToken userTok = UserToken.create(artId[0], typeIdToValue.get(CoreAttributeTypes.Name.getId()),
+            typeIdToValue.get(CoreAttributeTypes.Email.getId()), typeIdToValue.get(CoreAttributeTypes.UserId.getId()),
+            true);
          getLogger().info("Authentication: LoginId: [%s] UserToken:[%s]", loginId, userTok);
          return userTok;
       } catch (Exception ex) {

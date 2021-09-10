@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Properties;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
@@ -31,12 +30,9 @@ public class OseeSessionGrant {
    private String dbDatabasePath;
    private String dbId;
 
-   private String oseeUserEmail;
-   private String oseeUserName;
-   private String oseeUserId;
-   private boolean isOseeUserActive;
    private String oseeApplicationServerDataPath;
    private String oseeAuthenticationProtocol;
+   private UserToken userToken;
 
    private Properties sqlProperties;
    private Properties dbConnectionProperties;
@@ -71,20 +67,12 @@ public class OseeSessionGrant {
       return oseeApplicationServerDataPath;
    }
 
-   public UserToken getUserToken() {
-      return getGrantedUserToken();
-   }
-
    public String getAuthenticationProtocol() {
       return oseeAuthenticationProtocol;
    }
 
    public void setAuthenticationProtocol(String protocol) {
       this.oseeAuthenticationProtocol = protocol;
-   }
-
-   private UserToken getGrantedUserToken() {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), oseeUserName, oseeUserEmail, oseeUserId, isOseeUserActive);
    }
 
    public String getDbDriver() {
@@ -127,30 +115,6 @@ public class OseeSessionGrant {
       this.dbId = dbId;
    }
 
-   public String getOseeUserEmail() {
-      return oseeUserEmail;
-   }
-
-   public void setOseeUserEmail(String oseeUserEmail) {
-      this.oseeUserEmail = oseeUserEmail;
-   }
-
-   public String getOseeUserName() {
-      return oseeUserName;
-   }
-
-   public void setOseeUserName(String oseeUserName) {
-      this.oseeUserName = oseeUserName;
-   }
-
-   public String getOseeUserId() {
-      return oseeUserId;
-   }
-
-   public void setOseeUserId(String oseeUserId) {
-      this.oseeUserId = oseeUserId;
-   }
-
    public String getOseeApplicationServerDataPath() {
       return oseeApplicationServerDataPath;
    }
@@ -167,6 +131,14 @@ public class OseeSessionGrant {
       this.oseeAuthenticationProtocol = oseeAuthenticationProtocol;
    }
 
+   public UserToken getUserToken() {
+      return userToken;
+   }
+
+   public void setUserToken(UserToken userToken) {
+      this.userToken = userToken;
+   }
+
    public void setSessionId(String sessionId) {
       this.sessionId = sessionId;
    }
@@ -177,14 +149,6 @@ public class OseeSessionGrant {
 
    public void setDbIsProduction(boolean dbIsProduction) {
       this.dbIsProduction = dbIsProduction;
-   }
-
-   public boolean isOseeUserActive() {
-      return isOseeUserActive;
-   }
-
-   public void setOseeUserActive(boolean isOseeUserActive) {
-      this.isOseeUserActive = isOseeUserActive;
    }
 
    public void setDbUrl(String dbUrl) {

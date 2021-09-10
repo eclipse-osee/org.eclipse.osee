@@ -94,4 +94,6 @@ public interface ActivityLog {
 
    // when using ActivityLog for server side reports, use the ActivityLog's logger for debugging
    Log getDebugLogger();
+
+   Long createEntry(UserId accountId, ActivityTypeToken type, Integer status, Object... messageArgs);
 }
