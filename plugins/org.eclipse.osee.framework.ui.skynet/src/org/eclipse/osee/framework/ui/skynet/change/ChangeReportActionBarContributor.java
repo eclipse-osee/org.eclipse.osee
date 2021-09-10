@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenAssociatedArtifact;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenQuickSearchAction;
@@ -39,7 +39,7 @@ public class ChangeReportActionBarContributor implements IActionContributor {
    @Override
    public void contributeToToolBar(IToolBarManager manager) {
       ChangeUiData uiData = editor.getEditorInput().getChangeData();
-      if (UserServiceImpl.getOseeAdmin().isCurrentUserMember()) {
+      if (UserManager.getUser().isOseeAdmin()) {
          manager.add(new OpenChangeReportByTransactionIdAction());
       }
       manager.add(getReloadAction());

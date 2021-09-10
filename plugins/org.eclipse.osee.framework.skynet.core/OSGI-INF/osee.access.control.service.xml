@@ -5,7 +5,8 @@
       <provide interface="org.eclipse.osee.framework.core.access.IAccessControlService"/>
    </service>
    <reference bind="bindJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
-   <reference bind="bindTokenService1" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
+   <reference bind="bindTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
+   <reference bind="bindUserService" cardinality="1..1" interface="org.eclipse.osee.framework.core.data.UserService" name="UserService" policy="static"/>
    <reference bind="addOseeAccessProvider" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.IOseeAccessProvider" name="IOseeAccessProvider" policy="dynamic"/>
    <reference bind="addArtifactCheck" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.ArtifactCheck" name="ArtifactCheck" policy="dynamic"/>
 </scr:component>

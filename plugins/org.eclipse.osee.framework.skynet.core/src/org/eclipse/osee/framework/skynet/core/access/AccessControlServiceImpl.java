@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -62,7 +61,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
       this.jdbcClient = jdbcService.getClient();
    }
 
-   public void bindTokenService1(OrcsTokenService tokenService) {
+   public void bindTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
    }
 
@@ -158,11 +157,6 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
       } catch (Exception ex) {
          OseeLog.log(getClass(), Level.SEVERE, ex);
       }
-   }
-
-   @Override
-   public UserService getUserGroupService() {
-      return UserServiceImpl.instance();
    }
 
    @Override

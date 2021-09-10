@@ -67,5 +67,4 @@ public class BlamNavigateViewItems implements XNavigateItemProvider {
    public static Collection<AbstractBlam> getBlamOperations() {
       return getBlamMap().values();
    }
-
 }

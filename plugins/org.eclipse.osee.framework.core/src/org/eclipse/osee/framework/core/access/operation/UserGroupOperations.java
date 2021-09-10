@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -26,15 +27,17 @@ public class UserGroupOperations {
 
    private final AccessCache cache;
    private final IAccessControlService accessService;
+   private final UserService userService;
 
-   public UserGroupOperations(AccessCache cache, IAccessControlService accessService) {
+   public UserGroupOperations(AccessCache cache, IAccessControlService accessService, UserService userService) {
       this.cache = cache;
       this.accessService = accessService;
+      this.userService = userService;
    }
 
    public void populateUserGroupList() {
       for (ArtifactToken userGroupArt : accessService.getArtifactListFromType(CoreArtifactTypes.UserGroup, COMMON)) {
-         IUserGroup userGroup = accessService.getUserGroupService().getUserGroup(userGroupArt);
+         IUserGroup userGroup = userService.getUserGroup(userGroupArt);
          cache.idToUserGroup.put(userGroup.getId(), userGroup);
       }
    }
@@ -43,5 +46,4 @@ public class UserGroupOperations {
       cache.subjectToGroupCache.put(groupMember.getId(), groupId);
       cache.groupToSubjectsCache.put(groupId.getId(), groupMember);
    }
-
 }
