@@ -108,7 +108,7 @@ public class TaskEstUtil {
             String desc = atsApi.getAttributeResolver().getSoleAttributeValueAsString(childArt,
                CoreAttributeTypes.Description, "");
             List<ArtifactId> assigneeAccountIds = new LinkedList<>();
-            for (UserToken user : atsApi.getUserGroupService().getUserGroup(childArt).getMembers()) {
+            for (UserToken user : atsApi.userService().getUserGroup(childArt).getMembers()) {
                assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
             }
             ArtifactToken aiArt = atsApi.getRelationResolver().getRelatedOrSentinel(childArt,

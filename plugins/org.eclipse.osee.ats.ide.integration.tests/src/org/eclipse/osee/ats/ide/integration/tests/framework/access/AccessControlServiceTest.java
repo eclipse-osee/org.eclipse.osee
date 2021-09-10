@@ -41,7 +41,7 @@ public class AccessControlServiceTest {
       ensureLoaded();
 
       // Reset OseeAccessAdmin
-      atsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
+      atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
 
       ArtifactToken softReqFolder =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SoftwareRequirementsFolder, DemoBranches.SAW_PL);
@@ -70,17 +70,16 @@ public class AccessControlServiceTest {
       rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Kay_Jones, virtualFixesSoftReq, null);
       Assert.assertTrue(rd.isErrors());
 
-      atsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin).addMember(DemoUsers.Kay_Jones, true);
-      Assert.assertTrue(atsApi.getUserGroupService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
+      atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).addMember(DemoUsers.Kay_Jones, true);
+      Assert.assertTrue(atsApi.userService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
 
       // Kay DOES have modify cause now in OSEE Access Admin group
       rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Kay_Jones, virtualFixesSoftReq, null);
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains(CoreUserGroups.OseeAccessAdmin.getName()));
 
-      atsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
-      Assert.assertFalse(
-         atsApi.getUserGroupService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
+      atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
+      Assert.assertFalse(atsApi.userService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
 
    }
 
@@ -89,7 +88,7 @@ public class AccessControlServiceTest {
       ensureLoaded();
 
       // Reset OseeAccessAdmin
-      atsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
+      atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
 
       // Joe DOES NOT have modify access
       XResultData rd =
@@ -110,23 +109,20 @@ public class AccessControlServiceTest {
       rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Kay_Jones, reqWorkBrch, null);
       Assert.assertTrue(rd.isErrors());
 
-      atsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin).addMember(DemoUsers.Kay_Jones, true);
-      Assert.assertTrue(atsApi.getUserGroupService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
+      atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).addMember(DemoUsers.Kay_Jones, true);
+      Assert.assertTrue(atsApi.userService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
 
       // Kay DOES have modify cause now in OSEE Access Admin group
       rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Kay_Jones, reqWorkBrch, null);
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains(CoreUserGroups.OseeAccessAdmin.getName()));
 
-      atsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
-      Assert.assertFalse(
-         atsApi.getUserGroupService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
-
+      atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
+      Assert.assertFalse(atsApi.userService().isUserMember(CoreUserGroups.OseeAccessAdmin, DemoUsers.Kay_Jones));
    }
 
    private void ensureLoaded() {
       atsApi = AtsApiService.get();
       reqWorkBrch = FrameworkAccessTestUtil.getReqWorkBrch();
    }
-
 }

@@ -61,10 +61,8 @@ import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 
 /**
  * @author Donald G. Dunne
@@ -267,11 +265,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public boolean isIde() {
       return true;
-   }
-
-   @Override
-   public UserService getUserGroupService() {
-      return UserServiceImpl.instance();
    }
 
    @Override
