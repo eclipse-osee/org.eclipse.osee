@@ -292,22 +292,29 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
          logger.warn("Creating IDE Activity Entry. Is enabled: [%s], Arguments: [%s]", isEnabled(),
             Arrays.deepToString(messageArgs));
       }
-      if (isEnabled()) {
-         Long parentId = get(ENTRY_ID);
-         return createEntry(type, parentId, status, messageArgs);
-      }
-      return 0L;
+      Long parentId = get(ENTRY_ID);
+      return createEntry(type, parentId, status, messageArgs);
    }
 
    @Override
-   public Long createEntry(ActivityTypeToken typeId, Long parentId, Integer status, Object... messageArgs) {
+   public Long createEntry(UserId accountId, ActivityTypeToken type, Integer status, Object... messageArgs) {
+      Long parentId = get(ENTRY_ID);
+      return createEntry(accountId, type, parentId, status, messageArgs);
+   }
+
+   @Override
+   public Long createEntry(ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs) {
+      UserId accountId = UserId.valueOf(get(LogEntry.ACCOUNT_ID));
+      return createEntry(accountId, type, parentId, status, messageArgs);
+   }
+
+   private Long createEntry(UserId accountId, ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs) {
       if (isEnabled()) {
          Object[] rootEntry = activityMonitor.getThreadRootEntry(parentId);
-         UserId accountId = UserId.valueOf(LogEntry.ACCOUNT_ID.from(rootEntry));
          Long serverId = LogEntry.SERVER_ID.from(rootEntry);
          Long clientId = LogEntry.CLIENT_ID.from(rootEntry);
-         Object[] entry = createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(parentId),
-            status, messageArgs);
+         Object[] entry =
+            createEntry(parentId, type, accountId, serverId, clientId, computeDuration(parentId), status, messageArgs);
          return LogEntry.ENTRY_ID.from(entry);
       }
       return 0L;
@@ -318,8 +325,8 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    }
 
    @Override
-   public Long createEntry(UserId accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs) {
-      Object[] entry = createEntry(parentId, typeId, accountId, get(SERVER_ID), clientId, computeDuration(parentId),
+   public Long createEntry(UserId accountId, Long clientId, ActivityTypeToken type, Long parentId, Integer status, String... messageArgs) {
+      Object[] entry = createEntry(parentId, type, accountId, get(SERVER_ID), clientId, computeDuration(parentId),
          status, (Object[]) messageArgs);
       return LogEntry.ENTRY_ID.from(entry);
    }
