@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 
 /**
  * @author Donald G. Dunne
@@ -63,5 +65,26 @@ public interface UserService {
 
    default IUserGroup getOseeAccessAdmin() {
       return getUserGroup(CoreUserGroups.OseeAccessAdmin);
+   }
+
+   /**
+    * Determines if the current thread's user is in at least one of the given groups. Otherwise throws
+    * OseeAccessDeniedException. In order to require multiple roles (rather than at least one) call this method once for
+    * each such role.
+    */
+   default void requireRole(IUserGroupArtifactToken... userGroups) throws OseeAccessDeniedException {
+      UserToken user = getUser();
+      Collection<IUserGroupArtifactToken> roles = user.getRoles();
+
+      for (IUserGroupArtifactToken userGroup : userGroups) {
+         if (roles.contains(userGroup)) {
+            return;
+         }
+      }
+      throw new OseeAccessDeniedException("User %s is not in any of the user groups %s", user.toStringWithId(),
+         Arrays.deepToString(userGroups));
+   }
+
+   default void clearCaches() {
    }
 }

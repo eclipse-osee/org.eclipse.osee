@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.access;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -34,7 +36,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -151,11 +152,18 @@ public class UserServiceImpl implements UserService {
    }
 
    private UserToken toUser(ArtifactReadable userArtifact) {
+      List<ArtifactReadable> groups =
+         userArtifact.getRelated(CoreRelationTypes.Users_Artifact, CoreArtifactTypes.UserGroup);
+
+      List<IUserGroupArtifactToken> roles = new ArrayList<>(groups.size());
+      for (ArtifactReadable group : groups) {
+         roles.add(new UserGroupArtifactToken(group.getId(), group.getName()));
+      }
       return UserToken.create(userArtifact.getId(), userArtifact.getName(),
          userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email),
          userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId),
          userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active),
-         userArtifact.getAttributeValues(CoreAttributeTypes.LoginId));
+         userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles);
    }
 
    @Override
@@ -192,6 +200,13 @@ public class UserServiceImpl implements UserService {
    @SuppressWarnings("unlikely-arg-type")
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
+      ensureLoaded();
+      if (loginIdToUser.isEmpty()) {
+         // During bootstrap allow user creation when no users have yet been created
+      } else {
+         requireRole(CoreUserGroups.AccountAdmin);
+      }
+
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, getUser(), comment);
 
       ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
@@ -207,7 +222,7 @@ public class UserServiceImpl implements UserService {
 
       for (UserToken userToken : users) {
          if (existingUsers.contains(userToken)) {
-            throw new OseeStateException("User %s already exists", userToken);
+            continue;
          }
          ArtifactId user = null;
          if (userToken.isValid()) {
@@ -246,5 +261,10 @@ public class UserServiceImpl implements UserService {
       }
       userGroupToArtifact.put(userGroup, userGroupArt);
       return userGroupArt;
+   }
+
+   @Override
+   public void clearCaches() {
+      loginIdToUser.clear();
    }
 }
