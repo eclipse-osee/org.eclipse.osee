@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 
 /**
  * @author Donald G. Dunne
@@ -56,4 +57,11 @@ public interface UserService {
 
    void setUserForCurrentThread(UserId accountId);
 
+   default IUserGroup getOseeAdmin() {
+      return getUserGroup(CoreUserGroups.OseeAdmin);
+   }
+
+   default IUserGroup getOseeAccessAdmin() {
+      return getUserGroup(CoreUserGroups.OseeAccessAdmin);
+   }
 }

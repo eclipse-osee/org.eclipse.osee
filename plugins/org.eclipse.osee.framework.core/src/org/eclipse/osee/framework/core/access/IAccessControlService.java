@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -146,8 +145,6 @@ public interface IAccessControlService extends ArtifactCheck {
    Collection<IOseeAccessProvider> getOseeAccessProviders();
 
    void kickAccessTopicEvent(AccessTopicEventPayload event);
-
-   UserService getUserGroupService();
 
    Collection<ArtifactToken> getArtifactListFromType(ArtifactTypeToken artType, BranchToken branch);
 

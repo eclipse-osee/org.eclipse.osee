@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.util;
 
 import static org.junit.Assert.assertTrue;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -35,8 +35,6 @@ import org.junit.BeforeClass;
  * @author Donald G. Dunne
  */
 public class DbInitTest {
-   private static boolean wasDbInitSuccessful = false;
-
    @BeforeClass
    public static void setup() throws Exception {
       OseeProperties.setIsInTest(true);
@@ -59,31 +57,28 @@ public class DbInitTest {
       DatabaseInitializationOperation.execute(DemoChoice.ATS_CLIENT_DEMO);
 
       TestUtil.severeLoggingEnd(monitorLog);
-      wasDbInitSuccessful = true;
 
-      if (wasDbInitSuccessful) {
-         TestUtil.setDbInitSuccessful(true);
+      TestUtil.setDbInitSuccessful(true);
 
-         // Re-authenticate so we can continue and NOT be bootstrap
-         ClientSessionManager.releaseSession();
-         ClientSessionManager.getSession();
-         UserManager.releaseUser();
+      // Re-authenticate so we can continue and NOT be bootstrap
+      ClientSessionManager.releaseSession();
+      ClientSessionManager.getSession();
+      UserManager.releaseUser();
 
-         AtsApiService.get().reloadServerAndClientCaches();
+      AtsApi atsApi = AtsApiService.get();
+      atsApi.reloadServerAndClientCaches();
 
-         if (UserManager.isBootstrap()) {
-            throw new OseeStateException("Should not be bootstrap user here");
-         }
-         if (AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
-            throw new OseeStateException("Should not be bootstrap user here");
-         }
-
-         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
-         UserManager.getUser().saveSettings();
-
-         UserServiceImpl.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
-
+      if (UserManager.isBootstrap()) {
+         throw new OseeStateException("Should not be bootstrap user here");
       }
+      if (AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
+         throw new OseeStateException("Should not be bootstrap user here");
+      }
+
+      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+      UserManager.getUser().saveSettings();
+
+      atsApi.userService().getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
 
       OseeProperties.setIsInTest(false);
 

@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -42,26 +41,9 @@ import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
  */
 public class UserServiceImpl implements UserService {
 
-   private static UserServiceImpl userService;
    private static List<IUserGroupArtifactToken> userGrps;
 
    private boolean loading = false;
-
-   public static UserService instance() {
-      return getUserService();
-   }
-
-   public static IUserGroup getOseeAdmin() {
-      return get(CoreUserGroups.OseeAdmin);
-   }
-
-   public static IUserGroup getOseeAccessAdmin() {
-      return get(CoreUserGroups.OseeAccessAdmin);
-   }
-
-   public static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
-      return getUserService().getUserGroup(userGroupArtToken);
-   }
 
    @Override
    public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
@@ -82,13 +64,6 @@ public class UserServiceImpl implements UserService {
    @Override
    public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
       return new UserGroupImpl(userGroupArt);
-   }
-
-   private static UserService getUserService() {
-      if (userService == null) {
-         userService = new UserServiceImpl();
-      }
-      return userService;
    }
 
    /**
@@ -136,10 +111,6 @@ public class UserServiceImpl implements UserService {
       }
 
       return users;
-   }
-
-   public static boolean isInUserGrp(IUserGroupArtifactToken... userGroups) {
-      return getUserService().isInUserGroup(userGroups);
    }
 
    @Override

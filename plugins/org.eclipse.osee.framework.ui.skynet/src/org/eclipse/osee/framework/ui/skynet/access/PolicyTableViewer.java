@@ -24,12 +24,11 @@ import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.osee.framework.core.access.AccessControlData;
 import org.eclipse.osee.framework.core.access.object.AccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -160,11 +159,9 @@ public class PolicyTableViewer {
       if (isArtifact()) {
          Artifact artifact = (Artifact) object;
 
-         IUserGroup oseeAccessGroup = UserServiceImpl.getOseeAccessAdmin();
-         boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
+         boolean isOseeAccessAdmin = UserManager.getUser().getRoles().contains(CoreUserGroups.OseeAccessAdmin);
 
-         boolean canUnlockObject =
-            ServiceUtil.accessControlService().canUnlockObject(artifact, UserManager.getUser());
+         boolean canUnlockObject = ServiceUtil.accessControlService().canUnlockObject(artifact, UserManager.getUser());
          boolean isUserFullAccess = ServiceUtil.accessControlService().hasArtifactPermission(artifact,
             PermissionEnum.FULLACCESS, null).isSuccess();
          return isOseeAccessAdmin || canUnlockObject || isUserFullAccess;

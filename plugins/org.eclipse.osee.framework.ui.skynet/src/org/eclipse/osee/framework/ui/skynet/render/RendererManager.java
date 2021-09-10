@@ -36,10 +36,10 @@ import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollector;
@@ -296,7 +296,8 @@ public final class RendererManager {
 
    public static Boolean isDefaultArtifactEditor() {
       if (defaultArtifactEditor == null) {
-         defaultArtifactEditor = UserServiceImpl.isInUserGrp(CoreUserGroups.DefaultArtifactEditor);
+         defaultArtifactEditor =
+            ServiceUtil.getOseeClient().userService().isInUserGroup(CoreUserGroups.DefaultArtifactEditor);
       }
       return defaultArtifactEditor;
    }

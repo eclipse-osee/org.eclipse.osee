@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -206,7 +207,7 @@ public class User extends Artifact implements UserToken {
 
    @Override
    public boolean isOseeAdmin() {
-      return UserServiceImpl.getOseeAdmin().isCurrentUserMember();
+      return getRoles().contains(CoreUserGroups.OseeAdmin);
    }
 
    @Override
@@ -228,5 +229,4 @@ public class User extends Artifact implements UserToken {
    public void setArtifact(ArtifactToken artifact) {
       // do nothing
    }
-
 }

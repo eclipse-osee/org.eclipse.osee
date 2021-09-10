@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -51,7 +52,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
 
    protected final static Collection<IOseeAccessProvider> oseeAccessProviders = new HashSet<>();
    protected final BranchAclOperations brchAclOps;
-   protected final UserGroupOperations userGrpOps;
+   protected UserGroupOperations userGrpOps;
    protected final ContextIdOperations contextIdOps;
    protected ArtifactAclOperations artAclOps;
    protected AccessCache cache;
@@ -59,12 +60,12 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    private final AccessRankOperations rankOps;
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
    private final List<ArtifactCheck> artifactChecks = new ArrayList<>();
+   private UserService userService;
 
    public AbstractAccessControlService() {
       cache = new AccessCache(this);
       rankOps = new AccessRankOperations(cache);
       contextIdOps = new ContextIdOperations(this);
-      userGrpOps = new UserGroupOperations(cache, this);
       cache.setUserGrpOps(userGrpOps);
       cache.setArtAclOps(artAclOps);
       brchAclOps = new BranchAclOperations(cache, rankOps, this);
@@ -78,6 +79,11 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
 
    public synchronized void addArtifactCheck(ArtifactCheck artifactCheck) {
       artifactChecks.add(artifactCheck);
+   }
+
+   public void bindUserService(UserService userService) {
+      this.userService = userService;
+      userGrpOps = new UserGroupOperations(cache, this, userService);
    }
 
    public synchronized void addOseeAccessProvider(IOseeAccessProvider provider) {
@@ -125,7 +131,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
          rd = new XResultData();
       }
       try {
-         IUserGroup oseeAccessGroup = getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin);
+         IUserGroup oseeAccessGroup = userService.getUserGroup(CoreUserGroups.OseeAccessAdmin);
          boolean isOseeAccessAdmin = oseeAccessGroup.isMember(subject.getId());
          if (isOseeAccessAdmin) {
             rd.logf("User %s DOES have Access Modify rights for Branch %s: Reason [%s]", subject.getName(),
@@ -217,7 +223,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
          rd = new XResultData();
       }
       try {
-         IUserGroup oseeAccessGroup = getUserGroupService().getUserGroup(CoreUserGroups.OseeAccessAdmin);
+         IUserGroup oseeAccessGroup = userService.getUserGroup(CoreUserGroups.OseeAccessAdmin);
          boolean isOseeAccessAdmin = oseeAccessGroup.isMember(subject.getId());
          if (isOseeAccessAdmin) {
             rd.logf("User %s DOES have Access Modify rights for Artifact %s: Reason [%s]", subject.getName(),

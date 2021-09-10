@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -246,8 +245,8 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          AWorkbench.popup("Must select items to delete");
          return;
       }
-      XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(selectedArtifacts,
-         PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Delete Attributes Error", selectedArtifacts));
+      XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(selectedArtifacts, PermissionEnum.WRITE,
+         AccessControlArtifactUtil.getXResultAccessHeader("Delete Attributes Error", selectedArtifacts));
       if (rd.isErrors()) {
          XResultDataDialog.open(rd, "Delete Attributes Failed", "Access Denied for artifacts");
          return;
@@ -286,7 +285,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
 
-      if (UserServiceImpl.getOseeAdmin().isCurrentUserMember()) {
+      if (UserManager.getUser().isOseeAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteArtifactAction);
          deleteArtifactAction.setEnabled(!getSelectedArtifacts().isEmpty());
 

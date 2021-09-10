@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.preferences;
 import java.io.File;
 import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -23,9 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -245,10 +246,12 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       try {
          boolean editOnOpen = editButton.getSelection();
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editOnOpen));
+
+         UserService userService = ServiceUtil.getOseeClient().userService();
          if (editOnOpen) {
-            UserServiceImpl.get(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser(), true);
+            userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser(), true);
          } else {
-            UserServiceImpl.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+            userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
          }
          RendererManager.clearCaches();
 
