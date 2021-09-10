@@ -15,8 +15,14 @@ package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -54,25 +60,24 @@ public class CreateSystemBranches {
       query = orcsApi.getQueryFactory().fromBranch(COMMON);
    }
 
-   public TransactionId create() {
+   public TransactionId create(UserToken superUser) {
       orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
 
       populateSystemBranch();
 
-      orcsApi.getBranchOps().createTopLevelBranch(COMMON, SystemUser.OseeSystem);
+      orcsApi.getBranchOps().createTopLevelBranch(COMMON, superUser);
 
-      return populateCommonBranch();
+      return populateCommonBranch(superUser);
    }
 
    private void populateSystemBranch() {
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.SYSTEM_ROOT,
-         "Add System Root branch artifacts");
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.SYSTEM_ROOT, "Add System Root branch artifacts");
       tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
       tx.createArtifact(CoreArtifactTokens.UniversalGroupRoot);
       tx.commit();
    }
 
-   private TransactionId populateCommonBranch() {
+   private TransactionId populateCommonBranch(UserToken superUser) {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, "Add Common branch artifacts");
 
       orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
@@ -88,6 +93,7 @@ public class CreateSystemBranches {
       tx.setSoleAttributeValue(everyOne, CoreAttributeTypes.DefaultGroup, true);
 
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAdmin);
+      tx.createArtifact(userGroupsFolder, CoreUserGroups.AccountAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAccessAdmin);
 
       ArtifactId globalPreferences = tx.createArtifact(oseeConfig, CoreArtifactTokens.GlobalPreferences);
@@ -101,7 +107,21 @@ public class CreateSystemBranches {
       createDataRights(tx, documentTemplateFolder);
       tx.commit();
 
-      return orcsApi.userService().createUsers(SystemUser.values(), "Create System Users");
+      List<IUserGroupArtifactToken> roles = superUser.getRoles();
+      roles.add(CoreUserGroups.AccountAdmin);
+      roles.add(CoreUserGroups.OseeAdmin);
+      roles.add(CoreUserGroups.OseeAccessAdmin);
+      UserToken userWithRoles = UserToken.create(superUser.getId(), superUser.getName(), superUser.getEmail(),
+         superUser.getUserId(), true, superUser.getLoginIds(), roles);
+
+      UserService userService = orcsApi.userService();
+      userService.clearCaches();
+      Set<UserToken> users = new HashSet<>(SystemUser.values());
+      users.remove(userWithRoles); // Replace existing entry, if any
+      users.add(userWithRoles);
+      TransactionId txId = userService.createUsers(users, "Create System Users");
+      userService.setUserForCurrentThread(userWithRoles.getLoginIds().get(0));
+      return txId;
    }
 
    private void createWordTemplates(TransactionBuilder tx, ArtifactId documentTemplateFolder) {

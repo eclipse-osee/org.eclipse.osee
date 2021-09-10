@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -48,9 +47,9 @@ public class AccessControlServiceTest {
 
       Assert.assertNotNull(softReqFolder);
 
-      // Joe DOES NOT have modify access
+      // Steven DOES NOT have modify access
       XResultData rd =
-         atsApi.getAccessControlService().isModifyAccessEnabled(UserManager.getUser(), softReqFolder, null);
+         atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Steven_Kohn, softReqFolder, null);
       Assert.assertTrue(rd.isErrors());
 
       // Kay DOES have modify access cause Branch FULL_ACCESS
@@ -61,8 +60,8 @@ public class AccessControlServiceTest {
       ArtifactToken virtualFixesSoftReq =
          atsApi.getQueryService().getArtifact(DemoArtifactToken.VirtualFixes, reqWorkBrch);
 
-      // Joe DOES NOT have modify access cause working branch without access set
-      rd = atsApi.getAccessControlService().isModifyAccessEnabled(UserManager.getUser(), virtualFixesSoftReq, null);
+      // Steven DOES NOT have modify access cause working branch without access set
+      rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Steven_Kohn, virtualFixesSoftReq, null);
       Assert.assertTrue(rd.isErrors());
       Assert.assertTrue(rd.toString().contains("Access Not Set"));
 
@@ -90,9 +89,9 @@ public class AccessControlServiceTest {
       // Reset OseeAccessAdmin
       atsApi.userService().getUserGroup(CoreUserGroups.OseeAccessAdmin).removeMember(DemoUsers.Kay_Jones, true);
 
-      // Joe DOES NOT have modify access
+      // Steven DOES NOT have modify access
       XResultData rd =
-         atsApi.getAccessControlService().isModifyAccessEnabled(UserManager.getUser(), DemoBranches.SAW_PL, null);
+         atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Steven_Kohn, DemoBranches.SAW_PL, null);
       Assert.assertTrue(rd.isErrors());
 
       // Kay DOES have modify access cause Branch FULL_ACCESS
@@ -100,8 +99,8 @@ public class AccessControlServiceTest {
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains("Branch FULL_ACCESS"));
 
-      // Joe DOES NOT have modify access cause working branch without access set
-      rd = atsApi.getAccessControlService().isModifyAccessEnabled(UserManager.getUser(), reqWorkBrch, null);
+      // Steven DOES NOT have modify access cause working branch without access set
+      rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Steven_Kohn, reqWorkBrch, null);
       Assert.assertTrue(rd.isErrors());
       Assert.assertTrue(rd.toString().contains("Access Not Set"));
 

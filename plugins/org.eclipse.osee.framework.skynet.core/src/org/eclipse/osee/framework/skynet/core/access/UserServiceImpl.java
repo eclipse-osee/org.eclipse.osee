@@ -24,10 +24,8 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -140,10 +138,7 @@ public class UserServiceImpl implements UserService {
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
       DatastoreEndpoint datastoreEndpoint = ServiceUtil.getOseeClient().getDatastoreEndpoint();
-      UserTokens userToks = new UserTokens();
-      userToks.setAccount(SystemUser.OseeSystem);
-      users.forEach(userToks::addUser);
-      return datastoreEndpoint.createUsers(userToks);
+      return datastoreEndpoint.createUsers(users);
    }
 
    @Override

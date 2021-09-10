@@ -21,7 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.UserTokens;
 
 /**
  * @author Roberto E. Escobar
@@ -49,5 +48,5 @@ public interface DatastoreEndpoint {
    @Path("user")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionId createUsers(UserTokens users);
+   TransactionId createUsers(Iterable<UserToken> users);
 }

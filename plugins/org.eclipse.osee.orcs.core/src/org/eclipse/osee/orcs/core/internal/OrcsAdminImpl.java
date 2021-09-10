@@ -72,7 +72,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
          activityLog.setEnabled(false);
 
          dataStoreAdmin.createDataStore(superUser);
-         return new CreateSystemBranches(orcsApi).create();
+         return new CreateSystemBranches(orcsApi).create(superUser);
       } finally {
          activityLog.setEnabled(true);
       }

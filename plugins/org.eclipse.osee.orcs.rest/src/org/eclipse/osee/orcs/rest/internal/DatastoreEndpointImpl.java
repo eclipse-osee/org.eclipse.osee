@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
@@ -82,7 +81,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public TransactionId createUsers(UserTokens users) {
-      return userService.createUsers(users.getUsers(), "DatastoreEndpointImpl.createUsers()");
+   public TransactionId createUsers(Iterable<UserToken> users) {
+      return userService.createUsers(users, "Create Users via Rest");
    }
 }
