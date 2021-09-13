@@ -31,19 +31,19 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class SupportEmailService {
 
-   private static MailService mailService;
-   private static OrcsApi orcsApi;
+   private MailService mailService;
+   private OrcsApi orcsApi;
 
    public SupportEmailService() {
       // Default constructor required. Do nothing
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
-      SupportEmailService.orcsApi = orcsApi;
+      this.orcsApi = orcsApi;
    }
 
    public void setMailService(MailService mailService) {
-      SupportEmailService.mailService = mailService;
+      this.mailService = mailService;
    }
 
    public List<MailStatus> sendSupportEmail(String subject, String msg) {

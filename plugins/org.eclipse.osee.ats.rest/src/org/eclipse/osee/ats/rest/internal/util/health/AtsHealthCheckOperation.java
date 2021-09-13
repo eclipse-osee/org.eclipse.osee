@@ -132,6 +132,8 @@ public class AtsHealthCheckOperation {
 
          // Break artifacts into blocks so don't run out of memory
          List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
+         // Uncomment and set ids to run singles
+         //         List<Collection<Long>> artIdLists = Arrays.asList(Arrays.asList(8661508L, 8661509L));
          for (Collection<Long> artIdList : artIdLists) {
 
             Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
