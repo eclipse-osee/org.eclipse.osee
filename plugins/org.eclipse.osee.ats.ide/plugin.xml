@@ -280,20 +280,11 @@
             categoryId="osee.product.commands.category"
             id="org.eclipse.osee.ats.ide.actions.OpenOseePerspective">
       </command>
-      <command
-            name="OSEE Review"
-            categoryId="osee.ats.ide.product.commands.category"
-            id="org.eclipse.osee.ats.ide.actions.OpenReviewPerspective">
-      </command>
    </extension>
    <extension point="org.eclipse.ui.handlers">
       <handler
             commandId="org.eclipse.osee.ats.ide.actions.OpenOseePerspective"
             class="org.eclipse.osee.ats.ide.actions.OpenOseePerspectiveHandler"> 
-      </handler>
-      <handler
-            commandId="org.eclipse.osee.ats.ide.actions.OpenReviewPerspective"
-            class="org.eclipse.osee.ats.ide.actions.OpenReviewPerspectiveHandler">  
       </handler>
       <handler
             commandId="osee.ats.ide.actions.OpenArtifactExplorer"
