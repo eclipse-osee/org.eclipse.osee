@@ -170,7 +170,7 @@ public class RelationResolverTest {
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
       assertCollection(captor.getValue(), 22, 44, 66);
-      assertCollection(arts, node1, node2, node3, node4, node5, node6);
+      assertCollection(arts, node1, node3, node5, node2, node4, node6);
    }
 
    @SuppressWarnings("unchecked")

@@ -61,8 +61,9 @@ public class RelationResolverImpl implements RelationResolver {
                      toLoad = new LinkedHashSet<>();
                   }
                   toLoad.add(id);
+               } else {
+                  items.put(id, (T) node);
                }
-               items.put(id, (T) node);
             }
          }
          if (toLoad != null && !toLoad.isEmpty()) {
