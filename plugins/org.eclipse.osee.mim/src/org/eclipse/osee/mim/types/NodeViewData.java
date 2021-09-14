@@ -25,7 +25,8 @@ public class NodeViewData extends PLGenericDBObject {
 
    private String Description;
    private ApplicabilityToken applicability;
-   private String bgColor = generateColor() ? "#81d4fa" : "#c5e1a5"; //has to be called bgColor due to @swimlane/ngx-graph having weird handling behavior of node.data.color
+   private String interfaceNodeBgColor = generateColor() ? "#81d4fa" : "#c5e1a5"; //has to be called bgColor due to @swimlane/ngx-graph having weird handling behavior of node.data.color
+   private String interfaceNodeAddress = "";
 
    public NodeViewData(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -45,15 +46,15 @@ public class NodeViewData extends PLGenericDBObject {
    /**
     * @return the color
     */
-   public String getbgColor() {
-      return bgColor;
+   public String getinterfaceNodeBgColor() {
+      return interfaceNodeBgColor;
    }
 
    /**
     * @param color the color to set
     */
-   public void setbgColor(String color) {
-      this.bgColor = color;
+   public void setinterfaceNodeBgColor(String color) {
+      this.interfaceNodeBgColor = color;
    }
 
    @JsonIgnore
@@ -87,6 +88,20 @@ public class NodeViewData extends PLGenericDBObject {
     */
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
+   }
+
+   /**
+    * @return the interfaceNodeAddress
+    */
+   public String getInterfaceNodeAddress() {
+      return interfaceNodeAddress;
+   }
+
+   /**
+    * @param interfaceNodeAddress the interfaceNodeAddress to set
+    */
+   public void setInterfaceNodeAddress(String interfaceNodeAddress) {
+      this.interfaceNodeAddress = interfaceNodeAddress;
    }
 
 }

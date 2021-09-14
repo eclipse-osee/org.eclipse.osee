@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { node } from '../../../../shared/types/node';
+import { node, nodeData } from '../../../../shared/types/node';
 
 @Component({
   selector: 'app-create-new-node-dialog',
@@ -9,9 +9,11 @@ import { node } from '../../../../shared/types/node';
 })
 export class CreateNewNodeDialogComponent implements OnInit {
 
-  result: node = {
+  result: Partial<nodeData> = {
     name: '',
-    description:''
+    description: '',
+    interfaceNodeAddress: '',
+    interfaceNodeBgColor:''
   };
   constructor(public dialogRef: MatDialogRef<CreateNewNodeDialogComponent>) { }
 

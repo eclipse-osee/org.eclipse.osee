@@ -9,10 +9,20 @@
         <mat-label>Add a description</mat-label>
         <input matInput [(ngModel)]="result.description">
     </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Add a color</mat-label>
+        <input matInput type="color" [(ngModel)]="result.interfaceNodeBgColor">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Add a network address</mat-label>
+        <input matInput [(ngModel)]="result.interfaceNodeAddress">
+    </mat-form-field>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="result" color="primary" [disabled]="result.name.length===0">Ok</button>
+    <button mat-raised-button [mat-dialog-close]="result" color="primary" [disabled]="result!.name!.length===0">Ok</button>
 </div>
 <!--
     mat-dialog-content:

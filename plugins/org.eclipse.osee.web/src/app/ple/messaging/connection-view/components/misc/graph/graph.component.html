@@ -27,7 +27,13 @@
   
           <ng-template #nodeTemplate let-node>
             <svg:g class="node" (contextmenu)="openNodeDialog($event,node,graphData.edges)">
-              <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.bgColor" />
+              <ng-container *ngIf="node.data.interfaceNodeBgColor!==''; else noBgColor">
+                <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.interfaceNodeBgColor" />
+              </ng-container>
+              <ng-template #noBgColor>
+                <!--Default to @swimlane/ngx-graph's handling of color-->
+                <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+              </ng-template>
               <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}</svg:text>
             </svg:g>
           </ng-template>
