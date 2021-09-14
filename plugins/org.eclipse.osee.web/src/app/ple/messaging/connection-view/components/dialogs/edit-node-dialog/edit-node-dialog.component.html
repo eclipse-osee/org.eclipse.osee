@@ -1,13 +1,23 @@
 <h1 mat-dialog-title>Editing {{title}}</h1>
 <div mat-dialog-content>
     <mat-form-field>
-        <mat-label>Add a Name</mat-label>
+        <mat-label>Edit Name</mat-label>
         <input matInput type="text" [(ngModel)]="data.name" #input required>
     </mat-form-field>
     <br>
     <mat-form-field>
-        <mat-label>Add a Description</mat-label>
-        <input matInput type="text" [(ngModel)]="data.description" #input required>
+        <mat-label>Edit Description</mat-label>
+        <input matInput type="text" [(ngModel)]="data.description" #input>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Edit Address/Port</mat-label>
+        <input matInput type="text" [(ngModel)]="data.interfaceNodeAddress" #input>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Select a Background Color</mat-label>
+        <input matInput type=color [(ngModel)]="data.interfaceNodeBgColor">
     </mat-form-field>
     <br>
     <mat-form-field>

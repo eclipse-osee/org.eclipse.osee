@@ -34,7 +34,8 @@ public class NodeView extends PLGenericDBObject {
    }
 
    public NodeView(InterfaceNode node) {
-      this(node.getId(), node.getName(), node.getDescription(), node.getApplicability());
+      this(node.getId(), node.getName(), node.getDescription(), node.getApplicability(), node.getColor(),
+         node.getAddress());
    }
 
    public NodeView(ArtifactReadable art) {
@@ -42,12 +43,14 @@ public class NodeView extends PLGenericDBObject {
       this.setData(new NodeViewData(art));
    }
 
-   public NodeView(Long id, String name, String description, ApplicabilityToken applicability) {
+   public NodeView(Long id, String name, String description, ApplicabilityToken applicability, String color, String address) {
       this(id, name);
       this.setLabel(name);
       this.setData(new NodeViewData(id, name));
       this.setApplicability(applicability);
       this.setDescription(description);
+      this.setbgColor(color);
+      this.setInterfaceNodeAddress(address);
    }
 
    public NodeView(Long id, String name) {
@@ -116,8 +119,24 @@ public class NodeView extends PLGenericDBObject {
     * @return color of node
     */
    @JsonIgnore
+   public String getInterfaceNodeAddress() {
+      return data.getInterfaceNodeAddress();
+   }
+
+   /**
+    * @param color the color to set
+    */
+   @JsonIgnore
+   public void setInterfaceNodeAddress(String address) {
+      this.data.setInterfaceNodeAddress(address);
+   }
+
+   /**
+    * @return color of node
+    */
+   @JsonIgnore
    public String getbgColor() {
-      return data.getbgColor();
+      return data.getinterfaceNodeBgColor();
    }
 
    /**
@@ -125,7 +144,7 @@ public class NodeView extends PLGenericDBObject {
     */
    @JsonIgnore
    public void setbgColor(String color) {
-      this.data.setbgColor(color);
+      this.data.setinterfaceNodeBgColor(color);
    }
 
    public void setApplicability(ApplicabilityToken applicability) {

@@ -126,6 +126,8 @@ public interface CoreAttributeTypes {
    InterfaceMessageRateAttributeType InterfaceMessageRate = osee.createEnum(new InterfaceMessageRateAttributeType());
    InterfaceMessageTypeAttributeType InterfaceMessageType = osee.createEnum(new InterfaceMessageTypeAttributeType());
    AttributeTypeBoolean InterfaceMessageWriteAccess = osee.createBoolean(2455059983007225754L, "Interface Message Write Access", MediaType.TEXT_PLAIN, "Message has write access");
+   AttributeTypeString InterfaceNodeAddress= osee.createString(5726596359647826656L,"Interface Node Address",MediaType.TEXT_PLAIN,"");
+   AttributeTypeString InterfaceNodeBackgroundColor = osee.createString(5221290120300474048L,"Interface Node Bg Color",MediaType.TEXT_PLAIN,"");
    InterfaceStructureCategoryAttribute InterfaceStructureCategory = osee.createEnum(new InterfaceStructureCategoryAttribute());
    AttributeTypeInteger InterfaceSubMessageNumber = osee.createInteger(2455059983007225769L, "Interface Sub Message Number", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfaceMinSimultaneity = osee.createString(2455059983007225755L, "Interface Minimum Simultaneity", MediaType.TEXT_PLAIN, "");

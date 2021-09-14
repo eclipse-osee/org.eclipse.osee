@@ -4,7 +4,8 @@ export interface nodeData {
     id: string,
     name: string,
     description?:string
-    bgColor: string,
+    interfaceNodeBgColor: string,
+    interfaceNodeAddress:string,
     applicability?:applic
 }
 
@@ -13,4 +14,5 @@ export interface node {
     name: string,
     description?: string
     applicability?:applic
+    
 }

@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -48,9 +49,12 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
 
    @Override
    public List<String> getBranchPreferences(UserId accountId) {
-      return mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+      List<String> prefs = new LinkedList<String>();
+      List<String> tempPrefs = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          ArtifactId.valueOf(accountId.getId())).asArtifact().getAttributeValues(
             CoreAttributeTypes.MimBranchPreferences);
+      prefs.addAll(tempPrefs != null ? tempPrefs : new LinkedList<String>());
+      return prefs;
    }
 
 }

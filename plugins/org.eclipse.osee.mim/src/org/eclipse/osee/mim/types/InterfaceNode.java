@@ -28,6 +28,10 @@ public class InterfaceNode extends PLGenericDBObject {
 
    private ApplicabilityToken applicability;
 
+   private String Color;
+
+   private String Address;
+
    public InterfaceNode(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -35,6 +39,8 @@ public class InterfaceNode extends PLGenericDBObject {
    public InterfaceNode(ArtifactReadable art) {
       super(art);
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+      this.setColor(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBackgroundColor, ""));
+      this.setAddress(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeAddress, ""));
    }
 
    public InterfaceNode(Long id, String name) {
@@ -70,6 +76,34 @@ public class InterfaceNode extends PLGenericDBObject {
     */
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
+   }
+
+   /**
+    * @return the color
+    */
+   public String getColor() {
+      return Color;
+   }
+
+   /**
+    * @param color the color to set
+    */
+   public void setColor(String color) {
+      Color = color;
+   }
+
+   /**
+    * @return the address
+    */
+   public String getAddress() {
+      return Address;
+   }
+
+   /**
+    * @param address the address to set
+    */
+   public void setAddress(String address) {
+      Address = address;
    }
 
 }
