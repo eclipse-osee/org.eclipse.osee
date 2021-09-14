@@ -14,6 +14,8 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
@@ -85,7 +87,7 @@ public class XHyperlabelVersionSelection extends XHyperlinkLabelValueSelection {
          int result = dialog.open();
          if (result == 0) {
             Version version = dialog.getSelectedFirst();
-            handleSelectedVersion(version);
+            this.selectedVersion = version;
          }
          return true;
       } catch (Exception ex) {
@@ -94,11 +96,15 @@ public class XHyperlabelVersionSelection extends XHyperlinkLabelValueSelection {
       return false;
    }
 
-   private void handleSelectedVersion(Version version) {
-      this.selectedVersion = version;
+   @Override
+   public IStatus isValid() {
+      if (isRequiredEntry() && isEmpty()) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      }
+      return Status.OK_STATUS;
    }
 
-   private Collection<IAtsVersion> getSelectableVersions() {
+   public Collection<IAtsVersion> getSelectableVersions() {
       return selectableVersions;
    }
 

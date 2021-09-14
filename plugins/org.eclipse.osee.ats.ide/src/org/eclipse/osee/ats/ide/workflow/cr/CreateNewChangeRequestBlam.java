@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,16 +23,20 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,9 +45,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
@@ -59,7 +67,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements INewActionListener {
+public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements INewActionListener, ISelectableValueProvider {
+
+   public static final String DEBUG_DESCRIPTION = "Description...";
    private static final String BLAM_DESCRIPTION =
       "Create program top level Demo Change Request for any new feature or problem found.\n" //
          + "This will mature into all the work for all teams needed to resolve this request.";
@@ -68,118 +78,43 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    protected final static String DESCRIPTION = "Description";
    protected static final String CHANGE_TYPE = "Change Type";
    protected static final String PRIORITY = "Priority";
-   protected static final String NEED_BY = "Need By";
+   protected static final String NEED_BY = AtsAttributeTypes.NeedBy.getUnqualifiedName();
    protected XText titleWidget;
    protected XText descWidget;
-   protected XCombo changeWidget;
-   protected XCombo priorityWidget;
+   protected XHyperlinkWfdForEnum changeWidgetEnum;
+   protected XHyperlinkWfdForEnumAttr changeWidgetEnumAttr;
+   protected XHyperlinkWfdForEnumAttr priorityWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
    private ActionResult actionResult;
+   protected XHyperlinkWfdForProgramAi programWidget;
+   private XRadioButtonsBooleanTriState crashWidget;
+   private XHyperlinkLabelDate needByWidget;
+   private String overrideTitle;
 
    public CreateNewChangeRequestBlam(String name) {
       super(name, BLAM_DESCRIPTION, null);
       this.atsApi = AtsApiService.get();
    }
 
-   // For subclass validation of widgets
-   protected boolean isValidEntry() {
-      return true;
-   }
-
-   @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      this.variableMap = variableMap;
-      boolean valid = true;
-      String title = variableMap.getString(TITLE);
-      if (Strings.isInValid(title)) {
-         log("Enter Title");
-         valid = false;
-      }
-      String programAi = variableMap.getString(PROGRAM);
-      if (Strings.isInValid(programAi)) {
-         log("Select Program");
-         valid = false;
-      }
-      String desc = variableMap.getString(DESCRIPTION);
-      if (Strings.isInValid(desc)) {
-         log("Enter Description");
-         valid = false;
-      }
-      String changeType = variableMap.getString(CHANGE_TYPE);
-      ChangeType cType = null;
-      if (Strings.isInValid(changeType) || XArtifactTypeComboViewer.SELECT_STR.equals(changeType)) {
-         log("Select Change type");
-         valid = false;
-      } else {
-         try {
-            cType = (ChangeType.valueOf(changeType));
-         } catch (Exception ex) {
-            valid = false;
-            log("Invalid Change Type");
-         }
-      }
-      String priority = variableMap.getString(PRIORITY);
-      if (Strings.isInValid(priority) || "--select--".equals(priority)) {
-         log("Select Priority");
-         valid = false;
-      }
-      Date needBy = (Date) variableMap.getValue(NEED_BY);
-
-      if (!isValidEntry() || !valid) {
-         return;
-      }
-
-      IAtsActionableItem ai = null;
-      for (IAtsActionableItem ai2 : getProgramCrAis()) {
-         if (ai2.getName().equals(programAi)) {
-            ai = ai2;
-            break;
-         }
-      }
-
-      IAtsChangeSet changes = atsApi.createChangeSet(getName());
-      actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priority, false, needBy, Collections.singleton(ai), new Date(),
-         atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
-      changes.execute();
-      if (actionResult.getResults().isErrors()) {
-         log(actionResult.getResults().toString());
-         return;
-      }
-      IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
-      WorkflowEditor.edit(teamWf);
-   }
-
-   abstract public Collection<IAtsActionableItem> getProgramCrAis();
-
    @Override
    public List<XWidgetRendererItem> getXWidgetItems() {
       wb = new XWidgetBuilder();
-      wb.andXCombo(PROGRAM, Collections.emptyList()).andRequired().endWidget();
+
+      wb.andWidget(PROGRAM, XHyperlinkWfdForProgramAi.class.getSimpleName()).andValueProvider(
+         this).andRequired().endWidget();
+
       wb.andXText(TITLE).andRequired().endWidget();
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
-      addChangeTypeCombo();
-      wb.andXCombo(getPriorityAttr()).andRequired().endWidget();
-      addWidgetAfterPriority();
-      wb.andXDate(AtsAttributeTypes.NeedBy).endComposite().endWidget();
+
+      // 6 columns
+      wb.andXHyperLinkEnumAttr(AtsAttributeTypes.ChangeType).andComposite(6).andRequired().endWidget();
+      wb.andXHyperLinkEnumAttr(getPriorityAttrType()).andRequired().endWidget();
+      wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endComposite().endWidget();
+
+      wb.andXRadioBooleanTriState(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName()).andRequired().endWidget();
+
       return wb.getItems();
-   }
-
-   private void addChangeTypeCombo() {
-      wb.andXCombo(AtsAttributeTypes.ChangeType).andComposite(getChangeTypeRowColumns()).andRequired().endWidget();
-   }
-
-   protected void addWidgetAfterPriority() {
-      // For sub-class extension
-   }
-
-   protected int getChangeTypeRowColumns() {
-      return 6;
-   }
-
-   protected AttributeTypeToken getPriorityAttr() {
-      return AtsAttributeTypes.Priority;
    }
 
    @Override
@@ -190,66 +125,193 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       } else if (xWidget.getLabel().equals(DESCRIPTION)) {
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
-         changeWidget = (XCombo) xWidget;
-         setChangeTypeWidget(changeWidget);
+         if (xWidget instanceof XHyperlinkWfdForEnumAttr) {
+            changeWidgetEnumAttr = (XHyperlinkWfdForEnumAttr) xWidget;
+         } else if (xWidget instanceof XHyperlinkWfdForEnum) {
+            changeWidgetEnum = (XHyperlinkWfdForEnum) xWidget;
+         }
       } else if (xWidget.getLabel().equals(PRIORITY)) {
-         priorityWidget = (XCombo) xWidget;
+         priorityWidget = (XHyperlinkWfdForEnumAttr) xWidget;
+      } else if (xWidget.getLabel().equals(NEED_BY)) {
+         needByWidget = (XHyperlinkLabelDate) xWidget;
+      } else if (xWidget.getLabel().equals(PRIORITY)) {
+         priorityWidget = (XHyperlinkWfdForEnumAttr) xWidget;
+      } else if (xWidget.getLabel().equals(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName())) {
+         crashWidget = (XRadioButtonsBooleanTriState) xWidget;
       } else if (xWidget.getLabel().equals(PROGRAM)) {
-         XCombo programCombo = (XCombo) xWidget;
-         programCombo.setToolTip("Selection if multiple Change Request programs exist");
-         List<String> aiStrs = new ArrayList<String>();
-         for (IAtsActionableItem ai : getProgramCrAis()) {
-            aiStrs.add(ai.getName());
-         }
-         programCombo.setDataStrings(aiStrs);
-         if (aiStrs.size() == 1) {
-            programCombo.getComboBox().select(1);
-         }
-         if (aiStrs.size() == 1) {
-            programCombo.setEditable(false);
-         }
-         programCombo.getLabelWidget().addMouseListener(new MouseAdapter() {
 
-            @Override
-            public void mouseUp(MouseEvent event) {
-               if (event.button == 3) {
-                  handlePopulateWithDebugInfo();
+         if (xWidget instanceof XHyperlinkWfdForProgramAi) {
+            programWidget = (XHyperlinkWfdForProgramAi) xWidget;
+            programWidget.getLabelHyperlink().addMouseListener(new MouseAdapter() {
+               @Override
+               public void mouseUp(MouseEvent event) {
+                  if (event.button == 3) {
+                     handlePopulateWithDebugInfo();
+                  }
                }
-            }
-
-         });
-      }
-   }
-
-   public static void setChangeTypeWidget(XCombo changeWidget) {
-      String[] array = ChangeType.valueArray();
-      for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
-         if (provider.useFactory()) {
-            if (provider.getChangeTypeValues() != null) {
-               array = provider.getChangeTypeArray();
+            });
+            Collection<IAtsActionableItem> selectable = programWidget.getSelectable();
+            if (selectable.size() == 1) {
+               programWidget.setSelected(selectable.iterator().next());
+               programWidget.refresh();
             }
          }
       }
-      changeWidget.setDataStrings(array);
    }
 
-   public void handlePopulateWithDebugInfo() {
-      String title = "New CR " + atsApi.getRandomNum();
-      handlePopulateWithDebugInfo(title);
+   abstract public Collection<IAtsActionableItem> getProgramCrAis();
+
+   protected String getDebugTitle() {
+      return "New CR " + atsApi.getRandomNum();
    }
 
    /**
     * Method is used to quickly create a unique title for debug purposes. Should only be used for tests.
     */
-   public void handlePopulateWithDebugInfo(String title) {
+   public void handlePopulateWithDebugInfo() {
       try {
-         titleWidget.set(title);
-         descWidget.set("Description...");
-         changeWidget.getComboBox().select(1);
-         priorityWidget.getComboBox().select(1);
+         titleWidget.set(Strings.isValid(overrideTitle) ? overrideTitle : getDebugTitle());
+         descWidget.set(DEBUG_DESCRIPTION);
+         if (changeWidgetEnum != null) {
+            changeWidgetEnum.setSelected(ChangeType.Problem.name());
+         }
+         if (changeWidgetEnumAttr != null) {
+            changeWidgetEnumAttr.setSelected(ChangeType.Problem.name());
+         }
+         if (priorityWidget != null) {
+            priorityWidget.setSelected("3");
+         }
+         if (crashWidget != null) {
+            crashWidget.setSelected(BooleanState.Yes);
+         }
+         if (needByWidget != null) {
+            needByWidget.setDateValue(new Date());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      this.variableMap = variableMap;
+      // Create ActionResult in case error checks find something
+      actionResult = new ActionResult(null, null);
+      XResultData results = actionResult.getResults();
+      String title = variableMap.getString(TITLE);
+      if (Strings.isInValid(title)) {
+         results.error("Enter Title");
+      }
+      IAtsActionableItem programAi = (IAtsActionableItem) variableMap.getValue(PROGRAM);
+      if (programAi == null || programAi.isInvalid()) {
+         results.error("Select Program");
+      }
+      String desc = variableMap.getString(DESCRIPTION);
+      if (Strings.isInValid(desc)) {
+         results.error("Enter Description");
+      }
+      String changeType = variableMap.getString(CHANGE_TYPE);
+      ChangeType cType = null;
+      if (changeWidgetEnum != null || changeWidgetEnumAttr != null) {
+         if (Strings.isInValid(changeType) || XArtifactTypeComboViewer.SELECT_STR.equals(changeType)) {
+            if (changeWidgetEnum != null && changeWidgetEnum.isRequiredEntry()) {
+               results.error("Select Change type");
+            } else if (changeWidgetEnumAttr != null && changeWidgetEnumAttr.isRequiredEntry()) {
+               results.error("Select Change type");
+            }
+         } else {
+            try {
+               cType = (ChangeType.valueOf(changeType));
+            } catch (Exception ex) {
+               results.error("Invalid Change Type");
+            }
+         }
+      }
+      String priority = "";
+      if (priorityWidget != null) {
+         priority = variableMap.getString(PRIORITY);
+         if (Strings.isInValid(priority) || "--select--".equals(priority)) {
+            if (priorityWidget.isRequiredEntry()) {
+               results.error("Select Priority");
+            }
+         }
+      }
+      if (crashWidget != null) {
+         BooleanState crash =
+            (BooleanState) variableMap.getValue(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName());
+         if (crash.isUnSet()) {
+            if (crashWidget.isRequiredEntry()) {
+               results.error("Select " + AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName());
+            }
+         }
+      }
+      Date needBy = null;
+      if (needByWidget != null) {
+         needBy = (Date) variableMap.getValue(NEED_BY);
+         if (needByWidget.isRequiredEntry()) {
+            results.error("Select Need By");
+         }
+      }
+
+      // Allow subsclass validation of additional input
+      isValidEntry(results);
+
+      // Log all strings to output section
+      log(results.toString());
+
+      // Return if failed
+      if (results.isErrors()) {
+         return;
+      }
+
+      IAtsChangeSet changes = atsApi.createChangeSet(getName());
+      actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
+         cType, priority, false, needBy, Collections.singleton(programAi), new Date(),
+         atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
+      changes.execute();
+      if (actionResult.getResults().isErrors()) {
+         log(actionResult.getResults().toString());
+         return;
+      }
+      IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
+      WorkflowEditor.edit(teamWf);
+   }
+
+   @Override
+   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
+      if (crashWidget != null) {
+         BooleanState state = crashWidget.getSelected();
+         boolean checked = true;
+         if (state.isUnSet()) {
+            checked = false;
+         }
+         changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CrashOrBlankDisplay, checked);
+      }
+   }
+
+   public Collection<IAtsVersion> getSelectedProgramVersions() {
+      IAtsTeamDefinition progTeamDef = getSelectedProgramTeamDefOrSentinel();
+      if (progTeamDef.isValid()) {
+         return atsApi.getVersionService().getVersionsFromTeamDefHoldingVersions(progTeamDef);
+      }
+      return Collections.emptyList();
+   }
+
+   public IAtsTeamDefinition getSelectedProgramTeamDefOrSentinel() {
+      IAtsTeamDefinition progTeamDef = IAtsTeamDefinition.SENTINEL;
+      IAtsActionableItem progAi = getSelectedProgramAiOrSentinel();
+      if (progAi.isValid()) {
+         progTeamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(progAi);
+      }
+      return progTeamDef;
+   }
+
+   public IAtsActionableItem getSelectedProgramAiOrSentinel() {
+      IAtsActionableItem selected = programWidget.getSelected();
+      if (selected != null) {
+         return selected;
+      }
+      return IAtsActionableItem.SENTINEL;
    }
 
    @Override
@@ -287,6 +349,22 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    @Override
    public Collection<XNavItemCat> getCategories() {
       return Arrays.asList(XNavItemCat.TOP_NEW);
+   }
+
+   protected AttributeTypeToken getPriorityAttrType() {
+      return AtsAttributeTypes.Priority;
+   }
+
+   @Override
+   public Collection<Object> getSelectable(XWidget widget) {
+      if (widget instanceof XHyperlinkWfdForProgramAi) {
+         return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getProgramCrAis());
+      }
+      return Collections.emptyList();
+   }
+
+   public void setOverrideTitle(String overrideTitle) {
+      this.overrideTitle = overrideTitle;
    }
 
 }

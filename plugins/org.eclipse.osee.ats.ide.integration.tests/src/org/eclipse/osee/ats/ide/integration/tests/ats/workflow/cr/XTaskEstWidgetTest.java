@@ -56,7 +56,7 @@ public class XTaskEstWidgetTest implements TaskEstNameProvider {
    public void testCreate() {
 
       ArtifactToken artifactByName = atsApi.getQueryService().getArtifactByName(
-         AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow, CreateNewDemoChangeRequestTest.TITLE);
+         AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow, CreateNewDemoChangeRequestBlamTest.TITLE);
       Assert.assertNotNull(artifactByName);
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
 

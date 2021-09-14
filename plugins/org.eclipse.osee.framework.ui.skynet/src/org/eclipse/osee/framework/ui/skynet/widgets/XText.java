@@ -100,7 +100,7 @@ public class XText extends XWidget {
 
    @Override
    public Control getControl() {
-      return sText;
+      return labelWidget;
    }
 
    /**

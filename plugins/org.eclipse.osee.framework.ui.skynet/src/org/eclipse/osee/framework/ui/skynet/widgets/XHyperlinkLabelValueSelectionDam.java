@@ -36,6 +36,7 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
 
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;
+
    public static String NOT_SET = "Not Set";
 
    public XHyperlinkLabelValueSelectionDam() {
@@ -44,6 +45,10 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
 
    public XHyperlinkLabelValueSelectionDam(String label) {
       super(label);
+   }
+
+   public void setAttributeType(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
    }
 
    @Override

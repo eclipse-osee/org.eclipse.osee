@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.LabelAfterWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -143,8 +144,10 @@ public class SwtXWidgetRenderer {
       if (xWidgetRenderItem.getDefaultValueObj() != null) {
          xWidget.setDefaultValueObj(xWidgetRenderItem.getDefaultValueObj());
       }
+      xWidget.setValueProvider(xWidgetRenderItem.getValueProvider());
 
       xWidget.setArtifactType(xWidgetRenderItem.getArtifactType());
+      xWidget.setValues(xWidgetRenderItem.getValues());
 
       return xWidget;
    }
@@ -331,7 +334,7 @@ public class SwtXWidgetRenderer {
       if (artifact == null) {
          return;
       }
-      if (xWidget instanceof AttributeWidget) {
+      if (xWidget instanceof AttributeWidget || xWidget instanceof AttributeTypeWidget) {
          AttributeTypeToken attributeType = null;
          if (xWidgetLayoutData.getStoreId() > 0) {
             attributeType = AttributeTypeManager.getAttributeType(xWidgetLayoutData.getStoreId());
@@ -340,7 +343,16 @@ public class SwtXWidgetRenderer {
             attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
          }
          try {
-            ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+            if (xWidget instanceof AttributeWidget) {
+               ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+         try {
+            if (xWidget instanceof AttributeTypeWidget) {
+               ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
+            }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

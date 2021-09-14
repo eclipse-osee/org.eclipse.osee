@@ -57,6 +57,7 @@ public class XRadioButtonsBooleanTriState extends XRadioButtons {
 
    protected void handleSelection(XRadioButton button) {
       selected = BooleanState.valueOf(button.getLabel());
+      refresh();
    }
 
    public BooleanState getSelected() {
@@ -99,6 +100,11 @@ public class XRadioButtonsBooleanTriState extends XRadioButtons {
       public boolean isNo() {
          return this == BooleanState.No;
       }
+   }
+
+   @Override
+   public Object getData() {
+      return selected;
    }
 
 }

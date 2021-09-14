@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -56,13 +57,16 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
                AUTO_SAVE), //
+
+            new WidgetDefinition(AtsAttributeTypes.NeedBy, "XHyperlinkLabelDateDam"), //
+
             new CompositeLayoutItem(4,
                new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERTICALLY),
                new WidgetDefinition(AtsAttributeTypes.WorkaroundDescription, "XTextDam", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XCheckBoxThreeStateDam", HORIZONTAL_LABEL,
-                  REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE),
+               new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XRadioButtonsBooleanTriStateDam",
+                  WidgetOption.HORIZONTAL_LABEL, REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE),
                new WidgetDefinition(AtsAttributeTypes.NonFunctionalProblem, "XCheckBoxThreeStateDam", HORIZONTAL_LABEL,
                   REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE) //
             ), //

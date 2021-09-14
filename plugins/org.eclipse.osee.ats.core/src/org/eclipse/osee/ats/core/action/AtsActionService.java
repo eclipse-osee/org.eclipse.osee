@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -88,254 +89,271 @@ public class AtsActionService implements IAtsActionService {
 
    @Override
    public ActionResult createAction(NewActionData data, IAtsChangeSet changes) {
-      AtsUser asUser = atsApi.getUserService().getUserByUserId(data.getAsUserId());
-      Conditions.assertNotNull(asUser, "As-User must be specified.");
-      AtsUser createdBy = null;
-      if (Strings.isValid(data.getCreatedByUserId())) {
-         createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
-      }
-      if (createdBy == null && Strings.isValid(data.getCreatedByUserId())) {
-         createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
-      }
-      Conditions.assertNotNull(createdBy, "Created-By must be specified.");
-      Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
-      List<IAtsActionableItem> ais = new LinkedList<>();
-      for (String aiId : data.getAiIds()) {
-         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(Long.valueOf(aiId));
-         Conditions.assertNotNull(ai, "Actionable Item must be specified.");
-         ais.add(ai);
-      }
-
-      Date needByDate = null;
-      if (Strings.isNumeric(data.getNeedByDateLong())) {
-         needByDate = new Date(Long.valueOf(data.getNeedByDateLong()));
-      } else if (Strings.isValid(data.getNeedByDate())) {
-         try {
-            needByDate = DateUtil.getDate("yyyy-MM-dd", data.getNeedByDate());
-         } catch (Exception ex) {
-            throw new OseeCoreException("Error parsing date.  Must be mm/dd/yyyy.", ex);
+      ActionResult result = null;
+      try {
+         AtsUser asUser = atsApi.getUserService().getUserByUserId(data.getAsUserId());
+         Conditions.assertNotNull(asUser, "As-User must be specified.");
+         AtsUser createdBy = null;
+         if (Strings.isValid(data.getCreatedByUserId())) {
+            createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
          }
-      }
-      Date createdDate = null;
-      if (Strings.isNumeric(data.getCreatedDateLong())) {
-         createdDate = new Date(Long.valueOf(data.getCreatedDateLong()));
-      } else {
-         createdDate = new Date();
-      }
-      ActionResult result = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(),
-         data.getPriority(), data.isValidationRequired(), needByDate, ais, createdDate, createdBy,
-         java.util.Collections.emptyList(), changes);
+         if (createdBy == null && Strings.isValid(data.getCreatedByUserId())) {
+            createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
+         }
+         Conditions.assertNotNull(createdBy, "Created-By must be specified.");
+         Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
+         List<IAtsActionableItem> ais = new LinkedList<>();
+         for (String aiId : data.getAiIds()) {
+            IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(Long.valueOf(aiId));
+            Conditions.assertNotNull(ai, "Actionable Item must be specified.");
+            ais.add(ai);
+         }
 
-      if (Strings.isValid(data.getPoints())) {
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            IAgileTeam agileTeam = null;
-            if (Strings.isNumeric(data.getAgileTeam())) {
-               agileTeam = atsApi.getQueryService().getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
+         Date needByDate = null;
+         if (Strings.isNumeric(data.getNeedByDateLong())) {
+            needByDate = new Date(Long.valueOf(data.getNeedByDateLong()));
+         } else if (Strings.isValid(data.getNeedByDate())) {
+            try {
+               needByDate = DateUtil.getDate("yyyy-MM-dd", data.getNeedByDate());
+            } catch (Exception ex) {
+               throw new OseeCoreException("Error parsing date.  Must be mm/dd/yyyy.", ex);
             }
-            if (agileTeam == null) {
-               IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-               agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
-            }
-            String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
-               AtsAttributeTypes.PointsAttributeType, null);
-            if (Strings.isInValid(pointsAttrType)) {
-               pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
+         }
+         Date createdDate = null;
+         if (Strings.isNumeric(data.getCreatedDateLong())) {
+            createdDate = new Date(Long.valueOf(data.getCreatedDateLong()));
+         } else {
+            createdDate = new Date();
+         }
+         result = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(), data.getPriority(),
+            data.isValidationRequired(), needByDate, ais, createdDate, createdBy, java.util.Collections.emptyList(),
+            changes);
+
+         if (result.getResults().isErrors()) {
+            return result;
+         }
+
+         if (Strings.isValid(data.getPoints())) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               IAgileTeam agileTeam = null;
+               if (Strings.isNumeric(data.getAgileTeam())) {
+                  agileTeam = atsApi.getQueryService().getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
+               }
+               if (agileTeam == null) {
+                  IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
+                  agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
+               }
+               String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
                   AtsAttributeTypes.PointsAttributeType, null);
+               if (Strings.isInValid(pointsAttrType)) {
+                  pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
+                     AtsAttributeTypes.PointsAttributeType, null);
+               }
+               if (!Strings.isValid(pointsAttrType)) {
+                  throw new OseeArgumentException(
+                     "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
+                     agileTeam.toStringWithId());
+               }
+               AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
+
+               changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
             }
-            if (!Strings.isValid(pointsAttrType)) {
-               throw new OseeArgumentException(
-                  "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
-                  agileTeam.toStringWithId());
+         }
+
+         if (data.isUnplanned()) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnplannedWork, true);
             }
-            AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
-
-            changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
          }
-      }
 
-      if (data.isUnplanned()) {
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnplannedWork, true);
+         String featureGroup = data.getFeatureGroup();
+         if (Strings.isValid(featureGroup)) {
+            IAgileFeatureGroup group = null;
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               if (Strings.isNumeric(featureGroup)) {
+                  group = atsApi.getAgileService().getAgileFeatureGroup(ArtifactId.valueOf(featureGroup));
+               } else {
+                  IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamWf.getTeamDefinition());
+                  for (IAgileFeatureGroup grp : atsApi.getAgileService().getAgileFeatureGroups(aTeam)) {
+                     if (grp.getName().equals(featureGroup)) {
+                        group = grp;
+                        break;
+                     }
+                  }
+               }
+               if (group != null) {
+                  changes.relate(teamWf, AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup, group);
+               }
+            }
          }
-      }
 
-      String featureGroup = data.getFeatureGroup();
-      if (Strings.isValid(featureGroup)) {
-         IAgileFeatureGroup group = null;
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            if (Strings.isNumeric(featureGroup)) {
-               group = atsApi.getAgileService().getAgileFeatureGroup(ArtifactId.valueOf(featureGroup));
-            } else {
-               IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamWf.getTeamDefinition());
-               for (IAgileFeatureGroup grp : atsApi.getAgileService().getAgileFeatureGroups(aTeam)) {
-                  if (grp.getName().equals(featureGroup)) {
-                     group = grp;
-                     break;
+         // Set sprint
+         String sprintStr = data.getSprint();
+         if (Strings.isValid(sprintStr)) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               IAgileSprint sprint = null;
+               if (Strings.isNumeric(sprintStr)) {
+                  sprint = atsApi.getAgileService().getAgileSprint(Long.valueOf(sprintStr));
+               } else {
+                  IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(sprint);
+                  for (IAgileSprint aSprint : atsApi.getAgileService().getAgileSprints(aTeam)) {
+                     if (aSprint.getName().equals(sprintStr)) {
+                        sprint = aSprint;
+                        break;
+                     }
+                  }
+               }
+               if (sprint != null) {
+                  changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+               }
+            }
+         }
+
+         // Set backlog if not already set
+         // NOTE: This may cause a problem if team already configured to add new items to backlog
+         String agileTeamStr = data.getAgileTeam();
+         if (Strings.isValid(agileTeamStr)) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               IAgileTeam aTeam = null;
+               if (Strings.isNumeric(agileTeamStr)) {
+                  aTeam = atsApi.getAgileService().getAgileTeam(Long.valueOf(agileTeamStr));
+               } else {
+                  ArtifactId aTeamArt =
+                     atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.AgileTeam, agileTeamStr);
+                  if (aTeamArt.isValid()) {
+                     aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
+                  }
+               }
+               if (aTeam != null) {
+                  IAgileBacklog backlog = atsApi.getAgileService().getBacklogForTeam(aTeam.getId());
+                  if (backlog != null) {
+                     if (!atsApi.getRelationResolver().areRelated(backlog, AtsRelationTypes.Goal_Member, teamWf)) {
+                        changes.relate(backlog, AtsRelationTypes.Goal_Member, teamWf);
+                     }
                   }
                }
             }
-            if (group != null) {
-               changes.relate(teamWf, AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup, group);
+         }
+
+         // set originator
+         if (Strings.isNumeric(data.getOriginatorStr())) {
+            AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(data.getOriginatorStr()));
+            if (originator != null) {
+               for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
+               }
             }
          }
-      }
 
-      // Set sprint
-      String sprintStr = data.getSprint();
-      if (Strings.isValid(sprintStr)) {
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            IAgileSprint sprint = null;
-            if (Strings.isNumeric(sprintStr)) {
-               sprint = atsApi.getAgileService().getAgileSprint(Long.valueOf(sprintStr));
+         // set assignee
+         if (Strings.isValid(data.getAssigneeStr())) {
+            List<AtsUser> assignees = new LinkedList<>();
+            for (String id : data.getAssigneeStr().split(",")) {
+               AtsUser user = atsApi.getUserService().getUserById(ArtifactId.valueOf(id));
+               if (user != null) {
+                  assignees.add(user);
+               }
+            }
+            if (!assignees.isEmpty()) {
+               for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+                  teamWf.getStateMgr().setAssignees(assignees);
+                  changes.add(teamWf);
+               }
+            }
+         }
+
+         // set work package
+         if (Strings.isValid(data.getWorkPackage())) {
+            IAtsWorkPackage workPkg = null;
+            if (Strings.isNumeric(data.getWorkPackage())) {
+               workPkg = atsApi.getEarnedValueService().getWorkPackage(ArtifactId.valueOf(data.getWorkPackage()));
             } else {
-               IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(sprint);
-               for (IAgileSprint aSprint : atsApi.getAgileService().getAgileSprints(aTeam)) {
-                  if (aSprint.getName().equals(sprintStr)) {
-                     sprint = aSprint;
-                     break;
-                  }
+               ArtifactId art = atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkPackage,
+                  data.getWorkPackage());
+               if (art.isValid()) {
+                  workPkg = atsApi.getEarnedValueService().getWorkPackage(art);
                }
             }
-            if (sprint != null) {
-               changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
-            }
-         }
-      }
-
-      // Set backlog if not already set
-      // NOTE: This may cause a problem if team already configured to add new items to backlog
-      String agileTeamStr = data.getAgileTeam();
-      if (Strings.isValid(agileTeamStr)) {
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            IAgileTeam aTeam = null;
-            if (Strings.isNumeric(agileTeamStr)) {
-               aTeam = atsApi.getAgileService().getAgileTeam(Long.valueOf(agileTeamStr));
+            if (workPkg != null) {
+               for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+                  atsApi.getEarnedValueService().setWorkPackage(workPkg, teamWf, changes);
+               }
             } else {
-               ArtifactId aTeamArt =
-                  atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.AgileTeam, agileTeamStr);
-               if (aTeamArt.isValid()) {
-                  aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
-               }
-            }
-            if (aTeam != null) {
-               IAgileBacklog backlog = atsApi.getAgileService().getBacklogForTeam(aTeam.getId());
-               if (backlog != null) {
-                  if (!atsApi.getRelationResolver().areRelated(backlog, AtsRelationTypes.Goal_Member, teamWf)) {
-                     changes.relate(backlog, AtsRelationTypes.Goal_Member, teamWf);
-                  }
-               }
+               result.getResults().errorf("Inavlid Work Package id or name [%s]", data.getWorkPackage());
             }
          }
-      }
 
-      // set originator
-      if (Strings.isNumeric(data.getOriginatorStr())) {
-         AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(data.getOriginatorStr()));
-         if (originator != null) {
+         // set any additional values
+         for (Entry<String, String> attr : data.getAttrValues().entrySet()) {
+            if (!Strings.isNumeric(attr.getKey())) {
+               throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
+            }
+            AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(Long.valueOf(attr.getKey()));
+            if (attributeType == null) {
+               throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
+            }
             for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
+               changes.setSoleAttributeValue(teamWf, attributeType, attr.getValue());
             }
          }
-      }
-
-      // set assignee
-      if (Strings.isValid(data.getAssigneeStr())) {
-         List<AtsUser> assignees = new LinkedList<>();
-         for (String id : data.getAssigneeStr().split(",")) {
-            AtsUser user = atsApi.getUserService().getUserById(ArtifactId.valueOf(id));
-            if (user != null) {
-               assignees.add(user);
-            }
-         }
-         if (!assignees.isEmpty()) {
-            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-               teamWf.getStateMgr().setAssignees(assignees);
-               changes.add(teamWf);
-            }
-         }
-      }
-
-      // set work package
-      if (Strings.isValid(data.getWorkPackage())) {
-         IAtsWorkPackage workPkg = null;
-         if (Strings.isNumeric(data.getWorkPackage())) {
-            workPkg = atsApi.getEarnedValueService().getWorkPackage(ArtifactId.valueOf(data.getWorkPackage()));
-         } else {
-            ArtifactId art = atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkPackage,
-               data.getWorkPackage());
-            if (art.isValid()) {
-               workPkg = atsApi.getEarnedValueService().getWorkPackage(art);
-            }
-         }
-         if (workPkg != null) {
-            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-               atsApi.getEarnedValueService().setWorkPackage(workPkg, teamWf, changes);
-            }
-         } else {
-            result.getResults().errorf("Inavlid Work Package id or name [%s]", data.getWorkPackage());
-         }
-      }
-
-      // set any additional values
-      for (Entry<String, String> attr : data.getAttrValues().entrySet()) {
-         if (!Strings.isNumeric(attr.getKey())) {
-            throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
-         }
-         AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(Long.valueOf(attr.getKey()));
-         if (attributeType == null) {
-            throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
-         }
-         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            changes.setSoleAttributeValue(teamWf, attributeType, attr.getValue());
-         }
+      } catch (Exception ex) {
+         result = new ActionResult(null, null);
+         result.getResults().errorf("Exception creating Action %s", Lib.exceptionToString(ex));
       }
       return result;
    }
 
    @Override
    public ActionResult createAction(AtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
-      Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
-      Conditions.assertNotNullOrEmpty(title, "Title must be specified");
+      ActionResult result = null;
+      try {
+         Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
+         Conditions.assertNotNullOrEmpty(title, "Title must be specified");
 
-      /**
-       * if "tt" is title, this is an action created for development. To make it easier, all fields are automatically
-       * filled in for ATS developer
-       */
-      IAtsAction action = createAction(title, desc, changeType, priority, validationRequired, needByDate, changes);
+         /**
+          * if "tt" is title, this is an action created for development. To make it easier, all fields are automatically
+          * filled in for ATS developer
+          */
+         IAtsAction action = createAction(title, desc, changeType, priority, validationRequired, needByDate, changes);
 
-      // Retrieve Team Definitions corresponding to selected Actionable Items
-      Collection<IAtsTeamDefinition> teamDefs = atsApi.getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
-      if (teamDefs.isEmpty()) {
-         StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
-         for (IAtsActionableItem aia : actionableItems) {
-            sb.append("Selected AI \"" + aia + "\" " + aia.getIdString() + "\n");
+         // Retrieve Team Definitions corresponding to selected Actionable Items
+         Collection<IAtsTeamDefinition> teamDefs =
+            atsApi.getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
+         if (teamDefs.isEmpty()) {
+            StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
+            for (IAtsActionableItem aia : actionableItems) {
+               sb.append("Selected AI \"" + aia + "\" " + aia.getIdString() + "\n");
+            }
+            throw new OseeStateException(sb.toString());
          }
-         throw new OseeStateException(sb.toString());
-      }
 
-      // Create team workflow artifacts
-      List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
-      for (IAtsTeamDefinition teamDef : teamDefs) {
-         List<AtsUser> leads =
-            new LinkedList<>(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef, actionableItems));
-         if (leads.isEmpty()) {
-            leads.add(AtsCoreUsers.UNASSIGNED_USER);
+         // Create team workflow artifacts
+         List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
+         for (IAtsTeamDefinition teamDef : teamDefs) {
+            List<AtsUser> leads =
+               new LinkedList<>(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef, actionableItems));
+            if (leads.isEmpty()) {
+               leads.add(AtsCoreUsers.UNASSIGNED_USER);
+            }
+            IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate,
+               createdBy, newActionListeners);
+            teamWfs.add(teamWf);
+            changes.add(teamWf);
          }
-         IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate,
-            createdBy, newActionListeners);
-         teamWfs.add(teamWf);
-         changes.add(teamWf);
-      }
 
-      // Notify listener of action creation
-      if (newActionListeners != null) {
-         for (INewActionListener listener : newActionListeners) {
-            listener.actionCreated(action);
+         // Notify listener of action creation
+         if (newActionListeners != null) {
+            for (INewActionListener listener : newActionListeners) {
+               listener.actionCreated(action);
+            }
          }
-      }
 
-      changes.add(action);
-      ActionResult result = new ActionResult(action, teamWfs);
+         changes.add(action);
+         result = new ActionResult(action, teamWfs);
+      } catch (Exception ex) {
+         result = new ActionResult(null, null);
+         result.getResults().errorf("Exception creating Action %s", Lib.exceptionToString(ex));
+      }
       return result;
    }
 

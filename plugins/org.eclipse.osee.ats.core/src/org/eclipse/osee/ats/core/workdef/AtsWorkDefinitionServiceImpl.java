@@ -473,6 +473,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             AtsWorkDefinitionToken workDefTok = listener.getOverrideWorkDefinitionId(teamDef);
             if (workDefTok != null) {
                workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
+               break;
             }
          }
       }

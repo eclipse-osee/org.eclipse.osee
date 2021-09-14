@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -159,5 +160,10 @@ public interface AtsConfigEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public BranchData createBranch(BranchData branchData);
+
+   @POST
+   @Path("configForDemoPl/{branch}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData configForDemoPl(@PathParam("branch") BranchId branch);
 
 }

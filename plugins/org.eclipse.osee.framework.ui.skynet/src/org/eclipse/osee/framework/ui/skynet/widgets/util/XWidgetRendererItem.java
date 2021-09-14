@@ -13,12 +13,15 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -58,6 +61,8 @@ public class XWidgetRendererItem implements Cloneable {
    private ComputedCharacteristicToken<?> computedCharacteristic;
    private boolean horizontalLabel;
    private Object defaultValueObj;
+   private ISelectableValueProvider valueProvider;
+   private Collection<? extends Object> values = new ArrayList<Object>();
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -355,6 +360,22 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setGroupName(String groupName) {
       this.groupName = groupName;
+   }
+
+   public ISelectableValueProvider getValueProvider() {
+      return valueProvider;
+   }
+
+   public void setValueProvider(ISelectableValueProvider valueProvider) {
+      this.valueProvider = valueProvider;
+   }
+
+   public Collection<? extends Object> getValues() {
+      return values;
+   }
+
+   public void setValues(Collection<? extends Object> values) {
+      this.values = values;
    }
 
 }

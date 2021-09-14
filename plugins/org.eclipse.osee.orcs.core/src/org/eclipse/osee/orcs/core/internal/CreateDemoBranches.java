@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.internal.applicability.DemoFeatures;
 import org.eclipse.osee.orcs.core.util.Artifacts;
@@ -49,13 +48,11 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class CreateDemoBranches {
    private final OrcsApi orcsApi;
    private final TransactionFactory txFactory;
-   private final OrcsApplicability ops;
    private final OrcsBranch branchOps;
 
    public CreateDemoBranches(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       txFactory = orcsApi.getTransactionFactory();
-      ops = orcsApi.getApplicabilityOps();
       branchOps = orcsApi.getBranchOps();
    }
 
@@ -68,7 +65,7 @@ public class CreateDemoBranches {
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, account, SAW_Bld_1, ArtifactId.SENTINEL);
 
-      createProductLineConfig(DemoBranches.SAW_PL, account);
+      createProductLineConfig(DemoBranches.SAW_PL, account, orcsApi);
 
       Branch hardeningBranch =
          branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, account, SAW_PL, ArtifactId.SENTINEL);
@@ -77,9 +74,9 @@ public class CreateDemoBranches {
       branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, account, SAW_PL, ArtifactId.SENTINEL);
    }
 
-   private void createProductLineConfig(BranchId branch, UserId account) {
+   public static void createProductLineConfig(BranchId branch, UserId account, OrcsApi orcsApi) {
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, "Create Product Line folders");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Create Product Line folders");
 
       ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder,
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
@@ -94,7 +91,7 @@ public class CreateDemoBranches {
 
       ArtifactToken[] products = new ArtifactToken[] {productA, productB, productC, productD};
 
-      createFeatureConfigs(featuresFolder, tx);
+      createFeatureConfigs(featuresFolder, tx, orcsApi);
 
       // Configure productions for each feature
       configureFeature(tx, DemoFeatures.ROBOT_ARM_LIGHT.name(), products, "Excluded", "Included", "Excluded",
@@ -116,20 +113,20 @@ public class CreateDemoBranches {
 
    }
 
-   private void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx) {
+   private static void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx, OrcsApi orcsApi) {
       XResultData results = new XResultData();
       FeatureDefinition def1 = new FeatureDefinition(DemoFeatures.ROBOT_ARM_LIGHT.name(), "String",
          Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability", Arrays.asList("Test"));
-      ops.createFeatureDefinition(def1, tx, results);
+      orcsApi.getApplicabilityOps().createFeatureDefinition(def1, tx, results);
       FeatureDefinition def2 = new FeatureDefinition(DemoFeatures.ENGINE_5.name(), "String",
          Arrays.asList("A2543", "B5543"), "A2543", false, "Used select type of engine", Arrays.asList("Test"));
-      ops.createFeatureDefinition(def2, tx, results);
+      orcsApi.getApplicabilityOps().createFeatureDefinition(def2, tx, results);
       FeatureDefinition def3 = new FeatureDefinition(DemoFeatures.JHU_CONTROLLER.name(), "String",
          Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation", null);
-      ops.createFeatureDefinition(def3, tx, results);
+      orcsApi.getApplicabilityOps().createFeatureDefinition(def3, tx, results);
       FeatureDefinition def4 = new FeatureDefinition(DemoFeatures.ROBOT_SPEAKER.name(), "String",
          Arrays.asList("SPKR_A", "SPKR_B", "SPKR_C"), "SPKR_A", true, "This feature is multi-select.", null);
-      ops.createFeatureDefinition(def4, tx, results);
+      orcsApi.getApplicabilityOps().createFeatureDefinition(def4, tx, results);
       orcsApi.getApplicabilityOps();
       Conditions.assertFalse(results.isErrors(), results.toString());
    }
@@ -137,7 +134,7 @@ public class CreateDemoBranches {
    /**
     * TODO: Remove after 26.0 release which converted feature definitions from a single json string
     */
-   private void createLegacyFeatureConfig(ArtifactId folder, TransactionBuilder tx) {
+   private static void createLegacyFeatureConfig(ArtifactId folder, TransactionBuilder tx) {
       ArtifactId featureDefinition =
          tx.createArtifact(folder, CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
       String featureDefJson = "[{" + "\"name\": \"" + DemoFeatures.ROBOT_ARM_LIGHT.name() + "\"," + //
@@ -169,7 +166,7 @@ public class CreateDemoBranches {
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
    }
 
-   private void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
+   private static void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
       for (int i = 0; i < products.length; i++) {
          tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
       }

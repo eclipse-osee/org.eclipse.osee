@@ -252,6 +252,7 @@ public class AttributeFormPart extends AbstractFormPart {
             xWidget.addXModifiedListener(new XWidgetValidationListener());
             decorator.addWidget(xWidget);
          }
+
       } catch (OseeCoreException ex) {
          toolkit.createLabel(parent,
             String.format("Error creating controls for: [%s] [%s]", attributeType.getName(), ex.getLocalizedMessage()));

@@ -24,11 +24,12 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
  */
 public class XFoundInVersionWithPersistWidget extends XHyperlabelVersionSelectionWithPersist {
 
+   public static final String LABEL = "Found In Version";
    public static final String WIDGET_ID = XFoundInVersionWithPersistWidget.class.getSimpleName();
    public static RelationTypeSide FOUND_VERSION_RELATION = AtsRelationTypes.TeamWorkflowToFoundInVersion_Version;
 
    public XFoundInVersionWithPersistWidget(String label) {
-      super("Found In Version", FOUND_VERSION_RELATION);
+      super(LABEL, FOUND_VERSION_RELATION);
    }
 
 }

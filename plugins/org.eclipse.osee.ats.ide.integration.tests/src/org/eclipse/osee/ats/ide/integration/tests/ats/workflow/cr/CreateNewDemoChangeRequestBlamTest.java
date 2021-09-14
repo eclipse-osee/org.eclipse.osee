@@ -13,16 +13,17 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.workflow.cr.CreateNewDemoChangeRequestBlam;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestTestUtility;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -32,7 +33,7 @@ import org.junit.Before;
  *
  * @author Donald G. Dunne
  */
-public class CreateNewDemoChangeRequestTest {
+public class CreateNewDemoChangeRequestBlamTest {
 
    AtsApi atsApi;
    public static String TITLE = "New CR - CreateNewDemoChangeRequestTest";
@@ -47,43 +48,8 @@ public class CreateNewDemoChangeRequestTest {
    public void testCreate() {
 
       CreateNewDemoChangeRequestBlam blam = new CreateNewDemoChangeRequestBlam();
-      BlamEditor.edit(blam);
-      BlamEditor blamEd = null;
-      while (blamEd == null) {
-         Collection<BlamEditor> editors = BlamEditor.getEditors();
-         if (editors.isEmpty()) {
-            continue;
-         }
-         blamEd = editors.iterator().next();
-         if (blamEd == null) {
-            try {
-               Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-               // do nothing
-            }
-         }
-      }
-      final CreateNewDemoChangeRequestBlam fBlam =
-         (CreateNewDemoChangeRequestBlam) blamEd.getEditorInput().getBlamOperation();
-      final BlamEditor fBlamEd = blamEd;
-      Displays.ensureInDisplayThread(new Runnable() {
 
-         @Override
-         public void run() {
-            fBlam.handlePopulateWithDebugInfo(TITLE);
-            fBlamEd.executeBlam();
-         }
-      }, true);
-
-      ActionResult actionResult = fBlam.getActionResult();
-      while (actionResult == null) {
-         try {
-            Thread.sleep(1000);
-         } catch (InterruptedException ex) {
-            // do nothing
-         }
-         actionResult = fBlam.getActionResult();
-      }
+      ActionResult actionResult = CreateNewChangeRequestTestUtility.testCreate(blam, TITLE);
       Assert.assertTrue(actionResult.getResults().isSuccess());
 
       ArtifactToken artifactByName =
@@ -92,6 +58,14 @@ public class CreateNewDemoChangeRequestTest {
 
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
       Assert.assertEquals("CR1001", teamWf.getAtsId());
+      Assert.assertEquals(TITLE, teamWf.getName());
+      Assert.assertEquals(ChangeType.Problem.name(),
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
+      Assert.assertEquals("3",
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
+      Assert.assertNotNull(atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
+      Assert.assertEquals(true,
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.CrashOrBlankDisplay, null));
 
    }
 
