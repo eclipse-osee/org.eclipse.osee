@@ -30,12 +30,15 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -43,10 +46,13 @@ import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.junit.Assert;
@@ -65,14 +71,17 @@ public class BranchEndpointTest {
    private static BranchEndpoint branchEndpoint;
    private static JaxRsApi jaxRsApi;
 
+   private static ArtifactEndpoint workingBranchArtifactEndpoint;
+
    @BeforeClass
    public static void testSetup() {
       OseeClient oseeClient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
       branchEndpoint = oseeClient.getBranchEndpoint();
+      workingBranchArtifactEndpoint = oseeClient.getArtifactEndpoint(DemoBranches.SAW_PL);
       jaxRsApi = oseeClient.jaxRsApi();
    }
 
-   private static NewBranch testDataInitialization() {
+   private static NewBranch testDataInitialization(BranchToken branchToken) {
       NewBranch data = new NewBranch();
       data.setAssociatedArtifact(ArtifactId.SENTINEL);
       data.setAuthor(UserManager.getUser());
@@ -81,8 +90,8 @@ public class BranchEndpointTest {
       data.setCreationComment("For Test");
       data.setMergeAddressingQueryId(0);
       data.setMergeDestinationBranchId(null);
-      data.setParentBranchId(CoreBranches.SYSTEM_ROOT);
-      data.setSourceTransactionId(TransactionManager.getHeadTransaction(CoreBranches.SYSTEM_ROOT));
+      data.setParentBranchId(branchToken);
+      data.setSourceTransactionId(TransactionManager.getHeadTransaction(branchToken));
       data.setTxCopyBranchType(false);
 
       return data;
@@ -427,7 +436,7 @@ public class BranchEndpointTest {
 
    @Test
    public void setBranchName() {
-      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization());
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(CoreBranches.SYSTEM_ROOT));
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getName().equals("TestBranch"));
@@ -442,7 +451,7 @@ public class BranchEndpointTest {
 
    @Test
    public void setBranchState() {
-      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization());
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(CoreBranches.SYSTEM_ROOT));
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchState().equals(BranchState.CREATED));
@@ -457,7 +466,7 @@ public class BranchEndpointTest {
 
    @Test
    public void setBranchType() {
-      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization());
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(CoreBranches.SYSTEM_ROOT));
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchType().equals(BranchType.WORKING));
@@ -472,8 +481,9 @@ public class BranchEndpointTest {
 
    @Test
    public void setAssociatedBranchToArtifact() {
-      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization());
-      Artifact testArtifact = new Artifact(COMMON, "TestArtifact");
+
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(CoreBranches.SYSTEM_ROOT));
+      Artifact testArtifact = new Artifact(CoreBranches.COMMON, "TestArtifact");
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().notEqual(testArtifact));
@@ -489,9 +499,9 @@ public class BranchEndpointTest {
 
    @Test
    public void createBranchValidation() {
-      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization());
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(CoreBranches.SYSTEM_ROOT));
       Assert.assertTrue(branchEndpoint.getBranchById(testBranch).isValid());
-      XResultData xResult = branchEndpoint.createBranchValidation(testDataInitialization());
+      XResultData xResult = branchEndpoint.createBranchValidation(testDataInitialization(CoreBranches.SYSTEM_ROOT));
 
       Assert.assertFalse(xResult.isErrors());
       branchEndpoint.purgeBranch(testBranch, false);
@@ -531,4 +541,63 @@ public class BranchEndpointTest {
       Assert.assertEquals(folder.getIdString(), relations.getRelations().iterator().next().getArtB());
       Assert.assertEquals(folder.getName(), relations.getRelations().iterator().next().getArtBName());
    }
+
+   @Test
+   public void getOtherBranchesWithModifiedArtifacts() {
+      //Create branches
+      BranchId setUpBranchId = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      //Create artifact
+      OseeClient oseeclient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
+      workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(setUpBranchId);
+
+      ArtifactToken newArtifact = workingBranchArtifactEndpoint.createArtifact(setUpBranchId,
+         CoreArtifactTypes.SoftwareDesignMsWord, CoreArtifactTokens.SoftwareRequirementsFolder, "SR A");
+
+      BranchCommitOptions options = new BranchCommitOptions();
+      options.setArchive(false);
+      options.setCommitter(UserManager.getUser());
+
+      //Check Modified State
+      branchEndpoint.setBranchName(setUpBranchId, "setUpBranch");
+      BranchState setUpBranchStateBefore = BranchManager.getState(setUpBranchId);
+      if (!setUpBranchStateBefore.isModified()) {
+         throw new OseeCoreException("unmodified branch");
+      }
+
+      //Commit branch
+      TransactionResult transactionResult = branchEndpoint.commitBranch(setUpBranchId, DemoBranches.SAW_PL, options);
+      if (transactionResult.isFailed()) {
+         throw new OseeCoreException(transactionResult.toString());
+      }
+
+      BranchId testBranchIdOne = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(testBranchIdOne);
+      branchEndpoint.setBranchName(testBranchIdOne, "testBranchIdOne");
+
+      // check to see if the original committed branch shows up as a branch with a modified artifact  - should be no
+      List<BranchId> branches =
+         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.valueOf(newArtifact.getId()));
+      Assert.assertTrue(branches.isEmpty());
+
+      // modify the artifact on the current branch, then check to see if another branch shows up as a branch with a modified artifact
+      BranchId testBranchIdTwo = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(testBranchIdTwo);
+      branchEndpoint.setBranchName(testBranchIdTwo, "testBranchIdTwo");
+      workingBranchArtifactEndpoint.deleteArtifact(testBranchIdTwo, newArtifact);
+
+      branches =
+         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.valueOf(newArtifact.getId()));
+      // since testBranchIdtwo has deleted the artifact, we expect to see it as a branch with a modified artifact
+      Assert.assertFalse(branches.isEmpty());
+
+      List<BranchId> branchesModded =
+         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.valueOf(newArtifact.getId()));
+      // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
+      Assert.assertTrue(branchesModded.isEmpty());
+
+      branchEndpoint.purgeBranch(setUpBranchId, false);
+      branchEndpoint.purgeBranch(testBranchIdOne, false);
+      branchEndpoint.purgeBranch(testBranchIdTwo, false);
+   }
+
 }

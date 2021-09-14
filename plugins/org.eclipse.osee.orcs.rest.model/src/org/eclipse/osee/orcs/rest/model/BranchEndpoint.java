@@ -259,4 +259,11 @@ public interface BranchEndpoint {
    @Path("log")
    @Consumes({MediaType.TEXT_PLAIN})
    Response logBranchActivity(String comment);
+
+   @GET
+   @Path("{branchId}/other-mods/{art-id}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   List<BranchId> getOtherBranchesWithModifiedArtifacts(@PathParam("branchId") BranchId branchId, @PathParam("art-id") ArtifactId artifactId);
+
 }

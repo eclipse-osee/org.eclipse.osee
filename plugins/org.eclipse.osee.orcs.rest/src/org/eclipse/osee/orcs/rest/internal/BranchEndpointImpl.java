@@ -108,6 +108,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private final ActivityLog activityLog;
    private final OrcsBranch branchOps;
    private final SupportEmailService supportEmailService;
+   private static final String OTHER_EDIT_SQL =
+      "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.branch_type = ? and br.branch_state = ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
 
    @Context
    private UriInfo uriInfo;
@@ -945,6 +947,25 @@ public class BranchEndpointImpl implements BranchEndpoint {
       rel.setArtB(artB);
       rel.setTypeId(chStmt.getString("rel_link_type_id"));
       return rel;
+   }
+
+   @Override
+   public List<BranchId> getOtherBranchesWithModifiedArtifacts(BranchId branchId, ArtifactId artifactId) {
+
+      List<BranchId> setOfBranchIds = new ArrayList<>();
+
+      orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), OTHER_EDIT_SQL,
+         artifactId, branchId, BranchType.WORKING, BranchState.MODIFIED);
+
+      return setOfBranchIds;
+   }
+
+   private BranchId getBranchId(JdbcStatement chStmt) {
+
+      long modifiedOnBranchId = chStmt.getLong("branch_id");
+
+      return BranchId.valueOf(modifiedOnBranchId);
+
    }
 
 }
