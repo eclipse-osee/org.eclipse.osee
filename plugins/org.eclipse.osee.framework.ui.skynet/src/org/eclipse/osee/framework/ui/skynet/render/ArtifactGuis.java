@@ -15,17 +15,19 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 public final class ArtifactGuis {
 
@@ -138,23 +140,25 @@ public final class ArtifactGuis {
       // Can only be on other branches if it has already been saved
       if (artifact.isInDb()) {
 
-         JdbcStatement chStmt = ConnectionHandler.getStatement();
-         try {
-            BranchId branch = artifact.getBranch();
-            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact, branch, BranchType.WORKING);
+         BranchId branch = artifact.getBranch();
 
-            while (chStmt.next()) {
-               long modifiedOnBranchId = chStmt.getLong("branch_id");
-               chStmt.getInt("mod_type");
-               StringBuilder branches = new StringBuilder();
-               branches.append("\n\t");
-               branches.append(BranchManager.getBranchToken(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
-               otherBranches.add(branches.toString());
-               wasModified = true;
-            }
-         } finally {
-            chStmt.close();
+         org.eclipse.osee.framework.core.client.OseeClient client = ServiceUtil.getOseeClient();
+         BranchEndpoint branchEndpoint = client.getBranchEndpoint();
+
+         List<BranchId> branchesMods = branchEndpoint.getOtherBranchesWithModifiedArtifacts(branch, artifact);
+
+         StringBuilder branches = new StringBuilder();
+         branches.append("\n\t");
+         for (BranchId branchId : branchesMods) {
+            branches.append(BranchManager.getBranchToken(branchId).getShortName(BRANCH_NAME_LENGTH));
+            otherBranches.add(branches.toString());
+            wasModified = true;
          }
+
+         if (branchesMods.isEmpty()) {
+            wasModified = false;
+         }
+
       }
       return wasModified;
    }
