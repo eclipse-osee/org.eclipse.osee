@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -49,7 +50,7 @@ public abstract class XWidget {
    private IManagedForm managedForm;
 
    protected Label labelWidget = null;
-   private String label = "";
+   protected String label = "";
    private String toolTip = null;
    private boolean requiredEntry = false;
    private boolean editable = true;
@@ -72,6 +73,8 @@ public abstract class XWidget {
    private boolean autoSave = false;
    private boolean validateDate = false;
    private boolean useLabelFont = true;
+   private ISelectableValueProvider valueProvider;
+   private Collection<? extends Object> values = new ArrayList<Object>();
 
    public XWidget(String label) {
       this.label = label;
@@ -480,6 +483,22 @@ public abstract class XWidget {
 
    public void setUseLabelFont(boolean useLabelFont) {
       this.useLabelFont = useLabelFont;
+   }
+
+   public ISelectableValueProvider getValueProvider() {
+      return valueProvider;
+   }
+
+   public void setValueProvider(ISelectableValueProvider valueProvider) {
+      this.valueProvider = valueProvider;
+   }
+
+   public Collection<? extends Object> getValues() {
+      return values;
+   }
+
+   public void setValues(Collection<? extends Object> values) {
+      this.values = values;
    }
 
 }

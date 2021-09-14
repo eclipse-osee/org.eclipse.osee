@@ -26,7 +26,7 @@ public class ActionResult {
 
    private IAtsAction action;
    private final Collection<IAtsTeamWorkflow> teamWfs;
-   private final XResultData results = new XResultData();
+   private XResultData results = new XResultData();
 
    public ActionResult(IAtsAction action, List<IAtsTeamWorkflow> teamWfs) {
       this.action = action;
@@ -67,5 +67,9 @@ public class ActionResult {
 
    public XResultData getResults() {
       return results;
+   }
+
+   public void setResultData(XResultData results) {
+      this.results = results;
    }
 }

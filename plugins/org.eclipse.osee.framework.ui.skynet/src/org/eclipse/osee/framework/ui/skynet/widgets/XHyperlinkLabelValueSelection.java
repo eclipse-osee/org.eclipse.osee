@@ -122,6 +122,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
          valueLabel.setText(getCurrentValue());
          valueLabel.update();
          valueLabel.getParent().update();
+         valueLabel.getParent().getParent().layout();
       }
       validate();
    }
@@ -158,6 +159,15 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
       if (Widgets.isAccessible(labelHyperlink)) {
          labelHyperlink.addMouseListener(listener);
       }
+   }
+
+   @Override
+   public Label getLabelWidget() {
+      return null;
+   }
+
+   public Hyperlink getLabelHyperlink() {
+      return labelHyperlink;
    }
 
 }

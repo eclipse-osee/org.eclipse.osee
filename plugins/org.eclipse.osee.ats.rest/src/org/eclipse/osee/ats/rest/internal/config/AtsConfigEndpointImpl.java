@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -332,6 +333,21 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public BranchData createBranch(BranchData branchData) {
       AtsConfigOperations ops = new AtsConfigOperations(atsApi);
       return ops.createBranch(branchData);
+   }
+
+   @Override
+   @POST
+   @Path("configForDemoPl/{branch}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData configForDemoPl(@PathParam("branch") BranchId branch) {
+      try {
+         orcsApi.getAdminOps().configForDemoPl(branch);
+      } catch (Exception ex) {
+         XResultData rd = new XResultData();
+         rd.errorf("Error configForDemoPl %s", Lib.exceptionToString(ex));
+         return rd;
+      }
+      return XResultData.EMPTY_RD;
    }
 
 }

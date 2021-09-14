@@ -22,6 +22,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -127,6 +129,11 @@ public class OrcsAdminImpl implements OrcsAdmin {
    @Override
    public void createDemoBranches() {
       new CreateDemoBranches(orcsApi).populate();
+   }
+
+   @Override
+   public void configForDemoPl(BranchId branch) {
+      CreateDemoBranches.createProductLineConfig(branch, SystemUser.OseeSystem, orcsApi);
    }
 
    @Override

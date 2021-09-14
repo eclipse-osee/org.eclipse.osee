@@ -14,7 +14,9 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -51,7 +53,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
@@ -62,9 +65,30 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
  */
 public class AtsWidgetProvider implements IXWidgetProvider {
 
+   private static Map<String, Class<? extends XWidget>> nameToClass = new HashMap<String, Class<? extends XWidget>>();
+
+   public static void register(Class<? extends XWidget> clazz) {
+      nameToClass.put(clazz.getSimpleName(), clazz);
+   }
+
+   public AtsWidgetProvider() {
+      register(XHyperlinkWfdForEnum.class);
+      register(XHyperlinkWfdForProgramAi.class);
+      register(XHyperlinkWfdForEnumAttr.class);
+   }
+
    @Override
    public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem widgetRendererItem) {
       XWidget toReturn = null;
+      @SuppressWarnings("unchecked")
+      Class<XWidget> clazz = (Class<XWidget>) nameToClass.get(widgetName);
+      if (clazz != null) {
+         try {
+            return clazz.newInstance();
+         } catch (Exception ex) {
+            OseeLog.log(AtsWidgetProvider.class, Level.SEVERE, ex.toString(), ex);
+         }
+      }
       if (widgetName.equals(XHyperlabelTeamDefinitionSelection.WIDGET_ID)) {
          XHyperlabelTeamDefinitionSelection widget = new XHyperlabelTeamDefinitionSelection(name);
          widget.setToolTip(widgetRendererItem.getToolTip());
@@ -228,8 +252,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XActionableItemWidget();
       } else if (widgetName.equals(XTaskEstSiblingWorldDemoWidget.WIDGET_ID)) {
          return new XTaskEstSiblingWorldDemoWidget();
-      } else if (widgetName.equals(XHyperlinkLabelValueSelectionDam.WIDGET_ID)) {
-         return new XHyperlinkLabelValueSelectionDam();
+      } else if (widgetName.equals(XHyperlabelVersionSelection.WIDGET_ID)) {
+         return new XHyperlabelVersionSelection(name);
       }
       return toReturn;
    }

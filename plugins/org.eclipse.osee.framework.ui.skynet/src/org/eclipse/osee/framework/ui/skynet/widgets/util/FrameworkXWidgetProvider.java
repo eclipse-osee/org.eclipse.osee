@@ -16,8 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -38,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
@@ -71,6 +74,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForConfiguration;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
@@ -108,6 +115,21 @@ import org.eclipse.swt.SWT;
 public final class FrameworkXWidgetProvider {
 
    private static final FrameworkXWidgetProvider reference = new FrameworkXWidgetProvider();
+   private static Map<String, Class<? extends XWidget>> nameToClass = null;
+
+   private static Map<String, Class<? extends XWidget>> getNameToClass() {
+      register(XHyperlinkLabelDate.class);
+      register(XHyperlinkLabelDateDam.class);
+      register(XHyperlinkWfdForConfiguration.class);
+      return nameToClass;
+   }
+
+   public static void register(Class<? extends XWidget> clazz) {
+      if (nameToClass == null) {
+         nameToClass = new HashMap<String, Class<? extends XWidget>>();
+      }
+      nameToClass.put(clazz.getSimpleName(), clazz);
+   }
 
    private FrameworkXWidgetProvider() {
       // Hide Constructor to enforce singleton pattern
@@ -154,19 +176,17 @@ public final class FrameworkXWidgetProvider {
          }
          if (xWidget != null) {
             if (artifact != null) {
-               AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
-               if (xWidget instanceof AttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
-                  attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
-               }
-               if (attributeType == AttributeTypeToken.SENTINEL && Strings.isValid(xWidgetLayoutData.getStoreName())) {
-                  attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreName());
-               }
+               AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
                if (attributeType != AttributeTypeToken.SENTINEL && xWidget instanceof AttributeWidget) {
                   ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
                }
                if (xWidget instanceof ArtifactWidget) {
                   ((ArtifactWidget) xWidget).setArtifact(artifact);
                }
+            }
+            if (xWidget instanceof AttributeTypeWidget) {
+               AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
+               ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
             }
             xWidget.setObject(xWidgetLayoutData.getObject());
          }
@@ -179,6 +199,17 @@ public final class FrameworkXWidgetProvider {
       return xWidget;
    }
 
+   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget, OrcsTokenService tokenService) {
+      AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+      if (xWidget instanceof AttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
+         attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
+      }
+      if (attributeType == AttributeTypeToken.SENTINEL && Strings.isValid(xWidgetLayoutData.getStoreName())) {
+         attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreName());
+      }
+      return attributeType;
+   }
+
    public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name, Artifact artifact) {
       XWidget xWidget = null;
       // Look for widget provider to create widget
@@ -186,6 +217,17 @@ public final class FrameworkXWidgetProvider {
          xWidget = widgetProvider.createXWidget(xWidgetName, name, xWidgetLayoutData);
          if (xWidget != null) {
             break;
+         }
+      }
+
+      FrameworkXWidgetProvider.getInstance();
+      @SuppressWarnings("unchecked")
+      Class<XWidget> clazz = (Class<XWidget>) getNameToClass().get(xWidgetName);
+      if (clazz != null) {
+         try {
+            return clazz.newInstance();
+         } catch (Exception ex) {
+            OseeLog.log(FrameworkXWidgetProvider.class, Level.SEVERE, ex.toString(), ex);
          }
       }
 
@@ -521,6 +563,8 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.equals(XLabelValue.WIDGET_ID)) {
             String defaultValue = xWidgetLayoutData.getDefaultValue();
             xWidget = new XLabelValue(name, defaultValue);
+         } else if (xWidgetName.equals(XHyperlinkLabelValueSelectionDam.WIDGET_ID)) {
+            return new XHyperlinkLabelValueSelectionDam(name);
          } else {
             xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
          }

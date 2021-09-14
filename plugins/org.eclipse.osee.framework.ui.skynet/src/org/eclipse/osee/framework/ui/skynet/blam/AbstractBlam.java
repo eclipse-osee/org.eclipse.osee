@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -189,6 +190,15 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       }
    }
 
+   protected void isValidEntry(XResultData rd) {
+      // For subclass validation of widgets prior to execution.  rd.error to log error that will be shown and stop execution.
+   }
+
+   /**
+    * Execution of blam after isValidEntry is called and comes back successful
+    *
+    * @param variableMap is populated from widget label/name and getData() calls to widgets.
+    */
    public void execute(OperationLogger logger, VariableMap variableMap, IJobChangeListener jobChangeListener) {
       try {
          this.logger = logger;

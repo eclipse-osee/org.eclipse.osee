@@ -264,6 +264,16 @@ public class Collections {
       return objs;
    }
 
+   public static <T> List<T> asList(T... objects) {
+      List<T> objs = new ArrayList<T>();
+      if (objects != null) {
+         for (T obj : objects) {
+            objs.add(obj);
+         }
+      }
+      return objs;
+   }
+
    public static List<Object> getAggregateTree(List<Object> items, int maxPerList) {
       if (items == null) {
          throw new IllegalArgumentException("items can not be null");
@@ -456,4 +466,5 @@ public class Collections {
       }
       return sentinel;
    }
+
 }

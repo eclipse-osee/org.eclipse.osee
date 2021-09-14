@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.actions.wizard.IAtsWizardItem;
@@ -41,7 +42,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XActionableItemWidget;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -278,7 +278,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
          changeWidget = (XCombo) xWidget;
-         CreateNewChangeRequestBlam.setChangeTypeWidget(changeWidget);
+         setChangeTypeWidget(changeWidget);
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XCombo) xWidget;
       } else if (xWidget instanceof XActionableItemWidget) {
@@ -290,6 +290,18 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
             }
          });
       }
+   }
+
+   public static void setChangeTypeWidget(XCombo changeWidget) {
+      String[] array = ChangeType.valueArray();
+      for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
+         if (provider.useFactory()) {
+            if (provider.getChangeTypeValues() != null) {
+               array = provider.getChangeTypeArray();
+            }
+         }
+      }
+      changeWidget.setDataStrings(array);
    }
 
    public void handlePopulateWithDebugInfo() {
@@ -370,7 +382,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavItemCat.TOP_NEW, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavItemCat.TOP, XNavItemCat.OSEE_ADMIN);
    }
 
    @Override

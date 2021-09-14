@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.builder;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
@@ -21,7 +22,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
@@ -223,7 +229,7 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andXRadioBooleanTriState(String name) {
       newXWidget();
-      currItem.setXWidgetName("XRadioButtonsBooleanTriState");
+      currItem.setXWidgetName(XRadioButtonsBooleanTriState.class.getSimpleName());
       currItem.setName(name);
       return this;
    }
@@ -237,6 +243,34 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andNewLine() {
       andXLabel("  ").endWidget();
+      return this;
+   }
+
+   public XWidgetBuilder andValueProvider(ISelectableValueProvider provider) {
+      currItem.setValueProvider(provider);
+      return this;
+   }
+
+   public XWidgetBuilder andXHyperLinkEnum(String name, Collection<String> values) {
+      newXWidget();
+      currItem.setXWidgetName(XHyperlinkWfdForEnum.class.getSimpleName());
+      currItem.setName(name);
+      currItem.setValues(values);
+      return this;
+   }
+
+   public XWidgetBuilder andXHyperLinkEnumAttr(AttributeTypeToken attrType) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setXWidgetName(XHyperlinkWfdForEnumAttr.class.getSimpleName());
+      currItem.setName(attrType.getName());
+      return this;
+   }
+
+   public XWidgetBuilder andXHyperLinkDate(String name) {
+      newXWidget();
+      currItem.setName(name);
+      currItem.setXWidgetName(XHyperlinkLabelDate.class.getSimpleName());
       return this;
    }
 
