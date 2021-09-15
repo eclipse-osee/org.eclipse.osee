@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
    /**
     * @return User Groups for current user
     */
-   public static Collection<IUserGroupArtifactToken> getUserGrps() {
+   public static List<IUserGroupArtifactToken> getUserGrps() {
       if (userGrps == null) {
          userGrps = new ArrayList<>();
          for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
