@@ -105,6 +105,7 @@ public class AtsTestUtil {
    private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
    private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
+   private static Boolean productionDatastore;
 
    public static void validateArtifactCache() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
@@ -256,8 +257,8 @@ public class AtsTestUtil {
    /**
     * Clear workDef from cache, clear all objects and create new objects with postFixName in titles
     */
-   private static void reset(String postFixName) {
-      if (ClientSessionManager.isProductionDataStore()) {
+   private static void reset(String postFixName, boolean clearCaches) {
+      if (isProductionDataStore()) {
          throw new OseeStateException("AtsTestUtil should not be run on production.");
       }
 
@@ -355,7 +356,16 @@ public class AtsTestUtil {
 
       changes.execute();
 
-      AtsApiService.get().reloadServerAndClientCaches();
+      if (clearCaches) {
+         AtsApiService.get().reloadServerAndClientCaches();
+      }
+   }
+
+   private static boolean isProductionDataStore() {
+      if (productionDatastore == null) {
+         productionDatastore = ClientSessionManager.isProductionDataStore();
+      }
+      return productionDatastore;
    }
 
    public static TaskArtifact getOrCreateTaskOffTeamWf1() {
@@ -409,8 +419,16 @@ public class AtsTestUtil {
     * names/titles. In addition, ArtifactCache will validate that it is not dirty or display errors if it is.
     */
    public static void cleanupAndReset(String name) {
+      cleanupAndReset(name, false);
+   }
+
+   /**
+    * All team defs, AIs, action and workflows will be deleted and new ones created with "name" as part of object
+    * names/titles. In addition, ArtifactCache will validate that it is not dirty or display errors if it is.
+    */
+   public static void cleanupAndReset(String name, boolean clearCaches) {
       cleanup();
-      reset(name);
+      reset(name, clearCaches);
    }
 
    private static void delete(IAtsChangeSet changes, Artifact artifact) {

@@ -46,8 +46,8 @@ public class AutoAddActionToGoalTest {
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
-         "AutoAddActionToGoalTest - cleanup");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "AutoAddActionToGoalTest - cleanup");
       for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest",
          AtsApiService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
@@ -58,7 +58,7 @@ public class AutoAddActionToGoalTest {
    // Test that no action is added to the Goal
    @org.junit.Test
    public void testNoActionAddedToGoal() {
-      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AutoAddActionToGoalTest - NoAdd");
+      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AutoAddActionToGoalTest - NoAdd", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - NoActionAddedGoal", changes);
@@ -72,7 +72,7 @@ public class AutoAddActionToGoalTest {
    // Team Workflow should be added to the Goal
    @org.junit.Test
    public void testAutoAddActionToGoal_AI() {
-      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI");
+      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAI", changes);
@@ -106,7 +106,7 @@ public class AutoAddActionToGoalTest {
    // Team Workflow should be added to the Goal
    @org.junit.Test
    public void testAutoAddActionToGoal_TeamWF() {
-      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithTeamDef");
+      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithTeamDef", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
@@ -116,8 +116,7 @@ public class AutoAddActionToGoalTest {
       }
       changes.execute();
 
-      Artifact teamDefArtifact =
-         AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
+      Artifact teamDefArtifact = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, teamDefArtifact);
       goalArt.persist(getClass().getSimpleName() + " - testAutoAddActionToGoal_TeamWF");
 
@@ -135,7 +134,7 @@ public class AutoAddActionToGoalTest {
    // only be added to the goal once.
    @org.junit.Test
    public void testAutoAddActionToGoal_AIandTeamWF() {
-      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAIandTeamDef");
+      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAIandTeamDef", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
@@ -144,8 +143,7 @@ public class AutoAddActionToGoalTest {
       }
 
       Artifact testAI2Art = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestAi2());
-      Artifact teamDefArtifact =
-         AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
+      Artifact teamDefArtifact = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
 
       GoalArtifact goalArt =
          GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAIorTeamDef", changes);
@@ -173,7 +171,7 @@ public class AutoAddActionToGoalTest {
    // only one member.
    @org.junit.Test
    public void testAutoAddActionToGoal_TwoAIsTwoGoals() {
-      AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
+      AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddTwoActions", changes);
