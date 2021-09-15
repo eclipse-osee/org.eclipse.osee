@@ -107,8 +107,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
                UserGroupArtifactToken.valueOf(userGroupArt.getId(), userGroupArt.getName());
             roles.add(userGroup);
          }
-         UserToken userToken = UserToken.create(userArt.getId(), name, email, userId, active,
-            roles.toArray(new IUserGroupArtifactToken[roles.size()]));
+         UserToken userToken = UserToken.create(userArt.getId(), name, email, userId, active, roles);
          users.add(userToken);
       }
       return users;

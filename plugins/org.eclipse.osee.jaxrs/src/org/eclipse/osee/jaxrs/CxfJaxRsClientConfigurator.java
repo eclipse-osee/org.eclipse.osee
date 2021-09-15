@@ -58,20 +58,11 @@ public final class CxfJaxRsClientConfigurator {
    private static final String DEFAULT_JAXRS_CLIENT_BUILDER_IMPL = "org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl";
 
    private final OAuthFactory oauthFactory;
+   private final List<Object> providers = new ArrayList<>();
+   private final List<Feature> features = new ArrayList<>(2);
 
    public CxfJaxRsClientConfigurator(OAuthFactory oauthFactory) {
       this.oauthFactory = oauthFactory;
-   }
-
-   private List<? extends Object> providers;
-   private List<Feature> features;
-
-   private List<? extends Object> getProviders() {
-      return providers;
-   }
-
-   private List<Feature> getFeatures() {
-      return features;
    }
 
    public void configureJaxRsRuntime() {
@@ -83,29 +74,23 @@ public final class CxfJaxRsClientConfigurator {
    }
 
    public void configureDefaults(ObjectMapper mapper, OrcsTokenService tokenService, UserService userService) {
-      List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
-
       providers.add(new JacksonJaxbJsonProvider(mapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
       providers.add(JsonParseExceptionMapper.class);
       providers.add(JsonMappingExceptionMapper.class);
-
       providers.addAll(OAuth2Util.getOAuthProviders());
       providers.add(new OrcsParamConverterProvider(tokenService));
       providers.add(new OseeAccountClientRequestFilter(userService));
-      this.providers = providers;
 
-      List<Feature> features = new ArrayList<>(2);
       features.add(new GZIPFeature());
-      this.features = features;
    }
 
    public void configureBean(JaxRsClientConfig config, String serverAddress, JAXRSClientFactoryBean bean) {
       Conditions.checkNotNullOrEmpty(serverAddress, "server address");
       bean.setAddress(serverAddress);
 
-      bean.setProviders(getProviders());
-      bean.setFeatures(getFeatures());
+      bean.setProviders(providers);
+      bean.setFeatures(features);
       bean.setProviders(getOAuthProviders(config));
 
       /**
@@ -125,8 +110,8 @@ public final class CxfJaxRsClientConfigurator {
    }
 
    public void configureClientBuilder(JaxRsClientConfig config, ClientBuilder builder) {
-      register(builder, getProviders());
-      register(builder, getFeatures());
+      register(builder, providers);
+      register(builder, features);
       register(builder, getOAuthProviders(config));
    }
 
@@ -219,7 +204,7 @@ public final class CxfJaxRsClientConfigurator {
          }
 
          catch (Exception ex) {
-            OseeLog.log(CxfJaxRsClientConfigurator.class, Level.WARNING, ex);
+            OseeLog.log(getClass(), Level.WARNING, ex);
          }
       }
    }

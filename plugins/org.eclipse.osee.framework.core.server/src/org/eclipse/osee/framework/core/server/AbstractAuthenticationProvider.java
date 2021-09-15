@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -70,7 +69,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       return toReturn;
    }
 
-   protected UserToken createUserToken(String userName, String userId, String userEmail, boolean isActive) {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), userName, userEmail, userId, isActive);
+   protected UserToken createUserToken(String userName, String userId, String userEmail) {
+      return UserToken.create(userName, userEmail, userId);
    }
 }

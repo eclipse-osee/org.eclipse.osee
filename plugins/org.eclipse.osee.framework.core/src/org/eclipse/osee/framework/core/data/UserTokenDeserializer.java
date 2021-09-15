@@ -42,18 +42,27 @@ public class UserTokenDeserializer extends StdDeserializer<@NonNull UserToken> {
    public UserToken deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
       List<IUserGroupArtifactToken> userGroups = new ArrayList<IUserGroupArtifactToken>();
-      for (JsonNode artToken : readTree.get("roles")) {
-         IUserGroupArtifactToken roleToken =
-            UserGroupArtifactToken.valueOf(artToken.get("id").asLong(), artToken.get("name").textValue());
-         userGroups.add(roleToken);
+
+      JsonNode rolesNode = readTree.get("roles");
+      if (rolesNode != null) {
+         for (JsonNode artToken : rolesNode) {
+            IUserGroupArtifactToken roleToken =
+               UserGroupArtifactToken.valueOf(artToken.get("id").asLong(), artToken.get("name").textValue());
+            userGroups.add(roleToken);
+         }
       }
       List<String> loginIds = new ArrayList<String>();
       for (JsonNode loginId : readTree.get("loginIds")) {
          loginIds.add(loginId.asText());
       }
-      ArtifactToken.valueOf(readTree.get("id").asLong(), readTree.get("name").textValue());
+
+      boolean active = true;
+      JsonNode activeNode = readTree.get("active");
+      if (activeNode != null) {
+         active = activeNode.asBoolean();
+      }
+
       return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
-         readTree.get("email").textValue(), readTree.get("userId").textValue(), readTree.get("active").asBoolean(),
-         loginIds, userGroups.toArray(new IUserGroupArtifactToken[userGroups.size()]));
+         readTree.get("email").textValue(), readTree.get("userId").textValue(), active, loginIds, userGroups);
    }
 }

@@ -404,7 +404,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
+   public List<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
       List<Long> relatedIds = new ArrayList<>();
       for (Relation relation : getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)) {
          if (relation.getRelationType().equals(relationTypeSide.getRelationType())) {

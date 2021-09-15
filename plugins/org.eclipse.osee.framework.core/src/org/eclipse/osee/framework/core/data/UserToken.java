@@ -16,11 +16,9 @@ package org.eclipse.osee.framework.core.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -28,8 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -42,23 +38,18 @@ public interface UserToken extends ArtifactToken, UserId {
 
    @JsonCreator
    public static UserToken create(@JsonProperty("name") String name, @JsonProperty("email") String email, @JsonProperty("userId") String userId) {
-      return create(Lib.generateArtifactIdAsInt(), name, email, userId, true);
+      return create(Id.SENTINEL, name, email, userId, true);
    }
 
-   public static UserToken create(long id, String name, String email, String userId, boolean active, IUserGroupArtifactToken... roles) {
-      return new UserTokenImpl(id, name, userId, active, email, java.util.Collections.singleton(userId), roles);
+   public static UserToken create(long id, String name, String email, String userId, boolean active) {
+      return create(id, name, email, userId, active, Collections.emptyList());
    }
 
-   public static UserToken create(String name, String email, String userId, boolean active, IUserGroupArtifactToken... roles) {
-      return new UserTokenImpl(ArtifactId.SENTINEL.getId(), name, userId, active, email,
-         java.util.Collections.singleton(userId), roles);
+   public static UserToken create(long id, String name, String email, String userId, boolean active, List<IUserGroupArtifactToken> roles) {
+      return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles);
    }
 
-   public static @NonNull UserToken create(ArtifactId id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
-      return new UserTokenImpl(id.getId(), name, userId, active, email, loginIds, roles);
-   }
-
-   public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
+   public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active, List<String> loginIds, List<IUserGroupArtifactToken> roles) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles);
    }
 
@@ -70,9 +61,9 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public String getEmail();
 
-   public Collection<ArtifactToken> getRoles();
+   public List<IUserGroupArtifactToken> getRoles();
 
-   public Collection<String> getLoginIds();
+   public List<String> getLoginIds();
 
    public ArtifactToken getArtifact();
 
@@ -83,18 +74,18 @@ public interface UserToken extends ArtifactToken, UserId {
       private final boolean active;
       private final boolean admin;
       private final String email;
-      private final Set<ArtifactToken> roles = new HashSet<>();
-      private final Collection<String> loginIds = new ArrayList<String>();
+      private final List<IUserGroupArtifactToken> roles;
+      private final List<String> loginIds;
       private ArtifactToken artifact;
 
-      public UserTokenImpl(long id, String name, String userId, boolean active, String email, Collection<String> loginIds, ArtifactToken... roles) {
+      public UserTokenImpl(long id, String name, String userId, boolean active, String email, List<String> loginIds, List<IUserGroupArtifactToken> roles) {
          super(id, name);
          this.userId = userId;
          this.active = active;
          this.email = email;
-         this.loginIds.addAll(loginIds);
-         this.roles.addAll(Collections.asHashSet(roles));
-         this.admin = Arrays.asList(roles).contains(CoreUserGroups.OseeAdmin);
+         this.loginIds = loginIds;
+         this.roles = roles;
+         this.admin = this.roles.contains(CoreUserGroups.OseeAdmin);
       }
 
       @Override
@@ -123,7 +114,7 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public Collection<ArtifactToken> getRoles() {
+      public List<IUserGroupArtifactToken> getRoles() {
          return roles;
       }
 
@@ -139,7 +130,7 @@ public interface UserToken extends ArtifactToken, UserId {
       }
 
       @Override
-      public Collection<String> getLoginIds() {
+      public List<String> getLoginIds() {
          return loginIds;
       }
 
@@ -170,7 +161,5 @@ public interface UserToken extends ArtifactToken, UserId {
          }
          return super.equals(obj);
       }
-
    }
-
 }

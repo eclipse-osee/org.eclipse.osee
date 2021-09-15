@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifa
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -55,14 +54,14 @@ public final class DemoUsers {
    public static final String Kay_Jones_And_Joe_Smith = DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName();
    // @formatter:on
 
-   private static UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
-      UserToken token = UserToken.create(id, name, email, userId, active, loginIds, roles);
+   private static UserToken create(long id, String name, String email, String userId, boolean active, List<String> loginIds, IUserGroupArtifactToken... roles) {
+      UserToken token = UserToken.create(id, name, email, userId, active, loginIds, Arrays.asList(roles));
       values.add(token);
       return token;
    }
 
    private static UserToken create(long id, String name, String email, String userId, boolean active, IUserGroupArtifactToken... roles) {
-      UserToken token = UserToken.create(id, name, email, userId, active, roles);
+      UserToken token = UserToken.create(id, name, email, userId, active, Arrays.asList(roles));
       values.add(token);
       return token;
    }

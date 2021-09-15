@@ -35,7 +35,7 @@ public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
             return userToken;
          }
       }
-      return createUserToken(DemoUsers.Joe_Smith.getName(), DemoUsers.Joe_Smith.getUserId(), "joe@boeing.com", true);
+      return DemoUsers.Joe_Smith;
    }
 
    @Override
