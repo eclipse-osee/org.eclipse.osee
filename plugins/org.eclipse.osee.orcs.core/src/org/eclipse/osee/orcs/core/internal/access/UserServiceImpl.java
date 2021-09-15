@@ -57,10 +57,12 @@ public class UserServiceImpl implements UserService {
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
+   @Override
    public IUserGroup getOseeAdmin() {
       return getUserGroup(CoreUserGroups.OseeAdmin);
    }
 
+   @Override
    public IUserGroup getOseeAccessAdmin() {
       return getUserGroup(CoreUserGroups.OseeAccessAdmin);
    }
@@ -179,6 +181,7 @@ public class UserServiceImpl implements UserService {
          List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
          if (userArtifacts.size() == 1) {
             user = toUser(userArtifacts.get(0));
+            accountIdToUser.put(user, user);
          }
       }
       if (user != null) {
