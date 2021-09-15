@@ -52,6 +52,8 @@ public abstract class XNavigateItem {
 
    public static final XNavItemCat OTE = new XNavItemCat("OTE");
 
+   public static final XNavItemCat PLE = new XNavItemCat("PLE");
+
    private final List<XNavigateItem> children = new ArrayList<>();
    private String name;
    private XNavigateItem parent;

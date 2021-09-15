@@ -22,6 +22,7 @@ import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.TOP;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.DEFINE;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.EMAIL_NOTIFICATIONS;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.OTE;
+import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.PLE;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.REPORTS;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.TOP_ADMIN;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.USER_MANAGEMENT;
@@ -85,6 +86,7 @@ import org.eclipse.osee.ats.ide.world.search.ShowOpenWorkflowsByReviewType;
 import org.eclipse.osee.ats.ide.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -100,6 +102,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
@@ -188,6 +191,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          addExampleItems();
 
          addOteItems();
+
+         addPleItems();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -316,6 +321,9 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
                FrameworkImage.EDIT, UTILITY));
          items.add(new XNavigateItemOperation(FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
             new MassEditDirtyArtifactOperation(), UTILITY));
+         items.add(new XNavigateUrlItem("Disciplined Engineering and OSEE",
+            "https://git.eclipse.org/c/gerrit/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx",
+            true, FrameworkImage.PPTX, UTILITY));
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -500,6 +508,26 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
          items.add(new XNavigateItemAction(new ValidatePeerDefectsAction(), AtsImage.PEER_REVIEW, REVIEW));
       }
+   }
+
+   private void addPleItems() {
+      ElapsedTime time = new ElapsedTime("NVI - addPleItems", debug);
+      try {
+         String applicationServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, "");
+         items.add(new XNavigateItemFolder(PLE.getName(), FrameworkImage.PLE, XNavItemCat.TOP, PLE));
+         items.add(new XNavigateUrlItem("Product Line (PL) Dashboard", applicationServer + "/osee/ple", true,
+            FrameworkImage.PLE, PLE));
+         items.add(new XNavigateUrlItem("Product Line Configuration (PLConfig)",
+            applicationServer + "/osee/ple/plconfig", true, FrameworkImage.PLE, PLE));
+         items.add(new XNavigateUrlItem("Message Interface Modeling (MIM)", applicationServer + "/osee/ple/messaging",
+            true, FrameworkImage.PLE, PLE));
+         items.add(new XNavigateUrlItem("PLE - Getting Started",
+            "https://git.eclipse.org/c/gerrit/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx",
+            true, FrameworkImage.PPTX, PLE));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create PLE section");
+      }
+      time.end();
    }
 
    private void addEvNavigateItems() {
