@@ -188,6 +188,8 @@ public enum FrameworkImage implements KeyedImage {
    OUTGOING_NEW("OUTGOING_New.gif"),
    OUTLINE("outline_co.gif"),
    PASTE_SPECIAL_WIZ("paste_wiz.png"),
+   PLE("ple.gif"),
+   PPTX("pptx.png"),
    PROBLEM("greenBug.gif"),
    PREVIEW_ARTIFACT("preview_artifact.gif"),
    PRINT("print.gif"),
