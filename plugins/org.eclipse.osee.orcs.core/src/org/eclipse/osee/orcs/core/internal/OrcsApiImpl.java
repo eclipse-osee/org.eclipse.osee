@@ -87,7 +87,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private UserService userService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
-   IAccessControlService accessControlService;
+   AccessControlServiceImpl accessControlService;
 
    ExternalArtifactManager proxyManager;
 
@@ -176,6 +176,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       applicability = new OrcsApplicabilityOps(this, logger);
       userService = new UserServiceImpl(this);
       accessControlService = new AccessControlServiceImpl(this);
+      accessControlService.bindUserService(userService);
    }
 
    public void stop() {
