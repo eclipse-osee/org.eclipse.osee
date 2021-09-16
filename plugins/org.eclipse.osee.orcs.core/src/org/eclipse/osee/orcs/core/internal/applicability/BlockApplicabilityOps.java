@@ -79,6 +79,10 @@ public class BlockApplicabilityOps {
    public static final String ENDCONFIGGRP = " ?(End ConfigurationGroup ?((\\[.*?\\]))?) ?";
    public static final String COMMENT_EXTRA_CHARS = INLINE_WHITESPACE + "(" + SINGLE_NEW_LINE + ")?";
 
+   public static final String ELSE =
+      WordCoreUtil.ELSE_PATTERN + "|(" + INLINE_WHITESPACE + " ?((Feature|ConfigurationGroup|Configuration) Else) ?" + COMMENT_EXTRA_CHARS + ")";
+   public static final Pattern ELSE_PATTERN = Pattern.compile(ELSE, Pattern.DOTALL | Pattern.MULTILINE);
+
    public static final int beginFeatureCommentMatcherGroup = 1;
    public static final int beginFeatureTagMatcherGroup = 2;
    public static final int endFeatureCommentMatcherGroup = 6;
@@ -180,6 +184,15 @@ public class BlockApplicabilityOps {
          File sourceFile = new File(sourceDir, sourceFileString);
          File stageFile = new File(stageDir, sourceFileString).getParentFile();
 
+         if (!stageFile.exists()) {
+            if (sourceFile.exists()) {
+               stageFile.mkdirs();
+            } else {
+               results.warningf("The path for %s does not exist", sourceFile.getPath());
+               continue;
+            }
+         }
+
          if (sourceFile.getName().equals(".fileApplicability")) {
             /**
              * If it's a .fileApplicability file, it could be making changes to its' siblings and therefore those all
@@ -259,8 +272,7 @@ public class BlockApplicabilityOps {
    }
 
    private String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
-
-      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
+      Matcher match = ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
 
@@ -304,7 +316,7 @@ public class BlockApplicabilityOps {
    }
 
    private String getValidConfigurationGroupContent(ApplicabilityType type, String fullText, String beginTag) {
-      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
+      Matcher match = ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
 
@@ -369,7 +381,7 @@ public class BlockApplicabilityOps {
    }
 
    private String getValidConfigurationContent(ApplicabilityType type, String fullText, HashMap<String, List<String>> configIdValuesMap) {
-      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
+      Matcher match = ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
 

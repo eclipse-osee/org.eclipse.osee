@@ -11,7 +11,6 @@ int CppTest {
 	
 	cout << "Enter robot speaker a name: ";
 	cin >> speaker;
-
 	cout << "Enter robot speaker b classification: ";
 	cin >> classification;
 }

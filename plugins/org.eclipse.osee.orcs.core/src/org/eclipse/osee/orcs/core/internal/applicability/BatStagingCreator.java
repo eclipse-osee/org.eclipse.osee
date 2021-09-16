@@ -228,9 +228,7 @@ public class BatStagingCreator {
       String stageLine, outLine;
       while (((stageLine = stageReader.readLine()) != null) && ((outLine = outReader.readLine()) != null)) {
          if (!stageLine.equals(outLine)) {
-            if (stageFile.length() != outFile.length()) {
-               isFileNew = true;
-            }
+            isFileNew = true;
          }
       }
 
