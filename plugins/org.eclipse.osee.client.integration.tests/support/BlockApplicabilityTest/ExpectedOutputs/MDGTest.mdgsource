@@ -6,7 +6,6 @@
          -HASDFG API    1,,T,24,8,,               . API OP CODE..            *
          -              OHAPIX(0),                . API X..                  *
          -              79,                       . API Y..                  *
-
          -              APPLICC,                   . API PITCH RATE DEG/SEC.. *
          -              APPLICD,                   . API ROLL RATE DEG/SEC..  *
          -              APPLICE(10),               . API ECHO OF NO. IN DEG...*
