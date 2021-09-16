@@ -225,7 +225,10 @@ public final class GitOperationsImpl implements GitOperations {
       }
 
       try {
-         String fromString = "remotes/origin/" + gitBranchName;
+         String fromString = gitBranchName;
+         if (!gitBranchName.contains("/")) {
+            fromString = "remotes/origin/" + gitBranchName;
+         }
          ObjectId from = jgitRepo.resolve(fromString);
          if (from == null) {
             throw new OseeStateException("Failed to resolve commit [%s]", fromString);
