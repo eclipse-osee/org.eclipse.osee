@@ -6,7 +6,7 @@
 * OSEE Access Control is handled in 3 levels.  Branch Access is used to see if a user has access to the branch.  Artifact Access is used for verifying a user has access to the artifact.  Then finally, Configuration Management is used for checking if a user has access to individual pieces such as attributes.
 
 == Data Read/Write Permission
-* Read and Write permissions are specified on individual artifacts and branches for users and user groups, the server will need to be able to handle this data to compute access control.  
+* Read and Write permissions are specified on individual artifacts and branches for users and user groups, the server will need to be able to handle this data to compute access control.
 ** These permissions are changed and applied to the database via the OSEE_ARTIFACT_ACL and OSEE_BRANCH_ACL tables.
 * Configuration Management Access Control specifies read/write permissions for data in the context of an ATS Workflow.
 
@@ -14,15 +14,15 @@
 * Execute permission is specified for a given API method by role (not a on per-user basis)
 
 == Design and Requirements
-* The server side Access Control will need the ability to identify the user that is communicating through the database.  Whether it is through the client or web pages, and even from third party access such as build scripts or code commits.  
+* The server side Access Control will need the ability to identify the user that is communicating through the database.  Whether it is through the client or web pages, and even from third party access such as build scripts or code commits.
 * When the server needs access control information it should query the database to get the exact information it needs.
-* AccessControlService is available from APIs, this service will provide the method requireRole(IUserGroupArtifactToken... userGroups) that determines if the current user is in at least one of the given groups.  Otherwise an OseeAccessDeniedException is thrown. 
+* AccessControlService is available from APIs, this service will provide the method requireRole(IUserGroupArtifactToken... userGroups) that determines if the current user is in at least one of the given groups.  Otherwise an OseeAccessDeniedException is thrown.
 * No database access should be allowed except via the JdbcClient.
 * All access to the JdbcClient service must be via Orcs API calls that are protected via requireRole().
 * In order to provide immediate feedback to the end user requireRole may be invoked at the beginning of the method.
 
 == Extensibility and Configuration
-* Extensibility of the access control will come from the capabilities of User Group artifacts.  These can be configured by specific users in OSEE, adding/removing users from various groups where these groups are granted artifact/branch permissions along with operational roles.  The creation and modification of artifacts of type "User" (and its' sub-types) must be strictly controlled. 
+* Extensibility of the access control will come from the capabilities of User Group artifacts.  These can be configured by specific users in OSEE, adding/removing users from various groups where these groups are granted artifact/branch permissions along with operational roles.  The creation and modification of artifacts of type "User" (and its' sub-types) must be strictly controlled.
 
 == Future Actions
 * UserGroup artifact type needs to be separated for the use case roles vs other uses such as email or distribution lists
