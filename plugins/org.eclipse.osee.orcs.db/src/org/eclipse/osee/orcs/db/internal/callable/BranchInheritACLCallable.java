@@ -39,15 +39,15 @@ public final class BranchInheritACLCallable extends JdbcTransaction {
    @Override
    public void handleTxWork(JdbcConnection connection) {
 
-      int lock = PermissionEnum.USER_LOCK.getPermId();
-      int deny = PermissionEnum.DENY.getPermId();
+      int read = PermissionEnum.READ.getPermId();
+      int write = PermissionEnum.WRITE.getPermId();
 
       List<Object[]> data = new ArrayList<>();
       jdbcClient.runQueryWithMaxFetchSize(stmt -> {
          int permissionId = stmt.getInt("permission_id");
          Long priviledgeId = stmt.getLong("privilege_entity_id");
-         if (branchData.getAuthor().equals(priviledgeId) && permissionId < lock && permissionId != deny) {
-            permissionId = lock;
+         if (permissionId == read) {
+            permissionId = write;
          }
          data.add(new Object[] {branchData.getBranch(), priviledgeId, permissionId});
       }, GET_BRANCH_ACCESS_CONTROL_LIST, branchData.getParentBranch());
