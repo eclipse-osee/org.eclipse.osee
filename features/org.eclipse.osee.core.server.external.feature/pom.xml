@@ -27,6 +27,7 @@
 							<excludes>
 							   <plugin id="org.eclipse.osgi.services" />								
 							   <plugin id="com.google.gson" />
+							   <plugin id="org.apache.commons.compress" />
 							   <plugin id="javax.activation" />
 							   <plugin id="ch.qos.logback.slf4j" />
 							   <plugin id="org.antlr.runtime" />

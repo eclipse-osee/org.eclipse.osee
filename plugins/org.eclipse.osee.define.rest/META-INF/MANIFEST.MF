@@ -6,7 +6,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: org.antlr.runtime
+Require-Bundle: org.antlr.runtime,
+ org.eclipse.jgit;visibility:=reexport
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.google.common.base,
@@ -71,6 +72,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.jsoup.parser,
  org.jsoup.select,
  org.osgi.service.event
+DynamicImport-Package: org.eclipse.jgit.transport
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.rest,
  org.eclipse.osee.define.rest.importing.operations,

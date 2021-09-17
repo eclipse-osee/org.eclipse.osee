@@ -24,9 +24,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RepositoryUrl;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
@@ -52,6 +51,8 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
+import org.eclipse.jgit.errors.TransportException;
+import org.eclipse.jgit.internal.transport.ssh.OpenSshConfigFile.HostEntry;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -62,14 +63,15 @@ import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.FetchResult;
-import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.NetRCCredentialsProvider;
-import org.eclipse.jgit.transport.OpenSshConfig.Host;
+import org.eclipse.jgit.transport.RemoteSession;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.SshTransport;
 import org.eclipse.jgit.transport.TagOpt;
 import org.eclipse.jgit.transport.Transport;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
@@ -86,6 +88,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -94,6 +97,10 @@ import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 
 /**
  * @author Ryan D. Brooks
@@ -185,18 +192,29 @@ public final class GitOperationsImpl implements GitOperations {
    }
 
    private void configureSsh(TransportCommand<?, ?> transportCommand, String passphrase) {
-      SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
-         @Override
-         protected void configure(Host host, Session session) {
+      SshSessionFactory sshSessionFactory = new SshSessionFactory() {
+         protected void configure(HostEntry host, Session session) {
             session.setPassword(passphrase);
          }
 
-         @Override
          protected JSch createDefaultJSch(FS fs) throws JSchException {
-            JSch defaultJSch = super.createDefaultJSch(fs);
-            defaultJSch.addIdentity("~/.ssh/id_rsa", passphrase);
-            return defaultJSch;
+            // JSch defaultJSch = super.createDefaultJSch(fs);
+            //defaultJSch.addIdentity("~/.ssh/id_rsa", passphrase);
+            return null;
          }
+
+		@Override
+		public RemoteSession getSession(URIish arg0, CredentialsProvider arg1, FS arg2, int arg3)
+				throws TransportException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
       };
 
       transportCommand.setTransportConfigCallback(new TransportConfigCallback() {
@@ -225,10 +243,7 @@ public final class GitOperationsImpl implements GitOperations {
       }
 
       try {
-         String fromString = gitBranchName;
-         if (!gitBranchName.contains("/")) {
-            fromString = "remotes/origin/" + gitBranchName;
-         }
+         String fromString = "remotes/origin/" + gitBranchName;
          ObjectId from = jgitRepo.resolve(fromString);
          if (from == null) {
             throw new OseeStateException("Failed to resolve commit [%s]", fromString);
@@ -443,7 +458,7 @@ public final class GitOperationsImpl implements GitOperations {
       } catch (Exception ex) {
          ArtifactId commitArtifact = tx.createArtifact(GitCommit, revCommit.getShortMessage());
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitSha, commitSHA);
-         tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.UserArtifactId, orcsApi.userService().getUser());
+         tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.UserArtifactId, SystemUser.OseeSystem); //TODO: this must convert author to the corresponding user artifact
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitAuthorDate,
             revCommit.getAuthorIdent().getWhen());
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitMessage, revCommit.getFullMessage());

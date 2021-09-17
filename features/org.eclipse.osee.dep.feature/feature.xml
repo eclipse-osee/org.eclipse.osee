@@ -20,15 +20,15 @@
 
   <includes
          id="org.eclipse.jgit.lfs"
-         version="5.0.0.201806131550-r"/>
+         version="5.13.0.202109080827-r"/>
          
    <includes
          id="org.eclipse.jgit.http.apache"
-         version="5.0.0.201806131550-r"/>
+         version="5.13.0.202109080827-r"/>
 
    <includes
          id="org.eclipse.jgit"
-         version="5.0.0.201806131550-r"/>
+         version="5.13.0.202109080827-r"/>
 
    <includes
          id="org.eclipse.equinox.core.feature"
@@ -372,7 +372,14 @@
          id="org.eclipse.jgit"
          download-size="0"
          install-size="0"
-         version="5.0.0.201806131550-r"
+         version="5.13.0.202109080827-r"
+         unpack="false"/>
+   
+   <plugin
+         id="org.eclipse.jgit.ssh.jsch"
+         download-size="0"
+         install-size="0"
+         version="5.13.0.202109080827-r"
          unpack="false"/>
 
    <plugin
@@ -388,13 +395,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false" />  
-   
-  <plugin
-         id="org.bouncycastle.bcpkix"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />       
+         
     
     <plugin
          id="org.bouncycastle.bcprov"
@@ -409,13 +410,7 @@
          install-size="0"
          version="9.4.43.v20210629"
          unpack="false" />      
-         
-   <plugin
-         id="org.apache.commons.compress"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />
+        
 
   <plugin
          id="jakarta.xml.bind"
@@ -428,8 +423,15 @@
          id="javaewah"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.7.v20200107-0831"
          unpack="false" />
+   
+   <plugin
+         id="org.apache.commons.compress"
+         download-size="0"
+         install-size="0"
+         version="1.6.0.v201310281400"
+         unpack="false" />   
    
    <plugin
          id="org.eclipse.jetty.http"
@@ -855,7 +857,7 @@
          id="org.eclipse.egit"
          download-size="0"
          install-size="0"
-         version="5.0.0.201806131550-r"
+         version="5.13.0.202109080827-r"
          unpack="false"/>
          								
    <plugin

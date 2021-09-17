@@ -35,6 +35,13 @@
    </requires>
 
    <plugin
+         id="org.eclipse.jgit.ssh.jsch"
+         download-size="0"
+         install-size="0"
+         version="5.13.0.202109080827-r"
+         unpack="false"/>
+
+   <plugin
          id="javax.transaction"
          download-size="0"
          install-size="0"
@@ -107,9 +114,16 @@
          id="javaewah"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.7.v20200107-0831"
          unpack="false" />   
-          
+   
+  <plugin
+         id="org.apache.commons.compress"
+         download-size="0"
+         install-size="0"
+         version="1.6.0.v201310281400"
+         unpack="false" />   
+                
    <plugin
          id="com.google.guava"
          download-size="0"

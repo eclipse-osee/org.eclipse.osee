@@ -86,7 +86,7 @@
  	<repository>
 			<id>egit</id>
 			<layout>p2</layout>
-			<url>http://archive.eclipse.org/egit/updates-5.0/</url>
+			<url>http://download.eclipse.org/egit/updates/</url>
 	  </repository>
  	
  	<repository>
@@ -113,6 +113,12 @@
 			<url>${eclipse-site}</url>
 	  </repository>
 	
+      <repository>
+			<id>polarion</id>
+			<layout>p2</layout>
+			<url>${polarion-site}</url>
+	  </repository>
+	    
 	  <repository>
 			<id>eclipse-ip</id>
 			<layout>p2</layout>
@@ -130,7 +136,7 @@
 			<layout>p2</layout>
 	      <url>${nebula-site}</url>
       </repository>
-		
+
       <repository>
 			<id>subversive</id>
 			<layout>p2</layout>
