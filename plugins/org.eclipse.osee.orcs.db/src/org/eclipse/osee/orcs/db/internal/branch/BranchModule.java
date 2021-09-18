@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -65,8 +66,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author Roberto E. Escobar
  */
 public class BranchModule {
-   private final String INSERT_INTO_BRANCH_ACL =
-      "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
    private final String UPDATE_BRANCH_ACL =
       "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id = ? AND branch_id = ?";
    private final String GET_BRANCH_PERMISSION =
@@ -217,10 +216,13 @@ public class BranchModule {
          @Override
          public void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission) {
             int existingPermission = jdbcClient.fetch(-1, GET_BRANCH_PERMISSION, subject, branch);
-            String sql = existingPermission == -1 ? INSERT_INTO_BRANCH_ACL : UPDATE_BRANCH_ACL;
-            jdbcClient.runPreparedUpdate(sql, permission.getPermId(), subject, branch);
+            if (existingPermission == -1) {
+               jdbcClient.runPreparedUpdate(OseeDb.OSEE_BRANCH_ACL_TABLE.getInsertSql(), branch, subject,
+                  permission.getPermId());
+            } else {
+               jdbcClient.runPreparedUpdate(UPDATE_BRANCH_ACL, permission.getPermId(), subject, branch);
+            }
          }
-
       };
    }
 }

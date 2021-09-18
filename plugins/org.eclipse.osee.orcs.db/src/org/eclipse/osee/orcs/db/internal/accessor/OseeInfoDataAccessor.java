@@ -22,13 +22,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
 
 public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    private static final String GET_VALUE_SQL = "SELECT osee_value FROM osee_info WHERE OSEE_KEY = ?";
-   private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO osee_info (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
    private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
    private static final String GET_KEYS_SQL = "SELECT osee_key FROM osee_info";
 
@@ -80,7 +80,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          throw new OseeStateException(INDEX_STARTUP_ERROR_MSG, DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       } else {
          jdbcClient.runPreparedUpdate(DELETE_KEY_SQL, key);
-         int updated = jdbcClient.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
+         int updated = jdbcClient.runPreparedUpdate(OseeDb.OSEE_INFO_TABLE.getInsertSql(), key, value);
          wasUpdated = updated == 1;
       }
       return wasUpdated;

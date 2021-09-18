@@ -28,6 +28,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
@@ -40,12 +41,6 @@ import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 public final class BranchCopyTxCallable extends JdbcTransaction {
 
    private final CreateBranchData branchData;
-
-   private static final String INSERT_TX_DETAILS =
-      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type, build_id) VALUES (?,?,?,?,?,?,?)";
-
-   private static final String INSERT_ADDRESSING =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?,?,?,?,?,?)";
 
    private static final String SELECT_ADDRESSING =
       "SELECT gamma_id, mod_type, app_id FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
@@ -76,9 +71,9 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
 
       String creationComment = branchData.getCreationComment();
 
-      jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getBranch(), nextTransactionId,
-         creationComment, timestamp, branchData.getAuthor(), TransactionDetailsType.NonBaselined.getId(),
-         OseeCodeVersion.getVersionId());
+      jdbcClient.runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), branchData.getBranch(),
+         nextTransactionId, branchData.getAuthor(), timestamp, creationComment,
+         TransactionDetailsType.NonBaselined.getId(), -1, OseeCodeVersion.getVersionId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),
          branchData.getSavedTransaction());
@@ -94,7 +89,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       populateAddressingToCopy(connection, data, intoTx, gammas, SELECT_ADDRESSING, parentBranch, copyTxId);
 
       if (!data.isEmpty()) {
-         jdbcClient.runBatchUpdate(connection, INSERT_ADDRESSING, data);
+         jdbcClient.runBatchUpdate(connection, OseeDb.TXS_TABLE.getInsertSql(), data);
       }
    }
 
@@ -108,7 +103,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
                ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
                Long app_id = chStmt.getLong("app_id");
                TxCurrent txCurrent = TxCurrent.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType, txCurrent, branchData.getBranch(), app_id});
+               data.add(new Object[] {branchData.getBranch(), gamma, baseTxId, txCurrent, modType, app_id});
                gammas.add(gamma);
             }
          }

@@ -26,14 +26,12 @@ import org.eclipse.osee.cache.admin.CacheKeysLoader;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class DatabaseSessionAccessor implements CacheDataLoader<String, Session>, CacheKeysLoader<String>, WriteDataAccessor<Session> {
-
-   private static final String INSERT_SESSION =
-      "INSERT INTO osee_session (session_id, user_id, client_machine_name, client_address, client_port, client_version, created_on) VALUES (?,?,?,?,?,?,?)";
 
    private static final String DELETE_SESSION = "DELETE FROM osee_session WHERE session_id = ?";
 
@@ -159,7 +157,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
             insertData.add(toInsert(session));
          }
          if (!insertData.isEmpty()) {
-            jdbcClient.runBatchUpdate(connection, INSERT_SESSION, insertData);
+            jdbcClient.runBatchUpdate(connection, OseeDb.OSEE_SESSION_TABLE.getInsertSql(), insertData);
          }
       }
 

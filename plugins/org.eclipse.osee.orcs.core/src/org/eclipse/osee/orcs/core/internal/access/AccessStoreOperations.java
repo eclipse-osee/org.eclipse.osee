@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -122,8 +123,8 @@ public class AccessStoreOperations implements IAccessStoreOperations {
          data.setNotDirty();
 
          if (data.isBirth()) {
-            jdbcClient.runPreparedUpdate(AccessQueries.INSERT_INTO_ARTIFACT_ACL, artifactAccessObject,
-               data.getPermission().getPermId(), data.getSubject().getId(), artifactAccessObject.getBranch());
+            jdbcClient.runPreparedUpdate(OseeDb.OSEE_ARTIFACT_ACL_TABLE.getInsertSql(), artifactAccessObject,
+               data.getSubject().getId(), artifactAccessObject.getBranch(), data.getPermission().getPermId());
          } else {
             jdbcClient.runPreparedUpdate(AccessQueries.UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
                data.getSubject().getId(), artifactAccessObject, artifactAccessObject.getBranch());

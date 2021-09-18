@@ -32,51 +32,45 @@ import org.eclipse.osee.jdbc.SqlTable;
 public class OseeDb {
 
    public static final SqlTable ARTIFACT_TABLE = new SqlTable("osee_artifact", "art", ObjectType.ARTIFACT);
-   public static final SqlColumn ARTIFACT_GUID = ARTIFACT_TABLE.addVarCharColumn("GUID", 22, false);
    public static final SqlColumn ARTIFACT_ART_ID = ARTIFACT_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
-   public static final SqlColumn ARTIFACT_ART_TYPE_ID = ARTIFACT_TABLE.addColumn("ART_TYPE_ID", JDBCType.BIGINT);
    public static final SqlColumn ARTIFACT_GAMMA_ID = ARTIFACT_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   public static final SqlColumn ARTIFACT_ART_TYPE_ID = ARTIFACT_TABLE.addColumn("ART_TYPE_ID", JDBCType.BIGINT);
+   public static final SqlColumn ARTIFACT_GUID = ARTIFACT_TABLE.addVarCharColumn("GUID", 22, false);
    static {
       ARTIFACT_TABLE.setPrimaryKeyConstraint(ARTIFACT_ART_ID, ARTIFACT_GAMMA_ID);
-      ARTIFACT_TABLE.createIndex("OSEE_ART__ART_ID_IDX", true, ARTIFACT_ART_ID.getName());
-      ARTIFACT_TABLE.createIndex("OSEE_ART__GUID_IDX", true, ARTIFACT_GUID.getName());
-      ARTIFACT_TABLE.createIndex("OSEE_ART__ART_TYPE_ID_IDX", true, ARTIFACT_ART_TYPE_ID.getName());
-
+      ARTIFACT_TABLE.createIndex("OSEE_ART__ART_ID_IDX", true, ARTIFACT_ART_ID);
+      ARTIFACT_TABLE.createIndex("OSEE_ART__GUID_IDX", true, ARTIFACT_GUID);
+      ARTIFACT_TABLE.createIndex("OSEE_ART__ART_TYPE_ID_IDX", true, ARTIFACT_ART_TYPE_ID);
    }
 
    public static final SqlTable ATTRIBUTE_TABLE = new SqlTable("osee_attribute", "att", ObjectType.ATTRIBUTE);
-   public static final SqlColumn ATTRIBUTE_ATTR_TYPE_ID = ATTRIBUTE_TABLE.addColumn("ATTR_TYPE_ID", JDBCType.BIGINT);
-   public static final SqlColumn ATTRIBUTE_ART_ID = ATTRIBUTE_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
-   public static final SqlColumn ATTRIBUTE_VALUE = ATTRIBUTE_TABLE.addVarCharColumn("VALUE", 4000);
    public static final SqlColumn ATTRIBUTE_ATRR_ID = ATTRIBUTE_TABLE.addColumn("ATTR_ID", JDBCType.BIGINT);
    public static final SqlColumn ATTRIBUTE_GAMMA_ID = ATTRIBUTE_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_ART_ID = ATTRIBUTE_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_ATTR_TYPE_ID = ATTRIBUTE_TABLE.addColumn("ATTR_TYPE_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_VALUE = ATTRIBUTE_TABLE.addVarCharColumn("VALUE", 4000);
    public static final SqlColumn ATTRIBUTE_URI = ATTRIBUTE_TABLE.addVarCharColumn("URI", 200);
    static {
       ATTRIBUTE_TABLE.setPrimaryKeyConstraint(ATTRIBUTE_ATRR_ID, ATTRIBUTE_GAMMA_ID);
-      ATTRIBUTE_TABLE.createIndex("OSEE_ATTRIBUTE_AR_G_IDX", true, ATTRIBUTE_ART_ID.getName(),
-         ATTRIBUTE_GAMMA_ID.getName());
-      ATTRIBUTE_TABLE.createIndex("OSEE_ATTRIBUTE_G_AT_IDX", true, ATTRIBUTE_GAMMA_ID.getName(),
-         ATTRIBUTE_ATRR_ID.getName());
-
+      ATTRIBUTE_TABLE.createIndex("OSEE_ATTRIBUTE_AR_G_IDX", true, ATTRIBUTE_ART_ID, ATTRIBUTE_GAMMA_ID);
+      ATTRIBUTE_TABLE.createIndex("OSEE_ATTRIBUTE_G_AT_IDX", true, ATTRIBUTE_GAMMA_ID, ATTRIBUTE_ATRR_ID);
    }
-   public static final SqlTable RELATION_TABLE = new SqlTable("osee_relation_link", "rel", ObjectType.RELATION);
 
-   public static final SqlColumn RELATION_LINK_REL_LINK_ID = RELATION_TABLE.addColumn("REL_LINK_ID", JDBCType.BIGINT);
+   public static final SqlTable RELATION_TABLE = new SqlTable("osee_relation_link", "rel", ObjectType.RELATION);
    public static final SqlColumn RELATION_LINK_REL_LINK_TYPE_ID =
       RELATION_TABLE.addColumn("REL_LINK_TYPE_ID", JDBCType.BIGINT);
    public static final SqlColumn RELATION_LINK_A_ART_ID = RELATION_TABLE.addColumn("A_ART_ID", JDBCType.BIGINT);
    public static final SqlColumn RELATION_LINK_B_ART_ID = RELATION_TABLE.addColumn("B_ART_ID", JDBCType.BIGINT);
-   public static final SqlColumn RELATION_LINK_RATIONALE = RELATION_TABLE.addVarCharColumn("RATIONALE", 4000);
    public static final SqlColumn RELATION_LINK_GAMMA_ID = RELATION_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
-
+   public static final SqlColumn RELATION_LINK_REL_LINK_ID = RELATION_TABLE.addColumn("REL_LINK_ID", JDBCType.BIGINT);
+   public static final SqlColumn RELATION_LINK_RATIONALE = RELATION_TABLE.addVarCharColumn("RATIONALE", 4000);
    static {
       RELATION_TABLE.setPrimaryKeyConstraint(RELATION_LINK_GAMMA_ID);
-      RELATION_TABLE.createIndex("OSEE_RELATION__R_G_IDX", true, RELATION_LINK_REL_LINK_ID.getName(),
-         RELATION_LINK_GAMMA_ID.getName());
-      RELATION_TABLE.createIndex("OSEE_RELATION__A_IDX", true, RELATION_LINK_A_ART_ID.getName());
-      RELATION_TABLE.createIndex("OSEE_RELATION__B_IDX", true, RELATION_LINK_B_ART_ID.getName());
-
+      RELATION_TABLE.createIndex("OSEE_RELATION__R_G_IDX", true, RELATION_LINK_REL_LINK_ID, RELATION_LINK_GAMMA_ID);
+      RELATION_TABLE.createIndex("OSEE_RELATION__A_IDX", true, RELATION_LINK_A_ART_ID);
+      RELATION_TABLE.createIndex("OSEE_RELATION__B_IDX", true, RELATION_LINK_B_ART_ID);
    }
+
    public static final SqlTable BRANCH_TABLE = new SqlTable("osee_branch", "br", ObjectType.BRANCH);
    public static final SqlColumn BRANCH_ID = BRANCH_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_TYPE = BRANCH_TABLE.addColumn("BRANCH_TYPE", JDBCType.SMALLINT);
@@ -94,13 +88,12 @@ public class OseeDb {
       BRANCH_TABLE.addColumn("INHERIT_ACCESS_CONTROL", JDBCType.SMALLINT);
    static {
       BRANCH_TABLE.setPrimaryKeyConstraint(BRANCH_ID);
-      BRANCH_TABLE.createIndex("OSEE_BRANCH_A_IDX", true, BRANCH_ARCHIVED.getName());
+      BRANCH_TABLE.createIndex("OSEE_BRANCH_A_IDX", true, BRANCH_ARCHIVED);
       BRANCH_TABLE.addStatement(BRANCH_TABLE.getInsertIntoSqlWithValues(SYSTEM_ROOT, BranchType.SYSTEM_ROOT,
          BranchState.MODIFIED, SYSTEM_ROOT.getName(), -1, 1, 1, -1, BranchArchivedState.UNARCHIVED, 0));
    }
 
    public static final SqlTable TXS_TABLE = new SqlTable("osee_txs", "txs", 1);
-
    public static final SqlColumn TXS_BRANCH_ID = TXS_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn TXS_GAMMA_ID = TXS_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
    public static final SqlColumn TXS_TRANSACTION_ID = TXS_TABLE.addColumn("TRANSACTION_ID", JDBCType.BIGINT);
@@ -124,7 +117,6 @@ public class OseeDb {
       TXS_ARCHIVED_TABLE.setPrimaryKeyConstraint(TXS_ARCHIVED_BRANCH_ID, TXS_ARCHIVED_GAMMA_ID,
          TXS_ARCHIVED_TRANSACTION_ID);
       TXS_ARCHIVED_TABLE.setTableExtras("TABLESPACE osee_archived");
-
    }
 
    public static final SqlTable TX_DETAILS_TABLE = new SqlTable("osee_tx_details", "txd", ObjectType.TX);
@@ -141,27 +133,27 @@ public class OseeDb {
    static {
       TX_DETAILS_TABLE.setPrimaryKeyConstraint(TX_DETAILS_TRANSACTION_ID);
       TX_DETAILS_TABLE.setForeignKeyConstraint("BRANCH_ID_FK1", TX_DETAILS_TX_BRANCH_ID, BRANCH_TABLE, BRANCH_ID);
-      TX_DETAILS_TABLE.createIndex("OSEE_TX_DETAILS_B_TX_IDX", true, TX_DETAILS_TX_BRANCH_ID.getName(),
-         TX_DETAILS_TRANSACTION_ID.getName());
+      TX_DETAILS_TABLE.createIndex("OSEE_TX_DETAILS_B_TX_IDX", true, TX_DETAILS_TX_BRANCH_ID,
+         TX_DETAILS_TRANSACTION_ID);
       TX_DETAILS_TABLE.addStatement(TX_DETAILS_TABLE.getInsertIntoSqlWithValues(1, 1, -1, "CURRENT_TIMESTAMP",
          CoreBranches.SYSTEM_ROOT.getName() + " Creation", TransactionDetailsType.Baselined, -1,
          OseeCodeVersion.getVersionId()));
    }
 
    public static final SqlTable OSEE_PERMISSION_TABLE = new SqlTable("osee_permission", "per");
-   public static final SqlColumn OSEE_PERMISSION_PERMISSION_NAME =
-      OSEE_PERMISSION_TABLE.addVarCharColumn("PERMISSION_NAME", 50, false);
    public static final SqlColumn OSEE_PERMISSION_PERMISSION_ID =
       OSEE_PERMISSION_TABLE.addColumn("PERMISSION_ID", JDBCType.INTEGER);
+   public static final SqlColumn OSEE_PERMISSION_PERMISSION_NAME =
+      OSEE_PERMISSION_TABLE.addVarCharColumn("PERMISSION_NAME", 50, false);
    static {
       OSEE_PERMISSION_TABLE.setPrimaryKeyConstraint(OSEE_PERMISSION_PERMISSION_ID);
    }
 
    public static final SqlTable OSEE_ARTIFACT_ACL_TABLE = new SqlTable("osee_artifact_acl", "art_acl");
-   public static final SqlColumn OSEE_ARTIFACT_ACL_PRIVILEGE_ENTITY_ID =
-      OSEE_ARTIFACT_ACL_TABLE.addColumn("PRIVILEGE_ENTITY_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ARTIFACT_ACL_ART_ID =
       OSEE_ARTIFACT_ACL_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_ARTIFACT_ACL_PRIVILEGE_ENTITY_ID =
+      OSEE_ARTIFACT_ACL_TABLE.addColumn("PRIVILEGE_ENTITY_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ARTIFACT_ACL_BRANCH_ID =
       OSEE_ARTIFACT_ACL_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ARTIFACT_ACL_PERMISSION_ID =
@@ -171,14 +163,13 @@ public class OseeDb {
          OSEE_ARTIFACT_ACL_BRANCH_ID);
       OSEE_ARTIFACT_ACL_TABLE.setForeignKeyConstraint("ARTIFACT_ACL_PERM_FK", OSEE_ARTIFACT_ACL_PERMISSION_ID,
          OSEE_PERMISSION_TABLE, OSEE_PERMISSION_PERMISSION_ID);
-
    }
 
    public static final SqlTable OSEE_BRANCH_ACL_TABLE = new SqlTable("osee_branch_acl", "br_acl");
-   public static final SqlColumn OSEE_BRANCH_ACL_PRIVILEGE_ENTITY_ID =
-      OSEE_BRANCH_ACL_TABLE.addColumn("PRIVILEGE_ENTITY_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_BRANCH_ACL_BRANCH_ID =
       OSEE_BRANCH_ACL_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_BRANCH_ACL_PRIVILEGE_ENTITY_ID =
+      OSEE_BRANCH_ACL_TABLE.addColumn("PRIVILEGE_ENTITY_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_BRANCH_ACL_PERMISSION_ID =
       OSEE_BRANCH_ACL_TABLE.addColumn("PERMISSION_ID", JDBCType.INTEGER);
    static {
@@ -187,7 +178,6 @@ public class OseeDb {
          BRANCH_TABLE, BRANCH_ID);
       OSEE_BRANCH_ACL_TABLE.setForeignKeyConstraint("BRANCH_ACL_PERM_FK", OSEE_BRANCH_ACL_PERMISSION_ID,
          OSEE_PERMISSION_TABLE, OSEE_PERMISSION_PERMISSION_ID);
-
    }
 
    public static final SqlTable OSEE_SEARCH_TAGS_TABLE = new SqlTable("osee_search_tags", "srch_tgs");
@@ -197,9 +187,8 @@ public class OseeDb {
       OSEE_SEARCH_TAGS_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
    static {
       OSEE_SEARCH_TAGS_TABLE.setPrimaryKeyConstraint(OSEE_SEARCH_TAGS_CODED_TAG_ID, OSEE_SEARCH_TAGS_GAMMA_ID);
-      OSEE_SEARCH_TAGS_TABLE.createIndex("OSEE_SEARCH_TAGS_C_IDX", true, OSEE_SEARCH_TAGS_CODED_TAG_ID.getName());
-      OSEE_SEARCH_TAGS_TABLE.createIndex("OSEE_SEARCH_TAGS_G_IDX", true, OSEE_SEARCH_TAGS_GAMMA_ID.getName());
-
+      OSEE_SEARCH_TAGS_TABLE.createIndex("OSEE_SEARCH_TAGS_C_IDX", true, OSEE_SEARCH_TAGS_CODED_TAG_ID);
+      OSEE_SEARCH_TAGS_TABLE.createIndex("OSEE_SEARCH_TAGS_G_IDX", true, OSEE_SEARCH_TAGS_GAMMA_ID);
    }
 
    public static final SqlTable OSEE_TAG_GAMMA_QUEUE_TABLE = new SqlTable("osee_tag_gamma_queue", "tg_gm_que");
@@ -222,35 +211,35 @@ public class OseeDb {
    }
 
    public static final SqlTable OSEE_INFO_TABLE = new SqlTable("osee_info", "inf");
-   public static final SqlColumn OSEE_INFO_OSEE_VALUE = OSEE_INFO_TABLE.addVarCharColumn("OSEE_VALUE", 1000, false);
    public static final SqlColumn OSEE_INFO_OSEE_KEY = OSEE_INFO_TABLE.addVarCharColumn("OSEE_KEY", 50, false);
+   public static final SqlColumn OSEE_INFO_OSEE_VALUE = OSEE_INFO_TABLE.addVarCharColumn("OSEE_VALUE", 1000, false);
    static {
       OSEE_INFO_TABLE.setUniqueKeyConstraint("OSEE_INFO_KEY_UN_IDX", OSEE_INFO_OSEE_KEY.getName());
    }
 
    public static final SqlTable OSEE_MERGE_TABLE = new SqlTable("osee_merge", "mrg");
-   public static final SqlColumn OSEE_MERGE_SOURCE_BRANCH_ID =
-      OSEE_MERGE_TABLE.addColumn("SOURCE_BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_MERGE_MERGE_BRANCH_ID =
       OSEE_MERGE_TABLE.addColumn("MERGE_BRANCH_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_MERGE_COMMIT_TRANSACTION_ID =
-      OSEE_MERGE_TABLE.addColumn("COMMIT_TRANSACTION_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_MERGE_SOURCE_BRANCH_ID =
+      OSEE_MERGE_TABLE.addColumn("SOURCE_BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_MERGE_DEST_BRANCH_ID =
       OSEE_MERGE_TABLE.addColumn("DEST_BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_MERGE_COMMIT_TRANSACTION_ID =
+      OSEE_MERGE_TABLE.addColumn("COMMIT_TRANSACTION_ID", JDBCType.BIGINT);
    static {
       OSEE_MERGE_TABLE.setPrimaryKeyConstraint(OSEE_MERGE_MERGE_BRANCH_ID);
       OSEE_MERGE_TABLE.setForeignKeyConstraint("OSEE_MERGE__MBI_FK", OSEE_MERGE_MERGE_BRANCH_ID, BRANCH_TABLE,
          BRANCH_ID);
       OSEE_MERGE_TABLE.setForeignKeyConstraint("OSEE_MERGE__DBI_FK", OSEE_MERGE_DEST_BRANCH_ID, BRANCH_TABLE,
          BRANCH_ID);
-
    }
 
    public static final SqlTable OSEE_CONFLICT_TABLE = new SqlTable("osee_conflict", "conf");
-   public static final SqlColumn OSEE_CONFLICT_SOURCE_GAMMA_ID =
-      OSEE_CONFLICT_TABLE.addColumn("SOURCE_GAMMA_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_CONFLICT_MERGE_BRANCH_ID =
       OSEE_CONFLICT_TABLE.addColumn("MERGE_BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_CONFLICT_SOURCE_GAMMA_ID =
+      OSEE_CONFLICT_TABLE.addColumn("SOURCE_GAMMA_ID", JDBCType.BIGINT);
+
    public static final SqlColumn OSEE_CONFLICT_CONFLICT_ID =
       OSEE_CONFLICT_TABLE.addColumn("CONFLICT_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_CONFLICT_DEST_GAMMA_ID =
@@ -265,12 +254,12 @@ public class OseeDb {
    }
 
    public static final SqlTable OSEE_JOIN_EXPORT_IMPORT_TABLE = new SqlTable("osee_join_export_import", "jn_ex_im");
-   public static final SqlColumn OSEE_JOIN_EXPORT_IMPORT_ID2 =
-      OSEE_JOIN_EXPORT_IMPORT_TABLE.addColumn("ID2", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_JOIN_EXPORT_IMPORT_ID1 =
-      OSEE_JOIN_EXPORT_IMPORT_TABLE.addColumn("ID1", JDBCType.BIGINT);
    public static final SqlColumn OSEE_JOIN_EXPORT_IMPORT_TABLE_QUERY_ID =
       OSEE_JOIN_EXPORT_IMPORT_TABLE.addColumn("QUERY_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_EXPORT_IMPORT_ID1 =
+      OSEE_JOIN_EXPORT_IMPORT_TABLE.addColumn("ID1", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_EXPORT_IMPORT_ID2 =
+      OSEE_JOIN_EXPORT_IMPORT_TABLE.addColumn("ID2", JDBCType.BIGINT);
    static {
       OSEE_JOIN_EXPORT_IMPORT_TABLE.setTableExtras("TABLESPACE osee_join");
    }
@@ -286,7 +275,6 @@ public class OseeDb {
       OSEE_IMPORT_SOURCE_TABLE.addColumn("DATE_IMPORTED", JDBCType.TIMESTAMP);
    static {
       OSEE_IMPORT_SOURCE_TABLE.setPrimaryKeyConstraint(OSEE_IMPORT_SOURCE_IMPORT_ID);
-
    }
 
    public static final SqlTable OSEE_IMPORT_SAVE_POINT_TABLE = new SqlTable("osee_import_save_point", "imp_sv_pt");
@@ -298,7 +286,6 @@ public class OseeDb {
       OSEE_IMPORT_SAVE_POINT_TABLE.addColumn("STATUS", JDBCType.INTEGER);
    public static final SqlColumn OSEE_IMPORT_SAVE_POINT_SAVE_POINT_NAME =
       OSEE_IMPORT_SAVE_POINT_TABLE.addVarCharColumn("SAVE_POINT_NAME", 128, false);
-
    static {
       OSEE_IMPORT_SAVE_POINT_TABLE.setPrimaryKeyConstraint(OSEE_IMPORT_SAVE_POINT_IMPORT_ID,
          OSEE_IMPORT_SAVE_POINT_SAVE_POINT_NAME);
@@ -332,53 +319,48 @@ public class OseeDb {
       OSEE_IMPORT_INDEX_MAP_TABLE.setForeignKeyConstraint("OSEE_IMPORT_INDEX_MAP_II_FK",
          OSEE_IMPORT_INDEX_MAP_SEQUENCE_ID, OSEE_IMPORT_MAP_TABLE, OSEE_IMPORT_MAP_SEQUENCE_ID);
 
-      OSEE_IMPORT_INDEX_MAP_TABLE.createIndex("OSEE_IMPORT_INDEX_MAP_IO_IDX", true,
-         OSEE_IMPORT_INDEX_MAP_SEQUENCE_ID.getName(), OSEE_IMPORT_INDEX_MAP_ORIGINAL_ID.getName());
-      OSEE_IMPORT_INDEX_MAP_TABLE.createIndex("OSEE_IMPORT_INDEX_MAP_IM_IDX", true,
-         OSEE_IMPORT_INDEX_MAP_SEQUENCE_ID.getName(), OSEE_IMPORT_INDEX_MAP_MAPPED_ID.getName());
-
+      OSEE_IMPORT_INDEX_MAP_TABLE.createIndex("OSEE_IMPORT_INDEX_MAP_IO_IDX", true, OSEE_IMPORT_INDEX_MAP_SEQUENCE_ID,
+         OSEE_IMPORT_INDEX_MAP_ORIGINAL_ID);
+      OSEE_IMPORT_INDEX_MAP_TABLE.createIndex("OSEE_IMPORT_INDEX_MAP_IM_IDX", true, OSEE_IMPORT_INDEX_MAP_SEQUENCE_ID,
+         OSEE_IMPORT_INDEX_MAP_MAPPED_ID);
    }
 
    public static final SqlTable OSEE_JOIN_ARTIFACT_TABLE = new SqlTable("osee_join_artifact", "jn_art");
-   public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_ART_ID =
-      OSEE_JOIN_ARTIFACT_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_BRANCH_ID =
-      OSEE_JOIN_ARTIFACT_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_TRANSACTION_ID =
-      OSEE_JOIN_ARTIFACT_TABLE.addColumn("TRANSACTION_ID", JDBCType.BIGINT, true);
    public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_QUERY_ID =
       OSEE_JOIN_ARTIFACT_TABLE.addColumn("QUERY_ID", JDBCType.BIGINT);
-
+   public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_BRANCH_ID =
+      OSEE_JOIN_ARTIFACT_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_ART_ID =
+      OSEE_JOIN_ARTIFACT_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_ARTIFACT_TABLE_TRANSACTION_ID =
+      OSEE_JOIN_ARTIFACT_TABLE.addColumn("TRANSACTION_ID", JDBCType.BIGINT, true);
    static {
-      OSEE_JOIN_ARTIFACT_TABLE.createIndex("OSEE_JOIN_ART__Q_A_IDX", true, OSEE_JOIN_ARTIFACT_TABLE_QUERY_ID.getName(),
-         OSEE_JOIN_ARTIFACT_TABLE_ART_ID.getName());
+      OSEE_JOIN_ARTIFACT_TABLE.createIndex("OSEE_JOIN_ART__Q_A_IDX", true, OSEE_JOIN_ARTIFACT_TABLE_QUERY_ID,
+         OSEE_JOIN_ARTIFACT_TABLE_ART_ID);
       OSEE_JOIN_ARTIFACT_TABLE.setTableExtras("TABLESPACE osee_join");
    }
 
    public static final SqlTable OSEE_JOIN_ID_TABLE = new SqlTable("osee_join_id", "jn_id");
-   public static final SqlColumn OSEE_JOIN_ID_TABLE_ID = OSEE_JOIN_ID_TABLE.addColumn("ID", JDBCType.BIGINT, true);
    public static final SqlColumn OSEE_JOIN_ID_TABLE_QUERY_ID =
       OSEE_JOIN_ID_TABLE.addColumn("QUERY_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_ID_TABLE_ID = OSEE_JOIN_ID_TABLE.addColumn("ID", JDBCType.BIGINT, true);
    static {
-      OSEE_JOIN_ID_TABLE.createIndex("OSEE_JOIN_ID__Q_I_IDX", true, OSEE_JOIN_ID_TABLE_QUERY_ID.getName(),
-         OSEE_JOIN_ID_TABLE_ID.getName());
+      OSEE_JOIN_ID_TABLE.createIndex("OSEE_JOIN_ID__Q_I_IDX", true, OSEE_JOIN_ID_TABLE_QUERY_ID, OSEE_JOIN_ID_TABLE_ID);
       OSEE_JOIN_ID_TABLE.setTableExtras("TABLESPACE osee_join");
-
    }
 
    public static final SqlTable OSEE_JOIN_CLEANUP_TABLE = new SqlTable("osee_join_cleanup", "jn_clup");
-   public static final SqlColumn OSEE_JOIN_CLEANUP_TABLE_NAME =
-      OSEE_JOIN_CLEANUP_TABLE.addVarCharColumn("TABLE_NAME", 28, false);
-   public static final SqlColumn OSEE_JOIN_CLEANUP_EXPIRES_IN =
-      OSEE_JOIN_CLEANUP_TABLE.addColumn("EXPIRES_IN", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_JOIN_CLEANUP_ISSUED_AT =
-      OSEE_JOIN_CLEANUP_TABLE.addColumn("ISSUED_AT", JDBCType.BIGINT);
    public static final SqlColumn OSEE_JOIN_CLEANUP_QUERY_ID =
       OSEE_JOIN_CLEANUP_TABLE.addColumn("QUERY_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_CLEANUP_TABLE_NAME =
+      OSEE_JOIN_CLEANUP_TABLE.addVarCharColumn("TABLE_NAME", 28, false);
+   public static final SqlColumn OSEE_JOIN_CLEANUP_ISSUED_AT =
+      OSEE_JOIN_CLEANUP_TABLE.addColumn("ISSUED_AT", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_JOIN_CLEANUP_EXPIRES_IN =
+      OSEE_JOIN_CLEANUP_TABLE.addColumn("EXPIRES_IN", JDBCType.BIGINT);
    static {
       OSEE_JOIN_CLEANUP_TABLE.setPrimaryKeyConstraint(OSEE_JOIN_CLEANUP_QUERY_ID);
       OSEE_JOIN_CLEANUP_TABLE.setTableExtras("TABLESPACE osee_join");
-
    }
 
    public static final SqlTable OSEE_JOIN_CHAR_ID_TABLE = new SqlTable("osee_join_char_id", "jn_chr_id");
@@ -386,9 +368,8 @@ public class OseeDb {
    public static final SqlColumn OSEE_JOIN_CHAR_ID_QUERY_ID =
       OSEE_JOIN_CHAR_ID_TABLE.addColumn("QUERY_ID", JDBCType.BIGINT);
    static {
-      OSEE_JOIN_CHAR_ID_TABLE.createIndex("OSEE_JOIN_CHAR__Q_IDX", true, OSEE_JOIN_CHAR_ID_QUERY_ID.getName());
+      OSEE_JOIN_CHAR_ID_TABLE.createIndex("OSEE_JOIN_CHAR__Q_IDX", true, OSEE_JOIN_CHAR_ID_QUERY_ID);
       OSEE_JOIN_CHAR_ID_TABLE.setTableExtras("TABLESPACE osee_join");
-
    }
 
    public static final SqlTable OSEE_JOIN_TRANSACTION_TABLE = new SqlTable("osee_join_transaction", "jn_trns");
@@ -401,10 +382,8 @@ public class OseeDb {
    public static final SqlColumn OSEE_JOIN_TRANSACTION_GAMMA_ID =
       OSEE_JOIN_TRANSACTION_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
    static {
-      OSEE_JOIN_TRANSACTION_TABLE.createIndex("OSEE_JOIN_TRANSACTION_Q_IDX", true,
-         OSEE_JOIN_TRANSACTION_QUERY_ID.getName());
+      OSEE_JOIN_TRANSACTION_TABLE.createIndex("OSEE_JOIN_TRANSACTION_Q_IDX", true, OSEE_JOIN_TRANSACTION_QUERY_ID);
       OSEE_JOIN_TRANSACTION_TABLE.setTableExtras("TABLESPACE osee_join");
-
    }
 
    public static final SqlTable OSEE_BRANCH_GROUP_TABLE = new SqlTable("osee_branch_group", "br_grp", 2);
@@ -419,8 +398,7 @@ public class OseeDb {
    static {
       OSEE_BRANCH_GROUP_TABLE.setPrimaryKeyConstraint(OSEE_BRANCH_GROUP_GROUP_TYPE, OSEE_BRANCH_GROUP_GROUP_ID,
          OSEE_BRANCH_GROUP_BRANCH_ID);
-      OSEE_BRANCH_GROUP_TABLE.createIndex("OSEE_BRANCH_GROUP__G_IDX", false, OSEE_BRANCH_GROUP_GAMMA_ID.getName());
-
+      OSEE_BRANCH_GROUP_TABLE.createIndex("OSEE_BRANCH_GROUP__G_IDX", false, OSEE_BRANCH_GROUP_GAMMA_ID);
    }
 
    public static final SqlTable LDAP_DETAILS_TABLE = new SqlTable("ldap_details", "ldap_det");
@@ -441,7 +419,7 @@ public class OseeDb {
    public static final SqlColumn TUPLE2_GAMMA_ID = TUPLE2.addColumn("GAMMA_ID", JDBCType.BIGINT);
    static {
       TUPLE2.setPrimaryKeyConstraint(TUPLE2_TUPLE_TYPE, TUPLE2_E1, TUPLE2_E2);
-      TUPLE2.createIndex("OSEE_TUPLE2__G_IDX", false, TUPLE2_GAMMA_ID.getName());
+      TUPLE2.createIndex("OSEE_TUPLE2__G_IDX", false, TUPLE2_GAMMA_ID);
    }
 
    public static final SqlTable TUPLE3 = new SqlTable("osee_tuple3", "tp3", ObjectType.TUPLE, 2);
@@ -449,12 +427,10 @@ public class OseeDb {
    public static final SqlColumn TUPLE3_E1 = TUPLE3.addColumn("E1", JDBCType.BIGINT);
    public static final SqlColumn TUPLE3_E2 = TUPLE3.addColumn("E2", JDBCType.BIGINT);
    public static final SqlColumn TUPLE3_E3 = TUPLE3.addColumn("E3", JDBCType.BIGINT);
-
    public static final SqlColumn TUPLE3_GAMMA_ID = TUPLE3.addColumn("GAMMA_ID", JDBCType.BIGINT);
    static {
       TUPLE3.setPrimaryKeyConstraint(TUPLE3_TUPLE_TYPE, TUPLE3_E1, TUPLE3_E2, TUPLE3_E3);
-      TUPLE3.createIndex("OSEE_TUPLE3__G_IDX", false, TUPLE3_GAMMA_ID.getName());
-
+      TUPLE3.createIndex("OSEE_TUPLE3__G_IDX", false, TUPLE3_GAMMA_ID);
    }
 
    public static final SqlTable TUPLE4 = new SqlTable("osee_tuple4", "tp4", ObjectType.TUPLE, 3);
@@ -466,8 +442,7 @@ public class OseeDb {
    public static final SqlColumn TUPLE4_GAMMA_ID = TUPLE4.addColumn("GAMMA_ID", JDBCType.BIGINT);
    static {
       TUPLE4.setPrimaryKeyConstraint(TUPLE4_TUPLE_TYPE, TUPLE4_E1, TUPLE4_E2, TUPLE4_E3, TUPLE4_E4);
-      TUPLE4.createIndex("OSEE_TUPLE4__G_IDX", false, TUPLE4_GAMMA_ID.getName());
-
+      TUPLE4.createIndex("OSEE_TUPLE4__G_IDX", false, TUPLE4_GAMMA_ID);
    }
 
    public static final SqlTable OSEE_KEY_VALUE_TABLE = new SqlTable("osee_key_value", "key_val", 0);
@@ -475,7 +450,7 @@ public class OseeDb {
    public static final SqlColumn OSEE_KEY_VALUE_VALUE = OSEE_KEY_VALUE_TABLE.addVarCharColumn("VALUE", 4000);
    static {
       OSEE_KEY_VALUE_TABLE.setPrimaryKeyConstraint(OSEE_KEY_VALUE_KEY);
-      OSEE_KEY_VALUE_TABLE.createIndex("OSEE_KEY_VALUE__V_IDX", false, OSEE_KEY_VALUE_VALUE.getName());
+      OSEE_KEY_VALUE_TABLE.createIndex("OSEE_KEY_VALUE__V_IDX", false, OSEE_KEY_VALUE_VALUE);
       OSEE_KEY_VALUE_TABLE.setTableExtras("TABLESPACE osee_data\n\tPCTTHRESHOLD 20\n\tOVERFLOW TABLESPACE osee_data");
    }
 
@@ -488,60 +463,59 @@ public class OseeDb {
    static {
       OSEE_JOIN_ID4_TABLE.setPrimaryKeyConstraint(OSEE_JOIN_ID4_QUERY_ID, OSEE_JOIN_ID4_ID1, OSEE_JOIN_ID4_ID2,
          OSEE_JOIN_ID4_ID3, OSEE_JOIN_ID4_ID4);
-      OSEE_JOIN_ID4_TABLE.createIndex("OSEE_JOIN_ID4__Q_IDX", false, OSEE_JOIN_ID4_QUERY_ID.getName());
+      OSEE_JOIN_ID4_TABLE.createIndex("OSEE_JOIN_ID4__Q_IDX", false, OSEE_JOIN_ID4_QUERY_ID);
       OSEE_JOIN_ID4_TABLE.setTableExtras("TABLESPACE osee_join");
    }
 
    public static final SqlTable OSEE_SERVER_LOOKUP_TABLE = new SqlTable("osee_server_lookup", "srvr_lkup");
-   public static final SqlColumn OSEE_SERVER_LOOKUP_ACCEPTS_REQUESTS =
-      OSEE_SERVER_LOOKUP_TABLE.addColumn("ACCEPTS_REQUESTS", JDBCType.SMALLINT);
-   public static final SqlColumn OSEE_SERVER_LOOKUP_VERSION_ID =
-      OSEE_SERVER_LOOKUP_TABLE.addVarCharColumn("VERSION_ID", 100, false);
    public static final SqlColumn OSEE_SERVER_LOOKUP_SERVER_ID =
       OSEE_SERVER_LOOKUP_TABLE.addVarCharColumn("SERVER_ID", 40, false);
-   public static final SqlColumn OSEE_SERVER_LOOKUP_START_TIME =
-      OSEE_SERVER_LOOKUP_TABLE.addColumn("START_TIME", JDBCType.TIMESTAMP);
+   public static final SqlColumn OSEE_SERVER_LOOKUP_VERSION_ID =
+      OSEE_SERVER_LOOKUP_TABLE.addVarCharColumn("VERSION_ID", 100, false);
    public static final SqlColumn OSEE_SERVER_LOOKUP_SERVER_URI =
       OSEE_SERVER_LOOKUP_TABLE.addVarCharColumn("SERVER_URI", 255, false);
+   public static final SqlColumn OSEE_SERVER_LOOKUP_START_TIME =
+      OSEE_SERVER_LOOKUP_TABLE.addColumn("START_TIME", JDBCType.TIMESTAMP);
+   public static final SqlColumn OSEE_SERVER_LOOKUP_ACCEPTS_REQUESTS =
+      OSEE_SERVER_LOOKUP_TABLE.addColumn("ACCEPTS_REQUESTS", JDBCType.SMALLINT);
    static {
       OSEE_SERVER_LOOKUP_TABLE.setPrimaryKeyConstraint(OSEE_SERVER_LOOKUP_SERVER_URI, OSEE_SERVER_LOOKUP_VERSION_ID);
    }
 
    public static final SqlTable OSEE_SESSION_TABLE = new SqlTable("osee_session", "sess");
+   public static final SqlColumn OSEE_SESSION_SESSION_ID = OSEE_SESSION_TABLE.addVarCharColumn("SESSION_ID", 28, false);
+   public static final SqlColumn OSEE_SESSION_USER_ID = OSEE_SESSION_TABLE.addVarCharColumn("USER_ID", 100, false);
+   public static final SqlColumn OSEE_SESSION_CLIENT_MACHINE_NAME =
+      OSEE_SESSION_TABLE.addVarCharColumn("CLIENT_MACHINE_NAME", 100, false);
    public static final SqlColumn OSEE_SESSION_CLIENT_ADDRESS =
       OSEE_SESSION_TABLE.addVarCharColumn("CLIENT_ADDRESS", 255, false);
-   public static final SqlColumn OSEE_SESSION_USER_ID = OSEE_SESSION_TABLE.addVarCharColumn("USER_ID", 100, false);
-   public static final SqlColumn OSEE_SESSION_CREATED_ON =
-      OSEE_SESSION_TABLE.addColumn("CREATED_ON", JDBCType.TIMESTAMP);
    public static final SqlColumn OSEE_SESSION_CLIENT_PORT =
       OSEE_SESSION_TABLE.addColumn("CLIENT_PORT", JDBCType.INTEGER);
    public static final SqlColumn OSEE_SESSION_CLIENT_VERSION =
       OSEE_SESSION_TABLE.addVarCharColumn("CLIENT_VERSION", 100, false);
-   public static final SqlColumn OSEE_SESSION_SESSION_ID = OSEE_SESSION_TABLE.addVarCharColumn("SESSION_ID", 28, false);
-   public static final SqlColumn OSEE_SESSION_CLIENT_MACHINE_NAME =
-      OSEE_SESSION_TABLE.addVarCharColumn("CLIENT_MACHINE_NAME", 100, false);
+   public static final SqlColumn OSEE_SESSION_CREATED_ON =
+      OSEE_SESSION_TABLE.addColumn("CREATED_ON", JDBCType.TIMESTAMP);
    static {
       OSEE_SESSION_TABLE.setPrimaryKeyConstraint(OSEE_SESSION_SESSION_ID);
    }
 
    public static final SqlTable OSEE_ACCOUNT_SESSION_TABLE = new SqlTable("osee_account_session", "acc_sess");
-   public static final SqlColumn OSEE_ACCOUNT_SESSION_CREATED_ON =
-      OSEE_ACCOUNT_SESSION_TABLE.addColumn("CREATED_ON", JDBCType.TIMESTAMP);
    public static final SqlColumn OSEE_ACCOUNT_SESSION_ACCOUNT_ID =
       OSEE_ACCOUNT_SESSION_TABLE.addColumn("ACCOUNT_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_ACCOUNT_SESSION_SESSION_TOKEN =
+      OSEE_ACCOUNT_SESSION_TABLE.addVarCharColumn("SESSION_TOKEN", 255, false);
+   public static final SqlColumn OSEE_ACCOUNT_SESSION_CREATED_ON =
+      OSEE_ACCOUNT_SESSION_TABLE.addColumn("CREATED_ON", JDBCType.TIMESTAMP);
+   public static final SqlColumn OSEE_ACCOUNT_SESSION_LAST_ACCESSED_ON =
+      OSEE_ACCOUNT_SESSION_TABLE.addColumn("LAST_ACCESSED_ON", JDBCType.TIMESTAMP);
    public static final SqlColumn OSEE_ACCOUNT_SESSION_ACCESSED_FROM =
       OSEE_ACCOUNT_SESSION_TABLE.addVarCharColumn("ACCESSED_FROM", 255, false);
    public static final SqlColumn OSEE_ACCOUNT_SESSION_ACCESS_DETAILS =
       OSEE_ACCOUNT_SESSION_TABLE.addVarCharColumn("ACCESS_DETAILS", 255, false);
-   public static final SqlColumn OSEE_ACCOUNT_SESSION_LAST_ACCESSED_ON =
-      OSEE_ACCOUNT_SESSION_TABLE.addColumn("LAST_ACCESSED_ON", JDBCType.TIMESTAMP);
-   public static final SqlColumn OSEE_ACCOUNT_SESSION_SESSION_TOKEN =
-      OSEE_ACCOUNT_SESSION_TABLE.addVarCharColumn("SESSION_TOKEN", 255, false);
    static {
       OSEE_ACCOUNT_SESSION_TABLE.setPrimaryKeyConstraint(OSEE_ACCOUNT_SESSION_ACCOUNT_ID,
          OSEE_ACCOUNT_SESSION_SESSION_TOKEN);
-      OSEE_ACCOUNT_SESSION_TABLE.createIndex("OSEE_ACCOUNT_SESSION_T_IDX", false,
-         OSEE_ACCOUNT_SESSION_SESSION_TOKEN.getName());
+      OSEE_ACCOUNT_SESSION_TABLE.createIndex("OSEE_ACCOUNT_SESSION_T_IDX", false, OSEE_ACCOUNT_SESSION_SESSION_TOKEN);
    }
 
    public static final SqlTable OSEE_ACTIVITY_TYPE_TABLE = new SqlTable("osee_activity_type", "acc_sess");
@@ -559,24 +533,22 @@ public class OseeDb {
 
    public static final SqlTable OSEE_ACTIVITY_TABLE = new SqlTable("osee_activity", "act");
    public static final SqlColumn OSEE_ACTIVITY_ENTRY_ID = OSEE_ACTIVITY_TABLE.addColumn("ENTRY_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_ACTIVITY_PARENT_ID = OSEE_ACTIVITY_TABLE.addColumn("PARENT_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_ACTIVITY_TYPE_ID = OSEE_ACTIVITY_TABLE.addColumn("TYPE_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ACTIVITY_ACCOUNT_ID =
       OSEE_ACTIVITY_TABLE.addColumn("ACCOUNT_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_ACTIVITY_CLIENT_ID = OSEE_ACTIVITY_TABLE.addColumn("CLIENT_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_ACTIVITY_TYPE_ID = OSEE_ACTIVITY_TABLE.addColumn("TYPE_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ACTIVITY_SERVER_ID = OSEE_ACTIVITY_TABLE.addColumn("SERVER_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_ACTIVITY_MSG_ARGS = OSEE_ACTIVITY_TABLE.addVarCharColumn("MSG_ARGS", 4000, true);
+   public static final SqlColumn OSEE_ACTIVITY_CLIENT_ID = OSEE_ACTIVITY_TABLE.addColumn("CLIENT_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ACTIVITY_START_TIME =
       OSEE_ACTIVITY_TABLE.addColumn("START_TIMESTAMP", JDBCType.TIMESTAMP);
-   public static final SqlColumn OSEE_ACTIVITY_STATUS = OSEE_ACTIVITY_TABLE.addColumn("STATUS", JDBCType.SMALLINT);
-   public static final SqlColumn OSEE_ACTIVITY_PARENT_ID = OSEE_ACTIVITY_TABLE.addColumn("PARENT_ID", JDBCType.BIGINT);
    public static final SqlColumn OSEE_ACTIVITY_DURATION = OSEE_ACTIVITY_TABLE.addColumn("DURATION", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_ACTIVITY_STATUS = OSEE_ACTIVITY_TABLE.addColumn("STATUS", JDBCType.SMALLINT);
+   public static final SqlColumn OSEE_ACTIVITY_MSG_ARGS = OSEE_ACTIVITY_TABLE.addVarCharColumn("MSG_ARGS", 4000, true);
    static {
       OSEE_ACTIVITY_TABLE.setPrimaryKeyConstraint(OSEE_ACTIVITY_ENTRY_ID);
-      OSEE_ACTIVITY_TABLE.createIndex("OSEE_ACTIVITY__P_E_IDX", false, OSEE_ACTIVITY_PARENT_ID.getName(),
-         OSEE_ACTIVITY_ENTRY_ID.getName());
-      OSEE_ACTIVITY_TABLE.createIndex("OSEE_ACTIVITY__ACCOUNT_IDX", false, OSEE_ACTIVITY_ACCOUNT_ID.getName());
-      OSEE_ACTIVITY_TABLE.createIndex("OSEE_ACTIVITY__TYPE_IDX", false, OSEE_ACTIVITY_TYPE_ID.getName());
-
+      OSEE_ACTIVITY_TABLE.createIndex("OSEE_ACTIVITY__P_E_IDX", false, OSEE_ACTIVITY_PARENT_ID, OSEE_ACTIVITY_ENTRY_ID);
+      OSEE_ACTIVITY_TABLE.createIndex("OSEE_ACTIVITY__ACCOUNT_IDX", false, OSEE_ACTIVITY_ACCOUNT_ID);
+      OSEE_ACTIVITY_TABLE.createIndex("OSEE_ACTIVITY__TYPE_IDX", false, OSEE_ACTIVITY_TYPE_ID);
    }
 
    public static final SqlTable OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE =
@@ -597,9 +569,9 @@ public class OseeDb {
       OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE.setPrimaryKeyConstraint("OSEE_OAUTH_CLIENT_CRED__U",
          OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID);
       OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE.createIndex("OSEE_OAUTH_CLIENT_CRED__CK_IDX", false,
-         OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_KEY.getName());
+         OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_KEY);
       OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE.createIndex("OSEE_OAUTH_CLIENT_CRED__AI_IDX", false,
-         OSEE_OAUTH_CLIENT_CREDENTIAL_APPLICATION_ID.getName());
+         OSEE_OAUTH_CLIENT_CREDENTIAL_APPLICATION_ID);
    }
 
    public static final SqlTable OSEE_OAUTH_AUTHORIZATION_TABLE = new SqlTable("osee_oauth_authorization", "oauth_auth");
@@ -628,8 +600,7 @@ public class OseeDb {
       OSEE_OAUTH_AUTHORIZATION_TABLE.setForeignKeyConstraintCascadeDelete("OSEE_OAUTH_AUTH__CI_FK",
          OSEE_OAUTH_AUTHORIZATION_CLIENT_ID, OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE,
          OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID);
-      OSEE_OAUTH_AUTHORIZATION_TABLE.createIndex("OSEE_OAUTH_AUTH__C_IDX", false,
-         OSEE_OAUTH_AUTHORIZATION_CODE.getName());
+      OSEE_OAUTH_AUTHORIZATION_TABLE.createIndex("OSEE_OAUTH_AUTH__C_IDX", false, OSEE_OAUTH_AUTHORIZATION_CODE);
    }
 
    public static final SqlTable OSEE_OAUTH_TOKEN_TABLE = new SqlTable("osee_oauth_token", "oauth_tk");
@@ -658,7 +629,7 @@ public class OseeDb {
       OSEE_OAUTH_TOKEN_TABLE.setPrimaryKeyConstraint(OSEE_OAUTH_TOKEN_ID);
       OSEE_OAUTH_TOKEN_TABLE.setForeignKeyConstraintCascadeDelete("OSEE_OAUTH_TOKEN__CI_FK", OSEE_OAUTH_TOKEN_CLIENT_ID,
          OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE, OSEE_OAUTH_CLIENT_CREDENTIAL_CLIENT_ID);
-      OSEE_OAUTH_TOKEN_TABLE.createIndex("OSEE_OAUTH_TOKEN__TK_IDX", false, OSEE_OAUTH_TOKEN_TOKEN_KEY.getName());
+      OSEE_OAUTH_TOKEN_TABLE.createIndex("OSEE_OAUTH_TOKEN__TK_IDX", false, OSEE_OAUTH_TOKEN_TOKEN_KEY);
    }
 
    public static SqlTable getTxsTable(boolean isArchived) {

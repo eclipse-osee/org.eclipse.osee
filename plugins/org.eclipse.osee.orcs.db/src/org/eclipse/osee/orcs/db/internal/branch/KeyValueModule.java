@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 
 /**
@@ -29,7 +30,6 @@ public class KeyValueModule {
    private final JdbcClient jdbcClient;
 
    private static final String SELECT_KEY_WITH_KEY = "select * from osee_key_value where key = ?";
-   private static final String INSERT_INTO_KEY_VALUE = "INSERT INTO osee_key_value (key, value) VALUES (?,?)";
    private static final String SELECT_KEY_WITH_VALUE = "select * from osee_key_value where value = ?";
 
    public KeyValueModule(JdbcClient jdbcClient) {
@@ -45,7 +45,7 @@ public class KeyValueModule {
             Long key = getByValue(value);
             if (key.equals(0L)) {
                key = Lib.generateUuid();
-               jdbcClient.runPreparedUpdate(INSERT_INTO_KEY_VALUE, key, value);
+               jdbcClient.runPreparedUpdate(OseeDb.OSEE_KEY_VALUE_TABLE.getInsertSql(), key, value);
             }
 
             return key;
@@ -84,7 +84,7 @@ public class KeyValueModule {
          public boolean putByKey(Long key, String value) {
             String existingValue = getByKey(key);
             if (!Strings.isValid(existingValue)) {
-               jdbcClient.runPreparedUpdate(INSERT_INTO_KEY_VALUE, key, value);
+               jdbcClient.runPreparedUpdate(OseeDb.OSEE_KEY_VALUE_TABLE.getInsertSql(), key, value);
                return true;
             }
 

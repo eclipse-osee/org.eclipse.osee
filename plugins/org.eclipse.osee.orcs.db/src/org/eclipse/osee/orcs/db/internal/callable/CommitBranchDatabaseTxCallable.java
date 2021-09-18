@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
@@ -49,12 +50,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionId> {
    private static final String COMMIT_COMMENT = "Commit Branch ";
-
-   private static final String INSERT_COMMIT_TRANSACTION =
-      "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id, build_id) values(?,?,?,?,?,?,?,?)";
-
-   private static final String INSERT_COMMIT_ADDRESSING =
-      "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current, app_id) values(?,?,?,?,?,?)";
 
    private static final String UPDATE_CONFLICT_STATUS =
       "update osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
@@ -160,9 +155,10 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = COMMIT_COMMENT + sourceBranch.getName();
 
-      getJdbcClient().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
-         TransactionDetailsType.NonBaselined.getId(), destinationBranch, newTransactionNumber, comment, timestamp,
-         committer, sourceBranch.getAssociatedArtifact(), OseeCodeVersion.getVersionId());
+      getJdbcClient().runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), destinationBranch,
+         newTransactionNumber, committer, timestamp, comment, TransactionDetailsType.NonBaselined.getId(),
+         sourceBranch.getAssociatedArtifact(), OseeCodeVersion.getVersionId());
+
       return newTransactionNumber;
    }
 
@@ -171,15 +167,16 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
          ApplicabilityToken appToken = change.getNetChange().getApplicabilityToken();
+
          insertData.add(new Object[] {
-            newTx,
             destinationBranch,
             change.getNetChange().getGammaId(),
-            modType,
+            newTx,
             TxCurrent.getCurrent(modType),
+            modType,
             appToken});
       }
-      getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
+      getJdbcClient().runBatchUpdate(connection, OseeDb.TXS_TABLE.getInsertSql(), insertData);
    }
 
    private void manageBranchStates() {

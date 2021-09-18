@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.conflict.Conflict;
 
 /**
@@ -33,8 +34,6 @@ import org.eclipse.osee.orcs.db.internal.conflict.Conflict;
  */
 public class DatabaseConflictAccessor {
 
-   private static final String INSERT_CONFLICT =
-      "INSERT INTO osee_conflict (conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES (?,?,?,?,?,?)";
    private static final String UPDATE_CONFLICT =
       "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String DELETE_CONFLICT =
@@ -86,7 +85,7 @@ public class DatabaseConflictAccessor {
             }
          }
       }
-      getJdbcClient().runBatchUpdate(INSERT_CONFLICT, insertData);
+      getJdbcClient().runBatchUpdate(OseeDb.OSEE_CONFLICT_TABLE.getInsertSql(), insertData);
       getJdbcClient().runBatchUpdate(UPDATE_CONFLICT, updateData);
       getJdbcClient().runBatchUpdate(DELETE_CONFLICT, deleteData);
       for (Conflict conflict : conflicts) {
@@ -96,12 +95,12 @@ public class DatabaseConflictAccessor {
 
    private Object[] toInsertValues(Conflict conflict) {
       return new Object[] {
-         conflict.getId(),
          conflict.getMergeBranch(),
          conflict.getSourceGammaId(),
+         conflict.getId(),
          conflict.getDestinationGammaId(),
-         conflict.getStatus().getValue(),
-         conflict.getType().getValue()};
+         conflict.getType().getValue(),
+         conflict.getStatus().getValue()};
    }
 
    private Object[] toUpdateValues(Conflict conflict) {

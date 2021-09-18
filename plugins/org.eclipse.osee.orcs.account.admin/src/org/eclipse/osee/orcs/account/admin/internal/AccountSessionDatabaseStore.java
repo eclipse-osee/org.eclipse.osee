@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
@@ -37,9 +38,6 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
    private static final String SELECT_BY_ACCOUNT_ID = "SELECT * FROM osee_account_session WHERE account_id = ?";
 
    private static final String SELECT_BY_SESSION_TOKEN = "SELECT * FROM osee_account_session WHERE session_token = ?";
-
-   private static final String INSERT_ACCOUNT_SESSION =
-      "INSERT INTO osee_account_session (account_id, session_token, created_on, last_accessed_on, accessed_from, access_details) VALUES (?,?,?,?,?,?)";
 
    private static final String UPDATE_BY_ACCOUNT_ID_AND_SESSION_TOKEN =
       "UPDATE osee_account_session SET last_accessed_on = ?, accessed_from = ?, access_details = ? WHERE account_id = ? AND session_token = ?";
@@ -119,7 +117,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
             for (AccountSession session : datas) {
                data.add(asInsert(session));
             }
-            int result = jdbcClient.runBatchUpdate(INSERT_ACCOUNT_SESSION, data);
+            int result = jdbcClient.runBatchUpdate(OseeDb.OSEE_ACCOUNT_SESSION_TABLE.getInsertSql(), data);
             return result;
          }
       };
