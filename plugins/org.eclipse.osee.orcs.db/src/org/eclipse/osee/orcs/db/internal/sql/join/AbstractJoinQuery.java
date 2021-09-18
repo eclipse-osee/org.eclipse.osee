@@ -21,14 +21,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractJoinQuery implements AutoCloseable {
    private static final Long DEFAULT_JOIN_EXPIRATION_SECONDS = 3L * 60L * 60L; // 3 hours
-   private static final String INSERT_INTO_JOIN_CLEANUP =
-      "INSERT INTO osee_join_cleanup (query_id, table_name, issued_at, expires_in) VALUES (?,?,?,?)";
    private static final String SELECT_QUERY_IDS = "select DISTINCT query_id from %s";
    private static final String DELETE_FROM_JOIN_CLEANUP = "DELETE FROM osee_join_cleanup WHERE query_id =?";
 
@@ -69,8 +68,8 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
       if (wasStored) {
          throw new OseeCoreException("Cannot store query id twice");
       } else {
-         jdbcClient.runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP, queryId, joinItem.getJoinTableName(),
-            getIssuedAt(), DEFAULT_JOIN_EXPIRATION_SECONDS);
+         jdbcClient.runPreparedUpdate(connection, OseeDb.OSEE_JOIN_CLEANUP_TABLE.getInsertSql(), queryId,
+            joinItem.getJoinTableName(), getIssuedAt(), DEFAULT_JOIN_EXPIRATION_SECONDS);
          addressing.execute();
          wasStored = true;
       }

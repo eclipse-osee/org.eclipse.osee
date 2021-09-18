@@ -28,6 +28,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
@@ -77,7 +78,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       for (PermissionEnum permission : PermissionEnum.values()) {
          data.add(new Object[] {permission.getPermId(), permission.getName()});
       }
-      jdbcClient.runBatchUpdate("INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)", data);
+      jdbcClient.runBatchUpdate(OseeDb.OSEE_PERMISSION_TABLE.getInsertSql(), data);
    }
 
    @Override

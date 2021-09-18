@@ -126,7 +126,7 @@ public class SqlTable extends NamedBase {
       constraints.add("CONSTRAINT " + constraintName + " UNIQUE (" + columnName + ")");
    }
 
-   public void createIndex(String indexName, boolean hasIndexTablespace, String... columns) {
+   public void createIndex(String indexName, boolean hasIndexTablespace, SqlColumn... columns) {
       if (hasIndexTablespace) {
          addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(", ",
             Arrays.asList(columns)) + ")");

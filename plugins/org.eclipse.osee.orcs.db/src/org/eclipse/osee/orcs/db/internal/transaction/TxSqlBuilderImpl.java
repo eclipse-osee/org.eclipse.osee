@@ -107,8 +107,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       dataItemInserts = new HashCollection<>();
       txNotCurrentsJoin = new HashMap<>();
 
-      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthor(), tx.getBranch(),
-         tx.getTxType().getId(), OseeCodeVersion.getVersionId());
+      addRow(SqlOrderEnum.TXS_DETAIL, tx.getBranch(), txId, tx.getAuthor(), tx.getDate(), tx.getComment(),
+         tx.getTxType(), -1, OseeCodeVersion.getVersionId());
       changeSet.accept(this);
    }
 
@@ -124,7 +124,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateTxValues(data);
             if (!isApplicOnly && !reuseGamma) {
                updateGamma(data);
-               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getType(), data.getVersion().getGammaId(),
+               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getVersion().getGammaId(), data.getType(),
                   data.getGuid());
             }
             addTxs(SqlOrderEnum.ARTIFACTS, data);
@@ -148,8 +148,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int id = idManager.getNextAttributeId();
                data.setLocalId(id);
             }
-            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getType(), data.getVersion().getGammaId(),
-               data.getArtifactId(), dataProxy.getStorageString(), dataProxy.getUri());
+            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getVersion().getGammaId(), data.getArtifactId(),
+               data.getType(), dataProxy.getStorageString(), dataProxy.getUri());
          }
          addTxs(SqlOrderEnum.ATTRIBUTES, data);
       }
@@ -203,7 +203,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          throw new ItemDoesNotExist("Tuple not found on branch [%s] with gammaId [%s]", branch, gammaId);
       }
 
-      addRow(SqlOrderEnum.TXS, txId, gammaId, ModificationType.DELETED, TxCurrent.DELETED, branch, applicability);
+      addRow(SqlOrderEnum.TXS, branch, gammaId, txId, TxCurrent.DELETED, ModificationType.DELETED, applicability);
 
       IdJoinQuery join = txNotCurrentsJoin.get(tupleTable);
       if (join == null) {
@@ -236,8 +236,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int id = idManager.getNextRelationId();
                data.setLocalId(id);
             }
-            addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), data.getType(), data.getVersion().getGammaId(),
-               data.getArtIdA(), data.getArtIdB(), data.getRationale());
+            addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtIdA(), data.getArtIdB(),
+               data.getVersion().getGammaId(), data.getLocalId(), data.getRationale());
          }
          addTxs(SqlOrderEnum.RELATIONS, data);
       }
@@ -247,7 +247,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       VersionData data = orcsData.getVersion();
       ModificationType modType = orcsData.getModType();
 
-      addRow(SqlOrderEnum.TXS, txId, data.getGammaId(), modType, TxCurrent.getCurrent(modType), txId.getBranch(),
+      addRow(SqlOrderEnum.TXS, txId.getBranch(), data.getGammaId(), txId, TxCurrent.getCurrent(modType), modType,
          orcsData.getApplicabilityId());
 
       if (key.hasTxNotCurrentQuery()) {

@@ -34,6 +34,7 @@ import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
@@ -41,9 +42,6 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
  * @author Roberto E. Escobar
  */
 public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
-
-   private static final String INSERT_TX_DETAILS =
-      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type, build_id) VALUES (?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BASELINE_BRANCH_TX =
       "UPDATE osee_branch SET baseline_transaction_id = ? WHERE branch_id = ? AND baseline_transaction_id = 1";
@@ -71,12 +69,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    // @formatter:on
 
-   private static final String INSERT_ADDRESSING =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?,?,?,?,?,?)";
-
-   private static final String MERGE_BRANCH_INSERT =
-      "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES (?,?,?,?)";
-
    private final static String SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN =
       "SELECT item.gamma_id, txs.mod_type, txs.app_id FROM osee_attribute item, osee_txs txs, osee_join_id4 artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.id2 and artjoin.query_id = ? ORDER BY txs.transaction_id DESC";
    private final static String SELECT_ARTIFACT_ADDRESSING_FROM_JOIN =
@@ -85,8 +77,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private static final String TEST_MERGE_BRANCH_EXISTENCE =
       "SELECT COUNT(1) FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
 
-   private static final String INSERT_BRANCH =
-      "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?)";
    private static final String SELECT_INHERIT_ACCESS_CONTROL =
       "SELECT inherit_access_control from osee_branch where branch_id = ?";
 
@@ -185,21 +175,22 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       //write to branch table
       Object[] toInsert = new Object[] {
          branch,
+         newBranchData.getBranchType(),
+         BranchState.CREATED,
          truncatedName,
          parentBranch,
          sourceTx,
-         BranchArchivedState.UNARCHIVED,
-         newBranchData.getAssociatedArtifact(),
-         newBranchData.getBranchType(),
-         BranchState.CREATED,
          nextTransactionId,
+         newBranchData.getAssociatedArtifact(),
+         BranchArchivedState.UNARCHIVED,
          inheritAccessControl};
 
-      jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
+      jdbcClient.runPreparedUpdate(connection, OseeDb.BRANCH_TABLE.getInsertSql(), toInsert);
 
       nextTransactionId = tobeTransactionId;
-      jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch, nextTransactionId,
-         newBranchData.getCreationComment(), timestamp, newBranchData.getAuthor(), TransactionDetailsType.Baselined,
+
+      jdbcClient.runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), branch, nextTransactionId,
+         newBranchData.getAuthor(), timestamp, newBranchData.getCreationComment(), TransactionDetailsType.Baselined, -1,
          buildVersionId);
 
       if (needsUpdate) {
@@ -213,8 +204,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private void addMergeBranchEntry(double workAmount, JdbcConnection connection) {
       if (newBranchData.getBranchType().isMergeBranch()) {
-         jdbcClient.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, newBranchData.getParentBranch(),
-            newBranchData.getMergeDestinationBranchId(), newBranchData.getBranch(), 0);
+         jdbcClient.runPreparedUpdate(connection, OseeDb.OSEE_MERGE_TABLE.getInsertSql(), newBranchData.getBranch(),
+            newBranchData.getParentBranch(), newBranchData.getMergeDestinationBranchId(), 0);
       }
    }
 
@@ -223,7 +214,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          HashSet<Long> gammas = new HashSet<>(100000);
          BranchId parentBranch = newBranchData.getParentBranch();
 
-         OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
+         OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, OseeDb.TXS_TABLE.getInsertSql());
+
          if (newBranchData.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
                parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
@@ -249,7 +241,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
                Long appId = chStmt.getLong("app_id");
                TxCurrent txCurrent = TxCurrent.getCurrent(modType);
-               addressing.addToBatch(baseTxId, gamma, modType, txCurrent, branchId, appId);
+               addressing.addToBatch(branchId, gamma, baseTxId, txCurrent, modType, appId);
                gammas.add(gamma);
             }
          }

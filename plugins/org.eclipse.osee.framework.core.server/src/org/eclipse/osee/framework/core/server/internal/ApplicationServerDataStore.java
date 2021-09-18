@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
@@ -60,9 +61,6 @@ public class ApplicationServerDataStore {
    }
 
    private static final class ServerLookupTx extends JdbcTransaction {
-
-      private static final String INSERT_LOOKUP_TABLE =
-         "INSERT INTO osee_server_lookup (server_id, version_id, server_uri, start_time, accepts_requests) VALUES (?,?,?,?,?)";
 
       private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
 
@@ -104,7 +102,7 @@ public class ApplicationServerDataStore {
             insertData.add(new Object[] {serverId, version, uri, dateStarted, acceptingRequests});
          }
          if (!insertData.isEmpty()) {
-            jdbcClient.runBatchUpdate(connection, INSERT_LOOKUP_TABLE, insertData);
+            jdbcClient.runBatchUpdate(connection, OseeDb.OSEE_SERVER_LOOKUP_TABLE.getInsertSql(), insertData);
          }
       }
 

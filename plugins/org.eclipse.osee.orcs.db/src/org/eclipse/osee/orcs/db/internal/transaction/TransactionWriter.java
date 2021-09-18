@@ -22,7 +22,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -35,30 +37,6 @@ public class TransactionWriter {
 
    protected static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs SET tx_current = " + TxCurrent.NOT_CURRENT + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
-
-   private static final String INSERT_ARTIFACT =
-      "INSERT INTO osee_artifact (art_id, art_type_id, gamma_id, guid) VALUES (?,?,?,?)";
-
-   private static final String INSERT_ATTRIBUTE =
-      "INSERT INTO osee_attribute (attr_id, attr_type_id, gamma_id, art_id, value, uri) VALUES (?, ?, ?, ?, ?, ?)";
-
-   private static final String INSERT_RELATION_TABLE =
-      "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, gamma_id, a_art_id, b_art_id, rationale) VALUES (?,?,?,?,?,?)";
-
-   private static final String INSERT_TUPLES2_TABLE =
-      "INSERT INTO osee_tuple2 (tuple_type, e1, e2, gamma_id) VALUES (?,?,?,?)";
-
-   private static final String INSERT_TUPLES3_TABLE =
-      "INSERT INTO osee_tuple3 (tuple_type, e1, e2, e3, gamma_id) VALUES (?,?,?,?,?)";
-
-   private static final String INSERT_TUPLES4_TABLE =
-      "INSERT INTO osee_tuple4 (tuple_type, e1, e2, e3, e4, gamma_id) VALUES (?,?,?,?,?,?)";
-
-   private static final String INSERT_INTO_TRANSACTION_TABLE =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?, ?, ?, ?, ?, ?)";
-
-   private static final String INSERT_INTO_TRANSACTION_DETAIL =
-      "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type, build_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS =
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
@@ -73,25 +51,24 @@ public class TransactionWriter {
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_txs txs WHERE jid.query_id = ? AND jid.id = txs.gamma_id AND txs.branch_id = ?   AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    public static enum SqlOrderEnum {
-      ARTIFACTS(INSERT_ARTIFACT, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
-      ATTRIBUTES(INSERT_ATTRIBUTE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES),
-      RELATIONS(INSERT_RELATION_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS),
-      TUPLES2(INSERT_TUPLES2_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
-      TUPLES3(INSERT_TUPLES3_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
-      TUPLES4(INSERT_TUPLES4_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
-      TXS_DETAIL(INSERT_INTO_TRANSACTION_DETAIL),
-      TXS(INSERT_INTO_TRANSACTION_TABLE);
+      ARTIFACTS(OseeDb.ARTIFACT_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
+      ATTRIBUTES(OseeDb.ATTRIBUTE_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES),
+      RELATIONS(OseeDb.RELATION_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS),
+      TUPLES2(OseeDb.TUPLE2, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
+      TUPLES3(OseeDb.TUPLE3, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
+      TUPLES4(OseeDb.TUPLE4, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
+      TXS_DETAIL(OseeDb.TX_DETAILS_TABLE),
+      TXS(OseeDb.TXS_TABLE);
 
       private String notCurrentSearch;
       private String sql;
 
-      private SqlOrderEnum(String sql) {
-         this.sql = sql;
-         this.notCurrentSearch = null;
+      private SqlOrderEnum(SqlTable table) {
+         this(table, null);
       }
 
-      private SqlOrderEnum(String sql, String notCurrentSearch) {
-         this.sql = sql;
+      private SqlOrderEnum(SqlTable table, String notCurrentSearch) {
+         this.sql = table.getInsertSql();
          this.notCurrentSearch = notCurrentSearch;
       }
 

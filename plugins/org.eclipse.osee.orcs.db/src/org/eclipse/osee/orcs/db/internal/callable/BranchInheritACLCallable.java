@@ -19,14 +19,13 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
  * @author David Miller
  */
 public final class BranchInheritACLCallable extends JdbcTransaction {
-   private final String INSERT_INTO_BRANCH_ACL =
-      "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
    private final String GET_BRANCH_ACCESS_CONTROL_LIST =
       "SELECT permission_id, privilege_entity_id FROM osee_branch_acl WHERE branch_id= ?";
    private final CreateBranchData branchData;
@@ -50,11 +49,11 @@ public final class BranchInheritACLCallable extends JdbcTransaction {
          if (branchData.getAuthor().equals(priviledgeId) && permissionId < lock && permissionId != deny) {
             permissionId = lock;
          }
-         data.add(new Object[] {permissionId, priviledgeId, branchData.getBranch()});
+         data.add(new Object[] {branchData.getBranch(), priviledgeId, permissionId});
       }, GET_BRANCH_ACCESS_CONTROL_LIST, branchData.getParentBranch());
 
       if (!data.isEmpty()) {
-         jdbcClient.runBatchUpdate(INSERT_INTO_BRANCH_ACL, data);
+         jdbcClient.runBatchUpdate(OseeDb.OSEE_BRANCH_ACL_TABLE.getInsertSql(), data);
       }
    }
 }

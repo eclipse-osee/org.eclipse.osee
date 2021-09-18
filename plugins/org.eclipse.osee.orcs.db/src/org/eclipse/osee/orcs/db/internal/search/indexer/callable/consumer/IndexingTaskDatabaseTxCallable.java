@@ -31,6 +31,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
@@ -44,9 +45,6 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  * @author Roberto E. Escobar
  */
 public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCallable<Long> {
-
-   private static final String INSERT_SEARCH_TAG =
-      "insert into osee_search_tags (gamma_id, coded_tag_id) values (?, ?)";
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
@@ -218,13 +216,13 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
          for (Entry<Long, Collection<Long>> entry : toStore.entrySet()) {
             Long gammaId = entry.getKey();
             for (Long codedTag : entry.getValue()) {
-               data.add(new Object[] {gammaId, codedTag});
+               data.add(new Object[] {codedTag, gammaId});
                getLogger().debug("Storing: gamma:[%s] tag:[%s]", gammaId, codedTag);
             }
          }
          toStore.clear();
          if (!data.isEmpty()) {
-            updated += getJdbcClient().runBatchUpdate(connection, INSERT_SEARCH_TAG, data);
+            updated += getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), data);
          }
       }
       return updated;
