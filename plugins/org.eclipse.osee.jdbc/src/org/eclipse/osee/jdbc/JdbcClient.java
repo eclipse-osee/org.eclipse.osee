@@ -103,8 +103,6 @@ public interface JdbcClient {
 
    void runTransaction(JdbcConnection connection, JdbcTransaction dbWork) throws JdbcException;
 
-   void createDataStore(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources);
-
    long getNextSequence(String sequenceName, boolean aggressiveFetch);
 
    void invalidateSequences();

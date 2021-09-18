@@ -19,7 +19,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
@@ -45,11 +44,6 @@ public interface DatastoreEndpoint {
    @Path("synonyms")
    @Consumes(MediaType.TEXT_PLAIN)
    void synonyms();
-
-   @POST
-   @Path("migrate")
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   Response migrate();
 
    @POST
    @Path("user")

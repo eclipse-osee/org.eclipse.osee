@@ -42,7 +42,6 @@ import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
-import org.eclipse.osee.orcs.core.internal.admin.MigrateDatastoreAdminCallable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -128,11 +127,6 @@ public class OrcsAdminImpl implements OrcsAdmin {
    @Override
    public void createDemoBranches() {
       new CreateDemoBranches(orcsApi).populate();
-   }
-
-   @Override
-   public Callable<OrcsMetaData> migrateDatastore() {
-      return new MigrateDatastoreAdminCallable(logger, session, dataStoreAdmin);
    }
 
    @Override

@@ -34,8 +34,6 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
-import org.eclipse.osee.jdbc.JdbcMigrationOptions;
-import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -498,11 +496,6 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public void invalidateSequences() {
       sequenceProvider.invalidate();
-   }
-
-   @Override
-   public void createDataStore(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources) {
-      new DatabaseCreation(this).createDataStore();
    }
 
    @Override

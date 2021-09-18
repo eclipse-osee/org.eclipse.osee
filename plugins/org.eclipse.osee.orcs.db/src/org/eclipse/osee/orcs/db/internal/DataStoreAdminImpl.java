@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcMigrationOptions;
 import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -34,7 +33,6 @@ import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
-import org.eclipse.osee.orcs.db.internal.callable.MigrateDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
 
@@ -55,13 +53,10 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
    @Override
    public void createDataStore(UserToken superUser) {
-      Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
-
-      JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
       Conditions.checkExpressionFailOnTrue(jdbcClient.getConfig().isProduction(),
          "Error - attempting to initialize a production datastore.");
 
-      jdbcClient.createDataStore(options, schemaProvider.get());
+      new DatabaseCreation(jdbcClient, logger).createDataStore();
 
       jdbcClient.runPreparedUpdate("UPDATE osee_tx_details SET author = ? WHERE author <= 0 OR author = ?", superUser,
          SystemUser.BootStrap);
@@ -83,14 +78,6 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
          data.add(new Object[] {permission.getPermId(), permission.getName()});
       }
       jdbcClient.runBatchUpdate("INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)", data);
-   }
-
-   @Override
-   public Callable<DataStoreInfo> migrateDataStore(OrcsSession session) {
-      Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
-      JdbcMigrationOptions options = new JdbcMigrationOptions(false, false);
-
-      return new MigrateDatastoreCallable(session, logger, jdbcClient, properties, schemaProvider, options);
    }
 
    @Override
