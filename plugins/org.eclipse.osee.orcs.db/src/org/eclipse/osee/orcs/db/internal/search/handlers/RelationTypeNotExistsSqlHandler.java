@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 
@@ -28,13 +28,13 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
       super.addPredicates(writer);
 
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      String relAlias = writer.writeTable(SqlTable.RELATION_TABLE);
+      String relAlias = writer.writeTable(OseeDb.RELATION_TABLE);
       writer.write(", ");
-      String txsAlias = writer.writeTable(SqlTable.TXS_TABLE);
+      String txsAlias = writer.writeTable(OseeDb.TXS_TABLE);
       writer.write(" WHERE ");
       writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", criteria.getType());
 
-      List<String> aliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
+      List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       int aSize = aliases.size();
       for (int index = 0; index < aSize; index++) {
          String artAlias = aliases.get(index);

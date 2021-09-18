@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -203,7 +203,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          @Override
          public void addTables(AbstractSqlWriter writer) {
             writer.addTable(relsAlias);
-            artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
+            artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
          }
 
          @Override
@@ -259,8 +259,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    protected void writeSelectFields() {
-      String artAlias = getMainTableAlias(SqlTable.ARTIFACT_TABLE);
-      String txAlias = getMainTableAlias(SqlTable.TXS_TABLE);
+      String artAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+      String txAlias = getMainTableAlias(OseeDb.TXS_TABLE);
       if (relsAlias == null) {
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
             txAlias, "mod_type");
@@ -282,7 +282,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeSelectAndHint();
       }
       if (rootQueryData.isCountQueryType()) {
-         writeSelectFields(getMainTableAlias(SqlTable.ARTIFACT_TABLE), "art_id");
+         writeSelectFields(getMainTableAlias(OseeDb.ARTIFACT_TABLE), "art_id");
       } else {
          writeSelectFields();
          for (SqlHandler<?> handler : handlers) {

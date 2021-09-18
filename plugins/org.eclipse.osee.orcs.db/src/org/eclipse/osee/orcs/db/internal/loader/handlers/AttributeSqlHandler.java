@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -55,18 +55,18 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      jArtAlias = writer.addTable(SqlTable.OSEE_JOIN_ID4_TABLE);
+      jArtAlias = writer.addTable(OseeDb.OSEE_JOIN_ID4_TABLE);
 
       if (criteria.getIds().size() > 1) {
-         jIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
+         jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
 
       if (criteria.getTypes().size() > 1) {
-         jTypeIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
+         jTypeIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
 
-      attrAlias = writer.addTable(SqlTable.ATTRIBUTE_TABLE);
-      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ATTRIBUTE);
+      attrAlias = writer.addTable(OseeDb.ATTRIBUTE_TABLE);
+      txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    @Override

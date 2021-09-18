@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -35,6 +34,8 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.jdbc.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -215,7 +216,7 @@ public class LoadDeltasBetweenBranches {
 
          }
       };
-      SqlTable txsTable = SqlTable.getTxsTable(queryFactory.branchQuery().isArchived(sourceBranch));
+      SqlTable txsTable = OseeDb.getTxsTable(queryFactory.branchQuery().isArchived(sourceBranch));
 
       String sql = String.format(SELECT_ALL_SOURCE_ADDRESSING, txsTable, txsTable);
 

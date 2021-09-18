@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactTxComment;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -36,11 +36,11 @@ public class ArtifactTxCommentSqlHandler extends SqlHandler<CriteriaArtifactTxCo
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txdAlias = writer.addTable(SqlTable.TX_DETAILS_TABLE);
-      txsAttAlias = writer.addTable(SqlTable.TXS_TABLE);
-      attAlias = writer.addTable(SqlTable.ATTRIBUTE_TABLE);
-      tuple2Alias = writer.addTable(SqlTable.TUPLE2);
-      artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
+      txdAlias = writer.addTable(OseeDb.TX_DETAILS_TABLE);
+      txsAttAlias = writer.addTable(OseeDb.TXS_TABLE);
+      attAlias = writer.addTable(OseeDb.ATTRIBUTE_TABLE);
+      tuple2Alias = writer.addTable(OseeDb.TUPLE2);
+      artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
    }
 
    @Override

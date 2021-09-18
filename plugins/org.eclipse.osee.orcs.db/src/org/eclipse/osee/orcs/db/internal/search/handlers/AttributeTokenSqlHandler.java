@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
@@ -87,7 +87,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             writer.write("SELECT gamma_id FROM osee_attribute att");
             if (joinQuery != null) {
                writer.write(", ");
-               jIdAlias = writer.writeTable(SqlTable.OSEE_JOIN_ID_TABLE);
+               jIdAlias = writer.writeTable(OseeDb.OSEE_JOIN_ID_TABLE);
             }
             writer.write(" WHERE ");
             if (Strings.isValid(value)) {
@@ -128,7 +128,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
       String jIdAlias = null;
       if (joinQuery != null) {
-         jIdAlias = writer.writeTable(SqlTable.OSEE_JOIN_ID_TABLE);
+         jIdAlias = writer.writeTable(OseeDb.OSEE_JOIN_ID_TABLE);
          writer.write(", ");
       }
 
@@ -154,8 +154,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    @Override
    public void addTables(AbstractSqlWriter writer) {
       writer.addTable(attrAlias);
-      artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
-      writer.getMainTableAlias(SqlTable.TXS_TABLE);
+      artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+      writer.getMainTableAlias(OseeDb.TXS_TABLE);
    }
 
    @Override

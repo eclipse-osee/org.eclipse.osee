@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -43,17 +43,17 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          writer.write(" FROM osee_txs txs, osee_relation_link rel");
          if (criteria.hasMultipleIds()) {
             writer.write(", ");
-            writer.write(SqlTable.OSEE_JOIN_ID_TABLE.getName());
+            writer.write(OseeDb.OSEE_JOIN_ID_TABLE.getName());
             writer.write(" ");
             writer.write(jIdAlias);
          }
-         List<String> aliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
+         List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
          if (!aliases.isEmpty()) {
             int aSize = aliases.size();
             for (int index = 0; index < aSize; index++) {
                String artAlias = aliases.get(index);
                writer.write(", ");
-               writer.write(SqlTable.ARTIFACT_TABLE.getName());
+               writer.write(OseeDb.ARTIFACT_TABLE.getName());
                writer.write(" ");
                writer.write(artAlias);
             }
@@ -77,10 +77,10 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          writer.addTable(cteAlias);
       }
       if (criteria.hasMultipleIds()) {
-         jIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
+         jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
-      relAlias = writer.addTable(SqlTable.RELATION_TABLE);
-      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
+      relAlias = writer.addTable(OseeDb.RELATION_TABLE);
+      txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
    private void writePredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) {
@@ -108,7 +108,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          writer.addParameter(criteria.getId());
       }
 
-      List<String> aliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
+      List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
          writer.write("\n AND \n");
          String oppositeAOrBartId = typeSide.getSide().isSideA() ? ".b_art_id" : ".a_art_id";

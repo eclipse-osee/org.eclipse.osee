@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.jdbc.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -156,15 +157,15 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
    @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       writeTxFilter(txsAlias, allowDeleted);
-      if (hasAlias(SqlTable.BRANCH_TABLE)) {
-         String alias = getFirstAlias(SqlTable.BRANCH_TABLE);
+      if (hasAlias(OseeDb.BRANCH_TABLE)) {
+         String alias = getFirstAlias(OseeDb.BRANCH_TABLE);
          write(" AND ");
          write(txsAlias);
          write(".branch_id = ");
          write(alias);
          write(".branch_id");
-      } else if (hasAlias(SqlTable.TX_DETAILS_TABLE)) {
-         String alias = getFirstAlias(SqlTable.TX_DETAILS_TABLE);
+      } else if (hasAlias(OseeDb.TX_DETAILS_TABLE)) {
+         String alias = getFirstAlias(OseeDb.TX_DETAILS_TABLE);
          write(" AND ");
          write(txsAlias);
          write(".transaction_id = ");
@@ -198,10 +199,10 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
          List<SqlHandler<?>> withQueryHandlers = null;
          if (!branchHandlers.isEmpty()) {
             withQueryHandlers = branchHandlers;
-            table = SqlTable.BRANCH_TABLE;
+            table = OseeDb.BRANCH_TABLE;
          } else if (!txHandlers.isEmpty()) {
             withQueryHandlers = txHandlers;
-            table = SqlTable.TX_DETAILS_TABLE;
+            table = OseeDb.TX_DETAILS_TABLE;
          }
 
          if (withQueryHandlers != null && table != null) {

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -45,7 +45,7 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
    @Override
    public void addTables(AbstractSqlWriter writer) {
       writer.addTable(cteAlias);
-      brAlias = writer.getMainTableAlias(SqlTable.BRANCH_TABLE);
+      brAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
    }
 
    @Override
