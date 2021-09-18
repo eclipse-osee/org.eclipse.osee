@@ -14,11 +14,9 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
-import java.net.URI;
 import java.util.concurrent.Callable;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -75,21 +73,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       activityLog.setEnabled(false);
       adminOps.createSynonymsAndGrants();
       activityLog.setEnabled(true);
-   }
-
-   @Override
-   public Response migrate() {
-      activityLog.setEnabled(false);
-
-      Callable<OrcsMetaData> callable = adminOps.migrateDatastore();
-      OrcsMetaData metaData = executeCallable(callable);
-      URI location = getDatastoreLocation(uriInfo);
-      activityLog.setEnabled(true);
-      return Response.created(location).entity(asDatastoreInfo(metaData)).build();
-   }
-
-   private URI getDatastoreLocation(UriInfo uriInfo) {
-      return uriInfo.getRequestUriBuilder().path("../").path("info").build();
    }
 
    private DatastoreInfo asDatastoreInfo(OrcsMetaData metaData) {

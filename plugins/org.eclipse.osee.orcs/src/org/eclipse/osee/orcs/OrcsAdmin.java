@@ -30,8 +30,6 @@ public interface OrcsAdmin {
 
    TransactionId createDatastoreAndSystemBranches(UserToken superUser);
 
-   Callable<OrcsMetaData> migrateDatastore();
-
    boolean isDataStoreInitialized();
 
    void createDemoBranches();

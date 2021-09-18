@@ -11,7 +11,7 @@
 *     Boeing - initial API and implementation
 **********************************************************************/
 
-package org.eclipse.osee.jdbc.internal;
+package org.eclipse.osee.orcs.db.internal;
 
 import static org.eclipse.osee.framework.core.enums.SqlTable.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.core.enums.SqlTable.ATTRIBUTE_TABLE;
@@ -57,13 +57,12 @@ import static org.eclipse.osee.framework.core.enums.SqlTable.TXS_TABLE;
 import static org.eclipse.osee.framework.core.enums.SqlTable.TX_DETAILS_TABLE;
 import static org.eclipse.osee.framework.core.enums.SqlTable.TX_DETAILS_TRANSACTION_ID;
 import java.sql.JDBCType;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.SqlColumn;
 import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Ryan D. Brooks
@@ -71,16 +70,18 @@ import org.eclipse.osee.jdbc.JdbcDbType;
 public final class DatabaseCreation {
 
    private final JdbcClient jdbcClient;
+   private final Log logger;
 
-   public DatabaseCreation(JdbcClient jdbcClient) {
+   public DatabaseCreation(JdbcClient jdbcClient, Log logger) {
       this.jdbcClient = jdbcClient;
+      this.logger = logger;
    }
 
    private void dropConstraint(SqlTable table, String constraint) {
       try {
          jdbcClient.runPreparedUpdate("ALTER TABLE " + table.getName() + " DROP CONSTRAINT " + constraint);
       } catch (Exception ex) {
-         OseeLog.log(getClass(), Level.INFO, ex);
+         logger.info(ex, "dropConstraint failed");
       }
    }
 
@@ -139,7 +140,7 @@ public final class DatabaseCreation {
       try {
          jdbcClient.runPreparedUpdate("DROP TABLE " + table.getName());
       } catch (Exception ex) {
-         OseeLog.log(getClass(), Level.INFO, ex);
+         logger.info(ex, "dropTable failed");
       }
    }
 
