@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class TxCommitArtIdSqlHandler extends MainTableFieldSqlHandler {
    public TxCommitArtIdSqlHandler() {
-      super(SqlTable.TX_DETAILS_TABLE, "commit_art_id", SqlHandlerPriority.TX_COMMIT_ART_ID);
+      super(OseeDb.TX_DETAILS_TABLE, "commit_art_id", SqlHandlerPriority.TX_COMMIT_ART_ID);
    }
 }

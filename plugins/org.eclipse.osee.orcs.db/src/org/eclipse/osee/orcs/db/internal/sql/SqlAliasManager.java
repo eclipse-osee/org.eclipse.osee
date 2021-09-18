@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.jdbc.SqlTable;
 
 /**
  * @author Roberto E. Escobar

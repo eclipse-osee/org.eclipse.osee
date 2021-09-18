@@ -17,11 +17,12 @@ import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactor
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createBranchSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createObjectSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
@@ -88,13 +89,13 @@ public final class Engines {
 
    public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger);
-      return newSqlContextFactory(logger, joinFactory, jdbcClient, SqlTable.BRANCH_TABLE, "branch_id", handlerFactory,
+      return newSqlContextFactory(logger, joinFactory, jdbcClient, OseeDb.BRANCH_TABLE, "branch_id", handlerFactory,
          ObjectQueryType.BRANCH);
    }
 
    public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger);
-      return newSqlContextFactory(logger, joinFactory, jdbcClient, SqlTable.TX_DETAILS_TABLE, "transaction_id",
+      return newSqlContextFactory(logger, joinFactory, jdbcClient, OseeDb.TX_DETAILS_TABLE, "transaction_id",
          handlerFactory, ObjectQueryType.TX);
    }
 

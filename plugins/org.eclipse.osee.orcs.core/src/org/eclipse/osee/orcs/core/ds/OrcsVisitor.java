@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.jdbc.SqlTable;
 
 /**
  * @author Roberto E. Escobar

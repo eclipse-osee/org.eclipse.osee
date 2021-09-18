@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,6 +51,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -581,19 +581,19 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public void deleteTuple2(GammaId gammaId) {
       validateBuilder();
-      txData.deleteTuple(SqlTable.TUPLE2, gammaId);
+      txData.deleteTuple(OseeDb.TUPLE2, gammaId);
    }
 
    @Override
    public void deleteTuple3(GammaId gammaId) {
       validateBuilder();
-      txData.deleteTuple(SqlTable.TUPLE3, gammaId);
+      txData.deleteTuple(OseeDb.TUPLE3, gammaId);
    }
 
    @Override
    public void deleteTuple4(GammaId gammaId) {
       validateBuilder();
-      txData.deleteTuple(SqlTable.TUPLE4, gammaId);
+      txData.deleteTuple(OseeDb.TUPLE4, gammaId);
    }
 
    @Override

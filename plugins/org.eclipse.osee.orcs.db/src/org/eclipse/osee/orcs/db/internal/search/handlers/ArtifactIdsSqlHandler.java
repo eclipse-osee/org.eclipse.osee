@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -67,13 +67,13 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    public void addTables(AbstractSqlWriter writer) {
       if (cteAlias == null) {
          if (criteria.hasMultipleIds()) {
-            jIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
+            jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
          }
       } else {
          writer.addTable(cteAlias);
       }
-      artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
-      txsAlias = writer.getMainTableAlias(SqlTable.TXS_TABLE);
+      artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+      txsAlias = writer.getMainTableAlias(OseeDb.TXS_TABLE);
    }
 
    @Override

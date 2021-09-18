@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -47,26 +47,26 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> artAliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
+      List<String> artAliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
-         artAlias0 = writer.addTable(SqlTable.ARTIFACT_TABLE);
-         txsAlias0 = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ARTIFACT);
+         artAlias0 = writer.addTable(OseeDb.ARTIFACT_TABLE);
+         txsAlias0 = writer.addTable(OseeDb.TXS_TABLE, ObjectType.ARTIFACT);
       } else {
          artAlias0 = artAliases.iterator().next();
       }
-      relAlias1 = writer.addTable(SqlTable.RELATION_TABLE);
-      txsAlias1 = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
+      relAlias1 = writer.addTable(OseeDb.RELATION_TABLE);
+      txsAlias1 = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
 
-      String branchAlias = writer.getFirstAlias(SqlTable.BRANCH_TABLE);
+      String branchAlias = writer.getFirstAlias(OseeDb.BRANCH_TABLE);
 
       SqlAliasManager aliasManager = writer.getAliasManager();
       aliasManager.nextLevel();
 
-      artAlias2 = writer.addTable(SqlTable.ARTIFACT_TABLE);
-      txsAlias2 = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ARTIFACT);
+      artAlias2 = writer.addTable(OseeDb.ARTIFACT_TABLE);
+      txsAlias2 = writer.addTable(OseeDb.TXS_TABLE, ObjectType.ARTIFACT);
 
       if (Strings.isValid(branchAlias)) {
-         aliasManager.putAlias(SqlTable.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
+         aliasManager.putAlias(OseeDb.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
       }
    }
 

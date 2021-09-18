@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class TxTypesSqlHandler extends MainTableFieldSqlHandler {
    public TxTypesSqlHandler() {
-      super(SqlTable.TX_DETAILS_TABLE, "tx_type", SqlHandlerPriority.TX_TYPE);
+      super(OseeDb.TX_DETAILS_TABLE, "tx_type", SqlHandlerPriority.TX_TYPE);
    }
 }

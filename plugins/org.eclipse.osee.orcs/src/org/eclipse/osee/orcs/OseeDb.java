@@ -11,23 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.enums;
+package org.eclipse.osee.orcs;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.sql.JDBCType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
-import org.eclipse.osee.framework.jdk.core.type.NamedBase;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.jdbc.SqlColumn;
+import org.eclipse.osee.jdbc.SqlTable;
 
 /**
- * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
+ * @author Baily Roberts
  */
-public class SqlTable extends NamedBase {
+public class OseeDb {
 
    public static final SqlTable ARTIFACT_TABLE = new SqlTable("osee_artifact", "art", ObjectType.ARTIFACT);
    public static final SqlColumn ARTIFACT_GUID = ARTIFACT_TABLE.addVarCharColumn("GUID", 22, false);
@@ -95,7 +96,7 @@ public class SqlTable extends NamedBase {
       BRANCH_TABLE.setPrimaryKeyConstraint(BRANCH_ID);
       BRANCH_TABLE.createIndex("OSEE_BRANCH_A_IDX", true, BRANCH_ARCHIVED.getName());
       BRANCH_TABLE.addStatement("INSERT INTO OSEE_BRANCH (" + Collections.toString(", ",
-         BRANCH_TABLE.columns) + ") VALUES ('" + CoreBranches.SYSTEM_ROOT.getName() + "'," + BranchType.SYSTEM_ROOT.getIdString() + ",1,-1,0," + SYSTEM_ROOT.getIdString() + "," + BranchState.MODIFIED.getIdString() + ",-1,1,0)");
+         BRANCH_TABLE.getColumns()) + ") VALUES ('" + CoreBranches.SYSTEM_ROOT.getName() + "'," + BranchType.SYSTEM_ROOT.getIdString() + ",1,-1,0," + SYSTEM_ROOT.getIdString() + "," + BranchState.MODIFIED.getIdString() + ",-1,1,0)");
    }
 
    public static final SqlTable TXS_TABLE = new SqlTable("osee_txs", "txs", 1);
@@ -144,7 +145,7 @@ public class SqlTable extends NamedBase {
       TX_DETAILS_TABLE.createIndex("OSEE_TX_DETAILS_B_TX_IDX", true, TX_DETAILS_TX_BRANCH_ID.getName(),
          TX_DETAILS_TRANSACTION_ID.getName());
       TX_DETAILS_TABLE.addStatement("INSERT INTO OSEE_TX_DETAILS (" + Collections.toString(",",
-         (TX_DETAILS_TABLE.columns)) + ") VALUES (1,1,-1,CURRENT_TIMESTAMP,'" + CoreBranches.SYSTEM_ROOT.getName() + " Creation',1,NULL," + OseeCodeVersion.getVersionId() + ")");
+         (TX_DETAILS_TABLE.getColumns())) + ") VALUES (1,1,-1,CURRENT_TIMESTAMP,'" + CoreBranches.SYSTEM_ROOT.getName() + " Creation',1,NULL," + OseeCodeVersion.getVersionId() + ")");
    }
 
    public static final SqlTable OSEE_PERMISSION_TABLE = new SqlTable("osee_permission", "per");
@@ -218,7 +219,7 @@ public class SqlTable extends NamedBase {
    static {
       OSEE_SEQUENCE_TABLE.setUniqueKeyConstraint("SEQUENCE_ID_UN", OSEE_SEQUENCE_SEQUENCE_NAME.getName());
       OSEE_SEQUENCE_TABLE.addStatement("INSERT INTO OSEE_SEQUENCE (" + Collections.toString(",",
-         OSEE_SEQUENCE_TABLE.columns) + ") VALUES ('SKYNET_TRANSACTION_ID_SEQ', 1)");
+         OSEE_SEQUENCE_TABLE.getColumns()) + ") VALUES ('SKYNET_TRANSACTION_ID_SEQ', 1)");
 
    }
 
@@ -662,130 +663,7 @@ public class SqlTable extends NamedBase {
       OSEE_OAUTH_TOKEN_TABLE.createIndex("OSEE_OAUTH_TOKEN__TK_IDX", false, OSEE_OAUTH_TOKEN_TOKEN_KEY.getName());
    }
 
-   private final String aliasPrefix;
-   private final ObjectType objectType;
-   private final ChainingArrayList<@NonNull SqlColumn> columns;
-   private final ArrayList<String> constraints;
-   private final ArrayList<String> statements;
-   private final int indexLevel;
-   private final boolean hasJoinTblSp;
-   private String tableExtras;
-
-   private SqlTable(String tableName, String aliasPrefix) {
-      this(tableName, aliasPrefix, -1);
-   }
-
-   private SqlTable(String tableName, String aliasPrefix, int indexLevel) {
-      this(tableName, aliasPrefix, ObjectType.UNKNOWN, indexLevel);
-   }
-
-   private SqlTable(String tableName, String aliasPrefix, ObjectType objectType) {
-      this(tableName, aliasPrefix, objectType, -1);
-   }
-
-   private SqlTable(String tableName, String aliasPrefix, ObjectType objectType, int indexLevel) {
-      this(tableName, aliasPrefix, objectType, indexLevel, false);
-   }
-
-   private SqlTable(String tableName, String aliasPrefix, ObjectType objectType, int indexLevel, boolean hasJoinTblSp) {
-      super(tableName);
-      this.aliasPrefix = aliasPrefix;
-      this.objectType = objectType;
-      columns = new ChainingArrayList<>();
-      constraints = new ArrayList<>();
-      statements = new ArrayList<>();
-      this.indexLevel = indexLevel;
-      this.hasJoinTblSp = hasJoinTblSp;
-   }
-
-   public String getPrefix() {
-      return aliasPrefix;
-   }
-
-   public String getTableExtras() {
-      return tableExtras;
-   }
-
-   public ObjectType getObjectType() {
-      return objectType;
-   }
-
-   public List<SqlColumn> getColumns() {
-      return columns;
-   }
-
-   public List<String> getConstraints() {
-      return constraints;
-   }
-
-   public List<String> getStatements() {
-      return statements;
-   }
-
-   public int getIndexLevel() {
-      return indexLevel;
-   }
-
-   public SqlColumn addColumn(String name, JDBCType type) {
-      return columns.addAndReturn(new SqlColumn(this, name, type));
-   }
-
-   public SqlColumn addColumn(String name, JDBCType type, boolean isNull) {
-      return columns.addAndReturn(new SqlColumn(this, name, type, isNull));
-   }
-
-   public SqlColumn addVarCharColumn(String name, int length) {
-      return columns.addAndReturn(new SqlColumn(this, name, JDBCType.VARCHAR, true, length));
-   }
-
-   public SqlColumn addVarCharColumn(String name, int length, boolean isNull) {
-      return columns.addAndReturn(new SqlColumn(this, name, JDBCType.VARCHAR, false, length));
-   }
-
-   public void setPrimaryKeyConstraint(SqlColumn... columns) {
-      constraints.add(
-         "CONSTRAINT " + getName() + "_PK PRIMARY KEY (" + Collections.toString(",", Arrays.asList(columns)) + ")");
-   }
-
-   public void setPrimaryKeyConstraint(String key, SqlColumn... columns) {
-      constraints.add(
-         "CONSTRAINT " + key + "_PK PRIMARY KEY (" + Collections.toString(",", Arrays.asList(columns)) + ")");
-   }
-
-   public void setForeignKeyConstraint(String constraintName, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
-      constraints.add(
-         "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ")");
-   }
-
-   public void setForeignKeyConstraintCascadeDelete(String constraintName, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
-      constraints.add(
-         "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ") ON DELETE CASCADE");
-   }
-
-   public void setUniqueKeyConstraint(String constraintName, String columnName) {
-      constraints.add("CONSTRAINT " + constraintName + " UNIQUE (" + columnName + ")");
-   }
-
-   public void createIndex(String indexName, boolean hasIndexTablespace, String... columns) {
-      if (hasIndexTablespace) {
-         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
-            Arrays.asList(columns)) + ")");
-      } else {
-         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(",",
-            Arrays.asList(columns)) + ")");
-      }
-   }
-
-   public void addStatement(String statement) {
-      statements.add(statement);
-   }
-
-   private void setTableExtras(String extras) {
-      tableExtras = extras;
-   }
-
    public static SqlTable getTxsTable(boolean isArchived) {
       return isArchived ? TXS_ARCHIVED_TABLE : TXS_TABLE;
    }
-
 }

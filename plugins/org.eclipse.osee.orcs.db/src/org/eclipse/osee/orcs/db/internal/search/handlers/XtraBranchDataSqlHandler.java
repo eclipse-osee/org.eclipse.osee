@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 
 /**
@@ -36,8 +36,8 @@ public class XtraBranchDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      branchAlias = writer.addTable(SqlTable.BRANCH_TABLE, objectType);
-      txsAlias = writer.getFirstAlias(getLevel(), SqlTable.TXS_TABLE, objectType);
+      branchAlias = writer.addTable(OseeDb.BRANCH_TABLE, objectType);
+      txsAlias = writer.getFirstAlias(getLevel(), OseeDb.TXS_TABLE, objectType);
    }
 
    @Override

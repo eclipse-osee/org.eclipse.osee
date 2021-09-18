@@ -18,9 +18,9 @@ import java.util.List;
 
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -40,8 +40,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
 
    @Override
    protected void writeSelectFields() {
-      String txAlias = getLastAlias(SqlTable.TXS_TABLE);
-      String artJoinAlias = getLastAlias(SqlTable.OSEE_JOIN_ID4_TABLE);
+      String txAlias = getLastAlias(OseeDb.TXS_TABLE);
+      String artJoinAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
 
       writeSelectFields(txAlias, "gamma_id", txAlias, "mod_type", txAlias, "branch_id", txAlias, "transaction_id",
          txAlias, "app_id");
@@ -54,22 +54,22 @@ public class LoadSqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      String artAlias = getLastAlias(SqlTable.OSEE_JOIN_ID4_TABLE);
-      String txAlias = getLastAlias(SqlTable.TXS_TABLE);
+      String artAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
+      String txAlias = getLastAlias(OseeDb.TXS_TABLE);
 
       write("\n ORDER BY %s.branch_id, %s.id2", txAlias, artAlias);
-      if (hasAlias(SqlTable.ATTRIBUTE_TABLE)) {
-         write(", %s.attr_id", getLastAlias(SqlTable.ATTRIBUTE_TABLE));
+      if (hasAlias(OseeDb.ATTRIBUTE_TABLE)) {
+         write(", %s.attr_id", getLastAlias(OseeDb.ATTRIBUTE_TABLE));
       }
-      if (hasAlias(SqlTable.RELATION_TABLE)) {
-         write(", %s.rel_link_id", getLastAlias(SqlTable.RELATION_TABLE));
+      if (hasAlias(OseeDb.RELATION_TABLE)) {
+         write(", %s.rel_link_id", getLastAlias(OseeDb.RELATION_TABLE));
       }
       write(", %s.transaction_id desc", txAlias);
    }
 
    @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
-      String artJoinAlias = getLastAlias(SqlTable.OSEE_JOIN_ID4_TABLE);
+      String artJoinAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
       writeTxFilter(txsAlias, artJoinAlias, allowDeleted);
       write(" AND ");
       write(txsAlias);
@@ -90,7 +90,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
        */
       //@formatter:on
       boolean hasTable[] =
-         {hasAlias(SqlTable.ARTIFACT_TABLE), hasAlias(SqlTable.ATTRIBUTE_TABLE), hasAlias(SqlTable.RELATION_TABLE)};
+         {hasAlias(OseeDb.ARTIFACT_TABLE), hasAlias(OseeDb.ATTRIBUTE_TABLE), hasAlias(OseeDb.RELATION_TABLE)};
 
       /**********************************************************************
        * Allow deleted artifacts applies even if the artifact table is not in the query. The other two only make sense
@@ -157,8 +157,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
        * not made
        */
       int count = 0;
-      if (hasAlias(SqlTable.ARTIFACT_TABLE)) {
-         List<String> artTables = getAliases(SqlTable.ARTIFACT_TABLE);
+      if (hasAlias(OseeDb.ARTIFACT_TABLE)) {
+         List<String> artTables = getAliases(OseeDb.ARTIFACT_TABLE);
          if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
             write("(");
             buildTableGamma(artTables, txsAlias);
@@ -168,8 +168,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             count++;
          }
       }
-      if (hasAlias(SqlTable.ATTRIBUTE_TABLE)) {
-         List<String> attrTables = getAliases(SqlTable.ATTRIBUTE_TABLE);
+      if (hasAlias(OseeDb.ATTRIBUTE_TABLE)) {
+         List<String> attrTables = getAliases(OseeDb.ATTRIBUTE_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
                write(" AND ");
@@ -182,8 +182,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             count++;
          }
       }
-      if (hasAlias(SqlTable.RELATION_TABLE)) {
-         List<String> relationTables = getAliases(SqlTable.RELATION_TABLE);
+      if (hasAlias(OseeDb.RELATION_TABLE)) {
+         List<String> relationTables = getAliases(OseeDb.RELATION_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
                write(" AND ");

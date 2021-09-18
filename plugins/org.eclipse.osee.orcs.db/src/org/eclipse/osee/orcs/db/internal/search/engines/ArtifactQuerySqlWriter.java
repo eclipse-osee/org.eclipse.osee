@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -31,8 +31,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    protected void writeSelectFields() {
-      String txAlias = getMainTableAlias(SqlTable.TXS_TABLE);
-      String artAlias = getMainTableAlias(SqlTable.ARTIFACT_TABLE);
+      String txAlias = getMainTableAlias(OseeDb.TXS_TABLE);
+      String artAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
 
       writeSelectFields(artAlias, "art_id", txAlias, "branch_id");
       if (OptionsUtil.isHistorical(getOptions())) {
@@ -47,8 +47,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             write("\n) xTable");
          }
       } else {
-         write("\n ORDER BY %s.art_id, %s.branch_id", getMainTableAlias(SqlTable.ARTIFACT_TABLE),
-            getMainTableAlias(SqlTable.TXS_TABLE));
+         write("\n ORDER BY %s.art_id, %s.branch_id", getMainTableAlias(OseeDb.ARTIFACT_TABLE),
+            getMainTableAlias(OseeDb.TXS_TABLE));
       }
    }
 }

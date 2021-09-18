@@ -21,12 +21,13 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.jdbc.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -294,8 +295,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
          handler.addTables(this);
       }
       if (queryDataCursor.getView().isValid()) {
-         tupleAlias = addTable(SqlTable.TUPLE2);
-         tupleTxsAlias = addTable(SqlTable.TXS_TABLE);
+         tupleAlias = addTable(OseeDb.TUPLE2);
+         tupleTxsAlias = addTable(OseeDb.TXS_TABLE);
       }
    }
 
@@ -319,12 +320,12 @@ public abstract class AbstractSqlWriter implements HasOptions {
          }
       }
 
-      if (mainTableAliasExists(SqlTable.ARTIFACT_TABLE)) {
+      if (mainTableAliasExists(OseeDb.ARTIFACT_TABLE)) {
          if (!first) {
             write(" AND ");
          }
-         String mainTableAlias = getMainTableAlias(SqlTable.ARTIFACT_TABLE);
-         String mainTxsAlias = getMainTableAlias(SqlTable.TXS_TABLE);
+         String mainTableAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+         String mainTxsAlias = getMainTableAlias(OseeDb.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
          writeTxBranchFilter(mainTxsAlias);
          if (queryDataCursor.getAppId().isValid()) {
@@ -336,7 +337,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
             writeEqualsParameterAnd(tupleAlias, "tuple_type", CoreTupleTypes.ViewApplicability);
             writeEqualsParameterAnd(tupleAlias, "e1", queryDataCursor.getView());
             writeEqualsAnd(tupleAlias, tupleTxsAlias, "gamma_id");
-            writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(SqlTable.TXS_TABLE), "app_id");
+            writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(OseeDb.TXS_TABLE), "app_id");
             writeTxBranchFilter(tupleTxsAlias);
          }
       }

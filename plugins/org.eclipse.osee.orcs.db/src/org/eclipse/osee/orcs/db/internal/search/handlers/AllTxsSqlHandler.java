@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -25,7 +25,7 @@ public class AllTxsSqlHandler extends SqlHandler<CriteriaAllTxs> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      writer.getMainTableAlias(SqlTable.TX_DETAILS_TABLE);
+      writer.getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
    }
 
    @Override

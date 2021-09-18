@@ -14,8 +14,8 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 
@@ -30,8 +30,8 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
    @Override
    public void addTables(AbstractSqlWriter writer) {
       super.addTables(writer);
-      relAlias = writer.addTable(SqlTable.RELATION_TABLE);
-      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
+      relAlias = writer.addTable(OseeDb.RELATION_TABLE);
+      txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
    @Override
@@ -42,7 +42,7 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       writer.write(".rel_link_type_id = ?");
       writer.addParameter(criteria.getType());
 
-      List<String> aliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
+      List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       String side = criteria.getType().getSide().isSideA() ? "a" : "b";
       if (!aliases.isEmpty()) {
          writer.writeAndLn();

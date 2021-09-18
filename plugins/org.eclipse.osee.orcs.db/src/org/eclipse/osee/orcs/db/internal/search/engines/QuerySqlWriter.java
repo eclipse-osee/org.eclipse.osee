@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;

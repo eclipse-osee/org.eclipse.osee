@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.enums;
+package org.eclipse.osee.jdbc;
 
 /**
  * @author Roberto E. Escobar

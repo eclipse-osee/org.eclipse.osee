@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.sql.Timestamp;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -36,7 +36,7 @@ public class TxDateWithOperatorSqlHandler extends SqlHandler<CriteriaDateWithOpe
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txdAlias = writer.getMainTableAlias(SqlTable.TX_DETAILS_TABLE);
+      txdAlias = writer.getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
    }
 
    @Override

@@ -27,8 +27,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.SqlColumn;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -44,6 +42,8 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.jdbc.SQL3DataType;
+import org.eclipse.osee.jdbc.SqlColumn;
+import org.eclipse.osee.jdbc.SqlTable;
 
 /**
  * @author Roberto E. Escobar

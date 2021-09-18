@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -33,7 +33,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txdAlias = writer.getMainTableAlias(SqlTable.TX_DETAILS_TABLE);
+      txdAlias = writer.getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
    }
 
    @Override
@@ -43,7 +43,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
       writer.write("(SELECT max(transaction_id) FROM ");
-      writer.writeTableNoAlias(SqlTable.TX_DETAILS_TABLE);
+      writer.writeTableNoAlias(OseeDb.TX_DETAILS_TABLE);
       writer.write(" WHERE ");
       writer.writeEqualsParameterAnd("branch_id", branch);
       writer.write("transaction_id < ?");

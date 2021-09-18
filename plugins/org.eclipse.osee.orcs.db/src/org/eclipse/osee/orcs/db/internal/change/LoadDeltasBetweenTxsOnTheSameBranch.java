@@ -28,13 +28,13 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -168,7 +168,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             }
          }
       };
-      String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, SqlTable.getTxsTable(isArchived));
+      String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, OseeDb.getTxsTable(isArchived));
       jdbcClient.runQueryWithMaxFetchSize(consumer, query, destinationTx.getBranch(), sourceTx, destinationTx);
 
       return hashChangeData;
