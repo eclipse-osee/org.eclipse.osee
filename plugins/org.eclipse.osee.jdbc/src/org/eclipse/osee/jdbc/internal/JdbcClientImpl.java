@@ -17,6 +17,7 @@ import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_TX_ROW_COUNT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.CallableStatement;
+import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,9 +26,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.SqlColumn;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -564,5 +570,113 @@ public final class JdbcClientImpl implements JdbcClient {
 
    private ResultSet getPrivileges(JdbcConnection connection, String tableName) throws SQLException {
       return connection.getMetaData().getTablePrivileges(null, null, tableName.toUpperCase());
+   }
+
+   private String columnToSql(SqlColumn column) {
+      StringBuilder strB = new StringBuilder(50);
+      strB.append(column.getName());
+      strB.append(" ");
+      if (column.getType() == JDBCType.INTEGER) {
+         strB.append("INT");
+      } else if (column.getType() == JDBCType.BIGINT) {
+         if (getDbType().equals(JdbcDbType.oracle)) {
+            strB.append("NUMBER (19, 0)");
+         } else {
+            strB.append("BIGINT");
+         }
+      }
+
+      else if (getDbType().equals(JdbcDbType.postgresql)) {
+         if (column.getType() == JDBCType.BLOB) {
+            strB.append("bytea");
+         } else if (column.getType() == JDBCType.CLOB) {
+            strB.append("text");
+         } else {
+            strB.append(column.getType());
+         }
+      } else {
+         strB.append(column.getType());
+      }
+      if (column.getLength() > 0) {
+         strB.append(" (");
+         strB.append(column.getLength());
+         strB.append(")");
+      }
+      if (column.getName().equals("BUILD_ID")) {
+         strB.append(" DEFAULT 0");
+      } else if (!column.isNull()) {
+         strB.append(" NOT NULL");
+      }
+      return strB.toString();
+   }
+
+   @Override
+   public void createTable(SqlTable table) {
+      StringBuilder sql = new StringBuilder(200);
+      sql.append("CREATE TABLE ");
+      sql.append(table.getName());
+      sql.append(" (\n\t");
+      for (int i = 0; i < table.getColumns().size(); i++) {
+         sql.append(columnToSql(table.getColumns().get(i)));
+
+         if (i != table.getColumns().size() - 1 || !table.getConstraints().isEmpty()) {
+            sql.append(",\n\t");
+         }
+      }
+      sql.append(Collections.toString(",\n\t", table.getConstraints()));
+      sql.append("\n)");
+
+      JdbcDbType dbType = getDbType();
+      if (dbType.equals(JdbcDbType.oracle)) {
+         if (table.getIndexLevel() != -1) {
+            sql.append("\tORGANIZATION INDEX ");
+            if (table.getIndexLevel() > 0) {
+               sql.append("COMPRESS " + table.getIndexLevel());
+            }
+         }
+         if (table.getTableExtras() != null) {
+            sql.append("\n\t" + table.getTableExtras());
+         }
+      }
+      runPreparedUpdate(sql.toString());
+
+      for (String statement : table.getStatements()) {
+         if (statement.contains("CREATE INDEX") && dbType.equals(JdbcDbType.oracle)) {
+            statement += " TABLESPACE osee_index";
+         }
+         runPreparedUpdate(statement);
+      }
+   }
+
+   @Override
+   public void deferredForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
+      String defered =
+         getDbType().matches(JdbcDbType.oracle, JdbcDbType.postgresql) ? " DEFERRABLE INITIALLY DEFERRED" : "";
+      alterForeignKeyConstraint(constraintName, table, column, refTable, refColumn, defered);
+   }
+
+   @Override
+   public void alterForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable, SqlColumn refColumn, String defered) {
+      String statement = String.format("ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY(%s) REFERENCES %s(%s)%s", table,
+         constraintName, column, refTable, refColumn, defered);
+      runPreparedUpdate(statement);
+   }
+
+   @Override
+   public void dropTable(SqlTable table) {
+      try {
+         runPreparedUpdate("DROP TABLE " + table.getName());
+      } catch (Exception ex) {
+         OseeLog.log(getClass(), Level.INFO, ex);
+      }
+   }
+
+   @Override
+   public void dropConstraint(SqlTable table, String constraint) {
+      try {
+         runPreparedUpdate("ALTER TABLE " + table.getName() + " DROP CONSTRAINT " + constraint);
+      } catch (Exception ex) {
+         OseeLog.log(getClass(), Level.INFO, ex);
+      }
    }
 }

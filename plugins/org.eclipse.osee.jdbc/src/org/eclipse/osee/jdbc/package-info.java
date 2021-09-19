@@ -12,6 +12,11 @@
  **********************************************************************/
 
 /**
+ * <dl>
+ * <dt>Bundle Scope</dt>
+ * <dd>This bundle contains API that is applicable to any Java application running SQL queries and DDL statements.
+ * Application-specific code does not belong in this bundle.</dd>
+ * </dl>
  * The optional package import of the package for each JDBC driver's main driver class allows
  * JdbcConnectionFactoryManager to use DriverManager.getConnection to class load the driver without requiring all the
  * drivers to be presence in any one install. The default choice of which JDBC driver is used is controlled by the JSON
