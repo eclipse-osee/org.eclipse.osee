@@ -56,7 +56,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       Conditions.checkExpressionFailOnTrue(jdbcClient.getConfig().isProduction(),
          "Error - attempting to initialize a production datastore.");
 
-      new DatabaseCreation(jdbcClient, logger).createDataStore();
+      new DatabaseCreation(jdbcClient).createDataStore();
 
       jdbcClient.runPreparedUpdate("UPDATE osee_tx_details SET author = ? WHERE author <= 0 OR author = ?", superUser,
          SystemUser.BootStrap);
