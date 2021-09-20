@@ -218,9 +218,14 @@ public class WfeWorkflowSection extends SectionPart {
       createReviewFooter(workComp, statePage);
 
       for (XWidget xWidget : allXWidgets) {
-         if (xWidget.getLabelWidget() != null) {
-            // Set all XWidget labels to bold font
-            WorkflowEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
+         Label labelWidget = xWidget.getLabelWidget();
+         if (labelWidget != null) {
+            if (xWidget.isUseLabelFont()) {
+               // Set all XWidget labels to bold font
+               WorkflowEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
+            } else {
+               WorkflowEditor.setLabelFonts(labelWidget, null);
+            }
          }
       }
 

@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
@@ -112,8 +113,14 @@ public class WfeCustomHeader extends Composite {
 
       // Set all XWidget labels to bold font
       for (XWidget xWidget : allXWidgets) {
-         if (xWidget.getLabelWidget() != null) {
-            WorkflowEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
+         Label labelWidget = xWidget.getLabelWidget();
+         if (labelWidget != null) {
+            if (xWidget.isUseLabelFont()) {
+               // Set all XWidget labels to bold font
+               WorkflowEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
+            } else {
+               WorkflowEditor.setLabelFonts(labelWidget, null);
+            }
          }
       }
 

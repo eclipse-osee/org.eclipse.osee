@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XRadioButtonsBooleanDam extends XRadioButtonsDam {
 
-   private final Map<String, Boolean> optionToBoolean;
-   private Boolean defaultValue;
+   protected Map<String, Boolean> optionToBoolean;
+   protected Boolean defaultValue;
 
    public XRadioButtonsBooleanDam(String displayLabel) {
       super(displayLabel);
@@ -59,7 +59,9 @@ public class XRadioButtonsBooleanDam extends XRadioButtonsDam {
       for (Entry<String, Boolean> option : optionToBoolean.entrySet()) {
          XRadioButton button = addButton(option.getKey());
          button.setObject(option);
-         if (option.getValue().equals(stored)) {
+         if (option.getValue() != null && option.getValue().equals(stored)) {
+            button.setSelected(true);
+         } else if (option.getValue() == null && stored == null) {
             button.setSelected(true);
          }
       }
@@ -106,7 +108,10 @@ public class XRadioButtonsBooleanDam extends XRadioButtonsDam {
    }
 
    private Boolean getStored() {
-      return artifact.getSoleAttributeValue(attributeType, defaultValue);
+      if (artifact != null) {
+         return artifact.getSoleAttributeValue(attributeType, defaultValue);
+      }
+      return null;
    }
 
    public Boolean getDefaultValue() {

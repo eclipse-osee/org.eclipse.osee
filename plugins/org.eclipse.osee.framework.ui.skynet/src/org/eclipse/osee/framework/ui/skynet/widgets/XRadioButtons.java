@@ -50,7 +50,7 @@ public class XRadioButtons extends GenericXWidget {
    private boolean sortNames;
    private Integer marginWidgth = null;
 
-   public XRadioButtons(String displayLabel, String xmlRoot) {
+   public XRadioButtons(String displayLabel) {
       super(displayLabel);
    }
 
@@ -94,23 +94,16 @@ public class XRadioButtons extends GenericXWidget {
       return null;
    }
 
-   public void setSelected(String selected[]) {
-      // First, clear out all previous selections
-      selectAll(false);
+   public void setSelected(Collection<String> selected) {
       // Set, selected items sent in
-      for (String name : selected) {
-         XRadioButton rb = getButton(name);
-         if (rb != null) {
+      for (XRadioButton rb : xButtons) {
+         if (selected.contains(rb.getLabel())) {
             rb.setSelected(true);
+         } else {
+            rb.setSelected(false);
          }
       }
-      refresh();
-   }
-
-   public void setSelected(Collection<String> selected) {
-      if (selected != null) {
-         setSelected(selected.toArray(new String[selected.size()]));
-      }
+      validate();
    }
 
    @Override
@@ -269,7 +262,7 @@ public class XRadioButtons extends GenericXWidget {
    }
 
    public void setSelected(String name) {
-      setSelected(new String[] {name});
+      setSelected(Arrays.asList(name));
    }
 
    @Override

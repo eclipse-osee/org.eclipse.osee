@@ -89,6 +89,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriStateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
@@ -219,11 +221,15 @@ public final class FrameworkXWidgetProvider {
             xWidget = new XButton(name);
          } else if (xWidgetName.equals("XButtonPush")) {
             xWidget = new XButtonPush(name);
+         } else if (xWidgetName.equals(XRadioButtonsBooleanTriStateDam.WIDGET_ID)) {
+            xWidget = new XRadioButtonsBooleanTriStateDam(name);
+         } else if (xWidgetName.equals(XRadioButtonsBooleanTriState.WIDGET_ID)) {
+            xWidget = new XRadioButtonsBooleanTriState(name);
          } else if (xWidgetName.startsWith("XRadioButtons")) {
             String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
-               XRadioButtons radio = new XRadioButtons(name, "");
+               XRadioButtons radio = new XRadioButtons(name);
 
                if (options.contains(XOption.SORTED)) {
                   Arrays.sort(values);

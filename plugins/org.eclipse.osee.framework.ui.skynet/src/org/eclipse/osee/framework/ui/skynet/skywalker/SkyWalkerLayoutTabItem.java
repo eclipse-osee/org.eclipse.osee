@@ -110,7 +110,7 @@ public class SkyWalkerLayoutTabItem {
       });
       treeViewer.setInput(options.getLayouts());
 
-      radioButtons = new XRadioButtons("Link Naming", "");
+      radioButtons = new XRadioButtons("Link Naming");
       radioButtons.setVertical(true, 1);
       radioButtons.setVerticalLabel(true);
       for (LinkName linkName : LinkName.values()) {
