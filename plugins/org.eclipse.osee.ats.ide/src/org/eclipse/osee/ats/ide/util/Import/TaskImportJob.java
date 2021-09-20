@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class TaskImportJob extends Job {
    private final File file;
    private final ExcelAtsTaskArtifactExtractor atsTaskExtractor;
-   private XResultData errorLog;
+   private XResultData rd;
 
    public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor) {
       super("Importing Tasks");
@@ -38,9 +38,9 @@ public class TaskImportJob extends Job {
       this.atsTaskExtractor = atsTaskExtractor;
    }
 
-   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, XResultData blamXResultData) {
+   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, XResultData rd) {
       this(file, atsTaskExtractor);
-      this.errorLog = blamXResultData;
+      this.rd = rd;
    }
 
    @Override
@@ -51,7 +51,7 @@ public class TaskImportJob extends Job {
          monitor.beginTask("Importing Tasks", 0);
          if (file != null && file.isFile()) {
             try {
-               atsTaskExtractor.process(file.toURI(), errorLog);
+               atsTaskExtractor.process(file.toURI(), rd);
             } catch (Throwable ex) {
                throw new Exception(ex.getMessage(), ex.getCause());
             }

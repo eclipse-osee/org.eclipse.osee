@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.util.Import;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -195,11 +197,19 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public NewTaskSet performImport(boolean fixTitles, boolean emailPocs, IAtsTeamWorkflow teamWf, File file) {
       try {
          AtsUtilClient.setEmailEnabled(emailPocs);
-         NewTaskSet newTaskSet = NewTaskSet.createWithData(teamWf, "Import Tasks from Spreadsheet",
-            AtsApiService.get().getUserService().getCurrentUser());
+
+         NewTaskData newTaskData = new NewTaskData();
+         List<NewTaskData> newTaskDatas = new ArrayList<NewTaskData>();
+         newTaskDatas.add(newTaskData);
+         if (newTaskSet == null) {
+            newTaskSet = NewTaskSet.create(getName(), AtsApiService.get().getUserService().getCurrentUserId());
+         }
+         newTaskSet.getResults().log(getName());
+         newTaskSet.setTaskDatas(newTaskDatas);
+         newTaskSet.getTaskData().setTeamWfId(teamWf.getId());
          newTaskSet.getTaskData().setFixTitles(fixTitles);
 
-         XResultData rd = new XResultData();
+         XResultData rd = newTaskSet.getResults();
          Job job = Jobs.startJob(new TaskImportJob(file,
             new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskSet.getTaskData()),
             rd));

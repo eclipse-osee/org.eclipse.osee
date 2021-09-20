@@ -126,7 +126,6 @@ public class ExcelAtsTaskArtifactExtractor {
          this.sma = sma;
          createdDate = new Date();
          createdBy = AtsApiService.get().getUserService().getCurrentUser();
-         this.rowNum++;
       }
 
       protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma, XResultData rd) {
