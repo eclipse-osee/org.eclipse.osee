@@ -28,6 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+								<plugin id="org.objectweb.asm "/>
 								<plugin id="org.apache.xerces" />
 								<plugin id="org.apache.aries.proxy" />
 								<plugin id="org.eclipse.egit" />
@@ -38,7 +39,6 @@
 								<plugin id="org.eclipse.jst.ws.jaxb.core" />
 								<plugin id="org.eclipse.ptp.rm.jaxb.core" />
 								<plugin id=" org.eclipse.ptp.rm.jaxb.java11" />
-								
 								<plugin id="javax.transaction" />
 								<plugin id="org.apache.cxf.cxf-core" />
 								<plugin id="org.apache.cxf.cxf-rt-security" />
@@ -50,7 +50,7 @@
 								<plugin id="org.apache.cxf.cxf-rt-rs-client" />
 								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />	
 								<plugin id="org.eclipse.osgi" />		
-																<plugin id="org.eclipse.osgi.services" />								
+								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.eclipse.m2e.maven.runtime" />
 								<plugin id="org.apache.cxf.cxf-rt-transports-http" />
 								<plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
@@ -58,7 +58,7 @@
 								<plugin id= "org.bouncycastle.asn1" />
 								<plugin id="org.eclipse.m2e.archetype.common" />
 								<plugin id="org.eclipse.m2e.mwsaven.indexer" />
-																<plugin id="org.apache.sshd.sftp" />
+								<plugin id="org.apache.sshd.sftp" />
 								<plugin id="org.eclipse.m2e.workspace.cli" />
 								<plugin id="org.bouncycastle.bcpg" />
 								<plugin id= "org.bouncycastle.bcpkix" />
@@ -90,7 +90,7 @@
 								<plugin id="ch.qos.logback.core" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="org.eclipse.equinox.ds" />
-																<plugin id="org.eclipse.equinox.util" />
+								<plugin id="org.eclipse.equinox.util" />
 								<plugin id="javax.activation" />
 								<plugin id="com.sun.jna" />
 								<plugin id="com.sun.jna.platform" />
@@ -190,8 +190,8 @@
 								<feature id="org.eclipse.wst.web_ui.feature" />
 								<feature id="org.eclipse.wst.jsdt.feature" />							
 								<feature id="org.eclipse.xsd.edit" />
-							   <feature id="org.eclipse.wst.common_ui.feature" />
-							   	<feature id="org.eclipse.wst.common.fproj" />
+								<feature id="org.eclipse.wst.common_ui.feature" />
+								<feature id="org.eclipse.wst.common.fproj" />
 							  	<feature id="org.eclipse.jgit.http.apache" />
 								<plugin id="org.eclipse.uml2.codegen.ecore" />
 								<feature id="org.eclipse.core.runtime.feature" />
