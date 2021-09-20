@@ -135,6 +135,13 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXInteger(AttributeTypeToken attrType) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setXWidgetName("XInteger");
+      return this;
+   }
+
    public XWidgetBuilder andXText(AttributeTypeToken attrType) {
       newXWidget();
       setAttrTypeSettings(attrType);
@@ -204,6 +211,13 @@ public class XWidgetBuilder {
    public XWidgetBuilder andXActionableItem() {
       newXWidget();
       currItem.setXWidgetName("XActionableItemWidget");
+      return this;
+   }
+
+   public XWidgetBuilder andXRadioBooleanTriState(String name) {
+      newXWidget();
+      currItem.setXWidgetName("XRadioButtonsBooleanTriState");
+      currItem.setName(name);
       return this;
    }
 

@@ -25,7 +25,7 @@ public abstract class XRadioButtonsDam extends XRadioButtons implements Attribut
    protected AttributeTypeToken attributeType;
 
    public XRadioButtonsDam(String displayLabel) {
-      super(displayLabel, null);
+      super(displayLabel);
    }
 
    public String getStoredString() {

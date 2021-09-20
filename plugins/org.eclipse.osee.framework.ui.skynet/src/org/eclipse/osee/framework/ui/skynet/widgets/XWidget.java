@@ -71,6 +71,7 @@ public abstract class XWidget {
    protected Object defaultValueObj;
    private boolean autoSave = false;
    private boolean validateDate = false;
+   private boolean useLabelFont = true;
 
    public XWidget(String label) {
       this.label = label;
@@ -472,4 +473,13 @@ public abstract class XWidget {
    public void setValidateDate(boolean validateDate) {
       this.validateDate = validateDate;
    }
+
+   public boolean isUseLabelFont() {
+      return useLabelFont;
+   }
+
+   public void setUseLabelFont(boolean useLabelFont) {
+      this.useLabelFont = useLabelFont;
+   }
+
 }
