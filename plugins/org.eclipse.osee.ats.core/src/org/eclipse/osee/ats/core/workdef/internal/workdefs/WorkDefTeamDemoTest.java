@@ -56,7 +56,7 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -72,7 +72,7 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
@@ -87,7 +87,7 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
@@ -95,7 +95,7 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //

@@ -43,7 +43,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working) //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -59,7 +59,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(2, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -77,7 +77,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
@@ -85,7 +85,7 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //

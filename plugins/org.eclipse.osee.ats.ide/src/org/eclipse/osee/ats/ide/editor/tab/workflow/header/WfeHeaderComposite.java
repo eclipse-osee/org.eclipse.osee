@@ -326,7 +326,6 @@ public class WfeHeaderComposite extends Composite {
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
          boolean editable = WorkflowManager.isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject());
-
          assigneeHeader = new WfeAssigneesHeader(comp, SWT.NONE, workItem, editable, editor);
       }
    }

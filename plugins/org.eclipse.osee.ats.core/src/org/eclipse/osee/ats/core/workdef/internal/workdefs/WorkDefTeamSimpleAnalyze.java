@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -42,7 +41,7 @@ public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -53,7 +52,7 @@ public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //

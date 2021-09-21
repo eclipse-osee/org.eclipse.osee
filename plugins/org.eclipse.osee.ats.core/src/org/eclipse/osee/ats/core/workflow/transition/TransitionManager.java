@@ -210,7 +210,7 @@ public class TransitionManager implements IExecuteListener {
                   }
                   // Else, only allow transition if...
                   else if (!workItem.isTask() && !stateIsEditable && !currentlyUnAssignedOrCompletedOrCancelled && !overrideAssigneeCheck) {
-                     results.addResult(workItem, TransitionResult.MUST_BE_ASSIGNED);
+                     results.addResult(workItem, TransitionResult.UNABLE_TO_ASSIGN);
                      continue;
                   }
 

@@ -28,8 +28,7 @@ public class TransitionResult {
       new TransitionResult("No Workflows provided for transition; aborting.");
    public static TransitionResult TO_STATE_CANT_BE_NULL =
       new TransitionResult("To-State can not be null for transition.");
-   public static TransitionResult MUST_BE_ASSIGNED =
-      new TransitionResult("You must be assigned to transition this workflow.\nContact Assignee.");
+   public static TransitionResult UNABLE_TO_ASSIGN = new TransitionResult("Unable to Assign this workflow.");
    public static TransitionResult TASK_CANT_TRANSITION_IF_PARENT_COMPLETED = new TransitionResult(
       "You can not transition a task that belongs to a completed Workflow.  Un-complete workflow first.");
    public static TransitionResult DELETE_WORKING_BRANCH_BEFORE_CANCEL =

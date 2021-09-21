@@ -42,7 +42,7 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.InWork, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", REQUIRED_FOR_TRANSITION, FILL_VERTICALLY), //
@@ -56,7 +56,7 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
 
       bld.andState(2, "InWork", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
