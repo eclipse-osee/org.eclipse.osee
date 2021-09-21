@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.util.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -49,11 +48,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
-         if (UserManager.isBootstrap()) {
-            currentUser = configurationService.getUserByUserId(AtsCoreUsers.BOOTSTRAP_USER.getUserId());
-         } else {
-            currentUser = configurationService.getUserByLoginId(System.getProperty("user.name"));
-         }
+         currentUser = configurationService.getUserByLoginId(System.getProperty("user.name"));
       }
       return currentUser;
    }
