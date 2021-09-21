@@ -23,9 +23,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
@@ -43,24 +41,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class WorkflowManager {
 
    public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa) {
-      return !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
-      // and access control writeable
-         awa.isAccessControlWrite() && //
-
-         (WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), awa,
-            awa.getStateDefinition(), AtsApiService.get().getUserService()) || //
-         // page is define to allow anyone to edit
-            awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
-            // workItem is child of TeamWorkflow that has AllowAssigneeToAll rule
-            isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
-            // team definition has allowed anyone to edit
-            awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
-   }
-
-   private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) {
-      TeamWorkFlowArtifact parentTeamArt = (TeamWorkFlowArtifact) awa.getParentTeamWorkflow();
-      return parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
-         RuleDefinitionOption.AllowAssigneeToAll.name());
+      return !awa.isCompletedOrCancelled() && //
+         !awa.isReadOnly() && awa.isAccessControlWrite();
    }
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() {

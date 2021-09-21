@@ -44,7 +44,7 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToStates(StateToken.Decision, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.DecisionReviewOptions, "XTextDam", FILL_VERTICALLY), //
@@ -59,7 +59,7 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
 
       bld.andState(2, "Decision", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Followup, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(CoreAttributeTypes.Name, "XLabelDam"), //
@@ -70,7 +70,7 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
 
       bld.andState(3, "Followup", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
+         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));

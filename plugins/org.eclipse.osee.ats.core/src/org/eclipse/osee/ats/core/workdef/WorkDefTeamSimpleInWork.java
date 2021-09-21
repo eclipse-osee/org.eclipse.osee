@@ -42,7 +42,7 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //

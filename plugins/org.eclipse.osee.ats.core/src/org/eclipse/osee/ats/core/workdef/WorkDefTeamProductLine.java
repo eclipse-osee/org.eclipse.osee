@@ -42,7 +42,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Review, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
@@ -57,7 +57,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
 
       bld.andState(2, "Review", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //

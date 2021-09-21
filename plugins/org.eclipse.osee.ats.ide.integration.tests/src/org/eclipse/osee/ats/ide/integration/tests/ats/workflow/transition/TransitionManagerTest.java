@@ -149,13 +149,6 @@ public class TransitionManagerTest {
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
-      // Un-Assign Joe Smith
-      results.clear();
-      Assert.assertFalse(helper.isOverrideAssigneeCheck());
-      teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
-      transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.contains(AtsTestUtil.getTeamWf(), TransitionResult.MUST_BE_ASSIGNED));
-
       // Set OverrideAssigneeCheck
       results.clear();
       helper.addTransitionOption(TransitionOption.OverrideAssigneeCheck);

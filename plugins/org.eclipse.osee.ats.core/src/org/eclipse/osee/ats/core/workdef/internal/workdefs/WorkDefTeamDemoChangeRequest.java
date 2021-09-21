@@ -17,7 +17,6 @@ import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.VALIDATE_DATE;
-import static org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption.AllowAssigneeToAll;
 import static org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption.AllowEditToAll;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
@@ -49,7 +48,6 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-         .andRules(AllowAssigneeToAll, AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.ExternalReference, "XTextDam", AUTO_SAVE), //
@@ -89,7 +87,6 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Completed, StateToken.Cancelled) //
-         .andRules(AllowAssigneeToAll, AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
@@ -116,7 +113,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andRules(AllowAssigneeToAll, AllowEditToAll) //
+         .andRules(AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam", VALIDATE_DATE), //
@@ -125,7 +122,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(AllowAssigneeToAll, AllowEditToAll) //
+         .andRules(AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget"), //

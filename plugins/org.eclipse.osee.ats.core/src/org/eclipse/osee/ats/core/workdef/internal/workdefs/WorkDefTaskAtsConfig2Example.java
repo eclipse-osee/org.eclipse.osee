@@ -42,7 +42,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
       bld.andState(1, "None", StateType.Working).isStartState() //
          .andToStates(StateToken.InWork, StateToken.InReview, StateToken.Complete, StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
-            RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+            RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andRecommendedPercentComplete(0) //
          .andLayout( //
@@ -60,7 +60,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
       bld.andState(2, "InWork", StateType.Working) //
          .andToStates(StateToken.InReview, StateToken.Complete, StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
-            RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+            RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andRecommendedPercentComplete(15) //
          .andLayout( //
@@ -78,7 +78,7 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
       bld.andState(3, "InReview", StateType.Working) //
          .andToStates(StateToken.Complete, StateToken.Not_Required) //
          .andRules(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion,
-            RuleDefinitionOption.RequireStateHourSpentPrompt, RuleDefinitionOption.AllowAssigneeToAll) //
+            RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.DARK_RED) //
          .andRecommendedPercentComplete(60) //
          .andLayout( //

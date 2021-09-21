@@ -42,7 +42,7 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -53,7 +53,7 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //

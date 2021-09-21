@@ -91,7 +91,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", REQUIRED_FOR_TRANSITION, FILL_VERTICALLY), //
@@ -106,7 +106,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andDecisionReviewBuilder(analyzeTransitionToDecRev) //
          .andLayout( //
@@ -122,7 +122,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andPeerReviewBuilder(authorizeTransitionTo) //
          .andLayout( //
@@ -131,7 +131,7 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         
          .andColor(StateColor.BLACK) //
          .andDecisionReviewBuilder(implementCreateBranch) //
          .andPeerReviewBuilder(implementCommitBranch) //

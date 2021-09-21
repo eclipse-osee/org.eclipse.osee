@@ -29,7 +29,6 @@ public enum RuleDefinitionOption {
    ForceAssigneesToTeamLeads("StateDefinition Option: Will force this state to be assigned back to the configured team leads.  Useful for authorization state.", RuleLocations.StateDefinition),
    RequireTargetedVersion("StateDefinition and Team Definition Option: Requires workflow to be targeted for version before transition is allowed.", RuleLocations.StateDefinition, RuleLocations.TeamDefinition),
    AllowEditToAll("StateDefinition and Team Definition Option: Allow anyone to edit workflow without being assignee.", RuleLocations.StateDefinition, RuleLocations.TeamDefinition),
-   AllowAssigneeToAll("StateDefinition and Team Definition Option: Allow anyone to change workflow assignee without being assignee.", RuleLocations.StateDefinition, RuleLocations.TeamDefinition),
    AllowTransitionWithoutTaskCompletion("StateDefinition Option: Allow tasks to transition to other InWork states without completion.", RuleLocations.StateDefinition);
 
    public final String description;
