@@ -209,9 +209,4 @@ public final class UserManager {
       }
       return showTokenForChangeName.get();
    }
-
-   public static boolean isBootstrap() {
-      return getUser().getUserId().equals("bootstrap");
-   }
-
 }

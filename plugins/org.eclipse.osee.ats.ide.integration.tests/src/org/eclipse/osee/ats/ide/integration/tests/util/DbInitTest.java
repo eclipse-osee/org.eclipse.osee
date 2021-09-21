@@ -68,9 +68,6 @@ public class DbInitTest {
       AtsApi atsApi = AtsApiService.get();
       atsApi.reloadServerAndClientCaches();
 
-      if (UserManager.isBootstrap()) {
-         throw new OseeStateException("Should not be bootstrap user here");
-      }
       if (AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
          throw new OseeStateException("Should not be bootstrap user here");
       }
