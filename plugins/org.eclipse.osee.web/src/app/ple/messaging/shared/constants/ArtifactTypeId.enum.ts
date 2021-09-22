@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 export const enum ARTIFACTTYPEID  {
     ELEMENT = "2455059983007225765",
     STRUCTURE = "2455059983007225776",
@@ -5,5 +17,7 @@ export const enum ARTIFACTTYPEID  {
     MESSAGE = "2455059983007225775",
     CONNECTION = "126164394421696910",
     NODE = "6039606571486514295",
-    PLATFORMTYPE = "6360154518785980503"
+    PLATFORMTYPE = "6360154518785980503",
+    ENUMSET = "2455059983007225791",
+    ENUM="2455059983007225793"
 }

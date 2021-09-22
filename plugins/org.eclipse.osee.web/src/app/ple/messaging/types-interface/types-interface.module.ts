@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -19,10 +31,12 @@ import { EditTypeDialogComponent } from './components/edit-type-dialog/edit-type
 import { NewTypeDialogComponent } from './components/new-type-dialog/new-type-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
 import {MatStepperModule} from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { EditEnumSetDialogComponent } from './components/edit-enum-set-dialog/edit-enum-set-dialog.component';
 
 
 @NgModule({
-  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent],
+  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent, EditEnumSetDialogComponent],
   imports: [
     CommonModule,
     MatCardModule,
@@ -35,6 +49,7 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatStepperModule,
     FormsModule,
     MatSlideToggleModule,
+    MatTableModule,
     PleSharedMaterialModule,
     TypesInterfaceRoutingModule
   ]

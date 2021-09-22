@@ -39,5 +39,9 @@ public interface MimApi {
 
    InterfaceConnectionViewApi getInterfaceConnectionViewApi();
 
+   InterfaceEnumerationApi getInterfaceEnumerationApi();
+
+   InterfaceEnumerationSetApi getInterfaceEnumerationSetApi();
+
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 }

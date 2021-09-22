@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { BehaviorSubject, of } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
@@ -35,5 +47,6 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     subMessageId: "10",
     connection: "10",
     SubMessageId:new BehaviorSubject("10"),
-    BranchId:new BehaviorSubject("10")
+    BranchId: new BehaviorSubject("10"),
+    branchType: new BehaviorSubject("working")
 }

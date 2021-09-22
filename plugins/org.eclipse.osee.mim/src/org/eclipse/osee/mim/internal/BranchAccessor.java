@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.mim.EnumerationSetEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
@@ -51,7 +52,8 @@ public class BranchAccessor {
    @Path("{branch}/types")
    @Produces(MediaType.APPLICATION_JSON)
    public PlatformTypesEndpoint getPlatformTypes(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new PlatformTypesEndpointImpl(branch, accountId, mimApi.getInterfacePlatformTypeApi());
+      return new PlatformTypesEndpointImpl(branch, accountId, mimApi.getInterfacePlatformTypeApi(),
+         mimApi.getInterfaceEnumerationSetApi(), mimApi.getInterfaceEnumerationApi());
    }
 
    @Path("{branch}/types/filter")
@@ -136,5 +138,12 @@ public class BranchAccessor {
    public InterfaceConnectionEndpoint getConnectionEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceConnectionEndpointImpl(branch, accountId, mimApi.getInterfaceNodeViewApi(),
          mimApi.getInterfaceConnectionViewApi());
+   }
+
+   @Path("{branch}/enumerations")
+   @Produces(MediaType.APPLICATION_JSON)
+   public EnumerationSetEndpoint getEnumerationSetEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new EnumerationSetEndpointImpl(branch, mimApi.getInterfaceEnumerationSetApi(),
+         mimApi.getInterfaceEnumerationApi());
    }
 }

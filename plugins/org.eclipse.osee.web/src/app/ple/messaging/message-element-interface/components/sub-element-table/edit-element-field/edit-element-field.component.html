@@ -1,3 +1,15 @@
+<!--
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
 <mat-form-field>
     <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2' && header!=='applicability'">
     <ng-container *ngIf="header==='name'">
@@ -15,13 +27,11 @@
                 </mat-option>
             </mat-select>
         </ng-container>
-        <!-- <mat-select [(ngModel)]="value" (selectionChange)="updateType($event.value)">
-            <mat-option *ngFor="let option of (availableTypes|async)" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
-                {{option.name}}
-            </mat-option>
-        </mat-select> -->
         <ng-container *ngIf="header==='platformTypeName2'">
-            <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)">
+            <div style="display:flex;flex-direction:row;">
+                <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)">
+                <button mat-button mat-icon-button matSuffix (click)="navigateTo(value)" (contextmenu)="openMenu($event,value)">-></button>
+            </div>
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
             <mat-option *ngFor="let option of filteredTypes | async" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''">
               {{option.name}}
@@ -30,3 +40,13 @@
         </ng-container>
     </ng-container>
 </mat-form-field>
+<mat-menu #contextMenu="matMenu">
+    <ng-template matMenuContent let-location="location">
+        <button mat-menu-item (click)="navigateTo(location)">Open</button>
+        <button mat-menu-item (click)="navigateToInNewTab(location)">Open in new tab</button>
+    </ng-template>
+</mat-menu>
+<div style="visibility: hidden; position: fixed;" 
+[style.left]="menuPosition.x" 
+[style.top]="menuPosition.y" 
+[matMenuTriggerFor]="contextMenu"></div>

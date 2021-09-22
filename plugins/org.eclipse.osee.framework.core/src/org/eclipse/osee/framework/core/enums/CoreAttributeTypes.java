@@ -139,7 +139,7 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger InterfaceElementIndexStart = osee.createInteger(2455059983007225801L, "Interface Element Index Start", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger InterfaceElementIndexEnd = osee.createInteger(2455059983007225802L, "Interface Element Index End", MediaType.TEXT_PLAIN, "");
    InterfaceLogicalTypeAttribute InterfaceLogicalType = osee.createEnum(new InterfaceLogicalTypeAttribute());
-   AttributeTypeInteger InterfaceEnumOrdinal = osee.createInteger(2455059983007225790L, "Interface Enum State", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger InterfaceEnumOrdinal = osee.createInteger(2455059983007225790L, "Ordinal", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeEnumLiteral = osee.createString(2455059983007225803L, "Interface Platform Type Enum Literal", MediaType.TEXT_PLAIN, "");
    InterfacePlatformTypeUnitsAttribute InterfacePlatformTypeUnits = osee.createEnum(new InterfacePlatformTypeUnitsAttribute());
    AttributeTypeString InterfacePlatformTypeValidRangeDescription = osee.createString(2121416901992068417L, "Interface Platform Type Valid Range Desc", MediaType.TEXT_PLAIN, "");

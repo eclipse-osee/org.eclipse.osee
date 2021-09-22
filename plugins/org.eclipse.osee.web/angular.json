@@ -125,6 +125,7 @@
               "src/app/ple/messaging/connection-view/mock/**",
               "**/*.mock.*"
             ],
+            "codeCoverage":true,
             "assets": [
               "src/favicon.ico",
               "src/assets"

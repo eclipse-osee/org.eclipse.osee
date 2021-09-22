@@ -20,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
@@ -48,4 +49,14 @@ public interface PlatformTypesEndpoint {
     */
    PlatformTypeToken getPlatformType(@PathParam("type_id") ArtifactId typeId);
 
+   @GET()
+   @Path("{type_id}/enumeration")
+   @Produces({MediaType.APPLICATION_JSON})
+   /**
+    * Gets related enumeration set to platform type
+    *
+    * @param typeId id of platform type
+    * @return enumeration set
+    */
+   InterfaceEnumerationSet getRelatedEnumerationSet(@PathParam("type_id") ArtifactId typeId);
 }

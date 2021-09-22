@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { Injectable } from '@angular/core';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, filter, take, map, reduce } from 'rxjs/operators';
@@ -93,6 +105,17 @@ export class CurrentStateService {
 
   get BranchId() {
     return this.ui.BranchId;
+  }
+
+  get branchType() {
+    return this.ui.branchType;
+  }
+
+  set BranchType(value:string) {
+    this.ui.BranchType = value;
+  }
+  get BranchType() {
+    return this.ui.branchType.getValue();
   }
 
   set messageId(value: string) {

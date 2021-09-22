@@ -1,11 +1,26 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { take, switchMap } from 'rxjs/operators';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { BehaviorSubject, combineLatest, of, OperatorFunction } from 'rxjs';
+import { take, switchMap, filter, tap } from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
+import { applic } from '../../../shared/types/NamedId.applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
+import { enumeration } from '../../types/enum';
+import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../types/platformType';
 import { NewTypeDialogComponent } from '../new-type-dialog/new-type-dialog.component';
 
@@ -20,6 +35,7 @@ export class TypeGridComponent implements OnInit, OnChanges {
   gutterSize: string = "";
   filteredData = this.typesService.typeData;
   rowHeight: string = "";
+  inEditMode = this.typesService.inEditMode;
   
   constructor(private breakpointObserver: BreakpointObserver, private typesService: CurrentTypesService, private uiService: PlMessagingTypesUIService,public dialog: MatDialog) {
     this.uiService.filterString = this.filterValue;
@@ -94,22 +110,23 @@ export class TypeGridComponent implements OnInit, OnChanges {
   }
 
   openNewTypeDialog() {
-    const dialogRef = this.dialog.open(NewTypeDialogComponent, {
+    this.dialog.open(NewTypeDialogComponent, {
       minHeight: "70vh",
-      minWidth:"80vw"
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      this.mapTo(result);
-    })
+      minWidth: "80vw"
+    }).afterClosed().pipe(
+      filter(x => x !== undefined) as OperatorFunction<newPlatformTypeDialogReturnData | undefined, newPlatformTypeDialogReturnData>,
+      switchMap(({ fields, createEnum, ...enumData }) => this.mapTo(fields, createEnum, enumData).pipe(
+      ))
+    ).subscribe();
   }
 
-  mapTo(results: Array<{ name: string, value: string | boolean }>) {
+  mapTo(results: logicalTypefieldValue[], newEnum: boolean, enumData: { enumSetId:string,enumSetName: string, enumSetDescription: string, enumSetApplicability: applic, enums: enumeration[] }) {
     let resultingObj: Partial<PlatformType> = {};
     results.forEach((el) => {
       let name = el.name.charAt(0).toLowerCase() + el.name.slice(1);
       (resultingObj as any)[name]=el.value
     })
-    this.typesService.createType(resultingObj).subscribe();
+    return this.typesService.createType(resultingObj,newEnum,enumData);
   }
 
   getWidthString() {
