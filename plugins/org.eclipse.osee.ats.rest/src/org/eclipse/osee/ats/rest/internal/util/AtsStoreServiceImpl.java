@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -226,7 +227,8 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isAccessControlWrite(IAtsWorkItem workItem) {
-      throw new UnsupportedOperationException();
+      return orcsApi.getAccessControlService().hasArtifactPermission(workItem.getStoreObject(), PermissionEnum.WRITE,
+         null).isSuccess();
    }
 
    @Override

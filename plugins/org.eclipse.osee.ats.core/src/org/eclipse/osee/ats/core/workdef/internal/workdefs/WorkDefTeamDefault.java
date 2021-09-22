@@ -43,7 +43,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working) //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -59,7 +58,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(2, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
@@ -77,7 +75,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
@@ -85,7 +82,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
@@ -95,11 +91,10 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(5, "Completed", StateType.Completed) //
-         .andRules(RuleDefinitionOption.AllowEditToAll, RuleDefinitionOption.AddDecisionValidateBlockingReview) //
+         .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN);
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.DARK_GREEN);
 
       return bld.getWorkDefinition();

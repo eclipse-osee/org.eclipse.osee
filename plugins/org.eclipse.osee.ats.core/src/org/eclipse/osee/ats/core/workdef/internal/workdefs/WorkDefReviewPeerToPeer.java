@@ -67,7 +67,6 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToStates(StateToken.Cancelled, StateToken.Review, StateToken.Meeting) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
@@ -95,7 +94,6 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
       bld.andState(2, "Review", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Meeting, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
@@ -123,7 +121,6 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
       bld.andState(3, "Meeting", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new CompositeLayoutItem(4, //

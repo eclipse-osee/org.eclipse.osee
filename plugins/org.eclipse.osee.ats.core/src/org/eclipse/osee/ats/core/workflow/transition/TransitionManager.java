@@ -52,8 +52,8 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
-import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -197,8 +197,7 @@ public class TransitionManager implements IExecuteListener {
                   }
 
                   // Validate Editable
-                  boolean stateIsEditable = WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
-                     helper.getTransitionUser(), userService.isAtsAdmin(helper.getTransitionUser()));
+                  boolean isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
                   boolean currentlyUnAssignedOrCompletedOrCancelled =
                      workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
                         AtsCoreUsers.UNASSIGNED_USER);
@@ -209,7 +208,7 @@ public class TransitionManager implements IExecuteListener {
                      continue;
                   }
                   // Else, only allow transition if...
-                  else if (!workItem.isTask() && !stateIsEditable && !currentlyUnAssignedOrCompletedOrCancelled && !overrideAssigneeCheck) {
+                  else if (!workItem.isTask() && !isEditable && !currentlyUnAssignedOrCompletedOrCancelled && !overrideAssigneeCheck) {
                      results.addResult(workItem, TransitionResult.UNABLE_TO_ASSIGN);
                      continue;
                   }

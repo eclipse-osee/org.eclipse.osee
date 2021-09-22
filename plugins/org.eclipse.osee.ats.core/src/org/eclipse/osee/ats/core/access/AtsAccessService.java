@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.access.AtsAccessContextTokens;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -240,6 +241,15 @@ public class AtsAccessService implements IAtsAccessService {
    @Override
    public void clearCaches() {
       branchIdToContextIdCache.invalidateAll();
+   }
+
+   @Override
+   public boolean isWorkflowEditable(IAtsWorkItem workItem) {
+      boolean isAccessControlWrite = AtsApiService.get().getStoreService().isAccessControlWrite(workItem);
+      if (isAccessControlWrite) {
+         return true;
+      }
+      return false;
    }
 
 }

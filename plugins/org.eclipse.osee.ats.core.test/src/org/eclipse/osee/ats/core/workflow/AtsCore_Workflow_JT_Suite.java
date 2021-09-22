@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCore_Workflow_State_Suite.class, WorkflowManagerCoreTest.class, StateTypeTest.class})
+@Suite.SuiteClasses({AtsCore_Workflow_State_Suite.class, StateTypeTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

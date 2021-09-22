@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
-import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -55,7 +54,7 @@ public class WfeCustomHeader extends Composite {
 
    protected final IAtsWorkItem workItem;
    private final IManagedForm managedForm;
-   private final boolean isEditable, isGlobalEditable, isReadOnly, isAccessControlWrite;
+   private final boolean isEditable;
    private final List<XWidget> allXWidgets = new ArrayList<>();
    private final WorkflowEditor editor;
    private final AbstractWorkflowArtifact wfArt;
@@ -68,11 +67,7 @@ public class WfeCustomHeader extends Composite {
       this.editor = editor;
       editor.getToolkit().adapt(this);
 
-      isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), workItem,
-         workItem.getStateDefinition(), AtsApiService.get().getUserService());
-      isReadOnly = AtsApiService.get().getStoreService().isReadOnly(workItem);
-      isAccessControlWrite = AtsApiService.get().getStoreService().isAccessControlWrite(workItem);
-      isGlobalEditable = !isReadOnly && isAccessControlWrite;
+      isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
 
       try {
@@ -105,7 +100,7 @@ public class WfeCustomHeader extends Composite {
       statePage.generateLayoutDatas();
 
       SwtXWidgetRenderer dynamicXWidgetLayout =
-         statePage.createBody(managedForm, this, wfArt, xModListener, isEditable || isGlobalEditable);
+         statePage.createBody(managedForm, this, wfArt, xModListener, isEditable);
       for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
          addAndCheckChildren(xWidget);
       }

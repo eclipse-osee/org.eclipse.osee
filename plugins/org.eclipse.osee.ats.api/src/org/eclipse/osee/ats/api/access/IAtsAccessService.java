@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.access;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,5 +36,7 @@ public interface IAtsAccessService {
    void setContextIds(IAtsObject atsObject, AccessContextToken... contextIds);
 
    void clearCaches();
+
+   boolean isWorkflowEditable(IAtsWorkItem workItem);
 
 }

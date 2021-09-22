@@ -121,7 +121,6 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    @Path("my/{userArtId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
    public String getMyWorldUICustomized(@PathParam("userArtId") ArtifactId userArtId, @PathParam("customizeGuid") String customizeGuid) {
-      ElapsedTime time = new ElapsedTime("start");
       ArtifactReadable userArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
          atsApiServer.getUserService().getUserByUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
@@ -134,17 +133,13 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       }
       getCustomization.end();
 
-      ElapsedTime getWorkItems = new ElapsedTime("get work items");
-      // get work items
       Collection<IAtsWorkItem> myWorldItems =
          atsApiServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
-      getWorkItems.end();
 
       String table = getCustomizedTable(atsApiServer,
          "MY World - " + userById.getName() + " - Customization: " + customization.getName(), customization,
          myWorldItems);
-      time.end();
       return table;
    }
 
