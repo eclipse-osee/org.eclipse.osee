@@ -1,12 +1,26 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { defer, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { defer, iif, Observable, of, OperatorFunction } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 import { OSEEWriteApiResponse } from '../../../shared/types/ApiWriteResponse';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
+import { enumerationSet } from '../../types/enum';
 import { PlatformType } from '../../types/platformType';
+import { EditEnumSetDialogComponent } from '../edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.component';
 
 @Component({
@@ -40,12 +54,9 @@ export class PlatformTypeCardComponent implements OnInit {
     })
     dialogRef.afterClosed()
       .pipe(
-      switchMap(
-        x => defer(
-          () => x.mode ? this.typesService.createType(x.type) : this.getEditObservable(copy,x)
+       switchMap( ({mode, type})=>iif(()=>mode===copy,this.typesService.copyType(type),this.getEditObservable(copy,{mode,type}))
       )
-      )
-    ).subscribe((result) => {})
+    ).subscribe()
   }
 
   /**
@@ -66,4 +77,14 @@ export class PlatformTypeCardComponent implements OnInit {
     
     return this.typesService.partialUpdate(newType);
   }
+
+  openEnumDialog(makeChanges:boolean) {
+    this.dialog.open(EditEnumSetDialogComponent, {
+      data:of(this.typeData.id)
+    }).afterClosed().pipe(
+      filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
+      switchMap((changes)=>iif(()=>makeChanges,this.typesService.changeEnumSet(changes)))
+    ).subscribe();
+  }
+  
 }

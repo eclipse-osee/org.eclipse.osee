@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 
@@ -10,6 +22,7 @@ export class UiService {
 
   private _UpdateRequired: Subject<boolean> = new Subject<boolean>();
   private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
+  private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>("");
   private _messageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _subMessageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
@@ -63,5 +76,13 @@ export class UiService {
 
   set connectionIdString(value: string) {
     this._connectionId.next(value);
+  }
+
+  get branchType() {
+    return this._branchType;
+  }
+
+  set BranchType(value:string) {
+    this._branchType.next(value);
   }
 }

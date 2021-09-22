@@ -1,4 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { BehaviorSubject, from, Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, map, tap, switchMap, filter, scan } from 'rxjs/operators';
@@ -49,7 +63,13 @@ export class EditElementFieldComponent implements OnInit {
   )
 
   applics = this.structureService.applic;
-  constructor (private structureService: CurrentStateService) {
+  menuPosition = {
+    x: '0',
+    y:'0'
+  }
+  @ViewChild(MatMenuTrigger, { static: true })
+  matMenuTrigger!: MatMenuTrigger;
+  constructor (private structureService: CurrentStateService,private router: Router,private route: ActivatedRoute) {
     this._sendValue.subscribe();
     this._sendType.subscribe();
    }
@@ -71,5 +91,28 @@ export class EditElementFieldComponent implements OnInit {
 
   compareApplics(o1:any,o2:any) {
     return o1.id===o2.id && o1.name===o2.name
+  }
+
+  navigateTo(location: string) {
+    this.router.navigate([this.structureService.branchType.getValue(),this.structureService.BranchId.getValue(),"types",location], {
+      relativeTo: this.route.parent?.parent,
+      queryParamsHandling: 'merge',
+    });
+  }
+  openMenu(event: MouseEvent,location: string) {
+    event.preventDefault();
+    this.menuPosition.x = event.clientX + 'px';
+    this.menuPosition.y = event.clientY + 'px';
+    this.matMenuTrigger.menuData = {
+      location:location
+    }
+    this.matMenuTrigger.openMenu();
+  }
+  navigateToInNewTab(location: string) {
+    const url = this.router.serializeUrl(this.router.createUrlTree([this.structureService.branchType.getValue(),this.structureService.BranchId.getValue(),"types", location], {
+      relativeTo: this.route.parent?.parent,
+      queryParamsHandling: 'merge',
+    }))
+    window.open(url, "_blank");
   }
 }

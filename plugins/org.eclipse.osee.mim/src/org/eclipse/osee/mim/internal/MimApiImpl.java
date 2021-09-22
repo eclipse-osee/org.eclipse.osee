@@ -16,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
+import org.eclipse.osee.mim.InterfaceEnumerationApi;
+import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
@@ -65,6 +67,10 @@ public class MimApiImpl implements MimApi {
 
    private InterfaceConnectionViewApi interfaceConnectionViewApi;
 
+   private InterfaceEnumerationApi interfaceEnumerationApi;
+
+   private InterfaceEnumerationSetApi interfaceEnumerationSetApi;
+
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
@@ -112,6 +118,8 @@ public class MimApiImpl implements MimApi {
       this.interfaceElementArrayApi = new InterfaceElementArrayApiImpl(orcsApi);
       this.interfaceNodeViewApi = new InterfaceNodeViewApiImpl(orcsApi);
       this.interfaceConnectionViewApi = new InterfaceConnectionViewApiImpl(orcsApi);
+      this.interfaceEnumerationApi = new InterfaceEnumerationApiImpl(orcsApi);
+      this.interfaceEnumerationSetApi = new InterfaceEnumerationSetApiImpl(orcsApi);
    }
 
    @Override
@@ -162,6 +170,16 @@ public class MimApiImpl implements MimApi {
    @Override
    public InterfaceConnectionViewApi getInterfaceConnectionViewApi() {
       return this.interfaceConnectionViewApi;
+   }
+
+   @Override
+   public InterfaceEnumerationApi getInterfaceEnumerationApi() {
+      return this.interfaceEnumerationApi;
+   }
+
+   @Override
+   public InterfaceEnumerationSetApi getInterfaceEnumerationSetApi() {
+      return this.interfaceEnumerationSetApi;
    }
 
 }

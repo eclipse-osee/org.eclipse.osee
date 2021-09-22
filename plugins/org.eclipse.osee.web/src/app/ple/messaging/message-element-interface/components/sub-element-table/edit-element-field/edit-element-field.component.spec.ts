@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
@@ -14,21 +26,35 @@ import { CurrentStateService } from '../../../services/current-state.service';
 
 import { EditElementFieldComponent } from './edit-element-field.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatMenuModule } from '@angular/material/menu';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatMenuHarness, MatMenuItemHarness } from '@angular/material/menu/testing';
 
 describe('EditElementFieldComponent', () => {
   let component: EditElementFieldComponent;
   let fixture: ComponentFixture<EditElementFieldComponent>;
   let loader: HarnessLoader;
+  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
+    routerSpy = jasmine.createSpyObj('Router', ['navigate','serializeUrl','createUrlTree']);
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule],
-      providers:[{provide: CurrentStateService,useValue:CurrentStateServiceMock}],
+      imports: [NoopAnimationsModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
+      providers: [{ provide: CurrentStateService, useValue: CurrentStateServiceMock },
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: {} }],
       declarations: [ EditElementFieldComponent ]
     })
     .compileComponents();
   });
 
+  beforeEach(function () {
+    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+      return null;
+    })
+  });
   beforeEach(() => {
     fixture = TestBed.createComponent(EditElementFieldComponent);
     component = fixture.componentInstance;
@@ -81,5 +107,25 @@ describe('EditElementFieldComponent', () => {
       }
 
     }))
+
+    it('should navigate to types page', async () => {
+      let spy = spyOn(component, 'navigateTo').and.callThrough();
+      let button = await loader.getHarness(MatButtonHarness.with({ text: '->' }))
+      await button.click();
+      expect(spy).toHaveBeenCalled();
+      expect(routerSpy.navigate).toHaveBeenCalled();
+    })
+  })
+
+  it('should navigate to types page in new tab', async () => {
+    let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
+    component.matMenuTrigger.openMenu();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    let menu = await loader.getHarness(MatMenuHarness);
+    await menu.clickItem({text:'Open in new tab'})
+    // let item = await loader.getHarness(MatMenuItemHarness.with({ text: 'Open in new tab' }))
+    // await item.click()
+    expect(spy).toHaveBeenCalled();
   })
 });

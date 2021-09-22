@@ -1,5 +1,17 @@
+<!--
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
 <button mat-raised-button (click)="openSettingsDialog()" style="float:right">Settings</button>
-<button mat-fab (click)="openNewTypeDialog()" class="new-platform-type-button" color="primary">+</button>
+<button mat-fab *ngIf="(inEditMode|async)===true" (click)="openNewTypeDialog()" class="new-platform-type-button" color="primary">+</button>
 <mat-form-field class="ple-messaging-type-grid-filter">
     <mat-label>Filter Types</mat-label>
     <input matInput type="text" (keyup)="applyFilter($event)" #input [value]="filterValue">

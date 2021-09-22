@@ -158,7 +158,7 @@ public interface CoreRelationTypes {
    RelationTypeSide InterfacePlatformTypeEnumeration_Element = RelationTypeSide.create(InterfacePlatformTypeEnumeration, SIDE_A);
    RelationTypeSide InterfacePlatformTypeEnumeration_EnumerationSet = RelationTypeSide.create(InterfacePlatformTypeEnumeration, SIDE_B);
 
-   RelationTypeToken InterfaceEnumeration = osee.add(2455059983007225795L, "Interface Enumeration Definition", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceEnumSet, "Interface Enumeration Set", InterfaceEnum, "Interface Enumeration");
+   RelationTypeToken InterfaceEnumeration = osee.add(2455059983007225795L, "Interface Enumeration Definition", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceEnumSet, "Interface Enumeration Set", InterfaceEnum, "Interface Enumeration");
    RelationTypeSide InterfaceEnumeration_EnumerationSet = RelationTypeSide.create(InterfaceEnumeration, SIDE_A);
    RelationTypeSide InterfaceEnumeration_EnumerationState = RelationTypeSide.create(InterfaceEnumeration, SIDE_B);
 

@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { user } from "src/app/userdata/types/user-data-user"
 import { NameValuePair } from "../types/base-types/NameValuePair";
 import { action, newActionResponse, targetedVersion, teamWorkflow, transitionAction } from "../types/pl-config-actions"
