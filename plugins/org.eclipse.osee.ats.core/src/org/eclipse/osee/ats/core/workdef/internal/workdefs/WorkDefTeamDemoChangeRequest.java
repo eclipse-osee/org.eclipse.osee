@@ -17,7 +17,6 @@ import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.VALIDATE_DATE;
-import static org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption.AllowEditToAll;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -26,7 +25,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -117,7 +115,6 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andRules(AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam", VALIDATE_DATE), //
@@ -126,21 +123,18 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         .andRules(AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Task Estimating Manager", "XTaskEstDemoWidget"), //
             new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"));
 
       bld.andState(5, "Completed", StateType.Completed) //
-         .andRules(AllowEditToAll) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
             new WidgetDefinition("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget") //
          );
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
-         .andRules(RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.DARK_GREEN);
 
       return bld.getWorkDefinition();

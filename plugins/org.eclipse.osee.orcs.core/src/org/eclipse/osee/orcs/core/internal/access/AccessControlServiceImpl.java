@@ -128,7 +128,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
 
    @Override
    public ArtifactToken getUser() {
-      return null;
+      return orcsApi.userService().getUser();
    }
 
    @Override

@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
-import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -194,8 +193,8 @@ public class WfeHeaderComposite extends Composite {
                new WfeActionableItemReviewHeader(this, editor.getToolkit(), (AbstractReviewArtifact) workItem, editor);
          }
 
-         boolean isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(),
-            workItem, workItem.getStateDefinition(), AtsApiService.get().getUserService());
+         boolean isEditable =
+            !((Artifact) workItem.getStoreObject()).isReadOnly() && ((AbstractWorkflowArtifact) workItem.getStoreObject()).isAccessControlWrite();
          transitionHeader = new WfeTransitionHeader(this, editor, isEditable);
 
       } catch (Exception ex) {
@@ -400,9 +399,11 @@ public class WfeHeaderComposite extends Composite {
             // Notify extensions of widget modified
             for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
                try {
+                  boolean isEditable =
+                     !((Artifact) workItem.getStoreObject()).isReadOnly() && ((AbstractWorkflowArtifact) workItem.getStoreObject()).isAccessControlWrite();
+
                   item.widgetModified(xWidget, editor.getToolkit(), workItem.getStateDefinition(), (Artifact) workItem,
-                     WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), workItem,
-                        workItem.getStateDefinition(), AtsApiService.get().getUserService()));
+                     isEditable);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

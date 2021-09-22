@@ -68,7 +68,7 @@ public class AtsQueryImplTest {
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(atsApi.getUserService().getUserByUserId("3333"));
-      assertEquals(11, query.getResults().size());
+      assertEquals(12, query.getResults().size());
 
       // team
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -123,7 +123,7 @@ public class AtsQueryImplTest {
       // by assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(joeSmith);
-      assertEquals(11, query.getResults().size());
+      assertEquals(12, query.getResults().size());
 
       // by originator
       query = queryService.createQuery(WorkItemType.TeamWorkflow);

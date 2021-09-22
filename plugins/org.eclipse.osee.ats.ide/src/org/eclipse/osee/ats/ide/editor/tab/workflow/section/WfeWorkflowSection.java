@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
-import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
@@ -72,7 +71,7 @@ public class WfeWorkflowSection extends SectionPart {
 
    protected final AbstractWorkflowArtifact sma;
    private final StateXWidgetPage statePage;
-   private final boolean isEditable, isGlobalEditable;
+   private final boolean isEditable;
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<>();
    private boolean sectionCreated = false;
@@ -85,9 +84,7 @@ public class WfeWorkflowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), sma,
-         page.getStateDefinition(), AtsApiService.get().getUserService());
-      isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite();
+      isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(sma);
    }
 
    public boolean isCurrentState() {
@@ -225,7 +222,7 @@ public class WfeWorkflowSection extends SectionPart {
 
    private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
       SwtXWidgetRenderer dynamicXWidgetLayout =
-         statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable || isGlobalEditable);
+         statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable);
       for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
          addAndCheckChildren(xWidget);
       }
@@ -435,9 +432,7 @@ public class WfeWorkflowSection extends SectionPart {
             // Notify extensions of widget modified
             for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
                try {
-                  item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
-                     WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), sma,
-                        sma.getStateDefinition(), AtsApiService.get().getUserService()));
+                  item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma, isEditable);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
