@@ -14,29 +14,37 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
@@ -54,11 +62,13 @@ public class BranchEndpointTest {
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
    private static BranchEndpoint branchEndpoint;
+   private static JaxRsApi jaxRsApi;
 
    @BeforeClass
    public static void testSetup() {
-      OseeClient oseeclient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
-      branchEndpoint = oseeclient.getBranchEndpoint();
+      OseeClient oseeClient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
+      branchEndpoint = oseeClient.getBranchEndpoint();
+      jaxRsApi = oseeClient.jaxRsApi();
    }
 
    private static NewBranch testDataInitialization() {
@@ -92,7 +102,7 @@ public class BranchEndpointTest {
       }
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.CIS_Bld_1);
       originalBranches.add(DemoBranches.SAW_Bld_1);
       originalBranches.add(DemoBranches.SAW_PL);
@@ -120,10 +130,10 @@ public class BranchEndpointTest {
    public void getBranchesByUUID() {
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.SAW_PL);
 
-      String branchUuIds = String.format("%s,%s", CoreBranches.COMMON.getIdString(), DemoBranches.SAW_PL.getIdString());
+      String branchUuIds = String.format("%s,%s", COMMON.getIdString(), DemoBranches.SAW_PL.getIdString());
       List<Branch> baselineBranches = branchEndpoint.getBranches(branchUuIds, "", "", false, false, "", "", null, null);
       List<BranchId> branchIds = new ArrayList<>();
       for (Branch branch : baselineBranches) {
@@ -160,7 +170,7 @@ public class BranchEndpointTest {
    public void getBranchesByTypeBaseline() {
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.SAW_PL);
 
       List<Branch> baselineBranches = branchEndpoint.getBranches("", "BASELINE", "", false, false, "", "", null, null);
@@ -183,7 +193,7 @@ public class BranchEndpointTest {
    public void getBranchesByStateModified() {
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.SAW_PL);
 
       List<Branch> modifiedBranches = branchEndpoint.getBranches("", "", "MODIFIED", false, false, "", "", null, null);
@@ -206,7 +216,7 @@ public class BranchEndpointTest {
    public void getBranchesByDeleted() {
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.CIS_Bld_1);
       originalBranches.add(DemoBranches.SAW_Bld_1);
       originalBranches.add(DemoBranches.SAW_PL);
@@ -231,7 +241,7 @@ public class BranchEndpointTest {
    public void getBranchesByArchived() {
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
       originalBranches.add(DemoBranches.CIS_Bld_1);
       originalBranches.add(DemoBranches.SAW_Bld_1);
       originalBranches.add(DemoBranches.SAW_PL);
@@ -256,7 +266,7 @@ public class BranchEndpointTest {
    public void getBranchesByNameEquals() {
       List<BranchId> originalBranches = new ArrayList<>();
       //Selecting branches from CreateDemoBranches.java
-      originalBranches.add(CoreBranches.COMMON);
+      originalBranches.add(COMMON);
 
       List<Branch> commonBranches = branchEndpoint.getBranches("", "", "", false, false, "Common", "", null, null);
       List<BranchId> branchIds = new ArrayList<>();
@@ -292,7 +302,7 @@ public class BranchEndpointTest {
          }
       }
       Assert.assertTrue(allBranchesContained);
-      if (baselineBranches.contains(CoreBranches.COMMON)) {
+      if (baselineBranches.contains(COMMON)) {
          Assert.fail("Common branch should be filtered by the name selection, and wasn't");
       }
    }
@@ -418,7 +428,7 @@ public class BranchEndpointTest {
    @Test
    public void setAssociatedBranchToArtifact() {
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization());
-      Artifact testArtifact = new Artifact(CoreBranches.COMMON, "TestArtifact");
+      Artifact testArtifact = new Artifact(COMMON, "TestArtifact");
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().notEqual(testArtifact));
@@ -457,17 +467,19 @@ public class BranchEndpointTest {
 
    @Test
    public void getRelationsByType() {
-      JsonRelations relations =
-         branchEndpoint.getRelationsByType(CoreBranches.COMMON, CoreRelationTypes.SupportingInfo.getIdString());
+      String relId = CoreRelationTypes.SupportingInfo.getIdString();
+      JsonRelations relations = branchEndpoint.getRelationsByType(COMMON, relId);
       Assert.assertTrue(relations.getRelations().isEmpty());
 
-      User joe = UserManager.getUser();
-      Artifact folder = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.OseeConfiguration, CoreBranches.COMMON);
-      joe.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, folder);
-      joe.persist(getClass().getSimpleName());
+      UserToken joe = DemoUsers.Joe_Smith;
+      ArtifactToken folder = CoreArtifactTokens.OseeConfiguration;
+      String json = String.format(
+         "{\"branch\": \"%s\", \"txComment\": \"BranchEndpointTest\", \"addRelations\": [{\"typeId\": \"%s\", \"aArtId\": \"%s\", \"bArtId\": \"%s\"}]}",
+         COMMON.getIdString(), relId, joe.getIdString(), folder.getIdString());
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
 
-      relations =
-         branchEndpoint.getRelationsByType(CoreBranches.COMMON, CoreRelationTypes.SupportingInfo.getIdString());
+      relations = branchEndpoint.getRelationsByType(COMMON, relId);
       Assert.assertEquals(1, relations.getRelations().size());
       Assert.assertEquals(joe.getIdString(), relations.getRelations().iterator().next().getArtA());
       Assert.assertEquals(joe.getName(), relations.getRelations().iterator().next().getArtAName());
