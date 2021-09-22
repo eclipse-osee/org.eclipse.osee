@@ -88,7 +88,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
 
    private void handleParallelVersions(IAtsConfigTxVersion version, IAtsVersionArtifactToken... parallelVersions) {
       for (IAtsVersionArtifactToken parallelVer : parallelVersions) {
-         changes.relate(version.getVersion(), AtsRelationTypes.ParallelVersion_Child, parallelVer);
+         changes.relate(version.getVersion().getStoreObject(), AtsRelationTypes.ParallelVersion_Child, parallelVer);
       }
    }
 
@@ -115,8 +115,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
 
    @Override
    public IAtsConfigTxTeamDef createChildTeamDef(IAtsTeamDefinition parent, IAtsTeamDefinitionArtifactToken childTok) {
-      IAtsConfigTxTeamDef child = cfgTx.createTeamDef(parent, childTok);
-      return child;
+      return cfgTx.createTeamDef(parent, childTok);
    }
 
    @Override

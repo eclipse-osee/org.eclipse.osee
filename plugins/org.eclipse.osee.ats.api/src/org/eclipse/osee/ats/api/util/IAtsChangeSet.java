@@ -82,6 +82,8 @@ public interface IAtsChangeSet {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId);
 
+   void relate(ArtifactId object1, RelationTypeSide relationSide, ArtifactId object2);
+
    void relate(Object object1, RelationTypeSide relationSide, Object object2);
 
    AtsNotificationCollector getNotifications();
