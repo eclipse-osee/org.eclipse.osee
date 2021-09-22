@@ -287,6 +287,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void relate(Object object1, RelationTypeSide relationSide, Object object2) {
+      relatePrivate(object1, relationSide, object2);
+   }
+
+   @Override
+   public void relate(ArtifactId artifact1, RelationTypeSide relationSide, ArtifactId artifact2) {
+      relatePrivate(artifact1, relationSide, artifact2);
+   }
+
+   public void relatePrivate(Object object1, RelationTypeSide relationSide, Object object2) {
       Artifact artifact = getArtifact(object1);
       Artifact artifact2 = getArtifact(object2);
       artifact.addRelation(relationSide, artifact2);
