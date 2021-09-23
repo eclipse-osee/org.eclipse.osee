@@ -17,6 +17,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -95,13 +97,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       void onLoadStart();
 
-      void onData(final AttributeData data, final LoadDataHandler handler);
+      void onData(final AttributeData<?> data, final LoadDataHandler handler);
 
       void onLoadEnd();
 
    }
 
-   private static final AttributeData END_OF_QUEUE = new AttributeDataImpl(null);
+   private static final AttributeData<?> END_OF_QUEUE = new AttributeDataImpl<>(null);
 
    private final class ConsumerImpl implements Consumer {
 
@@ -109,7 +111,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       private final AtomicBoolean executorStarted = new AtomicBoolean();
 
-      private final LinkedBlockingQueue<AttributeData> dataToProcess = new LinkedBlockingQueue<>();
+      private final LinkedBlockingQueue<AttributeData<?>> dataToProcess = new LinkedBlockingQueue<>();
       private Future<?> future;
 
       public ConsumerImpl(List<CriteriaAttributeKeywords> criterias) {
@@ -127,11 +129,11 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onData(AttributeData data, LoadDataHandler handler) {
+      public void onData(AttributeData<?> data, LoadDataHandler handler) {
          addToQueue(data, handler);
       }
 
-      private void addToQueue(AttributeData data, LoadDataHandler handler) {
+      private void addToQueue(AttributeData<?> data, LoadDataHandler handler) {
          dataToProcess.offer(data);
          if (executorStarted.compareAndSet(false, true)) {
             future = executorAdmin.submit("AttributeData loader", createConsumer(handler));
@@ -144,18 +146,18 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             public void run() {
                try {
                   boolean isEndOfQueue = false;
-                  Map<Integer, CriteriaMatchTracker> artIdToCriteriaTracker = Maps.newHashMap();
+                  Map<ArtifactId, CriteriaMatchTracker> artIdToCriteriaTracker = Maps.newHashMap();
                   while (!isEndOfQueue) {
-                     Set<AttributeData> toProcess = new HashSet<>();
-                     AttributeData entry = dataToProcess.take();
+                     Set<AttributeData<?>> toProcess = new HashSet<>();
+                     AttributeData<?> entry = dataToProcess.take();
                      dataToProcess.drainTo(toProcess);
                      toProcess.add(entry);
-                     for (AttributeData item : toProcess) {
+                     for (AttributeData<?> item : toProcess) {
                         if (END_OF_QUEUE != item) {
                            CriteriaMatchTracker tracker = artIdToCriteriaTracker.get(item.getArtifactId());
                            if (tracker == null) {
                               tracker = new CriteriaMatchTracker(criterias);
-                              artIdToCriteriaTracker.put(item.getArtifactId().getIdIntValue(), tracker);
+                              artIdToCriteriaTracker.put(item.getArtifactId(), tracker);
                            }
                            checkForCancelled();
                            List<MatchLocation> matches = process(this, item, handler, tracker.remainingCriteriaToMatch);
@@ -165,9 +167,8 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
                         }
                      }
                   }
-                  for (Entry<Integer, CriteriaMatchTracker> e : artIdToCriteriaTracker.entrySet()) {
+                  for (CriteriaMatchTracker tracker : artIdToCriteriaTracker.values()) {
                      // matched all criteria
-                     CriteriaMatchTracker tracker = e.getValue();
                      tracker.finish(handler);
                   }
                } catch (Exception ex) {
@@ -177,7 +178,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          };
       }
 
-      private List<MatchLocation> process(HasCancellation cancellation, AttributeData data, LoadDataHandler handler, Set<CriteriaAttributeKeywords> remaining) throws Exception {
+      private List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, LoadDataHandler handler, Set<CriteriaAttributeKeywords> remaining) throws Exception {
          List<MatchLocation> locations = Lists.newLinkedList();
          for (CriteriaAttributeKeywords criteria : criterias) {
             cancellation.checkForCancelled();
@@ -228,7 +229,9 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       private final Consumer consumer;
 
-      private final Set<Integer> acceptedArtIds = new ConcurrentSkipListSet<>();
+      // A ConcurrentSkipListSet is being used to provide a set sorted by artifact id that may be used concurrently
+      private final Set<ArtifactId> acceptedArtIds =
+         new ConcurrentSkipListSet<>(Comparator.comparingLong(ArtifactId::getId));
 
       public AttributeDataProducer(LoadDataBuffer buffer, LoadDataHandler handler, Consumer consumer) {
          super(handler, buffer);
@@ -255,13 +258,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       @Override
       public <T> void onData(AttributeData<T> data, MatchLocation match) {
-         Integer artId = data.getArtifactId().getIdIntValue();
+         ArtifactId artId = data.getArtifactId();
          acceptedArtIds.add(artId);
          forwardArtifacts(artId);
          super.onData(data, match);
       }
 
-      private void forwardArtifacts(int artifactId) {
+      private void forwardArtifacts(ArtifactId artifactId) {
          LoadDataBuffer buffer = getBuffer();
          LoadDataHandler handler = getHandler();
          if (handler != null) {
@@ -288,7 +291,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          // Ensure all data required by the artifact is forwarded to the handler
          // This needs to be done in order to avoid missing relation data
          // coming in after the artifact data has been forwarded.
-         for (int artifactId : acceptedArtIds) {
+         for (ArtifactId artifactId : acceptedArtIds) {
             forwardArtifacts(artifactId);
          }
       }
@@ -310,14 +313,14 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
    }
 
    private static class CriteriaMatchTracker {
-      private final Map<AttributeData, Set<MatchLocation>> matches = Maps.newHashMap();
+      private final Map<AttributeData<?>, Set<MatchLocation>> matches = Maps.newHashMap();
       private final Set<CriteriaAttributeKeywords> remainingCriteriaToMatch;
 
       public CriteriaMatchTracker(List<CriteriaAttributeKeywords> criteria) {
          remainingCriteriaToMatch = Sets.newHashSet(criteria);
       }
 
-      public void addMatches(AttributeData attr, Collection<MatchLocation> matches) {
+      public void addMatches(AttributeData<?> attr, Collection<MatchLocation> matches) {
          if (Conditions.hasValues(matches)) {
             Set<MatchLocation> set = this.matches.get(attr);
             if (set == null) {
@@ -330,9 +333,9 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       public void finish(LoadDataHandler handler) {
          if (remainingCriteriaToMatch.isEmpty()) {
-            for (Entry<AttributeData, Set<MatchLocation>> entry : matches.entrySet()) {
+            for (Entry<AttributeData<?>, Set<MatchLocation>> entry : matches.entrySet()) {
                Set<MatchLocation> locations = entry.getValue();
-               AttributeData attributeData = entry.getKey();
+               AttributeData<?> attributeData = entry.getKey();
                for (MatchLocation location : locations) {
                   handler.onData(attributeData, location);
                }

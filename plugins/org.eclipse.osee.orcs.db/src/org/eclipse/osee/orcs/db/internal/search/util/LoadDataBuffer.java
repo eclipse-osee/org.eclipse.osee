@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -31,9 +32,9 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
  */
 public class LoadDataBuffer {
 
-   private final Map<Integer, ArtifactData> artifacts;
-   private final Multimap<Integer, AttributeData<?>> attributes;
-   private final Multimap<Integer, RelationData> relations;
+   private final Map<ArtifactId, ArtifactData> artifacts;
+   private final Multimap<ArtifactId, AttributeData<?>> attributes;
+   private final Multimap<ArtifactId, RelationData> relations;
 
    public LoadDataBuffer(int initialSize) {
       artifacts = new LinkedHashMap<>(initialSize);
@@ -49,24 +50,24 @@ public class LoadDataBuffer {
 
    public void addData(ArtifactData data) {
       synchronized (artifacts) {
-         artifacts.put(data.getLocalId(), data);
+         artifacts.put(data, data);
       }
    }
 
    public void addData(AttributeData<?> data) {
       synchronized (attributes) {
-         attributes.put(data.getArtifactId().getIdIntValue(), data);
+         attributes.put(data.getArtifactId(), data);
       }
    }
 
    public void addData(RelationData data) {
       synchronized (relations) {
-         relations.put(data.getArtIdA(), data);
-         relations.put(data.getArtIdB(), data);
+         relations.put(data.getArtifactIdA(), data);
+         relations.put(data.getArtifactIdB(), data);
       }
    }
 
-   public ArtifactData removeArtifactByArtId(int artifactId) {
+   public ArtifactData removeArtifactByArtId(ArtifactId artifactId) {
       ArtifactData art = null;
       synchronized (artifacts) {
          art = artifacts.remove(artifactId);
@@ -74,7 +75,7 @@ public class LoadDataBuffer {
       return art;
    }
 
-   public Iterable<AttributeData<?>> removeAttributesByArtId(int artifactId) {
+   public Iterable<AttributeData<?>> removeAttributesByArtId(ArtifactId artifactId) {
       Collection<AttributeData<?>> data = null;
       synchronized (attributes) {
          data = attributes.removeAll(artifactId);
@@ -82,7 +83,7 @@ public class LoadDataBuffer {
       return data;
    }
 
-   public Iterable<RelationData> removeRelationsByArtId(int artifactId) {
+   public Iterable<RelationData> removeRelationsByArtId(ArtifactId artifactId) {
       Collection<RelationData> rels = null;
       synchronized (relations) {
          rels = relations.removeAll(artifactId);
