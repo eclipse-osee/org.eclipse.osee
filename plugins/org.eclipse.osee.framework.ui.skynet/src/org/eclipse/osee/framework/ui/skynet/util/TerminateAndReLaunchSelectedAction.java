@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.internal.ui.actions.RelaunchActionDelegate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.TreeModelViewer;
 import org.eclipse.debug.internal.ui.views.launch.LaunchView;
@@ -97,8 +98,14 @@ public class TerminateAndReLaunchSelectedAction extends DebugCommandAction imple
             IStructuredSelection selection = tmv.getStructuredSelection();
             if (selection.size() == 1) {
                Object firstElement = selection.getFirstElement();
+               Launch launch = null;
                if (firstElement instanceof Launch) {
-                  Launch launch = (Launch) firstElement;
+                  launch = (Launch) firstElement;
+               } else if (firstElement instanceof DebugElement) {
+                  DebugElement dElement = (DebugElement) firstElement;
+                  launch = (Launch) dElement.getLaunch();
+               }
+               if (launch != null) {
                   try {
                      launch.terminate();
                      RelaunchActionDelegate.relaunch(launch.getLaunchConfiguration(), launch.getLaunchMode());
