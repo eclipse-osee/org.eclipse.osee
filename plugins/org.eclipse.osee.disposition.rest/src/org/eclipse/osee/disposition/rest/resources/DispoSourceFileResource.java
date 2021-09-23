@@ -61,15 +61,19 @@ public class DispoSourceFileResource {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getDispoItemsById(@PathParam("fileName") String fileName, @PathParam("fileNumber") String fileNumber) {
       if (!fileName.endsWith(".LIS")) {
-         String lisFileEnding = "." + fileNumber + ".LIS";
-         fileName = fileName.replaceAll(dispoApi.getConfig().getFileExtRegex(), lisFileEnding);
+         fileName = fileName.replaceAll(dispoApi.getConfig().getFileExtRegex(), ".LIS");
       }
 
       DispoSet set = dispoApi.getDispoSetById(branch, setId);
       String fullPath = set.getImportPath() + File.separator + "vcast" + File.separator + fileName;
       if (!(new File(fullPath).exists())) {
-         String regex = "\\.2\\.";
-         fullPath = fullPath.replaceAll(regex, String.format(".%s.2.", fileNumber));
+         if (fileName.contains(".2.")) {
+            String regex = "\\.2\\.";
+            fullPath = fullPath.replaceAll(regex, String.format(".%s.2.", fileNumber));
+         } else {
+            String regex = "\\.LIS";
+            fullPath = fullPath.replaceAll(regex, String.format(".%s.LIS", fileNumber));
+         }
       }
       final File result = new File(fullPath);
 
