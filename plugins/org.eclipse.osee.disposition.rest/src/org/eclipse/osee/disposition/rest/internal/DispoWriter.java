@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
-import org.eclipse.osee.disposition.model.DispoStorageMetadata;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -41,9 +40,9 @@ public interface DispoWriter {
 
    boolean deleteDispoItem(UserId author, BranchId branch, String itemId);
 
-   void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data, DispoStorageMetadata metadata);
+   void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data);
 
-   void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation, DispoStorageMetadata metadata);
+   void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation);
 
    void updateOperationSummary(UserId author, BranchId branch, String setId, OperationReport summary);
 
