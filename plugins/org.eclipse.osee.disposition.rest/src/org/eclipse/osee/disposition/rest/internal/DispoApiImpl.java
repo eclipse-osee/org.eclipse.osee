@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
-import static java.util.Collections.singleton;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,16 +34,13 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
-import org.eclipse.osee.disposition.model.DispoStorageMetadata;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
-import org.eclipse.osee.disposition.model.UpdateSummaryData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
-import org.eclipse.osee.disposition.rest.external.DispoUpdateBroadcaster;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.ImportFormat;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
@@ -75,7 +71,6 @@ public class DispoApiImpl implements DispoApi {
    private DispoConnector dispoConnector;
    private DispoResolutionValidator resolutionValidator;
    private DispoImporterFactory importerFactory;
-   private DispoUpdateBroadcaster updateBroadcaster;
    private OrcsApi orcsApi;
 
    private volatile DispoApiConfiguration config;
@@ -115,10 +110,6 @@ public class DispoApiImpl implements DispoApi {
 
    public void setResolutionValidator(DispoResolutionValidator resolutionValidator) {
       this.resolutionValidator = resolutionValidator;
-   }
-
-   public void setDispoUpdateBroadcaster(DispoUpdateBroadcaster updateBroadcater) {
-      this.updateBroadcaster = updateBroadcater;
    }
 
    /**
@@ -192,15 +183,7 @@ public class DispoApiImpl implements DispoApi {
          DispoItem updatedItem;
          updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList);
          UserId author = getQuery().findUserByName(userName);
-
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(dispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
-
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem);
       }
       return idOfNewAnnotation;
    }
@@ -258,7 +241,6 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public boolean deleteDispoSet(BranchId branch, String setId, String userName) {
       UserId author = getQuery().findUserByName(userName);
-      updateBroadcaster.broadcastDeleteSet(getDispoSetById(branch, setId));
       return getWriter().deleteDispoSet(author, branch, setId);
    }
 
@@ -281,13 +263,7 @@ public class DispoApiImpl implements DispoApi {
       // We will not allow the user to do mass edit of Annotations or discrepancies
       if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) {
          UserId author = getQuery().findUserByName(userName);
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-
-         getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(newDispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -364,18 +340,9 @@ public class DispoApiImpl implements DispoApi {
       return wasUpdated;
    }
 
-   private boolean editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation, String userName) {
-      boolean wasUpdated = false;
-
+   private void editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation, String userName) {
       UserId author = getQuery().findUserByName(userName);
-      DispoStorageMetadata metadata = new DispoStorageMetadata();
-      getWriter().updateDispoItems(author, branch, dispoItems, resetRerunFlag, operation, metadata);
-      if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-         updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), dispoItems,
-            getDispoSetById(branch, setId));
-      }
-      wasUpdated = true;
-      return wasUpdated;
+      getWriter().updateDispoItems(author, branch, dispoItems, resetRerunFlag, operation);
    }
 
    @Override
@@ -422,13 +389,7 @@ public class DispoApiImpl implements DispoApi {
          modifiedDispoItem.setAnnotationsList(annotationsList);
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
 
          wasUpdated = true;
       }
@@ -452,12 +413,7 @@ public class DispoApiImpl implements DispoApi {
          DispoItem updatedItem = dataFactory.createUpdatedItem(newAnnotationsList, discrepanciesList);
 
          UserId author = getQuery().findUserByName(userName);
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(updatedItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -476,12 +432,7 @@ public class DispoApiImpl implements DispoApi {
          DispoItem updatedItem = dataFactory.createUpdatedItem(new ArrayList<>(), discrepanciesList);
 
          UserId author = getQuery().findUserByName(userName);
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(updatedItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -639,8 +590,6 @@ public class DispoApiImpl implements DispoApi {
             }
             throw new OseeCoreException(ex);
          }
-      } else if (operation.equals(DispoStrings.Operation_MassSendStatus)) {
-         MassSendDispoItemStatus(branch, setToEdit, report);
       }
 
       // Create the Note to document the Operation
@@ -726,28 +675,6 @@ public class DispoApiImpl implements DispoApi {
          }
       }
       return toEdit;
-   }
-
-   private void MassSendDispoItemStatus(BranchId branch, DispoSet set, OperationReport report) {
-      try {
-         HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, set);
-         Collection<String> ids = new ArrayList<>();
-         for (DispoItem item : nameToItemMap.values()) {
-            ids.add(item.getGuid());
-         }
-
-         //let ci tool know to delete all the ciset dispo data
-         updateBroadcaster.broadcastDeleteSet(set);
-
-         // now send all the current data
-         List<UpdateSummaryData> summaryDataList =
-            updateBroadcaster.broadcastUpdateItems(ids, nameToItemMap.values(), set);
-         for (UpdateSummaryData summaryData : summaryDataList) {
-            report.addEntry(set.getCiSet(), summaryData.getMessage(), summaryData.getSeverity());
-         }
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
    }
 
    private HashMap<String, DispoItem> getItemsMap(BranchId branch, DispoSet set) {
@@ -917,12 +844,7 @@ public class DispoApiImpl implements DispoApi {
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
          UserId author = getQuery().findUser();
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(dispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem);
       }
       return idOfNewDiscrepancy;
    }
@@ -955,15 +877,10 @@ public class DispoApiImpl implements DispoApi {
          }
 
          UserId author = getQuery().findUser();
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
 
          String operation = String.format("Create Dispo Discrepancies in Program [%s], Item [%s]", branch, itemId);
 
-         getWriter().updateDispoItems(author, branch, dispoItems, false, operation, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(dispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItems(author, branch, dispoItems, false, operation);
       }
    }
 
@@ -979,7 +896,6 @@ public class DispoApiImpl implements DispoApi {
          modifiedDispoItem.setDiscrepanciesList(discrepanciesList);
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
          try {
             Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItem));
             modifiedDispoItem.setLastUpdate(date);
@@ -988,11 +904,8 @@ public class DispoApiImpl implements DispoApi {
          }
 
          UserId author = getQuery().findUser();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
+
          wasUpdated = true;
       }
       return wasUpdated;
@@ -1019,14 +932,8 @@ public class DispoApiImpl implements DispoApi {
             throw new OseeCoreException(ex);
          }
 
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-
          UserId author = getQuery().findUser();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
       }
    }
 
@@ -1043,12 +950,7 @@ public class DispoApiImpl implements DispoApi {
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
          UserId author = getQuery().findUser();
-         DispoStorageMetadata metadata = new DispoStorageMetadata();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem, metadata);
-         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
-            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(newItem),
-               getDispoItemParentSet(branch, itemId));
-         }
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem);
          wasUpdated = true;
       }
       return wasUpdated;

@@ -33,5 +33,4 @@ Import-Package:
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.vcast,
  org.eclipse.osee.vcast.model
-Export-Package: org.eclipse.osee.disposition.rest.external
 Require-Bundle: org.eclipse.osee.ats.api

@@ -29,7 +29,6 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
-import org.eclipse.osee.disposition.model.DispoStorageMetadata;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
@@ -365,7 +364,7 @@ public class OrcsStorageImpl implements Storage {
       tx.commit();
    }
 
-   private void updateSingleItem(ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag, DispoStorageMetadata metadata) {
+   private void updateSingleItem(ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
       Map<String, Discrepancy> newDiscrepancies = newItemData.getDiscrepanciesList();
@@ -402,11 +401,10 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoAnnotationsJson,
             JsonUtil.toJson(newAnnotations));
       }
-      if (assignee != null && !assignee.equals(origItem.getAssignee())) {
+      if (assignee != null && !assignee.equals("UnAssigned") && !assignee.equals(origItem.getAssignee())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemAssignee, assignee);
       }
-      if (status != null && !status.equals(origItem.getStatus())) {
-         metadata.addIdOfUpdatedItem(newItemData.getGuid());
+      if (status != null && !status.equals("Unspecified") && !status.equals(origItem.getStatus())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemStatus, status);
       }
       if (lastUpdate != null && !lastUpdate.equals(origItem.getLastUpdate())) {
@@ -415,16 +413,16 @@ public class OrcsStorageImpl implements Storage {
       if (needsRerun != null && !needsRerun.equals(origItem.getNeedsRerun())) {
          tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemNeedsRerun, needsRerun.booleanValue());
       }
-      if (totalPoints != null && !totalPoints.equals(origItem.getTotalPoints())) {
+      if (totalPoints != null && totalPoints.equals("0.0") && !totalPoints.equals(origItem.getTotalPoints())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemTotalPoints, totalPoints);
       }
-      if (machine != null && !machine.equals(origItem.getMachine())) {
+      if (machine != null && !machine.equals("n/a") && !machine.equals(origItem.getMachine())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemMachine, machine);
       }
-      if (category != null && !category.equals(origItem.getCategory())) {
+      if (category != null && !category.isEmpty() && !category.equals(origItem.getCategory())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemCategory, category);
       }
-      if (elapsedTime != null && !elapsedTime.equals(origItem.getElapsedTime())) {
+      if (elapsedTime != null && elapsedTime.equals("0.0") && !elapsedTime.equals(origItem.getElapsedTime())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemElapsedTime, elapsedTime);
       }
       if (aborted != null && !aborted.equals(origItem.getAborted())) {
@@ -445,15 +443,15 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data, DispoStorageMetadata metadata) {
+   public void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Item");
       ArtifactReadable dispoItemArt = findDispoArtifact(branch, dispoItemId);
-      updateSingleItem(dispoItemArt, data, tx, false, metadata);
+      updateSingleItem(dispoItemArt, data, tx, false);
       tx.commit();
    }
 
    @Override
-   public void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation, DispoStorageMetadata metadata) {
+   public void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, operation);
       boolean isCommitNeeded = false;
 
@@ -462,7 +460,7 @@ public class OrcsStorageImpl implements Storage {
          if (Strings.isValid(itemId)) {
             isCommitNeeded = true;
             ArtifactReadable dispoItemArt = findDispoArtifact(branch, newItem.getGuid());
-            updateSingleItem(dispoItemArt, newItem, tx, resetRerunFlag, metadata);
+            updateSingleItem(dispoItemArt, newItem, tx, resetRerunFlag);
          }
       }
 

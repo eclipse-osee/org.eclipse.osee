@@ -9,6 +9,5 @@
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setResolutionValidator" cardinality="1..1" interface="org.eclipse.osee.disposition.rest.internal.DispoResolutionValidator" name="DispoResolutionValidator" policy="static"/>
    <reference bind="setExecutor" cardinality="1..1" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
-   <reference bind="setDispoUpdateBroadcaster" cardinality="1..1" interface="org.eclipse.osee.disposition.rest.external.DispoUpdateBroadcaster" name="DispoUpdateBroadcaster" policy="static"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
 </scr:component>
