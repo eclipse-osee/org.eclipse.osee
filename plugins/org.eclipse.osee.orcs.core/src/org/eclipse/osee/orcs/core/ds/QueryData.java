@@ -629,7 +629,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranchId {
 
    @Override
    public ArtifactReadable asArtifact() {
-      return exactlyOne(asArtifacts());
+      setQueryType(QueryType.SELECT);
+      return exactlyOne(queryEngine.asArtifact(this, queryFactory));
    }
 
    @Override

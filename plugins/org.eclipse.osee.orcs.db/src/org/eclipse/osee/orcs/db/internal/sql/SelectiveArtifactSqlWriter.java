@@ -73,15 +73,15 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       }
    }
 
-   public void runSql(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory) {
-      runSqlorFetch(consumer, handlerFactory);
+   public void runSql(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory, int numArtifacts) {
+      runSqlorFetch(consumer, handlerFactory, numArtifacts);
    }
 
    public int getCount(SqlHandlerFactory handlerFactory) {
-      return runSqlorFetch(null, handlerFactory);
+      return runSqlorFetch(null, handlerFactory, 1);
    }
 
-   private int runSqlorFetch(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory) {
+   private int runSqlorFetch(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory, int numArtifacts) {
       try {
          build(handlerFactory);
          for (AbstractJoinQuery join : joinTables) {
@@ -90,7 +90,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          if (rootQueryData.isCountQueryType()) {
             return getJdbcClient().fetch(-1, toSql(), parameters.toArray());
          } else {
-            getJdbcClient().runQueryWithMaxFetchSize(consumer, toSql(), parameters.toArray());
+            getJdbcClient().runQuery(consumer, numArtifacts * 20, toSql(), parameters.toArray());
          }
       } finally {
          for (AbstractJoinQuery join : joinTables) {

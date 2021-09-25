@@ -71,6 +71,9 @@ import org.eclipse.osee.orcs.search.TupleQuery;
  * @author Roberto E. Escobar
  */
 public class QueryEngineImpl implements QueryEngine {
+   private static final int DefaultArtifactNum = 500;
+   // set HashMap capacity to accommodate the artifactCount given the default load factor of 75%
+   private static final int DefaultMapCapacity = (int) (DefaultArtifactNum / 0.75) + 1;
    private final QueryCallableFactory artifactQueryEngineFactory;
    private final QuerySqlContextFactory branchSqlContextFactory;
    private final QuerySqlContextFactory txSqlContextFactory;
@@ -160,7 +163,7 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public List<ArtifactToken> asArtifactTokens(QueryData queryData) {
       List<ArtifactToken> tokens = new ArrayList<>(100);
-      selectiveArtifactLoad(queryData,
+      selectiveArtifactLoad(queryData, DefaultArtifactNum,
          stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
             queryData.getBranch(), tokenService.getArtifactTypeOrCreate(stmt.getLong("art_type_id")))));
       return tokens;
@@ -168,20 +171,28 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory) {
-      HashMap<ArtifactId, ArtifactReadable> artifacts = new HashMap<>(500);
-      loadArtifactsInto(queryData, queryFactory, a -> artifacts.put(a, a));
+      HashMap<ArtifactId, ArtifactReadable> artifacts = new HashMap<>(DefaultMapCapacity);
+      loadArtifactsInto(queryData, queryFactory, a -> artifacts.put(a, a), DefaultArtifactNum);
       return artifacts;
    }
 
    @Override
    public List<ArtifactReadable> asArtifacts(QueryData queryData, QueryFactory queryFactory) {
-      List<ArtifactReadable> artifacts = new ArrayList<>(500);
-      loadArtifactsInto(queryData, queryFactory, a -> artifacts.add(a));
+      List<ArtifactReadable> artifacts = new ArrayList<>(DefaultArtifactNum);
+      loadArtifactsInto(queryData, queryFactory, a -> artifacts.add(a), DefaultArtifactNum);
       return artifacts;
    }
 
-   private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory, Consumer<ArtifactReadable> artifactConsumer) {
-      HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>(500);
+   @Override
+   public List<ArtifactReadable> asArtifact(QueryData queryData, QueryFactory queryFactory) {
+      List<ArtifactReadable> artifacts = new ArrayList<>(1);
+      loadArtifactsInto(queryData, queryFactory, a -> artifacts.add(a), 1);
+      return artifacts;
+   }
+
+   private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory, Consumer<ArtifactReadable> artifactConsumer, int numArtifacts) {
+      // make the HashMap capacity large enough to accommodate the artifactCount given the default load factor of 75%
+      HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>((int) (numArtifacts / 0.75) + 1);
 
       Consumer<JdbcStatement> jdbcConsumer = stmt -> {
          Long artId = stmt.getLong("art_id");
@@ -219,7 +230,7 @@ public class QueryEngineImpl implements QueryEngine {
          }
       };
 
-      selectiveArtifactLoad(queryData, jdbcConsumer);
+      selectiveArtifactLoad(queryData, numArtifacts, jdbcConsumer);
    }
 
    private ArtifactReadableImpl createArtifact(JdbcStatement stmt, Long artId, Long artifactTypeId, QueryData queryData, QueryFactory queryFactory) {
@@ -233,7 +244,7 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public List<Map<String, Object>> asArtifactMaps(QueryData queryData) {
-      List<Map<String, Object>> maps = new ArrayList<>(500);
+      List<Map<String, Object>> maps = new ArrayList<>(DefaultArtifactNum);
       HashCollection<AttributeTypeToken, Object> attributes = new HashCollection<>();
       Long[] artifactId = new Long[] {Id.SENTINEL};
       Long[] applicability = new Long[] {Id.SENTINEL};
@@ -255,7 +266,7 @@ public class QueryEngineImpl implements QueryEngine {
 
          attributes.put(tokenService.getAttributeTypeOrCreate(stmt.getLong("type_id")), stmt.getString("value"));
       };
-      selectiveArtifactLoad(queryData, consumer);
+      selectiveArtifactLoad(queryData, DefaultArtifactNum, consumer);
       if (!artifactId[0].equals(Id.SENTINEL)) {
          maps.add(createFieldMap(artifactType[0], artifactId[0], applicability[0], attributes));
       }
@@ -284,20 +295,20 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public Map<ArtifactId, ArtifactToken> asArtifactTokenMap(QueryData queryData) {
-      Map<ArtifactId, ArtifactToken> tokens = new HashMap<>(10000);
+      Map<ArtifactId, ArtifactToken> tokens = new HashMap<>(DefaultMapCapacity);
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactToken token = ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
             queryData.getBranch(), tokenService.getArtifactTypeOrCreate(stmt.getLong("art_type_id")));
          tokens.put(token, token);
       };
 
-      selectiveArtifactLoad(queryData, consumer);
+      selectiveArtifactLoad(queryData, DefaultArtifactNum, consumer);
       return tokens;
    }
 
    @Override
    public List<ArtifactId> asArtifactIds(QueryData queryData) {
-      List<ArtifactId> ids = new ArrayList<>(100);
+      List<ArtifactId> ids = new ArrayList<>(DefaultArtifactNum);
 
       if (isPostProcessRequired(queryData)) {
          LoadDataHandlerAdapter handler = new LoadDataHandlerAdapter() {
@@ -315,13 +326,14 @@ public class QueryEngineImpl implements QueryEngine {
          }
       }
 
-      selectiveArtifactLoad(queryData, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
+      selectiveArtifactLoad(queryData, DefaultArtifactNum, stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))));
       return ids;
    }
 
-   private void selectiveArtifactLoad(QueryData queryData, Consumer<JdbcStatement> consumer) {
+   private void selectiveArtifactLoad(QueryData queryData, int numArtifacts, Consumer<JdbcStatement> consumer) {
       QueryData rootQueryData = queryData.getRootQueryData();
-      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, rootQueryData).runSql(consumer, handlerFactory);
+      new SelectiveArtifactSqlWriter(sqlJoinFactory, jdbcClient, rootQueryData).runSql(consumer, handlerFactory,
+         numArtifacts);
    }
 
    @Override
