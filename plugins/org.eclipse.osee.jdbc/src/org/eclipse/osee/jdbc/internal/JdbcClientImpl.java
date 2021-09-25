@@ -430,7 +430,7 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
       try (JdbcStatement chStmt = getStatement(connection)) {
-         chStmt.runPreparedQuery(query, data);
+         chStmt.runPreparedQuery(1, query, data);
          if (chStmt.next()) {
             return function.apply(chStmt);
          }
@@ -446,7 +446,7 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data) {
       try (JdbcStatement chStmt = getStatement(connection)) {
-         chStmt.runPreparedQuery(query, data);
+         chStmt.runPreparedQuery(1, query, data);
          if (chStmt.next()) {
             return function.apply(chStmt);
          }

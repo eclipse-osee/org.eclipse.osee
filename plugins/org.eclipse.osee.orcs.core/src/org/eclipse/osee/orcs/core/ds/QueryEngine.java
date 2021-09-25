@@ -59,6 +59,8 @@ public interface QueryEngine {
 
    Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory);
 
+   List<ArtifactReadable> asArtifact(QueryData queryData, QueryFactory queryFactory);
+
    List<ArtifactReadable> asArtifacts(QueryData queryData, QueryFactory queryFactory);
 
    boolean isArchived(BranchId branchId);
