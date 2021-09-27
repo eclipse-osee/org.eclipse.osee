@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -428,11 +427,8 @@ public abstract class BranchRegressionTest {
    }
 
    protected Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, Artifact parent, boolean persist) {
-      Artifact art;
-
-      try {
-         art = ArtifactQuery.getArtifactFromTypeAndName(artifactType, artifactName, branch);
-      } catch (ArtifactDoesNotExist ex) {
+      Artifact art = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
+      if (art == null) {
          art = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);
          if (parent != null) {
             parent.addChild(art);

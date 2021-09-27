@@ -156,28 +156,28 @@ public class ArtifactQuery {
     *
     * @param artifactId the id of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
-    * @return one artifact by one its id if it exists, otherwise null
+    * @return one artifact with this id if it exists, otherwise null
     */
    public static Artifact checkArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted) {
       return getOrCheckArtifactFromId(artifactId, branch, allowDeleted, QueryType.CHECK);
    }
 
    /**
-    * Checks for existence of an artifact by one its guid - otherwise throw an exception
+    * Checks for existence of an artifact by guid
     *
     * @param guid either the guid of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
-    * @return one artifact by one its id if it exists, otherwise null
+    * @return one artifact with this guid if it exists, otherwise nulll
     */
    public static Artifact checkArtifactFromId(String guid, BranchId branch, DeletionFlag allowDeleted) {
       return getOrCheckArtifactFromId(guid, branch, allowDeleted, QueryType.CHECK);
    }
 
    /**
-    * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
+    * Checks for existence of an artifact by id
     *
     * @param artifactId of the desired artifact
-    * @return one artifact by its guid if it exists, otherwise null
+    * @return one artifact with this id if it exists, otherwise null
     */
    public static Artifact checkArtifactFromId(ArtifactId artifactId, BranchId branch) {
       return getOrCheckArtifactFromId(artifactId, branch, EXCLUDE_DELETED, QueryType.CHECK);

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -68,12 +67,7 @@ public class UniversalGroup {
    }
 
    public static Artifact getGroupOrNull(ArtifactToken groupToken, BranchToken branch) {
-      try {
-         return ArtifactQuery.getArtifactFromId(groupToken, branch);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
+      return ArtifactQuery.checkArtifactFromId(groupToken, branch);
    }
 
    public static Artifact addGroup(String name, BranchToken branch, SkynetTransaction transaction) {
