@@ -174,7 +174,12 @@ public class AtsDeleteManager {
          // check that if all team workflows are deleted, delete action
          for (Artifact art : allDeleteArts) {
             if (art instanceof AbstractWorkflowArtifact) {
-               Artifact actionArt = (Artifact) ((AbstractWorkflowArtifact) art).getParentAction().getStoreObject();
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
+               IAtsTeamWorkflow teamWf = awa.getParentTeamWorkflow();
+               if (teamWf == null) {
+                  continue;
+               }
+               Artifact actionArt = (Artifact) awa.getParentAction().getStoreObject();
                if (actionArt != null) {
                   if (!allDeleteArts.contains(actionArt)) {
                      Collection<ArtifactId> teamWfArts =
