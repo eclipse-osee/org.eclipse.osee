@@ -82,12 +82,7 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/mylyn/drops/3.20.0/v20160608-1917/</url>
 	 </repository>
-  
- 	<repository>
-			<id>egit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/egit/updates/</url>
-	  </repository>
+ 
  	
  	<repository>
 			<id>orbit_new</id>

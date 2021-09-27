@@ -27,7 +27,7 @@
    
    <includes
          id="org.eclipse.jgit"
-         version="5.13.0.202109080827-r"/>
+         version="0.0.0"/>
 
    <plugin
          id="com.sun.xml.bind"
@@ -94,14 +94,14 @@
          id="org.eclipse.egit"
          download-size="0"
          install-size="0"
-         version="5.13.0.202109080827-r"
+         version="0.0.0"
          unpack="false"/>
              
   <plugin
          id="org.eclipse.jgit"
          download-size="0"
          install-size="0"
-         version="5.13.0.202109080827-r"
+         version="0.0.0"
          unpack="false"/>
      
    <plugin

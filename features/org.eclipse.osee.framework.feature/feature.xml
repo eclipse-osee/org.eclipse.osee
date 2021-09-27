@@ -38,7 +38,7 @@
          id="org.eclipse.jgit.ssh.jsch"
          download-size="0"
          install-size="0"
-         version="5.13.0.202109080827-r"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin

@@ -20,15 +20,15 @@
 
   <includes
          id="org.eclipse.jgit.lfs"
-         version="5.13.0.202109080827-r"/>
+         version="0.0.0"/>
          
    <includes
          id="org.eclipse.jgit.http.apache"
-         version="5.13.0.202109080827-r"/>
+         version="0.0.0"/>
 
    <includes
          id="org.eclipse.jgit"
-         version="5.13.0.202109080827-r"/>
+         version="0.0.0"/>
 
    <includes
          id="org.eclipse.equinox.core.feature"
@@ -372,14 +372,14 @@
          id="org.eclipse.jgit"
          download-size="0"
          install-size="0"
-         version="5.13.0.202109080827-r"
+         version="0.0.0"
          unpack="false"/>
    
    <plugin
          id="org.eclipse.jgit.ssh.jsch"
          download-size="0"
          install-size="0"
-         version="5.13.0.202109080827-r"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -857,7 +857,7 @@
          id="org.eclipse.egit"
          download-size="0"
          install-size="0"
-         version="5.13.0.202109080827-r"
+         version="0.0.0"
          unpack="false"/>
          								
    <plugin
