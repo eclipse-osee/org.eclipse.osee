@@ -287,12 +287,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public Artifact getArtifact(Long id) {
       Conditions.assertTrue(id > 0, "Art Id must be > 0, not %s", id);
-      try {
-         return ArtifactQuery.getArtifactFromId(id, atsApi.getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
+      return ArtifactQuery.checkArtifactFromId(ArtifactId.valueOf(id), atsApi.getAtsBranch());
    }
 
    @Override
@@ -315,22 +310,18 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public <T extends ArtifactId> Artifact getArtifact(T artifact) {
-      Artifact result = null;
-      try {
-         if (artifact instanceof Artifact) {
-            result = ArtifactQuery.getArtifactFromToken((Artifact) artifact);
-         } else if (artifact instanceof IAtsObject) {
-            IAtsObject atsObject = (IAtsObject) artifact;
-            if (atsObject.getStoreObject() instanceof Artifact) {
-               result = ArtifactQuery.getArtifactFromToken((Artifact) atsObject.getStoreObject());
-            } else {
-               result = getArtifact(atsObject.getId());
-            }
+      Artifact result;
+      if (artifact instanceof Artifact) {
+         result = ArtifactQuery.getArtifactOrNull((Artifact) artifact, DeletionFlag.EXCLUDE_DELETED);
+      } else if (artifact instanceof IAtsObject) {
+         IAtsObject atsObject = (IAtsObject) artifact;
+         if (atsObject.getStoreObject() instanceof Artifact) {
+            result = ArtifactQuery.getArtifactFromToken((Artifact) atsObject.getStoreObject());
          } else {
-            result = getArtifact(artifact.getId());
+            result = getArtifact(atsObject.getId());
          }
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
+      } else {
+         result = getArtifact(artifact.getId());
       }
       return result;
    }
