@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -196,6 +197,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
       List<Attribute<Object>> attributes = getProxiedObject().getAttributes();
       return getProxyManager().asExternalAttributes(getSession(), attributes);
+   }
+
+   @Override
+   public <T> List<IAttribute<T>> getAttributeList(AttributeTypeGeneric<T> attributeType) {
+      return Collections.transform(getAttributes(attributeType).getList(), a -> (IAttribute<T>) a);
    }
 
    @Override

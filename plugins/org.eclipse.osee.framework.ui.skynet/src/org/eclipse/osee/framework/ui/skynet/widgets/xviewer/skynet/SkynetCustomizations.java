@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Donald G. Dunne
@@ -85,30 +86,9 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       return thisCustDatas;
    }
 
-   private static void saveCustomization(CustomizeData custData, Artifact saveArt) {
-      boolean found = false;
-      Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
-      for (Attribute<String> attribute : attributes) {
-         CustomizeData cd = new CustomizeData(attribute.getValue());
-         if (custData.getGuid().equals(cd.getGuid())) {
-            attribute.setValue(custData.getXml(true));
-            found = true;
-            break;
-         }
-      }
-      if (!found) {
-         saveArt.addAttribute(CoreAttributeTypes.XViewerCustomization, custData.getXml(true));
-      }
-      saveArt.persist(SkynetCustomizations.class.getSimpleName());
-   }
-
    @Override
-   public void saveCustomization(CustomizeData custData) {
-      if (custData.isPersonal()) {
-         saveCustomization(custData, UserManager.getUser());
-      } else {
-         saveCustomization(custData, globalCustomizationsArtifact);
-      }
+   public void saveCustomization(CustomizeData customizeData) {
+      ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(customizeData);
       ensurePopulated(true);
    }
 
