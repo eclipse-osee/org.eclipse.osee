@@ -195,6 +195,13 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXCheckbox(String name) {
+      newXWidget();
+      currItem.setName(name);
+      currItem.setXWidgetName("XCheckBox");
+      return this;
+   }
+
    public XWidgetBuilder andXCheckBoxThreeState(AttributeTypeBoolean attrType) {
       newXWidget();
       setAttrTypeSettings(attrType);
@@ -218,6 +225,18 @@ public class XWidgetBuilder {
       newXWidget();
       currItem.setXWidgetName("XRadioButtonsBooleanTriState");
       currItem.setName(name);
+      return this;
+   }
+
+   public XWidgetBuilder andXLabel(String name) {
+      newXWidget();
+      currItem.setXWidgetName("XLabel");
+      currItem.setName(name);
+      return this;
+   }
+
+   public XWidgetBuilder andNewLine() {
+      andXLabel("  ").endWidget();
       return this;
    }
 

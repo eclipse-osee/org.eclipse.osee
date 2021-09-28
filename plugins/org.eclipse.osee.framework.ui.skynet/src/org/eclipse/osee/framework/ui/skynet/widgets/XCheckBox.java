@@ -110,6 +110,13 @@ public class XCheckBox extends XButtonCommon implements LabelAfterWidget {
       checkButton.setLayoutData(gd);
       updateCheckWidget();
       checkButton.setEnabled(isEditable());
+      if (defaultValueObj != null) {
+         Object obj = getDefaultValueObj();
+         if (obj instanceof Boolean) {
+            selected = (Boolean) obj;
+            checkButton.setSelection(selected);
+         }
+      }
    }
 
    @Override

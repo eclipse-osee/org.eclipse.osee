@@ -224,6 +224,13 @@ public class XText extends XWidget {
          if (font != null) {
             sText.setFont(font);
          }
+         if (defaultValueObj != null) {
+            Object obj = getDefaultValueObj();
+            if (obj instanceof String) {
+               String value = (String) obj;
+               sText.setText(value);
+            }
+         }
          parent.layout();
       } finally {
          setNotificationsAllowed(true);

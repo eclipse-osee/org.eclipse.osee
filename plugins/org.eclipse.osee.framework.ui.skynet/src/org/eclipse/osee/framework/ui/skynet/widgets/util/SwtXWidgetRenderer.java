@@ -117,31 +117,34 @@ public class SwtXWidgetRenderer {
       return outComp;
    }
 
-   protected XWidget setupXWidget(XWidgetRendererItem xWidgetLayoutData, boolean isEditable) {
-      XWidget xWidget = xWidgetLayoutData.getXWidget();
+   protected XWidget setupXWidget(XWidgetRendererItem xWidgetRenderItem, boolean isEditable) {
+      XWidget xWidget = xWidgetRenderItem.getXWidget();
       xWidgets.add(xWidget);
 
       if (Strings.isInValid(xWidget.getLabel())) {
-         setName(xWidget, xWidgetLayoutData.getName());
+         setName(xWidget, xWidgetRenderItem.getName());
       }
 
-      if (Strings.isValid(xWidgetLayoutData.getToolTip())) {
-         xWidget.setToolTip(xWidgetLayoutData.getToolTip());
+      if (Strings.isValid(xWidgetRenderItem.getToolTip())) {
+         xWidget.setToolTip(xWidgetRenderItem.getToolTip());
       }
 
-      xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
-      xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
-      xWidget.setNoSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_SELECT));
-      xWidget.setAutoSave(xWidgetLayoutData.getXOptionHandler().contains(XOption.AUTO_SAVE));
-      xWidget.setFillHorizontally(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
-      xWidget.setValidateDate(xWidgetLayoutData.getXOptionHandler().contains(XOption.VALIDATE_DATE));
-      xWidget.setFillVertically(xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
+      xWidget.setRequiredEntry(xWidgetRenderItem.isRequired());
+      xWidget.setEditable(xWidgetRenderItem.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+      xWidget.setNoSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.NO_SELECT));
+      xWidget.setAutoSave(xWidgetRenderItem.getXOptionHandler().contains(XOption.AUTO_SAVE));
+      xWidget.setFillHorizontally(xWidgetRenderItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
+      xWidget.setValidateDate(xWidgetRenderItem.getXOptionHandler().contains(XOption.VALIDATE_DATE));
+      xWidget.setFillVertically(xWidgetRenderItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
       if (xWidget instanceof LabelAfterWidget) {
          ((LabelAfterWidget) xWidget).setLabelAfter(
-            xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
+            xWidgetRenderItem.getXOptionHandler().contains(XOption.LABEL_AFTER));
+      }
+      if (xWidgetRenderItem.getDefaultValueObj() != null) {
+         xWidget.setDefaultValueObj(xWidgetRenderItem.getDefaultValueObj());
       }
 
-      xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
+      xWidget.setArtifactType(xWidgetRenderItem.getArtifactType());
 
       return xWidget;
    }
