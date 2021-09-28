@@ -29,9 +29,6 @@
 			<modules>
 				<module>../../plugins/org.postgresql.driver</module>		
 			
-				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
-				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
-
 				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
@@ -94,9 +91,6 @@
 			<modules>
 							<module>../../plugins/org.postgresql.driver</module>		
 			
-				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
-				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
-
 				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
