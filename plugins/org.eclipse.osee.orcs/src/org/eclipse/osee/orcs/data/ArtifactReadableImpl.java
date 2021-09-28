@@ -258,6 +258,18 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
+   public <T> List<IAttribute<T>> getAttributeList(AttributeTypeGeneric<T> attributeType) {
+      if (attributes.isEmpty()) {
+         throw new OseeStateException("attributes not loaded for artifact [%s]", getIdString());
+      }
+      List<IAttribute<?>> attributeOfType = attributes.getValues(attributeType);
+      if (attributeOfType == null) {
+         return Collections.emptyList();
+      }
+      return org.eclipse.osee.framework.jdk.core.util.Collections.transform(attributeOfType, x -> (IAttribute<T>) x);
+   }
+
+   @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }

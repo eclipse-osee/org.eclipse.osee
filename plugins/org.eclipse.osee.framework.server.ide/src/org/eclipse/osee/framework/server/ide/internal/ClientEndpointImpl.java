@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.server.ide.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URL;
@@ -25,17 +26,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -55,6 +57,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -75,9 +78,6 @@ public class ClientEndpointImpl implements ClientEndpoint {
    }
 
    @Override
-   @GET
-   @Path("client")
-   @Produces({MediaType.APPLICATION_JSON})
    public Response getAll() {
       Sessions activeSessions = new Sessions();
       activeSessions.get().addAll(getActiveSessions().keySet());
@@ -85,9 +85,6 @@ public class ClientEndpointImpl implements ClientEndpoint {
    }
 
    @Override
-   @GET
-   @Path("client/details")
-   @Produces({MediaType.APPLICATION_JSON})
    public Response getAllDetails() {
       ClientDetails details = new ClientDetails();
       Map<IdeClientSession, ClientInfo> activeSessions = getActiveSessions();
@@ -104,15 +101,8 @@ public class ClientEndpointImpl implements ClientEndpoint {
       return Response.ok(details).build();
    }
 
-   /**
-    * @param idOrName as userId or name; underscores can be used instead of spaces if calling from browser;
-    * @return all client sessions matching idOrName; multiple users sessions can be returned depending
-    */
    @Override
-   @GET
-   @Path("client/{idOrName}")
-   @Produces({MediaType.APPLICATION_JSON})
-   public Response getClientsForUser(@PathParam("idOrName") String idOrName) {
+   public Response getClientsForUser(String idOrName) {
       System.out.println(String.format("getClientsForUser [%s]", idOrName));
       Sessions sessions = new Sessions();
       Map<String, Boolean> portToAlive = new HashMap<>();
@@ -141,10 +131,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
    }
 
    @Override
-   @GET
-   @Path("client/{userId}/session/{sessionId}")
-   @Produces({MediaType.TEXT_PLAIN})
-   public Response getClientInfo(@PathParam("userId") String userId, @PathParam("sessionId") String sessionId) {
+   public Response getClientInfo(String userId, String sessionId) {
       if (!GUID.isValid(sessionId)) {
          return Response.ok(String.format("Session [%s] is invalid", sessionId)).build();
       }
@@ -154,13 +141,37 @@ public class ClientEndpointImpl implements ClientEndpoint {
    }
 
    @Override
-   @GET
-   @Path("versions")
-   @Produces({MediaType.APPLICATION_JSON})
    public IdeVersion getSupportedVersions() {
       IdeVersion versions = new IdeVersion();
       versions.addVersion(OseeCodeVersion.getVersion());
       return versions;
+   }
+
+   @Override
+   public TransactionId saveCustomizeData(CustomizeData customizeData) {
+      ArtifactId customArtId =
+         customizeData.isPersonal() ? orcsApi.userService().getUser() : CoreArtifactTokens.XViewerCustomization;
+      ArtifactReadable customArt = orcsApi.getQueryFactory().fromBranch(COMMON).andId(customArtId).asArtifact();
+      List<IAttribute<String>> attributes = customArt.getAttributeList(CoreAttributeTypes.XViewerCustomization);
+
+      AttributeId attrId = AttributeId.SENTINEL;
+      for (IAttribute<String> attribute : attributes) {
+         CustomizeData cd = new CustomizeData(attribute.getValue());
+         if (customizeData.getGuid().equals(cd.getGuid())) {
+            attrId = attribute;
+            break;
+         }
+      }
+
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(COMMON, "save customization " + customizeData.getName());
+      String value = customizeData.getXml(true);
+      if (attrId.isValid()) {
+         tx.setAttributeById(customArt, attrId, value);
+      } else {
+         tx.createAttribute(customArt, CoreAttributeTypes.XViewerCustomization, value);
+      }
+      return tx.commit();
    }
 
    private List<String> getUserIds(String userIdOrName) {
@@ -299,5 +310,4 @@ public class ClientEndpointImpl implements ClientEndpoint {
       }
       return "";
    }
-
 }
