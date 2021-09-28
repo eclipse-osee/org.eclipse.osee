@@ -413,7 +413,7 @@ public class OrcsStorageImpl implements Storage {
       if (needsRerun != null && !needsRerun.equals(origItem.getNeedsRerun())) {
          tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemNeedsRerun, needsRerun.booleanValue());
       }
-      if (totalPoints != null && totalPoints.equals("0.0") && !totalPoints.equals(origItem.getTotalPoints())) {
+      if (totalPoints != null && !totalPoints.equals("0.0") && !totalPoints.equals(origItem.getTotalPoints())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemTotalPoints, totalPoints);
       }
       if (machine != null && !machine.equals("n/a") && !machine.equals(origItem.getMachine())) {
