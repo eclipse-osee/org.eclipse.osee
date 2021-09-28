@@ -64,7 +64,9 @@ public class TaskServerThread implements Runnable {
                Object[] parameters = parseParameters();
 
                Command command = commands.get(commandId);
-               sendResultToClient(command.invoke(parameters));
+               if (parameters != null) {
+                  sendResultToClient(command.invoke(parameters));
+               }
             } catch (Exception ex) {
                System.out.println(ex);
             }

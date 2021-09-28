@@ -185,7 +185,9 @@ public class DispoSetResource {
       newDispositionSet.setOperation(DispoStrings.Operation_Import);
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
       Response.Status status;
-      dispoApi.editDispoSet(branch, setId, newDispositionSet, "OSEE System Auto-Import (Set)");
+      if (setId != null) {
+         dispoApi.editDispoSet(branch, setId, newDispositionSet, "OSEE System Auto-Import (Set)");
+      }
       status = Status.OK;
       return Response.status(status).build();
    }

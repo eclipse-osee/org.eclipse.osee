@@ -48,6 +48,7 @@ public class RelationOrderMergerTest {
       rightOrder.add("Green");
 
       List<String> mergedOrder = merger.computeMergedOrder(leftOrder, rightOrder, mergedSet);
+      Assert.isNotNull(mergedOrder);
       Assert.isTrue(mergedOrder.size() == mergedSet.size());
       Assert.isTrue(mergedOrder.get(0).equals("Red"));
       Assert.isTrue(mergedOrder.get(1).equals("Yellow"));

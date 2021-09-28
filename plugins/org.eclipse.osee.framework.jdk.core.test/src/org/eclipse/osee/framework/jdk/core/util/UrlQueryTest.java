@@ -69,12 +69,12 @@ public class UrlQueryTest {
       for (Entry<String, List<String>> entry : expected.entrySet()) {
          String[] values = query.getParameterValues(entry.getKey());
          List<String> actual = new ArrayList<>();
-         actual.addAll(Arrays.asList(values));
-         java.util.Collections.sort(actual);
-
+         if (values != null) {
+            actual.addAll(Arrays.asList(values));
+            java.util.Collections.sort(actual);
+         }
          List<String> expected = entry.getValue();
          java.util.Collections.sort(expected);
-
          assertEquals(expected, actual);
       }
 

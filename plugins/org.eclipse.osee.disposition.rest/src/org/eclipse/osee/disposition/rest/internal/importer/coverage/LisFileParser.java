@@ -698,10 +698,12 @@ public class LisFileParser implements DispoImporterApi {
                break;
             }
          }
-         for (DispoAnnotationData value : dispoItem.getAnnotationsList()) {
-            if (String.valueOf(value.getLocationRefs()).equals(discrepancy.getLocation())) {
-               toReturn = value;
-               return toReturn;
+         if (dispoItem != null) {
+            for (DispoAnnotationData value : dispoItem.getAnnotationsList()) {
+               if (String.valueOf(value.getLocationRefs()).equals(discrepancy.getLocation())) {
+                  toReturn = value;
+                  return toReturn;
+               }
             }
          }
       }

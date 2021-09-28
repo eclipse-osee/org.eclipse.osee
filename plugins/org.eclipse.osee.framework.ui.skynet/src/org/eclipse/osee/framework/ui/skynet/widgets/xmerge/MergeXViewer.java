@@ -159,7 +159,7 @@ public class MergeXViewer extends XViewer {
          OseeEventManager.kickBranchEvent(CreateBranchHttpRequestOperation.class,
             new BranchEvent(BranchEventType.MergeConflictResolved, conflict.getMergeBranch()));
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Merged)) {
-         if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
+         if (conflict.getConflictType() != null && !conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
             AttributeConflict attributeConflict = (AttributeConflict) conflict;
             if (attributeConflict.isSimpleStringAttribute()) {
                getCompareHandler(attributeConflict).compare();

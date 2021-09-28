@@ -350,44 +350,45 @@ public class QuickSearchView extends GenericViewPart {
             final BranchToken branch = branchSelect.getData();
             if (branch == null) {
                branchLabel.setText("Error: Must Select a Branch");
-            }
-
-            XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(branch,
-               PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Select Branch", branch));
-            if (rd.isErrors()) {
-               XResultDataDialog.open(rd, "Branch Select Failed", "Access Denied for branch [%s]", branch);
-            } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
-               event) && Widgets.isAccessible(optionsComposite)) {
-
-               NewSearchUI.activateSearchResultView();
-
-               ISearchQuery query;
-               ArtifactSearchOptions options = new ArtifactSearchOptions();
-               options.setIncludeDeleted(DeletionFlag.allowDeleted(includeDeleted.getSelection()));
-               if (optionsComposite.isAttributeTypeFilterEnabled()) {
-                  options.setAttrTypeIds(Arrays.asList(optionsComposite.getAttributeTypeFilter()));
-               }
-               if (optionsComposite.isArtifactTypeFilterEnabled()) {
-                  options.setArtTypeIds(Arrays.asList(optionsComposite.getArtifactTypeFilter()));
-               }
-               options.setCaseSensitive(optionsComposite.isCaseSensitiveEnabled());
-               options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
-               options.setExactMatch(optionsComposite.isExactMatchEnabled());
-               if (Strings.isValid(attrSearchComposite.getQuery())) {
-                  options.setSearchString(attrSearchComposite.getQuery());
-               }
-               if (applicability.getCheckBox()) {
-                  options.setApplic(getApplicabilityId());
-               }
-               if (view.getCheckBox()) {
-                  options.setView(getViewId());
-               }
-               query = new ArtifactSearch(branchSelect.getData(), options);
-               NewSearchUI.runQueryInBackground(query);
-
             } else {
-               // branch has been selected; allow user to set up search string
-               compositeEnablement(attrSearchComposite, true);
+               XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+                  AccessControlArtifactUtil.getXResultAccessHeader("Select Branch", branch));
+               if (rd.isErrors()) {
+                  XResultDataDialog.open(rd, "Branch Select Failed", "Access Denied for branch [%s]", branch);
+
+               } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
+                  event) && Widgets.isAccessible(optionsComposite)) {
+
+                  NewSearchUI.activateSearchResultView();
+
+                  ISearchQuery query;
+                  ArtifactSearchOptions options = new ArtifactSearchOptions();
+                  options.setIncludeDeleted(DeletionFlag.allowDeleted(includeDeleted.getSelection()));
+                  if (optionsComposite.isAttributeTypeFilterEnabled()) {
+                     options.setAttrTypeIds(Arrays.asList(optionsComposite.getAttributeTypeFilter()));
+                  }
+                  if (optionsComposite.isArtifactTypeFilterEnabled()) {
+                     options.setArtTypeIds(Arrays.asList(optionsComposite.getArtifactTypeFilter()));
+                  }
+                  options.setCaseSensitive(optionsComposite.isCaseSensitiveEnabled());
+                  options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
+                  options.setExactMatch(optionsComposite.isExactMatchEnabled());
+                  if (Strings.isValid(attrSearchComposite.getQuery())) {
+                     options.setSearchString(attrSearchComposite.getQuery());
+                  }
+                  if (applicability.getCheckBox()) {
+                     options.setApplic(getApplicabilityId());
+                  }
+                  if (view.getCheckBox()) {
+                     options.setView(getViewId());
+                  }
+                  query = new ArtifactSearch(branchSelect.getData(), options);
+                  NewSearchUI.runQueryInBackground(query);
+
+               } else {
+                  // branch has been selected; allow user to set up search string
+                  compositeEnablement(attrSearchComposite, true);
+               }
             }
          }
       }

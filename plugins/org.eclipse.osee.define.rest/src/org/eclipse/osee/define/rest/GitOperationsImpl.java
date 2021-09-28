@@ -24,7 +24,9 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RepositoryUrl;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
-
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -38,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
@@ -97,10 +98,6 @@ import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 
 /**
  * @author Ryan D. Brooks
@@ -203,18 +200,17 @@ public final class GitOperationsImpl implements GitOperations {
             return null;
          }
 
-		@Override
-		public RemoteSession getSession(URIish arg0, CredentialsProvider arg1, FS arg2, int arg3)
-				throws TransportException {
-			// TODO Auto-generated method stub
-			return null;
-		}
+         @Override
+         public RemoteSession getSession(URIish arg0, CredentialsProvider arg1, FS arg2, int arg3) throws TransportException {
+            // TODO Auto-generated method stub
+            return null;
+         }
 
-		@Override
-		public String getType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+         @Override
+         public String getType() {
+            // TODO Auto-generated method stub
+            return null;
+         }
       };
 
       transportCommand.setTransportConfigCallback(new TransportConfigCallback() {

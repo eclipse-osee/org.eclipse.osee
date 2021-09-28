@@ -46,7 +46,12 @@ public class OpenConfigDetailsAction extends Action {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               Shell shell = getDisplay().getActiveShell();
+               Shell shell;
+               if (getDisplay() == null) {
+                  shell = null;
+               } else {
+                  shell = getDisplay().getActiveShell();
+               }
                if (shell == null) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "shell cannot be null");
                } else {

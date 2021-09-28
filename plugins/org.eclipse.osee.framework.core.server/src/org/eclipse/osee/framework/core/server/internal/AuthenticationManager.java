@@ -42,7 +42,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
-      authenticationProviders.remove(authenticationProvider.getProtocol()).toString();
+      authenticationProviders.remove(authenticationProvider.getProtocol());
    }
 
    @Override

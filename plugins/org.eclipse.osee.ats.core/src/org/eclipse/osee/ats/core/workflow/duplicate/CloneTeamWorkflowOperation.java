@@ -103,16 +103,17 @@ public class CloneTeamWorkflowOperation implements IDuplicateWorkflowListener {
       }
 
       IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamWf);
-      Collection<IAgileFeatureGroup> featureGroups = atsApi.getAgileService().getAgileFeatureGroups(aTeam);
-      for (String featureStr : data.getFeatures()) {
-         for (IAgileFeatureGroup grp : featureGroups) {
-            if (grp.getName().equals(featureStr)) {
-               changes.relate(grp, AtsRelationTypes.AgileFeatureToItem_AtsItem, newTeamWf);
-               break;
+      if (aTeam != null) {
+         Collection<IAgileFeatureGroup> featureGroups = atsApi.getAgileService().getAgileFeatureGroups(aTeam);
+         for (String featureStr : data.getFeatures()) {
+            for (IAgileFeatureGroup grp : featureGroups) {
+               if (grp.getName().equals(featureStr)) {
+                  changes.relate(grp, AtsRelationTypes.AgileFeatureToItem_AtsItem, newTeamWf);
+                  break;
+               }
             }
          }
       }
-
       return true;
    }
 

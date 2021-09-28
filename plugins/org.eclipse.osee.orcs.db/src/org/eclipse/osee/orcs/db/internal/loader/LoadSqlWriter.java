@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -171,9 +170,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       if (hasAlias(OseeDb.ATTRIBUTE_TABLE)) {
          List<String> attrTables = getAliases(OseeDb.ATTRIBUTE_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
-            if (count > 1) {
-               write(" AND ");
-            }
+
             write("(");
             buildTableGamma(attrTables, txsAlias);
             write(" AND ");

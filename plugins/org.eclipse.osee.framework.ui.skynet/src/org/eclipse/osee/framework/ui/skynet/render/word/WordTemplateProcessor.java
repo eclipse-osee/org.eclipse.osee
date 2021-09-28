@@ -446,8 +446,10 @@ public class WordTemplateProcessor {
 
             if (isDiff) {
                WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
-               templateFileDiffer.generateFileDifferences(artifacts, "/results/" + subDocFileName, sectionNumber,
-                  outlineType, recurseChildren);
+               if (artifacts != null) {
+                  templateFileDiffer.generateFileDifferences(artifacts, "/results/" + subDocFileName, sectionNumber,
+                     outlineType, recurseChildren);
+               }
             } else {
                IFile file = folder.getFile(new Path(subDocFileName));
                AIFile.writeToFile(file, applyTemplate(artifacts, slaveTemplate, slaveTemplateOptions,

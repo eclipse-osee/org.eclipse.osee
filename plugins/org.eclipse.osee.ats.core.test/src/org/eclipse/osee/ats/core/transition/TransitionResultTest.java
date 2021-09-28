@@ -26,16 +26,6 @@ import org.junit.Test;
 public class TransitionResultTest {
 
    @Test
-   public void testGetDetails() {
-      TransitionResult.CAN_NOT_TRANSITION_AS_SYSTEM_USER.getDetails();
-   }
-
-   @Test
-   public void testToString() {
-      TransitionResult.CAN_NOT_TRANSITION_AS_SYSTEM_USER.toString();
-   }
-
-   @Test
    public void testGetException() {
       TransitionResult result = new TransitionResult("details", new OseeStateException("hello"));
       Assert.assertNotNull(result);

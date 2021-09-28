@@ -147,7 +147,7 @@ public interface UserToken extends ArtifactToken, UserId {
       @Override
       public int hashCode() {
          if (Strings.isValid(userId)) {
-            userId.hashCode();
+            return userId.hashCode();
          }
          return id.hashCode();
       }

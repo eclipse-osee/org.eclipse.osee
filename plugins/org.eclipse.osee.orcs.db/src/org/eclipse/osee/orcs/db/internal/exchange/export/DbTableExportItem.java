@@ -81,9 +81,11 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       InputStream sourceStream = null;
       OutputStream outputStream = null;
       try {
-         sourceStream = resource.getContent();
-         outputStream = new FileOutputStream(target);
-         Lib.inputStreamToOutputStream(sourceStream, outputStream);
+         if (resource != null) {
+            sourceStream = resource.getContent();
+            outputStream = new FileOutputStream(target);
+            Lib.inputStreamToOutputStream(sourceStream, outputStream);
+         }
       } finally {
          Lib.close(sourceStream);
          Lib.close(outputStream);

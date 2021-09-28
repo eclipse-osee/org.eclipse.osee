@@ -110,7 +110,9 @@ public abstract class AbstractAtsAccessContextProvider implements IAtsAccessCont
             }
             if (applicable) {
                // Force all providers to check extra applicability
-               applicable = isAtsApplicable(branch, assocArt);
+               if (assocArt != null) {
+                  applicable = isAtsApplicable(branch, assocArt);
+               }
             }
          }
       } catch (OseeCoreException ex) {

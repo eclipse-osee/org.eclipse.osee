@@ -36,6 +36,10 @@ public class DispoSummarySeverityDeserializer extends StdDeserializer<DispoSumma
    @Override
    public DispoSummarySeverity deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
       JsonNode readTree = jp.getCodec().readTree(jp);
-      return DispoSummarySeverity.forVal(readTree.asText());
+      if (readTree != null) {
+         return DispoSummarySeverity.forVal(readTree.asText());
+      } else {
+         return DispoSummarySeverity.forVal("");
+      }
    }
 }

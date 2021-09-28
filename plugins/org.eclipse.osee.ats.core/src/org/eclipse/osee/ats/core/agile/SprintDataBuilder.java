@@ -245,7 +245,7 @@ public class SprintDataBuilder {
       int numDates = burn.getDates().size();
       int count = 1;
       int numWorkDays = numDates - 3;
-      double pointsPerDay = totalPoints / numWorkDays;
+      double pointsPerDay = (double) totalPoints / numWorkDays;
       // set Goal value
       for (AgileSprintDateData date : burn.getDates()) {
          // first day is sprint planning; second gets no work done

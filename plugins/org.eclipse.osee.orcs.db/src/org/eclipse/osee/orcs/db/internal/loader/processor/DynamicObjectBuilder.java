@@ -218,12 +218,14 @@ public class DynamicObjectBuilder {
             for (Entry<String, Collection<ObjectMap>> entries : getChildrenByName()) {
                String key = entries.getKey();
                Collection<ObjectMap> values = entries.getValue();
-               ObjectMap object = Iterables.getFirst(values, null);
-               ObjectType objectType = getObjectType(object.getDescriptor());
-               if (ObjectType.ATTRIBUTE == objectType || ObjectType.RELATION == objectType) {
-                  data.put(key, groupByTypeName(objectType, values));
-               } else {
-                  data.put(key, asSetMap(values));
+               if (values != null) {
+                  ObjectMap object = Iterables.getFirst(values, null);
+                  ObjectType objectType = getObjectType(object.getDescriptor());
+                  if (ObjectType.ATTRIBUTE == objectType || ObjectType.RELATION == objectType) {
+                     data.put(key, groupByTypeName(objectType, values));
+                  } else {
+                     data.put(key, asSetMap(values));
+                  }
                }
             }
          }

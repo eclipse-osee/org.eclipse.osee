@@ -316,14 +316,17 @@ public final class TransactionManager {
                Object curValue = art.getSoleAttributeValue(type, null);
                Object prevValue = getPreviousValue(prevArt, attr.getAttrId());
                changed = true;
-               if (persist) {
+               if (persist && prevValue != null) {
                   art.setSoleAttributeValue(type, prevValue);
                }
                String currValueAsText = curValue.toString();
                currValueAsText = AHTML.textToHtml(currValueAsText);
-               String prevValueAsText = prevValue.toString();
-               prevValueAsText = AHTML.textToHtml(prevValueAsText);
-               results.logf("Setting modified type [%s] from [%s] to [%s]\n", type, currValueAsText, prevValueAsText);
+               if (prevValue != null) {
+                  String prevValueAsText = prevValue.toString();
+                  prevValueAsText = AHTML.textToHtml(prevValueAsText);
+                  results.logf("Setting modified type [%s] from [%s] to [%s]\n", type, currValueAsText,
+                     prevValueAsText);
+               }
             } else {
                results.errorf("Max Occurrences > 1 not supported for attribute %s (but could be added as needed)\n",
                   attr);

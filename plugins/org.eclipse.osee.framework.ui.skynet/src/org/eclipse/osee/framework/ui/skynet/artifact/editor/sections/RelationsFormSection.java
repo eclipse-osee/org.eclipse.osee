@@ -131,7 +131,9 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
    }
 
    protected void handleExpandAndCollapse() {
-      ((ArtifactFormPage) getEditor().getSelectedPage()).refresh();
+      if (getEditor().getSelectedPage() != null) {
+         ((ArtifactFormPage) getEditor().getSelectedPage()).refresh();
+      }
    }
 
    protected void addDragAndDrop(Control dropArea) {

@@ -686,8 +686,10 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                Date date = CommonUtil.getDate(string);
                Pair<String, String> pair = new Pair<>("0", "0");
                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-               String formattedDate = simpleDateFormat.format(date);
-               linkedHashMap.put(formattedDate, pair);
+               if (date != null) {
+                  String formattedDate = simpleDateFormat.format(date);
+                  linkedHashMap.put(formattedDate, pair);
+               }
                JSONSerializer jsonSerializer = new JSONSerializer();
                String burnDownData = jsonSerializer.deepSerialize(linkedHashMap);
                tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.BurnDownData, burnDownData);
@@ -1338,12 +1340,12 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          } else {
             xml = CommentItem.toXml(Arrays.asList(noteItem));
          }
-
-         if (xml.length() > 0) {
-            tx.setSoleAttributeFromString(teamwfartifact, AtsAttributeTypes.StateNotes, xml);
-            tx.commit();
+         if (xml != null) {
+            if (xml.length() > 0) {
+               tx.setSoleAttributeFromString(teamwfartifact, AtsAttributeTypes.StateNotes, xml);
+               tx.commit();
+            }
          }
-
          teamwfartifact = CommonUtil.getArtifactFromIdExcludingDeleted(uuid, CoreBranches.COMMON, orcsApi);
 
          List<TeamWorkFlowArtifact> listTras = new ArrayList<TeamWorkFlowArtifact>();

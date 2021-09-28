@@ -209,10 +209,12 @@ public class LdapConnection implements Closeable {
             .scope(groupSearchScope);
 
          HashMap<String, String> params = new HashMap<>();
-         for (String key : query.getParameters()) {
-            String value = account.getField(key);
-            if (Strings.isValid(value)) {
-               params.put(key, value);
+         if (account != null) {
+            for (String key : query.getParameters()) {
+               String value = account.getField(key);
+               if (Strings.isValid(value)) {
+                  params.put(key, value);
+               }
             }
          }
          params.put(usernameVariableName, username);

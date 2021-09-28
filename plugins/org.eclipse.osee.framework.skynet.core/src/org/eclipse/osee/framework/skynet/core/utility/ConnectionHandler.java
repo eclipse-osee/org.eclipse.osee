@@ -53,7 +53,10 @@ public final class ConnectionHandler {
       JdbcService toReturn = null;
       try {
          Collection<ServiceReference<JdbcService>> references = context.getServiceReferences(JdbcService.class, null);
-         ServiceReference<JdbcService> reference = Iterables.getFirst(references, null);
+         ServiceReference<JdbcService> reference = null;
+         if (references != null) {
+            reference = Iterables.getFirst(references, null);
+         }
          if (reference != null) {
             toReturn = context.getService(reference);
          }

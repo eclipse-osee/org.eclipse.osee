@@ -141,7 +141,6 @@ public final class FrameworkXWidgetProvider {
             AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
             ArtifactTypeToken artType = ArtifactTypeToken.SENTINEL;
             if (!Strings.isValid(xWidgetName) && xWidgetLayoutData.getStoreId() > 0) {
-               tokenService.getAttributeTypeOrSentinel(xWidgetLayoutData.getStoreId());
                tokenService.getArtifactType(xWidgetLayoutData.getArtifactType().getId());
             }
             if (attributeType == AttributeTypeToken.SENTINEL && !Strings.isValid(xWidgetName) && Strings.isValid(
@@ -150,8 +149,9 @@ public final class FrameworkXWidgetProvider {
             }
             xWidgetName = getXWidgetNameBasedOnAttribute(artType, attributeType);
          }
-
-         xWidget = getXWidget(xWidgetLayoutData, xWidgetName, name, artifact);
+         if (xWidgetName != null) {
+            xWidget = getXWidget(xWidgetLayoutData, xWidgetName, name, artifact);
+         }
          if (xWidget != null) {
             if (artifact != null) {
                AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
