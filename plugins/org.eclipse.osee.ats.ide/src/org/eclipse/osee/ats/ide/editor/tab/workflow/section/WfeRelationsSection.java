@@ -61,7 +61,9 @@ public class WfeRelationsSection extends RelationsFormSection {
 
    @Override
    protected void handleExpandAndCollapse() {
-      ((WfeWorkFlowTab) getEditor().getSelectedPage()).getManagedForm().getForm().layout();
+      if (getEditor().getSelectedPage() != null) {
+         ((WfeWorkFlowTab) getEditor().getSelectedPage()).getManagedForm().getForm().layout();
+      }
    }
 
    @Override

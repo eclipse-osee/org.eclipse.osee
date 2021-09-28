@@ -117,7 +117,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
             Branch sourceBranch = cache.getById(stmt.getLong("source_branch_id"));
             Branch destBranch = cache.getById(stmt.getLong("dest_branch_id"));
 
-            if (destBranch == null) {
+            if (destBranch == null && mergeIdMap != null) {
                mergeIdMap.put(mergeBranch, stmt.getLong("dest_branch_id"));
             }
 

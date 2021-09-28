@@ -118,6 +118,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       query = query.andIsMergeFor(workingBranch, destinationBranch);
+      if (query == null) {
+         return false;
+      }
       return query.exists();
    }
 

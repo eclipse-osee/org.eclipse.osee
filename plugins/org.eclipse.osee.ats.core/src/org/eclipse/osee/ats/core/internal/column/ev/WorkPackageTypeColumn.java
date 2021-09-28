@@ -34,6 +34,9 @@ public class WorkPackageTypeColumn extends AbstractRelatedWorkPackageColumn {
    @Override
    protected String getColumnValue(IAtsWorkPackage workPkg) {
       try {
+         if (workPkg.getWorkPackageType() == null) {
+            return null;
+         }
          return workPkg.getWorkPackageType().name();
       } catch (OseeCoreException ex) {
          return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();

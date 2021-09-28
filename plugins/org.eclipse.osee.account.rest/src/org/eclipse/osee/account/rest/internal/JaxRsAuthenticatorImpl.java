@@ -100,11 +100,11 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
 
       Authorization authorize = authorizationAdmin.authorize(authorizationRequest);
       AuthorizationUser authUser = (AuthorizationUser) authorize.getPrincipal();
-
-      for (String role : authUser.getRoles()) {
-         roles.add(role);
+      if (authUser != null) {
+         for (String role : authUser.getRoles()) {
+            roles.add(role);
+         }
       }
-
       // Preferences or other user specific properties
       return OseePrincipal.Anonymous;
    }

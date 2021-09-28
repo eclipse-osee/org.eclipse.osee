@@ -137,21 +137,25 @@ public class ResourceManager implements IResourceManager {
       IResourceLocator locator = getResourceLocator(path);
       Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", path);
       IResource resource = acquire(locator, DEFAULT_OPTIONS);
-      String mimeType = getContentType(resource);
-
+      String mimeType = null;
+      if (resource != null) {
+         mimeType = getContentType(resource);
+      }
       byte[] data = null;
       InputStream inputStream = null;
-      try {
-         inputStream = resource.getContent();
-         data = Lib.inputStreamToBytes(inputStream);
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex, "Error acquiring resource - [%s]", dataResource);
-      } finally {
-         Lib.close(inputStream);
-      }
-      String extension = Lib.getExtension(resource.getName());
-      if (Strings.isValid(extension)) {
-         dataResource.setExtension(extension);
+      if (resource != null) {
+         try {
+            inputStream = resource.getContent();
+            data = Lib.inputStreamToBytes(inputStream);
+         } catch (IOException ex) {
+            throw new OseeCoreException(ex, "Error acquiring resource - [%s]", dataResource);
+         } finally {
+            Lib.close(inputStream);
+         }
+         String extension = Lib.getExtension(resource.getName());
+         if (Strings.isValid(extension)) {
+            dataResource.setExtension(extension);
+         }
       }
       dataResource.setContentType(mimeType);
       dataResource.setEncoding("ISO-8859-1");

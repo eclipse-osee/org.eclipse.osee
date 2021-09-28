@@ -62,7 +62,7 @@ public class Xml {
 
    /**
     * TODO Optimize algorithm
-    * 
+    *
     * @return string with entity reference characters unescaped.
     */
    public static StringBuilder unescape(String text) {
@@ -104,7 +104,7 @@ public class Xml {
 
    /**
     * TODO Optimize algorithm
-    * 
+    *
     * @return a string with entity reference characters escaped.
     */
    public static CharSequence escape(CharSequence text) {
@@ -356,23 +356,25 @@ public class Xml {
    }
 
    public static final boolean isSeriousXPath(String xPathExpression) {
-      return xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf(
-         "(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1;
+      return xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf("(") > -1
+         || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1;
    }
 
    public static final Node[] selectNodeList(Node startingNode, String xPathExpression) throws XPathExpressionException {
       Node[] resultNodes = null;
-      if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
-         List<Element> resultElementList = Jaxp.findElements((Element) startingNode, xPathExpression);
-         resultNodes = resultElementList.toArray(new Node[0]);
-      } else {
-         Object publisherNodeSet = null;
-         publisherNodeSet = myXPath.evaluate(xPathExpression, startingNode, XPathConstants.NODESET);
+      if (startingNode != null) {
+         if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
+            List<Element> resultElementList = Jaxp.findElements((Element) startingNode, xPathExpression);
+            resultNodes = resultElementList.toArray(new Node[0]);
+         } else {
+            Object publisherNodeSet = null;
+            publisherNodeSet = myXPath.evaluate(xPathExpression, startingNode, XPathConstants.NODESET);
 
-         NodeList myNodeList = (NodeList) publisherNodeSet;
-         resultNodes = new Node[myNodeList.getLength()];
-         for (int i = 0; i < resultNodes.length; i++) {
-            resultNodes[i] = myNodeList.item(i);
+            NodeList myNodeList = (NodeList) publisherNodeSet;
+            resultNodes = new Node[myNodeList.getLength()];
+            for (int i = 0; i < resultNodes.length; i++) {
+               resultNodes[i] = myNodeList.item(i);
+            }
          }
       }
       return resultNodes;
@@ -398,8 +400,8 @@ public class Xml {
       StringBuffer resultStringBuffer = new StringBuffer();
       NodeList childNodes = startingNode.getChildNodes();
       for (int i = 0; i < childNodes.getLength(); i++) {
-         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE || childNodes.item(
-            i).getNodeType() == Node.TEXT_NODE) {
+         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE
+            || childNodes.item(i).getNodeType() == Node.TEXT_NODE) {
             resultStringBuffer.append(childNodes.item(i).getNodeValue().trim());
          }
       }

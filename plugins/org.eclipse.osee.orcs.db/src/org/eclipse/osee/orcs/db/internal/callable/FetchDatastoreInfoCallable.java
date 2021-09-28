@@ -67,12 +67,14 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
    }
 
    private void addInfoProperties(Map<String, String> props) {
-      for (String key : preferences.getKeys()) {
-         String value = preferences.getValue(key);
-         if (!Strings.isValid(value)) {
-            value = "";
+      if (preferences.getKeys() != null) {
+         for (String key : preferences.getKeys()) {
+            String value = preferences.getValue(key);
+            if (!Strings.isValid(value)) {
+               value = "";
+            }
+            props.put(key, value);
          }
-         props.put(key, value);
       }
       props.put(DataStoreConstants.DATASTORE_ID_KEY, preferences.getSystemUuid());
       props.put("ds.binary.data.path", ResourceConstants.getBinaryDataPath(preferences));

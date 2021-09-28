@@ -202,11 +202,12 @@ public class StateManager implements IAtsStateManager {
          }
       }
       WorkState state = getState(stateName);
-
-      List<AtsUser> currentAssignees = state.getAssignees();
-      for (AtsUser assignee : assignees) {
-         if (!currentAssignees.contains(assignee)) {
-            state.addAssignee(assignee);
+      if (state != null) {
+         List<AtsUser> currentAssignees = state.getAssignees();
+         for (AtsUser assignee : assignees) {
+            if (!currentAssignees.contains(assignee)) {
+               state.addAssignee(assignee);
+            }
          }
       }
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
@@ -275,16 +276,17 @@ public class StateManager implements IAtsStateManager {
 
       // Note: current and next state could be same
       WorkState currState = getState(getCurrentStateName());
-      List<AtsUser> currAssignees = currState.getAssignees();
+      if (currState != null) {
+         List<AtsUser> currAssignees = currState.getAssignees();
+         WorkState nextState = getState(stateName);
+         List<AtsUser> nextAssignees = new ArrayList<>(assignees);
 
-      WorkState nextState = getState(stateName);
-      List<AtsUser> nextAssignees = new ArrayList<>(assignees);
+         List<AtsUser> notifyNewAssignees = new ArrayList<>(nextAssignees);
+         notifyNewAssignees.removeAll(currAssignees);
 
-      List<AtsUser> notifyNewAssignees = new ArrayList<>(nextAssignees);
-      notifyNewAssignees.removeAll(currAssignees);
-
-      //Update assignees for state
-      nextState.setAssignees(nextAssignees);
+         //Update assignees for state
+         nextState.setAssignees(nextAssignees);
+      }
 
       // Remove UnAssigned if part of assignees
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {

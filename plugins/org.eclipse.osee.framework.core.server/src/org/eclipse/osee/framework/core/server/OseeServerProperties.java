@@ -52,16 +52,18 @@ public class OseeServerProperties {
     */
    public static String getOseeApplicationServerData(Log logger) {
       String toReturn = internalGetOseeApplicationServerData();
-      if (!wasBinaryDataChecked) {
-         File file = new File(toReturn);
-         if (logger != null) {
-            if (file.exists()) {
-               logger.info("Application Server Data: [%s]", toReturn);
-            } else {
-               logger.warn("Application Server Data: [%s] does not exist and will be created", toReturn);
+      if (toReturn != null) {
+         if (!wasBinaryDataChecked) {
+            File file = new File(toReturn);
+            if (logger != null) {
+               if (file.exists()) {
+                  logger.info("Application Server Data: [%s]", toReturn);
+               } else {
+                  logger.warn("Application Server Data: [%s] does not exist and will be created", toReturn);
+               }
             }
+            wasBinaryDataChecked = true;
          }
-         wasBinaryDataChecked = true;
       }
       return toReturn;
    }

@@ -66,6 +66,19 @@ public class RoughToRealRectificationOperation {
       roughToRealArtifacts.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
    }
 
+   public RoughToRealRectificationOperation(OrcsApi orcsApi, BranchId branchId, XResultData results, TransactionBuilder transaction, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts) {
+      this.results = results;
+      this.orcsApi = orcsApi;
+      this.branchId = branchId;
+      this.rawData = rawData;
+      this.transaction = transaction;
+      this.artifactResolver = artifactResolver;
+      this.destinationArtifact = destinationArtifact;
+      this.roughToRealArtifacts = new HashMap<>();
+      this.toRectify = new ArrayList<String>();
+      roughToRealArtifacts.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
+   }
+
    public void doWork() {
       setupAllKnownArtifacts();
       for (String doorsIdToImport : toRectify) {

@@ -112,7 +112,7 @@ public class UnitTestValidator {
       if (file.getAbsolutePath().endsWith(".java") && !isSuite) {
          String text = Lib.fileToString(file);
          if (file.getName().startsWith("Abstract") || text.contains(
-            "abstract class " + file.getName().replaceFirst(".java", ""))) {
+            "abstract class " + file.getName().replaceFirst("\\.java", ""))) {
             System.out.println("Found ABSTRACT TEST " + file.getName() + ", Ignorning");
          } else if (text.contains("Parameterized.class")) {
             System.out.println("Found Parameterized TEST " + file.getName() + ", Ignorning");

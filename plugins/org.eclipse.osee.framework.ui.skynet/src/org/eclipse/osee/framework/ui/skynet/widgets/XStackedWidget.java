@@ -482,7 +482,9 @@ public abstract class XStackedWidget<T> extends XLabel {
          this.currentPage = page;
          stackedViewer.setCurrentControl(pageId);
          if (loadPageValues) {
-            updatePageText(page);
+            if (page != null) {
+               updatePageText(page);
+            }
          }
          updateCurrentPageLabel();
       }

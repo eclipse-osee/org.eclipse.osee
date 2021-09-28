@@ -72,7 +72,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public boolean isAtsAdmin(boolean useCache) {
       if (!useCache) {
-         getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
+         return getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
       }
       return isAtsAdmin();
    }

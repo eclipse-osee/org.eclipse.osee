@@ -261,7 +261,9 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       public void startContainer(CXFNonSpringServlet servlet) {
          if (!isRegistered.getAndSet(true)) {
             Server newServer = newCxfServer(servlet, getApplicationContext(), getApplication(), providers);
-            newServer.start();
+            if (newServer != null) {
+               newServer.start();
+            }
             server = newServer;
          }
       }

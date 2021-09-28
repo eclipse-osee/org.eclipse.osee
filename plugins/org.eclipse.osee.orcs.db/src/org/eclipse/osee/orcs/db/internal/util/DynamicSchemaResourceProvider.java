@@ -46,12 +46,12 @@ public class DynamicSchemaResourceProvider implements Supplier<Iterable<JdbcMigr
       try {
          Collection<ServiceReference<JdbcMigrationResource>> references =
             context.getServiceReferences(JdbcMigrationResource.class, null);
-
-         for (ServiceReference<JdbcMigrationResource> ref : references) {
-            JdbcMigrationResource resource = context.getService(ref);
-            resources.add(resource);
+         if (references != null) {
+            for (ServiceReference<JdbcMigrationResource> ref : references) {
+               JdbcMigrationResource resource = context.getService(ref);
+               resources.add(resource);
+            }
          }
-
       } catch (InvalidSyntaxException ex) {
          logger.warn(ex.toString(), ex);
       }

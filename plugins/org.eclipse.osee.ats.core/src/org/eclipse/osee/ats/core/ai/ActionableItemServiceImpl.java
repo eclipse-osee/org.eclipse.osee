@@ -226,12 +226,14 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    public IAtsActionableItem getActionableItem(IAtsTeamDefinition teamDef) {
       ActionableItem ai = null;
       Collection<ActionableItem> related = teamDef.getActionableItems();
-      if (related.isEmpty()) {
-         return null;
-      } else if (related.size() > 1) {
-         throw new OseeStateException("Multiple AIs related to teamDef; Invalid method for this");
-      } else if (related.size() == 1) {
-         ai = related.iterator().next();
+      if (related != null) {
+         if (related.isEmpty()) {
+            return null;
+         } else if (related.size() > 1) {
+            throw new OseeStateException("Multiple AIs related to teamDef; Invalid method for this");
+         } else if (related.size() == 1) {
+            ai = related.iterator().next();
+         }
       }
       return ai;
    }
