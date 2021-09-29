@@ -107,7 +107,7 @@ public class WfeTransitionHeader extends Composite {
             handleTransitionButtonSelection();
          }
       });
-      transitionLabelLink.setFont(FontManager.getCourierNew12Bold());
+      transitionLabelLink.setFont(FontManager.getDefaultLabelFont());
       transitionLabelLink.setToolTipText("Select to transition workflow to the default or selected state");
 
       Label transitionToLabel = editor.getToolkit().createLabel(this, "To");

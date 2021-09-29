@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
@@ -56,7 +56,7 @@ public class WfeTitleHeader extends Composite {
          titleText.setAttributeType((Artifact) workItem.getStoreObject(), CoreAttributeTypes.Name);
          titleText.createWidgets(this, 1);
          titleText.adaptControls(editor.getToolkit());
-         titleText.getLabelWidget().setFont(FontManager.getCourierNew12Bold());
+         XWidgetUtility.setLabelFontsBold(titleText);
          titleText.addXModifiedListener(xModListener);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

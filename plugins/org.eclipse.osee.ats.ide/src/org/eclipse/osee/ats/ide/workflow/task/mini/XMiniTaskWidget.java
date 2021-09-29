@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -43,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -170,7 +170,7 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
          pointsLabel = new XLabelValue("Total Estimated Points", "0");
          pointsLabel.createWidgets(tableComp, 2);
          pointsLabel.getComp().setLayout(new GridLayout(2, false));
-         pointsLabel.getLabelWidget().setFont(FontManager.getCourierNew12Bold());
+         XWidgetUtility.setLabelFontsBold(pointsLabel);
          if (toolkit != null) {
             toolkit.adapt(pointsLabel.getLabelWidget(), false, false);
             toolkit.adapt(pointsLabel.getValueTextWidget(), false, false);
@@ -181,7 +181,7 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // reset bold for label
-      WorkflowEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
+      XWidgetUtility.setLabelFontsBold(labelWidget, FontManager.getDefaultLabelFont());
 
       parentComp.layout();
    }

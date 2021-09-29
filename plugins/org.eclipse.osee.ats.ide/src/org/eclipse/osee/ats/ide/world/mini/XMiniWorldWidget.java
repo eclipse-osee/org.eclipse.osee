@@ -18,7 +18,6 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldContentProvider;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -145,7 +145,7 @@ public abstract class XMiniWorldWidget extends GenericXWidget {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // reset bold for label
-      WorkflowEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
+      XWidgetUtility.setLabelFontsBold(labelWidget, FontManager.getDefaultLabelFont());
 
       parentComp.layout();
    }

@@ -27,15 +27,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -102,7 +99,7 @@ public class BlamInputSection extends BaseBlamSection {
          widgetPage = new XWidgetPage(layoutDatas, optionResolver, getAbstractBlam());
          widgetPage.createBody(getManagedForm(), parent, null, null, true);
          abstractBlam.createWidgets(parent, getManagedForm(), getSection());
-         setLabelFonts(parent, FontManager.getCourierNew12Bold());
+         XWidgetUtility.setLabelFontsBold(widgetPage.getDynamicXWidgetLayout().getXWidgets());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -111,20 +108,6 @@ public class BlamInputSection extends BaseBlamSection {
    private void validate() {
       for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
          widget.validate();
-      }
-   }
-
-   public void setLabelFonts(Control parent, Font font) {
-      if (parent instanceof Label) {
-         Label label = (Label) parent;
-         label.setFont(font);
-      }
-      if (parent instanceof Composite) {
-         Composite container = (Composite) parent;
-         for (Control child : container.getChildren()) {
-            setLabelFonts(child, font);
-         }
-         container.layout();
       }
    }
 

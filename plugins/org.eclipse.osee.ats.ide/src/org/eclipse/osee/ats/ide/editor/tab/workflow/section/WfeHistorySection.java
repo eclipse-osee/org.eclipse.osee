@@ -83,12 +83,12 @@ public class WfeHistorySection extends SectionPart {
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Label logLabel = toolkit.createLabel(mainComp, "ATS Log:", SWT.NONE);
-      logLabel.setFont(FontManager.getCourierNew12Bold());
+      logLabel.setFont(FontManager.getDefaultLabelFont());
       xLogViewer = new XLogViewer(awa);
       xLogViewer.createWidgets(mainComp, 2);
 
       Label historyLabel = toolkit.createLabel(mainComp, "Detailed History (if available):", SWT.NONE);
-      historyLabel.setFont(FontManager.getCourierNew12Bold());
+      historyLabel.setFont(FontManager.getDefaultLabelFont());
       xHistoryViewer = new XHistoryViewer(awa);
       xHistoryViewer.createWidgets(mainComp, 2);
 

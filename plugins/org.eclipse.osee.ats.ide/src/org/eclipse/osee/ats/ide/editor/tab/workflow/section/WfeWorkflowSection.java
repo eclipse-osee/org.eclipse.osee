@@ -50,10 +50,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -217,17 +217,7 @@ public class WfeWorkflowSection extends SectionPart {
       createTaskFooter(workComp, statePage);
       createReviewFooter(workComp, statePage);
 
-      for (XWidget xWidget : allXWidgets) {
-         Label labelWidget = xWidget.getLabelWidget();
-         if (labelWidget != null) {
-            if (xWidget.isUseLabelFont()) {
-               // Set all XWidget labels to bold font
-               WorkflowEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
-            } else {
-               WorkflowEditor.setLabelFonts(labelWidget, null);
-            }
-         }
-      }
+      XWidgetUtility.setLabelFontsBold(allXWidgets);
 
       computeTextSizesAndReflow();
       return workComp;

@@ -89,7 +89,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
       Label label = new Label(this, SWT.NONE);
       label.setText("Related: ");
       label.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
-      label.setFont(FontManager.getCourierNew12Bold());
+      label.setFont(FontManager.getDefaultLabelFont());
 
       IAtsAction action = workItem.getParentAction();
       if (action != null) {
