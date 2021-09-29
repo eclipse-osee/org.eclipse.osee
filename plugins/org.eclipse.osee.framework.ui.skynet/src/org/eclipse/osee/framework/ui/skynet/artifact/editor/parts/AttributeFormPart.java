@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,10 +50,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -75,6 +74,7 @@ public class AttributeFormPart extends AbstractFormPart {
    private Composite composite;
    private final XWidgetDecorator decorator = new XWidgetDecorator();
    private final Map<AttributeTypeToken, Composite> xWidgetsMap = new HashMap<>();
+   private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
 
    private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
 
@@ -157,6 +157,9 @@ public class AttributeFormPart extends AbstractFormPart {
          addWidgetForAttributeType(types);
 
          layoutControls(composite);
+
+         XWidgetUtility.setLabelFontsBold(allXWidgets);
+
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       } finally {
@@ -175,7 +178,6 @@ public class AttributeFormPart extends AbstractFormPart {
          } else {
             internalComposite = createAttributeTypeControls(composite, artifact, attributeType, isEditable, false, 20);
          }
-         setLabelFonts(internalComposite, FontManager.getDefaultLabelFont());
          HelpUtil.setHelp(internalComposite, OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
          xWidgetsMap.put(attributeType, internalComposite);
       }
@@ -190,20 +192,6 @@ public class AttributeFormPart extends AbstractFormPart {
    public void dispose() {
       Widgets.disposeWidget(composite);
       super.dispose();
-   }
-
-   public static void setLabelFonts(Control parent, Font font) {
-      if (parent instanceof Label) {
-         Label label = (Label) parent;
-         label.setFont(font);
-      }
-      if (parent instanceof Composite) {
-         Composite container = (Composite) parent;
-         for (Control child : container.getChildren()) {
-            setLabelFonts(child, font);
-         }
-         container.layout();
-      }
    }
 
    private void layoutControls(Control control) {
@@ -257,9 +245,10 @@ public class AttributeFormPart extends AbstractFormPart {
 
          SwtXWidgetRenderer xWidgetLayout =
             workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
-         Collection<XWidget> xWidgets = xWidgetLayout.getXWidgets();
+         Collection<XWidget> widgets = xWidgetLayout.getXWidgets();
+         allXWidgets.addAll(widgets);
 
-         for (XWidget xWidget : xWidgets) {
+         for (XWidget xWidget : widgets) {
             xWidget.addXModifiedListener(new XWidgetValidationListener());
             decorator.addWidget(xWidget);
          }

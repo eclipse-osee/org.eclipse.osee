@@ -14,9 +14,14 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
 
 /**
@@ -60,4 +65,44 @@ public final class XWidgetUtility {
       }
       return result;
    }
+
+   /**
+    * Preferred way to set label fonts so widgets can override
+    */
+   public static void setLabelFontsBold(Collection<XWidget> allXWidgets) {
+      for (XWidget xWidget : allXWidgets) {
+         Label labelWidget = xWidget.getLabelWidget();
+         if (labelWidget != null) {
+            if (xWidget.isUseLabelFont()) {
+               // Set all XWidget labels to bold font
+               setLabelFontsBold(labelWidget, FontManager.getDefaultLabelFont());
+            } else {
+               setLabelFontsBold(labelWidget, null);
+            }
+         }
+      }
+   }
+
+   public static void setLabelFontsBold(XWidget xWidget) {
+      setLabelFontsBold(Arrays.asList(xWidget));
+   }
+
+   /**
+    * Recursively set label fonts from control. NOT preferred method if you have XWidget list. Use
+    * setLabelFontsBold(List<XWidget> allXWidgets).
+    */
+   public static void setLabelFontsBold(Control parent, Font font) {
+      if (parent instanceof Label) {
+         Label label = (Label) parent;
+         label.setFont(font);
+      }
+      if (parent instanceof Composite) {
+         Composite container = (Composite) parent;
+         for (Control child : container.getChildren()) {
+            setLabelFontsBold(child, font);
+         }
+         container.layout();
+      }
+   }
+
 }

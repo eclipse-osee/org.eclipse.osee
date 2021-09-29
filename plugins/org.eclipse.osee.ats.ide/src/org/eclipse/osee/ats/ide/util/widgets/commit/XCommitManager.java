@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -44,6 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -185,7 +185,7 @@ public class XCommitManager extends GenericXWidget implements ArtifactWidget, IB
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // reset bold for label
-      WorkflowEditor.setLabelFonts(labelWidget, FontManager.getDefaultLabelFont());
+      XWidgetUtility.setLabelFontsBold(labelWidget, FontManager.getDefaultLabelFont());
 
       parentComp.layout();
    }

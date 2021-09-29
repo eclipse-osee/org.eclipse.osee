@@ -86,7 +86,7 @@ public class WfeAttachmentsComposite extends Composite {
       label = new Label(this, SWT.NONE);
       label.setText("No Attachments");
       label.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
-      label.setFont(FontManager.getCourierNew12Bold());
+      label.setFont(FontManager.getDefaultLabelFont());
 
       createUpdateAttached();
 

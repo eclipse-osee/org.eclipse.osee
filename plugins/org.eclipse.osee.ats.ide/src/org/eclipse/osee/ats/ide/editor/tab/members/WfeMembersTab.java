@@ -71,8 +71,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -254,7 +254,7 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
          reload();
          createActions();
 
-         AttributeFormPart.setLabelFonts(worldComposite, FontManager.getDefaultLabelFont());
+         XWidgetUtility.setLabelFontsBold(worldComposite, FontManager.getDefaultLabelFont());
          worldComposite.setShowRemoveMenuItems(false);
 
          return true;

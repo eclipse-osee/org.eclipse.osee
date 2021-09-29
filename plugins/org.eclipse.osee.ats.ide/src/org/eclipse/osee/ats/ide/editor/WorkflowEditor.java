@@ -82,13 +82,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.EditorData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -302,20 +299,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   public static void setLabelFonts(Control parent, Font font) {
-      if (parent instanceof Label) {
-         Label label = (Label) parent;
-         label.setFont(font);
-      }
-      if (parent instanceof Composite) {
-         Composite container = (Composite) parent;
-         for (Control child : container.getChildren()) {
-            setLabelFonts(child, font);
-         }
-         container.layout();
       }
    }
 
