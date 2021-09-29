@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -33,6 +33,7 @@ export class EditElementFieldComponent implements OnInit {
   @Input() value: any = '';
   @Input() elementStart: number =0;
   @Input() elementEnd: number = 0;
+  @Output() contextMenu = new EventEmitter<MouseEvent>();
   private _value: Subject<string> = new Subject();
   _element: Partial<element> = {
     id:this.elementId
@@ -67,8 +68,6 @@ export class EditElementFieldComponent implements OnInit {
     x: '0',
     y:'0'
   }
-  @ViewChild(MatMenuTrigger, { static: true })
-  matMenuTrigger!: MatMenuTrigger;
   constructor (private structureService: CurrentStateService,private router: Router,private route: ActivatedRoute) {
     this._sendValue.subscribe();
     this._sendType.subscribe();
@@ -101,18 +100,12 @@ export class EditElementFieldComponent implements OnInit {
   }
   openMenu(event: MouseEvent,location: string) {
     event.preventDefault();
-    this.menuPosition.x = event.clientX + 'px';
-    this.menuPosition.y = event.clientY + 'px';
-    this.matMenuTrigger.menuData = {
-      location:location
-    }
-    this.matMenuTrigger.openMenu();
-  }
-  navigateToInNewTab(location: string) {
-    const url = this.router.serializeUrl(this.router.createUrlTree([this.structureService.branchType.getValue(),this.structureService.BranchId.getValue(),"types", location], {
-      relativeTo: this.route.parent?.parent,
-      queryParamsHandling: 'merge',
-    }))
-    window.open(url, "_blank");
+    // this.menuPosition.x = event.clientX + 'px';
+    // this.menuPosition.y = event.clientY + 'px';
+    // this.matMenuTrigger.menuData = {
+    //   location:location
+    // }
+    // this.matMenuTrigger.openMenu();
+    this.contextMenu.emit(event);
   }
 }

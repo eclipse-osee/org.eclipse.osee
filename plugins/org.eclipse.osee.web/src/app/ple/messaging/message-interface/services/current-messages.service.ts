@@ -199,6 +199,57 @@ export class CurrentMessagesService {
     )
   }
 
+  deleteMessage(messageId: string) {
+    return this.BranchId.pipe(
+      switchMap((branchId) => this.messageService.deleteMessage(branchId, messageId).pipe(
+        switchMap((transaction) => this.messageService.performMutation(branchId, '', transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
+    )
+  }
+
+  removeMessage(messageId: string) {
+    return combineLatest([this.connectionId, this.BranchId]).pipe(
+      switchMap(([connectionId, branchId]) => this.messageService.createConnectionRelation(connectionId, messageId).pipe(
+        switchMap((relation) => this.messageService.deleteRelation(branchId, relation).pipe(
+          switchMap((transaction) => this.messageService.performMutation(branchId, connectionId, transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
+        ))
+      ))
+    )
+  }
+
+  removeSubMessage(submessageId: string, messageId:string) {
+    return this.BranchId.pipe(
+      switchMap((branchId) => this.subMessageService.createMessageRelation(messageId, submessageId).pipe(
+        switchMap((relation) => this.subMessageService.deleteRelation(branchId, relation).pipe(
+          switchMap((transaction) => this.subMessageService.performMutation(branchId, '', '', transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
+        ))
+      ))
+    )
+  }
+  deleteSubMessage(submessageId: string) {
+    return this.BranchId.pipe(
+      switchMap((branchId) => this.subMessageService.deleteSubMessage(branchId, submessageId).pipe(
+        switchMap((transaction) => this.subMessageService.performMutation(branchId, '', '', transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
+    )
+  }
+
   updatePreferences(preferences: settingsDialogData) {
     return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
       take(1),

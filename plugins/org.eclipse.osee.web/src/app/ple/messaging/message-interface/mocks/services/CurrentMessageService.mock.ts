@@ -15,6 +15,7 @@ import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentMessagesService } from "../../services/current-messages.service";
 import { message } from "../../types/messages";
+import { subMessage } from "../../types/sub-messages";
 import { messageResponseMock } from "../ReturnObjects/response.mock";
 
 let expectedData: message[] = [{
@@ -52,5 +53,23 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   preferences: of(MimPreferencesMock),
   updatePreferences(preferences: settingsDialogData) {
     return of(messageResponseMock)
+  },
+  removeMessage(messageId: string) {
+    return of(messageResponseMock);
+  },
+  removeSubMessage(subMessageId: string, messageId: string) {
+    return of(messageResponseMock);
+  },
+  relateSubMessage(messageId: string, subMessageId: string) {
+    return of(messageResponseMock);
+  },
+  createSubMessage(body: subMessage, messageId: string) {
+    return of(messageResponseMock);
+  },
+  deleteMessage(messageId: string) {
+    return of(messageResponseMock);
+  },
+  deleteSubMessage(subMessageId: string) {
+    return of(messageResponseMock);
   }
 }

@@ -36,5 +36,11 @@ export const subMessageServiceMock: Partial<SubMessagesService> = {
     },
     performMutation(branchId: string, connectionId: string, messageId: string, body: transaction) {
         return of(response)
+    },
+    deleteSubMessage(branchId: string, submessageId: string, transaction?: transaction) {
+        return of(transactionMock);
+    },
+    deleteRelation(branchId: string, relation: relation) {
+        return of(transactionMock);
     }
 }

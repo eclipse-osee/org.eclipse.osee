@@ -39,9 +39,11 @@
                     </ng-container>
                     <ng-template #no_edit>
                         <ng-container *ngIf="header==='applicability'">
-                            <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header].name" classToApply="ple-message-interface-table-highlighted-text">
-                                {{element[header]}}
-                            </div>
+                            <ng-container *ngIf="element[header].name!=='Base'">
+                                <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header].name" classToApply="ple-message-interface-table-highlighted-text">
+                                    {{element[header]}}
+                                </div>
+                            </ng-container>
                         </ng-container>
                         <ng-container *ngIf="header!=='applicability'">
                             <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-interface-table-highlighted-text">
@@ -66,9 +68,23 @@
         </tr>    
         <tr mat-row *matRowDef= "let row; columns: headers;"    
         class="message-detail-row"
-        [class.message-expanded-detail-row]="expandedElement.includes(row.id)">
+        [class.message-expanded-detail-row]="expandedElement.includes(row.id)" (contextmenu)="openMenu($event,row)">
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedMessage']" class="message-expanded-detail-row">
         </tr>
     </table>
 </div>
+<mat-menu #contextMenu="matMenu">
+    <!--menu insertion-->
+    <ng-template matMenuContent let-message="message">
+        <ng-container *ngIf="(inEditMode | async)===true">
+            <button mat-menu-item (click)="removeMessage(message)">Remove message from connection</button>
+            <button mat-menu-item (click)="deleteMessage(message)">Delete message globally</button>
+        </ng-container>
+
+    </ng-template>
+</mat-menu>
+<div style="visibility: hidden; position: fixed;" 
+[style.left]="menuPosition.x" 
+[style.top]="menuPosition.y" 
+[matMenuTriggerFor]="contextMenu"></div>

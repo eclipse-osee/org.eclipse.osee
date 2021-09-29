@@ -30,6 +30,7 @@ import { CurrentMessagesService } from './current-messages.service';
 import { MessagesService } from './messages.service';
 import { SubMessagesService } from './sub-messages.service';
 import { UiService } from './ui.service';
+import { subMessagesMock } from '../mocks/ReturnObjects/submessages.mock';
 
 describe('CurrentMessagesService', () => {
   let service: CurrentMessagesService;
@@ -127,6 +128,45 @@ describe('CurrentMessagesService', () => {
       let expectedObservable = { a: response }
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.createMessage(messagesMock[0])).toBe(expectedMarble,expectedObservable)
+    })
+  })
+  it('should delete a message', () => {
+    scheduler.run(() => {
+      service.branch = '10';
+      service.connection = '10';
+      let expectedObservable = { a: response }
+      let expectedMarble = 'a';
+      scheduler.expectObservable(service.deleteMessage(messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
+    })
+  })
+
+  it('should remove a message', () => {
+    scheduler.run(() => {
+      service.branch = '10';
+      service.connection = '10';
+      let expectedObservable = { a: response }
+      let expectedMarble = 'a';
+      scheduler.expectObservable(service.removeMessage(messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
+    })
+  })
+
+  it('should delete a submessage', () => {
+    scheduler.run(() => {
+      service.branch = '10';
+      service.connection = '10';
+      let expectedObservable = { a: response }
+      let expectedMarble = 'a';
+      scheduler.expectObservable(service.deleteSubMessage(subMessagesMock[0].id)).toBe(expectedMarble,expectedObservable)
+    })
+  })
+
+  it('should remove a submessage', () => {
+    scheduler.run(() => {
+      service.branch = '10';
+      service.connection = '10';
+      let expectedObservable = { a: response }
+      let expectedMarble = 'a';
+      scheduler.expectObservable(service.removeSubMessage(subMessagesMock[0].id,messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
     })
   })
 

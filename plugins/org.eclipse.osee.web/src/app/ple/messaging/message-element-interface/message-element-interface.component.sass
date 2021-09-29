@@ -16,10 +16,12 @@ table
 
 tr.message-expanded-detail-row 
   height: 0
+  flex-wrap: nowrap
 
 
 .message-detail-row td 
   border-bottom-width: 0
+  flex-wrap: nowrap
 
 
 .sub-message-detail 
@@ -88,11 +90,36 @@ tr.message-expanded-detail-row
     size: 14px
 .flex-row
   display: flex
+  align-items: baseline
   flex:
     direction: row
+    wrap: nowrap
 
 .new-structure-button
     z-index: 10
     position: fixed
     bottom: 3%
     right: 2%
+td th
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+.mat-column--
+  flex: 0 0 5%
+  width: 5%
+.mat-column
+  flex: 1 1 auto
+.mat-column-name
+  flex: 2 2 10%
+  max-width: 10%
+.mat-column-description
+  flex: 3 1 50%
+.mat-column-interfaceMaxSimultaneity
+  flex: 0 0 5%
+  width: 5%
+.mat-column-interfaceMinSimultaneity
+  flex: 0 0 5%
+  width: 5%
+.mat-column-interfaceTaskFileType
+  flex: 0 0 8%
+  width: 8%

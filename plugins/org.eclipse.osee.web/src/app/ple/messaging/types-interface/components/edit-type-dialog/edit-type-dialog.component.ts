@@ -12,7 +12,11 @@
  **********************************************************************/
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { from } from 'rxjs';
+import { map, reduce, switchMap, tap } from 'rxjs/operators';
+import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
+import { logicalType } from '../../types/logicaltype';
 
 @Component({
   selector: 'app-edit-type-dialog',
@@ -21,8 +25,14 @@ import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogDa
 })
 export class EditTypeDialogComponent implements OnInit {
 
-  platform_type: string =""
-  constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData) {
+  platform_type: string = "";
+  logicalTypes = this.typesService.logicalTypes.pipe(
+    switchMap((logicalTypes) => from(logicalTypes).pipe(
+      map((type) => { let name = type.name.replace("nsigned ", "");if(name!==type.name){name =name.charAt(0)+name.charAt(1).toUpperCase()+name.slice(2)} type.name = name; return type; })
+    )),
+    reduce((acc, curr) => [...acc, curr], [] as logicalType[]),
+  );
+  constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData, private typesService: CurrentTypesService) {
     this.platform_type = this.data.type.name;
    }
 
@@ -65,4 +75,5 @@ export class EditTypeDialogComponent implements OnInit {
   onNoClick(): void {
     this.dialogRef.close();
   }
+
 }

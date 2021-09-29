@@ -26,12 +26,14 @@
                         {{value[header]}}
                     </div>
                 </ng-container>
-                <ng-container *ngIf="header===' '"><button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])" (contextmenu)="openMenu($event,element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                <ng-container *ngIf="header===' '"><button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
                 </ng-container>
                 <ng-container *ngIf="header==='applicability'">
-                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header].name" classToApply="ple-message-interface-table-highlighted-text">
-                        {{value[header]}}
-                    </div>
+                    <ng-container *ngIf="value[header].name!=='Base'">
+                        <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header].name" classToApply="ple-message-interface-table-highlighted-text">
+                            {{value[header]}}
+                        </div>
+                    </ng-container>
                 </ng-container>
             </ng-container>
             <ng-template #edit_Mode>
@@ -39,7 +41,7 @@
                     <osee-messaging-edit-sub-message-field [messageId]="element.id" [subMessageId]="value['id']" [header]="header" [value]="value[header]"></osee-messaging-edit-sub-message-field>
                 </ng-container>
                 <ng-container *ngIf="header===' '">
-                    <button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])" (contextmenu)="openMenu($event,element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                    <button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
                 </ng-container>
             </ng-template>
          </td>
@@ -53,13 +55,19 @@
         </ng-container>
      <tr mat-header-row *matHeaderRowDef="headers;"></tr>    
      <tr mat-row *matRowDef= "let row2; columns: headers; let k=index;"
-     [ngClass]="k%2===0? 'message-table-sub-message-row-even':'message-table-sub-message-row-odd'"></tr>
+     [ngClass]="k%2===0? 'message-table-sub-message-row-even':'message-table-sub-message-row-odd'" (contextmenu)="openMenu($event,element,row2,element.name+' > '+row2.name)"></tr>
      <tr mat-footer-row *matFooterRowDef="['footer']"></tr>
     </table>
 </div>
 <mat-menu #contextMenu="matMenu">
-    <ng-template matMenuContent let-id="id" let-submessage="submessage" let-location="location">
-        <button mat-menu-item (click)="navigateToElementsTableInNewTab(id,submessage,location)"> Open in new tab</button>
+    <ng-template matMenuContent let-message="message" let-submessage="submessage" let-location="location">
+        <button mat-menu-item (click)="navigateToElementsTable(message.id,submessage.id,location)"> Open submessage details</button>
+        <button mat-menu-item (click)="navigateToElementsTableInNewTab(message.id,submessage.id,location)"> Open submessage details in new tab</button>
+        <ng-container *ngIf="editMode==true;">
+            <button mat-menu-item (click)="removeSubMessage(submessage,message)">Remove submessage from message</button>
+            <button mat-menu-item (click)="deleteSubMessage(submessage)">Delete submessage globally</button>
+        </ng-container>
+        <!--Code insertion for remove submessage and delete submessage-->
     </ng-template>
 </mat-menu>
 <div style="visibility: hidden; position: fixed;" 

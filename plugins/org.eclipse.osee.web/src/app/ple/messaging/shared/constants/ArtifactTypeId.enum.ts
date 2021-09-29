@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const enum ARTIFACTTYPEID  {
+    ELEMENT_ARRAY="6360154518785980502",
     ELEMENT = "2455059983007225765",
     STRUCTURE = "2455059983007225776",
     SUBMESSAGE = "126164394421696908",

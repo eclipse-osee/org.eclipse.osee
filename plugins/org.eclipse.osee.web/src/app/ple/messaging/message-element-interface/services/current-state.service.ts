@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, filter, take, map, reduce } from 'rxjs/operators';
+import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, filter, take, map, reduce, delay } from 'rxjs/operators';
 import { transaction } from 'src/app/transactions/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
@@ -190,6 +190,7 @@ export class CurrentStateService {
   }
 
   createStructure(body: Partial<structure>) {
+    delete body.elements;
     return this.messages.getSubMessage(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue()).pipe(
       switchMap((submessage)=>this.structure.createSubMessageRelation(submessage.name).pipe(
         take(1),
@@ -323,6 +324,55 @@ export class CurrentStateService {
       }
     })
     return of([columnPrefs,allColumns]);
+  }
+
+  removeStructureFromSubmessage(structureId:string,submessageId:string) {
+    return this.ui.BranchId.pipe(
+      switchMap((branchId) => this.structure.deleteSubmessageRelation(branchId, submessageId, structureId).pipe(
+        switchMap((transaction) => this.structure.performMutation(branchId, '', '', '', transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
+    )
+  }
+  removeElementFromStructure(element: element, structure: structure) {
+    return this.ui.BranchId.pipe(
+      switchMap((branchId) => this.elements.createStructureRelation(structure.id, element.id).pipe(
+        switchMap((relation) => this.elements.deleteRelation(branchId, relation).pipe(
+          switchMap((transaction) => this.elements.performMutation(transaction, branchId, '', '', '', '').pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
+        ))
+      ))
+    )
+  }
+
+  deleteElement(element: element) {
+    return this.ui.BranchId.pipe(
+      switchMap((branchId) => this.elements.deleteElement(branchId, element.id).pipe(
+        switchMap((transaction) => this.elements.performMutation(transaction, branchId, '', '', '', '').pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
+    )
+  }
+
+  deleteStructure(structureId:string) {
+    return this.ui.BranchId.pipe(
+      switchMap((branchId) => this.structure.deleteStructure(branchId, structureId).pipe(
+        switchMap((transaction) => this.structure.performMutation(branchId, '', '', '', transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
+    )
   }
 
   private createUserPreferenceBranchTransaction(columnPrefs:string[], allColumns:string[],editMode:boolean) {

@@ -58,10 +58,11 @@ export class MessagesService {
       map(x=>x.name)
     )
   }
-  createConnectionRelation(connectionId:string) {
+  createConnectionRelation(connectionId:string, messageId?:string) {
     let relation: relation = {
       typeName: 'Interface Connection Content',
-      sideA:connectionId
+      sideA: connectionId,
+      sideB:messageId
     }
     return of(relation);
   }
@@ -71,6 +72,12 @@ export class MessagesService {
 
   createMessage(branchId: string, message: Partial<message>,relations:relation[]) {
     return of(this.builder.createArtifact(message, ARTIFACTTYPEID.MESSAGE, relations, undefined, branchId, "Create Message"));
+  }
+  deleteMessage(branchId: string, messageId: string, transaction?:transaction) {
+    return of(this.builder.deleteArtifact(messageId, transaction, branchId, "Deleting message"));
+  }
+  deleteRelation(branchId: string, relation: relation) {
+    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,'10','Removing message'))
   }
   performMutation(branchId:string,connectionId:string,body:transaction) {
     return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)

@@ -51,6 +51,7 @@ export class PlatformTypeCardComponent implements OnInit {
     const copy = JSON.parse(JSON.stringify(this.typeData));
     const dialogRef=this.dialog.open(EditTypeDialogComponent, {
       data: dialogData,
+      minWidth:"70%"
     })
     dialogRef.afterClosed()
       .pipe(

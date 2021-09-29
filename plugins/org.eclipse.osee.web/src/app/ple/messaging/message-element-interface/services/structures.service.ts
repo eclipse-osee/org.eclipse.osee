@@ -54,4 +54,10 @@ export class StructuresService {
   performMutation(branchId: string, messageId:string,subMessageId:string,connectionId:string,transaction:transaction): Observable<OSEEWriteApiResponse> {
     return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",transaction);
   }
+  deleteSubmessageRelation(branchId:string,submessageId:string,structureId:string) {
+    return of(this.builder.deleteRelation("Interface SubMessage Content",undefined,submessageId,structureId,undefined,undefined,branchId,"Unrelating submessage from message"))
+  }
+  deleteStructure(branchId:string,structureId: string) {
+    return of(this.builder.deleteArtifact(structureId,undefined,branchId,'Deleting structure'))
+  }
 }

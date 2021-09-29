@@ -41,6 +41,11 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
 
    private ApplicabilityToken applicability;
 
+   private String logicalType;
+   private String InterfacePlatformTypeMinval;
+   private String InterfacePlatformTypeMaxval;
+   private String InterfacePlatformTypeDefaultValue;
+
    public InterfaceStructureElementArrayToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -198,6 +203,62 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
     */
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
+   }
+
+   /**
+    * @return the logicalType
+    */
+   public String getLogicalType() {
+      return logicalType;
+   }
+
+   /**
+    * @param logicalType the logicalType to set
+    */
+   public void setLogicalType(String logicalType) {
+      this.logicalType = logicalType;
+   }
+
+   /**
+    * @return the interfacePlatformTypeMinval
+    */
+   public String getInterfacePlatformTypeMinval() {
+      return InterfacePlatformTypeMinval;
+   }
+
+   /**
+    * @param interfacePlatformTypeMinval the interfacePlatformTypeMinval to set
+    */
+   public void setInterfacePlatformTypeMinval(String interfacePlatformTypeMinval) {
+      InterfacePlatformTypeMinval = interfacePlatformTypeMinval;
+   }
+
+   /**
+    * @return the interfacePlatformTypeMaxval
+    */
+   public String getInterfacePlatformTypeMaxval() {
+      return InterfacePlatformTypeMaxval;
+   }
+
+   /**
+    * @param interfacePlatformTypeMaxval the interfacePlatformTypeMaxval to set
+    */
+   public void setInterfacePlatformTypeMaxval(String interfacePlatformTypeMaxval) {
+      InterfacePlatformTypeMaxval = interfacePlatformTypeMaxval;
+   }
+
+   /**
+    * @return the interfacePlatformTypeDefaultValue
+    */
+   public String getInterfacePlatformTypeDefaultValue() {
+      return InterfacePlatformTypeDefaultValue;
+   }
+
+   /**
+    * @param interfacePlatformTypeDefaultValue the interfacePlatformTypeDefaultValue to set
+    */
+   public void setInterfacePlatformTypeDefaultValue(String interfacePlatformTypeDefaultValue) {
+      InterfacePlatformTypeDefaultValue = interfacePlatformTypeDefaultValue;
    }
 
 }

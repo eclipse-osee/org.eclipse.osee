@@ -17,7 +17,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,6 +29,10 @@ import { combineLatest, from, iif, of } from 'rxjs';
 import { AddStructureDialogComponent } from './components/add-structure-dialog/add-structure-dialog.component';
 import { AddStructureDialog } from './types/AddStructureDialog';
 import { filter, first, map, mergeMap, reduce, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { RemoveStructureDialogComponent } from './components/remove-structure-dialog/remove-structure-dialog.component';
+import { DeleteStructureDialogComponent } from './components/delete-structure-dialog/delete-structure-dialog.component';
 
 @Component({
   selector: 'ple-messaging-message-element-interface',
@@ -63,7 +67,7 @@ export class MessageElementInterfaceComponent implements OnInit {
     'interfaceMinSimultaneity',
     'interfaceTaskFileType',
     'interfaceStructureCategory',
-  'applicability'];
+    'applicability'];
   
   allStructureHeaders: string[] = [
     'name',
@@ -83,6 +87,12 @@ export class MessageElementInterfaceComponent implements OnInit {
   allElementHeaders: string[] = [
     'name',
     'platformTypeName2',
+    'interfaceElementIndexStart',
+    'interfaceElementIndexEnd',
+    'logicalType',
+    'interfacePlatformTypeDefaultValue',
+    'interfacePlatformTypeMaxval',
+    'interfacePlatformTypeMinval',
     'beginWord',
     'endWord',
     'beginByte',
@@ -110,11 +120,13 @@ export class MessageElementInterfaceComponent implements OnInit {
         reduce((acc, curr) => [...acc, curr], [] as string[])
       ))
     )),
-    mergeMap((headers)=>iif(()=>headers.length!==0,of(headers),of(['name',
-    'platformTypeName2',
-    'interfaceElementAlterable',
-    'description',
-    'notes',]))),
+    mergeMap((headers) => iif(() => headers.length !== 0, of(headers).pipe(
+      map((array) => { array.push(array.splice(array.indexOf('applicability'), 1)[0]); return array; })
+    ), of(['name',
+      'platformTypeName2',
+      'interfaceElementAlterable',
+      'description',
+      'notes',]))),
     share(),
     shareReplay(1)
   );
@@ -126,19 +138,20 @@ export class MessageElementInterfaceComponent implements OnInit {
         reduce((acc, curr) => [...acc, curr], [] as string[])
       ))
     )),
-    mergeMap((headers)=>iif(()=>headers.length!==0,of(headers),of(['name',
-    'description',
-    'interfaceMaxSimultaneity',
-    'interfaceMinSimultaneity',
-    'interfaceTaskFileType',
-    'interfaceStructureCategory',]))),
+    mergeMap((headers) => iif(() => headers.length !== 0, of(headers), of(['name',
+      'description',
+      'interfaceMaxSimultaneity',
+      'interfaceMinSimultaneity',
+      'interfaceTaskFileType',
+      'interfaceStructureCategory',]))),
+    switchMap((finalHeaders) => of([' ', ...finalHeaders])),
     share(),
     shareReplay(1)
   )
 
-  settingsDialog = combineLatest([this.structureService.BranchId,this.isEditing, this.currentElementHeaders, this.currentStructureHeaders]).pipe(
+  settingsDialog = combineLatest([this.structureService.BranchId, this.isEditing, this.currentElementHeaders, this.currentStructureHeaders]).pipe(
     take(1),
-    switchMap(([branch,edit, elements, structures]) => this.dialog.open(ColumnPreferencesDialogComponent, {
+    switchMap(([branch, edit, elements, structures]) => this.dialog.open(ColumnPreferencesDialogComponent, {
       data: {
         branchId: branch,
         allHeaders2: this.allElementHeaders,
@@ -152,12 +165,12 @@ export class MessageElementInterfaceComponent implements OnInit {
       }
     }).afterClosed().pipe(
       take(1),
-    switchMap((result)=>this.structureService.updatePreferences(result))))
+      switchMap((result) => this.structureService.updatePreferences(result))))
   )
 
   structureDialog = this.structureService.SubMessageId.pipe(
     take(1),
-    switchMap((submessage)=>this.dialog.open(AddStructureDialogComponent, {
+    switchMap((submessage) => this.dialog.open(AddStructureDialogComponent, {
       data: {
         id: submessage,
         name: this.breadCrumb,
@@ -169,7 +182,7 @@ export class MessageElementInterfaceComponent implements OnInit {
           interfaceMaxSimultaneity: '',
           interfaceMinSimultaneity: '',
           interfaceStructureCategory: '',
-          interfaceTaskFileType:0
+          interfaceTaskFileType: 0
         }
       }
     }).afterClosed().pipe(
@@ -179,11 +192,19 @@ export class MessageElementInterfaceComponent implements OnInit {
       first()
     ))
   )
-  constructor(
+  layout = this.layoutNotifier.layout;
+  menuPosition = {
+    x: '0',
+    y: '0'
+  }
+  @ViewChild(MatMenuTrigger, { static: true })
+  matMenuTrigger!: MatMenuTrigger;
+  constructor (
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog,
-    private structureService: CurrentStateService
+    private structureService: CurrentStateService,
+    private layoutNotifier: LayoutNotifierService
   ) {
     this.messageData.subscribe((value) => {
       this.dataSource.data = value;
@@ -230,7 +251,7 @@ export class MessageElementInterfaceComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.searchTerms = filterValue;
     this.filter = filterValue.trim().toLowerCase();
-    this.structureService.filter=(event.target as HTMLInputElement).value;
+    this.structureService.filter = (event.target as HTMLInputElement).value;
   }
   isTruncated(value: string) {
     if (this.truncatedSections.find((x) => x === value)) {
@@ -244,5 +265,44 @@ export class MessageElementInterfaceComponent implements OnInit {
   }
   openAddStructureDialog() {
     this.structureDialog.subscribe();
+  }
+
+  openMenu(event: MouseEvent, id: string, name: string) {
+    event.preventDefault();
+    this.menuPosition.x = event.clientX + 'px';
+    this.menuPosition.y = event.clientY + 'px';
+    this.matMenuTrigger.menuData = {
+      id: id,
+      name: name
+    }
+    this.matMenuTrigger.openMenu();
+  }
+
+  removeStructureDialog(id: string, name: string) {
+    this.structureService.SubMessageId.pipe(
+      take(1),
+      switchMap((subMessageId) => this.dialog.open(RemoveStructureDialogComponent, { data: { subMessageId: subMessageId, structureId: id, structureName: name } }).afterClosed().pipe(
+        take(1),
+        switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+          this.structureService.removeStructureFromSubmessage(id, subMessageId),
+          of()
+        ))
+      ))
+    ).subscribe();
+  }
+
+  deleteStructureDialog(id: string, name: string) {
+    this.dialog.open(DeleteStructureDialogComponent, {
+      data: {
+        structureId: id,
+        structureName: name
+      }
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.structureService.deleteStructure(id),
+        of()
+      ))
+    ).subscribe();
   }
 }

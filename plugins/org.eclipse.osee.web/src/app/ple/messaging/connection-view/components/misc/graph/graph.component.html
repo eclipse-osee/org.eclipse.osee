@@ -78,7 +78,7 @@
         </ngx-graph>
     </div>
 </ng-container>
-<mat-menu #linkMenu="matMenu">
+<mat-menu #linkMenu="matMenu" class="linkMenu">
   <ng-template matMenuContent let-data="data" let-source="source" let-target="target">
     <button mat-menu-item (click)="navigateToMessages(data.id)"> Go to {{data.name}}</button>
     <button mat-menu-item (click)="navigateToMessagesInNewTab(data.id)"> Go to {{data.name}} in new tab</button>
@@ -117,15 +117,15 @@
 <div #linkMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed;"
 [style.left]="linkPosition.x" 
 [style.top]="linkPosition.y" 
-[matMenuTriggerFor]="linkMenu">
+[matMenuTriggerFor]="linkMenu" class='linkMenuTrigger'>LinkMenu
 </div>
 <div #nodeMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed;"
 [style.left]="nodePosition.x" 
 [style.top]="nodePosition.y" 
-[matMenuTriggerFor]="nodeMenu">
+[matMenuTriggerFor]="nodeMenu" class='nodeMenuTrigger'>NodeMenu
 </div>
 <div #graphMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed;"
 [style.left]="graphMenuPosition.x" 
 [style.top]="graphMenuPosition.y" 
-[matMenuTriggerFor]="graphMenu">
+[matMenuTriggerFor]="graphMenu" class="graphMenuTrigger">GraphMenu
 </div>

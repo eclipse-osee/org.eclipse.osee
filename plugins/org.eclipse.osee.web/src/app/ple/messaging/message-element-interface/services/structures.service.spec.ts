@@ -82,6 +82,22 @@ describe('StructuresService', () => {
     })
   })
 
+  it('should create a transaction for deleting a submessage relation', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      expectObservable(service.deleteSubmessageRelation('10', '20', '30')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should create a transaction for deleting a structure', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      expectObservable(service.deleteStructure('10', '20')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
   it('should create a sub message relation', () => {
     scheduler.run(() => {
       let relation: relation = {

@@ -24,6 +24,9 @@ import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
+import { CurrentTypesService } from '../../services/current-types.service';
+import { currentTypesServiceMock } from '../../mocks/services/current.types.service.mock';
+import { MatSelectModule } from '@angular/material/select';
 
 let loader: HarnessLoader;
 
@@ -53,12 +56,12 @@ describe('EditTypeDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatDialogModule, MatFormFieldModule,MatInputModule,NoopAnimationsModule,FormsModule,MatSlideToggleModule],
+      imports:[MatDialogModule, MatFormFieldModule,MatInputModule,NoopAnimationsModule,FormsModule,MatSlideToggleModule,MatSelectModule],
       declarations: [EditTypeDialogComponent],
       providers: [
         { provide: MatDialogRef, useValue: {} },
-        {
-          provide: MAT_DIALOG_DATA, useValue: matDialogData}
+        { provide: MAT_DIALOG_DATA, useValue: matDialogData },
+        {provide: CurrentTypesService, useValue:currentTypesServiceMock}
       ]
     })
     .compileComponents();

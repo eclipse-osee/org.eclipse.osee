@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
@@ -21,7 +21,10 @@ import { message } from '../../types/messages';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { filter, first, map, share, shareReplay, switchMap, take } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
+import { combineLatest, iif, of } from 'rxjs';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { RemoveMessageDialogComponent } from '../dialogs/remove-message-dialog/remove-message-dialog.component';
+import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/delete-message-dialog.component';
 
 @Component({
   selector: 'ple-messaging-message-table',
@@ -55,6 +58,12 @@ export class MessageTableComponent implements OnInit {
     share(),
     shareReplay(1)
   );
+  menuPosition = {
+    x: '0',
+    y:'0'
+  }
+  @ViewChild(MatMenuTrigger, { static: true })
+  matMenuTrigger!: MatMenuTrigger;
   constructor (private messageService: CurrentMessagesService,public dialog: MatDialog) {
     this.messageData.subscribe((value) => {
       this.dataSource.data = value;
@@ -130,6 +139,40 @@ export class MessageTableComponent implements OnInit {
       filter((val) => val !== undefined),
       switchMap((val) => this.messageService.createMessage(val)),
       first()
+    ).subscribe();
+  }
+
+  openMenu(event: MouseEvent, message: message) {
+    event.preventDefault();
+    this.menuPosition.x = event.clientX + 'px';
+    this.menuPosition.y = event.clientY + 'px';
+    this.matMenuTrigger.menuData = {
+      message: message,
+    }
+    this.matMenuTrigger.openMenu();
+  }
+  removeMessage(message: message) {
+    //open dialog, iif result ==='ok' messageservice. removemessage
+    this.dialog.open(RemoveMessageDialogComponent, {
+      data: { message: message }
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.messageService.removeMessage(message.id),
+        of()
+      ))
+    ).subscribe();
+  }
+
+  deleteMessage(message: message) {
+    this.dialog.open(DeleteMessageDialogComponent, {
+      data: { message: message }
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.messageService.deleteMessage(message.id),
+        of()
+      ))
     ).subscribe();
   }
 }

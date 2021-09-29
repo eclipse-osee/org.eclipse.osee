@@ -43,8 +43,14 @@ export class SubMessagesService {
   addRelation(branchId:string,relation:relation) {
     return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,'10','Relating SubMessage'))
   }
+  deleteRelation(branchId:string,relation:relation) {
+    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,'10','Relating SubMessage'))
+  }
   createSubMessage(branchId: string, submessage: Partial<subMessage>, relations: relation[]) {
     return of(this.builder.createArtifact(submessage, ARTIFACTTYPEID.SUBMESSAGE, relations, undefined, branchId, "Create SubMessage"));
+  }
+  deleteSubMessage(branchId: string, submessageId: string) {
+    return of(this.builder.deleteArtifact(submessageId,undefined,branchId,'Deleting Submessage'))
   }
   performMutation(branchId:string,connectionId:string,messageId:string,body:transaction) {
     return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)

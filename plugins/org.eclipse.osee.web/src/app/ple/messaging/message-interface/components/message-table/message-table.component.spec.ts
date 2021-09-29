@@ -49,6 +49,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiService } from '../../services/ui.service'
 import { MimPreferencesMock } from '../../../shared/mocks/MimPreferences.mock';
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
+import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
+import { MatMenuHarness } from '@angular/material/menu/testing';
 
 let loader: HarnessLoader;
 
@@ -196,4 +198,40 @@ describe('MessageTableComponent', () => {
   //   let input = await form.getControl(MatInputHarness);
   //   await input?.setValue('sub message: Hello');
   // })
+
+  describe("menu testing",()=> {
+    let mEvent:MouseEvent
+    beforeEach(() => {
+      mEvent = document.createEvent("MouseEvent");
+    })
+
+    it('should open a dialog and remove a message', async() => {
+      component.openMenu(mEvent, messagesMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'removeMessage').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeMessage').and.stub();
+      await menu.clickItem({ text: "Remove message from connection" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open a dialog and delete a message', async() => {
+      component.openMenu(mEvent, messagesMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'deleteMessage').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteMessage').and.stub();
+      await menu.clickItem({ text: "Delete message globally" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+    afterEach(() => {
+      component.matMenuTrigger.closeMenu();
+    })
+  })
 });

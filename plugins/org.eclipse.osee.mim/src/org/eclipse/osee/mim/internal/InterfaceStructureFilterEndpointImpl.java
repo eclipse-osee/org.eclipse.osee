@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,10 +57,10 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
 
    @Override
    public Collection<InterfaceStructureToken> getStructures() {
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
-         List<InterfaceStructureToken> structureList =
-            (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
+         structureList = (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
             double beginWord = 0.0;
             double endWord = 0.0;
@@ -103,16 +102,23 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
 
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setLogicalType(
+                  platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
+               element.setInterfacePlatformTypeMinval(
+                  platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
+               element.setInterfacePlatformTypeMaxval(
+                  platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
+               element.setInterfacePlatformTypeDefaultValue(
+                  platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
          }
 
          return structureList;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
+      } catch (Exception ex) {
          System.out.println(ex);
-         return null;
+         return structureList;
       }
    }
 
@@ -142,11 +148,12 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
    public Collection<InterfaceStructureToken> getStructures(String filter) {
       List<AttributeTypeId> structureAttributes = this.createStructureAttributeList();
       List<AttributeTypeId> elementAttributes = this.createElementAttributeList();
+      List<InterfaceStructureToken> totalStructureList = new LinkedList<InterfaceStructureToken>();
       try {
          /**
           * Gets total list of all related structures for lookup later
           */
-         List<InterfaceStructureToken> totalStructureList =
+         totalStructureList =
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : totalStructureList) {
@@ -190,6 +197,14 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
 
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setLogicalType(
+                  platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
+               element.setInterfacePlatformTypeMinval(
+                  platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
+               element.setInterfacePlatformTypeMaxval(
+                  platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
+               element.setInterfacePlatformTypeDefaultValue(
+                  platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
@@ -242,6 +257,14 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
 
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setLogicalType(
+                  platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
+               element.setInterfacePlatformTypeMinval(
+                  platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
+               element.setInterfacePlatformTypeMaxval(
+                  platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
+               element.setInterfacePlatformTypeDefaultValue(
+                  platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
@@ -263,6 +286,14 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                   PlatformTypeToken.class);
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setLogicalType(
+                  platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
+               element.setInterfacePlatformTypeMinval(
+                  platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
+               element.setInterfacePlatformTypeMaxval(
+                  platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
+               element.setInterfacePlatformTypeDefaultValue(
+                  platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
                if (totalStructureList.indexOf(alternateStructure) != -1 && totalStructureList.get(
                   totalStructureList.indexOf(alternateStructure)).getElements().indexOf(element) != -1) {
                   InterfaceStructureElementToken tempElement =
@@ -294,10 +325,9 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
             }
          }
          return structureList;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
+      } catch (Exception ex) {
          System.out.println(ex);
-         return null;
+         return totalStructureList;
       }
    }
 
