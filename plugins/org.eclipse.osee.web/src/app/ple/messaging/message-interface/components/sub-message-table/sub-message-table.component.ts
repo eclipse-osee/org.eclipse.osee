@@ -15,12 +15,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { iif } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+import { iif, of } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { message } from '../../types/messages';
 import { subMessage } from '../../types/sub-messages';
+import { DeleteSubmessageDialogComponent } from '../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
+import { RemoveSubmessageDialogComponent } from '../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
 
 @Component({
@@ -45,7 +47,7 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   matMenuTrigger!: MatMenuTrigger;
   constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService) {
     this.dataSource.data = this.data;
-    this.headers=["name","description","interfaceSubMessageNumber","applicability", " "]
+    this.headers=["name","description","interfaceSubMessageNumber", " ","applicability"]
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.data;
@@ -69,12 +71,12 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     })
   }
 
-  openMenu(event: MouseEvent, id: string | undefined, submessage: string, location: string) {
+  openMenu(event: MouseEvent, message: message, submessage: subMessage, location: string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
     this.matMenuTrigger.menuData = {
-      id: id,
+      message: message,
       submessage: submessage,
       location:location
     }
@@ -89,7 +91,7 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   }
 
   createNewSubMessage() {
-    const dialogRef = this.dialog.open(AddSubMessageDialogComponent, {
+    this.dialog.open(AddSubMessageDialogComponent, {
       data: {
         name:this.element.name,
         id: this.element.id,
@@ -99,10 +101,32 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
           interfaceSubMessageNumber:''
         }
       }
-    })
-    dialogRef.afterClosed().pipe(
+    }).afterClosed().pipe(
+      take(1),
       filter((val)=>val!==undefined),
       switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id!=='-1', this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1'), this.messageService.createSubMessage(z.subMessage, z.id)))
+    ).subscribe();
+  }
+
+  removeSubMessage(submessage:subMessage,message:message) {
+    this.dialog.open(RemoveSubmessageDialogComponent, {
+      data: { submessage: submessage, message: message }
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.messageService.removeSubMessage(submessage?.id || '', message.id),
+        of()
+      ))
+    ).subscribe();
+  }
+  deleteSubMessage(submessage: subMessage) {
+    this.dialog.open(DeleteSubmessageDialogComponent, {
+      data: { submessage: submessage }
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.messageService.deleteSubMessage(submessage.id || ''),
+        of()))
     ).subscribe();
   }
 

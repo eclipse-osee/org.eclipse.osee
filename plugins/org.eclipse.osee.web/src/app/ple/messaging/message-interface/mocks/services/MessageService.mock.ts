@@ -17,7 +17,7 @@ import { messageResponseMock } from "../ReturnObjects/response.mock";
 import { message } from '../../types/messages';
 import { transactionMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
-import { transaction } from "src/app/transactions/transaction";
+import { relation, transaction } from "src/app/transactions/transaction";
 
 export const messageServiceMock: Partial<MessagesService> = {
     getFilteredMessages(filter, branchId, connectionId) {
@@ -42,6 +42,12 @@ export const messageServiceMock: Partial<MessagesService> = {
           })
     },
     performMutation(branchId: string, connectionId: string, body: transaction) {
-        return of(response)
+        return of(response);
+    },
+    deleteMessage(branchId: string, messageId: string, transaction?: transaction) {
+        return of(transactionMock);
+    },
+    deleteRelation(branchId: string, relation: relation) {
+        return of(transactionMock);
     }
 }

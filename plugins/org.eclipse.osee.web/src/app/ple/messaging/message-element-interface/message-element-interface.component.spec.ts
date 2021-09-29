@@ -39,6 +39,9 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { SubElementTableComponentMock } from './mocks/components/sub-element-table.mock';
 import { EditAuthService } from '../shared/services/edit-auth-service.service';
 import { editAuthServiceMock } from '../connection-view/mocks/EditAuthService.mock';
+import { MatMenuModule } from '@angular/material/menu';
+import { structuresMock } from './mocks/ReturnObjects/Structures.mock';
+import { MatMenuHarness } from '@angular/material/menu/testing';
 
 let loader: HarnessLoader;
 
@@ -53,6 +56,7 @@ describe('MessageElementInterfaceComponent', () => {
         MatDialogModule,
         MatInputModule,
         MatSelectModule,
+        MatMenuModule,
         FormsModule,
         NoopAnimationsModule,
         MatTableModule,
@@ -183,5 +187,39 @@ describe('MessageElementInterfaceComponent', () => {
     const button = await loader.getHarness(MatButtonHarness.with({ text: '+' }));
     await button.click();
     expect(spy).toHaveBeenCalled();
+  })
+
+  describe("Menu Testing", () => {
+    let mEvent:MouseEvent
+    beforeEach(() => {
+      mEvent = document.createEvent("MouseEvent");
+    })
+    it('should open the remove structure dialog', async() => {
+      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'removeStructureDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'removeStructureFromSubmessage').and.stub();
+      await menu.clickItem({ text: "Remove structure from submessage" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+    it('should open the delete structure dialog', async() => {
+      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'deleteStructureDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'deleteStructure').and.stub();
+      await menu.clickItem({ text: "Delete structure globally" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+    afterEach(() => {
+      component.matMenuTrigger.closeMenu();
+    })
   })
 });

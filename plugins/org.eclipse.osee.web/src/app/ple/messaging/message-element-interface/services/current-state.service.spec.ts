@@ -132,6 +132,38 @@ describe('CurrentStateService', () => {
     })
   });
 
+  it('should perform a mutation for deleting a submessage relation', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: response };
+      let expectedMarble = 'a';
+      expectObservable(service.removeStructureFromSubmessage('10', '20')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should perform a mutation for deleting a submessage relation', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: response };
+      let expectedMarble = 'a';
+      expectObservable(service.removeElementFromStructure(elementsMock[0], structuresMock[0])).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should perform a mutation for deleting a submessage relation', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: response };
+      let expectedMarble = 'a';
+      expectObservable(service.deleteElement(elementsMock[0])).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should perform a mutation for deleting a structure', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: response };
+      let expectedMarble = 'a';
+      expectObservable(service.deleteStructure(structuresMock[0].id)).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
   it('should update user preferences', () => {
     scheduler.run(() => {
       service.branchId='10'

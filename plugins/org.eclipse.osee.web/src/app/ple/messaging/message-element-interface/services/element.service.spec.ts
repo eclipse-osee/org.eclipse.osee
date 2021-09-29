@@ -67,6 +67,13 @@ describe('ElementService', () => {
       scheduler.expectObservable(service.createElement({},'10', [])).toBe(expectedMarble, expectedObservable);
     })
   })
+  it('should create a transaction for deleting an element', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      expectObservable(service.deleteElement('10', '20')).toBe(expectedMarble, expectedObservable);
+    })
+  })
 
   it('should create a transaction for an element modification', () => {
     scheduler.run(() => {

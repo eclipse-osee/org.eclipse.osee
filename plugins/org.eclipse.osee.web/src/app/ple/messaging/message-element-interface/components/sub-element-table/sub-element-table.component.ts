@@ -15,11 +15,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { iif } from 'rxjs';
+import { iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
+import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
+import { element } from '../../types/element';
+import { RemoveElementDialogData } from '../../types/RemoveElementDialog';
+import { structure } from '../../types/structure';
 import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
+import { RemoveElementDialogComponent } from '../remove-element-dialog/remove-element-dialog.component';
 
 @Component({
   selector: 'ple-messaging-message-element-interface-sub-element-table',
@@ -37,6 +42,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   private _branchId: string = "";
   private _branchType: string = "";
   @Input() editMode: boolean = false;
+  layout = this.layoutNotifier.layout;
   menuPosition = {
     x: '0',
     y:'0'
@@ -47,11 +53,14 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     'interfaceElementAlterable',
     'description',
     'notes',
-    'applicability'
+    'applicability',
+    'interfaceElementIndexStart',
+    'interfaceElementIndexEnd',
   ];
-  @ViewChild(MatMenuTrigger, { static: true })
-  matMenuTrigger!: MatMenuTrigger;
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService) {
+
+  @ViewChild('generalMenuTrigger', { static: true })
+  generalMenuTrigger!: MatMenuTrigger;
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService,private layoutNotifier: LayoutNotifierService) {
     this.subMessageHeaders = ["name", "beginWord", "endWord", "BeginByte", "EndByte",  "interfaceElementAlterable", "description", "notes"];
     this.dataSource.data = this.data;
   }
@@ -93,15 +102,6 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     });
   }
 
-  openMenu(event: MouseEvent,location: string) {
-    event.preventDefault();
-    this.menuPosition.x = event.clientX + 'px';
-    this.menuPosition.y = event.clientY + 'px';
-    this.matMenuTrigger.menuData = {
-      location:location
-    }
-    this.matMenuTrigger.openMenu();
-  }
   navigateToInNewTab(location: string) {
     const url = this.router.serializeUrl(this.router.createUrlTree([this._branchType,this._branchId,"types", location], {
       relativeTo: this.route.parent?.parent,
@@ -139,5 +139,48 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     );
     createElement.subscribe();
   }
-  
+  openGeneralMenu(event: MouseEvent, element: element) {
+    event.preventDefault();
+    this.menuPosition.x = event.clientX + 'px';
+    this.menuPosition.y = event.clientY + 'px';
+    this.generalMenuTrigger.menuData = {
+      element: element,
+      structure:this.element
+    }
+    this.generalMenuTrigger.openMenu();
+  }
+
+  removeElement(element: element,structure:structure) {
+    const dialogData: RemoveElementDialogData = {
+      elementId: element.id,
+      structureId: structure.id,
+      elementName:element.name
+    }
+    this.dialog.open(RemoveElementDialogComponent, {
+      data:dialogData
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.structureService.removeElementFromStructure(element, structure),
+        of()
+      ))
+    ).subscribe()
+  }
+  deleteElement(element: element) {
+    //open dialog, yes/no if yes -> this.structures.deleteElement()
+    const dialogData: RemoveElementDialogData = {
+      elementId: element.id,
+      structureId: '',
+      elementName:element.name
+    }
+    this.dialog.open(RemoveElementDialogComponent, {
+      data:dialogData
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((dialogResult: string) => iif(() => dialogResult === 'ok',
+        this.structureService.deleteElement(element),
+        of()
+      ))
+    ).subscribe()
+  }
 }

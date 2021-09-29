@@ -37,10 +37,14 @@ import { EditElementFieldComponent } from './components/sub-element-table/edit-e
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { RemoveStructureDialogComponent } from './components/remove-structure-dialog/remove-structure-dialog.component';
+import { RemoveElementDialogComponent } from './components/remove-element-dialog/remove-element-dialog.component';
+import { DeleteElementDialogComponent } from './components/delete-element-dialog/delete-element-dialog.component';
+import { DeleteStructureDialogComponent } from './components/delete-structure-dialog/delete-structure-dialog.component';
 
 
 @NgModule({
-  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent],
+  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent],
   imports: [
     CommonModule,
     MatTableModule,

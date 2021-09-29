@@ -40,7 +40,13 @@ const transformMatrix:any = {
   DefaultValue: "Default Value",
   isArray: "Is An Array",
   platformTypeName2: "Type",
-  applicability: "Applicability"
+  applicability: "Applicability",
+  logicalType: "Logical Type",
+  interfacePlatformTypeDefaultValue: "Default",
+  interfacePlatformTypeMaxval: "Max",
+  interfacePlatformTypeMinval: "Min",
+  interfaceElementIndexEnd: "End Index",
+  interfaceElementIndexStart:"Start Index"
 }
 
 @Pipe({

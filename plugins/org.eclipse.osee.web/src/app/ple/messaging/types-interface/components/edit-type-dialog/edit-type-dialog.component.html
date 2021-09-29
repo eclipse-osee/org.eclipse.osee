@@ -17,64 +17,65 @@
     <h1 mat-dialog-title>Creating New Type from {{platform_type}}</h1>
 </ng-container>
 <mat-dialog-content>
-    <mat-form-field>
-        <label>Platform Type</label>
-        <input matInput type="text" [(ngModel)]="data.type.name" #input required>
-    </mat-form-field>
+    <div class="full-width">
+        <mat-form-field>
+            <label>Platform Type</label>
+            <input matInput type="text" [(ngModel)]="data.type.name" #input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>Logical Type</label>
+            <mat-select [(ngModel)]="data.type.interfaceLogicalType" required>
+                <mat-option *ngFor="let logicaltype of (logicalTypes |async)" [value]="logicaltype.name" >
+                    {{logicaltype.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
     <br>
-    <mat-form-field>
-        <label>Logical Type</label>
-        <input matInput type="text" [(ngModel)]="data.type.interfaceLogicalType" #input required>
-    </mat-form-field>
+    <div class="full-width">
+        <mat-form-field>
+            <label>Minimum Value</label>
+            <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeMinval" #input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>Maximum Value</label>
+            <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeMaxval" #input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>Default Value</label>
+            <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeDefaultValue" #input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>MSB Value</label>
+            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeMsbValue" [ngModel]="getMSBValue()" #input required>
+        </mat-form-field>
+    </div>
     <br>
-    <!-- <mat-slide-toggle [(ngModel)]="data.type.interfacePlatform2sComplement" labelPosition='before' [style.fontSize.px]="18" color="primary" [disabled]="true">
-        Signed
-    </mat-slide-toggle> -->
+    <div class="full-width">
+        <mat-form-field>
+            <label>Byte Size</label>
+            <input matInput type="number" [(ngModel)]="byte_size" #input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>Bit Size</label>
+            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeBitSize" #input required>
+        </mat-form-field>
+    </div>
     <br>
-    <mat-form-field>
-        <label>Minimum Value</label>
-        <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeMinval" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Maximum Value</label>
-        <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeMaxval" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Byte Size</label>
-        <input matInput type="number" [(ngModel)]="byte_size" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Bit Size</label>
-        <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeBitSize" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Default Value</label>
-        <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeDefaultValue" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>MSB Value</label>
-        <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeMsbValue" [ngModel]="getMSBValue()" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Resolution</label>
-        <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeBitsResolution"  [ngModel]="getResolution()"#input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Comp Rate</label>
-        <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeCompRate" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Analog Accuracy</label>
-        <input matInput [(ngModel)]="data.type.interfacePlatformTypeAnalogAccuracy" #input required>
-    </mat-form-field>
+    <div class="full-width">
+        <mat-form-field>
+            <label>Resolution</label>
+            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeBitsResolution"  [ngModel]="getResolution()"#input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>Comp Rate</label>
+            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeCompRate" #input required>
+        </mat-form-field>
+        <mat-form-field>
+            <label>Analog Accuracy</label>
+            <input matInput [(ngModel)]="data.type.interfacePlatformTypeAnalogAccuracy" #input required>
+        </mat-form-field>
+    </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button (click)="onNoClick()">

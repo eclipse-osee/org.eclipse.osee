@@ -46,7 +46,8 @@ describe('MessagesService', () => {
     scheduler.run(() => {
       let relation: relation = {
         typeName: 'Interface Connection Content',
-        sideA:'10'
+        sideA: '10',
+        sideB:undefined
       }
       let expectedObservable = { a: relation }
       let expectedMarble = '(a|)';
@@ -67,6 +68,22 @@ describe('MessagesService', () => {
       let expectedObservable = { a: transactionMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.changeMessage('10', {})).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should create a delete relation transaction', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.deleteRelation('10',{typeId:'12345',sideA:'abcde',sideB:'abcde'})).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should create a delete message transaction', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.deleteMessage('10','20')).toBe(expectedMarble, expectedObservable);
     })
   })
 

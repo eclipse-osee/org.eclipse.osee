@@ -43,4 +43,10 @@ export const structureServiceMock: Partial<StructuresService> = {
     addRelation(branchId: string, relation: relation, transaction?: transaction) {
         return of(transactionMock);
     },
+    deleteSubmessageRelation(branchId: string, submessageId: string, structureId: string) {
+        return of(transactionMock);
+    },
+    deleteStructure(branchId: string, structureId: string) {
+        return of(transactionMock);
+    }
 }

@@ -38,6 +38,12 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     updatePreferences(preferences: settingsDialogData) {
         return of(elementResponseMock)
     },
+    removeStructureFromSubmessage(structureId: string, submessageId: string) {
+        return of(elementResponseMock);
+    },
+    deleteStructure(structureId: string) {
+        return of(elementResponseMock);
+    },
     applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
     types: of(platformTypesMock),
     preferences: of(MimPreferencesMock),

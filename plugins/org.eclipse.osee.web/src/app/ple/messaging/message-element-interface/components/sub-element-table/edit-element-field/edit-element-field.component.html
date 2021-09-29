@@ -40,13 +40,3 @@
         </ng-container>
     </ng-container>
 </mat-form-field>
-<mat-menu #contextMenu="matMenu">
-    <ng-template matMenuContent let-location="location">
-        <button mat-menu-item (click)="navigateTo(location)">Open</button>
-        <button mat-menu-item (click)="navigateToInNewTab(location)">Open in new tab</button>
-    </ng-template>
-</mat-menu>
-<div style="visibility: hidden; position: fixed;" 
-[style.left]="menuPosition.x" 
-[style.top]="menuPosition.y" 
-[matMenuTriggerFor]="contextMenu"></div>

@@ -10,16 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
+import { MatMenuHarness } from '@angular/material/menu/testing';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableHarness } from '@angular/material/table/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -28,6 +33,9 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
+import { elementsMock } from '../../mocks/ReturnObjects/element.mock';
+import { CurrentStateService } from '../../services/current-state.service';
+import { AddElementDialog } from '../../types/AddElementDialog';
 import { EditElementFieldComponent } from './edit-element-field/edit-element-field.component';
 
 import { SubElementTableComponent } from './sub-element-table.component';
@@ -35,6 +43,7 @@ import { SubElementTableComponent } from './sub-element-table.component';
 describe('SubElementTableComponent', () => {
   let component: SubElementTableComponent;
   let fixture: ComponentFixture<SubElementTableComponent>;
+  let loader: HarnessLoader;
   let expectedData = [
     {
       beginWord: 'BEGIN',
@@ -89,10 +98,19 @@ describe('SubElementTableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SubElementTableComponent);
     component = fixture.componentInstance;
+    component.editMode = true;
     component.data = expectedData;
+    component.dataSource = new MatTableDataSource(expectedData);
     component.dataSource.filter="name1"
     component.filter="element: name1"
-    //fixture.detectChanges();
+    fixture.detectChanges();
+    loader = TestbedHarnessEnvironment.loader(fixture);
+  });
+
+  beforeEach(function () {
+    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+      return null;
+    })
   });
 
   it('should create',async () => {
@@ -118,7 +136,59 @@ describe('SubElementTableComponent', () => {
 
   it('should navigate to //types/10', () => {
     component.navigateTo("10");
-    expect(router.navigate).toHaveBeenCalledWith(['','','types','10'],{relativeTo: undefined, queryParamsHandling:'merge'});
+    expect(router.navigate).toHaveBeenCalledWith(['working','10','types','10'],{relativeTo: undefined, queryParamsHandling:'merge'});
   });
 
+  it('should open create element dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddElementDialog>({id:'2',name:'abcdef',type:{id:'123',name:'abcd'},element:{id:'3',name:'abcdef',description:'qwerty',notes:'uiop',interfaceElementIndexEnd:0,interfaceElementIndexStart:0,interfaceElementAlterable:true}}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+    let cells = (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells());
+    let button = await (cells[cells.length - 1].getHarness(MatButtonHarness));
+    expect(button).toBeDefined();
+    await button.click();
+
+  })
+  describe("Menu Testing", () => {
+    let mEvent:MouseEvent
+    beforeEach(() => {
+      mEvent = document.createEvent("MouseEvent");
+    })
+    it('should open the remove element dialog', async() => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'removeElement').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'removeElementFromStructure').and.stub();
+      await menu.clickItem({ text: "Remove element from structure" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the delete element dialog', async() => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'deleteElement').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'deleteElement').and.stub();
+      await menu.clickItem({ text: "Delete element globally" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should navigate to in new tab', async() => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
+      await menu.clickItem({ text: "Open Platform Type in new tab" });
+      expect(spy).toHaveBeenCalled();
+    })
+    afterEach(() => {
+      component.generalMenuTrigger.closeMenu();
+    })
+  })
 });

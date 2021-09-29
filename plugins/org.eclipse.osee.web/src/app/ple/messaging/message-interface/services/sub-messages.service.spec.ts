@@ -72,6 +72,22 @@ describe('SubMessagesService', () => {
     })
   })
 
+  it('should create a delete relation transaction', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.deleteRelation('10',{typeId:'12345',sideA:'abcde',sideB:'abcde'})).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('should create a delete sub message transaction', () => {
+    scheduler.run(() => {
+      let expectedObservable = { a: transactionMock };
+      let expectedMarble = '(a|)';
+      scheduler.expectObservable(service.deleteSubMessage('10','20')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
   it('should create a relation', () => {
     scheduler.run(() => {
       let expectedObservable = { a: transactionMock };

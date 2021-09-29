@@ -100,12 +100,10 @@ describe('EditElementFieldComponent', () => {
     it('should update the platform type', fakeAsync(async() => {
       let select = await loader.getHarness(MatAutocompleteHarness);
       await select.focus();
-      if (await select.isOpen()) {
-        await select.enterText('2');
-        tick(500);
-        expect(await select.getValue()).toBe('First2')
-      }
-
+      await select.isOpen() 
+      await select.enterText('2');
+      tick(500);
+      expect(await select.getValue()).toBe('First2')
     }))
 
     it('should navigate to types page', async () => {
@@ -115,17 +113,12 @@ describe('EditElementFieldComponent', () => {
       expect(spy).toHaveBeenCalled();
       expect(routerSpy.navigate).toHaveBeenCalled();
     })
-  })
 
-  it('should navigate to types page in new tab', async () => {
-    let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
-    component.matMenuTrigger.openMenu();
-    fixture.detectChanges();
-    await fixture.whenStable();
-    let menu = await loader.getHarness(MatMenuHarness);
-    await menu.clickItem({text:'Open in new tab'})
-    // let item = await loader.getHarness(MatMenuItemHarness.with({ text: 'Open in new tab' }))
-    // await item.click()
-    expect(spy).toHaveBeenCalled();
+    it('should emit an event to parent component', () => {
+      let mEvent = document.createEvent("MouseEvent");
+      let spy = spyOn(component.contextMenu, 'emit');
+      component.openMenu(mEvent, '');
+      expect(spy).toHaveBeenCalledWith(mEvent);
+    })
   })
 });
