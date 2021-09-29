@@ -106,14 +106,13 @@ public class DatabaseActivityStorage implements ActivityStorage {
    }
 
    @Override
-   public long cleanEntries(int daysToKeep) {
+   public void cleanEntries(int daysToKeep) {
       Calendar cal = Calendar.getInstance();
       if (daysToKeep > 0) {
          daysToKeep = -daysToKeep;
       }
       cal.add(Calendar.DATE, daysToKeep);
       jdbcClient.runPreparedUpdate(DELETE_ENTRIES, cal.getTime());
-      return cal.getTimeInMillis();
    }
 
    @Override

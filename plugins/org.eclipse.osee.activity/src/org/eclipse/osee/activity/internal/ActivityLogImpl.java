@@ -253,8 +253,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    }
 
    private void clean() {
-      long time = storage.cleanEntries(cleanerKeepDays);
-      logger.warn("ActivityLogImpl: OSEE_ACTIVITY Cleaner cleaned entries older than [%s]", time);
+      storage.cleanEntries(cleanerKeepDays);
    }
 
    private void setupCleaner() {
