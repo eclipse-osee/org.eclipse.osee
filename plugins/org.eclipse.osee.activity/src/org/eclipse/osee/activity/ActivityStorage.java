@@ -31,7 +31,7 @@ public interface ActivityStorage {
 
    ActivityTypeToken getActivityType(ActivityTypeId typeId);
 
-   long cleanEntries(int daysToKeep);
+   void cleanEntries(int daysToKeep);
 
    /**
     * Stores the activity type if not already in the data store. If the type token has an invalid id, a new id is
