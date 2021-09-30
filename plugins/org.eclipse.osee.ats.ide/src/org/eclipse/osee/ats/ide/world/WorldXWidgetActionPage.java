@@ -30,6 +30,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
@@ -653,14 +654,21 @@ public class WorldXWidgetActionPage extends FormPage {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.add(art);
                   } else if (art instanceof AbstractWorkflowArtifact) {
-                     Artifact parentArt =
-                        (Artifact) ((AbstractWorkflowArtifact) art).getParentAction().getStoreObject();
+                     Artifact parentArt = null;
+                     IAtsAction action = ((AbstractWorkflowArtifact) art).getParentAction();
+                     if (action != null) {
+                        parentArt = (Artifact) action.getStoreObject();
+                     }
                      if (parentArt != null) {
                         arts.add(parentArt);
                      }
                   }
                }
-               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               if (arts.isEmpty()) {
+                  AWorkbench.popup("No Actions to Display");
+               } else {
+                  worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -678,7 +686,11 @@ public class WorldXWidgetActionPage extends FormPage {
             try {
                final Set<Artifact> goals = new HashSet<>();
                new GoalManager().getCollectors(artifacts, goals, true);
-               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), goals);
+               if (goals.isEmpty()) {
+                  AWorkbench.popup("No Goals to Display");
+               } else {
+                  worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), goals);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -706,7 +718,11 @@ public class WorldXWidgetActionPage extends FormPage {
                      }
                   }
                }
-               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               if (arts.isEmpty()) {
+                  AWorkbench.popup("No Workflows to Display");
+               } else {
+                  worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -734,7 +750,11 @@ public class WorldXWidgetActionPage extends FormPage {
                         AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) art))));
                   }
                }
-               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               if (arts.isEmpty()) {
+                  AWorkbench.popup("No Tasks to Display");
+               } else {
+                  worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -761,7 +781,11 @@ public class WorldXWidgetActionPage extends FormPage {
                      arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));
                   }
                }
-               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               if (arts.isEmpty()) {
+                  AWorkbench.popup("No Reviews to Display");
+               } else {
+                  worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
