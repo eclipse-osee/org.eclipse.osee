@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.activity.internal.jaxrs;
+package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
 import static org.eclipse.osee.activity.ActivityConstants.ERROR_MSG__MISSING_ACTIVITY_HEADER;
@@ -25,8 +25,9 @@ import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.OseeClient;
-import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Ryan D. Brooks
@@ -36,9 +37,11 @@ public class ActivityLogResponseFilter implements ContainerResponseFilter {
 
    private Log logger;
    private ActivityLog activityLog;
+   private UserService userService;
 
-   public void setActivityLogger(ActivityLog activityLog) {
-      this.activityLog = activityLog;
+   public void bindOrcsApi(OrcsApi orcsApi) {
+      activityLog = orcsApi.getActivityLog();
+      userService = orcsApi.userService();
    }
 
    public void setLogger(Log logger) {
@@ -62,7 +65,7 @@ public class ActivityLogResponseFilter implements ContainerResponseFilter {
                }
             } else {
                // Response was called without a matching request
-               activityLog.createActivityThread(JAXRS_METHOD_CALL_FILTER_ERROR, SystemUser.Anonymous,
+               activityLog.createActivityThread(JAXRS_METHOD_CALL_FILTER_ERROR, userService.getUser(),
                   Long.valueOf(OseeClient.getPort()), DEFAULT_CLIENT_ID, ERROR_MSG__MISSING_ACTIVITY_HEADER);
             }
          } catch (Throwable th) {
