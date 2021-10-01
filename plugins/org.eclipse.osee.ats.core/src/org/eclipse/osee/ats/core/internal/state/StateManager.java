@@ -194,9 +194,6 @@ public class StateManager implements IAtsStateManager {
          if (AtsCoreUsers.isBootstrapUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Bootstrap");
          }
-         if (AtsCoreUsers.isAnonymousUser(assignee)) {
-            throw new OseeArgumentException("Can not assign workflow to Anonymous");
-         }
          if (AtsCoreUsers.isSystemUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to System User");
          }
@@ -265,9 +262,6 @@ public class StateManager implements IAtsStateManager {
       for (AtsUser assignee : assignees) {
          if (AtsCoreUsers.isBootstrapUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Bootstrap");
-         }
-         if (AtsCoreUsers.isAnonymousUser(assignee)) {
-            throw new OseeArgumentException("Can not assign workflow to Anonymous");
          }
          if (AtsCoreUsers.isSystemUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to System User");

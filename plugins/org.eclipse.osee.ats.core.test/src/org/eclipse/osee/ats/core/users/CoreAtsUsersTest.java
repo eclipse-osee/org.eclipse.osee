@@ -34,7 +34,6 @@ public class CoreAtsUsersTest {
    @Test
    public void testIsActive() {
       AtsCoreUsers.SYSTEM_USER.isActive();
-      AtsCoreUsers.ANONYMOUS_USER.isActive();
       AtsCoreUsers.UNASSIGNED_USER.isActive();
       new TestUser().isActive();
    }
@@ -42,20 +41,17 @@ public class CoreAtsUsersTest {
    @Test
    public void testGetName() {
       Assert.assertEquals(SystemUser.OseeSystem.getName(), AtsCoreUsers.SYSTEM_USER.getName());
-      Assert.assertEquals(SystemUser.Anonymous.getName(), AtsCoreUsers.ANONYMOUS_USER.getName());
       Assert.assertEquals(SystemUser.UnAssigned.getName(), AtsCoreUsers.UNASSIGNED_USER.getName());
    }
 
    @Test
    public void testGetId() {
       Assert.assertEquals(SystemUser.OseeSystem.getId(), AtsCoreUsers.SYSTEM_USER.getId());
-      Assert.assertEquals(SystemUser.Anonymous.getId(), AtsCoreUsers.ANONYMOUS_USER.getId());
    }
 
    @Test
    public void testGetUserId() {
       Assert.assertEquals(SystemUser.OseeSystem.getUserId(), AtsCoreUsers.SYSTEM_USER.getUserId());
-      Assert.assertEquals(SystemUser.Anonymous.getUserId(), AtsCoreUsers.ANONYMOUS_USER.getUserId());
       Assert.assertEquals(SystemUser.UnAssigned.getUserId(), AtsCoreUsers.UNASSIGNED_USER.getUserId());
    }
 
@@ -69,7 +65,6 @@ public class CoreAtsUsersTest {
    @Test
    public void testGetEmail() {
       Assert.assertEquals("", AtsCoreUsers.SYSTEM_USER.getEmail());
-      Assert.assertEquals("", AtsCoreUsers.ANONYMOUS_USER.getEmail());
       Assert.assertEquals("", AtsCoreUsers.UNASSIGNED_USER.getEmail());
    }
 

@@ -36,8 +36,8 @@ public class AtsObjectsTest {
    public void testToIds() {
       List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
-      objs.add(AtsCoreUsers.ANONYMOUS_USER);
-      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getId(), AtsCoreUsers.ANONYMOUS_USER.getId()),
+      objs.add(AtsCoreUsers.UNASSIGNED_USER);
+      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getId(), AtsCoreUsers.UNASSIGNED_USER.getId()),
          AtsObjects.toIds(objs));
    }
 
@@ -47,23 +47,18 @@ public class AtsObjectsTest {
 
       List<Object> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
-      objs.add(AtsCoreUsers.ANONYMOUS_USER);
       objs.add(AtsCoreUsers.UNASSIGNED_USER);
       objs.add("Just a String");
-      Assert.assertEquals(
-         String.format("%s; %s; %s; Just a String", AtsCoreUsers.SYSTEM_USER.getName(),
-            AtsCoreUsers.ANONYMOUS_USER.getName(), AtsCoreUsers.UNASSIGNED_USER.getName()),
-         AtsObjects.toString("; ", objs));
+      Assert.assertEquals(String.format("%s; %s; Just a String", AtsCoreUsers.SYSTEM_USER.getName(),
+         AtsCoreUsers.UNASSIGNED_USER.getName()), AtsObjects.toString("; ", objs));
    }
 
    @Test
    public void testGetNames() {
       List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
-      objs.add(AtsCoreUsers.ANONYMOUS_USER);
       objs.add(AtsCoreUsers.UNASSIGNED_USER);
-      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getName(), AtsCoreUsers.ANONYMOUS_USER.getName(),
-         AtsCoreUsers.UNASSIGNED_USER.getName()), AtsObjects.getNames(objs));
+      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getName(), AtsCoreUsers.UNASSIGNED_USER.getName()),
+         AtsObjects.getNames(objs));
    }
-
 }
