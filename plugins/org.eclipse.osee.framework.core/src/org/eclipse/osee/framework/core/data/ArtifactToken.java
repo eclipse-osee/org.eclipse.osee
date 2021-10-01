@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Donald G. Dunne
  */
 @JsonSerialize(using = NamedIdSerializer.class)
-public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<String> {
+public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifactType, Identity<String> {
    public static final ArtifactToken SENTINEL = valueOf(ArtifactId.SENTINEL, BranchId.SENTINEL);
 
    @Override
@@ -38,28 +38,8 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       throw new UnsupportedOperationException("getGuid() is not supported");
    }
 
-   ArtifactTypeToken getArtifactType();
-
-   default boolean isTypeEqual(ArtifactTypeId artifactType) {
-      return artifactType.equals(getArtifactType());
-   }
-
    default boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       return getArtifactType().isValidAttributeType(attributeType);
-   }
-
-   /**
-    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types. This is
-    * a more expensive operation than isTypeEqual(), so only use this method when you need either the multiple artifact
-    * types or to have sub-types included
-    */
-   default boolean isOfType(ArtifactTypeId... otherTypes) {
-      for (ArtifactTypeId otherType : otherTypes) {
-         if (getArtifactType().inheritsFrom(otherType)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    public static ArtifactToken valueOf(Id id, BranchId branch) {

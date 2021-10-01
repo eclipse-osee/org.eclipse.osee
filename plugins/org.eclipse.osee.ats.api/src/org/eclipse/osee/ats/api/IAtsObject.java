@@ -18,15 +18,14 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.HasArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends NamedId, HasDescription {
+public interface IAtsObject extends NamedId, HasDescription, HasArtifactType {
 
    default ArtifactToken getStoreObject() {
       return null;
@@ -39,27 +38,6 @@ public interface IAtsObject extends NamedId, HasDescription {
    @Override
    default String getDescription() {
       return getName();
-   }
-
-   ArtifactTypeToken getArtifactType();
-
-   default boolean isOfType(ArtifactTypeId... otherTypes) {
-      for (ArtifactTypeId otherType : otherTypes) {
-         if (getArtifactType().inheritsFrom(otherType)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   default boolean isTypeEqual(ArtifactTypeId... artifactTypes) {
-      ArtifactTypeId artifactType = getArtifactType();
-      for (ArtifactTypeId artType : artifactTypes) {
-         if (artifactType.equals(artType)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    default ArtifactId getArtifactId() {
