@@ -14,14 +14,10 @@
 package org.eclipse.osee.account.admin;
 
 import java.security.Principal;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
@@ -43,15 +39,6 @@ public interface OseePrincipal extends Principal, Identity<Long> {
    boolean isAuthenticated();
 
    Map<String, String> getProperties();
-
-   public static final OseePrincipal Anonymous = createAnonymous();
-
-   public static OseePrincipal createAnonymous() {
-      Set<String> roles = new LinkedHashSet<>();
-      roles.add(SystemRoles.ROLES_ANONYMOUS);
-      Account account = UserTokenAccount.Anonymous;
-      return OseePrincipal.valueOf(SystemUser.Anonymous.getName(), account, true, roles, Collections.emptyMap());
-   }
 
    public static OseePrincipal valueOf(String login, Account data, boolean authenticated, Set<String> roles, Map<String, String> properties) {
       final class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {

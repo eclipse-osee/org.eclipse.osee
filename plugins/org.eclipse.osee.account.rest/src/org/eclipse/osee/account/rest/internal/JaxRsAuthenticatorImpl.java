@@ -86,8 +86,6 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       Set<String> roles = new LinkedHashSet<>();
       if (subject.isAuthenticated()) {
          roles.add(SystemRoles.ROLES_AUTHENTICATED);
-      } else {
-         roles.add(SystemRoles.ROLES_ANONYMOUS);
       }
       for (String role : subject.getRoles()) {
          roles.add(role);
@@ -106,7 +104,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
          }
       }
       // Preferences or other user specific properties
-      return OseePrincipal.Anonymous;
+      return null;
    }
 
    private Account resolveAccount(String login, AuthenticatedUser subject, boolean accountCreationAllowed) {
@@ -120,7 +118,6 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
             ArtifactId accountId = accountAdmin.createAccount(request);
             account = accountAdmin.getAccountById(accountId).getExactlyOne();
          } else {
-            // or log in as anonymous ?
             throw new OseeCoreException("Account not found for [%s]", login);
          }
       }
@@ -139,5 +136,4 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       }
       return toReturn;
    }
-
 }

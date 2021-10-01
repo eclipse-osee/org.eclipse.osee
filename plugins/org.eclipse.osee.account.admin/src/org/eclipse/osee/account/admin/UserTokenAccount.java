@@ -18,14 +18,12 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
  * @author Roberto E. Escobar
  */
 public class UserTokenAccount extends BaseId implements Account, AccountPreferences {
-   public static final UserTokenAccount Anonymous = new UserTokenAccount(SystemUser.Anonymous);
 
    private final UserToken user;
 

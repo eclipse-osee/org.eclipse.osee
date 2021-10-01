@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.account.rest.internal;
 
-import java.util.Map;
-
 /**
  * @author Megumi Telles
  */
@@ -44,45 +42,5 @@ public class AccountConfiguration {
       AccountConfiguration data = new AccountConfiguration();
       data.httpHeaderName = this.httpHeaderName;
       return data;
-   }
-
-   public static AccountConfigurationBuilder newBuilder() {
-      return new AccountConfigurationBuilder();
-   }
-
-   public static AccountConfigurationBuilder fromProperties(Map<String, Object> props) {
-      return newBuilder().properties(props);
-   }
-
-   public static AccountConfiguration newConfig(Map<String, Object> props) {
-      return fromProperties(props).build();
-   }
-
-   public static final class AccountConfigurationBuilder {
-      private final AccountConfiguration config = new AccountConfiguration();
-
-      public AccountConfiguration build() {
-         return config.copy();
-      }
-
-      public AccountConfigurationBuilder properties(Map<String, Object> props) {
-         httpHeaderName(get(props, HTTP_HEADER_NAME, ""));
-         return this;
-      }
-
-      public AccountConfigurationBuilder httpHeaderName(String httpHeaderName) {
-         config.setHttpHeaderName(httpHeaderName);
-         return this;
-      }
-
-      private static String get(Map<String, Object> props, String key, String defaultValue) {
-         String toReturn = defaultValue;
-         Object object = props != null ? props.get(key) : null;
-         if (object != null) {
-            toReturn = String.valueOf(object);
-         }
-         return toReturn;
-      }
-
    }
 }

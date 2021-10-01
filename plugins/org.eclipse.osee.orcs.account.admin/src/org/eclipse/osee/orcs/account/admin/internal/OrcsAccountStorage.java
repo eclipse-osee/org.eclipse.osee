@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.orcs.account.admin.internal;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
@@ -28,11 +26,9 @@ import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -44,8 +40,6 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountStorage {
    private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
-   private final Account bootstrapAccount = null;
-   private final Supplier<ResultSet<Account>> anonymousAccountSupplier = Suppliers.memoize(getAnonymousSupplier());
 
    // for ReviewOsgiXml public void setLogger(Log logger) {
    // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi) {
@@ -205,28 +199,6 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<Account> getAnonymousAccount() {
-      ResultSet<Account> toReturn;
-      if (isInitialized()) {
-         toReturn = anonymousAccountSupplier.get();
-      } else {
-         toReturn = ResultSets.singleton(bootstrapAccount);
-      }
-      return toReturn;
-   }
-
-   private Supplier<ResultSet<Account>> getAnonymousSupplier() {
-      return new Supplier<ResultSet<Account>>() {
-         @Override
-         public ResultSet<Account> get() {
-            ResultSet<ArtifactReadable> results =
-               newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(SystemUser.Anonymous.getUuid()).getResults();
-            return getFactory().newAccountResultSet(results);
-         }
-      };
-   }
-
-   @Override
    public void setAccountWebPreferences(ArtifactId artifactId, String preferences) {
       TransactionBuilder tx = newTransaction("User - Save Web Preferences");
       tx.setSoleAttributeFromString(artifactId, CoreAttributeTypes.WebPreferences, preferences);
@@ -246,5 +218,4 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
          newQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.UserId, name).getResults();
       return getFactory().newAccountResultSet(results);
    }
-
 }

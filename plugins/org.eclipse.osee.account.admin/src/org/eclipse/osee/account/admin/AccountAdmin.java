@@ -50,8 +50,6 @@ public interface AccountAdmin {
 
    ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId);
 
-   ResultSet<Account> getAnonymousAccount();
-
    boolean setAccountWebPreference(ArtifactId accountId, String key, String itemId, String newValue);
 
    void deleteAccount(ArtifactId accountId);

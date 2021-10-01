@@ -30,11 +30,6 @@ public class AccountApplication extends Application {
 
    private AccountAdmin accountAdmin;
    private SubscriptionAdmin subscriptionAdmin;
-   private volatile AccountConfiguration config;
-
-   public void setConfig(AccountConfiguration config) {
-      this.config = config;
-   }
 
    public void setAccountAdmin(AccountAdmin accountAdmin) {
       this.accountAdmin = accountAdmin;
@@ -45,10 +40,9 @@ public class AccountApplication extends Application {
    }
 
    public void start(Map<String, Object> props) {
-      update(props);
       AccountOps ops = new AccountOps(accountAdmin);
 
-      singletons.add(new AccountsResource(ops, config));
+      singletons.add(new AccountsResource(ops));
       singletons.add(new SubscriptionsResource(subscriptionAdmin));
       singletons.add(new UnsubscribeResource(subscriptionAdmin));
    }
@@ -61,9 +55,4 @@ public class AccountApplication extends Application {
    public Set<Object> getSingletons() {
       return singletons;
    }
-
-   public void update(Map<String, Object> props) {
-      setConfig(AccountConfiguration.newConfig(props));
-   }
-
 }

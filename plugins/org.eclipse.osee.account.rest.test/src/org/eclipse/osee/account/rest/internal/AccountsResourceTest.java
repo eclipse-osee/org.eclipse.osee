@@ -46,8 +46,7 @@ public class AccountsResourceTest {
    @Before
    public void setUp() {
       initMocks(this);
-
-      resource = new AccountsResource(accountOps, null);
+      resource = new AccountsResource(accountOps);
    }
 
    @Test

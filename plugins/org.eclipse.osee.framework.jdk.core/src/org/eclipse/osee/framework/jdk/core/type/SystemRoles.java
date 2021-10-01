@@ -21,7 +21,6 @@ public enum SystemRoles {
    ADMINISTRATOR,
    AUTHENTICATED;
 
-   public static final String ROLES_ANONYMOUS = "anonymous";
    public static final String ROLES_ADMINISTRATOR = "administrator";
    public static final String ROLES_AUTHENTICATED = "authenticated";
 

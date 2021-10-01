@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.account.admin.internal;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
