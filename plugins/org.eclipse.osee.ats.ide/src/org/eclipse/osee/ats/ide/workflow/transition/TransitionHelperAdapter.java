@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.workflow.transition;
 
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -53,12 +52,6 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem) {
-      return workItem.getStateMgr().getAssignees().contains(
-         AtsCoreUsers.ANONYMOUS_USER) || workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.SYSTEM_USER);
-   }
-
-   @Override
    public AtsUser getTransitionUser() {
       AtsUser user = transitionUser;
       if (user == null) {
@@ -71,5 +64,4 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    public void setTransitionUser(AtsUser user) {
       transitionUser = user;
    }
-
 }

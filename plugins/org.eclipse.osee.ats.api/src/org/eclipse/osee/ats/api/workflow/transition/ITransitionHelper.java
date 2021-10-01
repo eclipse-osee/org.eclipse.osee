@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 
 /**
  * @author Donald G. Dunne
@@ -53,7 +54,9 @@ public interface ITransitionHelper {
 
    public boolean isSystemUser();
 
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem);
+   default boolean isSystemUserAssingee(IAtsWorkItem workItem) {
+      return workItem.getStateMgr().getAssignees().stream().anyMatch(SystemUser.OseeSystem::equals);
+   }
 
    public IAtsChangeSet getChangeSet();
 

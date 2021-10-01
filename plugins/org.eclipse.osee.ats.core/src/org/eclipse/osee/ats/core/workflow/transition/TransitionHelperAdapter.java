@@ -82,12 +82,6 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem) {
-      return workItem.getStateMgr().getAssignees().contains(
-         AtsCoreUsers.ANONYMOUS_USER) || workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.SYSTEM_USER);
-   }
-
-   @Override
    public boolean isExecuteChanges() {
       return false;
    }
