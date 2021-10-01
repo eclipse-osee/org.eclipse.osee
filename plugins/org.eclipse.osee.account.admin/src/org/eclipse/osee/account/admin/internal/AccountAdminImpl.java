@@ -254,11 +254,6 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public ResultSet<Account> getAnonymousAccount() {
-      return storage.getAnonymousAccount();
-   }
-
-   @Override
    public ResultSet<Account> getAccountByEmail(String email) {
       Conditions.checkNotNull(email, "email");
       return getStorage().getAccountByEmail(email);
@@ -274,5 +269,4 @@ public class AccountAdminImpl implements AccountAdmin {
       Conditions.checkNotNull(name, "name");
       return getStorage().getAccountByName(name);
    }
-
 }

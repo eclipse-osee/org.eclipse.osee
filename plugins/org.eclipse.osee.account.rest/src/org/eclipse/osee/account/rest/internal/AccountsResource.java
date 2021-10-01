@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.account.rest.internal;
 
-import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.account.admin.OseePrincipal;
-import org.eclipse.osee.account.admin.UserTokenAccount;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
@@ -44,11 +42,9 @@ public class AccountsResource {
    private HttpHeaders httpHeaders;
 
    private final AccountOps accountOps;
-   private final AccountConfiguration config;
 
-   public AccountsResource(AccountOps accountOps, AccountConfiguration config) {
+   public AccountsResource(AccountOps accountOps) {
       this.accountOps = accountOps;
-      this.config = config;
    }
 
    @GET
@@ -59,23 +55,8 @@ public class AccountsResource {
       AccountInfoData toReturn = null;
       if (principal != null) {
          toReturn = AccountDataUtil.asAccountInfoData(principal);
-      } else {
-         toReturn = AccountDataUtil.asAccountData(UserTokenAccount.Anonymous);
       }
       return toReturn;
-   }
-
-   @GET
-   @Path("user")
-   @PermitAll
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public AccountInfoData getUser() {
-      AccountInfoData account = accountOps.getAnonymousAccount();
-      List<String> userName = httpHeaders.getRequestHeader(config.getHttpHeaderName());
-      if (userName != null && !userName.isEmpty()) {
-         account = accountOps.getAccountDataByName(userName.iterator().next());
-      }
-      return account;
    }
 
    @GET
