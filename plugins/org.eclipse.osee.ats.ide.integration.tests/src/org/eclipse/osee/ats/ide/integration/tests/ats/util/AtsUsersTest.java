@@ -31,8 +31,6 @@ public class AtsUsersTest {
    public void testGetUser() {
       Assert.assertEquals(AtsCoreUsers.SYSTEM_USER,
          AtsApiService.get().getUserService().getUserByUserId(SystemUser.OseeSystem.getUserId()));
-      Assert.assertEquals(AtsCoreUsers.ANONYMOUS_USER,
-         AtsApiService.get().getUserService().getUserByUserId(SystemUser.Anonymous.getUserId()));
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER,
          AtsApiService.get().getUserService().getUserByUserId(SystemUser.UnAssigned.getUserId()));
    }
