@@ -87,10 +87,6 @@ public class TransitionHelperAdapterTest {
 
       assignees.add(AtsCoreUsers.SYSTEM_USER);
       Assert.assertTrue(helper.isSystemUserAssingee(workItem));
-
-      assignees.clear();
-      assignees.add(AtsCoreUsers.ANONYMOUS_USER);
-      Assert.assertTrue(helper.isSystemUserAssingee(workItem));
    }
 
    private class TestTransitionHelper extends TransitionHelperAdapter {
