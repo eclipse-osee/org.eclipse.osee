@@ -34,7 +34,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
@@ -279,21 +278,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final String getArtifactTypeName() {
       return getArtifactType().getName();
-   }
-
-   /**
-    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types. This is
-    * a relatively expensive operation, only use this method when you need either the multiple artifact types or to have
-    * sub-types included; otherwise us the less expensive isTypeEqual()
-    */
-   @Override
-   public final boolean isOfType(ArtifactTypeId... artifactTypes) {
-      for (ArtifactTypeId otherType : artifactTypes) {
-         if (getArtifactType().inheritsFrom(otherType)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    @Override
