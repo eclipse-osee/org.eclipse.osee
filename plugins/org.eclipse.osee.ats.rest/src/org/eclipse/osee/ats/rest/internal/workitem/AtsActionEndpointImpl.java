@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
+import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -70,6 +71,7 @@ import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
+import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportDiffOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffsOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
@@ -759,8 +761,15 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public JiraByEpicData reportEpicDiffs(JiraByEpicData data) {
+   public JiraByEpicData reportEpicDiffsByEpic(JiraByEpicData data) {
       JiraReportEpicDiffsOperation op = new JiraReportEpicDiffsOperation(data, atsApi);
+      op.run();
+      return data;
+   }
+
+   @Override
+   public JiraDiffData reportEpicDiffs(JiraDiffData data) {
+      JiraReportDiffOperation op = new JiraReportDiffOperation(data, atsApi);
       op.run();
       return data;
    }

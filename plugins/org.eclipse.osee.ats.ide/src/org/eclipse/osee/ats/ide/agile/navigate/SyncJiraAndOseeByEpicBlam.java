@@ -49,7 +49,7 @@ public class SyncJiraAndOseeByEpicBlam extends AbstractBlam {
          protected void doWork(IProgressMonitor monitor) throws Exception {
             JiraByEpicData data = new JiraByEpicData();
             data.setTabDelimReport(tabDelimStr);
-            data = AtsApiService.get().getServerEndpoints().getActionEndpoint().reportEpicDiffs(data);
+            data = AtsApiService.get().getServerEndpoints().getActionEndpoint().reportEpicDiffsByEpic(data);
             XResultDataUI.report(data.getResults(), getName());
          }
       };
