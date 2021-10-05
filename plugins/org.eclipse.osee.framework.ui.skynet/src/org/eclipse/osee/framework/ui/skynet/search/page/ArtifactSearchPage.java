@@ -122,7 +122,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    private static final String KEY_LIMIT = "org.eclipse.search.resultpage.limit"; //$NON-NLS-1$
-   private static final int DEFAULT_ELEMENT_LIMIT = 1000;
+   private static final int DEFAULT_ELEMENT_LIMIT = 10000;
 
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
