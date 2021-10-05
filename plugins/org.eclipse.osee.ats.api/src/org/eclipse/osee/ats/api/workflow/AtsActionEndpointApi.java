@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
+import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -263,7 +264,13 @@ public interface AtsActionEndpointApi {
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   JiraByEpicData reportEpicDiffs(JiraByEpicData data);
+   JiraByEpicData reportEpicDiffsByEpic(JiraByEpicData data);
+
+   @Path("jira/report/diff")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   JiraDiffData reportEpicDiffs(JiraDiffData data);
 
    @Path("journal")
    @POST

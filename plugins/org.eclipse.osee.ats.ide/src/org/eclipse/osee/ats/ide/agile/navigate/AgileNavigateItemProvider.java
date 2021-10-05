@@ -13,8 +13,10 @@
 package org.eclipse.osee.ats.ide.agile.navigate;
 
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.SUBCAT;
+
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
@@ -68,6 +70,7 @@ public class AgileNavigateItemProvider implements XNavigateItemProvider {
          items.add(new OpenAgileSprintReports());
          items.add(new OpenAgileStoredSprintReports());
          items.add(new XNavigateItemBlam(new SyncJiraAndOseeByEpicBlam(), AGILE_REPORTS));
+         items.add(new XNavigateItemBlam(new SyncJiraAndOseeBlam(), AGILE_REPORTS));
 
          // Configs
          items.add(new CreateNewAgileTeam());
