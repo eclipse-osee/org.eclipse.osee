@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.query;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -106,11 +105,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
    public TransactionId saveSearch(AtsUser atsUser, AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
@@ -127,11 +121,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public AtsSearchData getSearch(String jsonStr) {
-      throw new UnsupportedOperationException("Unsupported on the server");
-   }
-
-   @Override
-   public AtsSearchData createSearchData(String namespace, String searchName) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 

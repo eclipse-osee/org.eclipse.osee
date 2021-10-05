@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -28,7 +27,6 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -36,7 +34,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
-import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -57,7 +54,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -102,24 +98,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
       return new AtsWorkItemFilter(workItems, atsApi);
-   }
-
-   @Override
-   public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
-      ArrayList<AtsSearchData> searches = new ArrayList<>();
-      for (String jsonValue : atsUser.getSavedSearches()) {
-         if (jsonValue.contains("\"" + namespace + "\"")) {
-            try {
-               AtsSearchData data = fromJson(namespace, jsonValue);
-               if (data != null) {
-                  searches.add(data);
-               }
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-      }
-      return searches;
    }
 
    @Override
@@ -202,51 +180,15 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    private AtsSearchData fromJson(String jsonValue) {
       Matcher m = namespacePattern.matcher(jsonValue);
       if (m.find()) {
-         return fromJson(m.group(1), jsonValue);
+         String namespace = m.group(1);
+         return atsApi.getSearchDataProvider(namespace).fromJson(namespace, jsonValue);
       }
       return null;
-   }
-
-   private AtsSearchData fromJson(String namespace, String jsonValue) {
-      AtsSearchData data = null;
-      try {
-         for (IAtsSearchDataProvider provider : atsApi.getSearchDataProviders()) {
-            if (provider.getSupportedNamespaces().contains(namespace)) {
-               data = provider.fromJson(namespace, jsonValue);
-               if (data != null) {
-                  break;
-               }
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.WARNING, ex,
-            "Can't deserialize ATS Quick Search value [%s] for NAMESPACE [%s]", jsonValue, namespace);
-      }
-      return data;
    }
 
    @Override
    public AtsSearchData getSearch(String jsonStr) {
       return fromJson(jsonStr);
-   }
-
-   @Override
-   public AtsSearchData createSearchData(String namespace, String searchName) {
-      AtsSearchData data = null;
-      try {
-         for (IAtsSearchDataProvider provider : atsApi.getSearchDataProviders()) {
-            if (provider.getSupportedNamespaces().contains(namespace)) {
-               data = provider.createSearchData(namespace, searchName);
-               if (data != null) {
-                  break;
-               }
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.WARNING, ex,
-            "Can't create ATS Quick Search NAMESPACE [%s] and searchName [%s]", namespace, searchName);
-      }
-      return data;
    }
 
    @Override
