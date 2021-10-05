@@ -13,12 +13,10 @@
 
 package org.eclipse.osee.ats.ide.search.internal.query;
 
-import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -33,16 +31,7 @@ public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
 
    @Override
    public AtsSearchData fromJson(String namespace, String jsonValue) {
-      try {
-         return jaxRsApi.readValue(convertFrom25To26(jsonValue), AtsSearchData.class);
-      } catch (Exception ex) {
-         throw new OseeArgumentException(ex, "Unable to read AtsSearchData for [%s]", jsonValue);
-      }
-   }
-
-   @Override
-   public List<String> getSupportedNamespaces() {
-      return AtsSearchUtil.ATS_DEFAULT_SEARCH_NAMESPACES;
+      return fromJson(namespace, jsonValue, AtsSearchData.class, jaxRsApi);
    }
 
    @Override
@@ -50,5 +39,10 @@ public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
       AtsSearchData data = new AtsSearchData(searchName);
       data.setNamespace(namespace);
       return data;
+   }
+
+   @Override
+   public boolean supportsNamespace(String namespace) {
+      return AtsSearchUtil.ATS_DEFAULT_SEARCH_NAMESPACES.contains(namespace);
    }
 }

@@ -83,6 +83,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -343,8 +344,14 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    }
 
    @Override
-   public List<IAtsSearchDataProvider> getSearchDataProviders() {
-      return searchDataProviders;
+   public IAtsSearchDataProvider getSearchDataProvider(String namespace) {
+      for (IAtsSearchDataProvider provider : searchDataProviders) {
+         if (provider.supportsNamespace(namespace)) {
+            return provider;
+         }
+      }
+      throw new OseeArgumentException("Namespace [%s] is not supported by any of the providers %s", namespace,
+         searchDataProviders);
    }
 
    @Override

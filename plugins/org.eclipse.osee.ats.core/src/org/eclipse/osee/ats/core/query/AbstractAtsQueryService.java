@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -378,4 +379,26 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return results;
    }
 
+   @Override
+   public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
+      ArrayList<AtsSearchData> searches = new ArrayList<>();
+      for (String jsonValue : atsUser.getSavedSearches()) {
+         if (jsonValue.contains("\"" + namespace + "\"")) {
+            try {
+               AtsSearchData data = atsApi.getSearchDataProvider(namespace).fromJson(namespace, jsonValue);
+               if (data != null) {
+                  searches.add(data);
+               }
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return searches;
+   }
+
+   @Override
+   public AtsSearchData createSearchData(String namespace, String searchName) {
+      return atsApi.getSearchDataProvider(namespace).createSearchData(namespace, searchName);
+   }
 }

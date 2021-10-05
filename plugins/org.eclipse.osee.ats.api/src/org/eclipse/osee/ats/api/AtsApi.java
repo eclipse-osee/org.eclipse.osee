@@ -137,7 +137,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    void storeAtsBranch(BranchId branch, String name);
 
-   List<IAtsSearchDataProvider> getSearchDataProviders();
+   IAtsSearchDataProvider getSearchDataProvider(String namespace);
 
    void clearCaches();
 
