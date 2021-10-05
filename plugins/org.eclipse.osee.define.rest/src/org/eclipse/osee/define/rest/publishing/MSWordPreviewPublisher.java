@@ -27,14 +27,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Branden W. Phillips
  */
-public class MSWordSpecifiedTemplatePublisher extends MSWordTemplatePublisher {
+public class MSWordPreviewPublisher extends MSWordTemplatePublisher {
 
    /**
-    * This subclass of the MSWordTemplatePublisher is the publishing process for publishing artifacts similarly to the
-    * old client "Publish With Specified Template" BLAM. This publishes via the hierarchy under the given artifact,
-    * using the given template. This REST Operation is currently not in use anywhere.
+    * This subclass of the MSWordTemplatePublisher is the publishing process for publishing artifacts with similar
+    * features to the client-side publishing preview.
     */
-   public MSWordSpecifiedTemplatePublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
+   public MSWordPreviewPublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
       super(publishingOptions, writer, orcsApi, atsApi);
    }
 
@@ -46,14 +45,9 @@ public class MSWordSpecifiedTemplatePublisher extends MSWordTemplatePublisher {
          populateEmptyHeaders(artifacts);
       }
 
-      getDataRightsOverride();
-      setDataRightResponse(headArtifact);
+      setUpDataRights(headArtifact);
 
       processArtifact(headArtifact, wordMl);
-      if (publishingOptions.updateParagraphNumbers) {
-         updateParagraphNumbers();
-      }
-
       addErrorLogToWordMl(wordMl);
    }
 
@@ -72,4 +66,5 @@ public class MSWordSpecifiedTemplatePublisher extends MSWordTemplatePublisher {
       String footer = response.getContent(artifact, orientation);
       return footer;
    }
+
 }

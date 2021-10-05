@@ -61,6 +61,7 @@ import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRende
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -69,7 +70,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
@@ -135,6 +135,7 @@ public class MSWordTemplatePublisher {
    protected List<ArtifactId> changedArtifacts = new LinkedList<>();
    protected final Map<ArtifactId, String> wordContentMap = new HashMap<>();
    protected final Set<String> headerGuids = new HashSet<>();
+   protected HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -149,7 +150,7 @@ public class MSWordTemplatePublisher {
    protected final OrcsTokenService tokenService;
    protected final OseeHierarchyComparator hierarchyComparator;
 
-   protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
+   public MSWordTemplatePublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
       this.publishingOptions = publishingOptions;
       this.writer = writer;
       this.orcsApi = orcsApi;
@@ -318,7 +319,6 @@ public class MSWordTemplatePublisher {
       try {
          ObjectMapper OM = new ObjectMapper();
          JsonNode jsonObject = OM.readTree(templateOptions);
-         //   JSONObject jsonObject = new JSONObject(templateOptions);
 
          elementType = jsonObject.findValue("ElementType").asText();
       } catch (IOException ex) {
@@ -527,22 +527,22 @@ public class MSWordTemplatePublisher {
    }
 
    /**
+    * This method sets up the DataRightsResponse for the publish. <br/>
+    * <br/>
     * DataRightsClassification override comes in as a publishing option string, compare string to all
     * DataRightsClassifications, if they match, set override variable to that classification. This override makes it
     * that the entire published document uses the same data rights footer, regardless of the attribute on artifacts.
+    * <br/>
+    * <br/>
+    * Starting from the head artifact, goes through all artifacts in the hierarchy to be published (if specified through
+    * recurseChildren) and sets their data rights.
     */
-   protected void getDataRightsOverride() {
+   protected void setUpDataRights(ArtifactReadable artifact) {
       overrideClassification = "invalid";
       if (DataRightsClassification.isValid(publishingOptions.overrideDataRights)) {
          overrideClassification = publishingOptions.overrideDataRights;
       }
-   }
 
-   /**
-    * Starting from the head artifact, goes through all artifacts in the hierarchy to be published (if specified through
-    * recurseChildren) and sets their data rights.
-    */
-   protected void setDataRightResponse(ArtifactReadable artifact) {
       List<ArtifactId> artifacts = new ArrayList<>();
       artifacts.add(artifact);
       if (recurseChildren) {
@@ -557,7 +557,8 @@ public class MSWordTemplatePublisher {
     * during this publish.
     */
    protected void updateParagraphNumbers() {
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(publishingOptions.branch, "Update paragraph number on artifact");
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(publishingOptions.branch,
+         "Update paragraph number on artifact");
       int count = 0;
 
       for (Map.Entry<ArtifactReadable, CharSequence> art : artParagraphNumbers.entrySet()) {
@@ -722,6 +723,24 @@ public class MSWordTemplatePublisher {
    }
 
    /**
+    * This method returns the class HashMap variable applicabilityTokens to ensure that the map is loaded once needed.
+    * The variable will stay null if this method is never called. This is meant to increase efficiency of applicability
+    * checks
+    */
+   protected Map<ApplicabilityId, ApplicabilityToken> getApplicabilityTokens() {
+      if (applicabilityTokens == null) {
+         applicabilityTokens = new HashMap<>();
+         HashMap<Long, ApplicabilityToken> tokens =
+            orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(publishingOptions.branch);
+         for (Map.Entry<Long, ApplicabilityToken> entry : tokens.entrySet()) {
+            applicabilityTokens.put(ApplicabilityId.valueOf(entry.getKey()), entry.getValue());
+         }
+      }
+
+      return applicabilityTokens;
+   }
+
+   /**
     * The default footer for artifacts is an empty string. If data rights/orientation are needed in the footer, this
     * method should be overridden to support that.
     */
@@ -773,8 +792,13 @@ public class MSWordTemplatePublisher {
       String label = element.getLabel();
       String value = "";
       if (name.equals(APPLICABILITY)) {
-         //TODO Handle for when the meta data option is for applicability.
-         return;
+         ApplicabilityToken applicToken = getApplicabilityTokens().get(artifact.getApplicability());
+         if (applicToken.isValid()) {
+            value = applicToken.getName();
+         } else {
+            wordMl.endParagraph();
+            return;
+         }
       } else if (name.equals(ARTIFACT_TYPE)) {
          value = artifact.getArtifactType().getName();
       } else if (name.equals(ARTIFACT_ID)) {
@@ -854,8 +878,11 @@ public class MSWordTemplatePublisher {
          renderWordTemplateContent(attributeType, artifact, presentationType, wordMl, attributeElement.getFormat(),
             attributeElement.getLabel());
       } else if (artifact.isAttributeTypeValid(attributeType)) {
-         renderSpecifiedAttribute(attributeType, artifact, presentationType, wordMl, attributeElement.getFormat(),
-            attributeElement.getLabel());
+         String attrValues = artifact.getAttributeValuesAsString(attributeType);
+         if (!attrValues.isEmpty()) {
+            renderSpecifiedAttribute(attributeType, attrValues, presentationType, wordMl, attributeElement.getFormat(),
+               attributeElement.getLabel());
+         }
       }
    }
 
@@ -946,7 +973,7 @@ public class MSWordTemplatePublisher {
    /**
     * For non word template content attributes, this method appends the attribute to the WordMLWriter.
     */
-   protected void renderSpecifiedAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label) {
+   protected void renderSpecifiedAttribute(AttributeTypeToken attributeType, String attrValues, PresentationType presentationType, WordMLWriter producer, String format, String label) {
       WordMLWriter wordMl = producer;
 
       wordMl.startParagraph();
@@ -962,11 +989,10 @@ public class MSWordTemplatePublisher {
          wordMl.addWordMl(label);
       }
 
-      String valueList = artifact.getAttributeValuesAsString(attributeType);
       if (format.contains(">x<")) {
-         wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(valueList).toString() + "<"));
+         wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(attrValues).toString() + "<"));
       } else {
-         wordMl.addTextInsideParagraph(valueList);
+         wordMl.addTextInsideParagraph(attrValues);
       }
       wordMl.endParagraph();
    }
