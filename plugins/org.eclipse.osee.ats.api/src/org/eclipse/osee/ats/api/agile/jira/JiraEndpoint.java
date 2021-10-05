@@ -16,7 +16,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -27,8 +26,13 @@ import javax.ws.rs.core.MediaType;
 public interface JiraEndpoint {
 
    @POST
-   @Path("authenticate/{jiraUrl}")
+   @Path("authenticate")
    @Consumes(MediaType.APPLICATION_JSON)
-   String authenticate(@PathParam("jiraUrl") String jiraUrl, @Encoded String jsonPayload);
+   String authenticate(@Encoded String jsonPayload);
+
+   @POST
+   @Path("search")
+   @Consumes(MediaType.APPLICATION_JSON)
+   String searchJira(@Encoded String jsonPayload);
 
 }
