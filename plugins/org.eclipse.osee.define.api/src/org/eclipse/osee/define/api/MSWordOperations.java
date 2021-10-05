@@ -32,6 +32,8 @@ public interface MSWordOperations {
 
    public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
+   public Response msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
+
    public String renderPlainText(BranchId branchId, String data);
 
 }

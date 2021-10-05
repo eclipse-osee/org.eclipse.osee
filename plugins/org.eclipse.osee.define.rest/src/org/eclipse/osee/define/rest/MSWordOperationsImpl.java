@@ -13,11 +13,15 @@
 
 package org.eclipse.osee.define.rest;
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
@@ -32,11 +36,13 @@ import org.eclipse.osee.define.rest.internal.wordupdate.WordMlLinkHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
-import org.eclipse.osee.define.rest.publishing.SpecifiedTemplatePublisherStreamingOutput;
+import org.eclipse.osee.define.rest.publishing.MSWordPreviewPublisher;
+import org.eclipse.osee.define.rest.publishing.MSWordTemplatePublisher;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.ReportConstants;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -140,8 +146,55 @@ public class MSWordOperationsImpl implements MSWordOperations {
       publishingOptions.excludeFolders = true;
       publishingOptions.view = view;
 
-      StreamingOutput streamingOutput =
-         new SpecifiedTemplatePublisherStreamingOutput(publishingOptions, template, headArtifact, orcsApi, atsApi);
+      StreamingOutput streamingOutput = new StreamingOutput() {
+
+         @Override
+         public void write(OutputStream opStream) throws WebApplicationException {
+            try (Writer writer = new OutputStreamWriter(opStream)) {
+               MSWordTemplatePublisher publisher =
+                  new MSWordTemplatePublisher(publishingOptions, writer, orcsApi, atsApi);
+               publisher.publish(template, headArtifact);
+               writer.close();
+            } catch (Exception ex) {
+               OseeCoreException.wrapAndThrow(ex);
+            }
+         }
+      };
+
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + fileName);
+      return builder.build();
+   }
+
+   @Override
+   public Response msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
+      //Generate filename with the headArtifact name and current time
+      String name = orcsApi.getQueryFactory().fromBranch(branch).andId(headArtifact).asArtifactToken().getName();
+      SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
+      Date date = new Date(System.currentTimeMillis());
+      String time = format.format(date);
+      String fileName = name + "_" + time + ".xml";
+
+      PublishingOptions publishingOptions = new PublishingOptions();
+      publishingOptions.branch = branch;
+      publishingOptions.linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
+      publishingOptions.excludeFolders = false;
+      publishingOptions.view = view;
+
+      StreamingOutput streamingOutput = new StreamingOutput() {
+
+         @Override
+         public void write(OutputStream opStream) throws WebApplicationException {
+            try (Writer writer = new OutputStreamWriter(opStream)) {
+               MSWordPreviewPublisher publisher =
+                  new MSWordPreviewPublisher(publishingOptions, writer, orcsApi, atsApi);
+               publisher.publish(template, headArtifact);
+               writer.close();
+            } catch (Exception ex) {
+               OseeCoreException.wrapAndThrow(ex);
+            }
+         }
+      };
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + fileName);

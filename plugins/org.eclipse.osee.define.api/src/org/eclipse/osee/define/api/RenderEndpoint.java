@@ -49,4 +49,9 @@ public interface RenderEndpoint {
    @Produces({MediaType.APPLICATION_XML})
    Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact, @PathParam("view") ArtifactId view);
 
+   @GET
+   @Path("msWordPreview/{branch}/{template}/{artifact}/{view}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_XML})
+   Response msWordPreview(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact, @PathParam("view") ArtifactId view);
 }
