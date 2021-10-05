@@ -15,8 +15,10 @@ package org.eclipse.osee.ats.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintDataUiOperation;
@@ -149,7 +151,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsWorkPackageEndpointImpl(atsApiServer));
       singletons.add(new AtsTeamWfEndpointImpl(atsApiServer));
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
-      singletons.add(new JiraEndpointImpl(atsApiServer));
+      singletons.add(new JiraEndpointImpl(atsApiServer, "jira.atlassian.com"));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));

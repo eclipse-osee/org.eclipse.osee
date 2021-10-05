@@ -12,6 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem.sync.jira;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -31,25 +33,29 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 public class JiraEndpointImpl implements JiraEndpoint {
 
    private final AtsApi atsApi;
+   private String sessionId;
+   private final String jiraUrl;
    static final String SESSION_AUTH = "rest/auth/1/session";
+   static final String SEARCH_JIRA = "rest/api/2/search";
 
-   public JiraEndpointImpl(AtsApi atsApi) {
+   public JiraEndpointImpl(AtsApi atsApi, String jiraUrl) {
       this.atsApi = atsApi;
+      this.jiraUrl = linkParser(jiraUrl);
    }
 
    @Override
-   public String authenticate(String jiraUrl, String jsonPayload) {
-      String sessionId = "";
-      String websiteURL = "https://" + jiraUrl + "/" + SESSION_AUTH;
+   public String authenticate(String jsonPayload) {
+      String websiteURL = jiraUrl + SESSION_AUTH;
 
       CookieManager cookieManager = new CookieManager();
       CookieHandler.setDefault(cookieManager);
 
       byte[] out = jsonPayload.getBytes(StandardCharsets.UTF_8);
+      HttpURLConnection conn = null;
 
       try {
          URL url = new URL(websiteURL);
-         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+         conn = (HttpURLConnection) url.openConnection();
 
          conn.setDoInput(true);
          conn.setDoOutput(true);
@@ -58,10 +64,10 @@ public class JiraEndpointImpl implements JiraEndpoint {
          conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
          conn.connect();
          try (OutputStream os = conn.getOutputStream()) {
-            os.write(out);
+            os.write(out, 0, out.length);
+            os.close();
          }
          conn.getContent();
-         conn.disconnect();
 
          // Get CookieStore
          CookieStore cookieStore = cookieManager.getCookieStore();
@@ -72,7 +78,67 @@ public class JiraEndpointImpl implements JiraEndpoint {
          }
       } catch (Exception ex) {
          throw new OseeAuthenticationException("Failed to authenticate user with JIRA", ex);
+      } finally {
+         if (conn != null) {
+            conn.disconnect();
+         }
       }
       return sessionId;
    }
+
+   @Override
+   public String searchJira(String jsonPayload) {
+      String searchResults = "";
+      String websiteURL = jiraUrl + SEARCH_JIRA;
+
+      CookieManager cookieManager = new CookieManager();
+      CookieHandler.setDefault(cookieManager);
+
+      byte[] out = jsonPayload.getBytes(StandardCharsets.UTF_8);
+      HttpURLConnection conn = null;
+
+      try {
+         URL url = new URL(websiteURL);
+         conn = (HttpURLConnection) url.openConnection();
+
+         conn.setDoInput(true);
+         conn.setDoOutput(true);
+         conn.setRequestMethod("POST");
+         conn.setFixedLengthStreamingMode(out.length);
+         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+         conn.setRequestProperty("Cookie", "JSESSIONID=" + sessionId);
+         conn.connect();
+         try (OutputStream os = conn.getOutputStream()) {
+            os.write(out, 0, out.length);
+         }
+         if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            String readLine = null;
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((readLine = in.readLine()) != null) {
+               searchResults += readLine;
+            }
+            in.close();
+         }
+         conn.getContent();
+      } catch (Exception ex) {
+         throw new OseeAuthenticationException("Failed to authenticate user with JIRA", ex);
+      } finally {
+         if (conn != null) {
+            conn.disconnect();
+         }
+      }
+      return searchResults;
+   }
+
+   private String linkParser(String link) {
+      String newLink = link;
+      if (!link.startsWith("https://")) {
+         newLink = "https://" + link;
+      }
+      if (!link.endsWith("/")) {
+         newLink += "/";
+      }
+      return newLink;
+   }
+
 }
