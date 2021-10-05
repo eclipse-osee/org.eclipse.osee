@@ -140,6 +140,7 @@ public class PolicyTableViewer {
       canModify = canModify || permission.equals(PermissionEnum.DENY);
       if (canModify) {
          data.setPermission(permission);
+         ServiceUtil.accessControlService().persistPermission(data);
       } else {
          AWorkbench.popup("ERROR",
             "Cannot promote user to higher status then yourself or cannot demote user with higher status");
