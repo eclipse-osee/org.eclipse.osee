@@ -64,8 +64,6 @@ public class CreateNewChangeRequestTestUtility {
       while (actionResult == null && count <= 10) {
          try {
             Thread.sleep(1000);
-            System.err.println(count);
-            count++;
          } catch (InterruptedException ex) {
             // do nothing
          }
