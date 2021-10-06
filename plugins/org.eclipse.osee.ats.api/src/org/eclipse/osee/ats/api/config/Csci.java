@@ -19,5 +19,6 @@ package org.eclipse.osee.ats.api.config;
 public enum Csci {
    DP,
    SP,
-   WP;
+   WP,
+   MP;
 }
