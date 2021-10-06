@@ -769,15 +769,20 @@ public abstract class BranchRegressionTest {
    }
 
    protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchToken branch) {
+      SkynetTransaction tx = TransactionManager.createTransaction(branch, "title");
+      Artifact art = this.createSoftwareArtifact(artifactType, parent, title, partitions, branch, tx);
+      tx.execute();
+      return art;
+   }
+
+   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchToken branch, SkynetTransaction tx) {
       Artifact parentArt = null;
       try {
          SkynetTransaction.setOverrideAccess(true);
-         SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + title);
          Artifact newArt = ArtifactTypeManager.addArtifact(artifactType, branch, title);
          parentArt = setParent(parent, partitions, newArt, tx);
          tx.addArtifact(newArt);
          tx.addArtifact(parent);
-         tx.execute();
       } finally {
          SkynetTransaction.setOverrideAccess(false);
       }
