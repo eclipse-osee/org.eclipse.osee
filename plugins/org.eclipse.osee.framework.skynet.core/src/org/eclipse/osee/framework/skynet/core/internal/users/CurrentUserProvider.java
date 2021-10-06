@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -104,11 +104,10 @@ public class CurrentUserProvider extends LazyObject<User> {
          try {
             user = cacheProvider.get().get(token.getUserId());
          } catch (Exception ex) {
-            OseeCoreException.wrapAndThrow(ex);
+            throw new OseeAuthenticationException(ex, "User [%s] is not authenticated", token.getUserId());
          }
          return user;
       }
-
    }
 
    public boolean isDuringCurrentUserCreation() {

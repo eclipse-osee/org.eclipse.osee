@@ -18,9 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
@@ -74,11 +72,9 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
          getLogger().info("Authentication: LoginId: [%s] UserToken:[%s]", loginId, userTok);
          return userTok;
       } catch (Exception ex) {
-         getLogger().error(
-            String.format("Exception resolving loginId: [%s] - Exception: %s", loginId, Lib.exceptionToString(ex)));
+         getLogger().error(ex, "Exception resolving loginId: [%s]", loginId);
       }
 
-      return SystemUser.UnAuthenticated;
+      return createUserToken(loginId, loginId, loginId + "@dbinit.com");
    }
-
 }

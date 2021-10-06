@@ -24,14 +24,11 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -41,6 +38,7 @@ import org.eclipse.osee.framework.database.init.internal.GroupSelection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -74,14 +72,6 @@ public class DatabaseInitializationOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       checkServerPreconditions();
 
-      ClientSessionManager.authenticate(new BaseCredentialProvider() {
-         @Override
-         public OseeCredential getCredential() {
-            OseeCredential credential = super.getCredential();
-            credential.setUserName(SystemUser.BootStrap.getName());
-            return credential;
-         }
-      });
       String dbName = ClientSessionManager.getDataStoreName();
       if (ClientSessionManager.isProductionDataStore()) {
          throw new OseeArgumentException(
@@ -90,7 +80,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
 
       System.out.println("Begin Database Initialization...");
 
-      OseeClientProperties.setInDbInit(true);
+      OseeProperties.setInDbInit(true);
       try {
          processTasks();
          System.out.println("Database Initialization Complete");
@@ -98,7 +88,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
          OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
          OseeCoreException.wrapAndThrow(ex);
       } finally {
-         OseeClientProperties.setInDbInit(false);
+         OseeProperties.setInDbInit(false);
       }
    }
 

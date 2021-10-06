@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -277,37 +276,12 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    @Override
-   public AtsUser getUserByLoginId(String loginId) {
-      AtsUser user = null;
-      // Don't use cache if not loaded
-      if (isConfigLoaded()) {
-         for (AtsUser usr : atsApi.getUserService().getUsers()) {
-            if (usr.getLoginIds().contains(loginId)) {
-               user = usr;
-               break;
-            }
-         }
-      }
-      if (user == null) {
-         ArtifactToken userArt = atsApi.getQueryService().getArtifactFromAttribute(CoreAttributeTypes.LoginId,
-            System.getProperty("user.name"), atsApi.getAtsBranch());
-         if (userArt.isValid()) {
-            user = atsApi.getUserService().getUserById(userArt);
-            // Don't use cache if not loaded
-            if (isConfigLoaded()) {
-               atsApi.getUserService().addUser(user);
-            }
-         }
-      }
-      if (user == null) {
-         user = atsApi.getUserService().getUserById(SystemUser.UnAuthenticated);
-      }
-      return user;
+   public AtsUser getUserByLoginId() {
+      return atsApi.getUserService().getUserById(atsApi.userService().getUser());
    }
 
    @Override
    public AtsUser getCurrentUserByLoginId() {
       throw new UnsupportedOperationException("Not supported on the server");
    }
-
 }

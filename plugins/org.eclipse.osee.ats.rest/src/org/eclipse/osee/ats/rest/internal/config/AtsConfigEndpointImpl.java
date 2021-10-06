@@ -116,8 +116,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public AtsUser getUserByLogin(String loginId) {
-      AtsUser user = atsApi.getConfigService().getUserByLoginId(loginId);
+   public AtsUser getUserByLogin() {
+      AtsUser user = atsApi.getConfigService().getUserByLoginId();
 
       // Load Saved Searches
       user.getSavedSearches().clear();

@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.BaseStatus;
@@ -113,8 +112,6 @@ public class InternalClientSessionManager {
             oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
             if (oseeSessionGrant == null) {
                return;
-            } else if (SystemUser.UnAuthenticated.getUserId().equals(oseeSessionGrant.getUserToken().getUserId())) {
-               throw new OseeArgumentException("User [%s] is not authenticated.", credential.getUserName());
             }
             oseeSession = new IdeClientSession();
             oseeSession.setId(oseeSessionGrant.getSessionId());
@@ -172,7 +169,10 @@ public class InternalClientSessionManager {
    }
 
    public List<String> getAuthenticationProtocols() {
-      return getSessionEndpoint().getIdeClientProtocols();
+      userService.setUserLoading(true);
+      List<String> ideClientProtocols = getSessionEndpoint().getIdeClientProtocols();
+      userService.setUserLoading(false);
+      return ideClientProtocols;
    }
 
    private void clearData() {

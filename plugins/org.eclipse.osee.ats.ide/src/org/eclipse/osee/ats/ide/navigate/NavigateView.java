@@ -96,12 +96,11 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    @Override
    public void createPartControl(Composite parent) {
-      // Start loading current user and user groups for improved performance
-      AtsApiService.get().getUserService().getCurrentUser();
-      AtsApiService.get().userService().getMyUserGroups();
       this.parent = parent;
       NavigateView.navView = this;
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         // Preload user groups for improved performance
+         AtsApiService.get().userService().getMyUserGroups();
          loadingComposite = new LoadingComposite(parent);
          refreshData();
       }
