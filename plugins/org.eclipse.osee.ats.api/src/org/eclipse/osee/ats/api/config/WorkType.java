@@ -54,6 +54,7 @@ public class WorkType extends OseeEnum {
    public static final WorkType ARB = new WorkType("ARB", "Architecture Review Board");
    public static final WorkType ChangeRequest = new WorkType("Top level Change Request to rule them all");
    public static final WorkType None = new WorkType("None");
+   public static final WorkType PR = new WorkType("Problem Report");
 
    private String description;
 
