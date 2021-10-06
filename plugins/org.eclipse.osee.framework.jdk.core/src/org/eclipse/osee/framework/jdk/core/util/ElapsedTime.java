@@ -62,7 +62,7 @@ public class ElapsedTime {
    }
 
    public String end() {
-      return end(Units.SEC);
+      return end(Units.MIN);
    }
 
    public String end(Units units) {
