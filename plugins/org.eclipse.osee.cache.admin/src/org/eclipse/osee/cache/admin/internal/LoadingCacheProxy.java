@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author John Misinco
@@ -95,12 +96,8 @@ public class LoadingCacheProxy<K, V> implements Cache<K, V> {
       V toReturn = null;
       try {
          toReturn = proxied.get(key);
-      } catch (InvalidCacheLoadException ex) {
-         throw new Exception(ex);
-      } catch (UncheckedExecutionException ex) {
-         throw new Exception(ex);
-      } catch (ExecutionError ex) {
-         throw new Exception(ex);
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
       }
       return toReturn;
    }

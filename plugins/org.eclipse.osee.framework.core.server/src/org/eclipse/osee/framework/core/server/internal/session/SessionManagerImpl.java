@@ -70,7 +70,7 @@ public final class SessionManagerImpl implements ISessionManager {
                   Integer.valueOf(credential.getClientPort()));
 
                // if the user is BootStrap we do not want to insert into database since tables may not exist
-               if (SystemUser.BootStrap.notEqual(userToken)) {
+               if (userToken.isValid() && userToken.notEqual(SystemUser.BootStrap)) {
                   storeDataAccessor.create(Collections.singleton(session));
                }
 

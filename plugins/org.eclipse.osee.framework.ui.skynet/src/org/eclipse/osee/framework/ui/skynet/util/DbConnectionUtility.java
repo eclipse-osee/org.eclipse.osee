@@ -46,11 +46,17 @@ public class DbConnectionUtility {
    }
 
    public static Result dbConnectionIsOkResult() {
-      Result result = Result.TrueResult;
-      if (!isApplicationServerAlive()) {
-         result = new Result("The OSEE Application Server is not available.\n\nDatabase capability disabled.");
-      } else {
-         result = areOSEEServicesAvailable();
+      Result result;
+      try {
+         ServiceUtil.getOseeClient().userService().getUser();
+
+         if (!isApplicationServerAlive()) {
+            result = new Result("The OSEE Application Server is not available.\n\nDatabase capability disabled.");
+         } else {
+            result = areOSEEServicesAvailable();
+         }
+      } catch (Exception ex) {
+         result = new Result(ex.getLocalizedMessage());
       }
       return result;
    }

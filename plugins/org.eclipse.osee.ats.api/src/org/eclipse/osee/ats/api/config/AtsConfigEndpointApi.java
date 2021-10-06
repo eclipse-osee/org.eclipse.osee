@@ -64,9 +64,9 @@ public interface AtsConfigEndpointApi {
    public AtsConfigurations getWithPend();
 
    @GET
-   @Path("user/{loginId}")
+   @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
-   public AtsUser getUserByLogin(@PathParam("loginId") String loginId);
+   public AtsUser getUserByLogin();
 
    @GET
    @Path("userid/{userId}")

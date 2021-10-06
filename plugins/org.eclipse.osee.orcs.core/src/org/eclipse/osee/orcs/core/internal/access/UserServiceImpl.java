@@ -183,17 +183,19 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserForCurrentThread(UserId accountId) {
-      ensureLoaded();
-      UserToken user = accountIdToUser.get(accountId);
-      if (user == null) {
-         List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
-         if (userArtifacts.size() == 1) {
-            user = toUser(userArtifacts.get(0));
-            accountIdToUser.put(user, user);
+      if (accountId.isValid()) {
+         ensureLoaded();
+         UserToken user = accountIdToUser.get(accountId);
+         if (user == null) {
+            List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
+            if (userArtifacts.size() == 1) {
+               user = toUser(userArtifacts.get(0));
+               accountIdToUser.put(user, user);
+            }
          }
-      }
-      if (user != null) {
-         threadToUser.put(Thread.currentThread(), user);
+         if (user != null) {
+            threadToUser.put(Thread.currentThread(), user);
+         }
       }
    }
 

@@ -101,8 +101,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    @Override
-   public synchronized AtsUser getUserByLoginId(String loginId) {
-      AtsUser user = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin(loginId);
+   public synchronized AtsUser getUserByLoginId() {
+      AtsUser user = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin();
       user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
       user.setAtsApi(atsApi);
       return user;
@@ -115,7 +115,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
    @Override
    public AtsUser getCurrentUserByLoginId() {
-      return getUserByLoginId(System.getProperty("user.name"));
+      return getUserByLoginId();
    }
-
 }

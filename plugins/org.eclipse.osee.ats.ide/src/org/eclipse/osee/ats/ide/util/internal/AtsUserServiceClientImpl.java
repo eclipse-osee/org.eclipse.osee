@@ -48,7 +48,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
-         currentUser = configurationService.getUserByLoginId(System.getProperty("user.name"));
+         currentUser = configurationService.getUserByLoginId();
       }
       return currentUser;
    }
