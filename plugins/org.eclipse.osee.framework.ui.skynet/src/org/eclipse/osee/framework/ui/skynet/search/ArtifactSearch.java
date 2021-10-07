@@ -19,11 +19,13 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * @author Audrey Denk
@@ -41,7 +43,11 @@ final class ArtifactSearch extends AbstractLegacyArtifactSearchQuery {
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
       List<ArtifactId> artIds = ServiceUtil.getOseeClient().getArtifactEndpoint(branch).findArtifactIds(options);
+      BranchEndpoint branchEndpoint = ServiceUtil.getOseeClient().getBranchEndpoint();
       QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(branch);
+      if (branchEndpoint.getBranchById(branch).isArchived()) {
+         throw new OseeArgumentException("This branch is archived");
+      }
       if (!artIds.isEmpty()) {
          query.andIds(artIds);
          query.includeDeleted(options.getIncludeDeleted().areDeletedAllowed());
