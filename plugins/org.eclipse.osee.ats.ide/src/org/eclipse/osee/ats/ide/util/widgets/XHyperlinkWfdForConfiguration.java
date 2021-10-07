@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWithFilteredDialog;
 
 /**
  * @author Donald G. Dunne

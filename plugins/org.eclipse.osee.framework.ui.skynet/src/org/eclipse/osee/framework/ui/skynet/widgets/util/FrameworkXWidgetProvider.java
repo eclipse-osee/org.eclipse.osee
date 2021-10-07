@@ -77,7 +77,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForConfiguration;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
@@ -120,7 +119,6 @@ public final class FrameworkXWidgetProvider {
    private static Map<String, Class<? extends XWidget>> getNameToClass() {
       register(XHyperlinkLabelDate.class);
       register(XHyperlinkLabelDateDam.class);
-      register(XHyperlinkWfdForConfiguration.class);
       return nameToClass;
    }
 
