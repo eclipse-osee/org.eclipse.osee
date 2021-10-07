@@ -43,6 +43,7 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private boolean showStateMetrics = false;
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
    private XResultData results = new XResultData();
+   private final List<WorkDefOption> options = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -184,5 +185,14 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
 
    public void setResults(XResultData results) {
       this.results = results;
+   }
+
+   public List<WorkDefOption> getOptions() {
+      return options;
+   }
+
+   @Override
+   public boolean hasOption(WorkDefOption workDefOption) {
+      return options.contains(workDefOption);
    }
 }

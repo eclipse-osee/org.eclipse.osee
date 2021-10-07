@@ -29,7 +29,7 @@ public class XFoundInVersionWithPersistWidget extends XHyperlabelVersionSelectio
    public static RelationTypeSide FOUND_VERSION_RELATION = AtsRelationTypes.TeamWorkflowToFoundInVersion_Version;
 
    public XFoundInVersionWithPersistWidget(String label) {
-      super(LABEL, FOUND_VERSION_RELATION);
+      super(label, FOUND_VERSION_RELATION);
    }
 
 }

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -198,6 +199,13 @@ public class WorkDefBuilder {
 
    public WorkDefBuilder andReviewRole(ReviewRole role, int minimum) {
       workDef.addReviewRole(role, minimum);
+      return this;
+   }
+
+   public WorkDefBuilder andWorkDefOption(WorkDefOption... workDefOptions) {
+      for (WorkDefOption opt : workDefOptions) {
+         workDef.getOptions().add(opt);
+      }
       return this;
    }
 

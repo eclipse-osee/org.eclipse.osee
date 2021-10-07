@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelValueSelection {
 
    private final String NOT_SET = "Not Set";
-   private T selected = null;
+   protected T selected = null;
 
    public XHyperlinkWithFilteredDialog(String label) {
       super(label);
@@ -77,6 +77,10 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
       return true;
    }
 
+   protected void handleSelectionPersist(T selected) {
+      // for subclass implementation
+   }
+
    @SuppressWarnings("unchecked")
    @Override
    public boolean handleSelection() {
@@ -94,6 +98,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
          }
          if (dialog.open() == Window.OK) {
             selected = (T) dialog.getSelectedFirst();
+            handleSelectionPersist(selected);
             return true;
          }
       } catch (Exception ex) {

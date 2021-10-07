@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -72,5 +73,7 @@ public interface IAtsWorkDefinition extends NamedId {
    ReviewRole fromName(String name);
 
    XResultData getResults();
+
+   boolean hasOption(WorkDefOption workDefOption);
 
 }

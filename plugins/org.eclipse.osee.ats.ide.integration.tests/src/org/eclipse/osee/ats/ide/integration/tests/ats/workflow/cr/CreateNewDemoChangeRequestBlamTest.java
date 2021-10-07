@@ -28,8 +28,8 @@ import org.junit.Assert;
 import org.junit.Before;
 
 /**
- * This test will launch the Demo Change Request Blam, handlePopulateWithDebugInfo, run the BLAM and then check that the
- * change request workflow was created.
+ * Test for CreateNewDemoChangeRequestBlam. This test will launch the Demo Change Request Blam,
+ * handlePopulateWithDebugInfo, run the BLAM and then check that the change request workflow was created.
  *
  * @author Donald G. Dunne
  */

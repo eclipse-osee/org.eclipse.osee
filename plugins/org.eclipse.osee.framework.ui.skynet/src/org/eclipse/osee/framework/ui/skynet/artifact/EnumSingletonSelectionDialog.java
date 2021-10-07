@@ -89,7 +89,7 @@ public class EnumSingletonSelectionDialog extends FilteredListDialog<EnumToken> 
    }
 
    public String getSelectedOption() {
-      if (removeAllSelected || getSelected() != null) {
+      if (removeAllSelected || getSelected() == null) {
          return "";
       }
       return getSelected().getName();

@@ -14,8 +14,10 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -33,6 +35,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -118,13 +122,25 @@ public class WfeTargetedVersionHeader extends Composite {
    }
 
    public void refresh() {
-      if (Widgets.isAccessible(valueLabel)) {
+      if (Widgets.isAccessible(link)) {
          String value = "Not Set";
          if (AtsApiService.get().getVersionService().hasTargetedVersion(teamWf)) {
             value = AtsApiService.get().getVersionService().getTargetedVersion(teamWf).getName();
          }
          valueLabel.setText(value);
          valueLabel.getParent().getParent().layout();
+
+         if (teamWf.getWorkDefinition().hasOption(WorkDefOption.RequireTargetedVersion)) {
+            IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
+            if (managedForm != null && !managedForm.getForm().isDisposed()) {
+               IMessageManager messageManager = managedForm.getMessageManager();
+               if ("Not Set".equals(value)) {
+                  messageManager.addMessage(link, "Must Select Targeted Version", null, IMessageProvider.ERROR, link);
+               } else {
+                  messageManager.removeMessages(link);
+               }
+            }
+         }
       }
    }
 
