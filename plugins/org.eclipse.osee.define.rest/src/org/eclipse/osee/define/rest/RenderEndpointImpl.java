@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.define.rest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.define.api.DefineApi;
@@ -52,6 +54,11 @@ public final class RenderEndpointImpl implements RenderEndpoint {
 
    @Override
    public Response msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
-      return defineApi.getMSWordOperations().msWordPreview(branch, template, headArtifact, view);
+      return defineApi.getMSWordOperations().msWordPreview(branch, template, Arrays.asList(headArtifact), view);
+   }
+
+   @Override
+   public Response msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view) {
+      return defineApi.getMSWordOperations().msWordPreview(branch, template, artifacts, view);
    }
 }

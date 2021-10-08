@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2017 Boeing
+ * Copyright (c) 2021 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,6 @@
 package org.eclipse.osee.define.rest.publishing;
 
 import java.io.Writer;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.PublishingOptions;
@@ -38,17 +37,16 @@ public class MSWordPreviewPublisher extends MSWordTemplatePublisher {
    }
 
    @Override
-   protected void processContent(ArtifactReadable headArtifact, WordMLWriter wordMl) {
-      if (!includeEmptyHeaders) {
-         List<ArtifactReadable> artifacts = new LinkedList<>();
-         artifacts.add(headArtifact);
+   protected void processContent(List<ArtifactReadable> artifacts, WordMLWriter wordMl) {
+      if (!includeEmptyHeaders && recurseChildren) {
          populateEmptyHeaders(artifacts);
       }
 
-      setUpDataRights(headArtifact);
+      setUpDataRights(artifacts);
 
-      processArtifact(headArtifact, wordMl);
-      addErrorLogToWordMl(wordMl);
+      for (ArtifactReadable artifact : artifacts) {
+         processArtifact(artifact, wordMl);
+      }
    }
 
    @Override

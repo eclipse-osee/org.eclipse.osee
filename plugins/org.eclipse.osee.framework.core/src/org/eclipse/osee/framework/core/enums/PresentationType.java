@@ -25,6 +25,7 @@ public enum PresentationType {
    DIFF_NO_ATTRIBUTES,
    F5_DIFF,
    PREVIEW, // open read-only using application specific editor
+   PREVIEW_SERVER,
    MERGE,
    RENDER_AS_HUMAN_READABLE_TEXT, // Used to pre and post process text based attributes.
    DEFAULT_OPEN, // up to the renderer to determine what is used for default

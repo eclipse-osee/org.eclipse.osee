@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.define.api;
 
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -20,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -54,4 +56,10 @@ public interface RenderEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
    Response msWordPreview(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact, @PathParam("view") ArtifactId view);
+
+   @GET
+   @Path("msWordPreview/{branch}/{template}/{view}/artifacts")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_XML})
+   Response msWordPreview(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @QueryParam("artifacts") List<ArtifactId> artifacts, @PathParam("view") ArtifactId view);
 }

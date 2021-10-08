@@ -163,6 +163,9 @@
 	<extension id="word" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
 	</extension>
+	<extension id="word_server" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer"/>
+	</extension>
 	<extension id="url" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.UrlRenderer"/>
 	</extension>

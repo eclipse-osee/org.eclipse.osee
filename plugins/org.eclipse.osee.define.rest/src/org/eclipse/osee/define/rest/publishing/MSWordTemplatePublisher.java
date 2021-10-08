@@ -162,22 +162,16 @@ public class MSWordTemplatePublisher {
    }
 
    /**
-    * Beginning method of the publishing process. Default version takes in the artifact id of the head that the publish
-    * is based off of, and then the artifact id for the template. This method is where the artifact readable is
-    * gathered, and the template options are set up. If everything is valid, move onto the next step for publishing.
+    * Beginning method of the publishing process. Default version takes in the list of artifact ids to be published, and
+    * then the artifact id for the template. This method is where the artifact readable's are gathered, and the template
+    * options are set up. If everything is valid, move onto the next step for publishing.
     */
-   public void publish(ArtifactId templateArtId, ArtifactId headArtId) {
-      ArtifactReadable artifact = getArtifactHead(headArtId);
+   public void publish(ArtifactId templateArtId, List<ArtifactId> artifactIds) {
+      List<ArtifactReadable> artifacts = getSelectedArtifacts(artifactIds);
       String template = setUpTemplateWithOptions(templateArtId);
 
-      if (artifact.isValid()) {
-         if (Strings.isValid(template) && elementType.equals(ARTIFACT)) {
-            applyContentToTemplate(artifact, template);
-         } else {
-            //TODO handle critical error for invalid template
-         }
-      } else {
-         //TODO handle critical error for invalid artifact head
+      if (!artifacts.isEmpty() && Strings.isValid(template) && elementType.equals(ARTIFACT)) {
+         applyContentToTemplate(artifacts, template);
       }
    }
 
@@ -188,17 +182,18 @@ public class MSWordTemplatePublisher {
     * processContent. Finally the rest of the template's word content is placed at the end to finish off the published
     * document.
     */
-   protected void applyContentToTemplate(ArtifactReadable headArtifact, String templateContent) {
+   protected void applyContentToTemplate(List<ArtifactReadable> artifacts, String templateContent) {
       WordMLWriter wordMl = new WordMLWriter(writer);
 
       templateContent =
-         setUpTemplateContent(wordMl, headArtifact, templateContent, publishingOptions.msWordHeadingDepth);
+         setUpTemplateContent(wordMl, artifacts.get(0), templateContent, publishingOptions.msWordHeadingDepth);
 
       int lastEndIndex = 0;
       Matcher matcher = headElementsPattern.matcher(templateContent);
       while (matcher.find()) {
          lastEndIndex = handleStartOfTemplate(wordMl, templateContent, matcher);
-         processContent(headArtifact, wordMl);
+         processContent(artifacts, wordMl);
+         addErrorLogToWordMl(wordMl);
       }
 
       handleEndOfTemplate(wordMl, templateContent, lastEndIndex);
@@ -210,9 +205,10 @@ public class MSWordTemplatePublisher {
     * starting from our head artifact, then any errors are added in their own final section. This section is likely to
     * be overriden by subclasses.
     */
-   protected void processContent(ArtifactReadable headArtifact, WordMLWriter wordMl) {
-      processArtifact(headArtifact, wordMl);
-      addErrorLogToWordMl(wordMl);
+   protected void processContent(List<ArtifactReadable> artifacts, WordMLWriter wordMl) {
+      for (ArtifactReadable artifact : artifacts) {
+         processArtifact(artifact, wordMl);
+      }
    }
 
    /**
@@ -276,13 +272,13 @@ public class MSWordTemplatePublisher {
    //--- Publish Helper Methods ---//
 
    /**
-    * Grabs artifact readable for the artifact id passed in as the head artifact, default uses the view option that was
-    * set.
+    * Grabs artifact readable's for the artifact ids passed in at the start.
     */
-   protected ArtifactReadable getArtifactHead(ArtifactId artifactId) {
-      ArtifactReadable artifact =
-         orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andId(artifactId).getArtifact();
-      return artifact;
+   protected List<ArtifactReadable> getSelectedArtifacts(List<ArtifactId> artifactIds) {
+      List<ArtifactReadable> artifacts =
+         orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andIds(artifactIds).getResults().getList();
+      artifacts.sort(hierarchyComparator);
+      return artifacts;
    }
 
    /**
@@ -534,22 +530,24 @@ public class MSWordTemplatePublisher {
     * that the entire published document uses the same data rights footer, regardless of the attribute on artifacts.
     * <br/>
     * <br/>
-    * Starting from the head artifact, goes through all artifacts in the hierarchy to be published (if specified through
-    * recurseChildren) and sets their data rights.
+    * Given the list of artifacts for publish, this loops through and adds any recursive artifacts to also be published
+    * (if specified through recurseChildren) and sets all of their data rights with DataRightsOperations.
     */
-   protected void setUpDataRights(ArtifactReadable artifact) {
+   protected void setUpDataRights(List<ArtifactReadable> artifacts) {
       overrideClassification = "invalid";
       if (DataRightsClassification.isValid(publishingOptions.overrideDataRights)) {
          overrideClassification = publishingOptions.overrideDataRights;
       }
 
-      List<ArtifactId> artifacts = new ArrayList<>();
-      artifacts.add(artifact);
-      if (recurseChildren) {
-         artifacts.addAll(artifact.getDescendants());
+      List<ArtifactId> allArtifactIds = new ArrayList<>();
+      for (ArtifactReadable artifact : artifacts) {
+         allArtifactIds.add(artifact);
+         if (recurseChildren) {
+            allArtifactIds.addAll(artifact.getDescendants());
+         }
       }
       DataRightsOperationsImpl dataRightsOps = new DataRightsOperationsImpl(orcsApi);
-      response = dataRightsOps.getDataRights(artifacts, publishingOptions.branch, overrideClassification);
+      response = dataRightsOps.getDataRights(allArtifactIds, publishingOptions.branch, overrideClassification);
    }
 
    /**

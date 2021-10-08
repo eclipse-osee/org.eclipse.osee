@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPE
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW_SERVER;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -376,7 +377,7 @@ public class WordTemplateRenderer extends WordRenderer {
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview (No Attr)", imageDescriptor,
          RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey(),
          wordMenuSettings));
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children (No Attr)",
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW_SERVER, "MS Word Preview with children (No Attr)",
          imageDescriptor, RendererOption.TEMPLATE_OPTION.getKey(),
          RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey(), wordMenuSettings));
    }

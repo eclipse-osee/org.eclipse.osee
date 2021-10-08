@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.define.api;
 
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -32,7 +33,7 @@ public interface MSWordOperations {
 
    public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
-   public Response msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
+   public Response msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view);
 
    public String renderPlainText(BranchId branchId, String data);
 
