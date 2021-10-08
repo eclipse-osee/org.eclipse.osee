@@ -102,17 +102,10 @@ public class UserAdminImpl implements UserAdmin {
 
    @Override
    public User getCurrentUser() {
-      User currentUser;
       if (isDuringCurrentUserCreation()) {
-         currentUser = getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId());
-      } else {
-         currentUser = currentUserProvider.get();
-         if (!currentUser.isActive()) {
-            currentUser.setActive(true);
-            currentUser.persist("Set current user active");
-         }
+         return getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId());
       }
-      return currentUser;
+      return currentUserProvider.get();
    }
 
    @Override
