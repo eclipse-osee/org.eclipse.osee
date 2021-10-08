@@ -237,6 +237,7 @@ public final class RenderingUtil {
             workingFolder = getOrCreateFolder(workingFolder, ".working");
             toReturn = workingFolder;
             break;
+         case PREVIEW_SERVER:
          case PREVIEW:
             previewFolder = getOrCreateFolder(previewFolder, ".preview");
             toReturn = previewFolder;

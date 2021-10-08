@@ -17,7 +17,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,7 +155,7 @@ public class MSWordOperationsImpl implements MSWordOperations {
             try (Writer writer = new OutputStreamWriter(opStream)) {
                MSWordTemplatePublisher publisher =
                   new MSWordTemplatePublisher(publishingOptions, writer, orcsApi, atsApi);
-               publisher.publish(template, headArtifact);
+               publisher.publish(template, Arrays.asList(headArtifact));
                writer.close();
             } catch (Exception ex) {
                OseeCoreException.wrapAndThrow(ex);
@@ -167,9 +169,14 @@ public class MSWordOperationsImpl implements MSWordOperations {
    }
 
    @Override
-   public Response msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
+   public Response msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view) {
       //Generate filename with the headArtifact name and current time
-      String name = orcsApi.getQueryFactory().fromBranch(branch).andId(headArtifact).asArtifactToken().getName();
+      String name;
+      if (artifacts.size() == 1) {
+         name = orcsApi.getQueryFactory().fromBranch(branch).andId(artifacts.get(0)).asArtifactToken().getName();
+      } else {
+         name = String.format("%d_Artifacts_Preview", artifacts.size());
+      }
       SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
       Date date = new Date(System.currentTimeMillis());
       String time = format.format(date);
@@ -188,7 +195,7 @@ public class MSWordOperationsImpl implements MSWordOperations {
             try (Writer writer = new OutputStreamWriter(opStream)) {
                MSWordPreviewPublisher publisher =
                   new MSWordPreviewPublisher(publishingOptions, writer, orcsApi, atsApi);
-               publisher.publish(template, headArtifact);
+               publisher.publish(template, artifacts);
                writer.close();
             } catch (Exception ex) {
                OseeCoreException.wrapAndThrow(ex);

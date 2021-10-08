@@ -52,6 +52,7 @@ public class WordCoreUtil {
    public static String START_PARAGRAPH = "<w:p wsp:rsid";
    public static String WHOLE_END_PARAGRAPH = "</w:t></w:r></w:p>";
    public static String END_PARAGRAPH = "</w:p>";
+   public static String END_DOCUMENT = "</w:wordDocument>";
 
    public static String END = "E" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "d ?" + WORD_ML_TAGS + " ?";
    public static String ELSE = "E" + WORD_ML_TAGS + "l" + WORD_ML_TAGS + "s" + WORD_ML_TAGS + "e ?";
