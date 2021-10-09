@@ -67,11 +67,14 @@ public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHa
       createToolbar(managedForm);
       FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
-      OseeEventManager.addListener(this);
    }
 
    @Override
    public void refreshActionHandler() {
+      refresh();
+   }
+
+   public void refresh() {
       artifact = artifact.reloadAttributesAndRelations();
       xViewer.loadTable(artifact);
    }
