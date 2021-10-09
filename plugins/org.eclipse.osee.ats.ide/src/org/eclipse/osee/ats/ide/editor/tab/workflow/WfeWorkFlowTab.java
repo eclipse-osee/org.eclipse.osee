@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeRelationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
@@ -287,12 +288,14 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    }
 
    private void createRelationsSection() {
-      try {
-         relationsSection = new WfeRelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-         managedForm.addPart(relationsSection);
+      if (!AtsApiService.get().getUserService().isAtsAdmin()) {
+         try {
+            relationsSection = new WfeRelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
+            managedForm.addPart(relationsSection);
 
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
    }
 

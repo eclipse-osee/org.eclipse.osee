@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.ide.editor.tab.defects.WfeDefectsTab;
 import org.eclipse.osee.ats.ide.editor.tab.journal.WfeJournalTab;
 import org.eclipse.osee.ats.ide.editor.tab.members.WfeMembersTab;
 import org.eclipse.osee.ats.ide.editor.tab.metrics.WfeMetricsTab;
+import org.eclipse.osee.ats.ide.editor.tab.relations.WfeRelationsTab;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
 import org.eclipse.osee.ats.ide.editor.tab.task.WfeTasksTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
@@ -106,6 +107,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeDefectsTab defectsTab;
    private WfeTasksTab taskTab;
    private WfeAttributesTab attrTab;
+   private WfeRelationsTab relationsTab;
    private WfeJournalTab journalTab;
    int attrPageIndex = 0;
    private final AtsApi atsApi;
@@ -154,6 +156,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
             createMembersTab();
             createWorkflowTab();
+            createRelationsTab();
             createTaskTab();
             createJournalTab();
             createDefectsTab();
@@ -331,6 +334,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       if (attrTab != null) {
          removePage(attrTab.getIndex());
       }
+      if (relationsTab != null) {
+         removePage(relationsTab.getIndex());
+      }
       if (taskTab != null) {
          removePage(taskTab.getIndex());
       }
@@ -421,6 +427,17 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       }
    }
 
+   private void createRelationsTab() {
+      try {
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
+            relationsTab = new WfeRelationsTab(this, workItem);
+            addPage(relationsTab);
+         }
+      } catch (PartInitException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
    /**
     * Refresh all tabs, sections and widgets. Should be called on reload of artifact or artifact changed event.
     * Attribute widgets are reset so they don't register as dirty cause they don't have latest value in artifact.
@@ -432,6 +449,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          }
          if (workFlowTab != null) {
             workFlowTab.refresh();
+         }
+         if (attrTab != null) {
+            attrTab.refresh();
+         }
+         if (relationsTab != null) {
+            relationsTab.refresh();
          }
          if (journalTab != null) {
             journalTab.refresh();
