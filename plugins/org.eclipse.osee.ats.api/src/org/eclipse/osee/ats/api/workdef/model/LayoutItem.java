@@ -13,12 +13,10 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
-
 /**
  * @author Donald G. Dunne
  */
-public class LayoutItem extends AbstractWorkDefItem implements IAtsLayoutItem {
+public class LayoutItem extends AbstractWorkDefItem {
 
    public LayoutItem(String name) {
       super(Long.valueOf(name.hashCode()), name);

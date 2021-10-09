@@ -37,15 +37,15 @@ import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -332,42 +332,42 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     * Note: Modifing this list will not affect the state widgets. Use addStateItem().
     */
    @Override
-   public List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef) {
-      List<IAtsWidgetDefinition> widgets = new ArrayList<>();
+   public List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef) {
+      List<WidgetDefinition> widgets = new ArrayList<>();
       getWidgets(stateDef, widgets, stateDef.getLayoutItems());
       return widgets;
    }
 
    @Override
-   public List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<IAtsLayoutItem> layoutItems) {
-      List<IAtsWidgetDefinition> widgets = new ArrayList<>();
+   public List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<LayoutItem> layoutItems) {
+      List<WidgetDefinition> widgets = new ArrayList<>();
       getWidgets(stateDef, widgets, layoutItems);
       return widgets;
    }
 
-   private static void getWidgets(IAtsStateDefinition stateDef, List<IAtsWidgetDefinition> widgets, List<IAtsLayoutItem> layoutItems) {
-      for (IAtsLayoutItem lItem : layoutItems) {
-         if (lItem instanceof IAtsCompositeLayoutItem) {
-            getWidgets(stateDef, widgets, ((IAtsCompositeLayoutItem) lItem).getaLayoutItems());
-         } else if (lItem instanceof IAtsWidgetDefinition) {
-            widgets.add((IAtsWidgetDefinition) lItem);
+   private static void getWidgets(IAtsStateDefinition stateDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
+      for (LayoutItem lItem : layoutItems) {
+         if (lItem instanceof CompositeLayoutItem) {
+            getWidgets(stateDef, widgets, ((CompositeLayoutItem) lItem).getaLayoutItems());
+         } else if (lItem instanceof WidgetDefinition) {
+            widgets.add((WidgetDefinition) lItem);
          }
       }
    }
 
-   private static void getWidgets(HeaderDefinition headerDef, List<IAtsWidgetDefinition> widgets, List<IAtsLayoutItem> layoutItems) {
-      for (IAtsLayoutItem lItem : layoutItems) {
-         if (lItem instanceof IAtsCompositeLayoutItem) {
-            getWidgets(headerDef, widgets, ((IAtsCompositeLayoutItem) lItem).getaLayoutItems());
-         } else if (lItem instanceof IAtsWidgetDefinition) {
-            widgets.add((IAtsWidgetDefinition) lItem);
+   private static void getWidgets(HeaderDefinition headerDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
+      for (LayoutItem lItem : layoutItems) {
+         if (lItem instanceof CompositeLayoutItem) {
+            getWidgets(headerDef, widgets, ((CompositeLayoutItem) lItem).getaLayoutItems());
+         } else if (lItem instanceof WidgetDefinition) {
+            widgets.add((WidgetDefinition) lItem);
          }
       }
    }
 
    @Override
-   public Collection<IAtsWidgetDefinition> getWidgets(IAtsWorkDefinition workDef) {
-      List<IAtsWidgetDefinition> widgets = new ArrayList<>();
+   public Collection<WidgetDefinition> getWidgets(IAtsWorkDefinition workDef) {
+      List<WidgetDefinition> widgets = new ArrayList<>();
       getWidgets(workDef.getHeaderDef(), widgets, workDef.getHeaderDef().getLayoutItems());
       for (IAtsStateDefinition stateDef : workDef.getStates()) {
          getWidgets(stateDef, widgets, stateDef.getLayoutItems());
@@ -377,7 +377,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public boolean hasWidgetNamed(IAtsStateDefinition stateDef, String name) {
-      for (IAtsWidgetDefinition widgetDef : getWidgetsFromLayoutItems(stateDef)) {
+      for (WidgetDefinition widgetDef : getWidgetsFromLayoutItems(stateDef)) {
          if (widgetDef.getName().equals(name)) {
             return true;
          }

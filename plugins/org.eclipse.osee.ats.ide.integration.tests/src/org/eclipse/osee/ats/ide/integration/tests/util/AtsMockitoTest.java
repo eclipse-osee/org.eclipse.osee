@@ -33,11 +33,11 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -69,7 +69,7 @@ public class AtsMockitoTest {
    @Mock protected IAtsAction action;
    @Mock protected IAtsStateDefinition analyze, implement, completed, cancelled;
    @Mock protected IAtsWorkDefinition workDef;
-   @Mock protected IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   @Mock protected WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    @Mock protected IAttributeResolver attrResolver;
    @Mock protected IAtsVersionService versionService;
    @Mock protected IAtsBranchService branchService;
@@ -214,11 +214,11 @@ public class AtsMockitoTest {
       return analyze;
    }
 
-   public IAtsWidgetDefinition getEstHoursWidgetDef() {
+   public WidgetDefinition getEstHoursWidgetDef() {
       return estHoursWidgetDef;
    }
 
-   public IAtsWidgetDefinition getWorkPackageWidgetDef() {
+   public WidgetDefinition getWorkPackageWidgetDef() {
       return workPackageWidgetDef;
    }
 

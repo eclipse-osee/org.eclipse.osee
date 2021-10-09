@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
@@ -28,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Donald G. Dunne
  */
-public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition {
+public class WidgetDefinition extends LayoutItem {
 
    private final AttributeTypeToken attributeType;
    private final ComputedCharacteristicToken<?> computedCharacteristic;
@@ -85,7 +84,6 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
          computedCharacteristic, xWidgetName, widgetOptions);
    }
 
-   @Override
    public String getToolTip() {
       return toolTip;
    }
@@ -94,27 +92,22 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       this.toolTip = toolTip;
    }
 
-   @Override
    public boolean is(WidgetOption widgetOption) {
       return options.contains(widgetOption);
    }
 
-   @Override
    public void set(WidgetOption widgetOption) {
       options.add(widgetOption);
    }
 
-   @Override
    public String getXWidgetName() {
       return xWidgetName;
    }
 
-   @Override
    public void setXWidgetName(String xWidgetName) {
       this.xWidgetName = xWidgetName;
    }
 
-   @Override
    public String getDefaultValue() {
       return defaultValue;
    }
@@ -133,12 +126,10 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
       this.description = description;
    }
 
-   @Override
    public int getHeight() {
       return height;
    }
 
-   @Override
    public void setHeight(int height) {
       this.height = height;
    }
@@ -149,53 +140,43 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
          getAttributeType().isValid() ? getAttributeType().toStringWithId() : "");
    }
 
-   @Override
    public IAtsWidgetOptionHandler getOptions() {
       return options;
    }
 
-   @Override
    public void setConstraint(double min, double max) {
       this.min = min;
       this.max = max;
    }
 
-   @Override
    public Double getMin() {
       return min;
    }
 
-   @Override
    public Double getMax() {
       return max;
    }
 
-   @Override
    public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
-   @Override
    public ComputedCharacteristicToken<?> getComputedCharacteristic() {
       return computedCharacteristic;
    }
 
-   @Override
    public RelationTypeSide getRelationTypeSide() {
       return relationTypeSide;
    }
 
-   @Override
    public void addParameter(String key, Object obj) {
       parameters.put(key, obj);
    }
 
-   @Override
    public Object getParameter(String key) {
       return parameters.get(key);
    }
 
-   @Override
    public Map<String, Object> getParameters() {
       return parameters;
    }

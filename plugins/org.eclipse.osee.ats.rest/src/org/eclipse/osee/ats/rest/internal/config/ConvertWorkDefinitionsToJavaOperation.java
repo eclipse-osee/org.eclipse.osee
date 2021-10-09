@@ -176,7 +176,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
    //
    //   private String getLayoutStr(IAtsStateDefinition state, ArtifactToken workDefArt) {
    //      StringBuilder sb = new StringBuilder();
-   //      for (IAtsLayoutItem item : state.getLayoutItems()) {
+   //      for (LayoutItem item : state.getLayoutItems()) {
    //         handleLayoutItem(sb, item);
    //      }
    //      String layoutStr = sb.toString();
@@ -189,11 +189,11 @@ public class ConvertWorkDefinitionsToJavaOperation {
    //   List<String> ignoreAttrTypes = Arrays.asList("Review Required", "Fast Track", "Training Required",
    //      "Tool Change Required", "Meeting Attendees", "SW Build Id");
    //
-   //   private void handleLayoutItem(StringBuilder sb, IAtsLayoutItem item) {
+   //   private void handleLayoutItem(StringBuilder sb, LayoutItem item) {
    //      if (item instanceof CompositeLayoutItem) {
    //         CompositeLayoutItem comp = (CompositeLayoutItem) item;
    //         sb.append(String.format("new CompositeLayoutItem(%s, //\n", String.valueOf(comp.getNumColumns())));
-   //         for (IAtsLayoutItem child : comp.getaLayoutItems()) {
+   //         for (LayoutItem child : comp.getaLayoutItems()) {
    //            handleLayoutItem(sb, child);
    //         }
    //         sb.append("), //\n");

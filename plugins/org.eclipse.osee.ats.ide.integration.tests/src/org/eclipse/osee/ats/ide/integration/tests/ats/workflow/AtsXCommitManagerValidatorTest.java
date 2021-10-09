@@ -16,9 +16,9 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
 import org.eclipse.osee.ats.ide.integration.tests.util.AtsMockitoTest;
 import org.eclipse.osee.ats.ide.util.validate.AtsXCommitManagerValidator;
@@ -37,8 +37,8 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
    }
 
    // @formatter:off
-   @Mock IAtsWidgetDefinition widgetDef;
-   @Mock IAtsWidgetDefinition notXCommitManagerWidget;
+   @Mock WidgetDefinition widgetDef;
+   @Mock WidgetDefinition notXCommitManagerWidget;
    @Mock ArtifactValueProvider provider;
    @Mock IValueProvider notArtifactValueProvider;
    @Mock IAtsWorkItem workItem;

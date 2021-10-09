@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef.model;
 
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
-
 /**
  * CompositeLayoutItem that creates box around layoutItems with name label on box
  *
@@ -21,7 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
  */
 public class GroupCompositeLayoutItem extends CompositeLayoutItem {
 
-   public GroupCompositeLayoutItem(int numColumns, String name, IAtsLayoutItem... layoutItems) {
+   public GroupCompositeLayoutItem(int numColumns, String name, LayoutItem... layoutItems) {
       super(numColumns, layoutItems);
       setName(name);
    }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -83,7 +83,7 @@ public class WfeCustomHeader extends Composite {
       }
    }
 
-   private Collection<IAtsLayoutItem> getLayoutItems() {
+   private Collection<LayoutItem> getLayoutItems() {
 
       // Use custom header definition, if defined
       if (workItem.getWorkDefinition().hasHeaderDefinitionItems()) {

@@ -22,11 +22,11 @@ import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -131,10 +131,10 @@ public class WorkDefBuilder {
       return workDef;
    }
 
-   private void allLayoutItemsToStringSet(Set<String> ret, List<IAtsLayoutItem> inputList) {
-      for (IAtsLayoutItem layItem : inputList) {
+   private void allLayoutItemsToStringSet(Set<String> ret, List<LayoutItem> inputList) {
+      for (LayoutItem layItem : inputList) {
          if (layItem instanceof CompositeLayoutItem) {
-            for (IAtsLayoutItem compItem : ((CompositeLayoutItem) layItem).getaLayoutItems()) {
+            for (LayoutItem compItem : ((CompositeLayoutItem) layItem).getaLayoutItems()) {
                ret.add(compItem.getName());
             }
          } else {

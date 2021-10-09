@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -33,7 +33,7 @@ public class ArtifactValueProvider implements IValueProvider {
    private final Artifact artifact;
    private final AttributeTypeToken attributeType;
 
-   public ArtifactValueProvider(Artifact artifact, IAtsWidgetDefinition widgetDef) {
+   public ArtifactValueProvider(Artifact artifact, WidgetDefinition widgetDef) {
       this.artifact = artifact;
       this.attributeType = widgetDef.getAttributeType();
    }

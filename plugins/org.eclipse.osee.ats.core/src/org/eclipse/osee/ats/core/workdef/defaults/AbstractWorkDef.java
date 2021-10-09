@@ -18,9 +18,9 @@ import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSIT
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -67,7 +67,7 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
    }
 
    //should be Overriden in sub-classes
-   public IAtsLayoutItem[] getLayout() {
+   public LayoutItem[] getLayout() {
       return null;
    }
 

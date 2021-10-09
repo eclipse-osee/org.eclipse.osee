@@ -26,9 +26,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -183,11 +181,11 @@ public class AtsWorkDefinitionServiceImplTest {
       StateDefinition def = new StateDefinition("endorse");
       Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 2"));
 
-      IAtsCompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
+      CompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
       def.getLayoutItems().add(stateItem2);
-      IAtsWidgetDefinition widget2 = new WidgetDefinition("item 2");
+      WidgetDefinition widget2 = new WidgetDefinition("item 2");
       stateItem2.getaLayoutItems().add(widget2);
-      IAtsWidgetDefinition widget3 = new WidgetDefinition("item 3");
+      WidgetDefinition widget3 = new WidgetDefinition("item 3");
       stateItem2.getaLayoutItems().add(widget3);
 
       Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 45"));
