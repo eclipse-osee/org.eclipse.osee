@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.api.review;
 
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.framework.core.enums.OseeEnum;
 
 /**
@@ -53,7 +53,7 @@ public class UserRoleError extends OseeEnum {
       return this == None;
    }
 
-   public WidgetResult toWidgetResult(IAtsWidgetDefinition widgetDef) {
+   public WidgetResult toWidgetResult(WidgetDefinition widgetDef) {
       if (this == None) {
          return WidgetResult.Success;
       }

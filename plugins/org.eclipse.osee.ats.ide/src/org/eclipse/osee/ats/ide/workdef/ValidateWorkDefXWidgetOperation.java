@@ -13,8 +13,8 @@
 package org.eclipse.osee.ats.ide.workdef;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -38,7 +38,7 @@ public class ValidateWorkDefXWidgetOperation {
    public XResultData run() {
       XResultData rd = new XResultData();
       for (IAtsWorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
-         for (IAtsWidgetDefinition widgetDef : atsApi.getWorkDefinitionService().getWidgets(workDef)) {
+         for (WidgetDefinition widgetDef : atsApi.getWorkDefinitionService().getWidgets(workDef)) {
             String xWidgetName = widgetDef.getXWidgetName();
             if (Strings.isValid(xWidgetName)) {
                XWidget widget = getWidget(xWidgetName);

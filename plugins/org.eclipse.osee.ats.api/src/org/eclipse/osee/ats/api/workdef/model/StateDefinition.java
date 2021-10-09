@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.api.workdef.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -34,7 +33,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
 
    private StateType StateType;
    private int ordinal = 0;
-   private List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
+   private List<LayoutItem> stateItems = new ArrayList<>(5);
    private final RuleManager ruleMgr = new RuleManager();
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
@@ -51,7 +50,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    }
 
    @Override
-   public List<IAtsLayoutItem> getLayoutItems() {
+   public List<LayoutItem> getLayoutItems() {
       return stateItems;
    }
 
@@ -61,7 +60,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    }
 
    @Override
-   public void setLayoutItems(List<IAtsLayoutItem> layoutToSet) {
+   public void setLayoutItems(List<LayoutItem> layoutToSet) {
       this.stateItems = layoutToSet;
    }
 

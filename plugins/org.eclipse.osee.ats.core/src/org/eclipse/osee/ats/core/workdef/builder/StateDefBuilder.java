@@ -18,13 +18,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
@@ -129,20 +129,20 @@ public class StateDefBuilder {
       return this;
    }
 
-   public StateDefBuilder andLayout(IAtsLayoutItem... items) {
+   public StateDefBuilder andLayout(LayoutItem... items) {
       if (this.getAndLayoutFromState() != null) {
          rd.errorf("Cannot add layout items when state already gets layout from other state for Work Def %s\n",
             workDef.getName());
       }
-      for (IAtsLayoutItem item : items) {
+      for (LayoutItem item : items) {
          state.getLayoutItems().add(item);
       }
       return this;
    }
 
-   public void insertLayoutAfter(AttributeTypeToken attrTypeLocation, IAtsLayoutItem... addLayoutItems) {
+   public void insertLayoutAfter(AttributeTypeToken attrTypeLocation, LayoutItem... addLayoutItems) {
       AtomicBoolean found = new AtomicBoolean(false);
-      List<IAtsLayoutItem> currLayoutItems = new ArrayList<>(state.getLayoutItems());
+      List<LayoutItem> currLayoutItems = new ArrayList<>(state.getLayoutItems());
       state.getLayoutItems().clear();
       insertLayoutAfter(state.getLayoutItems(), attrTypeLocation, currLayoutItems, found, addLayoutItems);
       if (!found.get()) {
@@ -155,22 +155,22 @@ public class StateDefBuilder {
     * @param currItems to loop through looking for attrTypeLocation; will recurse through CompositeLayoutItems
     * @param found is true if attrTypeLocation was found
     */
-   private void insertLayoutAfter(List<IAtsLayoutItem> newItems, AttributeTypeToken attrTypeLocation, List<IAtsLayoutItem> currItems, AtomicBoolean found, IAtsLayoutItem... insertLayoutItems) {
-      for (IAtsLayoutItem currItem : currItems) {
+   private void insertLayoutAfter(List<LayoutItem> newItems, AttributeTypeToken attrTypeLocation, List<LayoutItem> currItems, AtomicBoolean found, LayoutItem... insertLayoutItems) {
+      for (LayoutItem currItem : currItems) {
          newItems.add(currItem);
          if (currItem instanceof WidgetDefinition) {
             WidgetDefinition widgetDef = (WidgetDefinition) currItem;
             if (attrTypeLocation.equals(widgetDef.getAttributeType())) {
                found.set(true);
-               for (IAtsLayoutItem newItem : insertLayoutItems) {
+               for (LayoutItem newItem : insertLayoutItems) {
                   newItems.add(newItem);
                }
             }
          }
          // Recurse through composite layout items
-         else if (currItem instanceof IAtsCompositeLayoutItem) {
-            IAtsCompositeLayoutItem compLayoutItem = (IAtsCompositeLayoutItem) currItem;
-            List<IAtsLayoutItem> currLayoutItems = new ArrayList<IAtsLayoutItem>(compLayoutItem.getaLayoutItems());
+         else if (currItem instanceof CompositeLayoutItem) {
+            CompositeLayoutItem compLayoutItem = (CompositeLayoutItem) currItem;
+            List<LayoutItem> currLayoutItems = new ArrayList<LayoutItem>(compLayoutItem.getaLayoutItems());
             compLayoutItem.getaLayoutItems().clear();
             insertLayoutAfter(compLayoutItem.getaLayoutItems(), attrTypeLocation, currLayoutItems, found,
                insertLayoutItems);

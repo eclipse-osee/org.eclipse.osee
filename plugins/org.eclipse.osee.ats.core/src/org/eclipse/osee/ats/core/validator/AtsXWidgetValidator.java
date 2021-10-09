@@ -18,10 +18,10 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,11 +36,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return toStateDef.getStateType().isCompletedState();
    }
 
-   public boolean isRequiredForTransition(IAtsWidgetDefinition widgetDef) {
+   public boolean isRequiredForTransition(WidgetDefinition widgetDef) {
       return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_TRANSITION);
    }
 
-   public boolean isRequiredForCompletion(IAtsWidgetDefinition widgetDef) {
+   public boolean isRequiredForCompletion(WidgetDefinition widgetDef) {
       return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
    }
 
@@ -48,7 +48,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition",
             widgetDef.getName());
@@ -60,9 +60,9 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi);
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi);
 
-   public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
+   public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) {
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {
@@ -74,7 +74,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   public WidgetResult isValidFloat(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
+   public WidgetResult isValidFloat(IValueProvider valueProvider, WidgetDefinition widgetDef) {
       for (Object obj : valueProvider.getValues()) {
          if (obj instanceof Double) {
             return WidgetResult.Success;
@@ -95,7 +95,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   public WidgetResult isValidInteger(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
+   public WidgetResult isValidInteger(IValueProvider valueProvider, WidgetDefinition widgetDef) {
       for (Object obj : valueProvider.getValues()) {
          if (obj instanceof Integer) {
             return WidgetResult.Success;
@@ -116,7 +116,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   private WidgetResult checkValid(IAtsWidgetDefinition widgetDef, double value, String valueProviderName) {
+   private WidgetResult checkValid(WidgetDefinition widgetDef, double value, String valueProviderName) {
       Double minValue = widgetDef.getMin();
       Double maxValue = widgetDef.getMax();
 
@@ -131,7 +131,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
+   public WidgetResult isValidList(IValueProvider valueProvider, WidgetDefinition widgetDef) {
       return checkValid(widgetDef, valueProvider.getValues().size(), valueProvider.getName());
    }
 

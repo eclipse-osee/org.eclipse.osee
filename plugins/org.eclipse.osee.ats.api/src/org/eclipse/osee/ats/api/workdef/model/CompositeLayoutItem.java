@@ -15,16 +15,14 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayoutItem {
+public class CompositeLayoutItem extends LayoutItem {
 
    private int numColumns;
-   private final List<IAtsLayoutItem> childrenLayoutItems = new ArrayList<>(5);
+   private final List<LayoutItem> childrenLayoutItems = new ArrayList<>(5);
 
    public CompositeLayoutItem() {
       this(2);
@@ -35,25 +33,22 @@ public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayo
       this.numColumns = numColumns;
    }
 
-   public CompositeLayoutItem(int numColumns, IAtsLayoutItem... layoutItems) {
+   public CompositeLayoutItem(int numColumns, LayoutItem... layoutItems) {
       this(numColumns);
-      for (IAtsLayoutItem item : layoutItems) {
+      for (LayoutItem item : layoutItems) {
          childrenLayoutItems.add(item);
       }
    }
 
-   @Override
    public int getNumColumns() {
       return numColumns;
    }
 
-   @Override
    public void setNumColumns(int numColumns) {
       this.numColumns = numColumns;
    }
 
-   @Override
-   public List<IAtsLayoutItem> getaLayoutItems() {
+   public List<LayoutItem> getaLayoutItems() {
       return childrenLayoutItems;
    }
 
@@ -62,7 +57,6 @@ public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayo
       return "Composite " + numColumns;
    }
 
-   @Override
    public boolean isGroupComposite() {
       return false;
    }

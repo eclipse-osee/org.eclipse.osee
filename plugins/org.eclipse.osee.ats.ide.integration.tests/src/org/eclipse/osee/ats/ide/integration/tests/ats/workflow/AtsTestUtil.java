@@ -41,13 +41,13 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -103,7 +103,7 @@ public class AtsTestUtil {
    private static ActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static IAtsAction actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
    private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
-   private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   private static WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
    private static Boolean productionDatastore;
 
@@ -164,12 +164,12 @@ public class AtsTestUtil {
       return analyze;
    }
 
-   public static IAtsWidgetDefinition getEstHoursWidgetDef() {
+   public static WidgetDefinition getEstHoursWidgetDef() {
       ensureLoaded();
       if (estHoursWidgetDef == null) {
-         for (IAtsLayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
+         for (LayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
             if (item.getName().equals("ats.Estimated Hours")) {
-               estHoursWidgetDef = (IAtsWidgetDefinition) item;
+               estHoursWidgetDef = (WidgetDefinition) item;
                break;
             }
          }
@@ -177,12 +177,12 @@ public class AtsTestUtil {
       return estHoursWidgetDef;
    }
 
-   public static IAtsWidgetDefinition getWorkPackageWidgetDef() {
+   public static WidgetDefinition getWorkPackageWidgetDef() {
       ensureLoaded();
       if (workPackageWidgetDef == null) {
-         for (IAtsLayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
+         for (LayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
             if (item.getName().equals("ats.Work Package")) {
-               workPackageWidgetDef = (IAtsWidgetDefinition) item;
+               workPackageWidgetDef = (WidgetDefinition) item;
                break;
             }
          }

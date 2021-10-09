@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class CompositeStateItemTest {
 
    @Test
    public void testToString() {
-      IAtsCompositeLayoutItem compositeStateItem = new CompositeLayoutItem();
+      CompositeLayoutItem compositeStateItem = new CompositeLayoutItem();
       Assert.assertEquals("Composite 2", compositeStateItem.toString());
    }
 
@@ -38,7 +37,7 @@ public class CompositeStateItemTest {
 
    @Test
    public void testGetSetNumColumns() {
-      IAtsCompositeLayoutItem compositeStateItem = new CompositeLayoutItem();
+      CompositeLayoutItem compositeStateItem = new CompositeLayoutItem();
       Assert.assertEquals(2, compositeStateItem.getNumColumns());
       compositeStateItem.setNumColumns(3);
       Assert.assertEquals(3, compositeStateItem.getNumColumns());
@@ -49,7 +48,7 @@ public class CompositeStateItemTest {
 
    @Test
    public void testGetStateItems() {
-      IAtsCompositeLayoutItem comp = new CompositeLayoutItem();
+      CompositeLayoutItem comp = new CompositeLayoutItem();
       Assert.assertEquals(0, comp.getaLayoutItems().size());
    }
 

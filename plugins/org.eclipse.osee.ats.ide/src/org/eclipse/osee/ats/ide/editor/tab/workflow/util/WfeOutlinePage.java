@@ -28,16 +28,16 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -168,9 +168,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
          } else if (element instanceof IAtsWorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
-         } else if (element instanceof IAtsWidgetDefinition) {
+         } else if (element instanceof WidgetDefinition) {
             return ImageManager.getImage(FrameworkImage.GEAR);
-         } else if (element instanceof IAtsCompositeLayoutItem || element instanceof WrappedLayout) {
+         } else if (element instanceof CompositeLayoutItem || element instanceof WrappedLayout) {
             return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);
          } else if (element instanceof String || element instanceof WidgetOption || element instanceof WrappedPercentWeight) {
             return ImageManager.getImage(AtsImage.RIGHT_ARROW_SM);
@@ -223,8 +223,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             getChildrenFromWorkDefinition((IAtsWorkDefinition) element, items);
          } else if (element instanceof IAtsStateDefinition) {
             getChildrenFromStateDefinition(element, items);
-         } else if (element instanceof IAtsCompositeLayoutItem) {
-            items.addAll(((IAtsCompositeLayoutItem) element).getaLayoutItems());
+         } else if (element instanceof CompositeLayoutItem) {
+            items.addAll(((CompositeLayoutItem) element).getaLayoutItems());
          } else if (element instanceof User) {
             items.add("Assignee: " + ((User) element).getName());
          } else if (element instanceof WrappedStateItems) {
@@ -246,7 +246,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.addAll(((WrappedPeerReviews) element).getPeerReviews());
          } else if (element instanceof WrappedRules) {
             items.addAll(((WrappedRules) element).getRuleAndLocations());
-         } else if (element instanceof IAtsWidgetDefinition) {
+         } else if (element instanceof WidgetDefinition) {
             getChildrenFromWidgetDefinition(element, items);
          } else if (element instanceof String) {
             items.add(element);
@@ -290,11 +290,11 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof IAtsStateDefinition) {
             return true;
-         } else if (element instanceof IAtsCompositeLayoutItem) {
+         } else if (element instanceof CompositeLayoutItem) {
             return true;
          } else if (element instanceof IAtsWorkItemHook) {
             return true;
-         } else if (element instanceof IAtsWidgetDefinition) {
+         } else if (element instanceof WidgetDefinition) {
             return true;
          } else if (element instanceof IAtsPeerReviewDefinition) {
             return true;
@@ -346,21 +346,21 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWidgetDefinition(Object element, List<Object> items) {
-         items.add("XWidget: " + ((IAtsWidgetDefinition) element).getXWidgetName());
-         if (((IAtsWidgetDefinition) element).getAttributeType() != null) {
-            items.add("Attribute Name: " + ((IAtsWidgetDefinition) element).getAttributeType().getName());
+         items.add("XWidget: " + ((WidgetDefinition) element).getXWidgetName());
+         if (((WidgetDefinition) element).getAttributeType() != null) {
+            items.add("Attribute Name: " + ((WidgetDefinition) element).getAttributeType().getName());
          }
-         if (Strings.isValid(((IAtsWidgetDefinition) element).getDescription())) {
-            items.add("Description: " + ((IAtsWidgetDefinition) element).getDescription());
+         if (Strings.isValid(((WidgetDefinition) element).getDescription())) {
+            items.add("Description: " + ((WidgetDefinition) element).getDescription());
          }
-         if (((IAtsWidgetDefinition) element).getHeight() > 0) {
-            items.add("Height: " + ((IAtsWidgetDefinition) element).getHeight());
+         if (((WidgetDefinition) element).getHeight() > 0) {
+            items.add("Height: " + ((WidgetDefinition) element).getHeight());
          }
-         if (((IAtsWidgetDefinition) element).getAttributeType() != null) {
-            items.add("Tooltip: " + ((IAtsWidgetDefinition) element).getAttributeType().getName());
+         if (((WidgetDefinition) element).getAttributeType() != null) {
+            items.add("Tooltip: " + ((WidgetDefinition) element).getAttributeType().getName());
          }
-         if (!((IAtsWidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
-            items.addAll(((IAtsWidgetDefinition) element).getOptions().getXOptions());
+         if (!((WidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
+            items.addAll(((WidgetDefinition) element).getOptions().getXOptions());
          }
       }
 
@@ -648,9 +648,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
    }
 
    private class WrappedLayout {
-      private final Collection<IAtsLayoutItem> stateItems;
+      private final Collection<LayoutItem> stateItems;
 
-      public WrappedLayout(Collection<IAtsLayoutItem> stateItems) {
+      public WrappedLayout(Collection<LayoutItem> stateItems) {
          this.stateItems = stateItems;
       }
 
@@ -659,7 +659,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          return "Layout" + (stateItems.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<IAtsLayoutItem> getStateItems() {
+      public Collection<LayoutItem> getStateItems() {
          return stateItems;
       }
 

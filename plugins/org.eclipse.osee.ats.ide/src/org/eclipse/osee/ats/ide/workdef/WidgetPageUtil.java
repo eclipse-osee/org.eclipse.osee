@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -109,18 +109,18 @@ public class WidgetPageUtil {
 
    }
 
-   public static void generateLayoutDatas(AbstractWorkflowArtifact sma, Collection<IAtsLayoutItem> layoutItems, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static void generateLayoutDatas(AbstractWorkflowArtifact sma, Collection<LayoutItem> layoutItems, SwtXWidgetRenderer dynamicXWidgetLayout) {
       // Add static layoutDatas to statePage
-      for (IAtsLayoutItem stateItem : layoutItems) {
-         if (stateItem instanceof IAtsWidgetDefinition) {
-            processWidgetDefinition((IAtsWidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
-         } else if (stateItem instanceof IAtsCompositeLayoutItem) {
-            processComposite((IAtsCompositeLayoutItem) stateItem, sma, dynamicXWidgetLayout);
+      for (LayoutItem stateItem : layoutItems) {
+         if (stateItem instanceof WidgetDefinition) {
+            processWidgetDefinition((WidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
+         } else if (stateItem instanceof CompositeLayoutItem) {
+            processComposite((CompositeLayoutItem) stateItem, sma, dynamicXWidgetLayout);
          }
       }
    }
 
-   public static void processComposite(IAtsCompositeLayoutItem compositeLayoutItem, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static void processComposite(CompositeLayoutItem compositeLayoutItem, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
       boolean firstWidget = true;
 
       // Group Comp is stand-alone renderer item
@@ -134,13 +134,13 @@ public class WidgetPageUtil {
 
       }
 
-      List<IAtsLayoutItem> stateItems = compositeLayoutItem.getaLayoutItems();
+      List<LayoutItem> stateItems = compositeLayoutItem.getaLayoutItems();
       for (int x = 0; x < stateItems.size(); x++) {
          boolean lastWidget = x == stateItems.size() - 1;
-         IAtsLayoutItem stateItem = stateItems.get(x);
-         if (stateItem instanceof IAtsWidgetDefinition) {
+         LayoutItem stateItem = stateItems.get(x);
+         if (stateItem instanceof WidgetDefinition) {
             XWidgetRendererItem renderItem =
-               processWidgetDefinition((IAtsWidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
+               processWidgetDefinition((WidgetDefinition) stateItem, sma, dynamicXWidgetLayout);
             if (firstWidget) {
                if (compositeLayoutItem.getNumColumns() > 0) {
                   if (!compositeLayoutItem.isGroupComposite()) {
@@ -151,8 +151,8 @@ public class WidgetPageUtil {
             if (lastWidget) {
                renderItem.setEndComposite(true);
             }
-         } else if (stateItem instanceof IAtsCompositeLayoutItem) {
-            IAtsCompositeLayoutItem compLayoutItem = (IAtsCompositeLayoutItem) stateItem;
+         } else if (stateItem instanceof CompositeLayoutItem) {
+            CompositeLayoutItem compLayoutItem = (CompositeLayoutItem) stateItem;
             processComposite(compLayoutItem, sma, dynamicXWidgetLayout);
          }
          firstWidget = false;
@@ -169,7 +169,7 @@ public class WidgetPageUtil {
    /**
     * TODO This will eventually go away and ATS pages will be generated straight from WidgetDefinitions.
     */
-   public static XWidgetRendererItem processWidgetDefinition(IAtsWidgetDefinition widgetDef, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static XWidgetRendererItem processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
       XWidgetRendererItem data = null;
       try {
          data = new XWidgetRendererItem(dynamicXWidgetLayout);

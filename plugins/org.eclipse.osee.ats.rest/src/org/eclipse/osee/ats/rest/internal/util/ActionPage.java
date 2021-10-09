@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -260,22 +260,22 @@ public class ActionPage {
       page.param("states", statesSb.toString());
    }
 
-   private void addWidgets(StringBuilder sb, IAtsWorkItem workItem, Collection<IAtsLayoutItem> items) {
+   private void addWidgets(StringBuilder sb, IAtsWorkItem workItem, Collection<LayoutItem> items) {
       addLayoutItems(sb, workItem, items);
    }
 
    private boolean inComposite = false;
 
-   private void addLayoutItems(StringBuilder sb, IAtsWorkItem workItem, Collection<IAtsLayoutItem> items) {
-      for (IAtsLayoutItem layout : items) {
-         if (layout instanceof IAtsCompositeLayoutItem) {
+   private void addLayoutItems(StringBuilder sb, IAtsWorkItem workItem, Collection<LayoutItem> items) {
+      for (LayoutItem layout : items) {
+         if (layout instanceof CompositeLayoutItem) {
             inComposite = true;
             sb.append("<tr><td><table width=\"100%\"><tr>");
-            addWidgets(sb, workItem, ((IAtsCompositeLayoutItem) layout).getaLayoutItems());
+            addWidgets(sb, workItem, ((CompositeLayoutItem) layout).getaLayoutItems());
             sb.append("</tr></table></td></tr>");
             inComposite = false;
          } else {
-            IAtsWidgetDefinition widget = (IAtsWidgetDefinition) layout;
+            WidgetDefinition widget = (WidgetDefinition) layout;
             if (!getIgnoreWidgetNames().contains(widget.getName())) {
                if (!inComposite) {
                   sb.append("<tr><td>");
@@ -293,7 +293,7 @@ public class ActionPage {
       }
    }
 
-   private void addWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+   private void addWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
       if (widget.getName().equals(ROLE_WIDGET_NAME)) {
          addRoleWidget(sb, workItem, widget);
       } else if (widget.getName().equals(REVIEW_DEFECT_WIDGET_NAME)) {
@@ -305,7 +305,7 @@ public class ActionPage {
       }
    }
 
-   private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, IAtsWidgetDefinition widget) {
+   private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, WidgetDefinition widget) {
       sb.append("Commit Manager: ");
       BranchToken branch = atsApi.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
       if (branch.isValid()) {
@@ -326,7 +326,7 @@ public class ActionPage {
       return ignoredWidgets;
    }
 
-   private void addRoleWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+   private void addRoleWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
       sb.append("Roles: ");
       Collection<String> roles =
          atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.Role);
@@ -349,7 +349,7 @@ public class ActionPage {
       }
    }
 
-   private void addDefectWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+   private void addDefectWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
       sb.append("Defects: ");
       Collection<String> defects =
          atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.ReviewDefect);
@@ -374,7 +374,7 @@ public class ActionPage {
       }
    }
 
-   private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+   private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
       sb.append(widget.getName());
       try {
          AttributeTypeToken attrType = widget.getAttributeType();

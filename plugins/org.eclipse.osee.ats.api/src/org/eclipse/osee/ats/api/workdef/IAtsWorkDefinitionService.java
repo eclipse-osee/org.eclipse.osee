@@ -21,7 +21,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -60,9 +62,9 @@ public interface IAtsWorkDefinitionService {
     * <br>
     * Note: Modifing this list will not affect the state widgets. Use addStateItem().
     */
-   List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef);
+   List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef);
 
-   List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<IAtsLayoutItem> layoutItems);
+   List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<LayoutItem> layoutItems);
 
    IAtsWorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review);
 
@@ -109,6 +111,6 @@ public interface IAtsWorkDefinitionService {
    /**
     * @return widget defintions from header and all states
     */
-   Collection<IAtsWidgetDefinition> getWidgets(IAtsWorkDefinition workDef);
+   Collection<WidgetDefinition> getWidgets(IAtsWorkDefinition workDef);
 
 }

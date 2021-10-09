@@ -14,10 +14,10 @@
 package org.eclipse.osee.ats.core.workdef.operations;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -39,7 +39,7 @@ public class ValidateWorkDefinitionsOperation {
          results.logf("Validating workDef [%s]\n", workDef.getName());
          for (IAtsStateDefinition stateDef : workDef.getStates()) {
             results.logf("   Validating state [%s]\n", stateDef.getName());
-            for (IAtsLayoutItem layoutItem : stateDef.getLayoutItems()) {
+            for (LayoutItem layoutItem : stateDef.getLayoutItems()) {
                validateLayoutItem(layoutItem, results);
             }
          }
@@ -47,7 +47,7 @@ public class ValidateWorkDefinitionsOperation {
       return results;
    }
 
-   private void validateLayoutItem(IAtsLayoutItem layoutItem, XResultData results) {
+   private void validateLayoutItem(LayoutItem layoutItem, XResultData results) {
       if (layoutItem instanceof WidgetDefinition) {
          WidgetDefinition widgetDef = (WidgetDefinition) layoutItem;
          AttributeTypeToken attrTypeTok = widgetDef.getAttributeType();
@@ -60,7 +60,7 @@ public class ValidateWorkDefinitionsOperation {
          }
       } else if (layoutItem instanceof CompositeLayoutItem) {
          CompositeLayoutItem comp = (CompositeLayoutItem) layoutItem;
-         for (IAtsLayoutItem compLayoutItem : comp.getaLayoutItems()) {
+         for (LayoutItem compLayoutItem : comp.getaLayoutItems()) {
             validateLayoutItem(compLayoutItem, results);
          }
       }

@@ -14,8 +14,6 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
@@ -146,14 +144,14 @@ public class StateDefinitionTest {
       StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
 
-      IAtsWidgetDefinition widget1 = new WidgetDefinition("item 1");
+      WidgetDefinition widget1 = new WidgetDefinition("item 1");
       def.getLayoutItems().add(widget1);
 
-      IAtsCompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
+      CompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
       def.getLayoutItems().add(stateItem2);
-      IAtsWidgetDefinition widget2 = new WidgetDefinition("item 2");
+      WidgetDefinition widget2 = new WidgetDefinition("item 2");
       stateItem2.getaLayoutItems().add(widget2);
-      IAtsWidgetDefinition widget3 = new WidgetDefinition("item 3");
+      WidgetDefinition widget3 = new WidgetDefinition("item 3");
       stateItem2.getaLayoutItems().add(widget3);
 
       CompositeLayoutItem stateItem3 = new CompositeLayoutItem(2);

@@ -34,8 +34,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -185,7 +185,7 @@ public class TransitionToMenu {
                   if (stateDef != null && stateDef.getStateType().isCancelledState()) {
                      EntryDialog cancelDialog;
                      boolean useEntryCancelWidgetDialog = false;
-                     for (IAtsLayoutItem layoutItem : stateDef.getLayoutItems()) {
+                     for (LayoutItem layoutItem : stateDef.getLayoutItems()) {
                         if (layoutItem.getName().contains("Cancel")) {
                            useEntryCancelWidgetDialog = true;
                            break;
