@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
@@ -48,7 +49,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUser() {
       if (currentUser == null) {
-         currentUser = configurationService.getUserByLoginId();
+         currentUser = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin();
       }
       return currentUser;
    }
@@ -70,17 +71,9 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public boolean isAtsAdmin(boolean useCache) {
-      if (!useCache) {
-         return getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
-      }
-      return isAtsAdmin();
-   }
-
-   @Override
    public boolean isAtsAdmin() {
       if (atsAdmin == null) {
-         atsAdmin = getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
+         atsAdmin = AtsApiService.get().userService().isInUserGroup(AtsUserGroups.AtsAdmin);
       }
       return atsAdmin;
    }
@@ -89,5 +82,4 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    public Collection<AtsUser> getUsers() {
       return configurationService.getConfigurations().getUsers();
    }
-
 }

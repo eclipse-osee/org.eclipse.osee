@@ -542,7 +542,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public String getUserConfigValue(String key) {
       String result = null;
-      ArtifactToken userArt = getUserService().getCurrentUser().getStoreObject();
+      ArtifactToken userArt = userService().getUser();
       if (userArt != null) {
          for (String configKeyValueStr : getAttributeResolver().getAttributesToStringList(userArt,
             CoreAttributeTypes.AtsUserConfig)) {

@@ -33,7 +33,7 @@ public class AtsNavigateViewItemsOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      itemCollector.getComputedNavItems(AtsApiService.get().getUserService().getCurrentUser().getUserGroups());
+      itemCollector.getComputedNavItems(AtsApiService.get().userService().getMyUserGroups());
    }
 
 }

@@ -40,7 +40,7 @@ public class NavigateItemCollector {
    List<XNavigateItem> items = new ArrayList<XNavigateItem>();
    private final INavigateItemRefresher refresher;
    private final XResultData rd;
-   private Collection<ArtifactId> currUserUserGroups;
+   private Collection<? extends ArtifactId> currUserUserGroups;
 
    public NavigateItemCollector(Collection<XNavigateItemProvider> providers, INavigateItemRefresher refresher, XResultData rd) {
       this.providers = providers;
@@ -52,7 +52,7 @@ public class NavigateItemCollector {
       return getComputedNavItems(Collections.emptyList());
    }
 
-   public List<XNavigateItem> getComputedNavItems(Collection<ArtifactId> currUserUserGroups) {
+   public List<XNavigateItem> getComputedNavItems(Collection<? extends ArtifactId> currUserUserGroups) {
       this.currUserUserGroups = currUserUserGroups;
       if (compNavItems.isEmpty()) {
          for (XNavigateItemProvider provider : providers) {
@@ -184,5 +184,4 @@ public class NavigateItemCollector {
       }
       return sb.toString();
    }
-
 }

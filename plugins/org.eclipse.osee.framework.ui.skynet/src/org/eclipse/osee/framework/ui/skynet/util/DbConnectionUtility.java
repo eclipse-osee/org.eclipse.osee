@@ -31,7 +31,6 @@ public class DbConnectionUtility {
 
    private static Boolean supported;
    private static Boolean applicationServerAlive;
-   private static ClientEndpoint clientEp;
 
    public static Result areOSEEServicesAvailable() {
       Result toReturn = Result.FalseResult;

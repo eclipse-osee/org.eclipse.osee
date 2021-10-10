@@ -62,11 +62,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
-   @Override
-   public boolean isAtsAdmin(boolean useCache) {
-      throw new UnsupportedOperationException();
-   }
-
    public static AtsUser valueOf(ArtifactReadable userArt) {
       AtsUser atsUser = new AtsUser();
       atsUser.setName(userArt.getName());
