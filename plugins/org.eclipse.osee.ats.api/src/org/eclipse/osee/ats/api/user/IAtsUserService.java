@@ -68,8 +68,6 @@ public interface IAtsUserService {
     */
    AtsUser getUserByAccountId(UserId accountId);
 
-   boolean isAtsAdmin(boolean useCache);
-
    Collection<AtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
 
    void setCurrentUser(AtsUser user);

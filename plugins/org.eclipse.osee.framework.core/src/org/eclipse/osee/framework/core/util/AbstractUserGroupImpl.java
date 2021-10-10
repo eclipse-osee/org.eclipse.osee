@@ -16,15 +16,17 @@ package org.eclipse.osee.framework.core.util;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractUserGroupImpl implements IUserGroup, IUserGroupArtifactToken {
+public abstract class AbstractUserGroupImpl extends BaseId implements IUserGroup, IUserGroupArtifactToken {
 
    protected ArtifactToken groupArtifact;
 
    public AbstractUserGroupImpl(ArtifactToken userGroupArt) {
+      super(userGroupArt.getId());
       this.groupArtifact = userGroupArt;
    }
 
@@ -46,10 +48,4 @@ public abstract class AbstractUserGroupImpl implements IUserGroup, IUserGroupArt
    }
 
    protected abstract ArtifactToken getOrCreateGroupArtifact(ArtifactToken groupArtifact2);
-
-   @Override
-   public Long getId() {
-      return groupArtifact.getId();
-   }
-
 }
