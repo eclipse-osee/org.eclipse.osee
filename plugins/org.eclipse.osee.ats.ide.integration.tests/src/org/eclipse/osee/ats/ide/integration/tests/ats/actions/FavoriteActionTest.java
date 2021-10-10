@@ -13,12 +13,15 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
-import org.eclipse.osee.ats.api.IAtsObject;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.actions.FavoriteAction;
-import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,15 +35,18 @@ public class FavoriteActionTest extends AbstractAtsActionTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      Assert.assertFalse(AtsApiService.get().getRelationResolver().getRelated(
-         (IAtsObject) AtsApiService.get().getUserService().getCurrentUser(),
-         AtsRelationTypes.FavoriteUser_Artifact).contains(AtsTestUtil.getTeamWf()));
+
+      Assert.assertFalse(getFavorites().contains(AtsTestUtil.getTeamWf()));
       FavoriteAction action = createAction();
       action.runWithException();
-      Assert.assertTrue(AtsApiService.get().getRelationResolver().getRelated(
-         (IAtsObject) AtsApiService.get().getUserService().getCurrentUser(),
-         AtsRelationTypes.FavoriteUser_Artifact).contains(AtsTestUtil.getTeamWf()));
+      Assert.assertTrue(getFavorites().contains(AtsTestUtil.getTeamWf()));
+
       TestUtil.severeLoggingEnd(monitor);
+   }
+
+   private List<Artifact> getFavorites() {
+      return ArtifactQuery.getRelatedArtifactList(UserManager.getUser(), AtsRelationTypes.FavoriteUser,
+         RelationSide.SIDE_B);
    }
 
    @Override
@@ -49,5 +55,4 @@ public class FavoriteActionTest extends AbstractAtsActionTest {
       action.setPrompt(false);
       return action;
    }
-
 }

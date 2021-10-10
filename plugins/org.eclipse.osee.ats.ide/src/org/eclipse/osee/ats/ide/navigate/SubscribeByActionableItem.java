@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.navigate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -52,9 +51,10 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
          List<IAtsActionableItem> objs = new ArrayList<>();
-         for (ArtifactToken artifact : AtsApiService.get().getRelationResolver().getRelated(
-            (IAtsObject) AtsApiService.get().getUserService().getCurrentUser(),
-            AtsRelationTypes.SubscribedUser_Artifact)) {
+
+         User user = UserManager.getUser();
+
+         for (ArtifactToken artifact : user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact)) {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                objs.add(AtsApiService.get().getActionableItemService().getActionableItemById(artifact));
             }
@@ -67,7 +67,6 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          Collection<Artifact> arts =
             Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromObjects(selected));
 
-         User user = UserManager.getUserByArtId(AtsApiService.get().getUserService().getCurrentUser());
          SubscribeUtility.setSubcriptionsAndPersist(user, AtsRelationTypes.SubscribedUser_Artifact, arts,
             AtsArtifactTypes.ActionableItem, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");

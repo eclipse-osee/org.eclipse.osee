@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.navigate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -53,9 +52,10 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          false);
       try {
          List<IAtsTeamDefinition> objs = new ArrayList<>();
-         for (ArtifactToken art : AtsApiService.get().getRelationResolver().getRelated(
-            (IAtsObject) AtsApiService.get().getUserService().getCurrentUser(),
-            AtsRelationTypes.SubscribedUser_Artifact)) {
+
+         User user = UserManager.getUser();
+
+         for (ArtifactToken art : user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact)) {
             if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
                objs.add(AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(art));
             }
@@ -68,7 +68,6 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          Collection<Artifact> arts =
             Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromObjects(selected));
 
-         User user = UserManager.getUserByArtId(AtsApiService.get().getUserService().getCurrentUser());
          SubscribeUtility.setSubcriptionsAndPersist(user, AtsRelationTypes.SubscribedUser_Artifact, arts,
             AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");

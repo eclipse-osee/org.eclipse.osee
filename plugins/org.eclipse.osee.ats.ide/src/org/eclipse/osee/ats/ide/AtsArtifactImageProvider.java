@@ -95,7 +95,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
             // was 8,6
             return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
-         if (FavoritesManager.isFavorite(wfArt, AtsApiService.get().getUserService().getCurrentUser())) {
+         if (FavoritesManager.isFavorite(wfArt)) {
             // was 7,0
             return ArtifactImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }

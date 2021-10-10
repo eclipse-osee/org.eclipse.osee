@@ -424,7 +424,7 @@ public class ArtifactQuery {
     *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getRelatedArtifactList(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
+   public static List<Artifact> getRelatedArtifactList(ArtifactToken artifact, RelationTypeToken relationType, RelationSide relationSide) {
       return new ArtifactQueryBuilder(artifact.getBranch(), ALL, EXCLUDE_DELETED,
          new RelationCriteria(artifact, relationType, relationSide)).getArtifacts(1000, null);
    }
