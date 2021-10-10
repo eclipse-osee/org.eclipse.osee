@@ -17,14 +17,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.ui.PlatformUI;
@@ -57,7 +57,7 @@ public class FavoritesManager {
                SkynetTransaction transaction =
                   TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
-                  removeFavorite(awa, AtsApiService.get().getUserService().getCurrentUser(), transaction);
+                  removeFavorite(awa, transaction);
                }
                transaction.execute();
             }
@@ -71,7 +71,7 @@ public class FavoritesManager {
                SkynetTransaction transaction =
                   TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
-                  addFavorite(awa, AtsApiService.get().getUserService().getCurrentUser(), transaction);
+                  addFavorite(awa, transaction);
                }
                transaction.execute();
             }
@@ -83,28 +83,26 @@ public class FavoritesManager {
 
    public static boolean amIFavorite(AbstractWorkflowArtifact workflow) {
       try {
-         return isFavorite(workflow, AtsApiService.get().getUserService().getCurrentUser());
+         return isFavorite(workflow);
       } catch (OseeCoreException ex) {
          return false;
       }
    }
 
-   public static void addFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
-      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user.getStoreObject())) {
-         workflow.addRelation(AtsRelationTypes.FavoriteUser_User,
-            (Artifact) AtsApiService.get().getQueryService().getArtifact(user.getArtifactId()));
+   public static void addFavorite(AbstractWorkflowArtifact workflow, SkynetTransaction transaction) {
+      User user = UserManager.getUser();
+      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user)) {
+         workflow.addRelation(AtsRelationTypes.FavoriteUser_User, user);
          workflow.persist(transaction);
       }
    }
 
-   public static void removeFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
-      workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User,
-         (Artifact) AtsApiService.get().getQueryService().getArtifact(user.getArtifactId()));
+   public static void removeFavorite(AbstractWorkflowArtifact workflow, SkynetTransaction transaction) {
+      workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User, UserManager.getUser());
       workflow.persist(transaction);
    }
 
-   public static boolean isFavorite(AbstractWorkflowArtifact workflow, AtsUser user) {
-      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user.getStoreObject());
+   public static boolean isFavorite(AbstractWorkflowArtifact workflow) {
+      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(UserManager.getUser());
    }
-
 }
