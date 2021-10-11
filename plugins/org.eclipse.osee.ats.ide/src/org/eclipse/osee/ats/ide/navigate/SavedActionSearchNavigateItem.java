@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
@@ -56,8 +55,6 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
          Thread refresh = new Thread(topNavigateItem.getClass().getSimpleName()) {
             @Override
             public void run() {
-               super.run();
-               topNavigateItem.getChildren().clear();
                load();
                if (refresher != null) {
                   Displays.ensureInDisplayThread(new Runnable() {
@@ -82,7 +79,6 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
       try {
          // If current user and not first load, reload user to get latest
          AtsApi atsApi = AtsApiService.get();
-         AtsUser currentUser = atsApi.getConfigService().getCurrentUserByLoginId();
 
          if (topNavigateItem.getChildren() != null) {
             topNavigateItem.getChildren().clear();
@@ -90,8 +86,7 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
          Set<Long> ids = new HashSet<Long>();
          for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
             for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
-               ArrayList<AtsSearchData> savedSearches =
-                  atsApi.getQueryService().getSavedSearches(currentUser, item.getNamespace());
+               ArrayList<AtsSearchData> savedSearches = atsApi.getQueryService().getSavedSearches(item.getNamespace());
                for (AtsSearchData data : savedSearches) {
                   if (!ids.contains(data.getId())) {
                      AtsSearchWorkflowSearchItem searchItem = item.copy();
@@ -112,5 +107,4 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
    public Collection<IUserGroupArtifactToken> getUserGroups() {
       return Arrays.asList(CoreUserGroups.Everyone);
    }
-
 }

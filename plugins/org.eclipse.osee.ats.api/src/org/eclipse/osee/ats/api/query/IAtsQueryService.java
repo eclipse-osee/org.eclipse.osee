@@ -54,11 +54,14 @@ public interface IAtsQueryService {
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
 
-   ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace);
+   ArrayList<AtsSearchData> getSavedSearches(String namespace);
 
-   TransactionId saveSearch(AtsUser atsUser, AtsSearchData data);
+   /**
+    * Persists the saved ATS searches for the current user
+    */
+   TransactionId saveSearch(AtsSearchData data);
 
-   TransactionId removeSearch(AtsUser atsUser, AtsSearchData data);
+   TransactionId removeSearch(AtsSearchData data);
 
    AtsSearchData getSearch(AtsUser atsUser, Long id);
 
