@@ -105,12 +105,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public TransactionId saveSearch(AtsUser atsUser, AtsSearchData data) {
+   public TransactionId saveSearch(AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public TransactionId removeSearch(AtsUser atsUser, AtsSearchData data) {
+   public TransactionId removeSearch(AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 

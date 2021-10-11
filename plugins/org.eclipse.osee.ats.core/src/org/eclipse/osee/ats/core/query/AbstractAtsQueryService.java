@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -380,9 +380,13 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
+   public ArrayList<AtsSearchData> getSavedSearches(String namespace) {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
-      for (String jsonValue : atsUser.getSavedSearches()) {
+
+      List<String> json = atsApi.getAttributeResolver().getAttributesToStringList(atsApi.userService().getUser(),
+         CoreAttributeTypes.AtsActionSearch);
+
+      for (String jsonValue : json) {
          if (jsonValue.contains("\"" + namespace + "\"")) {
             try {
                AtsSearchData data = atsApi.getSearchDataProvider(namespace).fromJson(namespace, jsonValue);

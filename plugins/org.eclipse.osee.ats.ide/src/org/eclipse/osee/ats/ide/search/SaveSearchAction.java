@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.search;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.SavedActionSearchNavigateItem;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -50,7 +49,6 @@ public final class SaveSearchAction extends Action {
 
    @Override
    public void run() {
-      AtsUser asUser = AtsApiService.get().getConfigService().getCurrentUserByLoginId();
       EntryDialog dialog = new EntryDialog("Save Search", "Save Search?\n\n(edit to change Search Name)");
       dialog.setEntry(searchItem.getSearchName());
       if (dialog.open() == 0) {
@@ -67,7 +65,7 @@ public final class SaveSearchAction extends Action {
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
-         AtsApiService.get().getQueryService().saveSearch(asUser, data);
+         AtsApiService.get().getQueryService().saveSearch(data);
 
          SavedActionSearchNavigateItem.refreshItems();
 

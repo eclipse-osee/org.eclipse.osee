@@ -34,7 +34,6 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    private String email;
    private String phone;
    private List<String> loginIds = new ArrayList<>();
-   private List<String> savedSearches = new ArrayList<>();
 
    public AtsUser() {
       // for jax-rs instantiation
@@ -100,17 +99,4 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    public void setLoginIds(List<String> loginIds) {
       this.loginIds = loginIds;
    }
-   public List<String> getSavedSearches() {
-      return savedSearches;
-   }
-
-   public void setSavedSearches(List<String> savedSearches) {
-      this.savedSearches = savedSearches;
-   }
-
-
-   public boolean isAnonymous() {
-      return AtsCoreUsers.isAnonymousUser(this);
-   }
-
 }

@@ -45,8 +45,8 @@ public final class DeleteSearchAction extends Action {
 
    @Override
    public void run() {
-      List<AtsSearchData> searchDatas = AtsApiService.get().getQueryService().getSavedSearches(
-         AtsApiService.get().getConfigService().getCurrentUserByLoginId(), searchItem.getNamespace());
+      List<AtsSearchData> searchDatas =
+         AtsApiService.get().getQueryService().getSavedSearches(searchItem.getNamespace());
       Collections.sort(searchDatas, new QuickSearchDataComparator());
       FilteredTreeDialog dialog = new FilteredTreeDialog("Delete Saved Search", "Select Search to Delete",
          new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -54,8 +54,7 @@ public final class DeleteSearchAction extends Action {
 
       if (dialog.open() == 0) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
-         AtsApiService.get().getQueryService().removeSearch(AtsApiService.get().getUserService().getCurrentUser(),
-            selected);
+         AtsApiService.get().getQueryService().removeSearch(selected);
 
          SavedActionSearchNavigateItem.refreshItems();
 
