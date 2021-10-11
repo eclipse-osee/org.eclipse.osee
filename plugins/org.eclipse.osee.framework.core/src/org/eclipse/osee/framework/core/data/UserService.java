@@ -25,6 +25,9 @@ public interface UserService {
 
    IUserGroup getUserGroup(IUserGroupArtifactToken userGroup);
 
+   /**
+    * @return the user groups that the current user belongs to
+    */
    Collection<IUserGroupArtifactToken> getMyUserGroups();
 
    boolean isInUserGroup(IUserGroupArtifactToken... userGroups);

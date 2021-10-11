@@ -14,15 +14,14 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -71,9 +70,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setId(userArt.getId());
       atsUser.getLoginIds().addAll(userArt.getAttributeValues(CoreAttributeTypes.LoginId));
-      for (ArtifactToken userGroup : userArt.getRelated(CoreRelationTypes.Users_Artifact)) {
-         atsUser.getUserGroups().add(userGroup);
-      }
       return atsUser;
    }
 
@@ -138,5 +134,10 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public void clearCaches() {
       // do nothing
+   }
+
+   @Override
+   public boolean isAtsAdmin() {
+      return orcsApi.userService().isInUserGroup(AtsUserGroups.AtsAdmin);
    }
 }
