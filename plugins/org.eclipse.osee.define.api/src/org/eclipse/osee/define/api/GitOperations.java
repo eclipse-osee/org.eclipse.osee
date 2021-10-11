@@ -15,9 +15,9 @@ package org.eclipse.osee.define.api;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan D. Brooks </br>

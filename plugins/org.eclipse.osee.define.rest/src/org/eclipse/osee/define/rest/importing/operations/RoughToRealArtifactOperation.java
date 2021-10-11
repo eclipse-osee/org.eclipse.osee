@@ -27,6 +27,7 @@ import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.define.api.importing.RoughRelation;
 import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**

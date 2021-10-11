@@ -24,7 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -32,8 +34,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilder;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**

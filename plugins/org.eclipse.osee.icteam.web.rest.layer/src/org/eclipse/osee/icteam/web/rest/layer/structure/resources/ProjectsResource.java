@@ -33,7 +33,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -51,8 +53,6 @@ import org.eclipse.osee.icteam.web.rest.data.write.TranferableArtifactLoader;
 import org.eclipse.osee.icteam.web.rest.layer.util.CommonUtil;
 import org.eclipse.osee.icteam.web.rest.layer.util.InterfaceAdapter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 

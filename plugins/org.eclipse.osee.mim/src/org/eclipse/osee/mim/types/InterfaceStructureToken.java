@@ -18,11 +18,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti

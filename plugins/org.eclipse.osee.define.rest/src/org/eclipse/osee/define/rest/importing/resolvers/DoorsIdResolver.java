@@ -18,12 +18,12 @@ import java.util.List;
 import org.eclipse.define.api.importing.ReqNumbering;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**

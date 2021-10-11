@@ -16,6 +16,7 @@ package org.eclipse.osee.define.api;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

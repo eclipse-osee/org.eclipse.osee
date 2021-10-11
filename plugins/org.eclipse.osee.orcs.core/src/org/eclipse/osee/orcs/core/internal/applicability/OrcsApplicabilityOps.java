@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityCacheFile;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
@@ -60,7 +61,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 

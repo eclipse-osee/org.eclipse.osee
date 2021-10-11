@@ -17,10 +17,10 @@ import java.io.InputStream;
 import java.lang.ref.Reference;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar

@@ -31,6 +31,7 @@ import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.define.rest.internal.PublishLowHighReqStreamingOutput;
 import org.eclipse.osee.define.rest.internal.PublishPidsVerificationReport;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.template.engine.ArtifactTypeOptionsRule;
 

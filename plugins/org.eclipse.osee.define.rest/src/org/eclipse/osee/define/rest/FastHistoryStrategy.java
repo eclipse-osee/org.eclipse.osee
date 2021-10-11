@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.Map;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**

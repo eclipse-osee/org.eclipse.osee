@@ -15,10 +15,10 @@ package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**

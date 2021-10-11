@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

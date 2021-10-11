@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.orcs.core.internal.util;
 
+import org.eclipse.osee.framework.core.data.OrcsReadable;
 import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.orcs.data.CanDelete;
 import org.eclipse.osee.orcs.data.Modifiable;
-import org.eclipse.osee.orcs.data.OrcsReadable;
 
 /**
  * @author Roberto E. Escobar

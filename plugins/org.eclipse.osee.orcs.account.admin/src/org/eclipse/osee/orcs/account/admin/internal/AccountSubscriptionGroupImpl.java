@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.account.admin.internal;
 
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

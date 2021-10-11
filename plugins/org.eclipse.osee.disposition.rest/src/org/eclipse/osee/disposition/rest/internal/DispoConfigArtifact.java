@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Angel Avila

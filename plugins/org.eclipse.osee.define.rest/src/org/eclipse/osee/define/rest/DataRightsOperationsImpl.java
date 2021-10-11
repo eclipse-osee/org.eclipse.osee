@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.define.api.DataRightsOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**

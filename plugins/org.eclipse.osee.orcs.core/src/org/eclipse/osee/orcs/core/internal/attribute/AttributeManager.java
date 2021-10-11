@@ -17,12 +17,12 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.orcs.core.ds.Attribute;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar

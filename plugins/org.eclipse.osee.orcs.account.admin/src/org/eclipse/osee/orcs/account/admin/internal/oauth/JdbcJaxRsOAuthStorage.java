@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.List;
 import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
@@ -25,7 +26,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

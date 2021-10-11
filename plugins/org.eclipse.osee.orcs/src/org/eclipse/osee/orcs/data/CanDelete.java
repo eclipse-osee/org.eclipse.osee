@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.HasDeleteState;
+
 /**
  * @author Roberto E. Escobar
  */

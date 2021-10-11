@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -60,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne

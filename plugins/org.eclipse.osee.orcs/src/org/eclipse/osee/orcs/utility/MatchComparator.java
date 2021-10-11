@@ -14,11 +14,11 @@
 package org.eclipse.osee.orcs.utility;
 
 import java.util.Comparator;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**

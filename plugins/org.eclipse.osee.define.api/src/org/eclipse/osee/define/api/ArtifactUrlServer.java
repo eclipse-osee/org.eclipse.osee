@@ -16,12 +16,12 @@ package org.eclipse.osee.define.api;
 import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
 import static org.eclipse.osee.orcs.SystemProperties.OSEE_PERMANENT_URL;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.AbstractArtifactUrl;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.synchronization.rest.forest.denizens;
 
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * {@link RuntimeException} which is thrown when an unknown attribute type is requested from an
@@ -34,7 +34,7 @@ public class UnknownAttributeTypeTokenException extends RuntimeException {
    /**
     * Creates a new {@link RuntimeException} with a message describing the attribute type unknown to the
     * {@link ArtifactReadable}.
-    * 
+    *
     * @param artifactReadable the {@link ArtifactReadable} an unknown attribute type was requested from.
     * @param attributeTypeToken the unknown attribute type that was requested.
     */
@@ -60,7 +60,7 @@ public class UnknownAttributeTypeTokenException extends RuntimeException {
    /**
     * Creates a new {@link RuntimeException} with a message describing the attribute type unknown to the
     * {@link ArtifactReadable}.
-    * 
+    *
     * @param artifactReadable the {@link ArtifactReadable} an unknown attribute type was requested from.
     * @param attributeTypeToken the unknown attribute type that was requested.
     * @param cause the {@link Throwable} which led to this exception being thrown. This parameter maybe

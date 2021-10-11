@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.core.internal.graph;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.HasBranchId;
+import org.eclipse.osee.framework.core.data.HasTransaction;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.HasTransaction;
 
 /**
  * @author Roberto E. Escobar

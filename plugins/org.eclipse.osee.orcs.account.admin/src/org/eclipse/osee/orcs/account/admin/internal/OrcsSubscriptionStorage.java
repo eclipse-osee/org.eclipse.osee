@@ -22,12 +22,12 @@ import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.account.admin.internal.SubscriptionUtil.ActiveDelegate;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**

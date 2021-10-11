@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.orcs.core.internal.proxy;
 
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Megumi Telles

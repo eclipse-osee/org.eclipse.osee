@@ -14,9 +14,9 @@ package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti

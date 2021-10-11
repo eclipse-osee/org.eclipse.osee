@@ -14,8 +14,8 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.HasBranchId;
+import org.eclipse.osee.framework.core.data.HasTransaction;
 import org.eclipse.osee.orcs.data.HasSession;
-import org.eclipse.osee.orcs.data.HasTransaction;
 
 /**
  * @author Roberto E. Escobar

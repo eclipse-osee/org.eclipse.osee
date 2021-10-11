@@ -22,10 +22,10 @@ import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Angel Avila

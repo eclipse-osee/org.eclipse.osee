@@ -42,7 +42,9 @@ import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
@@ -52,8 +54,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Donald G. Dunne

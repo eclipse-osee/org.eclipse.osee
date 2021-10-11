@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.OAuthOseeTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

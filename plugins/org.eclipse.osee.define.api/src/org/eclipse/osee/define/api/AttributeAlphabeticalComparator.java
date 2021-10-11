@@ -14,9 +14,9 @@ package org.eclipse.osee.define.api;
 
 import java.util.Comparator;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Branden W. Phillips

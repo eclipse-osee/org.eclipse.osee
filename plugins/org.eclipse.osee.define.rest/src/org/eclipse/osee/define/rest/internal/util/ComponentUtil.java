@@ -15,11 +15,11 @@ package org.eclipse.osee.define.rest.internal.util;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Component;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan D. Brooks

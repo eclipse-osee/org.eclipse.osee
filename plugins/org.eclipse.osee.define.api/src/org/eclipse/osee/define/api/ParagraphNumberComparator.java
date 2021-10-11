@@ -15,10 +15,10 @@ package org.eclipse.osee.define.api;
 
 import java.util.Comparator;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

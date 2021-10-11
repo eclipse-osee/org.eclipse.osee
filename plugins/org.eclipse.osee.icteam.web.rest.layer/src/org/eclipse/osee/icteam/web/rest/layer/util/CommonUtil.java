@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -48,8 +50,6 @@ import org.eclipse.osee.icteam.common.clientserver.util.RestUtil;
 import org.eclipse.osee.icteam.server.access.core.OseeCoreData;
 import org.eclipse.osee.icteam.web.rest.data.write.TranferableArtifactLoader;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Operator;
 
 /**
