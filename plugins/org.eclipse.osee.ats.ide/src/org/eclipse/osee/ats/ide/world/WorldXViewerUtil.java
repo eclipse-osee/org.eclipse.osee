@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -48,15 +47,10 @@ public class WorldXViewerUtil {
       // Register any columns from other plugins
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            boolean found = false;
-            Collection<IUserGroupArtifactToken> userGroups = item.getUserGroups();
-            for (ArtifactId myUserGroup : AtsApiService.get().getUserService().getCurrentUser().getUserGroups()) {
-               if (userGroups.contains(myUserGroup)) {
-                  found = true;
-                  break;
-               }
-            }
-            if (found) {
+
+            Collection<IUserGroupArtifactToken> itemGroups = item.getUserGroups();
+            if (AtsApiService.get().userService().isInUserGroup(
+               itemGroups.toArray(new IUserGroupArtifactToken[itemGroups.size()]))) {
                for (XViewerColumn xCol : item.getXViewerColumns()) {
                   factory.registerColumns(xCol);
                }
@@ -70,8 +64,7 @@ public class WorldXViewerUtil {
    public static void registerAtsAttributeColumns(SkynetXViewerFactory factory) {
       // Register all ats.* attribute columns
       try {
-         if (AtsApiService.get().getUserService().getCurrentUser().getUserGroups().contains(
-            AtsUserGroups.AtsAddAttrColumns)) {
+         if (AtsApiService.get().userService().isInUserGroup(AtsUserGroups.AtsAddAttrColumns)) {
             for (AttributeTypeToken attributeType : AttributeTypeManager.getAllTypes()) {
                if (attributeType.getName().startsWith("ats.")) {
                   factory.registerColumns(SkynetXViewerFactory.getAttributeColumn(attributeType));

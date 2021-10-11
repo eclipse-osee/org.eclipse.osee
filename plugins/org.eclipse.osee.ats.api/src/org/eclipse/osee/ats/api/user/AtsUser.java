@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -36,7 +35,6 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    private String phone;
    private List<String> loginIds = new ArrayList<>();
    private List<String> savedSearches = new ArrayList<>();
-   private List<ArtifactId> userGroups = new ArrayList<>();
 
    public AtsUser() {
       // for jax-rs instantiation
@@ -102,7 +100,6 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    public void setLoginIds(List<String> loginIds) {
       this.loginIds = loginIds;
    }
-
    public List<String> getSavedSearches() {
       return savedSearches;
    }
@@ -111,13 +108,6 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
       this.savedSearches = savedSearches;
    }
 
-   public List<ArtifactId> getUserGroups() {
-      return userGroups;
-   }
-
-   public void setUserGroups(List<ArtifactId> userGroups) {
-      this.userGroups = userGroups;
-   }
 
    public boolean isAnonymous() {
       return AtsCoreUsers.isAnonymousUser(this);

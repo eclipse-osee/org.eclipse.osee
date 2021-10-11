@@ -23,20 +23,17 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
-import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -157,21 +154,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public boolean isAtsAdmin() {
-      return getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
-   }
-
-   @Override
-   public boolean isAtsAdmin(AtsUser user) {
-      return user.getUserGroups().contains(AtsUserGroups.AtsAdmin);
-   }
-
-   @Override
-   public boolean isOseeAdmin() {
-      return getCurrentUser().getUserGroups().contains(CoreUserGroups.OseeAdmin);
-   }
-
-   @Override
    public Collection<AtsUser> getUsers(Active active) {
       List<AtsUser> users = new ArrayList<>();
       for (AtsUser user : getUsers()) {
@@ -227,19 +209,4 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
          configurationService.getConfigurations().getUsers().add(user);
       }
    }
-
-   @Override
-   public Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId userId) {
-      AtsUser user = getUserById(userId);
-      if (user != null) {
-         return user.getUserGroups().contains(userGroup);
-      }
-      return false;
-   }
-
-   @Override
-   public Boolean isUserMember(IUserGroupArtifactToken userGroup) {
-      return isUserMember(userGroup, getCurrentUser());
-   }
-
 }

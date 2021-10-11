@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
@@ -126,13 +125,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       user.getSavedSearches().addAll(
          atsApi.getAttributeResolver().getAttributesToStringList(userArt, CoreAttributeTypes.AtsActionSearch));
 
-      // Load User Groups
-      user.getUserGroups().clear();
-      for (ArtifactToken userGroup : atsApi.getRelationResolver().getRelated(userArt,
-         CoreRelationTypes.Users_Artifact)) {
-         user.getUserGroups().add(userGroup);
-      }
-
       // Set Store Object
       user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
 
@@ -154,13 +146,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       // Always reload art to get latest sarches and user groups
       user.getSavedSearches().addAll(
          atsApi.getAttributeResolver().getAttributesToStringList(userArt, CoreAttributeTypes.AtsActionSearch));
-
-      // Load User Groups
-      user.getUserGroups().clear();
-      for (ArtifactToken userGroup : atsApi.getRelationResolver().getRelated(userArt,
-         CoreRelationTypes.Users_Artifact)) {
-         user.getUserGroups().add(userGroup);
-      }
 
       // Set Store Object
       user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
