@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -30,7 +31,6 @@ import org.eclipse.osee.mim.types.MimAttributeQueryElement;
 import org.eclipse.osee.mim.types.MimRelatedArtifact;
 import org.eclipse.osee.mim.types.PLGenericDBObject;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**

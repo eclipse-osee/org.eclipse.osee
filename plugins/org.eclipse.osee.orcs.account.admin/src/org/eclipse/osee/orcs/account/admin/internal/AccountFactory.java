@@ -20,10 +20,10 @@ import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

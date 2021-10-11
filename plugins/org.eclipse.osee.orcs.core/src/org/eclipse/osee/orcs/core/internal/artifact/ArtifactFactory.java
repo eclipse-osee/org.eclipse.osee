@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -30,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar

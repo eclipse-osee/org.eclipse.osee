@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author David W. Miller

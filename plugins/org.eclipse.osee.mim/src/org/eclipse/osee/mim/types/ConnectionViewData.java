@@ -13,8 +13,8 @@
 package org.eclipse.osee.mim.types;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti

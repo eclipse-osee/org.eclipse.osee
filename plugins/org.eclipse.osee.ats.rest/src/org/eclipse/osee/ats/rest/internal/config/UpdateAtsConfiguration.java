@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -32,8 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**

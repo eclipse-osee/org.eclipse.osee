@@ -100,6 +100,7 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.SprintConfigOperation
 import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
 import org.eclipse.osee.ats.rest.internal.world.AtsWorldEndpointImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -120,7 +121,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
 

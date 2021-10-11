@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -33,8 +35,6 @@ import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.Transfera
 import org.eclipse.osee.icteam.common.clientserver.dependent.util.CommonConstants;
 import org.eclipse.osee.icteam.server.access.core.OseeCoreData;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * This class is for populating the data to Transferable artifact from ArtifactReadable

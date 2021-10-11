@@ -11,19 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.data;
-
-import org.eclipse.osee.framework.core.enums.ModificationType;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface HasDeleteState {
+public interface HasTransaction {
 
-   default boolean isDeleted() {
-      return getModificationType().isDeleted();
-   }
-
-   ModificationType getModificationType();
-
+   TransactionId getTransaction();
 }

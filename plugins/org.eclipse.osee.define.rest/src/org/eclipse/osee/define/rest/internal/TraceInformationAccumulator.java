@@ -16,13 +16,13 @@ package org.eclipse.osee.define.rest.internal;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author David W. Miller

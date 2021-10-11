@@ -78,6 +78,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffs
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -95,7 +96,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**

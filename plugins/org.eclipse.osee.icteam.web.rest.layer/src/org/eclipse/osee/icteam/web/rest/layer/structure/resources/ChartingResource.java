@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.icteam.common.artifact.interfaces.ITransferableArtifact;
@@ -50,7 +51,6 @@ import org.eclipse.osee.icteam.web.rest.layer.util.BurnDownData;
 import org.eclipse.osee.icteam.web.rest.layer.util.CommonUtil;
 import org.eclipse.osee.icteam.web.rest.layer.util.InterfaceAdapter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * Chart Resource to return burn down data for total stories and efforts

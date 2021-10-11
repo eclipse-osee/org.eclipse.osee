@@ -15,9 +15,9 @@ package org.eclipse.osee.define.rest.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author David W. Miller

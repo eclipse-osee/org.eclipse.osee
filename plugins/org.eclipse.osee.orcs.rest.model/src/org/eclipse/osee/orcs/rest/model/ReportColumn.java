@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 
 /**
  * @author David W. Miller

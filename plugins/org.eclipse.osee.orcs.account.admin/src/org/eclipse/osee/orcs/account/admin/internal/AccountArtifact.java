@@ -17,9 +17,9 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar

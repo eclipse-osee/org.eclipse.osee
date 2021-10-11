@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -33,7 +34,6 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    private EditState objectEditState;

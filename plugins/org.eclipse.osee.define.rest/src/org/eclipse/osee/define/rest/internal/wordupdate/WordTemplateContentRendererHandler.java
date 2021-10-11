@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.util.ReportConstants;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**

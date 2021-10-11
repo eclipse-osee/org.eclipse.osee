@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.internal;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimUserPreferenceEndpoint;
 import org.eclipse.osee.mim.types.MimUserPreference;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti

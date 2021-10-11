@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.access.object.BranchAccessObject;
 import org.eclipse.osee.framework.core.access.operation.AccessCache;
 import org.eclipse.osee.framework.core.access.operation.IAccessStoreOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * Much of this code is a duplicate of the other AccessStoreOperation. Once more is shared, it can be merged into an

@@ -13,6 +13,7 @@
 package org.eclipse.osee.icteam.web.mail.notifier;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.icteam.server.access.core.OseeCoreData;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 // import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 

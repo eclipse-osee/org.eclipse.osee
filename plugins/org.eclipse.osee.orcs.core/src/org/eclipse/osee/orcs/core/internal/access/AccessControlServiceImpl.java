@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.access.AbstractAccessControlService;
 import org.eclipse.osee.framework.core.access.AccessQueries;
 import org.eclipse.osee.framework.core.access.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * This service in not implement (on the server) as an OSGi component so that OrcsApi can reference it even through

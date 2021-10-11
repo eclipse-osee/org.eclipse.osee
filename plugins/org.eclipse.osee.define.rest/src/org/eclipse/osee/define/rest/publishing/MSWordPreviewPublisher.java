@@ -17,11 +17,11 @@ import java.io.Writer;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.PublishingOptions;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.WordMLWriter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Branden W. Phillips

@@ -14,12 +14,12 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimReportsEndpoint;
 import org.eclipse.osee.mim.types.MimReportToken;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan Baldwin

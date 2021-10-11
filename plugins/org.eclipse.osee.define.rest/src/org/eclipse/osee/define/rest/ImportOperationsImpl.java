@@ -30,12 +30,12 @@ import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory.
 import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.define.rest.operations.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**

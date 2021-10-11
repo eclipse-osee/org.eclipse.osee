@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2013 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,17 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.data;
-
-import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IAttribute;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Roberto E. Escobar
- * @author Andrew M. Finkbeiner
  */
-public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
-
-   GammaId getGammaId();
-
+public interface OrcsReadable extends HasDeleteState {
+   //
 }

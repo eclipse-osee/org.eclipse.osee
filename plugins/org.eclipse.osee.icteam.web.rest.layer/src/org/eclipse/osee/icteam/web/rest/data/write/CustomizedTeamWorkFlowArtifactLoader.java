@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -40,8 +42,6 @@ import org.eclipse.osee.icteam.common.clientserver.util.RestUtil;
 import org.eclipse.osee.icteam.server.access.core.OseeCoreData;
 import org.eclipse.osee.icteam.web.rest.layer.util.CommonUtil;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * This class is used to populate the CustomizedTeamWorkFlowArtifact from the ArtifactReadable object

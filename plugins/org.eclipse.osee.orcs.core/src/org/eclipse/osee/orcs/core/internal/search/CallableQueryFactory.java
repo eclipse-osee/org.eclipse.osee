@@ -14,6 +14,8 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -27,8 +29,6 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphBuilder;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**

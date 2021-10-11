@@ -15,9 +15,9 @@ package org.eclipse.osee.synchronization.rest.reqifsynchronizationartifactbuilde
 
 import java.util.Map;
 import java.util.Objects;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.EnumSupplierMap;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierTypeGroup;
 import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
