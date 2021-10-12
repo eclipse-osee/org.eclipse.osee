@@ -43,10 +43,6 @@ public interface IAtsConfigurationsService {
 
    AtsUser getUserByName(String name);
 
-   AtsUser getUserByLoginId();
-
-   AtsUser getCurrentUserByLoginId();
-
    boolean isConfigLoaded();
 
    AtsUser getUser(ArtifactId userArt);

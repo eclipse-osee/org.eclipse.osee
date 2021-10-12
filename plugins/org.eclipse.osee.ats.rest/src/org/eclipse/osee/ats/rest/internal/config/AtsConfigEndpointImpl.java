@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,7 +36,6 @@ import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
@@ -51,7 +49,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -59,7 +56,6 @@ import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -112,33 +108,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public AtsConfigurations getWithPend() {
       return atsApi.getConfigService().getConfigurationsWithPend();
-   }
-
-   @Override
-   public AtsUser getUserByLogin() {
-      AtsUser user = atsApi.getConfigService().getUserByLoginId();
-
-      // Set Store Object
-      user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
-
-      return user;
-   }
-
-   @Override
-   @GET
-   @Path("userid/{userId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public AtsUser getUserByUserId(@PathParam("userId") String userId) {
-      ArtifactReadable userArt =
-         (ArtifactReadable) atsApi.getQueryService().getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
-            CoreAttributeTypes.UserId, userId, CoreBranches.COMMON);
-      AtsUser user = AtsUserServiceServerImpl.valueOf(userArt);
-
-
-      // Set Store Object
-      user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
-
-      return user;
    }
 
    @Override
