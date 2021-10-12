@@ -106,20 +106,16 @@ public class PeerToPeerReviewColumnsTest {
       defectManager.addOrUpdateDefectItem(item);
       defectManager.saveToArtifact(peerArt, changes);
 
-      UserRole role =
-         new UserRole(ReviewRole.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
+      UserRole role = new UserRole(ReviewRole.Author, DemoUsers.Alex_Kay);
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(ReviewRole.Moderator,
-         AtsApiService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
+      role = new UserRole(ReviewRole.Moderator, DemoUsers.Jason_Michael);
       roleMgr.addOrUpdateUserRole(role);
 
-      role =
-         new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
+      role = new UserRole(ReviewRole.Reviewer, DemoUsers.Joe_Smith);
       roleMgr.addOrUpdateUserRole(role);
-      role =
-         new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
+      role = new UserRole(ReviewRole.Reviewer, DemoUsers.Kay_Jones);
       roleMgr.addOrUpdateUserRole(role);
       roleMgr.saveToArtifact(changes);
       changes.add(peerArt);

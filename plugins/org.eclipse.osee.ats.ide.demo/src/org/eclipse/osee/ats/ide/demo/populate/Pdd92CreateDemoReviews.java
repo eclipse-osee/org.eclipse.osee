@@ -108,12 +108,9 @@ public class Pdd92CreateDemoReviews {
             "Peer Review algorithm used in code", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       List<UserRole> roles = new ArrayList<>();
-      roles.add(
-         new UserRole(ReviewRole.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
-      roles.add(
-         new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones)));
-      roles.add(new UserRole(ReviewRole.Reviewer,
-         AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(ReviewRole.Author, DemoUsers.Joe_Smith));
+      roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Kay_Jones));
+      roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Alex_Kay, 2.0, true));
       Result result = AtsApiService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Review,
          roles, null, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isFalse()) {
@@ -128,12 +125,9 @@ public class Pdd92CreateDemoReviews {
             AtsApiService.get().getUserService().getUserById(DemoUsers.Kay_Jones), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();
-      roles.add(new UserRole(ReviewRole.Author,
-         AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones), 2.3, true));
-      roles.add(new UserRole(ReviewRole.Reviewer,
-         AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), 4.5, true));
-      roles.add(new UserRole(ReviewRole.Reviewer,
-         AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(ReviewRole.Author, DemoUsers.Kay_Jones, 2.3, true));
+      roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Joe_Smith, 4.5, true));
+      roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Alex_Kay, 2.0, true));
 
       List<ReviewDefectItem> defects = new ArrayList<>();
       defects.add(

@@ -74,11 +74,10 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
          peerRevArt.getStateMgr().getAssignees().iterator().next());
 
       // set roles
-      UserRole userRole = new UserRole(ReviewRole.Author,
-         AtsApiService.get().getUserService().getUserByName(DemoUsers.Joe_Smith.getName()));
+      UserRole userRole = new UserRole(ReviewRole.Author, DemoUsers.Joe_Smith);
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerRevArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(userRole);
-      userRole = new UserRole(ReviewRole.Reviewer, AtsApiService.get().getUserService().getUserByName("Alex Kay"));
+      userRole = new UserRole(ReviewRole.Reviewer, DemoUsers.Alex_Kay);
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("test transition");
       roleMgr.addOrUpdateUserRole(userRole);
       roleMgr.saveToArtifact(changes);
