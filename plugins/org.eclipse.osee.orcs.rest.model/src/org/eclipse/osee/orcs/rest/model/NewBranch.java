@@ -90,7 +90,8 @@ public class NewBranch {
    }
 
    public void setAuthor(ArtifactId author) {
-      this.author = author;
+      // ensure only id is serialized in the case of subclasses
+      this.author = ArtifactId.valueOf(author.getId());
    }
 
    public void setSourceTransactionId(TransactionToken sourceTransaction) {
