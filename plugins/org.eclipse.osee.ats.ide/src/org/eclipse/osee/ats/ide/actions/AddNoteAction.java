@@ -75,8 +75,7 @@ public class AddNoteAction extends AbstractAtsAction {
       if (!selectedState.startsWith(sma.getName() + " - ")) {
          state = selectedToStateName.get(selectedState);
       }
-      AtsApiService.get().getWorkItemService().getNotes(sma).addNote(noteType, state, noteText,
-         AtsApiService.get().getUserService().getCurrentUser());
+      AtsApiService.get().getWorkItemService().getNotes(sma).addNote(noteType, state, noteText);
       dirtiable.onDirtied();
    }
 

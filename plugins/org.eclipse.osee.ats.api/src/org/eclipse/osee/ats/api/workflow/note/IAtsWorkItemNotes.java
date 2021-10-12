@@ -15,18 +15,18 @@ package org.eclipse.osee.ats.api.workflow.note;
 
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsWorkItemNotes {
 
-   void addNote(NoteType type, String state, String msg, AtsUser user);
+   void addNote(NoteType type, String state, String msg);
 
    void addNoteItem(NoteItem noteItem);
 
-   void addNote(NoteType type, String state, String msg, Date date, AtsUser user);
+   void addNote(NoteType type, String state, String msg, Date date, UserToken user);
 
    List<NoteItem> getNoteItems();
 
