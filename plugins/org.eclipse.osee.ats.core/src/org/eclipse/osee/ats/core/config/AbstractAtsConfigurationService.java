@@ -36,8 +36,8 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    }
 
    @Override
-   public IAtsConfigTx createConfigTx(String name, AtsUser asUser) {
-      return new AtsConfigTxImpl(name, atsApi, asUser);
+   public IAtsConfigTx createConfigTx(String name) {
+      return new AtsConfigTxImpl(name, atsApi);
    }
 
    @Override

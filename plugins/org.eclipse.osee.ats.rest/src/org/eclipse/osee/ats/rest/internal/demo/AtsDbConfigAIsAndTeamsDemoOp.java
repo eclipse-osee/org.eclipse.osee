@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
@@ -53,7 +52,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
    }
 
    public void run() {
-      IAtsConfigTx cfgTx = atsApi.getConfigService().createConfigTx("Create Demo Config", AtsCoreUsers.SYSTEM_USER);
+      IAtsConfigTx cfgTx = atsApi.getConfigService().createConfigTx("Create Demo Config");
       IAtsConfigTxTeamDef topTeam =
          cfgTx.createTeamDef((IAtsTeamDefinition) null, AtsArtifactToken.TopTeamDefinition).andWorkDef(
             AtsWorkDefinitionTokens.WorkDef_Team_Default);

@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -61,9 +60,9 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    private final Map<String, IAtsActionableItem> newAis = new HashMap<>();
    private final Set<Long> usedIds = new HashSet<>();
 
-   public AtsConfigTxImpl(String name, AtsApi atsApi, AtsUser asUser) {
+   public AtsConfigTxImpl(String name, AtsApi atsApi) {
       this.atsApi = atsApi;
-      changes = atsApi.createChangeSet(name, asUser);
+      changes = atsApi.createChangeSet(name);
    }
 
    @Override

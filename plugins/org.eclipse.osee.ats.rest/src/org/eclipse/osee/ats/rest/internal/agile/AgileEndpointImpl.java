@@ -81,7 +81,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.util.RestResult;
@@ -1103,8 +1102,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          for (ArtifactReadable featureArt : ((ArtifactReadable) team.getStoreObject()).getRelated(
             AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup)) {
             if (featureArt.getName().equals(featureGroupName)) {
-               IAtsChangeSet changes =
-                  atsApi.createChangeSet("Add Feature Group to WorkItem", AtsCoreUsers.SYSTEM_USER);
+               IAtsChangeSet changes = atsApi.createChangeSet("Add Feature Group to WorkItem");
                changes.relate(featureArt, AtsRelationTypes.AgileFeatureToItem_AtsItem, item);
                changes.execute();
                return Response.ok().build();
@@ -1121,7 +1119,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
       IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
-      IAtsChangeSet changes = atsApi.createChangeSet("Set Agile UnPlanned", AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Agile UnPlanned");
       changes.setSoleAttributeValue(item, AtsAttributeTypes.UnplannedWork, unPlanned);
       changes.execute();
       return Response.ok().build();
@@ -1136,7 +1134,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
       IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
       AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
-      IAtsChangeSet changes = atsApi.createChangeSet("Set Points", AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();
       return Response.ok().build();

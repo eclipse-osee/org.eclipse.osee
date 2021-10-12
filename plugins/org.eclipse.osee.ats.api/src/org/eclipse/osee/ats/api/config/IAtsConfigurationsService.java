@@ -31,7 +31,7 @@ public interface IAtsConfigurationsService {
     */
    AtsConfigurations getConfigurationsWithPend();
 
-   IAtsConfigTx createConfigTx(String string, AtsUser asUser);
+   IAtsConfigTx createConfigTx(String string);
 
    void setAtsApi(AtsApi atsApi);
 
