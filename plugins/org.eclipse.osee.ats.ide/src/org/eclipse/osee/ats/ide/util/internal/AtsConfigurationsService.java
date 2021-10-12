@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -101,20 +100,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    @Override
-   public synchronized AtsUser getUserByLoginId() {
-      AtsUser user = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin();
-      user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
-      user.setAtsApi(atsApi);
-      return user;
-   }
-
-   @Override
    public boolean isConfigLoaded() {
       return atsConfigurations != null;
-   }
-
-   @Override
-   public AtsUser getCurrentUserByLoginId() {
-      return getUserByLoginId();
    }
 }

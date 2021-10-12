@@ -274,14 +274,4 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       AtsDbConfigBase config = new AtsDbConfigBase(atsApi, orcsApi);
       return config.run();
    }
-
-   @Override
-   public AtsUser getUserByLoginId() {
-      return atsApi.getUserService().getUserById(atsApi.userService().getUser());
-   }
-
-   @Override
-   public AtsUser getCurrentUserByLoginId() {
-      throw new UnsupportedOperationException("Not supported on the server");
-   }
 }

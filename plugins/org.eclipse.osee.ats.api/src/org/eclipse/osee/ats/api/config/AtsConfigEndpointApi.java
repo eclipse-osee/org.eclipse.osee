@@ -24,7 +24,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -62,16 +61,6 @@ public interface AtsConfigEndpointApi {
    @Path("fromdb")
    @Produces(MediaType.APPLICATION_JSON)
    public AtsConfigurations getWithPend();
-
-   @GET
-   @Path("user")
-   @Produces(MediaType.APPLICATION_JSON)
-   public AtsUser getUserByLogin();
-
-   @GET
-   @Path("userid/{userId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public AtsUser getUserByUserId(@PathParam("userId") String userId);
 
    @GET
    @Path("image")
