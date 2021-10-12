@@ -13,12 +13,10 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,7 +25,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -58,7 +55,7 @@ public interface AtsTeamWfEndpointApi {
    @Path("{id}/addchangeids/{teamId}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData addChangeIds(@PathParam("id") String workItemId, @PathParam("teamId") String teamId, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds);
+   XResultData addChangeIds(@PathParam("id") String workItemId, @PathParam("teamId") String teamId, List<String> changeIds);
 
    @GET
    @Path("{id}/goal")
@@ -74,6 +71,6 @@ public interface AtsTeamWfEndpointApi {
    @Path("build/{build}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData relateReleaseToWorkflow(@PathParam("build") String build, @HeaderParam(OSEE_ACCOUNT_ID) UserId userId, List<String> changeIds);
+   XResultData relateReleaseToWorkflow(@PathParam("build") String build, List<String> changeIds);
 
 }

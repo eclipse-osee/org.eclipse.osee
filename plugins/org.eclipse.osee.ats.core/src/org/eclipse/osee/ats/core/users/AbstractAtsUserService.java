@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.users;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,15 +25,12 @@ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -90,12 +86,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public AtsUser getUserByAccountId(UserId accountId) {
-      Long id = accountId == null ? SystemUser.Anonymous.getId() : accountId.getId();
-      return getUserById(ArtifactId.valueOf(id));
-   }
-
-   @Override
    public AtsUser getUserById(ArtifactId user) {
       AtsUser atsUser = configurationService.getConfigurations().getIdToUser().get(user.getId());
       if (atsUser == null && isLoadValid()) {
@@ -137,18 +127,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public boolean isUserNameValid(String name) {
-      return getUserByName(name) != null;
-   }
-
-   @Override
-   public Collection<AtsUser> getUsersSortedByName(Active active) {
-      List<AtsUser> users = new ArrayList<AtsUser>(getUsers(active));
-      Collections.sort(users, new AtsUserNameComparator(false));
-      return users;
-   }
-
-   @Override
    public AtsUser getUserByToken(UserToken userToken) {
       return getUserByUserId(userToken.getUserId());
    }
@@ -167,11 +145,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    @Override
    public void reloadCache() {
       configurationService.getConfigurationsWithPend();
-      setCurrentUser(null);
-   }
-
-   @Override
-   public void releaseUser() {
       setCurrentUser(null);
    }
 
@@ -201,12 +174,5 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
          results.add(lead);
       }
       return results;
-   }
-
-   @Override
-   public void addUser(AtsUser user) {
-      if (!configurationService.getConfigurations().getUsers().contains(user)) {
-         configurationService.getConfigurations().getUsers().add(user);
-      }
    }
 }

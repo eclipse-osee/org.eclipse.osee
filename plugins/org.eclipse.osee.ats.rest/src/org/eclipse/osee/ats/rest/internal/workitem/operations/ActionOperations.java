@@ -52,11 +52,9 @@ public class ActionOperations {
 
    private final AtsApi atsApi;
    private IAtsWorkItem workItem;
-   private final AtsUser asUser;
    private final OrcsApi orcsApi;
 
-   public ActionOperations(AtsUser asUser, IAtsWorkItem workItem, AtsApi atsApi, OrcsApi orcsApi) {
-      this.asUser = asUser;
+   public ActionOperations(IAtsWorkItem workItem, AtsApi atsApi, OrcsApi orcsApi) {
       this.workItem = workItem;
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
@@ -76,7 +74,7 @@ public class ActionOperations {
          String state = values.iterator().next();
          TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
             new ArrayList<AtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-         helper.setTransitionUser(asUser);
+         helper.setTransitionUser(atsApi.getUserService().getCurrentUser());
          TransitionManager mgr = new TransitionManager(helper);
          TransitionResults results = new TransitionResults();
          mgr.handleTransitionValidation(results);
@@ -205,7 +203,7 @@ public class ActionOperations {
    public Collection<ArtifactToken> setByArtifactToken(IAtsWorkItem workItem, String changeType, Collection<ArtifactToken> artifacts) {
       if (changeType.equals(AttributeKey.Assignee.name())) {
          if (artifacts.isEmpty()) {
-            IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees", asUser);
+            IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees");
             atsApi.getWorkItemService().clearAssignees(workItem, changes);
             changes.executeIfNeeded();
          } else {
@@ -215,7 +213,7 @@ public class ActionOperations {
                Conditions.assertNotNull(user, "Artifact %s is not a User", userArt.toStringWithId());
                assignees.add(user);
             }
-            IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees", asUser);
+            IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees");
             atsApi.getWorkItemService().setAssignees(workItem, assignees, changes);
             changes.executeIfNeeded();
          }
@@ -230,18 +228,17 @@ public class ActionOperations {
                workItem.toStringWithId());
          }
          if (artifacts.isEmpty()) {
-            IAtsChangeSet changes = atsApi.createChangeSet("Clear targeted version", asUser);
+            IAtsChangeSet changes = atsApi.createChangeSet("Clear targeted version");
             atsApi.getVersionService().removeTargetedVersion((IAtsTeamWorkflow) workItem, changes);
             changes.executeIfNeeded();
          } else {
             IAtsVersion version = atsApi.getVersionService().getVersionById(artifacts.iterator().next());
             Conditions.assertNotNull(version, "No version found from artifact %s", artifacts.iterator().next());
-            IAtsChangeSet changes = atsApi.createChangeSet("Set targeted version", asUser);
+            IAtsChangeSet changes = atsApi.createChangeSet("Set targeted version");
             atsApi.getVersionService().setTargetedVersion((IAtsTeamWorkflow) workItem, version, changes);
             changes.executeIfNeeded();
          }
       }
       return artifacts;
    }
-
 }

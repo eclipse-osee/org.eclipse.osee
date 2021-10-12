@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
@@ -86,7 +85,7 @@ public class AtsTeamWfEndpointTest {
       changes.addAttribute(codeTeamWorkFlow.getArtifactId(), CoreAttributeTypes.GitChangeId, changeId);
       changes.execute();
 
-      XResultData rd = teamWfEp.relateReleaseToWorkflow(release.getName(), DemoUsers.Joe_Smith, changeIds);
+      XResultData rd = teamWfEp.relateReleaseToWorkflow(release.getName(), changeIds);
       TransactionId txId = TransactionId.SENTINEL;
       if (Strings.isNumeric(rd.getTxId())) {
          txId = TransactionId.valueOf(rd.getTxId());

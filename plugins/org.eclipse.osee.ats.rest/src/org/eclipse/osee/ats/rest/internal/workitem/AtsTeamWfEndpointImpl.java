@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -39,7 +38,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -101,7 +99,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   public XResultData addChangeIds(String workItemId, String teamId, UserId userId, List<String> changeIds) {
+   public XResultData addChangeIds(String workItemId, String teamId, List<String> changeIds) {
       XResultData rd = new XResultData();
       rd.setTitle("Add Change Ids: " + changeIds);
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(workItemId);
@@ -133,16 +131,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
             return rd;
          }
       }
-      if (userId.isInvalid()) {
-         rd.errorf("%s is an invalid ATS userId", userId);
-         return rd;
-      }
-      AtsUser asUser = atsApi.getUserService().getUserByAccountId(userId);
-      if (asUser.isInvalid()) {
-         rd.errorf("%s is an invalid ATS userId", userId);
-         return rd;
-      }
-      IAtsChangeSet changes = atsApi.createChangeSet("Add Change Id(s)", asUser);
+      IAtsChangeSet changes = atsApi.createChangeSet("Add Change Id(s)");
       Set<String> distinctChangeIds = new HashSet<String>(
          atsApi.getAttributeResolver().getAttributesToStringList(workItem, CoreAttributeTypes.GitChangeId));
       distinctChangeIds.addAll(changeIds);
@@ -182,7 +171,7 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
-   public XResultData relateReleaseToWorkflow(String build, UserId userId, List<String> changeIds) {
+   public XResultData relateReleaseToWorkflow(String build, List<String> changeIds) {
       XResultData rd = new XResultData();
       try {
          rd.setTitle("Add Workflow to Release Relations");
@@ -190,13 +179,8 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          Collection<ArtifactToken> allWorkflows =
             atsApi.getQueryService().createQuery(AtsArtifactTypes.TeamWorkflow).andAttr(CoreAttributeTypes.GitChangeId,
                changeIds).getArtifacts();
-         AtsUser asUser = atsApi.getUserService().getUserByAccountId(userId);
-         if (asUser.isInvalid()) {
-            rd.errorf("%s is an invalid ATS user.", userId);
-            return rd;
-         }
 
-         IAtsChangeSet changes = atsApi.createChangeSet("Add Build Incorporation(s)", asUser);
+         IAtsChangeSet changes = atsApi.createChangeSet("Add Build Incorporation(s)");
          Collection<IAtsWorkItem> workItems = new ArrayList<>();
          for (IAtsWorkItem workItem : atsApi.getWorkItemService().getWorkItems(allWorkflows)) {
             if (!workItem.isTeamWorkflow()) {

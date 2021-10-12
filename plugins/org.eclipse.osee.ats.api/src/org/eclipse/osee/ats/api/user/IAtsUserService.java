@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 
@@ -41,8 +40,6 @@ public interface IAtsUserService {
 
    boolean isUserIdValid(String userId);
 
-   boolean isUserNameValid(String name);
-
    AtsUser getUserByName(String name);
 
    Collection<AtsUser> getUsersByUserIds(Collection<String> userIds);
@@ -51,19 +48,9 @@ public interface IAtsUserService {
 
    Collection<AtsUser> getUsers(Active active);
 
-   Collection<AtsUser> getUsersSortedByName(Active active);
-
    void reloadCache();
 
-   void releaseUser();
-
    Collection<AtsUser> getUsers();
-
-   /**
-    * @param accountId UserId or null
-    * @return if accountId is null, then the IAtsUser corresponding to SystemUser.Anonymous is returned
-    */
-   AtsUser getUserByAccountId(UserId accountId);
 
    Collection<AtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
 
@@ -72,8 +59,6 @@ public interface IAtsUserService {
    Collection<AtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);
 
    void setConfigurationService(IAtsConfigurationsService configurationService);
-
-   void addUser(AtsUser user);
 
    void clearCaches();
 
