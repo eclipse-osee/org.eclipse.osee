@@ -29,7 +29,8 @@ public class BranchCommitOptions {
    }
 
    public void setCommitter(ArtifactId committer) {
-      this.committer = committer;
+      // ensure only id is serialized in the case of subclasses
+      this.committer = ArtifactId.valueOf(committer.getId());
    }
 
    public boolean isArchive() {
