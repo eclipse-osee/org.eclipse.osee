@@ -306,7 +306,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          try {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Add Review Roles");
             for (AtsUser user : dialog.getUsers()) {
-               UserRole userRole = new UserRole(dialog.getRole(), user);
+               UserRole userRole = new UserRole(dialog.getRole(), user.getUserId());
                roleMgr.addOrUpdateUserRole(userRole);
                changes.add(reviewArt);
             }
