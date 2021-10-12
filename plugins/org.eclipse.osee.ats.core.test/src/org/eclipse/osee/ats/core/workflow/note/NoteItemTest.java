@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.workflow.note;
 
-import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +20,11 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.api.workflow.note.NoteType;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,16 +38,17 @@ import org.mockito.MockitoAnnotations;
 public class NoteItemTest {
 
    // @formatter:off
-   @Mock private IAtsUserService userService;
+   @Mock private UserService userService;
    @Mock private AtsApi atsApi;
    // @formatter:on
    List<AtsUser> assignees = new ArrayList<>();
+   private final UserToken joe = DemoUsers.Joe_Smith;
 
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      when(atsApi.getUserService()).thenReturn(userService);
+      when(atsApi.userService()).thenReturn(userService);
       when(userService.getUserByUserId(joe.getUserId())).thenReturn(joe);
    }
 
@@ -57,14 +59,14 @@ public class NoteItemTest {
       validate(item, date, joe);
    }
 
-   public static void validate(NoteItem item, Date date, AtsUser joe) {
+   public static void validate(NoteItem item, Date date, UserToken joe) {
       Assert.assertEquals(NoteType.Comment, item.getType());
       Assert.assertEquals("Implement", item.getState());
       Assert.assertEquals(joe, item.getUser());
       Assert.assertEquals("my msg", item.getMsg());
    }
 
-   public static NoteItem getTestNoteItem(Date date, AtsUser user) {
+   public static NoteItem getTestNoteItem(Date date, UserToken user) {
       return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), user, "my msg");
    }
 

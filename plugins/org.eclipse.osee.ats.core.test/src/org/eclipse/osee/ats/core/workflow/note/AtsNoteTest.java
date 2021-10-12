@@ -13,16 +13,17 @@
 
 package org.eclipse.osee.ats.core.workflow.note;
 
-import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
@@ -35,9 +36,10 @@ import org.mockito.MockitoAnnotations;
  * @author Donald G. Dunne
  */
 public class AtsNoteTest {
+   private final UserToken joe = DemoUsers.Joe_Smith;
 
    // @formatter:off
-   @Mock private IAtsUserService userService;
+   @Mock private UserService userService;
    @Mock private AtsApi atsApi;
    // @formatter:on
    List<AtsUser> assignees = new ArrayList<>();
@@ -46,7 +48,7 @@ public class AtsNoteTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      when(atsApi.getUserService()).thenReturn(userService);
+      when(atsApi.userService()).thenReturn(userService);
       when(userService.getUserByUserId(joe.getUserId())).thenReturn(joe);
    }
 

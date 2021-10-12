@@ -22,11 +22,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.api.workflow.note.NoteType;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -51,8 +51,8 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
    }
 
    @Override
-   public void addNote(NoteType type, String state, String msg, AtsUser user) {
-      addNote(type, state, msg, new Date(), user);
+   public void addNote(NoteType type, String state, String msg) {
+      addNote(type, state, msg, new Date(), atsApi.userService().getUser());
    }
 
    @Override
@@ -61,7 +61,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
    }
 
    @Override
-   public void addNote(NoteType type, String state, String msg, Date date, AtsUser user) {
+   public void addNote(NoteType type, String state, String msg, Date date, UserToken user) {
       if (!enabled) {
          return;
       }
@@ -128,7 +128,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
       builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "State", "Message", "User", "Date")));
       DateFormat dateFormat = getDateFormat();
       for (NoteItem note : showNotes) {
-         AtsUser user = note.getUser();
+         UserToken user = note.getUser();
          String name = "";
          if (user != null) {
             name = user.getName();
@@ -164,14 +164,14 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  AtsUser user = atsApi.getUserService().getUserByUserId(element.getAttribute("userId"));
+                  UserToken user = atsApi.userService().getUserByUserId(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
                   atsApi.getLogger().error(ex, "Error parsing notes for [%s]", atsId);
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
-                     element.getAttribute("date"), AtsCoreUsers.ANONYMOUS_USER, element.getAttribute("msg"));
+                     element.getAttribute("date"), SystemUser.OseeSystem, element.getAttribute("msg"));
                   logItems.add(item);
                }
             }
@@ -202,5 +202,4 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
       }
       return null;
    }
-
 }
