@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -81,9 +80,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -106,9 +103,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
    private final AtsApi atsApi;
-
-   @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
-   private UserId accountId;
 
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -249,7 +243,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public Attribute getActionAttributeByType(String id, AttributeTypeToken attributeType) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
-      ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
+      ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       return ops.getActionAttributeValues(attributeType, workItem);
    }
 
@@ -258,7 +252,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
       IAtsChangeSet changes = atsApi.createChangeSet("Set attr by type/key [" + attrTypeIdOrKey + "]");
-      AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
       AttributeTypeToken attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
@@ -270,7 +263,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          String state = values.iterator().next();
          TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
             new ArrayList<AtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-         helper.setTransitionUser(asUser);
+         helper.setTransitionUser(atsApi.getUserService().getCurrentUser());
          TransitionManager mgr = new TransitionManager(helper);
          TransitionResults results = new TransitionResults();
          mgr.handleTransitionValidation(results);
@@ -367,7 +360,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
          }
       }
-      ActionOperations actionOps = new ActionOperations(asUser, workItem, atsApi, orcsApi);
+      ActionOperations actionOps = new ActionOperations(workItem, atsApi, orcsApi);
       return actionOps.setActionAttributeByType(id, attrTypeIdOrKey, values);
    }
 
@@ -376,8 +369,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       if (workItem.isInWork()) {
          Conditions.assertNotNull(workItem, "workItem can not be found");
-         AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
-         ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
+         ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
          ops.setActionAttributeByType(id, AttributeKey.State.name(), Arrays.asList("Cancelled"));
       }
       String htmlUrl = atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi);
@@ -391,8 +383,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public Collection<ArtifactToken> setByArtifactToken(String workItemId, String changeType, Collection<ArtifactToken> artifacts) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
-      AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
-      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
+      ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       return ops.setByArtifactToken(workItem, changeType, artifacts);
 
    }
@@ -512,7 +503,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
       NewActionResult result = new NewActionResult();
       try {
-         AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
+         AtsUser asUser = atsApi.getUserService().getCurrentUser();
          if (asUser == null) {
             result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
             return result;
@@ -557,9 +548,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          if (teamWf.isInvalid()) {
             rd.errorf("[%s] is not a valid workflow.", teamWfId);
          }
-         AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
+         AtsUser asUser = atsApi.getUserService().getCurrentUser();
          if (asUser.isInvalid()) {
-            rd.errorf("asUser [%s] not valid", accountId.toString());
+            rd.errorf("asUser [%s] not valid", asUser.toString());
             return rd;
          }
          atsApi.getBranchService().commitBranch(teamWf, destinationBranch, asUser, rd);

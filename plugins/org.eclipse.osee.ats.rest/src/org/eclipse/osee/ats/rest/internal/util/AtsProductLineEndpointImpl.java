@@ -92,7 +92,7 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    public XResultData checkPlarbApproval(String id) {
       XResultData rd = new XResultData();
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
-      ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
+      ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       Attribute approval = ops.getActionAttributeValues(AtsAttributeTypes.ProductLineApprovedBy, workItem);
       if (approval.getValues().isEmpty()) {
          rd.error("Working branch has not yet been approved by PLARB");
