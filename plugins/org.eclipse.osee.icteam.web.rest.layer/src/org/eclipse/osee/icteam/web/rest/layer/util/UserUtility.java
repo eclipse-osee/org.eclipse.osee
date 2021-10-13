@@ -63,7 +63,7 @@ public class UserUtility {
 
    /**
     * Gets user name by User ID
-    * 
+    *
     * @param userId
     * @return User Name by userID or returns user ID back if UserID is UnAssigned
     */
@@ -92,7 +92,7 @@ public class UserUtility {
     */
    public static String getUserId(final ArtifactReadable user) {
       List<Object> userIdObject = user.getAttributeValues(CoreAttributeTypes.UserId);
-      if ((userIdObject != null) && !userIdObject.isEmpty()) {
+      if (!userIdObject.isEmpty()) {
          if (userIdObject.get(0) instanceof String) {
             return (String) userIdObject.get(0);
          }

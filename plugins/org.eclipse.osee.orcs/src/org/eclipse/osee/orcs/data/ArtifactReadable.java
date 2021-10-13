@@ -73,6 +73,10 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue);
 
+   /**
+    * @return List of attribute values of non-deleted attributes of the type attributeType or an empty list if no such
+    * attributes exist
+    */
    <T> List<T> getAttributeValues(AttributeTypeToken attributeType);
 
    Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
