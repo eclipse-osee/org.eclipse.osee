@@ -158,4 +158,9 @@ public class UserServiceImpl implements UserService {
    public void setUserLoading(boolean loading) {
       this.loading = loading;
    }
+
+   @Override
+   public UserToken getUserByUserId(String userId) {
+      return UserManager.getUserByUserId(userId);
+   }
 }
