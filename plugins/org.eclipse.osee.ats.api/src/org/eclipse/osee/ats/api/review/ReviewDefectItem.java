@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -59,7 +59,7 @@ public class ReviewDefectItem {
 
    };
 
-   public ReviewDefectItem(AtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date, String notes) {
+   public ReviewDefectItem(UserToken user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date, String notes) {
       this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date, notes);
    }
 
@@ -309,10 +309,6 @@ public class ReviewDefectItem {
       this.id = id;
    }
 
-   public void setUser(AtsUser user) {
-      this.userId = user.getUserId();
-   }
-
    public String getGuid() {
       return guid;
    }
@@ -320,5 +316,4 @@ public class ReviewDefectItem {
    public void setGuid(String guid) {
       this.guid = guid;
    }
-
 }

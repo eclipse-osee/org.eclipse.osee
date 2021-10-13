@@ -386,7 +386,7 @@ public class DefectXViewerMenu {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUserId().equals(user.getUserId())) {
-            defectItem.setUser(user);
+            defectItem.setUserId(user.getUserId());
             // at least one in the list has been changed.
             if (!modified) {
                modified = true;
