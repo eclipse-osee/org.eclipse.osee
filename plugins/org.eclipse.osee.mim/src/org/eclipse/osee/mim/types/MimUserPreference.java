@@ -29,17 +29,11 @@ public class MimUserPreference extends PLGenericDBObject {
 
    public MimUserPreference(ArtifactReadable artifact, BranchId branch, boolean hasWriteAccess) {
       super(artifact);
-      this.setHasBranchPref(this.hasBranchAttribute(
-         artifact.getAttributeValues(CoreAttributeTypes.MimBranchPreferences) != null ? artifact.getAttributeValues(
-            CoreAttributeTypes.MimBranchPreferences) : new LinkedList<String>(),
-         branch));
-      this.setInEditMode(this.filterBranches(
-         artifact.getAttributeValues(CoreAttributeTypes.MimBranchPreferences) != null ? artifact.getAttributeValues(
-            CoreAttributeTypes.MimBranchPreferences) : new LinkedList<String>(),
+      this.setHasBranchPref(
+         this.hasBranchAttribute(artifact.getAttributeValues(CoreAttributeTypes.MimBranchPreferences), branch));
+      this.setInEditMode(this.filterBranches(artifact.getAttributeValues(CoreAttributeTypes.MimBranchPreferences),
          branch) && hasWriteAccess);
-      this.setColumnPreferences(
-         artifact.getAttributeValues(CoreAttributeTypes.MimColumnPreferences) != null ? artifact.getAttributeValues(
-            CoreAttributeTypes.MimColumnPreferences) : new LinkedList<String>());
+      this.setColumnPreferences(artifact.getAttributeValues(CoreAttributeTypes.MimColumnPreferences));
    }
 
    public MimUserPreference(ArtifactReadable artifact, BranchId branch) {

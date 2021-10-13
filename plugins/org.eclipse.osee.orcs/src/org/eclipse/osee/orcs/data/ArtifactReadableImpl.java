@@ -159,9 +159,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
       List<T> values = getAttributeValues(attributeType);
-      if (values == null) {
-         return defaultValue;
-      }
       ensureNotMoreThanOne(attributeType, values.size());
       if (values.size() == 1) {
          T value = values.iterator().next();
@@ -210,7 +207,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       }
       List<IAttribute<?>> values = attributes.getValues(attributeType);
       if (values == null) {
-         return null;
+         return Collections.emptyList();
       }
       return (List<T>) values.stream().map(IAttribute::getValue).collect(Collectors.toList());
    }
@@ -435,10 +432,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
       List<String> items = new ArrayList<>();
       List<Object> attributeValues = getAttributeValues(attributeType);
-      if (attributeValues != null) {
-         for (Object object : attributeValues) {
-            items.add(object.toString());
-         }
+      for (Object object : attributeValues) {
+         items.add(object.toString());
       }
       return items;
    }

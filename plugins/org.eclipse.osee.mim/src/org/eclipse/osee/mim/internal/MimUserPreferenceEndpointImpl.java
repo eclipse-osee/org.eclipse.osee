@@ -53,8 +53,7 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
       List<String> tempPrefs = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          ArtifactId.valueOf(accountId.getId())).asArtifact().getAttributeValues(
             CoreAttributeTypes.MimBranchPreferences);
-      prefs.addAll(tempPrefs != null ? tempPrefs : new LinkedList<String>());
+      prefs.addAll(tempPrefs);
       return prefs;
    }
-
 }
