@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<UserId, UserToken> accountIdToUser = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
 
    private final QueryBuilder query;
 
@@ -142,9 +143,15 @@ public class UserServiceImpl implements UserService {
       if (loginIdToUser.isEmpty()) {
          for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).asArtifacts()) {
             UserToken user = toUser(userArtifact);
-            for (String loginId : user.getLoginIds()) {
-               if (Strings.isValid(loginId)) {
-                  loginIdToUser.put(loginId, user);
+
+            String userId = user.getUserId();
+            if (user.isValid() && !userId.isEmpty()) {
+               userIdToUser.put(userId, user);
+
+               for (String loginId : user.getLoginIds()) {
+                  if (Strings.isValid(loginId)) {
+                     loginIdToUser.put(loginId, user);
+                  }
                }
             }
          }
@@ -152,18 +159,23 @@ public class UserServiceImpl implements UserService {
    }
 
    private UserToken toUser(ArtifactReadable userArtifact) {
-      List<ArtifactReadable> groups =
-         userArtifact.getRelated(CoreRelationTypes.Users_Artifact, CoreArtifactTypes.UserGroup);
+      try {
+         List<ArtifactReadable> groups =
+            userArtifact.getRelated(CoreRelationTypes.Users_Artifact, CoreArtifactTypes.UserGroup);
 
-      List<IUserGroupArtifactToken> roles = new ArrayList<>(groups.size());
-      for (ArtifactReadable group : groups) {
-         roles.add(new UserGroupArtifactToken(group.getId(), group.getName()));
+         List<IUserGroupArtifactToken> roles = new ArrayList<>(groups.size());
+         for (ArtifactReadable group : groups) {
+            roles.add(new UserGroupArtifactToken(group.getId(), group.getName()));
+         }
+         return UserToken.create(userArtifact.getId(), userArtifact.getName(),
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email, ""),
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId, ""),
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active, false),
+            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles,
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
+      } catch (Exception ex) {
+         return UserToken.SENTINEL;
       }
-      return UserToken.create(userArtifact.getId(), userArtifact.getName(),
-         userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email),
-         userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId),
-         userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active),
-         userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles);
    }
 
    @Override
@@ -176,7 +188,7 @@ public class UserServiceImpl implements UserService {
             user = toUser(userArtifacts.get(0));
          }
       }
-      if (user != null) {
+      if (user != null && user.isValid()) {
          threadToUser.put(Thread.currentThread(), user);
       }
    }
@@ -190,10 +202,12 @@ public class UserServiceImpl implements UserService {
             List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
             if (userArtifacts.size() == 1) {
                user = toUser(userArtifacts.get(0));
-               accountIdToUser.put(user, user);
+               if (user.isValid()) {
+                  accountIdToUser.put(user, user);
+               }
             }
          }
-         if (user != null) {
+         if (user != null && user.isValid()) {
             threadToUser.put(Thread.currentThread(), user);
          }
       }
@@ -268,5 +282,16 @@ public class UserServiceImpl implements UserService {
    @Override
    public void clearCaches() {
       loginIdToUser.clear();
+   }
+
+   @Override
+   public UserToken getUserByUserId(String userId) {
+      ensureLoaded();
+
+      UserToken user = userIdToUser.get(userId);
+      if (user == null) {
+         user = UserToken.SENTINEL;
+      }
+      return user;
    }
 }

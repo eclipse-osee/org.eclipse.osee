@@ -84,4 +84,9 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    public TransactionId createUsers(Iterable<UserToken> users) {
       return userService.createUsers(users, "Create Users via Rest");
    }
+
+   @Override
+   public UserToken getUserInfo(String userId) {
+      return userService.getUserByUserId(userId);
+   }
 }

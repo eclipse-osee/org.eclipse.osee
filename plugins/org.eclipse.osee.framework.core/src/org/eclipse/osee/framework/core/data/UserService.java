@@ -90,4 +90,10 @@ public interface UserService {
 
    default void clearCaches() {
    }
+
+   /**
+    * @return the UserToken for the user whose org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId attribute
+    * equals the userId parameter
+    */
+   UserToken getUserByUserId(String userId);
 }

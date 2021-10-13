@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 @JsonSerialize(using = UserTokenSerializer.class)
 public interface UserToken extends ArtifactToken, UserId {
 
-   public static final UserToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, "", "-1", true);
+   public static final UserToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, "", "", false);
 
    @JsonCreator
    public static UserToken create(@JsonProperty("name") String name, @JsonProperty("email") String email, @JsonProperty("userId") String userId) {
@@ -46,11 +46,15 @@ public interface UserToken extends ArtifactToken, UserId {
    }
 
    public static UserToken create(long id, String name, String email, String userId, boolean active, List<IUserGroupArtifactToken> roles) {
-      return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles);
+      return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles, "");
    }
 
    public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active, List<String> loginIds, List<IUserGroupArtifactToken> roles) {
-      return new UserTokenImpl(id, name, userId, active, email, loginIds, roles);
+      return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, "");
+   }
+
+   public static UserToken create(long id, String name, String email, String userId, boolean active, List<String> loginIds, List<IUserGroupArtifactToken> roles, String phone) {
+      return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, phone);
    }
 
    public String getUserId();
@@ -58,6 +62,8 @@ public interface UserToken extends ArtifactToken, UserId {
    public boolean isActive();
 
    public boolean isOseeAdmin();
+
+   public String getPhone();
 
    public String getEmail();
 
@@ -76,9 +82,10 @@ public interface UserToken extends ArtifactToken, UserId {
       private final String email;
       private final List<IUserGroupArtifactToken> roles;
       private final List<String> loginIds;
+      private final String phone;
       private ArtifactToken artifact;
 
-      public UserTokenImpl(long id, String name, String userId, boolean active, String email, List<String> loginIds, List<IUserGroupArtifactToken> roles) {
+      public UserTokenImpl(long id, String name, String userId, boolean active, String email, List<String> loginIds, List<IUserGroupArtifactToken> roles, String phone) {
          super(id, name);
          this.userId = userId;
          this.active = active;
@@ -86,6 +93,7 @@ public interface UserToken extends ArtifactToken, UserId {
          this.loginIds = loginIds;
          this.roles = roles;
          this.admin = this.roles.contains(CoreUserGroups.OseeAdmin);
+         this.phone = phone;
       }
 
       @Override
@@ -111,6 +119,11 @@ public interface UserToken extends ArtifactToken, UserId {
       @Override
       public String getEmail() {
          return email;
+      }
+
+      @Override
+      public String getPhone() {
+         return phone;
       }
 
       @Override
