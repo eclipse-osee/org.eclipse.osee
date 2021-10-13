@@ -38,8 +38,6 @@ public interface IAtsUserService {
 
    AtsUser getUserById(ArtifactId id);
 
-   boolean isUserIdValid(String userId);
-
    AtsUser getUserByName(String name);
 
    Collection<AtsUser> getUsersByUserIds(Collection<String> userIds);

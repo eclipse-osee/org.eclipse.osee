@@ -122,11 +122,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public boolean isUserIdValid(String userId) {
-      return getUserByUserId(userId) != null;
-   }
-
-   @Override
    public AtsUser getUserByToken(UserToken userToken) {
       return getUserByUserId(userToken.getUserId());
    }
