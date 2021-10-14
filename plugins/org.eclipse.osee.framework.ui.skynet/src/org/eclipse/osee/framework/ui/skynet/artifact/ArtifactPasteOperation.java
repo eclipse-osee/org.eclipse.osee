@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,6 +58,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
       }
       if (!itemsToCopy.isEmpty()) {
          double workAmount = 0.80;
+         ArrayList<Pair<Artifact, Artifact>> copiedItems = new ArrayList<Pair<Artifact, Artifact>>();
          final Artifact itemToCopy = itemsToCopy.get(0);
          if (itemToCopy.hasParent() && destination.equals(itemToCopy.getParent())) {
 
@@ -72,14 +74,20 @@ public class ArtifactPasteOperation extends AbstractOperation {
             } else {
                Artifact newArtifact = pasteArtifact(monitor, workAmount, config, destination, itemToCopy);
                newArtifact.setName(changedName);
+               copiedItems.add(new Pair<Artifact, Artifact>(itemToCopy, newArtifact));
             }
          } else {
             workAmount = workAmount / itemsToCopy.size();
             for (Artifact item : itemsToCopy) {
-               pasteArtifact(monitor, workAmount, config, destination, item);
+               copiedItems.add(
+                  new Pair<Artifact, Artifact>(item, pasteArtifact(monitor, workAmount, config, destination, item)));
             }
          }
          destination.persist(getClass().getSimpleName());
+         // handle applicability for itemToCopy done after since setting applicability can only happen on a persisted artifact
+         for (Pair<Artifact, Artifact> copied : copiedItems) {
+            copied.getFirst().copyApplicability(copied.getSecond());
+         }
          monitor.worked(calculateWork(0.20));
       } else {
          monitor.worked(calculateWork(1.0));

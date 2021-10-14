@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -95,6 +97,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
  * {@link ArtifactTest}
@@ -1533,6 +1536,18 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
       copyAttributes(newArtifact, excludeAttributeTypes);
       return newArtifact;
+   }
+
+   public void copyApplicability(Artifact destination) {
+      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
+      try {
+         ApplicabilityToken applic = applEndpoint.getApplicabilityToken(this);
+         if (!applic.equals(ApplicabilityId.BASE)) {
+            applEndpoint.setApplicability(applic, Arrays.asList(destination));
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
    }
 
    private void copyAttributes(Artifact artifact, Collection<AttributeTypeId> excludeAttributeTypes) {
