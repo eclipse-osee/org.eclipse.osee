@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -31,10 +32,12 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
  */
 public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> implements TransactionQuery {
    private final QueryEngine queryEngine;
+   private final UserService userService;
 
-   public TransactionQueryImpl(QueryEngine queryEngine, TransactionCriteriaFactory criteriaFactory, QueryData queryData) {
+   public TransactionQueryImpl(QueryEngine queryEngine, TransactionCriteriaFactory criteriaFactory, QueryData queryData, UserService userService) {
       super(criteriaFactory, queryData);
       this.queryEngine = queryEngine;
+      this.userService = userService;
    }
 
    @Override
@@ -61,7 +64,7 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    private void query(List<? super TransactionReadable> txs) {
       QueryData queryData = build();
       OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
-      queryEngine.runTxQuery(queryData, txs);
+      queryEngine.runTxQuery(userService, queryData, txs);
    }
 
    @Override

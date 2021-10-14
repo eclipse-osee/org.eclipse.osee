@@ -17,7 +17,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.core.ds.TxOrcsData;
  */
 public class TransactionDataImpl extends BaseId implements TxOrcsData {
 
-   private UserId authorId = UserId.SENTINEL;
+   private UserToken authorId = UserToken.SENTINEL;
    private BranchId branch = BranchId.SENTINEL;
    private String comment = RelationalConstants.DEFAULT_COMMENT;
    private ArtifactId commitId = ArtifactId.SENTINEL;
@@ -40,7 +40,7 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
    }
 
    @Override
-   public UserId getAuthor() {
+   public UserToken getAuthor() {
       return authorId;
    }
 
@@ -70,7 +70,7 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
    }
 
    @Override
-   public void setAuthor(UserId author) {
+   public void setAuthor(UserToken author) {
       this.authorId = author;
    }
 

@@ -13,21 +13,14 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.workflow.history.column;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -36,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AuthorColumn extends XViewerValueColumn {
    private static AuthorColumn instance = new AuthorColumn();
-   private final Map<ArtifactId, String> artIdToName = new HashMap<>(40);
 
    public static AuthorColumn getInstance() {
       return instance;
@@ -63,19 +55,7 @@ public class AuthorColumn extends XViewerValueColumn {
       if (element instanceof Change) {
          try {
             TransactionRecord endTx = TransactionManager.getTransaction(((Change) element).getTxDelta().getEndTx());
-            ArtifactId author = endTx.getAuthor();
-            name = artIdToName.get(author);
-            if (name == null) {
-               Artifact art = ArtifactQuery.getArtifactFromId(author, AtsApiService.get().getAtsBranch(),
-                  DeletionFlag.EXCLUDE_DELETED);
-               if (art != null) {
-                  name = art.getName();
-                  artIdToName.put(author, name);
-               } else {
-                  name = "unknown for " + author;
-               }
-            }
-            return name;
+            return endTx.getAuthor().getName();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             name = "exception " + ex.getLocalizedMessage();

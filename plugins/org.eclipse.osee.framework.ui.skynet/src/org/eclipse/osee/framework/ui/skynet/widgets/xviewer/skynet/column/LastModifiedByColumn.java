@@ -17,8 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -50,15 +50,14 @@ public class LastModifiedByColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return ((Artifact) element).getLastModifiedBy().toString();
+            return ((Artifact) element).getLastModifiedBy().getName();
          } else if (element instanceof Change) {
-            User user = ((Change) element).getChangeArtifact().getLastModifiedBy();
-            return user.toString();
+            UserToken user = ((Change) element).getChangeArtifact().getLastModifiedBy();
+            return user.getName();
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
       return "";
    }
-
 }

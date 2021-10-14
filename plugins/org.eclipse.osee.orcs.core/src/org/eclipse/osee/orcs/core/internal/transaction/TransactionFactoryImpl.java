@@ -77,13 +77,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public TransactionBuilder createTransaction(BranchId branch, String comment) {
-      return createTransaction(branch, orcsApi.userService().getUser(), comment);
-   }
-
-   @Override
-   public TransactionBuilder createTransaction(BranchId branch, UserId author, String comment) {
       Conditions.checkNotNull(branch, "branch");
-      Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
       if (!queryFactory.branchQuery().andId(branch).exists()) {
          throw new ItemDoesNotExist("BranchId %s does not exist", branch);
@@ -93,8 +87,14 @@ public class TransactionFactoryImpl implements TransactionFactory {
       TransactionBuilderImpl orcsTxn =
          new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
       orcsTxn.setComment(comment);
-      orcsTxn.setAuthor(author);
+      orcsTxn.setAuthor(orcsApi.userService().getUser());
       return orcsTxn;
+
+   }
+
+   @Override
+   public TransactionBuilder createTransaction(BranchId branch, UserId author, String comment) {
+      return createTransaction(branch, comment);
    }
 
    @Override

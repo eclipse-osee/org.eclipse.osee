@@ -117,8 +117,7 @@ public final class Artifacts {
          details.put("Read Only", String.valueOf(artifact.isReadOnly()));
          details.put("Last Modified", artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db");
          try {
-            details.put("Last Modified By",
-               artifact.isInDb() ? String.valueOf(artifact.getLastModifiedBy()) : "Not In Db");
+            details.put("Last Modified By", artifact.isInDb() ? artifact.getLastModifiedBy().getName() : "Not In Db");
             TransactionRecord trans = (TransactionRecord) artifact.getTransaction();
             details.put("Last Modified Comment", artifact.isInDb() ? trans.getComment() : "Not In Db");
          } catch (Exception ex) {

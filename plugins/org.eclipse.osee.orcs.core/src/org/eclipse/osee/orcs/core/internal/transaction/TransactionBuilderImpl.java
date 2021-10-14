@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -110,7 +111,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return txData.getAuthor();
    }
 
-   public void setAuthor(UserId author) {
+   public void setAuthor(UserToken author) {
       validateBuilder();
       txManager.setAuthor(txData, author);
    }

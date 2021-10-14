@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -132,8 +130,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       TransactionRecord transaction = TransactionManager.getTransaction(tx);
       String author;
       try {
-         User user = UserManager.getUserByArtId(transaction.getAuthor());
-         author = user.toString();
+         author = transaction.getAuthor().getName();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          author = "Unknown";

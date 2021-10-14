@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -146,9 +147,9 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public void runTxQuery(QueryData queryData, List<? super TransactionReadable> txs) {
+   public void runTxQuery(UserService userService, QueryData queryData, List<? super TransactionReadable> txs) {
       QuerySqlContext queryContext = txSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
-      sqlObjectLoader.loadTransactions(txs, queryContext);
+      sqlObjectLoader.loadTransactions(userService, txs, queryContext);
       queryData.reset();
    }
 

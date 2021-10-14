@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,6 +50,12 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
       this.active = active;
       this.id = id;
       setName(name);
+   }
+
+   public AtsUser(long id, String name, String userId, boolean active, String email, List<String> loginIds, List<IUserGroupArtifactToken> roles, String phone) {
+      this(id, name, userId, email, active);
+      this.loginIds = loginIds;
+      this.phone = phone;
    }
 
    public String getUserId() {

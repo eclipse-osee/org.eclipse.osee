@@ -162,6 +162,9 @@ public final class BranchManager {
     * @return Branch or null if doesn't exist
     */
    public static BranchToken getBranchToken(BranchId branch) {
+      if (branch instanceof BranchToken) {
+         return (BranchToken) branch;
+      }
       return getBranch(branch);
    }
 
