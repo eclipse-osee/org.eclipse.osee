@@ -71,12 +71,14 @@ public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHa
 
    @Override
    public void refreshActionHandler() {
+      artifact = artifact.reloadAttributesAndRelations();
       refresh();
    }
 
    public void refresh() {
-      artifact = artifact.reloadAttributesAndRelations();
-      xViewer.loadTable(artifact);
+      if (xViewer != null) {
+         xViewer.loadTable(artifact);
+      }
    }
 
    @Override
