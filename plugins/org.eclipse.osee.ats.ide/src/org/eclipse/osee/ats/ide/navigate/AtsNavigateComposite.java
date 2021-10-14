@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.activity.api.ActivityEntryId;
@@ -20,6 +21,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.NavigateItemCollector;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -82,6 +85,11 @@ public class AtsNavigateComposite extends XNavigateComposite {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Eror updating activity log entry", ex);
       }
+   }
+
+   @Override
+   public Collection<? extends ArtifactId> getCurrUserUserGroups() {
+      return ServiceUtil.getOseeClient().userService().getMyUserGroups();
    }
 
 }
