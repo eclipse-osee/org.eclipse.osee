@@ -122,8 +122,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    private void setBaselineAccessControl(BranchToken branch) {
       IAccessControlService accessControlService = ServiceUtil.getOseeClient().getAccessControlService();
       accessControlService.removePermissions(branch);
-      ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      accessControlService.setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
+      accessControlService.setPermission(DemoUsers.Kay_Jones, branch, PermissionEnum.FULLACCESS);
       accessControlService.setPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
    }
 

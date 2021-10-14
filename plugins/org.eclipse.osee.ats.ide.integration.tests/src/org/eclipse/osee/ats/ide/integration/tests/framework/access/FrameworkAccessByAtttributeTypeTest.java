@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -87,8 +86,7 @@ public class FrameworkAccessByAtttributeTypeTest {
       ensureLoaded();
 
       accessControlService.removePermissions(reqWorkBrch);
-      ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      accessControlService.setPermission(kayJones, reqWorkBrch, PermissionEnum.FULLACCESS);
+      accessControlService.setPermission(DemoUsers.Kay_Jones, reqWorkBrch, PermissionEnum.FULLACCESS);
       accessControlService.clearCaches();
 
       ArtifactToken softReqFolder =
@@ -198,8 +196,7 @@ public class FrameworkAccessByAtttributeTypeTest {
 
       // Change the access control
       accessControlService.removePermissions(branch);
-      ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
-      accessControlService.setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
+      accessControlService.setPermission(DemoUsers.Kay_Jones, branch, PermissionEnum.FULLACCESS);
       accessControlService.setPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
       accessControlService.clearCaches();
 
