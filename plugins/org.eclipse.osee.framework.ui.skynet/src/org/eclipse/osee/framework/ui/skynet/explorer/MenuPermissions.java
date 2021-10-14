@@ -50,22 +50,19 @@ public class MenuPermissions {
       ArtifactToken combinationSubject = null;
 
       for (Artifact objectArtifact : artifacts) {
-         writePermission =
-            writePermission && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
-               PermissionEnum.WRITE, null).isSuccess() && BranchManager.isEditable(objectArtifact.getBranch());
-         readPermission =
-            readPermission && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
-               PermissionEnum.READ, null).isSuccess();
+         writePermission = writePermission && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
+            PermissionEnum.WRITE, null).isSuccess() && BranchManager.isEditable(objectArtifact.getBranch());
+         readPermission = readPermission && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
+            PermissionEnum.READ, null).isSuccess();
          fullAccess = fullAccess && ServiceUtil.accessControlService().hasArtifactPermission(objectArtifact,
             PermissionEnum.FULLACCESS, null).isSuccess();
          isLocked = isLocked || ServiceUtil.accessControlService().hasLock(objectArtifact);
          accessToRemoveLock =
-            accessToRemoveLock && ServiceUtil.accessControlService().canUnlockObject(objectArtifact,
-               UserManager.getUser());
+            accessToRemoveLock && ServiceUtil.accessControlService().canUnlockObject(UserManager.getUser(),
+               objectArtifact);
 
          // acquire the name of the subject that has the lock
-         ArtifactToken subject =
-            ServiceUtil.accessControlService().getSubjectFromLockedObject(objectArtifact);
+         ArtifactToken subject = ServiceUtil.accessControlService().getSubjectFromLockedObject(objectArtifact);
 
          if (isLocked && subject.isValid()) {
             if (combinationSubject == null) {
