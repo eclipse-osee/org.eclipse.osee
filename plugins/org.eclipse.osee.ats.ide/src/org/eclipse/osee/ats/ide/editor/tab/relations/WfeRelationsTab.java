@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -118,11 +119,14 @@ public class WfeRelationsTab extends WfeAbstractTab implements IRefreshActionHan
 
    @Override
    public void refreshActionHandler() {
+      artifact.reloadAttributesAndRelations();
       refresh();
    }
 
    public void refresh() {
-      relationComposite.refresh();
+      if (Widgets.isAccessible(relationComposite)) {
+         relationComposite.refresh();
+      }
    }
 
    @Override
