@@ -24,8 +24,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -99,15 +97,8 @@ public class NewRoleDialog extends MessageDialog {
          }
 
       });
-      Collection<AtsUser> atsUsers = AtsApiService.get().getUserService().getUsers(Active.Active);
-      List<User> users = new ArrayList<>();
-      for (AtsUser aUser : atsUsers) {
-         User user = UserManager.getUserByArtId(aUser);
-         if (user != null) {
-            users.add(user);
-         }
-      }
-      users.remove(SystemUser.BootStrap);
+
+      List<User> users = UserManager.getUsers();
       usersLink = new XHyperlabelMemberSelection("Select User(s)", users);
       usersLink.createWidgets(comp, 2);
       usersLink.addXModifiedListener(new XModifiedListener() {

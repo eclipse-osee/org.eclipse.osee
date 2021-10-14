@@ -59,8 +59,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
             defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.User_Col)) {
          try {
-            AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getUserId());
-            User user = UserManager.getUserByArtId(atsUser.getArtifactId());
+            User user = UserManager.getUserByUserId(defectItem.getUserId());
             return ArtifactImageManager.getImage(user);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
