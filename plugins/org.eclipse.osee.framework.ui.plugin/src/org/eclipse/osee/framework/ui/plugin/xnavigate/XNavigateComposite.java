@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.XNAVIGATEITEM;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -26,6 +27,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
@@ -60,7 +62,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 /**
  * @author Donald G. Dunne
  */
-public class XNavigateComposite extends Composite {
+public abstract class XNavigateComposite extends Composite {
 
    public static enum TableLoadOption {
       None,
@@ -199,9 +201,11 @@ public class XNavigateComposite extends Composite {
       }
    }
 
+   public abstract Collection<? extends ArtifactId> getCurrUserUserGroups();
+
    public void refresh() {
       ElapsedTime time = new ElapsedTime("Navigate Items - load", false);
-      final List<XNavigateItem> items = navigateItemCollector.getComputedNavItems();
+      final List<XNavigateItem> items = navigateItemCollector.getComputedNavItems(getCurrUserUserGroups());
       time.end();
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

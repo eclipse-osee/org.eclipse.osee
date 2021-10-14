@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +45,6 @@ public class NavigateItemCollector {
       this.providers = providers;
       this.refresher = refresher;
       this.rd = rd;
-   }
-
-   public List<XNavigateItem> getComputedNavItems() {
-      return getComputedNavItems(Collections.emptyList());
    }
 
    public List<XNavigateItem> getComputedNavItems(Collection<? extends ArtifactId> currUserUserGroups) {
