@@ -94,6 +94,7 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
                      SearchNavigateItem navItem = new SearchNavigateItem(searchItem, SAVED_ACTION_SEARCHES);
                      navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
                      ids.add(data.getId());
+                     topNavigateItem.addChild(navItem);
                   }
                }
             }
