@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -31,7 +32,8 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -47,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeRow;
 import org.eclipse.osee.framework.skynet.core.attribute.RelationRow;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -190,12 +193,14 @@ public final class TransactionManager {
       Long transactionNumber = stmt.getLong("transaction_id");
       String comment = stmt.getString("osee_comment");
       Date timestamp = stmt.getTimestamp("time");
-      UserId authorArtId = UserId.valueOf(stmt.getLong("author"));
       ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
       Long buildId = stmt.getLong("build_id");
       TransactionDetailsType txType = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
-      return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType,
-         buildId);
+
+      UserService userService = OsgiUtil.getService(DatabaseBranchAccessor.class, OseeClient.class).userService();
+      UserToken author = userService.getUserIfLoaded(stmt.getLong("author"));
+
+      return new TransactionRecord(transactionNumber, branch, comment, timestamp, author, commitArtId, txType, buildId);
    }
 
    public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord) {

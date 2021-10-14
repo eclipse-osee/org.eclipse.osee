@@ -14,13 +14,13 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 
 public interface TransactionData extends HasOrcsChangeSet {
 
    BranchId getBranch();
 
-   UserId getAuthor();
+   UserToken getAuthor();
 
    String getComment();
 

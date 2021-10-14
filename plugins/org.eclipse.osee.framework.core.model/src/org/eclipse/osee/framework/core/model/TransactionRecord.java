@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -30,16 +30,16 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
    public static TransactionRecord SENTINEL = new TransactionRecord(Id.SENTINEL, BranchToken.SENTINEL, null, null,
-      UserId.SENTINEL, ArtifactId.SENTINEL, TransactionDetailsType.INVALID, 0L);
+      UserToken.SENTINEL, ArtifactId.SENTINEL, TransactionDetailsType.INVALID, 0L);
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;
    private Date time;
-   private UserId authorArtId;
+   private UserToken authorArtId;
    private final ArtifactId commitArtId;
    private Long buildId;
 
-   public TransactionRecord(Long id, BranchId branch, String comment, Date time, UserId authorArtId, ArtifactId commitArtId, TransactionDetailsType txType, Long buildId) {
+   public TransactionRecord(Long id, BranchId branch, String comment, Date time, UserToken authorArtId, ArtifactId commitArtId, TransactionDetailsType txType, Long buildId) {
       super(id);
       this.branch = branch;
       this.buildId = buildId;
@@ -63,7 +63,7 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       return time;
    }
 
-   public UserId getAuthor() {
+   public UserToken getAuthor() {
       return authorArtId;
    }
 
@@ -83,7 +83,7 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       this.time = time;
    }
 
-   public void setAuthor(UserId authorArtId) {
+   public void setAuthor(UserToken authorArtId) {
       this.authorArtId = authorArtId;
    }
 

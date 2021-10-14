@@ -45,7 +45,13 @@ public interface UserService {
 
    UserToken getUser();
 
+   UserToken getUser(Long accountId);
+
    default UserToken getUserIfLoaded() {
+      return UserToken.SENTINEL;
+   }
+
+   default UserToken getUserIfLoaded(Long accountId) {
       return UserToken.SENTINEL;
    }
 

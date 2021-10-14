@@ -155,6 +155,14 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
+   public UserToken getUserIfLoaded(Long accountId) {
+      if (loading) {
+         return UserToken.SENTINEL;
+      }
+      return getUser(accountId);
+   }
+
+   @Override
    public void setUserLoading(boolean loading) {
       this.loading = loading;
    }
@@ -162,5 +170,10 @@ public class UserServiceImpl implements UserService {
    @Override
    public UserToken getUserByUserId(String userId) {
       return UserManager.getUserByUserId(userId);
+   }
+
+   @Override
+   public UserToken getUser(Long accountId) {
+      return UserManager.getUserByArtId(UserId.valueOf(accountId));
    }
 }

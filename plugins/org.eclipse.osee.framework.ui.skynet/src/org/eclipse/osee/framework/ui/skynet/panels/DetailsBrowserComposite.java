@@ -42,7 +42,7 @@ public class DetailsBrowserComposite extends BrowserComposite {
          addData(sb, "Deleted", String.valueOf(artifact.isDeleted()));
          addData(sb, "Revision", String.valueOf(artifact.getTransaction()));
          addData(sb, "Last Modified", String.valueOf(artifact.getLastModified()));
-         addData(sb, "Last Modified By", String.valueOf(artifact.getLastModifiedBy()));
+         addData(sb, "Last Modified By", artifact.getLastModifiedBy().getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          sb.append(AHTML.getLabelStr("Exception in rendering details: ", ex.getLocalizedMessage()));

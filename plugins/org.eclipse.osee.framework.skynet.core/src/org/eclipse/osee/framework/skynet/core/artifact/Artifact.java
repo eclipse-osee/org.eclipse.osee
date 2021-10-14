@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -85,8 +86,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -1756,12 +1755,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return new Date();
    }
 
-   public final User getLastModifiedBy() {
+   public final UserToken getLastModifiedBy() {
       if (transaction.isInvalid()) {
-         return UserManager.getUser(SystemUser.OseeSystem);
+         return SystemUser.OseeSystem;
       }
       TransactionRecord transactionRecord = TransactionManager.getTransaction(transaction);
-      return UserManager.getUserByArtId(transactionRecord.getAuthor());
+      return transactionRecord.getAuthor();
    }
 
    void meetMinimumAttributeCounts(boolean isNewArtifact) {

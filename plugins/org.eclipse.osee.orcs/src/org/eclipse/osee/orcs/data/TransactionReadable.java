@@ -17,7 +17,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -34,7 +34,7 @@ public interface TransactionReadable extends TransactionToken {
 
    String getComment();
 
-   UserId getAuthor();
+   UserToken getAuthor();
 
    ArtifactId getCommitArt();
 
@@ -59,8 +59,8 @@ public interface TransactionReadable extends TransactionToken {
          }
 
          @Override
-         public UserId getAuthor() {
-            return null;
+         public UserToken getAuthor() {
+            return UserToken.SENTINEL;
          }
 
          @Override

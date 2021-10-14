@@ -18,8 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
@@ -55,10 +56,10 @@ public class TransactionFactoryImplTest {
    @Mock private OrcsBranch orcsBranch;
    @Mock private TxDataStore txDataStore;
    @Mock private KeyValueOps keyValueOps;
-   @Mock private UserId expectedAuthor;
    @Mock private TxData txData;
    @Mock private QueryFactory queryFactory;
    @Mock private BranchQuery branchQuery;
+   @Mock private UserService userService;
    // @formatter:on
 
    private final BranchToken expectedBranch = CoreBranches.COMMON;
@@ -71,29 +72,26 @@ public class TransactionFactoryImplTest {
       when(queryFactory.branchQuery()).thenReturn(branchQuery);
       when(branchQuery.andId(expectedBranch)).thenReturn(branchQuery);
       when(branchQuery.exists()).thenReturn(true);
+
+      when(orcsApi.userService()).thenReturn(userService);
+      when(userService.getUser()).thenReturn(SystemUser.UnAssigned);
+
       factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, orcsApi, orcsBranch, keyValueOps,
          txDataStore);
-   }
-
-   @Test
-   public void testNullAuthor() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("author cannot be null");
-      factory.createTransaction(expectedBranch, null, "my comment");
    }
 
    @Test
    public void testNullComment() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("comment cannot be null");
-      factory.createTransaction(expectedBranch, expectedAuthor, null);
+      factory.createTransaction(expectedBranch, null);
    }
 
    @Test
    public void testEmptyComment() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("comment cannot be empty");
-      factory.createTransaction(expectedBranch, expectedAuthor, "");
+      factory.createTransaction(expectedBranch, "");
    }
 
    @Test
@@ -101,11 +99,10 @@ public class TransactionFactoryImplTest {
       String expectedComment = "This is my comment";
 
       when(txDataManager.createTxData(session, expectedBranch)).thenReturn(txData);
-      when(txData.getAuthor()).thenReturn(expectedAuthor);
       when(txData.getBranch()).thenReturn(expectedBranch);
       when(txData.getComment()).thenReturn(expectedComment);
 
-      TransactionBuilder tx = factory.createTransaction(expectedBranch, expectedAuthor, expectedComment);
+      TransactionBuilder tx = factory.createTransaction(expectedBranch, expectedComment);
       assertNotNull(tx);
       assertEquals(expectedBranch, tx.getBranch());
       assertEquals(expectedComment, tx.getComment());

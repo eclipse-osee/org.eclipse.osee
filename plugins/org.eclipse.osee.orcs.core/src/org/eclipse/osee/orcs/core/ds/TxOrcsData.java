@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 
@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TxOrcsData extends TransactionReadable {
 
-   void setAuthor(UserId author);
+   void setAuthor(UserToken author);
 
    void setBranch(BranchId branch);
 

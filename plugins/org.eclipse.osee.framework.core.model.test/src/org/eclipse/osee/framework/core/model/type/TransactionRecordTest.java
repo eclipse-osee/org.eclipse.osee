@@ -19,8 +19,9 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
@@ -46,9 +47,9 @@ public class TransactionRecordTest {
 
    private final String comment;
    private final Date time;
-   private final UserId author;
+   private final UserToken author;
 
-   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, UserId author, ArtifactId commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, UserToken author, ArtifactId commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = (long) transactionNumber;
       this.branch = branch;
       this.comment = comment;
@@ -100,7 +101,7 @@ public class TransactionRecordTest {
    public void testGetSetAuthor() {
       Assert.assertEquals(author, transaction.getAuthor());
 
-      UserId otherAuthor = UserId.valueOf(author.getId() * 101);
+      UserToken otherAuthor = SystemUser.UnAssigned;
       transaction.setAuthor(otherAuthor);
       Assert.assertEquals(otherAuthor, transaction.getAuthor());
 
@@ -113,7 +114,7 @@ public class TransactionRecordTest {
       TransactionId tx1 = TransactionId.valueOf(tx2.getId());
 
       // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
-      tx2.setAuthor(UserId.SENTINEL);
+      tx2.setAuthor(UserToken.SENTINEL);
       tx2.setComment("a");
       tx2.setTimeStamp(new Date(11111111111L));
 

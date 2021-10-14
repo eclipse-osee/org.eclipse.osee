@@ -77,7 +77,7 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public TransactionQuery transactionQuery() {
       return new TransactionQueryImpl(queryEngine, txCriteriaFactory,
-         new QueryData(this, queryEngine, artQueryFactory, tokenService));
+         new QueryData(this, queryEngine, artQueryFactory, tokenService), orcsApi.userService());
    }
 
    @Override

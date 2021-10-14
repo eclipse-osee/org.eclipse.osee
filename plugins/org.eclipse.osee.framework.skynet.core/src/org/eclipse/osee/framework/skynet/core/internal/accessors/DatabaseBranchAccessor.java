@@ -17,9 +17,11 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -30,6 +32,7 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -137,14 +140,16 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    }
 
    private static TransactionRecord createTx(boolean base, Branch branch, JdbcStatement stmt) {
+      UserService userService = OsgiUtil.getService(DatabaseBranchAccessor.class, OseeClient.class).userService();
+
       Long transactionId = stmt.getLong(base ? "baseline_transaction_id" : "parent_transaction_id");
       String comment = stmt.getString(base ? "b_osee_comment" : "p_osee_comment");
       Date timestamp = stmt.getTimestamp(base ? "b_time" : "p_time");
-      UserId authorArtId = UserId.valueOf(stmt.getLong(base ? "b_author" : "p_author"));
+      UserToken author = userService.getUser(stmt.getLong(base ? "b_author" : "p_author"));
+
       ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong(base ? "b_commit_art_id" : "p_commit_art_id"));
       TransactionDetailsType txType = TransactionDetailsType.valueOf(stmt.getInt(base ? "b_tx_type" : "p_tx_type"));
       Long txBuildId = stmt.getLong(base ? "b_tx_build_id" : "p_tx_build_id");
-      return new TransactionRecord(transactionId, branch, comment, timestamp, authorArtId, commitArtId, txType,
-         txBuildId);
+      return new TransactionRecord(transactionId, branch, comment, timestamp, author, commitArtId, txType, txBuildId);
    }
 }

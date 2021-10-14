@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -159,14 +159,14 @@ public class SqlObjectLoader {
       load(loadContext, stmtConsumer);
    }
 
-   public void loadTransactions(List<? super TransactionReadable> txs, QuerySqlContext queryContext) {
+   public void loadTransactions(UserService userService, List<? super TransactionReadable> txs, QuerySqlContext queryContext) {
       Consumer<JdbcStatement> stmtConsumer = stmt -> {
          TransactionDataImpl tx = new TransactionDataImpl(stmt.getLong("transaction_id"));
          tx.setBranch(BranchId.valueOf(stmt.getLong("branch_id")));
          tx.setTxType(TransactionDetailsType.valueOf(stmt.getInt("tx_type")));
          tx.setComment(stmt.getString("osee_comment"));
          tx.setDate(stmt.getTimestamp("time"));
-         tx.setAuthor(UserId.valueOf(stmt.getLong("author")));
+         tx.setAuthor(userService.getUser(stmt.getLong("author")));
          tx.setCommitArt(ArtifactId.valueOf(stmt.getLong("commit_art_id")));
          tx.setBuildId(stmt.getLong("build_id"));
          txs.add(tx);

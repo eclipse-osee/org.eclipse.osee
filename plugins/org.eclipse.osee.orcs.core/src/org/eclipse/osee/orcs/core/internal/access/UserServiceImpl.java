@@ -294,4 +294,15 @@ public class UserServiceImpl implements UserService {
       }
       return user;
    }
+
+   @Override
+   public UserToken getUser(Long accountId) {
+      ensureLoaded();
+
+      UserToken user = accountIdToUser.get(accountId);
+      if (user == null) {
+         user = UserToken.SENTINEL;
+      }
+      return user;
+   }
 }
