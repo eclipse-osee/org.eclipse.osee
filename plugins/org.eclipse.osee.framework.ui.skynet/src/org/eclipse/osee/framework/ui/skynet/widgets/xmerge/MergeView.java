@@ -53,8 +53,6 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
@@ -135,13 +133,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
    @Override
    public void createPartControl(Composite parent) {
-      GridLayout layout = new GridLayout();
-      layout.numColumns = 1;
-      layout.verticalSpacing = 0;
-      layout.marginWidth = 0;
-      layout.marginHeight = 0;
-      parent.setLayout(layout);
-      parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+
       mergeXWidget = new MergeXWidget(this);
       mergeXWidget.setDisplayLabel(false);
       mergeXWidget.createWidgets(parent, 1);
@@ -154,6 +146,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       HelpUtil.setHelp(parent, OseeHelpContext.MERGE_MANAGER);
 
       OseeEventManager.addListener(this);
+
+      mergeXWidget.createTaskActionBar();
 
       setFocusWidget(mergeXWidget.getControl());
    }

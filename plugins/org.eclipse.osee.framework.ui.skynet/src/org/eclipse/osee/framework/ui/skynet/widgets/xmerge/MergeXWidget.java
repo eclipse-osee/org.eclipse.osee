@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -108,7 +107,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private TransactionToken commitTrans;
    private TransactionToken tranId;
    private MergeView mergeView;
-   private IToolBarManager toolBarManager;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
 
    public MergeXWidget(MergeView mergeView) {
@@ -118,6 +116,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
+
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
@@ -130,6 +129,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       taskComp.setLayout(ALayout.getZeroMarginLayout());
       createTextWidgets(parent);
 
+      createTaskActionLabel(taskComp);
+
       createCompletionComposite(mainComp);
 
       mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, mergeView, this);
@@ -140,12 +141,12 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       mergeXViewer.setContentProvider(new XMergeContentProvider());
       mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
 
-      createTaskActionBar(taskComp);
+      Tree tree = mergeXViewer.getTree();
+      createTree(tree);
+
       if (toolkit != null) {
          toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
       }
-      Tree tree = mergeXViewer.getTree();
-      createTree(tree);
    }
 
    private void createCompletionComposite(Composite mainComp) {
@@ -197,7 +198,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       tree.setLinesVisible(true);
    }
 
-   public void createTaskActionBar(Composite parent) {
+   public void createTaskActionLabel(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout layout = ALayout.getZeroMarginLayout(2, false);
       layout.marginLeft = 5;
@@ -208,9 +209,10 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       extraInfoLabel.setAlignment(SWT.LEFT);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
+   }
 
-      IToolBarManager manager = getToolBarManager();
-      ((ToolBarManager) manager).createControl(composite);
+   public void createTaskActionBar() {
+      IToolBarManager manager = mergeView.getViewSite().getActionBars().getToolBarManager();
       manager.add(new RefreshAction());
       manager.add(new Separator());
       openAssociatedArtifactAction = new OpenAssociatedArtifactAction();
@@ -222,14 +224,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       manager.add(new ShowDestinationBranchChangeReportAction());
       manager.add(new Separator());
       manager.add(mergeXViewer.getCustomizeAction());
+      mergeView.getViewSite().getActionBars().updateActionBars();
       manager.update(true);
-   }
-
-   private IToolBarManager getToolBarManager() {
-      if (toolBarManager == null) {
-         toolBarManager = new ToolBarManager(SWT.FLAT);
-      }
-      return toolBarManager;
    }
 
    private void applyPreviousMerge(final BranchToken destinationBranch) {
