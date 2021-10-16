@@ -80,17 +80,17 @@ public class BranchesResource {
    }
 
    @Path("{branch}/applic")
-   public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new ApplicabilityEndpointImpl(orcsApi, branch, accountId);
+   public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch) {
+      return new ApplicabilityEndpointImpl(orcsApi, branch);
    }
 
    @Path("{branch}/artifact")
-   public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new ArtifactEndpointImpl(orcsApi, branch, accountId, uriInfo);
+   public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch) {
+      return new ArtifactEndpointImpl(orcsApi, branch, uriInfo);
    }
 
    @Path("{branch}/relation")
-   public RelationEndpoint getRelation(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new RelationEndpointImpl(orcsApi, branch, accountId, uriInfo);
+   public RelationEndpoint getRelation(@PathParam("branch") BranchId branch) {
+      return new RelationEndpointImpl(orcsApi, branch);
    }
 }

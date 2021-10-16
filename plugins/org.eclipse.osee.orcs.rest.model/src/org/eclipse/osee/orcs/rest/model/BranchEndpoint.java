@@ -13,13 +13,11 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -38,7 +36,6 @@ import org.eclipse.osee.framework.core.data.JsonRelations;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -160,7 +157,7 @@ public interface BranchEndpoint {
    @Path("{branch}/program")
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
-   BranchToken createProgramBranch(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("branch") BranchId branchId, String branchName);
+   BranchToken createProgramBranch(@PathParam("branch") BranchId branchId, String branchName);
 
    @GET
    @Path("{branch}/relation/type/{relationTypes}")

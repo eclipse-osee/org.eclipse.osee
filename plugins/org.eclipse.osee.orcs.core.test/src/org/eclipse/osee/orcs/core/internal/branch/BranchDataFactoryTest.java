@@ -52,7 +52,6 @@ public class BranchDataFactoryTest {
    // @formatter:on
 
    private final ArtifactId associatedArtifact = ArtifactId.valueOf(66);
-   private final ArtifactId author = ArtifactId.valueOf(55);
    private final TransactionToken txRecord = TransactionToken.valueOf(99, parentBranch);
    private BranchDataFactory factory;
 
@@ -81,58 +80,54 @@ public class BranchDataFactoryTest {
    @Test
    public void testDataForBaselineBranch() {
       BranchToken branch = BranchToken.create("testDataForBaselineBranch");
-      CreateBranchData result = factory.createBaselineBranchData(branch, author, parentBranch, associatedArtifact);
+      CreateBranchData result = factory.createBaselineBranchData(branch, parentBranch, associatedArtifact);
 
       verify(txQuery).andIsHead(parentBranch);
 
       String comment = String.format("New Branch from %s (%s)", parentBranch.getName(), txRecord.getId());
-      assertData(result, branch.getName(), branch, BranchType.BASELINE, comment, txRecord, author, associatedArtifact,
-         false);
+      assertData(result, branch.getName(), branch, BranchType.BASELINE, comment, txRecord, associatedArtifact, false);
    }
 
    @Test
    public void testDataForWorkingBranch() {
       BranchToken branch = BranchToken.create("testDataForWorkingBranch");
 
-      CreateBranchData result = factory.createWorkingBranchData(branch, author, parentBranch, associatedArtifact);
+      CreateBranchData result = factory.createWorkingBranchData(branch, parentBranch, associatedArtifact);
       verify(txQuery).andIsHead(parentBranch);
 
       String comment = String.format("New Branch from %s (%s)", parentBranch.getName(), txRecord.getId());
-      assertData(result, branch.getName(), branch, BranchType.WORKING, comment, txRecord, author, associatedArtifact,
-         false);
+      assertData(result, branch.getName(), branch, BranchType.WORKING, comment, txRecord, associatedArtifact, false);
    }
 
    @Test
    public void testDataForCopyTxBranch() {
       BranchToken branch = BranchToken.create("testDataForCopyTxBranch");
 
-      CreateBranchData result = factory.createCopyTxBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
+      CreateBranchData result = factory.createCopyTxBranchData(branch, txRecord, ArtifactId.SENTINEL);
 
       verify(txQuery).andTxId(txRecord);
       verify(branchQuery).andId(txRecord.getBranch());
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
-      assertData(result, branch.getName(), branch, BranchType.WORKING, comment, txRecord, author, ArtifactId.SENTINEL,
-         true);
+      assertData(result, branch.getName(), branch, BranchType.WORKING, comment, txRecord, ArtifactId.SENTINEL, true);
    }
 
    @Test
    public void testDataForPortBranch() {
       BranchToken branch = BranchToken.create("testDataForPortBranch");
 
-      CreateBranchData result = factory.createPortBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
+      CreateBranchData result = factory.createPortBranchData(branch, txRecord, ArtifactId.SENTINEL);
 
       verify(txQuery).andTxId(txRecord);
       verify(branchQuery).andId(txRecord.getBranch());
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
-      assertData(result, branch.getName(), branch, BranchType.PORT, comment, txRecord, author, ArtifactId.SENTINEL,
-         true);
+      assertData(result, branch.getName(), branch, BranchType.PORT, comment, txRecord, ArtifactId.SENTINEL, true);
    }
 
-   private static void assertData(CreateBranchData actual, String branchName, BranchId branch, BranchType type, String comment, TransactionId fromTx, ArtifactId author, ArtifactId associatedArtifact, boolean isCopyFromTx) {
+   private static void assertData(CreateBranchData actual, String branchName, BranchId branch, BranchType type, String comment, TransactionId fromTx, ArtifactId associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
       assertEquals(branch, actual.getBranch());
 
@@ -143,7 +138,6 @@ public class BranchDataFactoryTest {
       assertEquals(-1, actual.getMergeAddressingQueryId());
       assertEquals(BranchId.SENTINEL, actual.getMergeDestinationBranchId());
 
-      assertEquals(author, actual.getAuthor());
       assertEquals(associatedArtifact, actual.getAssociatedArtifact());
 
       assertEquals(isCopyFromTx, actual.isTxCopyBranchType());

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -84,12 +85,14 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private final IdentityManager idManager;
    private final CreateBranchData newBranchData;
    private final Long buildVersionId;
+   private final UserService userService;
 
-   public CreateBranchDatabaseTxCallable(JdbcClient jdbcClient, IdentityManager idManager, CreateBranchData branchData, Long buildVersionId) {
+   public CreateBranchDatabaseTxCallable(JdbcClient jdbcClient, IdentityManager idManager, UserService userService, CreateBranchData branchData, Long buildVersionId) {
       this.jdbcClient = jdbcClient;
       this.idManager = idManager;
       this.newBranchData = branchData;
       this.buildVersionId = buildVersionId;
+      this.userService = userService;
    }
 
    public XResultData checkPreconditions(JdbcConnection connection) {
@@ -190,7 +193,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       nextTransactionId = tobeTransactionId;
 
       jdbcClient.runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), branch, nextTransactionId,
-         newBranchData.getAuthor(), timestamp, newBranchData.getCreationComment(), TransactionDetailsType.Baselined, -1,
+         userService.getUser(), timestamp, newBranchData.getCreationComment(), TransactionDetailsType.Baselined, -1,
          buildVersionId);
 
       if (needsUpdate) {

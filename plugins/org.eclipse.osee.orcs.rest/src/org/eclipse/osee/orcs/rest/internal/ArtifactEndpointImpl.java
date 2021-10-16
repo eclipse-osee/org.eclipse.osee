@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -70,12 +69,10 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    private final OrcsApi orcsApi;
    private final BranchId branch;
-   private final UserId account;
    private final UriInfo uriInfo;
 
-   public ArtifactEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId account, UriInfo uriInfo) {
+   public ArtifactEndpointImpl(OrcsApi orcsApi, BranchId branch, UriInfo uriInfo) {
       this.orcsApi = orcsApi;
-      this.account = account;
       this.uriInfo = uriInfo;
       this.branch = branch;
    }
@@ -236,8 +233,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public List<ArtifactToken> createArtifacts(BranchId branch, ArtifactTypeToken artifactType, ArtifactId parent, List<String> names) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifacts");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - create artifacts");
       List<ArtifactToken> tokens = tx.createArtifacts(artifactType, parent, names);
       tx.commit();
       return tokens;
@@ -245,8 +241,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public ArtifactToken createArtifact(BranchId branch, ArtifactTypeToken artifactType, ArtifactId parent, String name) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifact");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - create artifact");
       ArtifactToken token = tx.createArtifact(parent, artifactType, name);
       tx.commit();
       return token;
@@ -270,16 +265,14 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public TransactionToken deleteArtifact(BranchId branch, ArtifactId artifact) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - delete artifact");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - delete artifact");
       tx.deleteArtifact(artifact);
       return tx.commit();
    }
 
    @Override
    public TransactionToken setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeToken attributeType, String value) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - setSoleAttributeValue");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - setSoleAttributeValue");
       tx.setSoleAttributeFromString(artifact, attributeType, value);
       return tx.commit();
    }

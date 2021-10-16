@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -70,7 +69,6 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       NewBranch data = new NewBranch();
       data.setAssociatedArtifact(
          associatedArtifact != null && associatedArtifact.isValid() ? associatedArtifact : ArtifactId.SENTINEL);
-      data.setAuthor(UserManager.getUser());
       data.setBranchName(branchName);
       data.setBranchType(branchType);
       data.setCreationComment(creationComment);

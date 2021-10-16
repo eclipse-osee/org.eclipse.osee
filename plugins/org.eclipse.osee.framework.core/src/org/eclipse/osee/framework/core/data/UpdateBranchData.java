@@ -23,7 +23,6 @@ public class UpdateBranchData {
    private BranchId fromBranch = BranchId.SENTINEL;
    private BranchId toBranch = BranchId.SENTINEL;
    private BranchId newBranchId = BranchId.SENTINEL;
-   private ArtifactId author = ArtifactId.SENTINEL;
    private String fromName;
    private String toName;
    private boolean needsMerge;
@@ -38,14 +37,6 @@ public class UpdateBranchData {
 
    public BranchId getToBranch() {
       return toBranch;
-   }
-
-   public ArtifactId getAuthor() {
-      return author;
-   }
-
-   public void setAuthor(ArtifactId author) {
-      this.author = author;
    }
 
    public void setToBranch(BranchId toBranch) {

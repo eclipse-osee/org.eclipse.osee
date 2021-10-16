@@ -51,7 +51,6 @@ public class AtsBranchOperations {
       cbd.setBranchType(type);
       cbd.setName(bd.getBranchName());
       cbd.setAssociatedArtifact(assocArt);
-      cbd.setAuthor(bd.getAuthor());
       cbd.setCreationComment(bd.getCreationComment());
       cbd.setInheritAccess(true);
       cbd.setParentBranch(bd.getParent());

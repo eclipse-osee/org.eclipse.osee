@@ -200,8 +200,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public Long createDispoProgram(UserId author, String name) {
       BranchToken branch = BranchToken.create(name);
-
-      getBranchFactory().createWorkingBranch(branch, author, dispoParent, ArtifactId.SENTINEL);
+      getBranchFactory().createWorkingBranch(branch, dispoParent, ArtifactId.SENTINEL);
 
       return branch.getId();
    }

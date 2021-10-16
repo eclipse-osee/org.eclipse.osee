@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -84,7 +83,6 @@ public class BranchEndpointTest {
    private static NewBranch testDataInitialization(BranchToken branchToken) {
       NewBranch data = new NewBranch();
       data.setAssociatedArtifact(ArtifactId.SENTINEL);
-      data.setAuthor(UserManager.getUser());
       data.setBranchName("TestBranch");
       data.setBranchType(BranchType.WORKING);
       data.setCreationComment("For Test");

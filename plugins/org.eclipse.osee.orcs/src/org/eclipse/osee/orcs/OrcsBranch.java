@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -53,15 +52,15 @@ public interface OrcsBranch {
    // branch state
    // assoc art id
 
-   BranchToken createTopLevelBranch(BranchToken branch, ArtifactId account);
+   BranchToken createTopLevelBranch(BranchToken branch);
 
-   Branch createBaselineBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact);
+   Branch createBaselineBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact);
 
-   Branch createWorkingBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact);
+   Branch createWorkingBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact);
 
-   Branch createCopyTxBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Branch createCopyTxBranch(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
-   Branch createPortBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Branch createPortBranch(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
    Branch createBranch(CreateBranchData branchData);
 
@@ -101,7 +100,7 @@ public interface OrcsBranch {
 
    void addMissingApplicabilityFromParentBranch(BranchId branch);
 
-   BranchToken createProgramBranch(BranchToken branch, UserId account);
+   BranchToken createProgramBranch(BranchToken branch);
 
    XResultData createBranchValidation(CreateBranchData branchData);
 

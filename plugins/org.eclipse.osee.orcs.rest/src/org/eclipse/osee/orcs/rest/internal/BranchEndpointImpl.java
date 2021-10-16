@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -366,7 +365,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setBranchType(data.getBranchType());
       createData.setCreationComment(data.getCreationComment());
 
-      createData.setAuthor(data.getAuthor());
       createData.setAssociatedArtifact(data.getAssociatedArtifact());
 
       createData.setFromTransaction(data.getSourceTransaction());
@@ -896,10 +894,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public BranchToken createProgramBranch(UserId account, BranchId branch, String branchName) {
+   public BranchToken createProgramBranch(BranchId branch, String branchName) {
       BranchToken branchToken =
          branch.isValid() ? BranchToken.create(branch, branchName) : BranchToken.create(branchName);
-      return branchOps.createProgramBranch(branchToken, account);
+      return branchOps.createProgramBranch(branchToken);
    }
 
    @Override

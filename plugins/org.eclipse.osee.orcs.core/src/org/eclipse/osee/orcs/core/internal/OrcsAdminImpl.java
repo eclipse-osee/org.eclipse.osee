@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -133,7 +132,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
    @Override
    public void configForDemoPl(BranchId branch) {
-      CreateDemoBranches.createProductLineConfig(branch, SystemUser.OseeSystem, orcsApi);
+      CreateDemoBranches.createProductLineConfig(branch, orcsApi);
    }
 
    @Override
