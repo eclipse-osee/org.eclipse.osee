@@ -13,11 +13,9 @@
 
 package org.eclipse.osee.define.api;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,7 +24,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Ryan D. Brooks
@@ -38,13 +35,13 @@ public interface GitEndpoint {
    @Path("{branch}/repo")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId trackGitBranch(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("git-branch") String gitBranchName, @QueryParam("clone") boolean clone, String gitRepoUrl);
+   ArtifactId trackGitBranch(@PathParam("branch") BranchId branch, @QueryParam("git-branch") String gitBranchName, @QueryParam("clone") boolean clone, String gitRepoUrl);
 
    @POST
    @Path("{branch}/repo/{repositoryName}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("fetch") boolean fetch, @QueryParam("shallowImport") boolean shallowImport, String gitBranchName);
+   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repositoryName") String repositoryName, @QueryParam("fetch") boolean fetch, @QueryParam("shallowImport") boolean shallowImport, String gitBranchName);
 
    @GET
    @Path("{branch}/repo/{repositoryName}/changeId/tags")

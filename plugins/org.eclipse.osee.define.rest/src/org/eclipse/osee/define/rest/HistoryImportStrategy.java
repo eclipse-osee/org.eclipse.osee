@@ -17,7 +17,6 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -42,7 +41,7 @@ public interface HistoryImportStrategy {
 
    ArtifactId findCodeUnit(ArtifactId repository, String path);
 
-   TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch, UserId account);
+   TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch);
 
    default boolean matchesChangeType(String changeType, char typeToMatch) {
       return ((changeType.length() == 1 || changeType.length() == 4) && changeType.charAt(

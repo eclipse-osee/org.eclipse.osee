@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -134,7 +133,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, TransactionBuilder tx, String password) {
+   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, TransactionBuilder tx, String password) {
 
       ArtifactId baselineEvent = tx.createArtifact(CertificationBaselineEvent, baselineData.eventName);
 
@@ -143,7 +142,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
 
       ArtifactId baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
       if (baselineCommit.isInvalid()) {
-         gitOps.updateGitTrackingBranch(branch, repoArtifact, account, null, true, password, false, false);
+         gitOps.updateGitTrackingBranch(branch, repoArtifact, null, true, password, false, false);
          baselineCommit = gitOps.getCommitArtifactId(branch, baselineData.changeId);
          if (baselineCommit.isInvalid()) {
             throw new OseeArgumentException("No commit with change id [%s] can be found", baselineData.changeId);
@@ -175,10 +174,9 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, String password) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - baseline  files");
-      ArtifactId baselineEvent = baselineFiles(branch, repoArtifact, baselineData, account, tx, password);
+   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, String password) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - baseline  files");
+      ArtifactId baselineEvent = baselineFiles(branch, repoArtifact, baselineData, password);
       tx.commit();
 
       return baselineEvent;
@@ -216,14 +214,14 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public TransactionToken copyCertBaselineData(UserId account, BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(destinationBranch, account,
-         "rest - copy cert baseline data");
+   public TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(destinationBranch, "rest - copy cert baseline data");
       ArtifactReadable sourceRepo = gitOps.getRepoArtifact(sourceBranch, repositoryName);
       ArtifactReadable destinationRepo = gitOps.getRepoArtifact(destinationBranch, repositoryName);
 
       for (CertBaselineData certEvent : getBaselineData(sourceBranch, sourceRepo)) {
-         baselineFiles(destinationBranch, destinationRepo, certEvent, account, tx, null);
+         baselineFiles(destinationBranch, destinationRepo, certEvent, tx, null);
       }
       return tx.commit();
    }

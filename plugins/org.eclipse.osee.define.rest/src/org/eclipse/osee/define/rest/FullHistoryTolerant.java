@@ -26,7 +26,6 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -219,8 +218,8 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    @Override
-   public TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch, UserId account) {
-      return orcsApi.getTransactionFactory().createTransaction(branch, account,
+   public TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch) {
+      return orcsApi.getTransactionFactory().createTransaction(branch,
          "TraceabilityOperationsImpl.parseGitHistory repo [" + repoArtifact.getIdString() + "]");
    }
 

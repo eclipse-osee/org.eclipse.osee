@@ -84,7 +84,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -223,13 +222,13 @@ public final class GitOperationsImpl implements GitOperations {
    }
 
    @Override
-   public ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String passphrase) {
-      ArtifactReadable repoArtifact = clone(gitRepoUrl, branch, account, gitBranchName, clone, passphrase);
-      return updateGitTrackingBranch(branch, repoArtifact, account, gitBranchName, !clone, passphrase, true, false);
+   public ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone, String passphrase) {
+      ArtifactReadable repoArtifact = clone(gitRepoUrl, branch, gitBranchName, clone, passphrase);
+      return updateGitTrackingBranch(branch, repoArtifact, gitBranchName, !clone, passphrase, true, false);
    }
 
    @Override
-   public ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, UserId account, String gitBranchName, boolean fetch, String passphrase, boolean initialImport, boolean shallowImport) {
+   public ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, String gitBranchName, boolean fetch, String passphrase, boolean initialImport, boolean shallowImport) {
       Repository jgitRepo = getLocalRepoReference(repoArtifact.getSoleAttributeValue(FileSystemPath));
       if (fetch) {
          fetch(jgitRepo, passphrase);
@@ -255,7 +254,7 @@ public final class GitOperationsImpl implements GitOperations {
                throw new OseeStateException("Failed to resolve commit [%s]", latestImportedSHA);
             }
          }
-         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(repoArtifact.getBranch(), account,
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(repoArtifact.getBranch(),
             "updateGitTrackingBranch repo [" + repoArtifact + "]");
          List<ArtifactReadable> currentCommits =
             queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).andRelatedRecursive(
@@ -277,7 +276,7 @@ public final class GitOperationsImpl implements GitOperations {
          }
          HistoryImportStrategy importStrategy = new FastHistoryStrategy(repoArtifact, orcsApi, tx, initialImport,
             shallowImport, pathToCodeunitReferenceMap);
-         walkTree(repoArtifact, jgitRepo, to, from, branch, account, importStrategy, shallowImport);
+         walkTree(repoArtifact, jgitRepo, to, from, branch, importStrategy, shallowImport);
       } catch (RevisionSyntaxException | IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -337,7 +336,7 @@ public final class GitOperationsImpl implements GitOperations {
       return allGitBranches;
    }
 
-   public ArtifactReadable clone(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String passphrase) {
+   public ArtifactReadable clone(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone, String passphrase) {
       String serverDataLocation = systemPrefs.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       String repoName = gitRepoUrl.substring(gitRepoUrl.lastIndexOf('/') + 1).replaceAll("\\.git$", "");
       File localPath = new File(serverDataLocation + File.separator + "git", repoName);
@@ -359,7 +358,7 @@ public final class GitOperationsImpl implements GitOperations {
       }
 
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "GitOperationsImpl.createGitRepository()");
+         orcsApi.getTransactionFactory().createTransaction(branch, "GitOperationsImpl.createGitRepository()");
 
       if (!queryFactory.fromBranch(branch).andNameEquals("Git Repositories").andTypeEquals(Folder).exists()) {
          tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
@@ -378,7 +377,7 @@ public final class GitOperationsImpl implements GitOperations {
       return queryFactory.fromBranch(branch).andId(repoArtifact).getArtifact();
    }
 
-   private TransactionToken walkTree(ArtifactReadable repoArtifact, Repository jgitRepo, ObjectId to, ObjectId from, BranchId branch, UserId account, HistoryImportStrategy importStrategy, boolean shallowImport) {
+   private TransactionToken walkTree(ArtifactReadable repoArtifact, Repository jgitRepo, ObjectId to, ObjectId from, BranchId branch, HistoryImportStrategy importStrategy, boolean shallowImport) {
 
       try (RevWalk revWalk = new RevWalk(jgitRepo)) {
 
@@ -401,15 +400,15 @@ public final class GitOperationsImpl implements GitOperations {
          ArtifactId lastValidCommit = ArtifactId.SENTINEL;
          ObjectReader objectReader = revWalk.getObjectReader();
          for (RevCommit revCommit : revWalk) {
-            ArtifactId lastCommit = parseGitCommit(objectReader, df, repoArtifact, revCommit, branch, account,
-               importStrategy, shallowImport);
+            ArtifactId lastCommit =
+               parseGitCommit(objectReader, df, repoArtifact, revCommit, branch, importStrategy, shallowImport);
             if (lastCommit.isValid()) {
                lastValidCommit = lastCommit;
             }
          }
 
          if (lastValidCommit.isValid() && !shallowImport) {
-            TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch, account);
+            TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch);
             tx.unrelateFromAll(GitRepositoryCommit_GitCommit.getOpposite(), repoArtifact);
             tx.relate(repoArtifact, GitRepositoryCommit_GitCommit, lastValidCommit);
             importStrategy.finishGitCommit(tx);
@@ -465,9 +464,9 @@ public final class GitOperationsImpl implements GitOperations {
       }
    }
 
-   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact, RevCommit revCommit, BranchId branch, UserId account, HistoryImportStrategy importStrategy, boolean shallowImport) {
+   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact, RevCommit revCommit, BranchId branch, HistoryImportStrategy importStrategy, boolean shallowImport) {
       try {
-         TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch, account);
+         TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch);
          ArtifactId commitArtifact = ArtifactId.SENTINEL;
 
          if (!shallowImport) {

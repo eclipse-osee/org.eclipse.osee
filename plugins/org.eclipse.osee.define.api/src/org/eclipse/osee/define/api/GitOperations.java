@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -31,9 +30,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface GitOperations {
 
-   ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String password);
+   ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone, String password);
 
-   ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, UserId account, String gitBranchName, boolean fetch, String password, boolean initialImport, boolean shallowImport);
+   ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, String gitBranchName, boolean fetch, String password, boolean initialImport, boolean shallowImport);
 
    ArtifactReadable getRepoArtifact(BranchId branch, String repositoryName);
 

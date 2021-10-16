@@ -56,8 +56,7 @@ public class XGitFetchButton extends XButton implements ArtifactWidget {
                   repositoryName, branchName, workingBranchName))) {
                   GitEndpoint proxy = AtsApiService.get().getOseeClient().getGitEndpoint();
                   if (proxy.getRemoteBranches(workingBranch, repositoryName).contains(branchName)) {
-                     proxy.updateGitTrackingBranch(workingBranch, repositoryName,
-                        AtsApiService.get().getUserService().getCurrentUser(), true, true, branchName);
+                     proxy.updateGitTrackingBranch(workingBranch, repositoryName, true, true, branchName);
                   } else {
                      MessageDialog.openError(Displays.getActiveShell(), "Branch does not exist",
                         String.format("The branch [%s] does not exist or is invalid.", branchName));

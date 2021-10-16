@@ -20,32 +20,27 @@ import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.GitOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Ryan D. Brooks
  */
 public class GitEndpointImpl implements GitEndpoint {
-   private final OrcsApi orcsApi;
    private final GitOperations gitOps;
-   private final ActivityLog activityLog;
 
    public GitEndpointImpl(ActivityLog activityLog, OrcsApi orcsApi, DefineApi defineApi) {
-      this.orcsApi = orcsApi;
-      this.activityLog = activityLog;
       this.gitOps = defineApi.gitOperations();
    }
 
    @Override
-   public ArtifactId trackGitBranch(BranchId branch, UserId account, String gitBranchName, boolean clone, String gitRepoUrl) {
-      return gitOps.trackGitBranch(gitRepoUrl, branch, account, gitBranchName, clone, null);
+   public ArtifactId trackGitBranch(BranchId branch, String gitBranchName, boolean clone, String gitRepoUrl) {
+      return gitOps.trackGitBranch(gitRepoUrl, branch, gitBranchName, clone, null);
    }
 
    @Override
-   public ArtifactId updateGitTrackingBranch(BranchId branch, String repositoryName, UserId account, boolean fetch, boolean shallowImport, String gitBranchName) {
-      return gitOps.updateGitTrackingBranch(branch, gitOps.getRepoArtifact(branch, repositoryName), account,
-         gitBranchName, fetch, null, false, shallowImport);
+   public ArtifactId updateGitTrackingBranch(BranchId branch, String repositoryName, boolean fetch, boolean shallowImport, String gitBranchName) {
+      return gitOps.updateGitTrackingBranch(branch, gitOps.getRepoArtifact(branch, repositoryName), gitBranchName,
+         fetch, null, false, shallowImport);
    }
 
    @Override
@@ -58,5 +53,4 @@ public class GitEndpointImpl implements GitEndpoint {
       return gitOps.getRemoteBranches(branch, gitOps.getRepoArtifact(branch, repositoryName));
 
    }
-
 }
