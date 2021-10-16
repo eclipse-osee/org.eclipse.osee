@@ -529,8 +529,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          BranchToken parentBranchToken =
             orcsApi.getQueryFactory().branchQuery().andId(parentBranch).getResultsAsId().getExactlyOne();
          Branch workingBranch = orcsApi.getBranchOps().createWorkingBranch(
-            BranchToken.create(teamWf.getAtsId() + " " + newActionData.getTitle()), asUser.getArtifactId(),
-            parentBranchToken, teamWf.getArtifactId());
+            BranchToken.create(teamWf.getAtsId() + " " + newActionData.getTitle()), parentBranchToken,
+            teamWf.getArtifactId());
          result.setWorkingBranchId(workingBranch);
       } catch (Exception ex) {
          result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));

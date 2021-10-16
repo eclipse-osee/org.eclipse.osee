@@ -35,9 +35,7 @@ import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -57,14 +55,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    private final OrcsApi orcsApi;
    private final BranchId branch;
    private final ApplicabilityQuery applicabilityQuery;
-   private final UserId account;
    private final OrcsApplicability ops;
 
-   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId account) {
+   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
       this.branch = branch;
       this.applicabilityQuery = orcsApi.getQueryFactory().applicabilityQuery();
-      this.account = account;
       ops = orcsApi.getApplicabilityOps();
    }
 
@@ -143,7 +139,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          return TransactionToken.SENTINEL;
       }
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
+         orcsApi.getTransactionFactory().createTransaction(branch, "Set Applicability Ids for Artifacts");
       tx.setApplicability(applicId, artifacts);
       return tx.commit();
    }
@@ -155,7 +151,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          return TransactionToken.SENTINEL;
       }
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
+         orcsApi.getTransactionFactory().createTransaction(branch, "Set Applicability Ids for Artifacts");
       Long putIfAbsent = orcsApi.getKeyValueOps().putIfAbsent(applicTag);
       ApplicabilityToken applicId = new ApplicabilityToken(putIfAbsent, applicTag);
       tx.setApplicability(applicId, artifacts);
@@ -168,8 +164,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return TransactionToken.SENTINEL;
       }
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
-         "Set Reference Applicability Ids for Artifacts");
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, "Set Reference Applicability Ids for Artifacts");
       HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap = new HashMap<ArtifactId, List<ApplicabilityId>>();
       for (ApplicabilityData data : appDatas) {
          artToApplMap.put(data.getArtifact(), Collections.castAll(data.getApplIds()));
@@ -181,39 +177,27 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public XResultData createApplicabilityForView(ArtifactId viewId, String applicability) {
       XResultData results = isAccess();
-      UserId user = account;
-      if (user == null) {
-         user = SystemUser.OseeSystem;
-      }
       if (results.isErrors()) {
          return results;
       }
-      return ops.createApplicabilityForView(viewId, applicability, user, branch);
+      return ops.createApplicabilityForView(viewId, applicability, branch);
    }
 
    @Override
    public XResultData validate() {
       XResultData results = isAccess();
-      UserId user = account;
-      if (user == null) {
-         user = SystemUser.OseeSystem;
-      }
-      results = ops.validateCompoundApplicabilities(branch, user, false);
+      results = ops.validateCompoundApplicabilities(branch, false);
       return results;
    }
 
    @Override
    public XResultData removeApplicabilityFromView(ArtifactId viewId, String applicability) {
       XResultData results = isAccess();
-      UserId user = account;
-      if (user == null) {
-         user = SystemUser.OseeSystem;
-      }
       if (results.isErrors()) {
          return results;
       }
 
-      return ops.removeApplicabilityFromView(branch, viewId, applicability, user);
+      return ops.removeApplicabilityFromView(branch, viewId, applicability);
    }
 
    @Override
@@ -251,7 +235,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.updateFeature(feature, branch, account);
+      return ops.updateFeature(feature, branch);
    }
 
    @Override
@@ -260,7 +244,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createFeature(feature, branch, account);
+      return ops.createFeature(feature, branch);
    }
 
    @Override
@@ -269,7 +253,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.deleteFeature(feature, branch, account);
+      return ops.deleteFeature(feature, branch);
    }
 
    @Override
@@ -278,7 +262,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.updateView(view, branch, account);
+      return ops.updateView(view, branch);
    }
 
    @Override
@@ -287,7 +271,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createView(view, branch, account);
+      return ops.createView(view, branch);
    }
 
    @Override
@@ -296,7 +280,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.deleteView(id, branch, account);
+      return ops.deleteView(id, branch);
    }
 
    @Override
@@ -325,7 +309,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.createCfgGroup(group, branch, account);
+      return ops.createCfgGroup(group, branch);
    }
 
    @Override
@@ -334,7 +318,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.updateCfgGroup(group, branch, account);
+      return ops.updateCfgGroup(group, branch);
    }
 
    @Override
@@ -343,7 +327,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.relateCfgGroupToView(groupId, viewId, branch, account);
+      return ops.relateCfgGroupToView(groupId, viewId, branch);
    }
 
    @Override
@@ -352,7 +336,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.unrelateCfgGroupToView(groupId, viewId, branch, account);
+      return ops.unrelateCfgGroupToView(groupId, viewId, branch);
    }
 
    @Override
@@ -361,7 +345,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.deleteCfgGroup(id, branch, account);
+      return ops.deleteCfgGroup(id, branch);
    }
 
    @Override
@@ -370,7 +354,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.syncConfigGroup(branch, id, account, null);
+      return ops.syncConfigGroup(branch, id, null);
 
    }
 
@@ -380,7 +364,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (access.isErrors()) {
          return access;
       }
-      return ops.syncConfigGroup(branch, account);
+      return ops.syncConfigGroup(branch);
 
    }
 

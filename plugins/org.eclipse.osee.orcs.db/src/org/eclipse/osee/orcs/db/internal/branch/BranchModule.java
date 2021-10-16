@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -82,7 +83,6 @@ public class BranchModule {
    private final IResourceManager resourceManager;
 
    public BranchModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, SystemProperties preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
-      super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
@@ -101,24 +101,24 @@ public class BranchModule {
          }
 
          @Override
-         public void createBranch(CreateBranchData branchData) {
-            jdbcClient.runTransaction(
-               new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData, OseeCodeVersion.getVersionId()));
+         public void createBranch(CreateBranchData branchData, UserService userService) {
+            jdbcClient.runTransaction(new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData,
+               OseeCodeVersion.getVersionId()));
             if (branchData.isInheritAccess()) {
                jdbcClient.runTransaction(new BranchInheritACLCallable(jdbcClient, branchData));
             }
          }
 
          @Override
-         public XResultData createBranchValidation(CreateBranchData branchData) {
-            return new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData,
+         public XResultData createBranchValidation(CreateBranchData branchData, UserService userService) {
+            return new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData,
                OseeCodeVersion.getVersionId()).checkPreconditions(jdbcClient.getConnection());
          }
 
          @Override
-         public void createBranchCopyTx(CreateBranchData branchData) {
-            jdbcClient.runTransaction(
-               new BranchCopyTxCallable(jdbcClient, idManager, branchData, OseeCodeVersion.getVersionId()));
+         public void createBranchCopyTx(CreateBranchData branchData, UserService userService) {
+            jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, idManager, userService, branchData,
+               OseeCodeVersion.getVersionId()));
          }
 
          @Override

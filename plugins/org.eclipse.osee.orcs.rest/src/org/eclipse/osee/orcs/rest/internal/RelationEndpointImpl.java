@@ -14,11 +14,9 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -30,19 +28,15 @@ public class RelationEndpointImpl implements RelationEndpoint {
 
    private final OrcsApi orcsApi;
    private final BranchId branch;
-   private final UserId account;
-   private final UriInfo uriInfo;
 
-   public RelationEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId accountId, UriInfo uriInfo) {
+   public RelationEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
-      this.account = accountId;
-      this.uriInfo = uriInfo;
       this.branch = branch;
    }
 
    @Override
    public Response createRelationByType(ArtifactId sideA, ArtifactId sideB, RelationTypeToken relationType) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
          String.format("RelationEndpoint REST api creating relation %s between %s and %s", relationType.getName(),
             sideA.getIdString(), sideB.getIdString()));
       tx.relate(sideA, relationType, sideB);

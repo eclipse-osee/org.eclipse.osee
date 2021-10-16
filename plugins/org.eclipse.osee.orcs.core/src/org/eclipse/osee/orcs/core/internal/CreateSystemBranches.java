@@ -65,7 +65,7 @@ public class CreateSystemBranches {
 
       populateSystemBranch();
 
-      orcsApi.getBranchOps().createTopLevelBranch(COMMON, superUser);
+      orcsApi.getBranchOps().createTopLevelBranch(COMMON);
 
       return populateCommonBranch(superUser);
    }

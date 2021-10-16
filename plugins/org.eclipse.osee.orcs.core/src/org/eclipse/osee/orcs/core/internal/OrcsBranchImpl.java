@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -61,6 +61,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final BranchDataFactory branchDataFactory;
    private final OrcsTokenService tokenService;
    private final QueryFactory queryFactory;
+   private final UserService userService;
 
    public OrcsBranchImpl(OrcsApi orcsApi, Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory) {
       this.orcsApi = orcsApi;
@@ -70,11 +71,12 @@ public class OrcsBranchImpl implements OrcsBranch {
       branchDataFactory = new BranchDataFactory(queryFactory);
       this.tokenService = orcsApi.tokenService();
       this.queryFactory = queryFactory;
+      userService = orcsApi.userService();
    }
 
    @Override
    public XResultData createBranchValidation(CreateBranchData branchData) {
-      return branchStore.createBranchValidation(branchData);
+      return branchStore.createBranchValidation(branchData, userService);
    }
 
    @Override
@@ -102,20 +104,20 @@ public class OrcsBranchImpl implements OrcsBranch {
          branchData.setSavedTransaction(givenTx);
          TransactionToken priorTx = txQuery.andIsPriorTx(givenTx).getResults().getExactlyOne();
          branchData.setFromTransaction(priorTx);
-         branchStore.createBranchCopyTx(branchData);
+         branchStore.createBranchCopyTx(branchData, userService);
       } else {
-         branchStore.createBranch(branchData);
+         branchStore.createBranch(branchData, userService);
       }
 
       return queryFactory.branchQuery().andId(branchData.getBranch()).getResults().getExactlyOne();
    }
 
    @Override
-   public BranchToken createTopLevelBranch(BranchToken branch, ArtifactId account) {
-      return createTopLevelBranch(new CreateBranchData(branch), ArtifactId.SENTINEL, account);
+   public BranchToken createTopLevelBranch(BranchToken branch) {
+      return createTopLevelBranch(new CreateBranchData(branch), ArtifactId.SENTINEL);
    }
 
-   private BranchToken createTopLevelBranch(CreateBranchData createData, ArtifactId associatedArtifact, ArtifactId account) {
+   private BranchToken createTopLevelBranch(CreateBranchData createData, ArtifactId associatedArtifact) {
       createData.setBranchType(BranchType.BASELINE);
 
       BranchToken parentBranch = CoreBranches.SYSTEM_ROOT;
@@ -125,7 +127,6 @@ public class OrcsBranchImpl implements OrcsBranch {
       String creationComment = String.format("New Branch from %s (%s)", parentBranch, parentTx.getId());
       createData.setCreationComment(creationComment);
 
-      createData.setAuthor(account);
       createData.setAssociatedArtifact(associatedArtifact);
 
       createData.setFromTransaction(parentTx);
@@ -218,32 +219,29 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Branch createBaselineBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact) {
-      CreateBranchData branchData =
-         branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
+   public Branch createBaselineBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
+      CreateBranchData branchData = branchDataFactory.createBaselineBranchData(branch, parent, associatedArtifact);
       Branch newBranch = createBranch(branchData);
-      setBranchPermission(author, newBranch, PermissionEnum.FULLACCESS);
+      setBranchPermission(userService.getUser(), newBranch, PermissionEnum.FULLACCESS);
       return newBranch;
    }
 
    @Override
-   public Branch createWorkingBranch(BranchToken branch, ArtifactId author, BranchToken parent, ArtifactId associatedArtifact) {
-      CreateBranchData branchData =
-         branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
+   public Branch createWorkingBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
+      CreateBranchData branchData = branchDataFactory.createWorkingBranchData(branch, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Branch createCopyTxBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Branch createCopyTxBranch(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
-         branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
+         branchDataFactory.createCopyTxBranchData(branch, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Branch createPortBranch(BranchToken branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
-      CreateBranchData branchData =
-         branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
+   public Branch createPortBranch(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+      CreateBranchData branchData = branchDataFactory.createPortBranchData(branch, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
@@ -253,12 +251,11 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public BranchToken createProgramBranch(BranchToken branch, UserId account) {
-      BranchToken newBranch = createTopLevelBranch(branch, account);
-      setBranchPermission(account, branch, PermissionEnum.FULLACCESS);
+   public BranchToken createProgramBranch(BranchToken branch) {
+      BranchToken newBranch = createTopLevelBranch(branch);
+      setBranchPermission(userService.getUser(), branch, PermissionEnum.FULLACCESS);
 
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Program Hierarchy");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Create Program Hierarchy");
 
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolder);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolder);

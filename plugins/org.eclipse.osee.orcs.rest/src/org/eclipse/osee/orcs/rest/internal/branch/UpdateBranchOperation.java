@@ -27,7 +27,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class UpdateBranchOperation {
    private final BranchId toBranchId;
    private final BranchId fromBranchId;
-   private final ArtifactId author;
    private final UpdateBranchData branchData;
    private final OrcsApi orcsApi;
 
@@ -35,7 +34,6 @@ public class UpdateBranchOperation {
       this.orcsApi = orcsApi;
       this.toBranchId = branchData.getToBranch();
       this.fromBranchId = branchData.getFromBranch();
-      this.author = branchData.getAuthor();
       this.branchData = branchData;
    }
 
@@ -58,7 +56,7 @@ public class UpdateBranchOperation {
 
          BranchToken toBranch = BranchToken.create(branchData.getToName());
          branchData.setNewBranchId(
-            orcsApi.getBranchOps().createWorkingBranch(toBranch, author, fromBranch, ArtifactId.SENTINEL));
+            orcsApi.getBranchOps().createWorkingBranch(toBranch, fromBranch, ArtifactId.SENTINEL));
 
          branchData.getResults().logf("Update Branch [%s]", fromBranch.getShortName());
 

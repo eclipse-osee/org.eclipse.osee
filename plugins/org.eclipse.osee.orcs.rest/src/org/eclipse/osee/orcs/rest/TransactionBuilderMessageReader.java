@@ -53,7 +53,6 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  * @author Ryan D. Brooks
  */
 public class TransactionBuilderMessageReader implements MessageBodyReader<TransactionBuilder> {
-   private final OrcsApi orcsApi;
    private final TransactionFactory txFactory;
    private final JaxRsApi jaxRsApi;
    private final OrcsTokenService tokenService;
@@ -62,7 +61,6 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
    public TransactionBuilderMessageReader(OrcsApi orcsApi) {
       this.txFactory = orcsApi.getTransactionFactory();
       this.jaxRsApi = orcsApi.jaxRsApi();
-      this.orcsApi = orcsApi;
       this.tokenService = orcsApi.tokenService();
       this.query = orcsApi.getQueryFactory();
    }
@@ -83,7 +81,7 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
          txComment = "create transaction REST call";
       }
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, orcsApi.userService().getUser(), txComment);
+      TransactionBuilder tx = txFactory.createTransaction(branch, txComment);
 
       createArtifacts(readTree, artifactsByName, tx);
       modifyArtifacts(readTree, artifactsByName, tx);

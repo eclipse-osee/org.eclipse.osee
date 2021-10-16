@@ -24,12 +24,11 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -60,22 +59,21 @@ public class CreateDemoBranches {
    public void populate() {
       orcsApi.userService().createUsers(DemoUsers.values(), "Create Demo Users");
 
-      UserId account = DemoUsers.Joe_Smith;
-      createDemoProgramBranch(SAW_Bld_1, account);
-      createDemoProgramBranch(CIS_Bld_1, account);
+      createDemoProgramBranch(SAW_Bld_1);
+      createDemoProgramBranch(CIS_Bld_1);
 
-      branchOps.createBaselineBranch(DemoBranches.SAW_PL, account, SAW_Bld_1, ArtifactId.SENTINEL);
+      branchOps.createBaselineBranch(DemoBranches.SAW_PL, SAW_Bld_1, ArtifactId.SENTINEL);
 
-      createProductLineConfig(DemoBranches.SAW_PL, account, orcsApi);
+      createProductLineConfig(DemoBranches.SAW_PL, orcsApi);
 
       Branch hardeningBranch =
-         branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, account, SAW_PL, ArtifactId.SENTINEL);
+         branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, SAW_PL, ArtifactId.SENTINEL);
       orcsApi.getAccessControlService().removePermissions(hardeningBranch);
 
-      branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, account, SAW_PL, ArtifactId.SENTINEL);
+      branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, SAW_PL, ArtifactId.SENTINEL);
    }
 
-   public static void createProductLineConfig(BranchId branch, UserId account, OrcsApi orcsApi) {
+   public static void createProductLineConfig(BranchId branch, OrcsApi orcsApi) {
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Create Product Line folders");
 
@@ -109,10 +107,10 @@ public class CreateDemoBranches {
       tx.commit();
       ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
       group.setName("abGroup");
-      orcsApi.getApplicabilityOps().createCfgGroup(group, branch, account);
-      orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch, account);
-      orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch, account);
-      orcsApi.getApplicabilityOps().syncConfigGroup(branch, account);
+      orcsApi.getApplicabilityOps().createCfgGroup(group, branch);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch);
+      orcsApi.getApplicabilityOps().syncConfigGroup(branch);
 
    }
 
@@ -175,10 +173,10 @@ public class CreateDemoBranches {
       }
    }
 
-   private void createDemoProgramBranch(BranchToken branch, UserId account) {
-      branchOps.createProgramBranch(branch, account);
+   private void createDemoProgramBranch(BranchToken branch) {
+      branchOps.createProgramBranch(branch);
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create SAW Product Decomposition");
+      TransactionBuilder tx = txFactory.createTransaction(branch, "Create SAW Product Decomposition");
 
       ArtifactId sawProduct = tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Component,
          CoreArtifactTokens.SAW_PRODUCT_DECOMP);

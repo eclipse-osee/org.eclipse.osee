@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -150,8 +149,8 @@ public class AtsDbConfigBase {
       atsApi.setConfigValue("PeerReviewChecklist", jsonToStore);
 
       // Create Processes Branch
-      Branch branch = branchOps.createBaselineBranch(DemoBranches.Processes, DemoUsers.Joe_Smith,
-         CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL);
+      Branch branch =
+         branchOps.createBaselineBranch(DemoBranches.Processes, CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL);
       branchOps.setBranchPermission(CoreUserGroups.Everyone, branch, PermissionEnum.READ);
 
       // Create Top Folder on Processes Branch
@@ -161,7 +160,8 @@ public class AtsDbConfigBase {
 
       changes.execute();
 
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes, "Import Peer Checklist");
+      TransactionBuilder transaction =
+         orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes, "Import Peer Checklist");
       File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDbConfigBase.class);
       importChecklist(file, transaction, AtsArtifactToken.PeerAttachmentFolder);
 
@@ -185,7 +185,8 @@ public class AtsDbConfigBase {
 
       changes.execute();
 
-      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes, "Import Walkthrough Checklist");
+      TransactionBuilder transaction =
+         orcsApi.getTransactionFactory().createTransaction(DemoBranches.Processes, "Import Walkthrough Checklist");
       File file =
          OseeInf.getResourceAsFile("demoWalkthroughChecklists/W_Document_Checklist.xlsx", AtsDbConfigBase.class);
       importChecklist(file, transaction, AtsArtifactToken.WalkthroughAttachmentFolder);

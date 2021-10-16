@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -53,43 +52,43 @@ public interface OrcsApplicability {
 
    CreateViewDefinition getViewDefinition(ArtifactReadable artifact);
 
-   XResultData createFeature(FeatureDefinition feature, BranchId branch, UserId account);
+   XResultData createFeature(FeatureDefinition feature, BranchId branch);
 
-   XResultData updateFeature(FeatureDefinition feature, BranchId branch, UserId account);
+   XResultData updateFeature(FeatureDefinition feature, BranchId branch);
 
    FeatureDefinition getFeature(String feature, BranchId branch);
 
-   XResultData deleteFeature(ArtifactId feature, BranchId branch, UserId account);
+   XResultData deleteFeature(ArtifactId feature, BranchId branch);
 
    CreateViewDefinition getView(String view, BranchId branch);
 
-   XResultData createView(CreateViewDefinition view, BranchId branch, UserId account);
+   XResultData createView(CreateViewDefinition view, BranchId branch);
 
-   XResultData updateView(CreateViewDefinition view, BranchId branch, UserId account);
+   XResultData updateView(CreateViewDefinition view, BranchId branch);
 
-   XResultData deleteView(String view, BranchId branch, UserId account);
+   XResultData deleteView(String view, BranchId branch);
 
-   XResultData setApplicability(BranchId branch, ArtifactId variant, ArtifactId feature, String applicability, UserId account);
+   XResultData setApplicability(BranchId branch, ArtifactId variant, ArtifactId feature, String applicability);
 
    List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
 
-   XResultData createApplicabilityForView(ArtifactId viewId, String applicability, UserId account, BranchId branch);
+   XResultData createApplicabilityForView(ArtifactId viewId, String applicability, BranchId branch);
 
-   XResultData createCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account);
+   XResultData createCfgGroup(ConfigurationGroupDefinition group, BranchId branch);
 
-   XResultData relateCfgGroupToView(String groupId, String viewId, BranchId branch, UserId account);
+   XResultData relateCfgGroupToView(String groupId, String viewId, BranchId branch);
 
-   XResultData unrelateCfgGroupToView(String groupId, String viewId, BranchId branch, UserId account);
+   XResultData unrelateCfgGroupToView(String groupId, String viewId, BranchId branch);
 
    ArtifactToken getPlConfigurationGroupsFolder(BranchId branch);
 
-   XResultData deleteCfgGroup(String id, BranchId branch, UserId account);
+   XResultData deleteCfgGroup(String id, BranchId branch);
 
-   XResultData syncConfigGroup(BranchId branch, String cfgGroup, UserId account, XResultData results);
+   XResultData syncConfigGroup(BranchId branch, String cfgGroup, XResultData results);
 
-   XResultData syncConfigGroup(BranchId branch, UserId account);
+   XResultData syncConfigGroup(BranchId branch);
 
-   XResultData removeApplicabilityFromView(BranchId branch, ArtifactId viewId, String applicability, UserId account);
+   XResultData removeApplicabilityFromView(BranchId branch, ArtifactId viewId, String applicability);
 
    String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic);
 
@@ -103,8 +102,8 @@ public interface OrcsApplicability {
 
    ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch);
 
-   XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch, UserId account);
+   XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch);
 
-   XResultData validateCompoundApplicabilities(BranchId branch, UserId account, boolean update);
+   XResultData validateCompoundApplicabilities(BranchId branch, boolean update);
 
 }

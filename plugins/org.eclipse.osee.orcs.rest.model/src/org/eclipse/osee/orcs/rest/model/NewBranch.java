@@ -26,7 +26,6 @@ public class NewBranch {
    private BranchId parentBranch;
    private ArtifactId associatedArtifact;
    private BranchType branchType;
-   private ArtifactId author;
    private TransactionToken sourceTransaction;
    private String creationComment;
    private int mergeAddressingQueryId;
@@ -47,10 +46,6 @@ public class NewBranch {
 
    public BranchType getBranchType() {
       return branchType;
-   }
-
-   public ArtifactId getAuthor() {
-      return author;
    }
 
    public TransactionToken getSourceTransaction() {
@@ -89,11 +84,6 @@ public class NewBranch {
       this.branchType = branchType;
    }
 
-   public void setAuthor(ArtifactId author) {
-      // ensure only id is serialized in the case of subclasses
-      this.author = ArtifactId.valueOf(author.getId());
-   }
-
    public void setSourceTransactionId(TransactionToken sourceTransaction) {
       this.sourceTransaction = sourceTransaction;
    }
@@ -116,6 +106,6 @@ public class NewBranch {
 
    @Override
    public String toString() {
-      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifact + ", branchType=" + branchType + ", authorId=" + author + ", sourceTransactionId=" + sourceTransaction + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
+      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifact + ", branchType=" + branchType + ", sourceTransactionId=" + sourceTransaction + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
    }
 }

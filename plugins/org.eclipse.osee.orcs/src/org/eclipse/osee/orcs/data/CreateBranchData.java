@@ -34,7 +34,6 @@ public class CreateBranchData {
    private TransactionToken fromTransaction;
    private TransactionId savedTransaction;
    private ArtifactId associatedArtifact;
-   private ArtifactId author;
 
    // Merge Branch Legacy Support
    private int mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
@@ -101,14 +100,6 @@ public class CreateBranchData {
       this.savedTransaction = priorTransaction;
    }
 
-   public ArtifactId getAuthor() {
-      return author;
-   }
-
-   public void setAuthor(ArtifactId author) {
-      this.author = author;
-   }
-
    public void setAssociatedArtifact(ArtifactId associatedArtifact) {
       this.associatedArtifact = associatedArtifact;
    }
@@ -157,7 +148,7 @@ public class CreateBranchData {
 
    @Override
    public String toString() {
-      return "CreateBranchData [branchUuid=" + branch + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", author=" + author + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
+      return "CreateBranchData [branchUuid=" + branch + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
    }
 
    public BranchId getBranch() {

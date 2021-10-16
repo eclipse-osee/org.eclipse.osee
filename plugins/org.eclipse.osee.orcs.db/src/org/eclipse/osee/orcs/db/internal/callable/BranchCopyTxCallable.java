@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -47,13 +48,14 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
 
    private final JdbcClient jdbcClient;
    private final IdentityManager idManager;
-
+   private final UserService userService;
    private final Long buildVersionId;
 
-   public BranchCopyTxCallable(JdbcClient jdbcClient, IdentityManager idManager, CreateBranchData branchData, Long buildVersionId) {
+   public BranchCopyTxCallable(JdbcClient jdbcClient, IdentityManager idManager, UserService userService, CreateBranchData branchData, Long buildVersionId) {
       this.jdbcClient = jdbcClient;
       this.branchData = branchData;
       this.idManager = idManager;
+      this.userService = userService;
       this.buildVersionId = buildVersionId;
    }
 
@@ -64,7 +66,8 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
 
-      new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData, buildVersionId).handleTxWork(connection);
+      new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData, buildVersionId).handleTxWork(
+         connection);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       TransactionId nextTransactionId = idManager.getNextTransactionId();
@@ -72,7 +75,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       String creationComment = branchData.getCreationComment();
 
       jdbcClient.runPreparedUpdate(connection, OseeDb.TX_DETAILS_TABLE.getInsertSql(), branchData.getBranch(),
-         nextTransactionId, branchData.getAuthor(), timestamp, creationComment,
+         nextTransactionId, userService.getUser(), timestamp, creationComment,
          TransactionDetailsType.NonBaselined.getId(), -1, OseeCodeVersion.getVersionId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),

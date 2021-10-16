@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -40,9 +41,9 @@ public interface BranchDataStore {
 
    void addMissingApplicabilityFromParentBranch(BranchId branch);
 
-   void createBranch(CreateBranchData branchData);
+   void createBranch(CreateBranchData branchData, UserService userService);
 
-   void createBranchCopyTx(CreateBranchData branchData);
+   void createBranchCopyTx(CreateBranchData branchData, UserService userService);
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
@@ -70,5 +71,5 @@ public interface BranchDataStore {
 
    void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
-   XResultData createBranchValidation(CreateBranchData branchData);
+   XResultData createBranchValidation(CreateBranchData branchData, UserService userService);
 }
