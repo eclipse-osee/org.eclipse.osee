@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -111,9 +110,8 @@ public final class TraceabilityEndpointImpl implements TraceabilityEndpoint {
    }
 
    @Override
-   public ArtifactId baselineFiles(BranchId branch, String repositoryName, UserId account, CertBaselineData baselineData) {
-      return traceOps.baselineFiles(branch, gitOps.getRepoArtifact(branch, repositoryName), baselineData, account,
-         null);
+   public ArtifactId baselineFiles(BranchId branch, String repositoryName, CertBaselineData baselineData) {
+      return traceOps.baselineFiles(branch, gitOps.getRepoArtifact(branch, repositoryName), baselineData, null);
    }
 
    @Override
@@ -122,8 +120,8 @@ public final class TraceabilityEndpointImpl implements TraceabilityEndpoint {
    }
 
    @Override
-   public TransactionToken copyCertBaselineData(UserId account, BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
-      return traceOps.copyCertBaselineData(account, destinationBranch, repositoryName, sourceBranch);
+   public TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
+      return traceOps.copyCertBaselineData(destinationBranch, repositoryName, sourceBranch);
    }
 
    @Override

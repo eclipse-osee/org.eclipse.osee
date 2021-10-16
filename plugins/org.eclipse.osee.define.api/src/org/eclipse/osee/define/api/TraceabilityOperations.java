@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -34,15 +33,15 @@ public interface TraceabilityOperations {
 
    TraceData getSrsToImpd(BranchId branch, ArtifactTypeId excludeType);
 
-   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, String password);
+   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, String password);
 
-   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, TransactionBuilder tx, String password);
+   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, TransactionBuilder tx, String password);
 
    CertBaselineData getBaselineData(ArtifactReadable baselineArtifact);
 
    List<CertBaselineData> getBaselineData(BranchId branch, ArtifactReadable repoArtifact);
 
-   TransactionToken copyCertBaselineData(UserId account, BranchId destinationBranch, String repositoryName, BranchId sourceBranch);
+   TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName, BranchId sourceBranch);
 
    /**
     * @return list of current files (excluding deleted) in given Git repository with their latest change and baselined

@@ -13,12 +13,10 @@
 
 package org.eclipse.osee.define.api;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,7 +28,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Ryan D. Brooks
@@ -69,7 +66,7 @@ public interface TraceabilityEndpoint {
    @Path("cert/{branch}/repo/{repository-name}/files")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId baselineFiles(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, CertBaselineData baselineData);
+   ArtifactId baselineFiles(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName, CertBaselineData baselineData);
 
    @GET
    @Path("cert/{branch}/{artifact}")
@@ -84,7 +81,7 @@ public interface TraceabilityEndpoint {
    @POST
    @Path("cert/{destination-branch}/repo/{repository-name}/{source-branch}")
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken copyCertBaselineData(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("destination-branch") BranchId destinationBranch, @PathParam("repository-name") String repositoryName, @PathParam("source-branch") BranchId sourceBranch);
+   TransactionToken copyCertBaselineData(@PathParam("destination-branch") BranchId destinationBranch, @PathParam("repository-name") String repositoryName, @PathParam("source-branch") BranchId sourceBranch);
 
    @GET
    @Path("cert/{branch}/repo/{repository-name}/files")

@@ -24,11 +24,9 @@ import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -60,9 +58,8 @@ public class UpdateAtsConfiguration {
    }
 
    public XResultData createUpdateConfig(XResultData rd) {
-      UserId user = SystemUser.OseeSystem;
       ArtifactReadable atsConfigArt = (ArtifactReadable) AtsDbConfigBase.getOrCreateAtsConfig(atsApi);
-      createUpdateConfigAttributes(atsConfigArt, user, rd);
+      createUpdateConfigAttributes(atsConfigArt, rd);
       try {
          createUpdateValidStateAttributes();
       } catch (Exception ex) {
@@ -80,7 +77,7 @@ public class UpdateAtsConfiguration {
       return viewsJson;
    }
 
-   private void createUpdateConfigAttributes(ArtifactReadable configArt, UserId userId, XResultData rd) {
+   private void createUpdateConfigAttributes(ArtifactReadable configArt, XResultData rd) {
       try {
          AtsViews databaseViews = atsApi.getConfigService().getConfigurations().getViews();
          for (String viewsJson : getViewsJsonStrings()) {
@@ -108,8 +105,8 @@ public class UpdateAtsConfiguration {
             databaseViews.getAttrColumns().addAll(toAdd);
          }
 
-         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId,
-            "Create Update Config Attributes");
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Create Update Config Attributes");
          Iterator<? extends AttributeReadable<Object>> iterator =
             configArt.getAttributes(CoreAttributeTypes.GeneralStringData, DeletionFlag.EXCLUDE_DELETED).iterator();
          boolean found = false;

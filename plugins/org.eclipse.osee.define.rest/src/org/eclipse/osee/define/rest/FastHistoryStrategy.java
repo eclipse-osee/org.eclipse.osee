@@ -21,7 +21,6 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -53,7 +52,7 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
    }
 
    @Override
-   public TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch, UserId account) {
+   public TransactionBuilder getTransactionBuilder(OrcsApi orcsApi, BranchId branch) {
       return tx;
    }
 
