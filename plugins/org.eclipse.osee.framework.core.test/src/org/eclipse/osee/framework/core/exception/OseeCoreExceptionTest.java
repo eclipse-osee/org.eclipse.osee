@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link OseeCoreException}
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class OseeCoreExceptionTest {
@@ -56,7 +56,7 @@ public class OseeCoreExceptionTest {
       String messageFormat = "max = %d; min = %d; avg = %d";
       Exception ex = new OseeCoreException(messageFormat, 1, 0);
       Assert.assertTrue(ex.getMessage(), ex.getMessage().contains(
-         "Exception message could not be formatted: [" + messageFormat + "] with the following arguments [1,0].  Cause [java.util.MissingFormatArgumentException: Format specifier "));
+         "Exception message could not be formatted: [" + messageFormat + "] with the following arguments [1, 0].  Cause [java.util.MissingFormatArgumentException: Format specifier "));
    }
 
    @Test

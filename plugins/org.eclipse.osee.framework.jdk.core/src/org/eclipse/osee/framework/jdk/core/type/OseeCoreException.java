@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import java.util.Arrays;
 
 /**
  * @author Ryan D. Brooks
@@ -42,8 +42,8 @@ public class OseeCoreException extends RuntimeException {
          return String.format(message, args);
       } catch (RuntimeException ex) {
          return String.format(
-            "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]", message,
-            Collections.toString(",", args), ex.toString());
+            "Exception message could not be formatted: [%s] with the following arguments %s.  Cause [%s]", message,
+            Arrays.deepToString(args), ex.toString());
       }
    }
 

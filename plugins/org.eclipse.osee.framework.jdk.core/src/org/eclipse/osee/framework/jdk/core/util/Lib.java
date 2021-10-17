@@ -1056,8 +1056,7 @@ public final class Lib {
       System.out.println("resolveToUrl: " + path);
       if (Strings.isValid(path)) {
          if (path.indexOf("://") == -1) { // if not a full URL yet
-            if (!path.startsWith("/")) { // if not absolute then prepend
-               // base path
+            if (!path.startsWith("/")) { // if not absolute then prepend base path
                try {
                   path = new File(Lib.basePath + "/" + path).getCanonicalPath();
                } catch (IOException e) {
