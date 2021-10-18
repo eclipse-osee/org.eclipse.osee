@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, Subject } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentMessagesService } from "../../services/current-messages.service";
@@ -46,6 +46,7 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   messages: of(expectedData),
   applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
   partialUpdateSubMessage(body, messageId) { return of(messageResponseMock) },
+  partialUpdateMessage(body){return of(messageResponseMock)},
   createMessage(body: message) {
       return of(messageResponseMock)
   },
@@ -71,5 +72,6 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   },
   deleteSubMessage(subMessageId: string) {
     return of(messageResponseMock);
-  }
+  },
+  done:new Subject()
 }

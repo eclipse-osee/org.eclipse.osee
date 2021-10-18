@@ -77,6 +77,19 @@ describe('CurrentStateService', () => {
     })
   });
 
+  it('should get a structure', () => {
+    scheduler.run(({ expectObservable }) => {
+      service.branchId = "0";
+      service.filter = "0";
+      service.messageId = "1";
+      service.subMessageId = "2";
+      service.connection = "3";
+      const expectedObservable = { a: structuresMock[0] };
+      const expectedMarble = 'a'
+      expectObservable(service.getStructure('abcdef')).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
   it('should change an element and get a response back', () => {
     scheduler.run(() => {
       let expectedObservable = { a: response };
@@ -211,6 +224,36 @@ describe('CurrentStateService', () => {
       const makeemissions = cold('----a----(b|)', { a: '10', b: '8' }).pipe(tap((t) => service.BranchType = t));
       expectObservable(makeemissions).toBe('----a----(b|)', { a: '10', b: '8' });
       expectObservable(service.branchType).toBe(expectedMarble,expectedObservable)
+    })
+  })
+
+  it('done should complete', () => {
+    scheduler.run(({ expectObservable,cold }) => {
+      const expectedFilterValues = { a: true, b: undefined, c: false };
+      const expectedMarble = '-(b|)';
+      let delayMarble = '-a';
+      cold(delayMarble).subscribe(() => service.toggleDone=true);
+      expectObservable(service.done).toBe(expectedMarble,expectedFilterValues)
+    })
+  })
+
+  it('should return an update', () => {
+    scheduler.run(({cold, expectObservable}) => {
+      let expectedObservable = { a: true }
+      let expectedMarble = '101ms a';
+      let delayMarble = '-a';
+      cold(delayMarble).subscribe(() => service.update = true);
+      expectObservable(service.updated).toBe(expectedMarble,expectedObservable)
+    })
+  })
+
+  it('should return structure multiple times', () => {
+    scheduler.run(({cold, expectObservable}) => {
+      let expectedObservable = { a: structuresMock[0] }
+      let expectedMarble = 'a 200ms a';
+      let delayMarble = '- 100ms a';
+      cold(delayMarble).subscribe(() => service.update = true);
+      expectObservable(service.getStructureRepeating('abcdef')).toBe(expectedMarble,expectedObservable)
     })
   })
 });

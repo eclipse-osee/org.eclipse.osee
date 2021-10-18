@@ -20,18 +20,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ConvertMessageInterfaceTitlesToStringPipe } from './pipes/convert-message-interface-titles-to-string.pipe';
+import { EditEnumSetDialogComponent } from './components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { EditViewFreeTextFieldDialogComponent } from './components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe],
+  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent],
   imports: [
     CommonModule,
     MatDialogModule,
     MatFormFieldModule,
     MatListModule,
     MatCheckboxModule,
+    MatTableModule,
+    MatSelectModule,
+    MatInputModule,
     FormsModule,
     MatButtonModule,
   ],
-  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent]
+  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent]
 })
 export class SharedMessagingModule {}

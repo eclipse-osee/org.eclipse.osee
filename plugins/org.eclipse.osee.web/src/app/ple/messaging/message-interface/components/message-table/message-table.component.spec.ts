@@ -31,7 +31,7 @@ import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-messa
 import { MessageTableComponent } from './message-table.component';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { message } from '../../types/messages';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditMessageFieldComponentMock } from '../../mocks/components/EditMessageField.mock';
@@ -46,8 +46,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { UiService } from '../../services/ui.service'
-import { MimPreferencesMock } from '../../../shared/mocks/MimPreferences.mock';
+import { MessageUiService } from '../../services/ui.service'
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
 import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
 import { MatMenuHarness } from '@angular/material/menu/testing';
@@ -56,7 +55,7 @@ let loader: HarnessLoader;
 
 describe('MessageTableComponent', () => {
   let component: MessageTableComponent;
-  let uiService: UiService;
+  let uiService: MessageUiService;
   let fixture: ComponentFixture<MessageTableComponent>;
   let expectedData: message[] = [{
     id:'10',
@@ -110,7 +109,7 @@ describe('MessageTableComponent', () => {
       {provide:EnumsService,useValue:enumsServiceMock}]
     })
       .compileComponents();
-    uiService=TestBed.inject(UiService)
+    uiService=TestBed.inject(MessageUiService)
   });
 
   beforeEach(() => {
@@ -203,6 +202,32 @@ describe('MessageTableComponent', () => {
     let mEvent:MouseEvent
     beforeEach(() => {
       mEvent = document.createEvent("MouseEvent");
+    })
+
+    it('should open the menu and dismiss a description', async () => {
+      component.openMenu(mEvent, messagesMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.stub();
+      await menu.clickItem({ text: "Open Description" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and edit a description', async () => {
+      component.openMenu(mEvent, messagesMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.stub();
+      await menu.clickItem({ text: "Open Description" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
     })
 
     it('should open a dialog and remove a message', async() => {

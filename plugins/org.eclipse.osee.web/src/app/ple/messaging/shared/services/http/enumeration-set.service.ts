@@ -16,8 +16,9 @@ import { of } from 'rxjs';
 import { relation, transaction } from 'src/app/transactions/transaction';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
-import { enumeration, enumerationSet, enumSet } from '../types/enum';
+import { ARTIFACTTYPEID } from '../../constants/ArtifactTypeId.enum';
+import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
+import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 
 @Injectable({
   providedIn: 'root'
@@ -54,5 +55,8 @@ export class EnumerationSetService {
 
   getEnumSet(branchId: string, platformTypeId: string) {
     return this.http.get<enumerationSet>(apiURL + "/mim/branch/" + branchId + "/types/" + platformTypeId + "/enumeration");
+  }
+  performMutation(body: transaction,branchId:string) {
+    return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",body)
   }
 }

@@ -41,10 +41,13 @@ import { RemoveStructureDialogComponent } from './components/remove-structure-di
 import { RemoveElementDialogComponent } from './components/remove-element-dialog/remove-element-dialog.component';
 import { DeleteElementDialogComponent } from './components/delete-element-dialog/delete-element-dialog.component';
 import { DeleteStructureDialogComponent } from './components/delete-structure-dialog/delete-structure-dialog.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { StructureTableComponent } from './components/structure-table/structure-table.component';
+import { SingleStructureTableComponent } from './components/single-structure-table/single-structure-table.component';
 
 
 @NgModule({
-  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent],
+  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent, StructureTableComponent, SingleStructureTableComponent],
   imports: [
     CommonModule,
     MatTableModule,
@@ -57,6 +60,7 @@ import { DeleteStructureDialogComponent } from './components/delete-structure-di
     MatMenuModule,
     MatListModule,
     MatSlideToggleModule,
+    MatProgressBarModule,
     FormsModule,
     MatAutocompleteModule,
     PleSharedMaterialModule,

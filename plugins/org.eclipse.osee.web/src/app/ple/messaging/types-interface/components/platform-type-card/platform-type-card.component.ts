@@ -18,10 +18,11 @@ import { OSEEWriteApiResponse } from '../../../shared/types/ApiWriteResponse';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
-import { enumerationSet } from '../../types/enum';
+import { enumerationSet } from '../../../shared/types/enum';
 import { PlatformType } from '../../types/platformType';
-import { EditEnumSetDialogComponent } from '../edit-enum-set-dialog/edit-enum-set-dialog.component';
+import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.component';
+import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';
 
 @Component({
   selector: 'ple-messaging-types-platform-type-card',
@@ -81,7 +82,11 @@ export class PlatformTypeCardComponent implements OnInit {
 
   openEnumDialog(makeChanges:boolean) {
     this.dialog.open(EditEnumSetDialogComponent, {
-      data:of(this.typeData.id)
+      data: of<enumsetDialogData>(
+        {
+          id: this.typeData.id || '',
+          isOnEditablePage: true
+        })
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
       switchMap((changes)=>iif(()=>makeChanges,this.typesService.changeEnumSet(changes)))

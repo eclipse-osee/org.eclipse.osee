@@ -17,6 +17,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -70,7 +71,7 @@ describe('TypesInterfaceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatCardModule,MatFormFieldModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule, FormsModule, RouterTestingModule],
+      imports:[MatCardModule,MatFormFieldModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule,MatProgressBarModule, FormsModule, RouterTestingModule],
       declarations: [TypesInterfaceComponent, TypeGridComponent, PlatformTypeCardComponent],
       providers:[{provide: CurrentTypesService, useValue:typesService}]
     })

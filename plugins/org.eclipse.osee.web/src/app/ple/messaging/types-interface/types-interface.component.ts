@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpLoadingService } from '../shared/services/ui/http-loading.service';
 import { PlMessagingTypesUIService } from './services/pl-messaging-types-ui.service';
 
 @Component({
@@ -21,7 +22,8 @@ import { PlMessagingTypesUIService } from './services/pl-messaging-types-ui.serv
 })
 export class TypesInterfaceComponent implements OnInit {
   filterValue: string = "";
-  constructor(private route: ActivatedRoute, private uiService: PlMessagingTypesUIService) { }
+  isLoading = this.loadingService.isLoading;
+  constructor(private route: ActivatedRoute, private uiService: PlMessagingTypesUIService,private loadingService: HttpLoadingService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((values) => {

@@ -25,6 +25,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTableHarness } from '@angular/material/table/testing';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -85,7 +86,7 @@ describe('SubElementTableComponent', () => {
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
     await TestBed.configureTestingModule({
-      imports:[CommonModule,MatDialogModule,MatTableModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
+      imports:[CommonModule,MatDialogModule,MatTableModule,MatTooltipModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
       declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent],
       providers: [{ provide: Router, useValue: router }, {
         provide: ActivatedRoute, useValue: {
@@ -153,6 +154,72 @@ describe('SubElementTableComponent', () => {
     beforeEach(() => {
       mEvent = document.createEvent("MouseEvent");
     })
+
+    it('should open the menu and open the enum dialog', async () => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openEnumDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      //let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      await menu.clickItem({ text: "Open Enumeration Details(view only)" });
+      expect(spy).toHaveBeenCalled();
+      //expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and dismiss a description', async () => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      await menu.clickItem({ text: "Open Description" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and edit a description', async () => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      await menu.clickItem({ text: "Open Description" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and dismiss a notes popup', async () => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openNotesDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      await menu.clickItem({ text: "Open Notes" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and edit a notes popup', async () => {
+      component.openGeneralMenu(mEvent, elementsMock[0]);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openNotesDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      await menu.clickItem({ text: "Open Notes" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
     it('should open the remove element dialog', async() => {
       component.openGeneralMenu(mEvent, elementsMock[0]);
       await fixture.whenStable();

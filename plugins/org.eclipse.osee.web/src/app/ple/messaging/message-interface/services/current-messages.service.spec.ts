@@ -22,20 +22,19 @@ import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesServ
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { messagesMock } from '../mocks/ReturnObjects/messages.mock';
-import { messageResponseMock } from '../mocks/ReturnObjects/response.mock';
 import { messageServiceMock } from '../mocks/services/MessageService.mock';
 import { subMessageServiceMock } from '../mocks/services/SubMessageService.mock';
 
 import { CurrentMessagesService } from './current-messages.service';
 import { MessagesService } from './messages.service';
 import { SubMessagesService } from './sub-messages.service';
-import { UiService } from './ui.service';
+import { MessageUiService } from './ui.service';
 import { subMessagesMock } from '../mocks/ReturnObjects/submessages.mock';
 
 describe('CurrentMessagesService', () => {
   let service: CurrentMessagesService;
   let httpTestingController: HttpTestingController;
-  let uiService: UiService;
+  let uiService: MessageUiService;
   let scheduler: TestScheduler;
 
   beforeEach(() => {
@@ -50,7 +49,7 @@ describe('CurrentMessagesService', () => {
     });
     service = TestBed.inject(CurrentMessagesService);
     httpTestingController = TestBed.inject(HttpTestingController);
-    uiService = TestBed.inject(UiService);
+    uiService = TestBed.inject(MessageUiService);
   });
 
   beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
@@ -77,8 +76,9 @@ describe('CurrentMessagesService', () => {
       service.branch = '10';
       service.connection = '10';
       let expectedObservable = { a: messagesMock }
-      let expectedMarble = 'aa';
-      cold(expectedMarble).subscribe(() => uiService.updateMessages = true);
+      let expectedMarble = 'a 100ms a';
+      let delayMarble = '-a';
+      cold(delayMarble).subscribe(() => uiService.updateMessages = true);
       scheduler.expectObservable(service.allMessages).toBe(expectedMarble,expectedObservable)
     })
   })
@@ -185,6 +185,16 @@ describe('CurrentMessagesService', () => {
       let expectedObservable = { a: response };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
+    })
+  })
+
+  it('done should complete', () => {
+    scheduler.run(({ expectObservable,cold }) => {
+      const expectedFilterValues = { a: true, b: undefined, c: false };
+      const expectedMarble = '-(b|)';
+      let delayMarble = '-a';
+      cold(delayMarble).subscribe(() => service.toggleDone=true);
+      expectObservable(service.done).toBe(expectedMarble,expectedFilterValues)
     })
   })
 });

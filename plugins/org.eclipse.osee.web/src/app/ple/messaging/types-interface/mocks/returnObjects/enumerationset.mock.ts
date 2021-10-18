@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { enumerationSet } from "../../types/enum";
+import { enumerationSet } from "../../../shared/types/enum";
 
 export const enumerationSetMock: enumerationSet[] = [
     {

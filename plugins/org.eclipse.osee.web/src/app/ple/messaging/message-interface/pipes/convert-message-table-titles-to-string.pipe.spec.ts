@@ -21,4 +21,9 @@ describe('ConvertMessageTableTitlesToStringPipe', () => {
     const pipe = new ConvertMessageTableTitlesToStringPipe();
     expect(pipe.transform('abcdef')).toEqual('abcdef')
   })
+
+  it('should return proper value if in list', () => {
+    const pipe = new ConvertMessageTableTitlesToStringPipe();
+    expect(pipe.transform('applicability')).toEqual('Applicability')
+  })
 });

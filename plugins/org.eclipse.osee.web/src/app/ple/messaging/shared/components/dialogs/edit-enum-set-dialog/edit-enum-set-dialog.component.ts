@@ -13,10 +13,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-import { applic } from '../../../shared/types/NamedId.applic';
-import { CurrentTypesService } from '../../services/current-types.service';
-import { enumerationSet } from '../../types/enum';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { applic } from '../../../types/NamedId.applic';
+import { enumerationSet } from '../../../types/enum';
+import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
+import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';
+import { PreferencesUIService } from '../../../services/ui/preferences-ui.service';
+import { enumsetDialogData } from '../../../types/EnumSetDialogData';
 
 @Component({
   selector: 'app-edit-enum-set-dialog',
@@ -25,13 +28,17 @@ import { enumerationSet } from '../../types/enum';
 })
 export class EditEnumSetDialogComponent implements OnInit {
 
-  applic = this.typesService.applic;
+  applic = this.applicabilityService.applic;
   enumObs = this.data.pipe(
-    switchMap((id) => this.typesService.getEnumSet(id)),
+    switchMap(({ id, isOnEditablePage }) => this.enumSetService.getEnumSet(id)),
     tap((value) => {
       this.enumSet.description=''
       this.enumSet.id = value.id;
     })
+  )
+
+  isOnEditablePage = this.data.pipe(
+    map(({id,isOnEditablePage})=>isOnEditablePage)
   )
   enumSet: Partial<enumerationSet> = {
     name: '',
@@ -41,8 +48,8 @@ export class EditEnumSetDialogComponent implements OnInit {
       name:''
     }
   };
-  inEditMode = this.typesService.inEditMode;
-  constructor(public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Observable<string>,private typesService: CurrentTypesService) { }
+  inEditMode = this.preferenceService.inEditMode;
+  constructor(public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Observable<enumsetDialogData>, private enumSetService:EnumerationUIService, private applicabilityService:ApplicabilityListUIService, private preferenceService: PreferencesUIService) { }
 
   ngOnInit(): void {
   }

@@ -44,12 +44,6 @@ export class PlConfigUIStateService {
   public get branchId() {
     return this._branchId.pipe(share());
   }
-  public set deleteReqConfig(deleteReq:string) {
-    this._deleteRequired.next(deleteReq);
-  }
-  public get deleteReq() {
-    return this._deleteRequired;
-  }
   public set updateReqConfig(updateReq: boolean) {
     this._updateRequired.next(updateReq);
   }
@@ -59,16 +53,13 @@ export class PlConfigUIStateService {
   public get loading() {
     return this._loading;
   }
-  public set loadingBool(loading: boolean) {
+  public set loadingValue(loading: boolean|string) {
     this._loading.next(loading.toString());
   }
   public get editable() {
     return this._editable;
   }
-  public set editableString(edit: string) {
-    this._editable.next(edit);
-  }
-  public set editableBool(edit: boolean) {
+  public set editableValue(edit: boolean |string) {
     this.editable.next(edit.toString())
   }
   public get errors() {

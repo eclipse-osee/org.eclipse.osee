@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { applic } from "../../shared/types/NamedId.applic";
-import { enumeration } from "./enum";
+import { enumeration } from "../../shared/types/enum";
 
 export interface newTypeDialogData {
     fields:logicalTypefieldValue[]

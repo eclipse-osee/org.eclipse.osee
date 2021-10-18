@@ -18,12 +18,13 @@ import { TypesService } from './types.service';
 import { PlatformType } from '../types/platformType'
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import { relation, transaction } from 'src/app/transactions/transaction';
+import { transaction } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
-import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
-import { EnumerationSetService } from './enumeration-set.service';
 import { applic } from '../../shared/types/NamedId.applic';
-import { enumeration, enumerationSet } from '../types/enum';
+import { enumeration, enumerationSet } from '../../shared/types/enum';
+import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
+import { EnumerationUIService } from '../../shared/services/ui/enumeration-ui.service';
+import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,7 @@ export class CurrentTypesService {
       repeatWhen(_ => this.uiService.typeUpdateRequired),
       share(),
       tap((y) => {
-        this.uiService.updateTypes = false;
+        //this.uiService.updateTypes = false;
         if (y.length <= this.uiService.columnCount.getValue()) {
           this.uiService.singleLineAdjustmentNumber = 30;
         } else {
@@ -48,54 +49,7 @@ export class CurrentTypesService {
     )),
   )
 
-  private _preferences = combineLatest([this.uiService.BranchId, this.userService.getUser()]).pipe(
-    share(),
-    filter(([id, user]) => id !== "" && id !== '-1'),
-    switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
-      repeatWhen(_ => this.uiService.typeUpdateRequired),
-      share(),
-      shareReplay(1)
-    )),
-    shareReplay(1)
-  );
-
-  private _inEditMode = this.preferences.pipe(
-    map((x) => x.inEditMode)
-  );
-
-  private _branchPrefs = combineLatest([this.uiService.BranchId, this.userService.getUser()]).pipe(
-    share(),
-    switchMap(([branch, user]) => this.preferenceService.getBranchPrefs(user).pipe(
-      repeatWhen(_ => this.uiService.typeUpdateRequired),
-      share(),
-      switchMap((branchPrefs) => from(branchPrefs).pipe(
-        filter((pref) => !pref.includes(branch + ":")),
-        reduce((acc, curr) => [...acc, curr], [] as string[])
-      )),
-      shareReplay(1)
-    )),
-    shareReplay(1)
-  );
-
-  private _applics = this.uiService.BranchId.pipe(
-    share(),
-    switchMap(id => this.applicabilityService.getApplicabilities(id).pipe(
-      repeatWhen(_ => this.uiService.typeUpdateRequired),
-      share(),
-      shareReplay(1),
-    )),
-    shareReplay(1),
-  )
-
-  private _enumSets = this.uiService.BranchId.pipe(
-    share(),
-    switchMap(id => this.enumSetService.getEnumSets(id).pipe(
-      share(),
-      shareReplay(1),
-    )),
-    shareReplay(1)
-  )
-  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: MimPreferencesService,private userService: UserDataAccountService, private applicabilityService: ApplicabilityListService, private enumSetService: EnumerationSetService) { }
+  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private userService: UserDataAccountService, private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService) { }
 
   /**
    * Returns a list of platform types based on current branch and filter conditions(debounced).
@@ -108,11 +62,11 @@ export class CurrentTypesService {
   }
 
   get applic(){
-    return this._applics;
+    return this.applicabilityService.applic;
   }
 
   get enumSets() {
-    return this._enumSets;
+    return this.enumSetService.enumSets;
   }
 
   /**
@@ -144,6 +98,7 @@ export class CurrentTypesService {
   }
   /**
    * Creates a new platform type using the platform types POST API, current branch,but without the id,idIntValue, and idString present and includes enum values
+   * @todo fix this up later to be in enumeration-ui.service
    * @param body @type {PlatformType} platform type to create
    * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
    */
@@ -221,13 +176,13 @@ export class CurrentTypesService {
   }
 
   public get preferences() {
-    return this._preferences;
+    return this.preferenceService.preferences;
   }
   public get inEditMode() {
-    return this._inEditMode;
+    return this.preferenceService.inEditMode;
   }
   public get BranchPrefs() {
-    return this._branchPrefs;
+    return this.preferenceService.BranchPrefs;
   }
 
   updatePreferences(preferences: settingsDialogData) {
@@ -285,17 +240,9 @@ export class CurrentTypesService {
       ))
   }
   getEnumSet(platformTypeId: string) {
-    return this.uiService.BranchId.pipe(
-      take(1),
-      switchMap((branchId)=>this.enumSetService.getEnumSet(branchId,platformTypeId))
-    )
+    return this.enumSetService.getEnumSet(platformTypeId);
   }
   changeEnumSet(changes:enumerationSet) {
-    return this.uiService.BranchId.pipe(
-      take(1),
-      switchMap((branchId) => this.enumSetService.changeEnumSet(branchId, changes).pipe(
-        switchMap((transaction)=>this.typesService.performMutation(transaction,branchId))
-      ))
-    )
+    return this.enumSetService.changeEnumSet(changes);
   }
 }

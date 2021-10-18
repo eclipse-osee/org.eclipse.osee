@@ -29,7 +29,7 @@ import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.co
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { of } from 'rxjs';
-import { enumerationSet } from '../../types/enum';
+import { enumerationSet } from '../../../shared/types/enum';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { currentTypesServiceMock } from '../../mocks/services/current.types.service.mock';
 

@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,7 @@ export class PlMessagingTypesUIService {
   private _singleLineAdjustment: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private _columnCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private _typesUpdateRequired: Subject<boolean> = new Subject<boolean>();
-  private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  constructor() { }
+  constructor(private ui: UiService) { }
 
   get filter() {
     return this._filter
@@ -57,18 +56,18 @@ export class PlMessagingTypesUIService {
   }
 
   get typeUpdateRequired() {
-    return this._typesUpdateRequired;
+    return this.ui.update;
   }
 
   set updateTypes(value: boolean) {
-    this._typesUpdateRequired.next(value);
+    this.ui.updated = value;
   }
 
   get BranchId() {
-    return this._branchId;
+    return this.ui.id;
   }
 
   set BranchIdString(value: string) {
-    this._branchId.next(value);
+    this.ui.idValue = value;
   }
 }

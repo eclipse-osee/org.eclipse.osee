@@ -32,11 +32,12 @@ import { NewTypeDialogComponent } from './components/new-type-dialog/new-type-di
 import { MatSelectModule } from '@angular/material/select';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
-import { EditEnumSetDialogComponent } from './components/edit-enum-set-dialog/edit-enum-set-dialog.component';
+import { SharedMessagingModule } from '../shared/shared-messaging.module';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @NgModule({
-  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent, EditEnumSetDialogComponent],
+  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent],
   imports: [
     CommonModule,
     MatCardModule,
@@ -47,10 +48,12 @@ import { EditEnumSetDialogComponent } from './components/edit-enum-set-dialog/ed
     MatDialogModule,
     MatSelectModule,
     MatStepperModule,
+    MatProgressBarModule,
     FormsModule,
     MatSlideToggleModule,
     MatTableModule,
     PleSharedMaterialModule,
+    SharedMessagingModule,
     TypesInterfaceRoutingModule
   ]
 })

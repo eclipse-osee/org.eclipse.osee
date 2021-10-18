@@ -28,14 +28,14 @@ import { platformTypes1 } from '../../type-element-search/testing/MockResponses/
 import { enumerationSetMock } from '../mocks/returnObjects/enumerationset.mock';
 import { logicalTypeMock } from '../mocks/returnObjects/logicalType.mock';
 import { logicalTypeFormDetailMock } from '../mocks/returnObjects/logicalTypeFormDetail.mock';
-import { enumerationSetServiceMock } from '../mocks/services/enumeration.set.service.mock';
+import { enumerationSetServiceMock } from '../../shared/mocks/enumeration.set.service.mock';
 import { typesServiceMock } from '../mocks/services/types.service.mock';
 import { TypesApiResponse } from '../types/ApiResponse';
 import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
 import { PlatformType } from '../types/platformType.d';
 
 import { CurrentTypesService } from './current-types.service';
-import { EnumerationSetService } from './enumeration-set.service';
+import { EnumerationSetService } from '../../shared/services/http/enumeration-set.service';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 import { TypesService } from './types.service';
 

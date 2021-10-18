@@ -25,7 +25,7 @@ export class PlConfigSetLoadingIndicatorInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler):
         Observable<HttpEvent<any>> {
         this.requests.push(req);
-        this.uiStateService.loadingBool = true;
+        this.uiStateService.loadingValue = true;
         this.messageUIHttpLoadingService.loading = true;
         return new Observable((observer: { next: (arg0: HttpEvent<any>) => void; error: (arg0: any) => void; complete: () => void; }) => {
             const subscription = next.handle(req)
@@ -57,7 +57,7 @@ export class PlConfigSetLoadingIndicatorInterceptor implements HttpInterceptor {
         if (index >= 0) {
             this.requests.splice(index, 1);
         }
-        this.uiStateService.loadingBool = this.requests.length > 0;
+        this.uiStateService.loadingValue = this.requests.length > 0;
         this.messageUIHttpLoadingService.loading = this.requests.length > 0;
     }
 }

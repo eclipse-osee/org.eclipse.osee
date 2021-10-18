@@ -26,7 +26,7 @@ import {
 } from 'rxjs/operators';
 import { applic } from '../../../shared/types/NamedId.applic';
 import { CurrentTypesService } from '../../services/current-types.service';
-import { enumeration, enumerationSet } from '../../types/enum';
+import { enumeration, enumerationSet } from '../../../shared/types/enum';
 import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../types/logicaltype';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../types/platformType';

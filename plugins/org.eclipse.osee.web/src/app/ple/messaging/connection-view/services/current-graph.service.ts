@@ -33,12 +33,14 @@ export class CurrentGraphService {
 
   private _nodes = this.routeStateService.id.pipe(
     share(),
-    filter((val)=>val!=="" && val!=='-1'),
-    switchMap((val) => this.graphService.getNodes(val).pipe(
+    switchMap((val) => iif(() => val !== "" && val !== '-1' && val !== undefined,
+      this.graphService.getNodes(val).pipe(
       map((split) => this.transform(split)),
       repeatWhen(_=>this.updated),
       share(),
       shareReplay(1),
+    ),
+      of({ nodes: [], edges: [] })
     )),
     shareReplay(1),
   )

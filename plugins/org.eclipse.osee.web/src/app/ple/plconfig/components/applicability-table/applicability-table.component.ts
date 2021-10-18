@@ -65,7 +65,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
       this.sorter.reset();
       this.sorter.syncGroups(response.groups);
       this.sorter.syncViews(response.views);
-      this.uiStateService.editableBool = response.editable;
+      this.uiStateService.editableValue = response.editable;
       this.uiStateService.groupsString = response.groups.map(a => a.id);
       this.dataSource.data = [];
       this.dataSource.data = response.features;
@@ -88,7 +88,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
     })
    }
   ngOnChanges(changes: SimpleChanges): void {
-    this.uiStateService.editableBool = false;
+    this.uiStateService.editableValue = false;
   }
 
   ngOnInit(): void {

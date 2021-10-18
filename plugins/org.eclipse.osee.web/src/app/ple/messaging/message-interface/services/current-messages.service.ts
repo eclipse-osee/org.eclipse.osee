@@ -11,18 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, from, iif, of } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, tap, shareReplay, take, filter, map, reduce } from 'rxjs/operators';
+import { combineLatest, from, iif, of, Subject } from 'rxjs';
+import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, tap, shareReplay, take, filter, map, reduce, takeUntil } from 'rxjs/operators';
 import { transaction } from 'src/app/transactions/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
-import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
+import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { message } from '../types/messages';
 import { subMessage } from '../types/sub-messages';
 import { MessagesService } from './messages.service';
 import { SubMessagesService } from './sub-messages.service';
-import { UiService } from './ui.service';
+import { MessageUiService } from './ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class CurrentMessagesService {
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
     )),
-    shareReplay(1)
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
   
   private _allMessages = combineLatest(this.BranchId,this.connectionId).pipe(
@@ -48,42 +48,8 @@ export class CurrentMessagesService {
     ))
   )
 
-  private _applics = this.ui.BranchId.pipe(
-    share(),
-    switchMap(id => this.applicabilityService.getApplicabilities(id).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-      shareReplay(1),
-    )),
-    shareReplay(1),
-  )
-
-  private _preferences = combineLatest([this.ui.BranchId, this.userService.getUser()]).pipe(
-    share(),
-    filter(([id, user]) => id !== "" && id !== '-1' && id!=='0'),
-    switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-      shareReplay(1)
-    )),
-    shareReplay(1)
-  )
-
-  private _branchPrefs = combineLatest([this.ui.BranchId, this.userService.getUser()]).pipe(
-    share(),
-    switchMap(([branch,user]) => this.preferenceService.getBranchPrefs(user).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-      switchMap((branchPrefs) => from(branchPrefs).pipe(
-        filter((pref) => !pref.includes(branch + ":")),
-        reduce((acc, curr) => [...acc, curr], [] as string[]),
-      )),
-      shareReplay(1) 
-    )),
-    shareReplay(1),
-  )
-
-  constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: UiService, private applicabilityService: ApplicabilityListService, private preferenceService: MimPreferencesService, private userService: UserDataAccountService) { }
+  private _done = new Subject();
+  constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: MessageUiService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private userService: UserDataAccountService) { }
 
   get messages() {
     return this._messages;
@@ -113,15 +79,15 @@ export class CurrentMessagesService {
     return this.ui.connectionId;
   }
   get applic() {
-    return this._applics;
+    return this.applicabilityService.applic;
   }
 
   get preferences() {
-    return this._preferences;
+    return this.preferenceService.preferences;
   }
 
   get BranchPrefs() {
-    return this._branchPrefs;
+    return this.preferenceService.BranchPrefs;
   }
 
   partialUpdateSubMessage(body: Partial<subMessage>, messageId: string) {
@@ -303,5 +269,14 @@ export class CurrentMessagesService {
           ),
         )
       ))
+  }
+
+  set toggleDone(value: any) {
+    this._done.next();
+    this._done.complete();
+  }
+
+  get done() {
+    return this._done;
   }
 }

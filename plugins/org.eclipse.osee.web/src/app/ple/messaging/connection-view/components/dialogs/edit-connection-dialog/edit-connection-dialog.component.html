@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>Editing {{title}}</h1>
-<div mat-dialog-content>
+<mat-dialog-content>
     <mat-form-field id='connection-name-field'>
         <mat-label>Add a Name</mat-label>
         <input matInput type="text" [(ngModel)]="data.name" #input required>
@@ -39,7 +39,7 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-</div>
+</mat-dialog-content>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Cancel</button>
     <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0">Ok</button>

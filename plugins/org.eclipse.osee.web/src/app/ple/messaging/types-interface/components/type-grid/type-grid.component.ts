@@ -19,7 +19,7 @@ import { ColumnPreferencesDialogComponent } from '../../../shared/components/dia
 import { applic } from '../../../shared/types/NamedId.applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
-import { enumeration } from '../../types/enum';
+import { enumeration } from '../../../shared/types/enum';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../types/platformType';
 import { NewTypeDialogComponent } from '../new-type-dialog/new-type-dialog.component';
