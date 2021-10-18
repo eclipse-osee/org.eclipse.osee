@@ -59,6 +59,9 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
             if (branchProvider.getBranch().isValid()) {
 
                Artifact assocArt = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
+               if (assocArt.isInvalid()) {
+                  AWorkbench.popup("This branch does not have an associated artifact.");
+               }
                RendererManager.openInJob(assocArt, PresentationType.SPECIALIZED_EDIT);
 
             } else {
