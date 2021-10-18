@@ -211,6 +211,7 @@ public class WidgetPageUtil {
          for (Entry<String, Object> pair : widgetDef.getParameters().entrySet()) {
             data.getParameters().put(pair.getKey(), pair.getValue());
          }
+         data.setConditions(widgetDef.getConditions());
          dynamicXWidgetLayout.addWorkLayoutData(data);
       } catch (Exception ex) {
          data = new XWidgetRendererItem(dynamicXWidgetLayout);

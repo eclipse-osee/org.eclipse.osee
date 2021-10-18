@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.Edit
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -44,6 +45,7 @@ public class ArtEdAttrXViewer extends XViewer {
    }
 
    private ArtEdAttrXViewerMenu attrMenu;
+   private final Composite parent;
 
    public ArtEdAttrXViewer(Composite parent, int style, IOseeTreeReportProvider reportProvider, Artifact artifact) {
       this(parent, style, artifact, new ArtEdAttrXViewerFactory(reportProvider));
@@ -51,17 +53,20 @@ public class ArtEdAttrXViewer extends XViewer {
 
    public ArtEdAttrXViewer(Composite parent, int style, Artifact artifact, IXViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
+      this.parent = parent;
       this.artifact = artifact;
    }
 
    public void loadTable(Artifact artifact) {
-      Displays.ensureInDisplayThread(new Runnable() {
+      if (Widgets.isAccessible(parent)) {
+         Displays.ensureInDisplayThread(new Runnable() {
 
-         @Override
-         public void run() {
-            setInput(artifact.getAttributes());
-         }
-      });
+            @Override
+            public void run() {
+               setInput(artifact.getAttributes());
+            }
+         });
+      }
    }
 
    @Override

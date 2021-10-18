@@ -8,7 +8,8 @@ Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.ui.skynet.internal.Activator
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: com.fasterxml.jackson.core.type,
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core.type,
  com.fasterxml.jackson.databind,
  com.google.common.base,
  com.google.common.cache,
@@ -137,7 +138,7 @@ Import-Package: com.fasterxml.jackson.core.type,
  org.eclipse.osee.framework.ui.swt.styledText,
  org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.jdbc,
-  org.eclipse.osee.orcs.rest.model,
+ org.eclipse.osee.orcs.rest.model,
  org.eclipse.search.ui,
  org.eclipse.search.ui.text,
  org.eclipse.swt,
@@ -253,4 +254,5 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column
 Require-Bundle: org.eclipse.ui.workbench,
- org.eclipse.debug.ui
+ org.eclipse.debug.ui,
+ org.eclipse.osee.framework.core

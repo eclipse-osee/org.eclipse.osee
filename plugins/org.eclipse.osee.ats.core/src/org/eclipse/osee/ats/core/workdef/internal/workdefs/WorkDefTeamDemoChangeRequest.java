@@ -60,7 +60,7 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
             new CompositeLayoutItem(4,
                new WidgetDefinition(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERTICALLY),
-               new WidgetDefinition(AtsAttributeTypes.WorkaroundDescription, "XTextDam", FILL_VERTICALLY) //
+               new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XRadioButtonsBooleanTriStateDam",
@@ -102,8 +102,8 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
                AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.WorkaroundDescription, "XTextDam", FILL_VERTICALLY,
-               REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION,
+               AUTO_SAVE), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.RootCause, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
                new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY, AUTO_SAVE) //

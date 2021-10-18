@@ -32,6 +32,8 @@ public class XRadioButtonsBooleanTriStateDam extends XRadioButtonsBooleanTriStat
    @Override
    protected void handleSelection(XRadioButton button) {
       super.handleSelection(button);
+      // Even though refresh will do this, setting here gives user immediate feedback
+      button.setSelected(true);
       if (selected.isUnSet()) {
          artifact.deleteAttributes(attributeType);
       } else if (selected.isYes()) {
@@ -71,6 +73,14 @@ public class XRadioButtonsBooleanTriStateDam extends XRadioButtonsBooleanTriStat
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
+      String str = artifact.getSoleAttributeValueAsString(attributeType, "");
+      if ("true".equals(str)) {
+         selected = BooleanState.Yes;
+      } else if ("false".equals(str)) {
+         selected = BooleanState.No;
+      } else {
+         selected = BooleanState.UnSet;
+      }
       refresh();
    }
 
