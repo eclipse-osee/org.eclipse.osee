@@ -148,6 +148,7 @@ public class SwtXWidgetRenderer {
 
       xWidget.setArtifactType(xWidgetRenderItem.getArtifactType());
       xWidget.setValues(xWidgetRenderItem.getValues());
+      xWidget.setConditions(xWidgetRenderItem.getConditions());
 
       return xWidget;
    }

@@ -547,7 +547,7 @@ public class XText extends XWidget {
       if (!status.isOK()) {
          return status;
       }
-      if (isRequiredEntry() && isEmpty()) {
+      if (sText.isEnabled() && isRequiredEntry() && isEmpty()) {
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Must enter \"%s\"", getLabel()));
       }
       return Status.OK_STATUS;

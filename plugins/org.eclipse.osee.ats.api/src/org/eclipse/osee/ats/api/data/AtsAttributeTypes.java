@@ -196,7 +196,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean VersionLocked = ats.createBoolean(1152921504606847156L, "ats.Version Locked", MediaType.TEXT_PLAIN, "True if version artifact is locked.");
    AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", MediaType.TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact");
    AttributeTypeDouble WeeklyBenefit = ats.createDouble(1152921504606847186L, "ats.Weekly Benefit", MediaType.TEXT_PLAIN, "Estimated number of hours that will be saved over a single year if this change is completed.");
-   AttributeTypeString WorkaroundDescription = ats.createString(1311070965L, "ats.Workaround Description", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Workaround = ats.createString(1311070965L, "ats.Workaround", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
    AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", MediaType.TEXT_PLAIN, "");

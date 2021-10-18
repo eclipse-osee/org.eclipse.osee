@@ -245,7 +245,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(ValidationRequired)
       .zeroOrOne(WeeklyBenefit)
-      .zeroOrOne(WorkaroundDescription)
+      .zeroOrOne(Workaround)
       .any(GitChangeId)
       .zeroOrOne(BurnDownData));
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)

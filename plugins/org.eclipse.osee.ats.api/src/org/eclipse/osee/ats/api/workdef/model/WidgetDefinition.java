@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -22,6 +24,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristic;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -34,6 +37,7 @@ public class WidgetDefinition extends LayoutItem {
    private final Map<String, Object> parameters = new HashMap<String, Object>();
    private final RelationTypeSide relationTypeSide;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
+   private List<ConditionalRule> conditions = new ArrayList<>();
 
    private String toolTip;
    private String description;
@@ -74,6 +78,11 @@ public class WidgetDefinition extends LayoutItem {
       }
    }
 
+   public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, List<ConditionalRule> conditions, WidgetOption... widgetOptions) {
+      this(attrType, xWidgetName, widgetOptions);
+      this.conditions = conditions;
+   }
+
    public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
       this(attrType.getUnqualifiedName(), RelationTypeSide.SENTINEL, attrType, ComputedCharacteristicToken.SENTINEL,
          xWidgetName, widgetOptions);
@@ -82,6 +91,11 @@ public class WidgetDefinition extends LayoutItem {
    public WidgetDefinition(ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
       this(computedCharacteristic.getName(), RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL,
          computedCharacteristic, xWidgetName, widgetOptions);
+   }
+
+   public WidgetDefinition(String name, AttributeTypeToken attrType, String xWidgetName, List<ConditionalRule> conditions, WidgetOption... widgetOptions) {
+      this(name, attrType, xWidgetName, widgetOptions);
+      this.conditions = conditions;
    }
 
    public String getToolTip() {
@@ -179,5 +193,13 @@ public class WidgetDefinition extends LayoutItem {
 
    public Map<String, Object> getParameters() {
       return parameters;
+   }
+
+   public List<ConditionalRule> getConditions() {
+      return conditions;
+   }
+
+   public void setConditions(List<ConditionalRule> conditions) {
+      this.conditions = conditions;
    }
 }

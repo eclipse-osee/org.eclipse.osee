@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -75,6 +77,7 @@ public abstract class XWidget {
    private boolean useLabelFont = true;
    private ISelectableValueProvider valueProvider;
    private Collection<? extends Object> values = new ArrayList<Object>();
+   private List<ConditionalRule> conditions = new ArrayList<>();
 
    public XWidget(String label) {
       this.label = label;
@@ -499,6 +502,14 @@ public abstract class XWidget {
 
    public void setValues(Collection<? extends Object> values) {
       this.values = values;
+   }
+
+   public List<ConditionalRule> getConditions() {
+      return conditions;
+   }
+
+   public void setConditions(List<ConditionalRule> conditions) {
+      this.conditions = conditions;
    }
 
 }
