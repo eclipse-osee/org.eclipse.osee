@@ -15,16 +15,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { message } from '../../types/messages';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
-import { filter, first, map, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { filter, first, map, share, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, iif, of } from 'rxjs';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RemoveMessageDialogComponent } from '../dialogs/remove-message-dialog/remove-message-dialog.component';
 import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/delete-message-dialog.component';
+import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
+import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
+import { HeaderService } from '../../../shared/services/ui/header.service';
 
 @Component({
   selector: 'ple-messaging-message-table',
@@ -46,17 +48,20 @@ import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/d
   ]
 })
 export class MessageTableComponent implements OnInit {
-  messageData = this.messageService.messages;
-  dataSource: MatTableDataSource<message> = new MatTableDataSource<message>();
-  headers: string[] = [];
+  messageData = this.messageService.messages.pipe(
+    switchMap((data)=>of(new MatTableDataSource<message>(data))),
+    takeUntil(this.messageService.done));
+  // dataSource: MatTableDataSource<message> = new MatTableDataSource<message>();
+  headers = this.headerService.AllMessageHeaders;
   expandedElement: string[] = [];
   filter: string = "";
   searchTerms: string = "";
-  preferences = this.messageService.preferences;
+  preferences = this.messageService.preferences.pipe(takeUntil(this.messageService.done));
   inEditMode = this.preferences.pipe(
     map((r) => r.inEditMode),
     share(),
-    shareReplay(1)
+    shareReplay(1),
+    takeUntil(this.messageService.done)
   );
   menuPosition = {
     x: '0',
@@ -64,12 +69,7 @@ export class MessageTableComponent implements OnInit {
   }
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
-  constructor (private messageService: CurrentMessagesService,public dialog: MatDialog) {
-    this.messageData.subscribe((value) => {
-      this.dataSource.data = value;
-    })
-    this.headers = ["name","description","interfaceMessageNumber","interfaceMessagePeriodicity","interfaceMessageRate","interfaceMessageWriteAccess","interfaceMessageType",'applicability'];
-   }
+  constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService) {}
 
   ngOnInit(): void {}
   expandRow(value: string) {
@@ -174,5 +174,29 @@ export class MessageTableComponent implements OnInit {
         of()
       ))
     ).subscribe();
+  }
+
+  openDescriptionDialog(description: string,messageId:string) {
+    this.dialog.open(EditViewFreeTextFieldDialogComponent, {
+      data: {
+        original: JSON.parse(JSON.stringify(description)) as string,
+        type: 'Description',
+        return: description
+      },
+      minHeight: '60%',
+      minWidth:'60%'
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((response: EditViewFreeTextDialog | string) => iif(() => response === 'ok' || response === 'cancel'|| response === undefined,
+      //do nothing
+      of(),
+      //change description
+      this.messageService.partialUpdateMessage({id:messageId,description:(response as EditViewFreeTextDialog).return})
+      ))
+    ).subscribe();
+  }
+
+  getHeaderByName(value: string) {
+    return this.headerService.getHeaderByName(value,'message');
   }
 }

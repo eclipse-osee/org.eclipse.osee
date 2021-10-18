@@ -20,6 +20,7 @@ export const elementsMock: element[] = [
         notes: '',
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
-        interfaceElementIndexStart:0
+        interfaceElementIndexStart: 0,
+        logicalType:'enumeration'
     }
 ]

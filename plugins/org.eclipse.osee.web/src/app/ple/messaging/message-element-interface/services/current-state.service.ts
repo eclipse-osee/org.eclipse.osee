@@ -11,13 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, from, iif, Observable, of } from 'rxjs';
+import { combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, filter, take, map, reduce, delay } from 'rxjs/operators';
 import { transaction } from 'src/app/transactions/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
-import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
-import { MimPreferences } from '../../shared/types/mim.preferences';
+import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
+import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { element } from '../types/element';
 import { structure } from '../types/structure';
@@ -25,23 +24,22 @@ import { ElementService } from './element.service';
 import { MessagesService } from './messages.service';
 import { PlatformTypeService } from './platform-type.service';
 import { StructuresService } from './structures.service';
-import { UiService } from './ui.service';
+import { ElementUiService } from './ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrentStateService {
 
-  private _structures = combineLatest(this.ui.filter, this.ui.BranchId, this.ui.messageId, this.ui.subMessageId,this.ui.connectionId).pipe(
+  private _structures = combineLatest([this.ui.filter, this.ui.BranchId, this.ui.messageId, this.ui.subMessageId,this.ui.connectionId]).pipe(
     share(),
     debounceTime(500),
     distinctUntilChanged(),
     switchMap(x => this.structure.getFilteredStructures(...x).pipe(
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
-      shareReplay(1),
     )),
-    shareReplay(1),
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   private _types = this.ui.BranchId.pipe(
@@ -49,47 +47,11 @@ export class CurrentStateService {
     switchMap(x => this.typeService.getTypes(x).pipe(
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
-      shareReplay(1),
     )),
-    shareReplay(1),
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
-
-  private _applics = this.ui.BranchId.pipe(
-    share(),
-    switchMap(id => this.applicabilityService.getApplicabilities(id).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-      shareReplay(1),
-    )),
-    shareReplay(1),
-  )
-
-  private _preferences = combineLatest([this.ui.BranchId, this.userService.getUser()]).pipe(
-    share(),
-    filter(([id, user]) => id !== "" && id !== '-1' && id!=='0'),
-    switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-      shareReplay(1)
-    )),
-    shareReplay(1)
-  )
-
-  private _branchPrefs = combineLatest([this.ui.BranchId, this.userService.getUser()]).pipe(
-    share(),
-    switchMap(([branch,user]) => this.preferenceService.getBranchPrefs(user).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-      switchMap((branchPrefs) => from(branchPrefs).pipe(
-        filter((pref) => !pref.includes(branch + ":")),
-        reduce((acc, curr) => [...acc, curr], [] as string[]),
-      )),
-      shareReplay(1) 
-    )),
-    shareReplay(1),
-  )
-
-  constructor (private ui: UiService, private structure: StructuresService, private messages:MessagesService, private elements:ElementService, private typeService: PlatformTypeService, private applicabilityService: ApplicabilityListService,private preferenceService: MimPreferencesService, private userService: UserDataAccountService) { }
+  private _done = new Subject();
+  constructor (private ui: ElementUiService, private structure: StructuresService, private messages:MessagesService, private elements:ElementService, private typeService: PlatformTypeService, private applicabilityService: ApplicabilityListUIService,private preferenceService: PreferencesUIService, private userService: UserDataAccountService) { }
   
   get structures() {
     return this._structures;
@@ -143,11 +105,28 @@ export class CurrentStateService {
   }
 
   get preferences() {
-    return this._preferences;
+    return this.preferenceService.preferences;
   }
 
   get BranchPrefs() {
-    return this._branchPrefs;
+    return this.preferenceService.BranchPrefs;
+  }
+
+  set toggleDone(value: any) {
+    this._done.next();
+    this._done.complete();
+  }
+
+  get done() {
+    return this._done;
+  }
+  
+  get updated() {
+    return this.ui.UpdateRequired;
+  }
+
+  set update(value: boolean) {
+    this.ui.updateMessages = value;
   }
 
   private get structureObservable(){
@@ -186,7 +165,7 @@ export class CurrentStateService {
   }
 
   get applic() {
-    return this._applics;
+    return this.applicabilityService.applic;
   }
 
   createStructure(body: Partial<structure>) {
@@ -371,6 +350,20 @@ export class CurrentStateService {
             this.ui.updateMessages = true;
           })
         ))
+      ))
+    )
+  }
+
+  getStructure(structureId: string) {
+    return combineLatest([this.BranchId, this.MessageId, this.SubMessageId, this.connectionId]).pipe(
+      switchMap(([branch,message,submessage,connection])=>this.structure.getStructure(branch,message,submessage,structureId,connection))
+    )
+  }
+
+  getStructureRepeating(structureId: string) {
+    return combineLatest([this.BranchId, this.MessageId, this.SubMessageId, this.connectionId]).pipe(
+      switchMap(([branch, message, submessage, connection]) => this.structure.getStructure(branch, message, submessage, structureId, connection).pipe(
+        repeatWhen(_=>this.ui.UpdateRequired)
       ))
     )
   }

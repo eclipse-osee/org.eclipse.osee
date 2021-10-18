@@ -362,12 +362,12 @@ export class PlConfigCurrentBranchService {
   }
   public setLoadingIndicator() {
     if (!(this.uiStateService.loading.getValue()==='true')) {
-      this.uiStateService.loadingBool = true;
+      this.uiStateService.loadingValue = true;
     }
   }
   public turnOffLoadingIndicator() {
     if ((this.uiStateService.loading.getValue()==='true')) {
-      this.uiStateService.loadingBool = false;
+      this.uiStateService.loadingValue = false;
     }
   }
   public addConfigurationGroup(cfgGroup:ConfigurationGroupDefinition) {

@@ -12,18 +12,16 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UiService {
+export class MessageUiService {
 
   private _filter: BehaviorSubject<string> = new BehaviorSubject<string>("");
-
-  private _UpdateRequired: Subject<boolean> = new Subject<boolean>();
-  private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  constructor() { }
+  constructor(private ui: UiService) { }
 
   get filter() {
     return this._filter
@@ -36,19 +34,19 @@ export class UiService {
   }
 
   get UpdateRequired() {
-    return this._UpdateRequired;
+    return this.ui.update;
   }
 
   set updateMessages(value: boolean) {
-    this._UpdateRequired.next(value);
+    this.ui.updated = value;
   }
 
   get BranchId() {
-    return this._branchId;
+    return this.ui.id;
   }
 
   set BranchIdString(value: string) {
-    this._branchId.next(value);
+    this.ui.idValue = value;
   }
 
   get connectionId() {

@@ -11,17 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { count } from 'rxjs/operators';
-import {TestScheduler} from 'rxjs/testing'
-import { UiService } from './ui.service';
+import { TestScheduler } from 'rxjs/testing'
+import { ElementUiService } from './ui.service';
 
 describe('UiService', () => {
-  let service: UiService;
+  let service: ElementUiService;
   let scheduler: TestScheduler;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(UiService);
+    service = TestBed.inject(ElementUiService);
   });
 
   beforeEach(() => scheduler = new TestScheduler((actual, expected) => {

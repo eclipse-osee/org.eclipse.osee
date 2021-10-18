@@ -117,4 +117,12 @@ describe('EnumerationSetServiceService', () => {
     req.flush({});
     httpTestingController.verify();
   })
+
+  it('should perform a mutation', () => {
+    service.performMutation({ branch: '10', txComment: '' },'10').subscribe();
+    const req = httpTestingController.expectOne(apiURL+'/orcs/txs');
+    expect(req.request.method).toEqual('POST');
+    req.flush({});
+    httpTestingController.verify();
+  })
 });

@@ -13,15 +13,15 @@
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 
-import { UiService } from './ui.service';
+import { MessageUiService } from './ui.service';
 
 describe('UiService', () => {
-  let service: UiService;
+  let service: MessageUiService;
   let scheduler: TestScheduler;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(UiService);
+    service = TestBed.inject(MessageUiService);
   });
 
   beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
@@ -59,8 +59,9 @@ describe('UiService', () => {
   it('should set update value', () => {
     scheduler.run(({ cold }) => {
       const expectedfilterValues = { a: true, b:false };
-      const expectedMarble = '-a'
-      cold(expectedMarble).subscribe(() => service.updateMessages = true);
+      const delayMarble = '-a'
+      const expectedMarble='101ms a'
+      cold(delayMarble).subscribe(() => service.updateMessages = true);
       scheduler.expectObservable(service.UpdateRequired).toBe(expectedMarble, expectedfilterValues);
     })
   })

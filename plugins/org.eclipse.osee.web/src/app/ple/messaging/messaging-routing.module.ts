@@ -26,6 +26,7 @@ const routes: Routes = [
   { path: 'typeSearch', loadChildren: () => import('./type-element-search/type-element-search.module').then(m => m.TypeElementSearchModule) },
   { path: ':branchType/typeSearch', loadChildren: () => import('./type-element-search/type-element-search.module').then(m => m.TypeElementSearchModule) },
   { path: ':branchType/:branchId/typeSearch', loadChildren: () => import('./type-element-search/type-element-search.module').then(m => m.TypeElementSearchModule) },
+  { path: 'help', loadChildren: () => import('./messaging-help/messaging-help.module').then(m => m.MessagingHelpModule) },
 ];
 
 @NgModule({

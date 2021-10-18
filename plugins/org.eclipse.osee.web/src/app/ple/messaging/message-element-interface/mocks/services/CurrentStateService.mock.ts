@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, Subject } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentStateService } from "../../services/current-state.service";
@@ -44,6 +44,7 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     deleteStructure(structureId: string) {
         return of(elementResponseMock);
     },
+    done:new Subject(),
     applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
     types: of(platformTypesMock),
     preferences: of(MimPreferencesMock),
@@ -54,5 +55,13 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     connection: "10",
     SubMessageId:new BehaviorSubject("10"),
     BranchId: new BehaviorSubject("10"),
-    branchType: new BehaviorSubject("working")
+    branchType: new BehaviorSubject("working"),
+    MessageId: new BehaviorSubject("10"),
+    connectionId:new BehaviorSubject("10"),
+    getStructure(structureId: string) {
+        return of(structuresMock[0])
+    },
+    getStructureRepeating(structureId: string) {
+        return of(structuresMock[0])
+    }
 }

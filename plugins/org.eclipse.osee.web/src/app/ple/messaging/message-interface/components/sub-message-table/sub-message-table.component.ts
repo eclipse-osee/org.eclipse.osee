@@ -17,6 +17,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
+import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
+import { HeaderService } from '../../../shared/services/ui/header.service';
+import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { message } from '../../types/messages';
@@ -38,16 +41,17 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   @Input() element!: message;
   @Input() editMode: boolean = false;
   @Output() expandRow = new EventEmitter();
-  headers: string[] = [];
+  headers = this.headerService.AllSubMessageHeaders.pipe(
+    switchMap(([name,description,number,applicability])=>of([name,description,number," ",applicability]))
+  );
   menuPosition = {
     x: '0',
     y:'0'
   }
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
-  constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService) {
+  constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService, private headerService: HeaderService) {
     this.dataSource.data = this.data;
-    this.headers=["name","description","interfaceSubMessageNumber", " ","applicability"]
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.data;
@@ -130,4 +134,27 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     ).subscribe();
   }
 
+  openDescriptionDialog(description: string,submessageId:string,messageId:string) {
+    this.dialog.open(EditViewFreeTextFieldDialogComponent, {
+      data: {
+        original: JSON.parse(JSON.stringify(description)) as string,
+        type: 'Description',
+        return: description
+      },
+      minHeight: '60%',
+      minWidth:'60%'
+    }).afterClosed().pipe(
+      take(1),
+      switchMap((response: EditViewFreeTextDialog | string) => iif(() => response === 'ok' || response === 'cancel'|| response === undefined,
+      //do nothing
+      of(),
+      //change description
+      this.messageService.partialUpdateSubMessage({id:submessageId,description:(response as EditViewFreeTextDialog).return},messageId)
+      ))
+    ).subscribe();
+  }
+
+  getHeaderByName(value: string) {
+    return this.headerService.getHeaderByName(value,'submessage');
+  }
 }

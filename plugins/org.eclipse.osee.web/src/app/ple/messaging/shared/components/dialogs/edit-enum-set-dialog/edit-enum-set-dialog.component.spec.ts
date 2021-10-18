@@ -18,14 +18,20 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { currentTypesServiceMock } from '../../mocks/services/current.types.service.mock';
-import { CurrentTypesService } from '../../services/current-types.service';
+import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { applicabilityListServiceMock } from '../../../mocks/ApplicabilityListService.mock';
+import { enumerationSetServiceMock } from '../../../mocks/enumeration.set.service.mock';
+import { MimPreferencesServiceMock } from '../../../mocks/MimPreferencesService.mock';
+import { ApplicabilityListService } from '../../../services/http/applicability-list.service';
+import { EnumerationSetService } from '../../../services/http/enumeration-set.service';
+import { MimPreferencesService } from '../../../services/http/mim-preferences.service';
+import { enumsetDialogData } from '../../../types/EnumSetDialogData';
 
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
 
@@ -43,8 +49,11 @@ describe('EditEnumSetDialogComponent', () => {
           close() { return of(); }
         }
       },
-        { provide: MAT_DIALOG_DATA, useValue: of('1234567890') },
-        {provide: CurrentTypesService,useValue:currentTypesServiceMock}
+        { provide: MAT_DIALOG_DATA, useValue: of<enumsetDialogData>({ id:'1234567890', isOnEditablePage:true}) },
+        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
+        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
+        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
+        { provide: UserDataAccountService, useValue: userDataAccountServiceMock }
       ]
     })
     .compileComponents();

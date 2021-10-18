@@ -23,5 +23,6 @@ export interface element {
     beginWord?: number,
     beginByte?: number,
     endWord?: number,
-    endByte?:number
+    endByte?: number,
+    logicalType?:string
 }

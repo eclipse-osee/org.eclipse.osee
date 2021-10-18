@@ -45,9 +45,7 @@ export class ConfigurationDropdownComponent implements OnInit {
   }
 
   deleteConfig(config: {id:string , name:string}) {
-    this.currentBranchService.deleteConfiguration(config.id).pipe(take(1)).subscribe((response: response[]) => {
-      this.uiStateService.deleteReqConfig = config.name;
-    })
+    this.currentBranchService.deleteConfiguration(config.id).pipe(take(1)).subscribe();
   }
 
   openEditDialog(config: { id: string, name: string, hasFeatureApplicabilities: boolean },productApplicabilities?: string[]) {

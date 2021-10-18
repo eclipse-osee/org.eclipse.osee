@@ -22,6 +22,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTableHarness } from '@angular/material/table/testing';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -65,7 +66,7 @@ describe('SubMessageTableComponent', () => {
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl']);
     await TestBed.configureTestingModule({
-      imports:[MatTableModule, MatButtonModule,OseeStringUtilsDirectivesModule,OseeStringUtilsPipesModule, RouterTestingModule, MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
+      imports:[MatTableModule,MatTooltipModule, MatButtonModule,OseeStringUtilsDirectivesModule,OseeStringUtilsPipesModule, RouterTestingModule, MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
       declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent],
       providers: [{provide: CurrentMessagesService, useValue:CurrentMessageServiceMock},
         { provide: Router, useValue: router },
@@ -180,6 +181,32 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'navigateToElementsTableInNewTab').and.callThrough();
       await menu.clickItem({ text: "Open submessage details in new tab" });
       expect(spy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and dismiss a description', async () => {
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.stub();
+      await menu.clickItem({ text: "Open Description" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open the menu and edit a description', async () => {
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
+      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.stub();
+      await menu.clickItem({ text: "Open Description" });
+      expect(spy).toHaveBeenCalled();
+      expect(serviceSpy).toHaveBeenCalled();
     })
 
     it('should open the menu and remove a sub message', async () => {

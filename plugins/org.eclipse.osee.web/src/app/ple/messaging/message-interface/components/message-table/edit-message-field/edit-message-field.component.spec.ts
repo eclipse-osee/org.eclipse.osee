@@ -22,7 +22,7 @@ import { applicabilityListServiceMock } from 'src/app/ple/messaging/shared/mocks
 import { ApplicabilityListService } from 'src/app/ple/messaging/shared/services/http/applicability-list.service';
 import { apiURL } from 'src/environments/environment';
 import { ConvertMessageTableTitlesToStringPipe } from '../../../pipes/convert-message-table-titles-to-string.pipe';
-import { UiService } from '../../../services/ui.service';
+import { MessageUiService } from '../../../services/ui.service';
 
 import { EditMessageFieldComponent } from './edit-message-field.component';
 
@@ -30,7 +30,7 @@ describe('EditMessageFieldComponent', () => {
   let component: EditMessageFieldComponent;
   let fixture: ComponentFixture<EditMessageFieldComponent>;
   let httpTestingController: HttpTestingController;
-  let uiService: UiService;
+  let uiService: MessageUiService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -43,7 +43,7 @@ describe('EditMessageFieldComponent', () => {
 
   beforeEach(() => {
     httpTestingController = TestBed.inject(HttpTestingController);
-    uiService = TestBed.inject(UiService);
+    uiService = TestBed.inject(MessageUiService);
     fixture = TestBed.createComponent(EditMessageFieldComponent);
     component = fixture.componentInstance;
     component.header='applicability'

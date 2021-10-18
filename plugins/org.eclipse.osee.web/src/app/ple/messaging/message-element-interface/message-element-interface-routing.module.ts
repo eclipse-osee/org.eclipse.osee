@@ -12,9 +12,10 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { SingleStructureTableComponent } from './components/single-structure-table/single-structure-table.component';
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
 
-const routes: Routes = [{ path: '', component: MessageElementInterfaceComponent }];
+const routes: Routes = [{ path: '', component: MessageElementInterfaceComponent },{path:':structureId',component:SingleStructureTableComponent}];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

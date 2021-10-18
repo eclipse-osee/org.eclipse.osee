@@ -10,4 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+<ng-container *ngIf="(isLoading|async)==='true'">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
 <ple-messaging-types-type-grid [filterValue]="filterValue"></ple-messaging-types-type-grid>

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpLoadingService } from '../shared/services/ui/http-loading.service';
 import { CurrentMessagesService } from './services/current-messages.service';
@@ -20,10 +20,13 @@ import { CurrentMessagesService } from './services/current-messages.service';
   templateUrl: './message-interface.component.html',
   styleUrls: ['./message-interface.component.sass']
 })
-export class MessageInterfaceComponent implements OnInit {
+export class MessageInterfaceComponent implements OnInit,OnDestroy {
 
   isLoading = this.loadingService.isLoading;
   constructor(private route: ActivatedRoute, private messageService: CurrentMessagesService, private loadingService: HttpLoadingService) { }
+  ngOnDestroy(): void {
+    this.messageService.toggleDone=true;
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((values) => {

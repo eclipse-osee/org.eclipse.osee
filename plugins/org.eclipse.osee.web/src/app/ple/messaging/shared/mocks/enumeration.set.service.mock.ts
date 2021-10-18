@@ -13,9 +13,10 @@
 import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
 import { transactionMock } from "src/app/transactions/transaction.mock";
-import { EnumerationSetService } from "../../services/enumeration-set.service";
-import { enumeration, enumSet } from "../../types/enum";
-import { enumerationSetMock } from "../returnObjects/enumerationset.mock";
+import { EnumerationSetService } from "../services/http/enumeration-set.service";
+import { enumeration, enumSet } from "../types/enum";
+import { enumerationSetMock } from "../../types-interface/mocks/returnObjects/enumerationset.mock";
+import { response } from "../../connection-view/mocks/Response.mock";
 
 export const enumerationSetServiceMock: Partial<EnumerationSetService> = {
     createEnumSet(branchId: string, type: enumSet | Partial<enumSet>, relations: relation[], transaction?: transaction) {
@@ -37,9 +38,12 @@ export const enumerationSetServiceMock: Partial<EnumerationSetService> = {
         return of<relation>({ typeName: "Interface Enumeration Definition", sideA: sideA });
     },
     getEnumSets(branchId: string) {
-        return of(enumerationSetMock)
+        return of(enumerationSetMock);
     },
     getEnumSet(branchId: string, platformTypeId: string) {
-        return of(enumerationSetMock[0])
+        return of(enumerationSetMock[0]);
+    },
+    performMutation(body: transaction, branchId: string) {
+        return of(response);
     }
 }
