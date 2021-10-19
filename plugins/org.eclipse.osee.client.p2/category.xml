@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.client.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.client.feature" version="0.26.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.feature_1.0.0.qualifier.jar" id="org.eclipse.osee.client.feature" version="1.0.0.qualifier">
       <category name="org.eclipse.osee.client"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.26.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="1.0.0.qualifier">
       <category name="org.eclipse.osee.client"/>
    </feature>
-   <plugin url="features/org.eclipse.osee.client.demo_0.26.0.qualifier.jar" id="org.eclipse.osee.client.demo" version="0.26.0.qualifier">
+   <plugin url="features/org.eclipse.osee.client.demo_1.0.0.qualifier.jar" id="org.eclipse.osee.client.demo" version="1.0.0.qualifier">
       <category name="org.eclipse.osee.client.demo"/>
    </plugin>
-   <plugin url="features/org.eclipse.osee.client.demo.source_0.26.0.qualifier.jar" id="org.eclipse.osee.client.demo.source" version="0.26.0.qualifier">
+   <plugin url="features/org.eclipse.osee.client.demo.source_1.0.0.qualifier.jar" id="org.eclipse.osee.client.demo.source" version="1.0.0.qualifier">
       <category name="org.eclipse.osee.client.demo"/>
    </plugin>
-   <bundle id="org.eclipse.osee.client.test.framework" version="0.26.0.qualifier">
-      <category name="org.eclipse.osee.client.test"/>
+   <bundle id="org.eclipse.osee.client.test.framework">
+      <category name="org.eclipse.osee.client.test.framework"/>
    </bundle>
    <category-def name="org.eclipse.osee.client" label="Eclipse OSEE Client - (Incubation)">
       <description>

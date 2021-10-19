@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <bundle id="org.eclipse.osee.client.test.framework" version="0.26.0.qualifier">
-      <category name="org.eclipse.osee.test.framework"/>
+   <bundle id="org.eclipse.osee.client.test.framework">
+      <category name="org.eclipse.osee.client.test.framework"/>
    </bundle>
-   <category-def name="org.eclipse.osee.test.framework" label="OSEE Test Framework - (Incubation)">
+   <category-def name="org.eclipse.osee.client.test.framework" label="OSEE Test Framework - (Incubation)">
       <description>
          Eclipse OSEE Test Framwork - (Incubation)
       </description>
