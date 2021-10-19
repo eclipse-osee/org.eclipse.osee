@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -98,7 +99,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       if (toReturn != null) {
          return toReturn;
       }
-      return ApplicabilityToken.BASE;
+      throw new OseeCoreException("Applicability Token with app id %s not available", appId);
    }
 
    public List<ChangeItem> loadDeltasBetweenTxsOnTheSameBranch() {
