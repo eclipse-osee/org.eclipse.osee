@@ -465,6 +465,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                            listener.onBranchSelected(selectedBranch);
                         }
                      }
+                     branchXViewer.refresh();
                   }
                }
             });
