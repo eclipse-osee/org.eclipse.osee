@@ -81,7 +81,6 @@ public class XRadioButtonsBooleanTriStateDam extends XRadioButtonsBooleanTriStat
       } else {
          selected = BooleanState.UnSet;
       }
-      refresh();
    }
 
    @Override

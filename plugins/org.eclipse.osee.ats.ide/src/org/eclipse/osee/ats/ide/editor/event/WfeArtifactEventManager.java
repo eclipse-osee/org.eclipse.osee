@@ -54,7 +54,9 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
    }
 
    public static void add(WorkflowEditor editor) {
-      WfeArtifactEventManager.editors.add(editor);
+      if (!editors.contains(editor)) {
+         WfeArtifactEventManager.editors.add(editor);
+      }
    }
 
    public static void remove(WorkflowEditor editor) {

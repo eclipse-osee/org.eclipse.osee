@@ -53,27 +53,21 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.IMessage;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -167,7 +161,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                      createToolbar(managedForm);
                      setLoading(false);
                      createAtsBody();
-                     addMessageDecoration(managedForm.getForm());
+                     XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
                      FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      editor.onDirtied();
                   }
@@ -363,27 +357,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       managedForm.addPart(section);
       stateSections.add(section);
       statePages.add(statePage);
-   }
-
-   private void addMessageDecoration(ScrolledForm form) {
-      form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
-
-         @Override
-         public void linkActivated(HyperlinkEvent e) {
-            String title = e.getLabel();
-            Object href = e.getHref();
-            if (href instanceof IMessage[]) {
-               Point noteLocation = ((Control) e.widget).toDisplay(0, 0);
-               noteLocation.x += 10;
-               noteLocation.y += 10;
-
-               MessageSummaryNote note = new MessageSummaryNote(getManagedForm(), title, (IMessage[]) href);
-               note.setLocation(noteLocation);
-               note.open();
-            }
-         }
-
-      });
    }
 
    public XResultData isXWidgetDirty(XResultData rd) {

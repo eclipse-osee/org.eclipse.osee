@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IArtifactEditorProvider;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
@@ -55,6 +54,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -62,18 +62,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -164,7 +159,7 @@ public class ArtifactFormPage extends FormPage {
                   if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
                      setLoading(false);
                      createBody();
-                     addMessageDecoration(managedForm.getForm());
+                     XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
                      FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      editor.onDirtied();
                   }
@@ -228,7 +223,7 @@ public class ArtifactFormPage extends FormPage {
 
       addToolBar(toolkit, form, true);
       FormsUtil.addHeadingGradient(toolkit, form, true);
-      addMessageDecoration(form);
+      XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
 
@@ -251,27 +246,6 @@ public class ArtifactFormPage extends FormPage {
    @Override
    public ArtifactEditor getEditor() {
       return (ArtifactEditor) super.getEditor();
-   }
-
-   private void addMessageDecoration(ScrolledForm form) {
-      form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
-
-         @Override
-         public void linkActivated(HyperlinkEvent e) {
-            String title = e.getLabel();
-            Object href = e.getHref();
-            if (href instanceof IMessage[]) {
-               Point noteLocation = ((Control) e.widget).toDisplay(0, 0);
-               noteLocation.x += 10;
-               noteLocation.y += 10;
-
-               MessageSummaryNote note = new MessageSummaryNote(getManagedForm(), title, (IMessage[]) href);
-               note.setLocation(noteLocation);
-               note.open();
-            }
-         }
-
-      });
    }
 
    private void addToolBar(FormToolkit toolkit, ScrolledForm form, boolean add) {

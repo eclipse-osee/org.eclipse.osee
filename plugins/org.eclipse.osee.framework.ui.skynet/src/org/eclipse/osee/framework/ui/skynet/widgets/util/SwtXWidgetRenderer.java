@@ -290,10 +290,16 @@ public class SwtXWidgetRenderer {
          @Override
          public void run() {
             try {
+               if (managedForm != null) {
+                  managedForm.getMessageManager().setAutoUpdate(false);
+               }
                for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
                   xWidgetLayoutData.getXWidget().validate();
                }
                refreshOrAndXOrRequiredFlags();
+               if (managedForm != null) {
+                  managedForm.getMessageManager().setAutoUpdate(true);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
