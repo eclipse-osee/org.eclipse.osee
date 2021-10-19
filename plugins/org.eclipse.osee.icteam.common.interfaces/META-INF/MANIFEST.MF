@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iCTeam Common Interfaces (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.icteam.common.interfaces;singleton:=true
-Bundle-Version: 0.26.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.icteam.common.interfaces.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

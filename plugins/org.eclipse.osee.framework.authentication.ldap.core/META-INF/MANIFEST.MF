@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Osee Ldap Authentication
 Bundle-SymbolicName: org.eclipse.osee.framework.authentication.ldap.core;singleton:=true
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 0.26.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.codec
