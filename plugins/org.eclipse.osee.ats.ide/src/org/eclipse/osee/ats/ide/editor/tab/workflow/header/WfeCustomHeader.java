@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -72,7 +73,10 @@ public class WfeCustomHeader extends Composite {
 
       try {
          setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-         setLayout(ALayout.getZeroMarginLayout(1, false));
+         GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(1, false);
+         zeroMarginLayout.marginWidth = 4;
+         zeroMarginLayout.horizontalSpacing = 8;
+         setLayout(zeroMarginLayout);
          // section.setBackground(Displays.getSystemColor(SWT.COLOR_GREEN));
 
          createBody();
@@ -107,6 +111,9 @@ public class WfeCustomHeader extends Composite {
 
       // Set all XWidget labels to bold font
       XWidgetUtility.setLabelFontsBold(allXWidgets);
+
+      Composite childComp = (Composite) getChildren()[0];
+      childComp.setLayout(ALayout.getZeroMarginLayout());
 
       computeTextSizesAndReflow();
 

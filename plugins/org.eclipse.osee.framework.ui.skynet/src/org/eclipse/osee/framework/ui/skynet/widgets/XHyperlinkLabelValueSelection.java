@@ -138,6 +138,11 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    @Override
    public Control getControl() {
+      if (labelWidget != null) {
+         return labelWidget;
+      } else if (labelHyperlink != null) {
+         return labelHyperlink;
+      }
       return comp;
    }
 

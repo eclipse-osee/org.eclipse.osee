@@ -183,7 +183,7 @@ public abstract class XWidget {
       if (Widgets.isAccessible(control) && isFormReady() && areNotificationsAllowed()) {
          IStatus status = isValid();
          if (isInForm()) {
-            XWidgetValidateUtility.setStatus(status, this);
+            XWidgetUtility.setStatus(status, this);
          } else {
             if (Widgets.isAccessible(labelWidget)) {
                labelWidget.setForeground(status.isOK() ? null : Displays.getSystemColor(SWT.COLOR_RED));

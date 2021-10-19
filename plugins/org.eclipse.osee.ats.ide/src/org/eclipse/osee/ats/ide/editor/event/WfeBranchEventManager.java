@@ -49,7 +49,7 @@ public class WfeBranchEventManager implements IBranchEventListener {
 
    public static void add(WorkflowEditor editor) {
       OseeEventManager.addListener(instance);
-      if (instance != null) {
+      if (instance != null && !instance.editors.contains(editor)) {
          instance.editors.add(editor);
       }
    }

@@ -56,7 +56,7 @@ public class XRadioButtons extends GenericXWidget {
 
    @Override
    public Control getControl() {
-      return comp;
+      return getLabelWidget();
    }
 
    public void addButtons(String items[]) {

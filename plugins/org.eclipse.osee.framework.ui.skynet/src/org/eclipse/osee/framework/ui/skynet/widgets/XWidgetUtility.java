@@ -17,12 +17,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessage;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Roberto E. Escobar
@@ -103,6 +112,65 @@ public final class XWidgetUtility {
          }
          container.layout();
       }
+   }
+
+   /**
+    * Adds red hyperlink at top and lists errors upon selection
+    */
+   public static void addMessageDecoration(IManagedForm managedForm, ScrolledForm form) {
+      form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
+
+         @Override
+         public void linkActivated(HyperlinkEvent e) {
+            String title = e.getLabel();
+            Object href = e.getHref();
+            if (href instanceof IMessage[]) {
+               Point noteLocation = ((Control) e.widget).toDisplay(0, 0);
+               noteLocation.x += 10;
+               noteLocation.y += 10;
+
+               MessageSummaryNote note = new MessageSummaryNote(managedForm, title, (IMessage[]) href);
+               note.setLocation(noteLocation);
+               note.open();
+            }
+         }
+
+      });
+   }
+
+   public static void setStatus(IStatus status, XWidget xWidget) {
+      if (status.isMultiStatus()) {
+         for (IStatus item : status.getChildren()) {
+            if (item.isOK()) {
+               xWidget.removeControlCausedMessage(item.getPlugin());
+            } else {
+               xWidget.setControlCausedMessage(item.getPlugin(), item.getMessage(),
+                  toMessageProviderLevel(item.getSeverity()));
+            }
+         }
+      } else {
+         if (!status.isOK()) {
+            xWidget.setControlCausedMessageByObject(status.getMessage(), toMessageProviderLevel(status.getSeverity()));
+         } else {
+            xWidget.removeControlCausedMessageByObject();
+         }
+      }
+   }
+
+   public static boolean isValueInRange(int value, int min, int max) {
+      return min <= value && value < max;
+   }
+
+   public static int toMessageProviderLevel(int level) {
+      int toReturn = IMessageProvider.NONE;
+      if (level == IStatus.INFO) {
+         toReturn = IMessageProvider.INFORMATION;
+      } else if (level == IStatus.WARNING) {
+         toReturn = IMessageProvider.WARNING;
+      } else if (level == IStatus.ERROR) {
+         toReturn = IMessageProvider.ERROR;
+      }
+      return toReturn;
    }
 
 }
