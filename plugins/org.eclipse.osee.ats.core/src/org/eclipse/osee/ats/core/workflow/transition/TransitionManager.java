@@ -61,9 +61,11 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -97,8 +99,13 @@ public class TransitionManager implements IExecuteListener {
       this.storeService = helper.getServices().getStoreService();
       this.workItemFromStateMap = new HashMap<>();
       if (helper.getServices().isIde() && !AtsUtil.isInTest()) {
-         OseeLog.log(TransitionManager.class, Level.WARNING,
-            "TransitionManager should NOT be used on client.  Use AtsApiService.get().getWorkItemServiceClient().transition() instead.");
+         // Capture stack trace so it's easy to determine where this is being called from
+         try {
+            throw new OseeArgumentException(
+               "TransitionManager should NOT be used on client.  Use AtsApiService.get().getWorkItemServiceClient().transition() instead.");
+         } catch (Exception ex) {
+            OseeLog.log(TransitionManager.class, Level.WARNING, "Exception: " + Lib.exceptionToString(ex));
+         }
       }
    }
 
