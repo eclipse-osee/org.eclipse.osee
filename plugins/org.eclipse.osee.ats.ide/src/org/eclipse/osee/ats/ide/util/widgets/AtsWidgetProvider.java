@@ -77,6 +77,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       register(XHyperlinkWfdForEnumAttr.class);
       register(XHyperlinkWfdForConfiguration.class);
       register(XHyperlinkWfdForConfigurationDam.class);
+      register(XHyperlinkWfdForActiveAis.class);
    }
 
    @Override

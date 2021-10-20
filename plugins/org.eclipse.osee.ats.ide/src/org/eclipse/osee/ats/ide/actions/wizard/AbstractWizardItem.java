@@ -62,8 +62,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    private final DoubleKeyHashMap<IAtsTeamDefinition, WizardFields, Object> teamDefFieldToWidget =
       new DoubleKeyHashMap<>();
    private final AtsApi atsApi;
-   private XComboViewer versionCombo;
-   private XCheckBox createBranchCheck;
+   private final XComboViewer versionCombo = null;
+   private final XCheckBox createBranchCheck = null;
 
    public AbstractWizardItem(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -285,10 +285,12 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          (XHyperlinkLabelValuePointsSelection) teamDefFieldToWidget.get(teamDef, WizardFields.Points);
       AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamDef);
       String value = pointsWidget.getValue();
-      if (pointsAttrType.equals(AtsAttributeTypes.Points)) {
-         changes.setSoleAttributeValue(teamWf, pointsAttrType, value);
-      } else {
-         changes.setSoleAttributeValue(teamWf, pointsAttrType, Double.valueOf(value));
+      if (Strings.isValid(value)) {
+         if (pointsAttrType.equals(AtsAttributeTypes.Points)) {
+            changes.setSoleAttributeValue(teamWf, pointsAttrType, value);
+         } else {
+            changes.setSoleAttributeValue(teamWf, pointsAttrType, Double.valueOf(value));
+         }
       }
    }
 

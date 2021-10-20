@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public class XHyperlinkWfdForEnumAttr extends XHyperlinkWithFilteredDialog<String> implements AttributeTypeWidget {
 
    private AttributeTypeToken attributeTypeToken = AttributeTypeToken.SENTINEL;
+   private Collection<String> selectable = null;
 
    public XHyperlinkWfdForEnumAttr() {
       super("unknown");
@@ -28,6 +29,9 @@ public class XHyperlinkWfdForEnumAttr extends XHyperlinkWithFilteredDialog<Strin
 
    @Override
    public Collection<String> getSelectable() {
+      if (selectable != null) {
+         return selectable;
+      }
       return attributeTypeToken.toEnum().getEnumStrValues();
    }
 
@@ -42,6 +46,13 @@ public class XHyperlinkWfdForEnumAttr extends XHyperlinkWithFilteredDialog<Strin
       if (attributeTypeToken.isValid()) {
          this.label = this.attributeTypeToken.getUnqualifiedName();
       }
+   }
+
+   /**
+    * Override attributes enum values. If not set, enum type's values will be used.
+    */
+   public void setSelectable(Collection<String> selectable) {
+      this.selectable = selectable;
    }
 
 }
