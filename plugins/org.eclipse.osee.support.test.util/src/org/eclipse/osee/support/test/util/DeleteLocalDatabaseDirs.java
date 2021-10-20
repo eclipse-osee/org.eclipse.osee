@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.core.util;
+package org.eclipse.osee.support.test.util;
 
 import java.io.File;
 import java.util.Scanner;
