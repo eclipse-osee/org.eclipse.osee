@@ -221,6 +221,13 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXHyperlinkActionableItemActive() {
+      newXWidget();
+      currItem.setName("Actionable Item(s)");
+      currItem.setXWidgetName("XHyperlabelActionableItemSelection");
+      return this;
+   }
+
    public XWidgetBuilder andXActionableItem() {
       newXWidget();
       currItem.setXWidgetName("XActionableItemWidget");

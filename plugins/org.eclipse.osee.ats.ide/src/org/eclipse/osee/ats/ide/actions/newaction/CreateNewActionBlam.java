@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.ide.actions.wizard.IAtsWizardItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XActionableItemWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,12 +52,11 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
@@ -88,9 +87,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    protected static final String NEED_BY = "Need By";
    protected XText titleWidget;
    protected XText descWidget;
-   protected XCombo changeWidget;
-   protected XCombo priorityWidget;
-   protected XActionableItemWidget aiWidget;
+   protected XHyperlinkWfdForEnumAttr changeWidget;
+   protected XHyperlinkWfdForEnumAttr priorityWidget;
+   protected XHyperlabelActionableItemSelection aiWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
    private ActionResult actionResult;
@@ -150,7 +149,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       }
       Date needBy = (Date) variableMap.getValue(NEED_BY);
 
-      Set<IAtsActionableItem> actionableItems = aiWidget.getSelectedIAtsActionableItems();
+      Collection<IAtsActionableItem> actionableItems = aiWidget.getSelectedActionableItems();
       if (actionableItems.isEmpty()) {
          valid = false;
          log("Must select Actionable Item(s)");
@@ -181,12 +180,13 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    public List<XWidgetRendererItem> getXWidgetItems() {
       wb = new XWidgetBuilder();
       wb.andXText(TITLE).andRequired().endWidget();
-      wb.andXActionableItem().endWidget();
+      wb.andXHyperlinkActionableItemActive().endWidget();
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
-      wb.andXCombo(AtsAttributeTypes.ChangeType).andComposite(getChangeTypeRowColumns()).andRequired().endWidget();
-      wb.andXCombo(getPriorityAttr()).andRequired().endWidget();
+      wb.andXHyperLinkEnumAttr(AtsAttributeTypes.ChangeType).andComposite(
+         getChangeTypeRowColumns()).andRequired().endWidget();
+      wb.andXHyperLinkEnumAttr(getPriorityAttr()).andRequired().endWidget();
       addWidgetAfterPriority();
-      wb.andXDate(AtsAttributeTypes.NeedBy).endComposite().endWidget();
+      wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endWidget();
       return wb.getItems();
    }
 
@@ -218,8 +218,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          stringBuffer.append("<WorkPage>");
          IDynamicWidgetLayoutListener dynamicWidgetLayoutListener = null;
          for (IAtsWizardItem item : wizardExtensionItems) {
-            boolean hasWizardXWidgetExtensions =
-               item.hasWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems());
+            boolean hasWizardXWidgetExtensions = item.hasWizardXWidgetExtensions(aiWidget.getSelectedActionableItems());
             if (hasWizardXWidgetExtensions) {
                stringBuffer.append(
                   "<XWidget displayName=\"--- Extra fields for " + item.getName() + " ---\" xwidgetType=\"XLabel\" horizontalLabel=\"true\" toolTip=\"These fields are available for only the team workflow specified here.\"/>");
@@ -227,7 +226,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
                   if (item instanceof IDynamicWidgetLayoutListener) {
                      dynamicWidgetLayoutListener = (IDynamicWidgetLayoutListener) item;
                   }
-                  item.getWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems(), stringBuffer);
+                  item.getWizardXWidgetExtensions(aiWidget.getSelectedActionableItems(), stringBuffer);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -243,9 +242,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          for (IAtsWizardItem item : wizardExtensionItems) {
             if (!handledExtensionItems.contains(item)) {
                boolean hasWizardXWidgetExtensions =
-                  item.hasWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems());
+                  item.hasWizardXWidgetExtensions(aiWidget.getSelectedActionableItems());
                if (hasWizardXWidgetExtensions) {
-                  item.getWizardXWidgetExtensions(aiWidget.getSelectedIAtsActionableItems(), teamComp);
+                  item.getWizardXWidgetExtensions(aiWidget.getSelectedActionableItems(), teamComp);
                   handledExtensionItems.add(item);
                }
             }
@@ -277,22 +276,23 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       } else if (xWidget.getLabel().equals(DESCRIPTION)) {
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
-         changeWidget = (XCombo) xWidget;
+         changeWidget = (XHyperlinkWfdForEnumAttr) xWidget;
          setChangeTypeWidget(changeWidget);
       } else if (xWidget.getLabel().equals(PRIORITY)) {
-         priorityWidget = (XCombo) xWidget;
-      } else if (xWidget instanceof XActionableItemWidget) {
-         aiWidget = (XActionableItemWidget) xWidget;
-         aiWidget.getTreeViewer().addCheckListener(new ICheckBoxStateTreeListener() {
+         priorityWidget = (XHyperlinkWfdForEnumAttr) xWidget;
+      } else if (xWidget instanceof XHyperlabelActionableItemSelection) {
+         aiWidget = (XHyperlabelActionableItemSelection) xWidget;
+         aiWidget.addXModifiedListener(new XModifiedListener() {
+
             @Override
-            public void checkStateChanged(Object obj) {
+            public void widgetModified(XWidget widget) {
                updateTeamComposites();
             }
          });
       }
    }
 
-   public static void setChangeTypeWidget(XCombo changeWidget) {
+   public static void setChangeTypeWidget(XHyperlinkWfdForEnumAttr changeWidget) {
       String[] array = ChangeType.valueArray();
       for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
          if (provider.useFactory()) {
@@ -301,7 +301,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
             }
          }
       }
-      changeWidget.setDataStrings(array);
+      Set<String> selectable = org.eclipse.osee.framework.jdk.core.util.Collections.asHashSet(array);
+      changeWidget.setSelectable(selectable);
    }
 
    public void handlePopulateWithDebugInfo() {
@@ -314,10 +315,20 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
     */
    public void handlePopulateWithDebugInfo(String title) {
       try {
+         Collection<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
+         for (IAtsActionableItem ai : atsApi.getConfigService().getConfigurations().getIdToAi().values()) {
+            if (ai.getName().equals("ATS")) {
+               ais.add(ai);
+            }
+            if (ai.getName().equals("SAW Requirements")) {
+               ais.add(ai);
+            }
+         }
+         aiWidget.setSelectedAIs(ais);
          titleWidget.set(title);
          descWidget.set("Description...");
-         changeWidget.getComboBox().select(1);
-         priorityWidget.getComboBox().select(1);
+         changeWidget.setSelected(ChangeType.Problem.name());
+         priorityWidget.setSelected("1");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
