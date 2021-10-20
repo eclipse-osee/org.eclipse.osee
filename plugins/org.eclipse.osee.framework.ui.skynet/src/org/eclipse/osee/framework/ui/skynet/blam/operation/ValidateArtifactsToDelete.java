@@ -77,7 +77,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
 
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.TOP_ADMIN, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
 }
