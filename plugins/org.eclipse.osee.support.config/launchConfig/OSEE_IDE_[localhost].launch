@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <setAttribute key="additional_plugins">
-<setEntry value="com.google.guava:21.0.0.v20170206-1425:default:false"/>
-<setEntry value="org.eclipse.osgi.services:3.7.0.v20180223-1712:default:false"/>
-<setEntry value="org.eclipse.ui.views.log:1.2.200.v20180512-1206:default:true"/>
-<setEntry value="org.eclipse.ui.workbench:3.111.0.v20180524-1156:default:true"/>
+<setEntry value="com.google.guava:27.1.0.v20190517-1946:default:false:default:default"/>
+<setEntry value="org.eclipse.osgi.services:3.9.0.v20200511-1725:default:false:default:default"/>
+<setEntry value="org.eclipse.ui.views.log:1.2.1100.v20200513-0930:default:true:default:default"/>
+<setEntry value="org.eclipse.ui.workbench:3.119.0.v20200521-1247:default:true:default:default"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="true"/>
@@ -35,30 +35,11 @@
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="restart" value="false"/>
 <setAttribute key="selected_features">
-<setEntry value="org.eclipse.cvs:default"/>
 <setEntry value="org.eclipse.e4.core.tools.feature:default"/>
 <setEntry value="org.eclipse.e4.rcp.source:default"/>
 <setEntry value="org.eclipse.e4.rcp:default"/>
-<setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
-<setEntry value="org.eclipse.emf.codegen.ecore:default"/>
-<setEntry value="org.eclipse.emf.codegen.ui:default"/>
-<setEntry value="org.eclipse.emf.codegen:default"/>
-<setEntry value="org.eclipse.emf.common.ui:default"/>
 <setEntry value="org.eclipse.emf.common:default"/>
-<setEntry value="org.eclipse.emf.compare:default"/>
-<setEntry value="org.eclipse.emf.converter:default"/>
-<setEntry value="org.eclipse.emf.databinding.edit:default"/>
-<setEntry value="org.eclipse.emf.databinding:default"/>
-<setEntry value="org.eclipse.emf.ecore.edit:default"/>
-<setEntry value="org.eclipse.emf.ecore.editor:default"/>
 <setEntry value="org.eclipse.emf.ecore:default"/>
-<setEntry value="org.eclipse.emf.edit.ui:default"/>
-<setEntry value="org.eclipse.emf.edit:default"/>
-<setEntry value="org.eclipse.emf.mapping.ecore.editor:default"/>
-<setEntry value="org.eclipse.emf.mapping.ecore:default"/>
-<setEntry value="org.eclipse.emf.mapping.ui:default"/>
-<setEntry value="org.eclipse.emf.mapping:default"/>
-<setEntry value="org.eclipse.emf:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature.source:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.extras.feature.source:default"/>
@@ -93,15 +74,6 @@
 <setEntry value="org.eclipse.rcp.source:default"/>
 <setEntry value="org.eclipse.rcp:default"/>
 <setEntry value="org.eclipse.sdk:default"/>
-<setEntry value="org.eclipse.xtend.sdk:default"/>
-<setEntry value="org.eclipse.xtext.docs:default"/>
-<setEntry value="org.eclipse.xtext.examples:default"/>
-<setEntry value="org.eclipse.xtext.runtime:default"/>
-<setEntry value="org.eclipse.xtext.sdk:default"/>
-<setEntry value="org.eclipse.xtext.ui:default"/>
-<setEntry value="org.eclipse.xtext.xbase.lib:default"/>
-<setEntry value="org.eclipse.xtext.xbase:default"/>
-<setEntry value="org.eclipse.xtext.xtext.ui:default"/>
 </setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
 <stringAttribute key="templateConfig" value=""/>
