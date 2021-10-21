@@ -115,7 +115,7 @@ public class TransitionManager implements IExecuteListener {
       IAtsWorkItem workItem = helper.getWorkItems().iterator().next();
 
       TransitionResults results = new TransitionResults();
-      if (storeService.isInDb(workItem) && storeService.isIdeClient()) {
+      if (storeService.isIdeClient() && storeService.isInDb(workItem)) {
          handleWorkflowReload(results);
          if (results.isCancelled() || !results.isEmpty()) {
             return results;

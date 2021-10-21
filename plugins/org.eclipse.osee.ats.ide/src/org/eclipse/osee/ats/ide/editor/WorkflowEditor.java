@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -110,17 +109,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeRelationsTab relationsTab;
    private WfeJournalTab journalTab;
    int attrPageIndex = 0;
-   private final AtsApi atsApi;
-
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
    private WfeMetricsTab metricsTab;
-   private Boolean showJournalTab = null;
-
-   public WorkflowEditor() {
-      atsApi = AtsApiService.get();
-   }
 
    public void loadPages() {
       addPages();
@@ -236,18 +228,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    }
 
    private void createJournalTab() throws PartInitException {
-      if (isShowJournalTab()) {
-         journalTab = new WfeJournalTab(this, workItem, AtsApiService.get());
-         addPage(journalTab);
-      }
-   }
-
-   private boolean isShowJournalTab() {
-      if (showJournalTab == null) {
-         String configValue = atsApi.getConfigValue("ShowJournalTab");
-         showJournalTab = !"false".equals(configValue);
-      }
-      return showJournalTab;
+      journalTab = new WfeJournalTab(this, workItem, AtsApiService.get());
+      addPage(journalTab);
    }
 
    private void createDefectsTab() throws PartInitException {
