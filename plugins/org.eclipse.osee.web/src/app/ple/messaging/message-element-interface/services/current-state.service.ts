@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, filter, take, map, reduce, delay } from 'rxjs/operators';
-import { transaction } from 'src/app/transactions/transaction';
+import { relation, transaction } from 'src/app/transactions/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
@@ -170,20 +170,16 @@ export class CurrentStateService {
 
   createStructure(body: Partial<structure>) {
     delete body.elements;
-    return this.messages.getSubMessage(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue()).pipe(
-      switchMap((submessage)=>this.structure.createSubMessageRelation(submessage.name).pipe(
+    return this.structure.createSubMessageRelation(this.SubMessageId.getValue()).pipe(
+      take(1),
+      switchMap((relation) => this.structure.createStructure(body, this.BranchId.getValue(), [relation]).pipe(
         take(1),
-        switchMap((relation) => this.structure.createStructure(body, this.BranchId.getValue(), [relation]).pipe(
-          take(1),
-          switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
-            tap(() => {
-              this.ui.updateMessages = true;
-            })
-          ))
-        )
-        )
-      ) 
-      )
+        switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
+      ))
     )
   }
 
@@ -223,12 +219,9 @@ export class CurrentStateService {
   }
 
   createNewElement(body: Partial<element>, structureId: string, typeId: string) {
-    return combineLatest([this.structure.getStructure(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+    return combineLatest([this.elements.createStructureRelation(structureId), this.elements.createPlatformTypeRelation(typeId)]).pipe(
       take(1),
-      switchMap((structure) => this.elements.createStructureRelation(structure.name))),
-      this.typeService.getType(this.BranchId.getValue(), typeId).pipe(take(1), switchMap((type) => this.elements.createPlatformTypeRelation(type.name)))]).pipe(
-      take(1),
-      map((latest)=>[latest[0],latest[1]]),
+      map(([structureRelation, platformRelation]) => [structureRelation, platformRelation]),
       switchMap((relations) => this.elements.createElement(body, this.BranchId.getValue(), relations).pipe(
         take(1),
         switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(

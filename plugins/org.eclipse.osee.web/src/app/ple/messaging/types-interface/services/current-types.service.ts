@@ -104,7 +104,7 @@ export class CurrentTypesService {
    */
   createType(body: PlatformType|Partial<PlatformType>,isNewEnumSet:boolean,enumSetData:{ enumSetId:string,enumSetName: string, enumSetDescription: string, enumSetApplicability: applic, enums: enumeration[] }) {
     delete body.id;
-    return iif(() => isNewEnumSet, this.typesService.createPlatformType(this.uiService.BranchId.getValue(), body, []).pipe(
+    return iif(()=>body.interfaceLogicalType==='enumeration',iif(() => isNewEnumSet, this.typesService.createPlatformType(this.uiService.BranchId.getValue(), body, []).pipe(
       take(1),
       switchMap((platformTypeCreationTransaction) => this.enumSetService.createEnumSetToPlatformTypeRelation(body.name).pipe(
         take(1),
@@ -130,7 +130,8 @@ export class CurrentTypesService {
       take(1),
       switchMap((relation)=>this.typesService.createPlatformType(this.uiService.BranchId.getValue(),body,[relation]))
     )
-    ).pipe(
+    ),this.typesService.createPlatformType(this.uiService.BranchId.getValue(),body,[]))
+    .pipe(
       switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.BranchId.getValue()).pipe(
         tap(() => {
           this.uiService.updateTypes = true;
