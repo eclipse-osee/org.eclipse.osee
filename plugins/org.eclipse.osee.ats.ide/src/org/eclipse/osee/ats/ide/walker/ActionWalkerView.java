@@ -125,6 +125,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().removePartListener(this);
+      PlatformUI.getWorkbench().getActiveWorkbenchWindow().removePerspectiveListener(this);
       super.dispose();
    }
 
@@ -189,8 +191,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
 
    private void setTooltips() {
       try {
-         if (!activeAwa.isOfType(
-            AtsArtifactTypes.Goal) && !AtsApiService.get().getReviewService().isStandAloneReview(activeAwa)) {
+         if (!activeAwa.isOfType(AtsArtifactTypes.Goal) && !AtsApiService.get().getReviewService().isStandAloneReview(
+            activeAwa)) {
             IAtsAction actionArt = activeAwa.getParentAction();
             if (actionArt != null) {
                for (IAtsTeamWorkflow teamArt : AtsApiService.get().getWorkItemServiceIde().getTeams(actionArt)) {
