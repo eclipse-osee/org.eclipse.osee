@@ -25,7 +25,7 @@ export class UserDataAccountService {
   constructor(private http: HttpClient) { }
   public getUser():Observable<user> {
     if (environment.production) {
-      return this.http.get<user>(apiURL+'/accounts/user');
+      return this.http.get<user>(apiURL+'/datastore/user');
     } else {
       return of({id : '61106791',
       name : 'Joe Smith',

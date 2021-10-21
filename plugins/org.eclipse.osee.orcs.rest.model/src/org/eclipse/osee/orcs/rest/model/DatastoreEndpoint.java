@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.rest.model;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -52,7 +52,7 @@ public interface DatastoreEndpoint {
    TransactionId createUsers(Iterable<UserToken> users);
 
    @GET
-   @Path("user/{userId}")
+   @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
-   UserToken getUserInfo(@PathParam("userId") String userId);
+   UserToken getUserInfo(@HeaderParam("osee.user.id") String userId);
 }
