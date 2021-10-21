@@ -42,7 +42,7 @@ public class XAgileFeatureHyperlinkWidget extends XHyperlinkLabelCmdValueSelecti
    IAtsTeamDefinition teamDef;
 
    public XAgileFeatureHyperlinkWidget() {
-      super("Agile Feature", true, 50);
+      super("Agile Feature(s)", true, 50);
       atsApi = AtsApiService.get();
    }
 
@@ -74,6 +74,7 @@ public class XAgileFeatureHyperlinkWidget extends XHyperlinkLabelCmdValueSelecti
          AgileFeatureGroupColumn.openSelectionDialog(agileTeam.getId(), awas);
 
       if (dialog != null) {
+         features.clear();
          for (JaxAgileFeatureGroup grp : dialog.getChecked()) {
             for (IAgileFeatureGroup feature : atsApi.getAgileService().getAgileFeatureGroups(agileTeam)) {
                if (grp.getId().equals(feature.getId())) {

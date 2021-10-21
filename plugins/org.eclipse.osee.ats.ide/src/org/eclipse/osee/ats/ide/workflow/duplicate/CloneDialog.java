@@ -218,7 +218,7 @@ public class CloneDialog extends XWidgetsDialog {
                handleModified();
             }
          });
-      } else if (xWidget.getLabel().equals("Agile Feature(s)")) {
+      } else if (xWidget instanceof XAgileFeatureHyperlinkWidget) {
          XAgileFeatureHyperlinkWidget widget = (XAgileFeatureHyperlinkWidget) xWidget;
          widget.setTeamWf(teamWf);
          for (IAgileFeatureGroup feature : atsApi.getAgileService().getFeatureGroups(teamWf)) {
@@ -236,7 +236,7 @@ public class CloneDialog extends XWidgetsDialog {
                handleModified();
             }
          });
-      } else if (xWidget.getLabel().equals("Agile Sprint")) {
+      } else if (xWidget instanceof XSprintHyperlinkWidget) {
          XSprintHyperlinkWidget widget = (XSprintHyperlinkWidget) xWidget;
          widget.setTeamWf(teamWf);
          IAgileSprint sprint = atsApi.getAgileService().getSprint(teamWf);
