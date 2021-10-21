@@ -25,6 +25,7 @@ public class AccessQueries {
       "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
    public static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
       "SELECT bac1.*, art1.art_type_id FROM osee_artifact art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
+   public static final String GET_ACCESS_BRANCH_TOKENS = "SELECT branch_id, branch_name from OSEE_BRANCH";
 
    public static final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
    public static final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";

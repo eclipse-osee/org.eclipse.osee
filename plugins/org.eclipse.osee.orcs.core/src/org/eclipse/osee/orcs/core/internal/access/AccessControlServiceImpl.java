@@ -13,6 +13,8 @@
 package org.eclipse.osee.orcs.core.internal.access;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.AbstractAccessControlService;
@@ -49,20 +51,13 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
    protected JdbcClient jdbcClient;
    private final OrcsApi orcsApi;
    private final OrcsTokenService tokenService;
+   private Map<BranchId, BranchToken> branchIdToToken = null;
 
    public AccessControlServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       this.tokenService = orcsApi.tokenService();
       this.jdbcClient = orcsApi.getJdbcService().getClient();
       setStoreOperations(new AccessStoreOperations(orcsApi));
-   }
-
-   // Caches not needed on server, load as needed
-   @Override
-   public synchronized void ensurePopulated() {
-      cache.initializeCaches();
-      populateArtifactAccessControlList();
-      populateBranchAccessControlList();
    }
 
    @Override
@@ -136,12 +131,30 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
       return orcsApi.getQueryFactory().fromBranch(branch).andId(subjectId).asArtifactTokenOrSentinel();
    }
 
+   public void populateBranchCache() {
+      if (branchIdToToken == null) {
+         branchIdToToken = new HashMap<BranchId, BranchToken>();
+         Consumer<JdbcStatement> consumer = stmt -> {
+            String branchName = stmt.getString("branch_name");
+            BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
+            BranchToken branch = BranchToken.create(branchId, branchName);
+            branchIdToToken.put(branchId, branch);
+         };
+         jdbcClient.runQuery(consumer, AccessQueries.GET_ACCESS_BRANCH_TOKENS);
+      }
+   }
+
    @Override
    public void populateBranchAccessControlList() {
+      populateBranchCache();
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
-         BranchToken branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getOneOrSentinel();
+         BranchToken branch = branchIdToToken.get(branchId);
+         if (branch == null) {
+            branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getOneOrSentinel();
+            branchIdToToken.put(branchId, branch);
+         }
          if (branch.isValid()) {
             PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
             ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
