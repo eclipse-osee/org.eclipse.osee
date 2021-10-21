@@ -125,33 +125,33 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       return results;
    }
 
-   private IAtsWorkItem duplicateWorkItem(IAtsChangeSet changes, IAtsWorkItem workItem) {
+   private IAtsWorkItem duplicateWorkItem(IAtsChangeSet changes, IAtsWorkItem fromWorkItem) {
       ArtifactToken newWorkItemArt = changes.createArtifact(
-         atsApi.getStoreService().getArtifactType(workItem.getStoreObject()), getTitle(workItem));
+         atsApi.getStoreService().getArtifactType(fromWorkItem.getStoreObject()), getTitle(fromWorkItem));
 
       // If not creating new action art, add new workflow to this action
-      if (workItem.isTeamWorkflow() && !newAction) {
-         changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, workItem.getParentAction());
+      if (fromWorkItem.isTeamWorkflow() && !newAction) {
+         changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, fromWorkItem.getParentAction());
       }
-      IAtsLog atsLog = atsApi.getLogFactory().getLogLoaded(workItem, atsApi.getAttributeResolver());
-      atsLog.addLog(LogType.Note, null, "Workflow duplicated from " + workItem.getAtsId(), asUser.getUserId());
+      IAtsLog atsLog = atsApi.getLogFactory().getLogLoaded(fromWorkItem, atsApi.getAttributeResolver());
+      atsLog.addLog(LogType.Note, null, "Workflow duplicated from " + fromWorkItem.getAtsId(), asUser.getUserId());
 
       // assignees == add in existing assignees, leads and originator (current user)
       List<AtsUser> assignees = new LinkedList<>();
       if (assigneesOverride != null) {
-         if (assigneesOverride.isEmpty()) {
+         if (!assigneesOverride.isEmpty()) {
             assignees.addAll(assigneesOverride);
          } else {
             assignees.add(AtsCoreUsers.UNASSIGNED_USER);
          }
       } else {
-         assignees.addAll(workItem.getStateMgr().getAssignees());
+         assignees.addAll(fromWorkItem.getStateMgr().getAssignees());
       }
-      if (workItem.isTeamWorkflow()) {
-         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+      if (fromWorkItem.isTeamWorkflow()) {
+         IAtsTeamWorkflow fromTeamWf = (IAtsTeamWorkflow) fromWorkItem;
          if (assigneesOverride == null) {
             assignees.addAll(AtsApiService.get().getTeamDefinitionService().getLeads(
-               ((IAtsTeamWorkflow) workItem).getTeamDefinition()));
+               ((IAtsTeamWorkflow) fromWorkItem).getTeamDefinition()));
             if (!assignees.contains(asUser)) {
                assignees.add(asUser);
             }
@@ -163,13 +163,12 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
                goal = listener.addToGoal((IAtsTeamWorkflow) newWorkItemArt, changes);
                listener.handleChanges((IAtsTeamWorkflow) newWorkItemArt, changes);
             }
-            atsApi.getActionService().addActionToConfiguredGoal(teamWf.getTeamDefinition(),
-               (IAtsTeamWorkflow) newWorkItemArt, teamWf.getActionableItems(), goal, changes);
+            atsApi.getActionService().addActionToConfiguredGoal(fromTeamWf.getTeamDefinition(),
+               (IAtsTeamWorkflow) newWorkItemArt, fromTeamWf.getActionableItems(), goal, changes);
          }
       }
-      workItem.getStateMgr().setAssignees(assignees);
 
-      for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
+      for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(fromWorkItem.getStoreObject())) {
          if (!getExcludeTypes().contains(attr.getAttributeType())) {
             if (attr.getAttributeType().equals(AtsAttributeTypes.Points) || attr.getAttributeType().equals(
                AtsAttributeTypes.PointsNumeric)) {
@@ -207,10 +206,11 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          }
       }
       IAtsWorkItem newWorkItem = atsApi.getWorkItemService().getWorkItem(newWorkItemArt);
+      newWorkItem.getStateMgr().setAssignees(assignees);
 
       // If action created, set values off original action
       if (newAction) {
-         IAtsAction origAction = workItem.getParentAction();
+         IAtsAction origAction = fromWorkItem.getParentAction();
          ChangeType changeType = ChangeTypeUtil.getChangeType(origAction, atsApi);
          String priority =
             atsApi.getAttributeResolver().getSoleAttributeValue(origAction, AtsAttributeTypes.Priority, "");
@@ -223,7 +223,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, newAction);
       }
 
-      atsApi.getActionService().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), null,
+      atsApi.getActionService().setAtsId(newWorkItem, fromWorkItem.getParentTeamWorkflow().getTeamDefinition(), null,
          changes);
       return newWorkItem;
    }

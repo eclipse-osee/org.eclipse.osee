@@ -56,7 +56,9 @@ public class CloneWorkflowAction extends Action {
       CloneData data = new CloneData();
 
       dialog = new CloneDialog(getText(), "Enter details for new cloned Team Workflow", teamWf, data);
-      if (dialog.open() == Window.OK) {
+      if (data.getResults().isErrors()) {
+         AWorkbench.popup(data.toString());
+      } else if (dialog.open() == Window.OK) {
 
          CloneTeamWorkflowOperation clone = new CloneTeamWorkflowOperation(teamWf, duplicateListener, data, atsApi);
 
