@@ -243,24 +243,32 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
 
    private void relate(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, JsonNode relations, RelationTypeToken relationType, ArtifactToken artifact, RelationSide side, String rationale) {
       if (relations.isTextual()) {
-         ArtifactToken otherArtifact = getArtifactByName(tx, artifactsByName, relations.asText());
-         relate(tx, relationType, artifact, side, rationale, otherArtifact);
+         relateOne(tx, artifactsByName, relations, relationType, artifact, side, rationale);
       } else if (relations.isArray()) {
          for (JsonNode name : relations) {
-            ArtifactToken otherArtifact = getArtifactByName(tx, artifactsByName, name.asText());
-            relate(tx, relationType, artifact, side, rationale, otherArtifact);
+            relateOne(tx, artifactsByName, name, relationType, artifact, side, rationale);
          }
       } else {
          throw new OseeStateException("Json Node of unexpected type %s", relations.getNodeType());
       }
    }
 
-   private void relate(TransactionBuilder tx, RelationTypeToken relationType, ArtifactToken artifact, RelationSide side, String rationale, ArtifactToken otherArtifact) {
+   private void relate(TransactionBuilder tx, RelationTypeToken relationType, ArtifactToken artifact, RelationSide side, String rationale, ArtifactId otherArtifact) {
       if (side.isSideA()) {
          tx.relate(artifact, relationType, otherArtifact, rationale);
       } else {
          tx.relate(otherArtifact, relationType, artifact, rationale);
       }
+   }
+
+   private void relateOne(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, JsonNode relation, RelationTypeToken relationType, ArtifactToken artifact, RelationSide side, String rationale) {
+      ArtifactId otherArtifact;
+      if (Strings.isNumeric(relation.asText(""))) {
+         otherArtifact = ArtifactId.valueOf(relation.asLong());
+      } else {
+         otherArtifact = getArtifactByName(tx, artifactsByName, relation.asText());
+      }
+      relate(tx, relationType, artifact, side, rationale, otherArtifact);
    }
 
    private ArtifactToken getArtifactByName(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, String name) {
