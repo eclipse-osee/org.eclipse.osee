@@ -176,6 +176,38 @@ describe('CurrentTypesServiceService', () => {
     })
   });
 
+  it('should send a post request to create type with new enum set', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: response };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.createType({interfaceLogicalType:'enumeration'}, true, {
+        enumSetId: '1', enumSetName: 'hello', enumSetApplicability: { id: '1', name: 'Base' }, enumSetDescription: 'description', enums:[
+          {
+            name: 'Hello',
+            ordinal: 0,
+            applicability:{id:'1',name:"base"}
+          }
+        ]})).toBe(expectedMarble, expectedFilterValues);
+    })
+  });
+
+  it('should send a post request to create type with existing enum set', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: response };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.createType({interfaceLogicalType:'enumeration'}, false, {
+        enumSetId: '1', enumSetName: 'hello', enumSetApplicability: { id: '1', name: 'Base' }, enumSetDescription: 'description', enums:[
+          {
+            name: 'Hello',
+            ordinal: 0,
+            applicability:{id:'1',name:"base"}
+          }
+        ]})).toBe(expectedMarble, expectedFilterValues);
+    })
+  });
+
   it('should fetch logical types', () => {
     scheduler.run(() => {
       const expectedFilterValues = { a: logicalTypeMock };

@@ -183,7 +183,7 @@ export class CurrentGraphService {
         filter((val) => val.id === sourceId || val.id === targetId),
         reduce((acc, curr) => [...acc, curr], [] as node[]),
         switchMap((nodeArray) => iif(() => nodeArray[0]?.id === sourceId && nodeArray[1]?.id === targetId,
-          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].name, false), this.connectionService.createNodeRelation(nodeArray[1].name, true)]).pipe(
+          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', false), this.connectionService.createNodeRelation(nodeArray[1].id||'', true)]).pipe(
             take(1),
             map(latest => [latest[0], latest[1]]),
             switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, relations).pipe(
@@ -195,7 +195,7 @@ export class CurrentGraphService {
               ))
             ))
           ),//else flip order of target/source
-          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].name, true), this.connectionService.createNodeRelation(nodeArray[1].name, false)]).pipe(
+          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', true), this.connectionService.createNodeRelation(nodeArray[1].id||'', false)]).pipe(
             take(1),
             map(latest => [latest[0], latest[1]]),
             switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, relations).pipe(

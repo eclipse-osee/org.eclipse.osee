@@ -130,8 +130,7 @@ export class CurrentMessagesService {
   }
 
   createSubMessage(body: subMessage, messageId: string) {
-    return this.messageService.getMessage(this.BranchId.getValue(),messageId,this.connectionId.getValue()).pipe(
-    switchMap((message)=>this.subMessageService.createMessageRelation(message.name).pipe(
+    return this.subMessageService.createMessageRelation(messageId).pipe(
       take(1),
       switchMap((relation) => this.subMessageService.createSubMessage(this.BranchId.getValue(), body, [relation]).pipe(
         take(1),
@@ -140,25 +139,21 @@ export class CurrentMessagesService {
             this.ui.updateMessages = true;
           })
         ))
-      )) 
-    ))
+      ))
     )
   }
 
   createMessage(body: message) {
     return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
-      switchMap(([branch, connectionId]) => this.messageService.getConnectionName(branch, connectionId).pipe(
+      switchMap(([branch, connectionId]) => this.messageService.createConnectionRelation(connectionId).pipe(
         take(1),
-        switchMap((connectionName) => this.messageService.createConnectionRelation(connectionName).pipe(
+        switchMap((relation) => this.messageService.createMessage(branch, body, [relation]).pipe(
           take(1),
-          switchMap((relation) => this.messageService.createMessage(branch, body, [relation]).pipe(
-            take(1),
-            switchMap((transaction) => this.messageService.performMutation(branch, connectionId, transaction).pipe(
-              tap(() => {
+          switchMap((transaction) => this.messageService.performMutation(branch, connectionId, transaction).pipe(
+            tap(() => {
               this.ui.updateMessages = true;
-              })
-            ))
+            })
           ))
         ))
       ))
