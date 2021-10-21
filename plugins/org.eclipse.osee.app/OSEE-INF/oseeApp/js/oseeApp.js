@@ -34,7 +34,7 @@ app.provider('OseeAppSchema', function () {
 app.provider('Account', function () {
     this.$get = ['$resource',
         function ($resource) {
-            var Account = $resource('/datastore/user', {}, {});
+            var Account = $resource('/orcs/datastore/user', {}, {});
             return Account;
         }
     ];
