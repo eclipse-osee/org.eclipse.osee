@@ -40,6 +40,7 @@ public class JaxAtsTask extends JaxAtsObject {
    private String taskWorkDef;
    List<JaxAttribute> attributes;
    List<JaxRelation> relations;
+   private Double hoursSpent = 0.0;
 
    public JaxAtsTask() {
       attributes = new ArrayList<>();
@@ -168,6 +169,14 @@ public class JaxAtsTask extends JaxAtsObject {
    @JsonIgnore
    public ArtifactToken getToken() {
       return ArtifactToken.valueOf(ArtifactId.valueOf(getId()), atsApi.getAtsBranch());
+   }
+
+   public Double getHoursSpent() {
+      return hoursSpent;
+   }
+
+   public void setHoursSpent(Double hoursSpent) {
+      this.hoursSpent = hoursSpent;
    }
 
 }

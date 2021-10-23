@@ -110,61 +110,61 @@ public class CreateTasksOperation {
                continue;
             }
          }
-         for (JaxAtsTask task : newTaskData.getTasks()) {
-            Long taskId = task.getId();
+         for (JaxAtsTask jTask : newTaskData.getTasks()) {
+            Long taskId = jTask.getId();
             if (taskId != null && taskId > 0L) {
                ArtifactToken taskArt = atsApi.getQueryService().getArtifact(taskId);
                if (taskArt != null) {
-                  results.errorf("Task with id %d already exists for %s\n", taskId, task);
+                  results.errorf("Task with id %d already exists for %s\n", taskId, jTask);
                }
             }
-            if (!Strings.isValid(task.getName())) {
-               results.errorf("Task name [%s] is invalid for %s\n", task.getName(), task);
+            if (!Strings.isValid(jTask.getName())) {
+               results.errorf("Task name [%s] is invalid for %s\n", jTask.getName(), jTask);
             }
-            AtsUser createdBy = atsApi.getUserService().getUserByUserId(task.getCreatedByUserId());
+            AtsUser createdBy = atsApi.getUserService().getUserByUserId(jTask.getCreatedByUserId());
             if (createdBy == null) {
-               results.errorf("Task Created By user id %d does not exist in %s\n", createdBy, task);
+               results.errorf("Task Created By user id %d does not exist in %s\n", createdBy, jTask);
             }
-            createdByDate = task.getCreatedDate();
+            createdByDate = jTask.getCreatedDate();
             if (createdByDate == null) {
-               results.errorf("Task Created By Date %s does not exist in %s\n", createdByDate, task);
+               results.errorf("Task Created By Date %s does not exist in %s\n", createdByDate, jTask);
             }
-            String relatedToState = task.getRelatedToState();
+            String relatedToState = jTask.getRelatedToState();
             if (Strings.isValid(relatedToState)) {
                if (teamWf.getWorkDefinition().getStateByName(relatedToState) == null) {
                   results.errorf("Task Related To State %s invalid for Team Workflow %d\n", relatedToState, teamWfId);
                }
             }
 
-            List<String> assigneeUserIds = task.getAssigneeUserIds();
+            List<String> assigneeUserIds = jTask.getAssigneeUserIds();
             if (!assigneeUserIds.isEmpty()) {
                Collection<AtsUser> assignees = atsApi.getUserService().getUsersByUserIds(assigneeUserIds);
                if (assigneeUserIds.size() != assignees.size()) {
-                  results.errorf("Task Assignees [%s] not all valid in %s\n", String.valueOf(assigneeUserIds), task);
+                  results.errorf("Task Assignees [%s] not all valid in %s\n", String.valueOf(assigneeUserIds), jTask);
                }
             }
 
-            List<ArtifactId> assigneeAccountIds = task.getAssigneeAccountIds();
+            List<ArtifactId> assigneeAccountIds = jTask.getAssigneeAccountIds();
             if (!assigneeUserIds.isEmpty()) {
                for (ArtifactId assignArt : assigneeAccountIds) {
                   ArtifactId assignee = atsApi.getUserService().getUserById(assignArt);
                   if (assignee == null) {
-                     results.errorf("Task Assignee [%s] valid in %s\n", String.valueOf(assignArt), task);
+                     results.errorf("Task Assignee [%s] valid in %s\n", String.valueOf(assignArt), jTask);
                   }
                }
             }
 
             // If task work def is defined in NewTaskData, get from there and validate
             if (taskWorkDef == null) {
-               if (Strings.isValid(task.getTaskWorkDef())) {
+               if (Strings.isValid(jTask.getTaskWorkDef())) {
                   try {
                      taskWorkDef =
-                        atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(task.getTaskWorkDef()));
+                        atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(jTask.getTaskWorkDef()));
                      if (taskWorkDef == null) {
-                        results.errorf("Error finding Task Work Def [%s].\n", task.getTaskWorkDef());
+                        results.errorf("Error finding Task Work Def [%s].\n", jTask.getTaskWorkDef());
                      }
                   } catch (Exception ex) {
-                     results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", task.getTaskWorkDef(),
+                     results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", jTask.getTaskWorkDef(),
                         ex.getMessage());
                   }
                }
@@ -172,25 +172,24 @@ public class CreateTasksOperation {
             if (taskWorkDef == null) {
                taskWorkDef = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
             }
-            Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
-            task.addAttribute(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.valueOf(taskWorkDef.getId()));
+            Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", jTask.getTaskWorkDef());
 
-            for (JaxAttribute attribute : task.getAttributes()) {
+            for (JaxAttribute attribute : jTask.getAttributes()) {
                AttributeTypeId attrType = attribute.getAttrType();
                if (attrType == null || attrType.isInvalid()) {
-                  results.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
+                  results.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, jTask);
                }
             }
 
-            for (JaxRelation relation : task.getRelations()) {
+            for (JaxRelation relation : jTask.getRelations()) {
                RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
                if (relationType == null) {
                   results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
-                     relation.getRelationTypeName(), task);
+                     relation.getRelationTypeName(), jTask);
                }
                if (relation.getRelatedIds().isEmpty()) {
                   results.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
-                     relation.getRelationTypeName(), task);
+                     relation.getRelationTypeName(), jTask);
                }
                List<Long> foundWorkItemIds = new ArrayList<>();
                for (ArtifactId foundId : atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
@@ -202,7 +201,7 @@ public class CreateTasksOperation {
                   notFoundIds.addAll(relation.getRelatedIds());
                   notFoundIds.removeAll(foundWorkItemIds);
                   results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
-                     relation.getRelationTypeName(), notFoundIds, task);
+                     relation.getRelationTypeName(), notFoundIds, jTask);
                }
             }
          }
@@ -266,15 +265,15 @@ public class CreateTasksOperation {
 
    private void createTasks(IAtsChangeSet changes) {
       for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
-         for (JaxAtsTask jaxTask : newTaskData.getTasks()) {
+         for (JaxAtsTask jTask : newTaskData.getTasks()) {
 
             IAtsWorkDefinition workDefinition = null;
             IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());
 
             // If task work def already specified, use it
-            if (Strings.isNumeric(jaxTask.getTaskWorkDef())) {
+            if (Strings.isNumeric(jTask.getTaskWorkDef())) {
                workDefinition =
-                  atsApi.getWorkDefinitionService().getWorkDefinition(Long.valueOf(jaxTask.getTaskWorkDef()));
+                  atsApi.getWorkDefinitionService().getWorkDefinition(Long.valueOf(jTask.getTaskWorkDef()));
             }
             // Else compute and set
             else {
@@ -288,12 +287,12 @@ public class CreateTasksOperation {
 
             ArtifactToken taskArt = null;
 
-            if (jaxTask.isValid()) {
-               taskArt = changes.createArtifact(artType, jaxTask.getName(), jaxTask.getId());
+            if (jTask.isValid()) {
+               taskArt = changes.createArtifact(artType, jTask.getName(), jTask.getId());
             } else {
-               taskArt = changes.createArtifact(artType, jaxTask.getName());
+               taskArt = changes.createArtifact(artType, jTask.getName());
             }
-            jaxTask.setId(taskArt.getId());
+            jTask.setId(taskArt.getId());
 
             IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
             atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
@@ -302,11 +301,11 @@ public class CreateTasksOperation {
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
             List<AtsUser> assignees = new ArrayList<>();
-            if (!jaxTask.getAssigneeUserIds().isEmpty()) {
-               assignees.addAll(atsApi.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
+            if (!jTask.getAssigneeUserIds().isEmpty()) {
+               assignees.addAll(atsApi.getUserService().getUsersByUserIds(jTask.getAssigneeUserIds()));
             }
-            if (jaxTask.getAssigneeAccountIds() != null && !jaxTask.getAssigneeAccountIds().isEmpty()) {
-               for (ArtifactId assignArt : jaxTask.getAssigneeAccountIds()) {
+            if (jTask.getAssigneeAccountIds() != null && !jTask.getAssigneeAccountIds().isEmpty()) {
+               for (ArtifactId assignArt : jTask.getAssigneeAccountIds()) {
                   assignees.add(atsApi.getUserService().getUserById(assignArt));
                }
             }
@@ -314,24 +313,29 @@ public class CreateTasksOperation {
                assignees.add(AtsCoreUsers.UNASSIGNED_USER);
             }
 
-            if (Strings.isValid(jaxTask.getDescription())) {
-               changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
+            if (Strings.isValid(jTask.getDescription())) {
+               changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jTask.getDescription());
             }
-            AtsUser createdBy = atsApi.getUserService().getUserByUserId(jaxTask.getCreatedByUserId());
+            AtsUser createdBy = atsApi.getUserService().getUserByUserId(jTask.getCreatedByUserId());
             atsApi.getActionService().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
                workDefinition, changes);
 
             // Set parent state task is related to if set
-            if (Strings.isValid(jaxTask.getRelatedToState())) {
-               changes.setSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, jaxTask.getRelatedToState());
+            if (Strings.isValid(jTask.getRelatedToState())) {
+               changes.setSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, jTask.getRelatedToState());
             }
 
-            for (JaxAttribute attribute : jaxTask.getAttributes()) {
+            Double hoursSpent = jTask.getHoursSpent();
+            if (hoursSpent > 0.0) {
+               task.getStateMgr().setHoursSpent(task.getStateMgr().getCurrentStateName(), hoursSpent);
+            }
+
+            for (JaxAttribute attribute : jTask.getAttributes()) {
                AttributeTypeToken attrType = attribute.getAttrType();
                changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 
-            for (JaxRelation relation : jaxTask.getRelations()) {
+            for (JaxRelation relation : jTask.getRelations()) {
                RelationTypeToken relationType = atsApi.tokenService().getRelationType(relation.getRelationTypeName());
 
                Collection<IAtsWorkItem> items = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
