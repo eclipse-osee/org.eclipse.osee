@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.editor.event.WfeBranchEventManager;
 import org.eclipse.osee.ats.ide.editor.tab.attributes.WfeAttributesTab;
 import org.eclipse.osee.ats.ide.editor.tab.defects.WfeDefectsTab;
+import org.eclipse.osee.ats.ide.editor.tab.details.WfeDetailsTab;
 import org.eclipse.osee.ats.ide.editor.tab.journal.WfeJournalTab;
 import org.eclipse.osee.ats.ide.editor.tab.members.WfeMembersTab;
 import org.eclipse.osee.ats.ide.editor.tab.metrics.WfeMetricsTab;
@@ -110,9 +111,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeJournalTab journalTab;
    int attrPageIndex = 0;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
-   WfeOutlinePage outlinePage;
+   private WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
    private WfeMetricsTab metricsTab;
+   private WfeDetailsTab detailsTab;
 
    public void loadPages() {
       addPages();
@@ -148,12 +150,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
             createMembersTab();
             createWorkflowTab();
+            createAttributesTab();
             createRelationsTab();
             createTaskTab();
             createJournalTab();
             createDefectsTab();
-            createAttributesTab();
             createMetricsTab();
+            createDetailsTab();
          }
          updatePartName();
 
@@ -328,6 +331,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       if (defectsTab != null) {
          removePage(defectsTab.getIndex());
       }
+      if (detailsTab != null) {
+         removePage(detailsTab.getIndex());
+      }
       if (membersTab != null) {
          removePage(membersTab.getIndex());
       }
@@ -386,6 +392,16 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    protected void createPages() {
       super.createPages();
       OseeStatusContributionItemFactory.addTo(this, true);
+   }
+
+   private void createDetailsTab() {
+      try {
+         detailsTab = new WfeDetailsTab(this, workItem);
+         addPage(detailsTab);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
    }
 
    private void createMetricsTab() {
@@ -449,6 +465,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          }
          if (defectsTab != null) {
             defectsTab.refresh();
+         }
+         if (detailsTab != null) {
+            detailsTab.refresh();
          }
          // Don't refresh attribute tab, it listens for reload events and ArtifactEvents
          onDirtied();
