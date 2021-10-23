@@ -1,17 +1,14 @@
-/*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
+/*******************************************************************************
+ * Copyright (c) 2021 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Boeing - initial API and implementation
- **********************************************************************/
-
-package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
+ *******************************************************************************/
+package org.eclipse.osee.ats.ide.editor.tab.details;
 
 import java.util.Collection;
 import java.util.Map;
@@ -21,6 +18,7 @@ import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -30,89 +28,61 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.SectionPart;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Donald G. Dunne
  */
-public class WfeDetailsSection extends SectionPart {
-
-   private Browser browser;
+public class WfeDetailsTab extends WfeAbstractTab {
+   private ScrolledForm scrolledForm;
+   public final static String ID = "ats.details.tab";
    private final WorkflowEditor editor;
-   private boolean sectionCreated = false;
+   private Browser browser;
 
-   public WfeDetailsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+   public WfeDetailsTab(WorkflowEditor editor, IAtsWorkItem workItem) {
+      super(editor, ID, workItem, "Details");
       this.editor = editor;
    }
 
    @Override
-   public void initialize(IManagedForm form) {
-      super.initialize(form);
-      Section section = getSection();
-      section.setText("Details");
-      section.setLayout(new GridLayout());
-      section.setExpanded(false);
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+   protected void createFormContent(IManagedForm managedForm) {
+      super.createFormContent(managedForm);
 
-      // Only load when users selects section
-      section.addListener(SWT.Activate, new Listener() {
+      scrolledForm = managedForm.getForm();
+      try {
 
-         @Override
-         public void handleEvent(Event e) {
-            createSection();
-         }
-      });
-   }
+         bodyComp = scrolledForm.getBody();
+         GridLayout gridLayout = new GridLayout(1, true);
+         bodyComp.setLayout(gridLayout);
+         GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, true);
+         bodyComp.setLayoutData(gd);
 
-   private synchronized void createSection() {
-      if (!sectionCreated) {
-         final FormToolkit toolkit = getManagedForm().getToolkit();
-         Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
-         composite.setLayout(ALayout.getZeroMarginLayout());
-         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-         composite.addDisposeListener(new DisposeListener() {
+         browser = new Browser(bodyComp, SWT.NONE);
+         browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-               if (Widgets.isAccessible(browser)) {
-                  browser.dispose();
-               }
-            }
-         });
+         updateTitleBar(managedForm);
+         createToolbar(managedForm);
+         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
-         browser = new Browser(composite, SWT.NONE);
-         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-         gd.widthHint = 200;
-         gd.heightHint = 300;
-         browser.setLayoutData(gd);
-
-         getSection().setClient(composite);
-         toolkit.paintBordersFor(composite);
-         sectionCreated = true;
+         refresh();
+      } catch (Exception ex) {
+         handleException(ex);
       }
-
-      refresh();
    }
 
-   @Override
    public void refresh() {
+      refreshBrowser(browser, editor, getManagedForm());
+   }
+
+   public static void refreshBrowser(Browser browser, WorkflowEditor editor, IManagedForm managedForm) {
       if (Widgets.isAccessible(browser)) {
          IAtsWorkItem workItem = editor.getWorkItem();
 
@@ -127,11 +97,11 @@ public class WfeDetailsSection extends SectionPart {
          } catch (Exception ex) {
             browser.setText(Lib.exceptionToString(ex));
          }
-         getManagedForm().reflow(true);
+         managedForm.reflow(true);
       }
    }
 
-   private void addSMADetails(IAtsWorkItem workItem, Map<String, String> details) {
+   private static void addSMADetails(IAtsWorkItem workItem, Map<String, String> details) {
       details.put("Workflow Definition", workItem.getWorkDefinition().getName());
       IAtsAction parentAction = workItem.getParentAction();
       if (parentAction == null) {
@@ -147,7 +117,7 @@ public class WfeDetailsSection extends SectionPart {
       }
    }
 
-   private String getAccessContextId(TeamWorkFlowArtifact workflow) {
+   private static String getAccessContextId(TeamWorkFlowArtifact workflow) {
       String message;
       IAtsAccessService accessService = AtsApiService.get().getAtsAccessService();
       BranchId workingBranch = null;
@@ -176,10 +146,6 @@ public class WfeDetailsSection extends SectionPart {
          }
       }
       return message;
-   }
-
-   public boolean isDisposed() {
-      return browser == null || browser.isDisposed();
    }
 
 }

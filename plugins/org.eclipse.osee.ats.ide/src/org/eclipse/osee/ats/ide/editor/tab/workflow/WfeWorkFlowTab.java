@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeDetailsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeHistorySection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeOperationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeRelationsSection;
@@ -84,7 +83,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public final static String ID = "ats.workflow.tab";
    private final WorkflowEditor editor;
    private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
-   private WfeDetailsSection detailsSection;
    private WfeRelationsSection relationsSection;
    private WfeHistorySection historySection;
 
@@ -235,7 +233,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       createHistorySection();
       createRelationsSection();
       createOperationsSection();
-      createDetailsSection();
 
       setEditorWidgets();
       atsBody.layout();
@@ -259,15 +256,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                ((EditorWidget) widget).setEditorData(editor);
             }
          }
-      }
-   }
-
-   private void createDetailsSection() {
-      try {
-         detailsSection = new WfeDetailsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-         managedForm.addPart(detailsSection);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -402,9 +390,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       if (Widgets.isAccessible(headerComp)) {
          headerComp.dispose();
       }
-      if (detailsSection != null) {
-         detailsSection.dispose();
-      }
       for (WfeUndefinedStateSection section : undefinedStateSections) {
          section.dispose();
       }
@@ -466,7 +451,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                   relationsSection.refresh();
                }
                historySection.refresh();
-               detailsSection.refresh();
             }
 
          });
