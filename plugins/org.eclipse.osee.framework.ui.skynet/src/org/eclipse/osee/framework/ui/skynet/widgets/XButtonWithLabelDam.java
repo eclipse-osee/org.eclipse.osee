@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -40,18 +41,23 @@ public abstract class XButtonWithLabelDam extends XButton implements ArtifactWid
       numColumns = 3;
       super.createControls(parent, horizontalSpan);
       resultsLabelWidget = new Label(comp, SWT.NONE);
-      refreshLabel();
+      refresh();
    }
 
-   protected void refreshLabel() {
-      Displays.ensureInDisplayThread(new Runnable() {
+   @Override
+   public void refresh() {
+      if (Widgets.isAccessible(labelWidget)) {
 
-         @Override
-         public void run() {
-            resultsLabelWidget.setText(getResultsText());
-            resultsLabelWidget.getParent().layout(true);
-         }
-      });
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               resultsLabelWidget.setText(getResultsText());
+               resultsLabelWidget.getParent().layout(true);
+               resultsLabelWidget.getParent().getParent().layout(true);
+            }
+         });
+      }
    }
 
    protected abstract String getResultsText();

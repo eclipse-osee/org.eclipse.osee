@@ -111,12 +111,12 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
                if (res == 2) {
                   if (userHasPermission()) {
                      setSigned(artifact, signDateAttrType, signByAttrType, getLabel(), false);
-                     refreshLabel();
+                     refresh();
                   }
                } else if (res == 0) {
                   if (userHasPermission()) {
                      setSigned(artifact, signDateAttrType, signByAttrType, getLabel(), true);
-                     refreshLabel();
+                     refresh();
                   }
                }
                return Status.OK_STATUS;
@@ -130,18 +130,6 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    protected String getSignMessage() {
       return "Sign " + getLabel() + "?";
-   }
-
-   @Override
-   public void refreshLabel() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            resultsLabelWidget.setText(getResultsText());
-            resultsLabelWidget.getParent().layout(true);
-            resultsLabelWidget.getParent().getParent().layout(true);
-         }
-      });
    }
 
    public boolean userHasPermission() {

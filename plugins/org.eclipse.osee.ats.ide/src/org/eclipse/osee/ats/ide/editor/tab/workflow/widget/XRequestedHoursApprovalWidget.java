@@ -36,9 +36,4 @@ public class XRequestedHoursApprovalWidget extends XAbstractSignDateAndByButton 
 
    }
 
-   @Override
-   public void refresh() {
-      refreshLabel();
-   }
-
 }

@@ -28,9 +28,4 @@ public class XTleReviewedWidget extends XAbstractSignDateAndByButton {
          FrameworkImage.RUN_EXC, true);
    }
 
-   @Override
-   public void refresh() {
-      refreshLabel();
-   }
-
 }

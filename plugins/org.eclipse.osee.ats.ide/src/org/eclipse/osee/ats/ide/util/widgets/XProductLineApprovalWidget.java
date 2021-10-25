@@ -36,11 +36,6 @@ public class XProductLineApprovalWidget extends XAbstractSignDateAndByButton {
    }
 
    @Override
-   public void refresh() {
-      refreshLabel();
-   }
-
-   @Override
    public boolean userHasPermission() {
       Artifact storeArt = getArtifact();
       String teamArtifactId =
