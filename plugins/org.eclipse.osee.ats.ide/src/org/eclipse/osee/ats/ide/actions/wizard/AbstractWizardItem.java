@@ -283,13 +283,15 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    private void wizardCompletedPoints(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
       XHyperlinkLabelValuePointsSelection pointsWidget =
          (XHyperlinkLabelValuePointsSelection) teamDefFieldToWidget.get(teamDef, WizardFields.Points);
-      AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamDef);
-      String value = pointsWidget.getValue();
-      if (Strings.isValid(value)) {
-         if (pointsAttrType.equals(AtsAttributeTypes.Points)) {
-            changes.setSoleAttributeValue(teamWf, pointsAttrType, value);
-         } else {
-            changes.setSoleAttributeValue(teamWf, pointsAttrType, Double.valueOf(value));
+      if (pointsWidget != null) {
+         AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamDef);
+         String value = pointsWidget.getValue();
+         if (Strings.isValid(value)) {
+            if (pointsAttrType.equals(AtsAttributeTypes.Points)) {
+               changes.setSoleAttributeValue(teamWf, pointsAttrType, value);
+            } else {
+               changes.setSoleAttributeValue(teamWf, pointsAttrType, Double.valueOf(value));
+            }
          }
       }
    }
