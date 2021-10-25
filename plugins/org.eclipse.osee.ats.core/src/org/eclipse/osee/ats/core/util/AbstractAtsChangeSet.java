@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -59,10 +60,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
    protected boolean execptionIfEmpty = true;
-   protected BranchId branch;
+   protected BranchToken branch;
    protected Set<ArtifactId> ids = new HashSet<>();
 
-   public AbstractAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
+   public AbstractAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       this.comment = comment;
       this.branch = branch;
       this.asUser = asUser;

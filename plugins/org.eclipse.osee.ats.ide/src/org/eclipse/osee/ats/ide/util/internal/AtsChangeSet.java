@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -72,7 +72,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       this(comment, AtsApiService.get().getAtsBranch(), asUser);
    }
 
-   public AtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
+   public AtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       super(comment, branch, asUser);
    }
 

@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -78,7 +79,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
+   public IAtsChangeSet createAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       return new AtsChangeSet(atsApi, atsApi.getAttributeResolver(), orcsApi, stateFactory, logFactory, comment, asUser,
          branch);
    }
