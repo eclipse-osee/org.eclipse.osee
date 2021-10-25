@@ -66,7 +66,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
       bld.andReviewRoleTypeMinimum(ReviewRoleType.Reviewer, 1);
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
-         .andToStates(StateToken.Cancelled, StateToken.Review, StateToken.Meeting) //
+         .andToStates(StateToken.Review, StateToken.Meeting, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
