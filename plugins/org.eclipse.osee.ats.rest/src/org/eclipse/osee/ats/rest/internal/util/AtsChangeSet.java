@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -58,7 +58,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
 
-   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, AtsUser user, BranchId branch) {
+   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, AtsUser user, BranchToken branch) {
       super(comment, branch, user);
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;

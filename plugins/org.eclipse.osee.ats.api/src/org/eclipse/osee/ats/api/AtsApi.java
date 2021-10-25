@@ -193,9 +193,9 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    IAtsTaskSetDefinitionProviderService getTaskSetDefinitionProviderService();
 
-   IAtsChangeSet createChangeSet(String comment, BranchId branch);
+   IAtsChangeSet createChangeSet(String comment, BranchToken branch);
 
-   IAtsChangeSet createChangeSet(String comment, BranchId branch, AtsUser asUser);
+   IAtsChangeSet createChangeSet(String comment, BranchToken branch, AtsUser asUser);
 
    IAtsServerEndpointProvider getServerEndpoints();
 

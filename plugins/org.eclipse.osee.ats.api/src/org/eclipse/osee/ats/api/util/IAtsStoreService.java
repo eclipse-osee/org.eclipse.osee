@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -117,7 +118,7 @@ public interface IAtsStoreService {
 
    ArtifactTypeToken getArtifactType(ArtifactId artId, BranchId branch);
 
-   IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser);
+   IAtsChangeSet createAtsChangeSet(String comment, BranchToken branch, AtsUser asUser);
 
    boolean isOfType(ArtifactId artifact, ArtifactTypeToken artType);
 

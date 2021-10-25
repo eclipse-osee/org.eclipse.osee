@@ -13,8 +13,7 @@
 
 package org.eclipse.osee.orcs.account.admin.internal;
 
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -31,7 +30,6 @@ public abstract class AbstractOrcsStorage {
    private Log logger;
    private OrcsApi orcsApi;
 
-   private BranchId storageBranch;
    private AccountFactory factory;
 
    public void setLogger(Log logger) {
@@ -48,16 +46,10 @@ public abstract class AbstractOrcsStorage {
 
    public void start() {
       logger.trace("Starting [%s]...", getClass().getSimpleName());
-      storageBranch = CoreBranches.COMMON;
    }
 
    public void stop() {
       logger.trace("Stopping [%s]...", getClass().getSimpleName());
-      storageBranch = null;
-   }
-
-   private BranchId getBranch() {
-      return storageBranch;
    }
 
    protected Log getLogger() {
@@ -70,17 +62,16 @@ public abstract class AbstractOrcsStorage {
 
    protected QueryBuilder newQuery() {
       QueryFactory queryFactory = orcsApi.getQueryFactory();
-      return queryFactory.fromBranch(getBranch());
+      return queryFactory.fromBranch(COMMON);
    }
 
    protected TransactionBuilder newTransaction(String comment) {
       TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
-      return transactionFactory.createTransaction(getBranch(), comment);
+      return transactionFactory.createTransaction(COMMON, comment);
    }
 
    protected boolean isInitialized() {
       OrcsAdmin adminOps = orcsApi.getAdminOps();
       return adminOps.isDataStoreInitialized();
    }
-
 }
