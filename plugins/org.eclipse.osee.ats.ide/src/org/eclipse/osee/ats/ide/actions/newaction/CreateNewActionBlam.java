@@ -36,12 +36,15 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.wizard.IAtsWizardItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.ats.ide.world.WorldEditor;
+import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -172,8 +175,12 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          log(actionResult.getResults().toString());
          return;
       }
-      IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
-      WorkflowEditor.edit(teamWf);
+      Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeams();
+      if (teamWfs.size() == 1) {
+         WorkflowEditor.edit(teamWfs.iterator().next());
+      } else {
+         WorldEditor.open(new WorldEditorSimpleProvider("New Action Workflows", AtsObjects.getArtifacts(teamWfs)));
+      }
    }
 
    @Override
