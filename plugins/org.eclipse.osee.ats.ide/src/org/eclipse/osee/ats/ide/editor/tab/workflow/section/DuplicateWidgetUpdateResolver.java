@@ -136,7 +136,7 @@ public class DuplicateWidgetUpdateResolver {
             } else {
                ((XAbstractSignDateAndByButton) currUpdateWidget).setSigned();
             }
-            ((XAbstractSignDateAndByButton) currUpdateWidget).refreshLabel();
+            ((XAbstractSignDateAndByButton) currUpdateWidget).refresh();
          }
       } else if (currUpdateWidget instanceof XDateDam) {
          currText = ((XDateDam) currUpdateWidget).get();
