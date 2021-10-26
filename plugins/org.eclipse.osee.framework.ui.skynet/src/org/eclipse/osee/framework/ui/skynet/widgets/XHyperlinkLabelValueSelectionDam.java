@@ -78,25 +78,16 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
       return artifact;
    }
 
-   /**
-    * Hyperlink Selection is save on selection
-    */
    @Override
    public void saveToArtifact() {
       // do nothing
    }
 
-   /**
-    * Hyperlink Selection is save on selection
-    */
    @Override
    public void revert() {
       // do nothing
    }
 
-   /**
-    * Hyperlink Selection is save on selection
-    */
    @Override
    public Result isDirty() {
       return Result.FalseResult;

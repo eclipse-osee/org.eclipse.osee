@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -51,7 +51,10 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    protected void createControls(Composite parent, int horizontalSpan) {
 
       comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      //      comp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      GridLayout layout = new GridLayout(2, false);
+      layout.marginHeight = 1;
+      comp.setLayout(layout);
       if (isFillHorizontally()) {
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
       } else {

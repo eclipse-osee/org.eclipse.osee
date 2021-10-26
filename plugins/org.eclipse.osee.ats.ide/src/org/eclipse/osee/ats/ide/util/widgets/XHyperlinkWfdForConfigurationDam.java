@@ -16,6 +16,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -42,7 +44,7 @@ public class XHyperlinkWfdForConfigurationDam extends XHyperlinkWfdForConfigurat
 
    @Override
    public void handleSelectionPersist(ArtifactToken selected) {
-      SkynetTransaction tx = TransactionManager.createTransaction(CoreBranches.COMMON, "Set Configig");
+      SkynetTransaction tx = TransactionManager.createTransaction(CoreBranches.COMMON, "Set Config");
       artifact.setSoleAttributeValue(attributeTypeToken, selected);
       tx.execute();
    }
@@ -71,6 +73,17 @@ public class XHyperlinkWfdForConfigurationDam extends XHyperlinkWfdForConfigurat
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeToken) {
       this.artifact = artifact;
       this.attributeTypeToken = attributeTypeToken;
+      if (artifact instanceof IAtsTeamWorkflow) {
+         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) artifact;
+         ArtifactToken versionId = AtsApiService.get().getRelationResolver().getRelatedOrSentinel(teamWf,
+            AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
+         if (versionId.isValid()) {
+            Version ver = AtsApiService.get().getVersionService().getVersionById(versionId);
+            if (ver != null) {
+               branch = ver.getBaselineBranch();
+            }
+         }
+      }
    }
 
    @Override

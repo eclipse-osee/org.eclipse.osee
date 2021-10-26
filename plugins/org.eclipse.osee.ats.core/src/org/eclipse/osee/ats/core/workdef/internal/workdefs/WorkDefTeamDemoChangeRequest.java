@@ -63,10 +63,10 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERTICALLY) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XRadioButtonsBooleanTriStateDam",
+               new WidgetDefinition(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
                   WidgetOption.HORIZONTAL_LABEL, REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE),
-               new WidgetDefinition(AtsAttributeTypes.NonFunctionalProblem, "XCheckBoxThreeStateDam", HORIZONTAL_LABEL,
-                  REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE) //
+               new WidgetDefinition(AtsAttributeTypes.NonFunctionalProblem, "XHyperlinkTriStateBooleanDam",
+                  HORIZONTAL_LABEL, REQUIRED_FOR_TRANSITION, LABEL_AFTER, AUTO_SAVE) //
             ), //
             new WidgetDefinition(AtsAttributeTypes.ImpactToMissionOrCrew, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
 
