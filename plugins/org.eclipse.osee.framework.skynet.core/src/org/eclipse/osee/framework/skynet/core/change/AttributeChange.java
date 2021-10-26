@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -47,17 +47,17 @@ public final class AttributeChange extends Change {
    private final ModificationType artModType;
    private final ArtifactWasIsLazyProvider wasIsProvider;
 
-   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String isUri, String wasValue, String wasUri, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public AttributeChange(BranchToken branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String isUri, String wasValue, String wasUri, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       this(branch, sourceGamma, artId, txDelta, modType, isValue, isUri, wasValue, wasUri, null, attrId, attributeType,
          artModType, isHistorical, changeArtifact, artifactDelta);
    }
 
-   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public AttributeChange(BranchToken branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       this(branch, sourceGamma, artId, txDelta, modType, null, null, null, null, wasIsProvider, attrId, attributeType,
          artModType, isHistorical, changeArtifact, artifactDelta);
    }
 
-   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String isUri, String wasValue, String wasUri, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public AttributeChange(BranchToken branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String isUri, String wasValue, String wasUri, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeTypeToken attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;

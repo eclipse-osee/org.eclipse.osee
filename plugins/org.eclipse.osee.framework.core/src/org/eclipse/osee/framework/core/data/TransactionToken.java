@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  * @author Ryan D. Brooks
  */
 public interface TransactionToken extends TransactionId, HasBranchId {
-   TransactionToken SENTINEL = valueOf(Id.SENTINEL, BranchId.SENTINEL);
+   TransactionToken SENTINEL = valueOf(Id.SENTINEL, BranchToken.SENTINEL);
 
    public static TransactionToken valueOf(TransactionId id, BranchId branch) {
       return valueOf(id.getId(), branch);

@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.util.StringTokenizer;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
@@ -40,7 +40,7 @@ public class TupleChange extends Change {
    private String detailedIsValue;
    private String detailedWasValue;
 
-   public TupleChange(BranchId branch, GammaId sourceGamma, TransactionDelta txDelta, ModificationType modType, TupleTypeId itemTypeId, String isValue, String wasValue, String itemKind, boolean isHistorical) {
+   public TupleChange(BranchToken branch, GammaId sourceGamma, TransactionDelta txDelta, ModificationType modType, TupleTypeId itemTypeId, String isValue, String wasValue, String itemKind, boolean isHistorical) {
       super(branch, sourceGamma, ArtifactId.valueOf(0L), txDelta, modType, isHistorical, Artifact.SENTINEL, null);
       this.itemTypeId = itemTypeId;
       this.itemKind = itemKind;

@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -30,7 +30,7 @@ public final class ErrorChange extends Change {
    private final String errorMessage;
    private final String name;
 
-   public ErrorChange(BranchId branch, ArtifactId artId, String exception) {
+   public ErrorChange(BranchToken branch, ArtifactId artId, String exception) {
       super(branch, GammaId.valueOf(0L), artId, null, null, false, Artifact.SENTINEL, null);
       this.errorMessage = String.format("%s %s", ERROR_STRING, exception);
       this.name = String.format("%s ArtID: %s BranchUuid: %s - %s", ERROR_STRING, getArtId(),
