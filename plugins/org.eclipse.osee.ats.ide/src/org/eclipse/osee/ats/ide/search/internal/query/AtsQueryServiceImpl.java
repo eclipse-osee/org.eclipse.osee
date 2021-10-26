@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -367,7 +368,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchId branch, DeletionFlag deletionFlag) {
+   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchToken branch, DeletionFlag deletionFlag) {
       return Collections.castAll(ArtifactQuery.getArtifactListFrom(artifactIds, branch, deletionFlag));
    }
 

@@ -714,8 +714,10 @@ public final class BranchManager {
    }
 
    public static boolean isArchived(BranchId branchId) {
-      Branch branch = getAndCheck(branchId);
-      return branch.isArchived();
+      if (branchId.equals(COMMON)) {
+         return false;
+      }
+      return getAndCheck(branchId).isArchived();
    }
 
    private static Branch getAndCheck(BranchId branchId) {

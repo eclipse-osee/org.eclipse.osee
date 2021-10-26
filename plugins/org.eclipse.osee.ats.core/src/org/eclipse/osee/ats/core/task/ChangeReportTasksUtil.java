@@ -61,7 +61,7 @@ public class ChangeReportTasksUtil {
 
       // If working branch, get change data from branch
       List<ChangeItem> changeItems = null;
-      BranchId workOrParentBranch = null;
+      BranchToken workOrParentBranch = null;
       if (atsApi.getBranchService().isWorkingBranchInWork(chgRptTeamWf)) {
          BranchToken workingBranch = atsApi.getBranchService().getWorkingBranch(chgRptTeamWf);
          workOrParentBranch = workingBranch;
@@ -71,10 +71,9 @@ public class ChangeReportTasksUtil {
       // Else get change data from earliest transaction
       else if (atsApi.getBranchService().isCommittedBranchExists(chgRptTeamWf)) {
          TransactionToken tx = atsApi.getBranchService().getEarliestTransactionId(chgRptTeamWf);
-         workOrParentBranch = tx.getBranch();
+         workOrParentBranch = atsApi.getBranchService().getBranch(tx.getBranch());
          changeItems = atsApi.getBranchService().getChangeData(tx);
-         crtd.getResults().logf("Using Commit Branch %s\n",
-            atsApi.getBranchService().getBranch(tx.getBranch()).toStringWithId());
+         crtd.getResults().logf("Using Commit Branch %s\n", workOrParentBranch.toStringWithId());
       }
       crtd.setWorkOrParentBranch(workOrParentBranch);
       if (changeItems == null) {

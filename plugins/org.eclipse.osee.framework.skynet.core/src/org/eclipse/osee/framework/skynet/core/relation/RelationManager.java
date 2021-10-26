@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -223,7 +224,7 @@ public class RelationManager {
          }
 
          if (relatedArtIds.size() > 0) {
-            BranchId branch = artifacts.iterator().next().getBranch();
+            BranchToken branch = artifacts.iterator().next().getBranch();
             newArtifacts = ArtifactQuery.getArtifactListFrom(relatedArtIds, branch, allowDeleted);
          }
          newArtifactsToSearch.clear();
