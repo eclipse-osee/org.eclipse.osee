@@ -174,8 +174,10 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
             return role;
          }
       }
-      results.errorf("Review role with name [%s] does not exist for Work Def %s", name, getName());
-      return ReviewRole.Reviewer;
+      // Handle retired roles for old reviews
+      ReviewRole newRole = new ReviewRole(Long.valueOf(reviewRoleMap.size()), name, ReviewRoleType.Reviewer);
+      reviewRoleMap.put(newRole, 0);
+      return newRole;
    }
 
    @Override
