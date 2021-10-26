@@ -85,13 +85,13 @@ public class ArtifactEndpointTest {
       Assert.assertEquals(1, artIds.size());
 
       Collection<ApplicabilityToken> appTokens = applicEndpoint.getApplicabilityTokens();
-      ApplicabilityToken robotIncluded = appTokens.stream().filter(
-         appToken -> "ROBOT_ARM_LIGHT = Included".equals(appToken.getName())).findAny().orElse(
+      ApplicabilityToken robotSpkrA =
+         appTokens.stream().filter(appToken -> "ROBOT_SPEAKER = SPKR_A".equals(appToken.getName())).findAny().orElse(
             ApplicabilityToken.SENTINEL);
 
-      applicEndpoint.setApplicability(robotIncluded, Collections.singletonList(newArtifact));
+      applicEndpoint.setApplicability(robotSpkrA, Collections.singletonList(newArtifact));
       ArtifactSearchOptions options2 = new ArtifactSearchOptions();
-      options2.setApplic(robotIncluded);
+      options2.setApplic(robotSpkrA);
       artIds = workingBranchArtifactEndpoint.findArtifactIds(options2);
       Assert.assertEquals(1, artIds.size());
 
@@ -105,7 +105,7 @@ public class ArtifactEndpointTest {
       options4.setArtTypeIds(artTypes);
       options4.setView(ArtifactId.valueOf(applicEndpoint.getView("Product A").getId()));
       artIds = workingBranchArtifactEndpoint.findArtifactIds(options4);
-      Assert.assertEquals(17, artIds.size());
+      Assert.assertEquals(16, artIds.size());
    }
 
    @Test

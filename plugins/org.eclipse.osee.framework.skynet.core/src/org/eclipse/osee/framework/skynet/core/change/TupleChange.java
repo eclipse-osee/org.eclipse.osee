@@ -46,7 +46,8 @@ public class TupleChange extends Change {
       this.itemKind = itemKind;
       this.isValue = isValue;
       this.wasValue = wasValue;
-      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId())) {
+      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId()) || getItemTypeId().getId().equals(
+         CoreTupleTypes.ApplicabilityDefinition.getId())) {
          String value = isValue.isEmpty() ? wasValue : isValue;
          StringTokenizer tok = new StringTokenizer(value, ",");
 
@@ -63,6 +64,9 @@ public class TupleChange extends Change {
          if (cfg.isEmpty()) {
             cfg =
                ServiceUtil.getOseeClient().getApplicabilityEndpoint(getBranch()).getConfigurationGroup(cfgId).getName();
+         }
+         if (cfg.isEmpty()) {
+            cfg = ServiceUtil.getOseeClient().getApplicabilityEndpoint(getBranch()).getFeature(cfgId).getName();
          }
          ApplicabilityToken tag =
             ServiceUtil.getOseeClient().getApplicabilityEndpoint(getBranch()).getApplicabilityTokenFromId(appId);
@@ -86,7 +90,8 @@ public class TupleChange extends Change {
 
    @Override
    public String getIsValue() {
-      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId())) {
+      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId()) || getItemTypeId().getId().equals(
+         CoreTupleTypes.ApplicabilityDefinition.getId())) {
          return detailedIsValue;
       }
       return isValue;
@@ -94,7 +99,8 @@ public class TupleChange extends Change {
 
    @Override
    public String getWasValue() {
-      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId())) {
+      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId()) || getItemTypeId().getId().equals(
+         CoreTupleTypes.ApplicabilityDefinition.getId())) {
          return detailedWasValue;
       }
       return wasValue;
@@ -102,7 +108,8 @@ public class TupleChange extends Change {
 
    @Override
    public String getItemTypeName() {
-      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId())) {
+      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId()) || getItemTypeId().getId().equals(
+         CoreTupleTypes.ApplicabilityDefinition.getId())) {
          return itemTypeDescription;
       }
       return itemTypeId.getIdString();
@@ -110,7 +117,8 @@ public class TupleChange extends Change {
 
    @Override
    public String getName() {
-      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId())) {
+      if (getItemTypeId().getId().equals(CoreTupleTypes.ViewApplicability.getId()) || getItemTypeId().getId().equals(
+         CoreTupleTypes.ApplicabilityDefinition.getId())) {
          return ("Product Line Configuration");
       }
       return "N/A";

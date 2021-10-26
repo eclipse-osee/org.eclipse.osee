@@ -14,12 +14,14 @@
 package org.eclipse.osee.orcs.core.internal.applicability;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -417,10 +419,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public XResultData createFeature(FeatureDefinition feature, BranchId branch) {
       XResultData results = new XResultData();
+      ArtifactToken featureArt = ArtifactToken.SENTINEL;
+      TransactionBuilder tx = txFactory.createTransaction(branch, "Create Feature");
       try {
-         TransactionBuilder tx = txFactory.createTransaction(branch, "Create Feature");
-
-         if (createFeatureDefinition(feature, tx, results).isValid()) {
+         featureArt = createFeatureDefinition(feature, tx, results);
+         if (featureArt.isValid()) {
             tx.commit();
          }
       } catch (Exception ex) {
@@ -428,10 +431,17 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       if (results.getNumErrors() == 0) {
          try {
-
             boolean changes = false;
-            TransactionBuilder tx =
-               txFactory.createTransaction(branch, "Set Defaults for Configurations for New Feature");
+
+            /**
+             * Adding tuples for ApplicabilityValueData (E1: ArtifactId - E2: ApplicabilityId)<br/>
+             * E2 is passed as a string to find existing/create new ApplicabilityId
+             */
+            for (String value : feature.getValues()) {
+               String applicString = feature.getName() + " = " + value;
+               tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, applicString);
+               changes = true;
+            }
 
             List<ArtifactToken> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
             Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
@@ -458,15 +468,48 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public XResultData updateFeature(FeatureDefinition feature, BranchId branch) {
       XResultData results = new XResultData();
+      ArtifactToken featureArt = ArtifactToken.SENTINEL;
       try {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Update Feature");
-
-         if (updateFeatureDefinition(feature, tx, results).isValid()) {
+         featureArt = updateFeatureDefinition(feature, tx, results);
+         if (featureArt.isValid()) {
             tx.commit();
          }
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
+
+      if (results.getNumErrors() == 0) {
+         try {
+            boolean changes = false;
+            TransactionBuilder tx = txFactory.createTransaction(branch, "Add new tuple values for feature");
+
+            // Saving as a set to keep track of old entries to be deleted
+            HashSet<String> applicData =
+               Sets.newHashSet(orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ApplicabilityDefinition,
+                  tx.getBranch(), featureArt));
+            for (String value : feature.getValues()) {
+               String applicString = feature.getName() + " = " + value;
+               // If the string is successfully removed, then that value already exists. If not, need to add that value into the tuple table.
+               if (!applicData.remove(applicString)) {
+                  tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, applicString);
+                  changes = true;
+               }
+            }
+            // Any leftover strings that were not processed means that they are no longer valid and the tuple needs to be removed
+            for (String invalidApplic : applicData) {
+               tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, invalidApplic);
+               changes = true;
+            }
+
+            if (changes) {
+               tx.commit();
+            }
+         } catch (Exception ex) {
+            results.error(Lib.exceptionToString(ex));
+         }
+      }
+
       return results;
    }
 
@@ -494,20 +537,34 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    public XResultData deleteFeature(ArtifactId feature, BranchId branch) {
       XResultData results = new XResultData();
       try {
-         ArtifactToken featureArt = (ArtifactToken) getFeature(feature.getIdString(), branch).getData();
+         FeatureDefinition featureDef = getFeature(feature.getIdString(), branch);
          TransactionBuilder tx = txFactory.createTransaction(branch, "Delete Feature");
          List<ArtifactToken> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
          Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
-         for (ArtifactToken v : branchViews) {
-            Iterable<String> appl =
-               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, tx.getBranch(), v);
-            for (String app : appl) {
-               if (appl.toString().contains(feature + " = ")) {
-                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, v, app);
+         for (ArtifactToken view : branchViews) {
+            Iterable<String> applicData =
+               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, tx.getBranch(), view);
+            for (String value : featureDef.getValues()) {
+               String applicString = featureDef.getName() + " = " + value;
+               if (applicData.toString().contains(applicString)) {
+                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, view, applicString);
                }
             }
          }
-         tx.deleteArtifact(featureArt);
+
+         /**
+          * Removing tuples for ApplicabilityValueData (E1: ArtifactId - E2: ApplicabilityId)<br/>
+          * E2 is a string to find existing ApplicabilityId
+          */
+         Iterable<String> applicData = orcsApi.getQueryFactory().tupleQuery().getTuple2(
+            CoreTupleTypes.ApplicabilityDefinition, tx.getBranch(), feature);
+         for (String value : featureDef.getValues()) {
+            String applicString = featureDef.getName() + " = " + value;
+            if (applicData.toString().contains(applicString)) {
+               tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, feature, applicString);
+            }
+         }
+         tx.deleteArtifact(feature);
          tx.commit();
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
@@ -612,6 +669,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       if (!view.getName().equals(editView.getName())) {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Update Configuration Name");
          tx.setName(ArtifactId.valueOf(editView), view.getName());
+         tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(editView.getId()),
+            "Config = " + editView.getName());
+         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(view.getId()),
+            "Config = " + view.getName());
          tx.commit();
       }
       if (view.getConfigurationGroup().isValid()) {
@@ -657,6 +718,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             //so committing first, then adding standard applicabilities
             TransactionBuilder tx2 =
                txFactory.createTransaction(branch, "Create Config and Base applicabilities on New View");
+            tx2.addTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, "Config = " + view.getName());
             tx2.createApplicabilityForView(vDefArt, "Base");
             tx2.createApplicabilityForView(vDefArt, "Config = " + view.getName());
             tx2.commit();
@@ -709,6 +771,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             for (String app : deleteApps) {
                txApps.deleteTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(viewDef.getId()), app);
             }
+            txApps.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, viewArt, "Config = " + viewDef.getName());
             txApps.commit();
             TransactionBuilder tx = txFactory.createTransaction(branch, "Delete View");
             tx.deleteArtifact(viewArt);
@@ -1091,6 +1154,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          vDefArt = tx.createArtifact(getPlConfigurationGroupsFolder(tx.getBranch()), CoreArtifactTypes.GroupArtifact,
             group.getName());
          tx.setName(vDefArt, group.getName());
+         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, "ConfigurationGroup = " + vDefArt.getName());
          // reload artifact to return
          tx.commit();
          ArtifactId newGrp =
@@ -1127,6 +1191,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             if (!group.getName().equals(currentGroup.getName())) {
                TransactionBuilder tx = txFactory.createTransaction(branch, "Update PL Configuration Group Name");
                tx.setName(ArtifactId.valueOf(group.getId()), group.getName());
+               tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(group.getId()),
+                  "ConfigurationGroup = " + currentGroup.getName());
+               tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(group.getId()),
+                  "ConfigurationGroup = " + group.getName());
                tx.commit();
             }
             if (!group.getConfigurations().toString().equals(currentGroup.getConfigurations().toString())) {
@@ -1293,6 +1361,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          for (String app : deleteApps) {
             txApps.deleteTuple2(CoreTupleTypes.ViewApplicability, cfgGroup, app);
          }
+         txApps.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, cfgGroup,
+            "ConfigurationGroup = " + cfgGroup.getName());
          txApps.commit();
          TransactionBuilder tx = txFactory.createTransaction(branch, "Delete Cfg Group");
          tx.deleteArtifact(cfgGroup);
