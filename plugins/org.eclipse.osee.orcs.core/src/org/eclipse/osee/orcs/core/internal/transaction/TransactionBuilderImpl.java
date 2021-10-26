@@ -517,6 +517,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          plFolder = CoreArtifactTokens.ProductsFolder;
       }
       ArtifactToken view = createArtifact(plFolder, CoreArtifactTypes.BranchView, viewName);
+      addTuple2(CoreTupleTypes.ApplicabilityDefinition, view, "Config = " + viewName);
       addTuple2(CoreTupleTypes.ViewApplicability, view, ApplicabilityToken.BASE.getName());
       addTuple2(CoreTupleTypes.ViewApplicability, view, "Config = " + viewName);
 

@@ -70,11 +70,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Collection<String> getPossibleApplicabilities() {
-      return applicabilityQuery.getPossibleApplicabilities(branch);
-   }
-
-   @Override
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds) {
       return applicabilityQuery.getApplicabilityTokens(artIds, branch);
    }

@@ -44,6 +44,8 @@ public final class CoreTupleTypes {
       Tuple2Type.valueOf(DefaultFamily, 1L, TupleFamilyId::valueOf, TupleTypeId::valueOf);
    public static final Tuple2Type<ArtifactId, String> ViewApplicability =
       Tuple2Type.valueOf(ProductLineFamily, 2L, ArtifactId::valueOf, KeyedString);
+   public static final Tuple2Type<ArtifactId, String> ApplicabilityDefinition =
+      Tuple2Type.valueOf(ProductLineFamily, 11L, ArtifactId::valueOf, KeyedString);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
       Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L, ArtifactId::valueOf, ApplicabilityId::valueOf);
    public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig =

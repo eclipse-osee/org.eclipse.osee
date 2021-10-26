@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -104,6 +105,7 @@ public class CreateDemoBranches {
 
       tx.createBranchCategory(branch, CoreBranchCategoryTokens.PLE);
       tx.createBranchCategory(branch, CoreBranchCategoryTokens.ATS);
+      tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(1), "Base");
       tx.commit();
       ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
       group.setName("abGroup");
@@ -116,18 +118,31 @@ public class CreateDemoBranches {
 
    private static void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx, OrcsApi orcsApi) {
       XResultData results = new XResultData();
-      FeatureDefinition def1 = new FeatureDefinition(DemoFeatures.ROBOT_ARM_LIGHT.name(), "String",
-         Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability", Arrays.asList("Test"));
-      orcsApi.getApplicabilityOps().createFeatureDefinition(def1, tx, results);
-      FeatureDefinition def2 = new FeatureDefinition(DemoFeatures.ENGINE_5.name(), "String",
-         Arrays.asList("A2543", "B5543"), "A2543", false, "Used select type of engine", Arrays.asList("Test"));
-      orcsApi.getApplicabilityOps().createFeatureDefinition(def2, tx, results);
-      FeatureDefinition def3 = new FeatureDefinition(DemoFeatures.JHU_CONTROLLER.name(), "String",
-         Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation", null);
-      orcsApi.getApplicabilityOps().createFeatureDefinition(def3, tx, results);
-      FeatureDefinition def4 = new FeatureDefinition(DemoFeatures.ROBOT_SPEAKER.name(), "String",
-         Arrays.asList("SPKR_A", "SPKR_B", "SPKR_C"), "SPKR_A", true, "This feature is multi-select.", null);
-      orcsApi.getApplicabilityOps().createFeatureDefinition(def4, tx, results);
+
+      List<String> def1Values = Arrays.asList("Included", "Excluded");
+      FeatureDefinition def1 = new FeatureDefinition(DemoFeatures.ROBOT_ARM_LIGHT.name(), "String", def1Values,
+         "Included", false, "A significant capability", Arrays.asList("Test"));
+      ArtifactToken def1Tok = orcsApi.getApplicabilityOps().createFeatureDefinition(def1, tx, results);
+      configureApplicabilityValues(tx, def1Tok, DemoFeatures.ROBOT_ARM_LIGHT.name(), def1Values);
+
+      List<String> def2Values = Arrays.asList("A2543", "B5543");
+      FeatureDefinition def2 = new FeatureDefinition(DemoFeatures.ENGINE_5.name(), "String", def2Values, "A2543", false,
+         "Used select type of engine", Arrays.asList("Test"));
+      ArtifactToken def2Tok = orcsApi.getApplicabilityOps().createFeatureDefinition(def2, tx, results);
+      configureApplicabilityValues(tx, def2Tok, DemoFeatures.ENGINE_5.name(), def2Values);
+
+      List<String> def3Values = Arrays.asList("Included", "Excluded");
+      FeatureDefinition def3 = new FeatureDefinition(DemoFeatures.JHU_CONTROLLER.name(), "String", def3Values,
+         "Included", false, "A small point of variation", null);
+      ArtifactToken def3Tok = orcsApi.getApplicabilityOps().createFeatureDefinition(def3, tx, results);
+      configureApplicabilityValues(tx, def3Tok, DemoFeatures.JHU_CONTROLLER.name(), def3Values);
+
+      List<String> def4Values = Arrays.asList("SPKR_A", "SPKR_B", "SPKR_C");
+      FeatureDefinition def4 = new FeatureDefinition(DemoFeatures.ROBOT_SPEAKER.name(), "String", def4Values, "SPKR_A",
+         true, "This feature is multi-select.", null);
+      ArtifactToken def4Tok = orcsApi.getApplicabilityOps().createFeatureDefinition(def4, tx, results);
+      configureApplicabilityValues(tx, def4Tok, DemoFeatures.ROBOT_SPEAKER.name(), def4Values);
+
       orcsApi.getApplicabilityOps();
       Conditions.assertFalse(results.isErrors(), results.toString());
    }
@@ -170,6 +185,12 @@ public class CreateDemoBranches {
    private static void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
       for (int i = 0; i < products.length; i++) {
          tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
+      }
+   }
+
+   private static void configureApplicabilityValues(TransactionBuilder tx, ArtifactId featureId, String featureName, List<String> featureValues) {
+      for (String value : featureValues) {
+         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, featureId, featureName + " = " + value);
       }
    }
 

@@ -36,13 +36,14 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -55,6 +56,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Ryan D. Brooks
@@ -82,27 +84,6 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<String> getPossibleApplicabilities(BranchId branch) {
-      HashMap<Long, ApplicabilityToken> appTokens = getApplicabilityTokens(branch);
-      List<String> apps = Named.getNames(appTokens.values());
-
-      for (ArtifactToken view : getConfigurationsForBranch(branch)) {
-         apps.add("Config = " + view.getName());
-      }
-      for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
-         for (String val : feature.getValues()) {
-            apps.add(feature.getName() + " = " + val);
-         }
-      }
-      for (ArtifactToken group : getConfigurationGroupsForBranch(branch)) {
-         apps.add("ConfigurationGroup = " + group.getName());
-      }
-      List<String> appsNoDups = new ArrayList<>(new HashSet<>(apps));
-      Collections.sort(appsNoDups);
-      return appsNoDups;
-   }
-
-   @Override
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch) {
       return applicabilityDsQuery.getApplicabilityTokens(artIds, branch);
    }
@@ -111,7 +92,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch) {
       HashMap<Long, ApplicabilityToken> tokens = new HashMap<>();
       BiConsumer<Long, String> consumer = (id, name) -> tokens.put(id, new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch, consumer);
+      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ApplicabilityDefinition, branch, consumer);
       if (tokens.isEmpty()) {
          tokens.put(ApplicabilityToken.BASE.getId(), ApplicabilityToken.BASE);
       }
@@ -122,8 +103,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2) {
       HashMap<Long, ApplicabilityToken> tokens = new HashMap<>();
       BiConsumer<Long, String> consumer = (id, name) -> tokens.put(id, new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch1, consumer);
-      tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch2, consumer);
+      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ApplicabilityDefinition, branch1, consumer);
+      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ApplicabilityDefinition, branch2, consumer);
       return tokens;
    }
 
@@ -479,5 +460,95 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    @Override
    public Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view) {
       return applicabilityDsQuery.getExcludedArtifacts(branch, view);
+   }
+
+   /**
+    * This method was used to initialize the tuple2 type ApplicabilityDefinition on baseline branches with Product Line
+    * capabilities. This was taken from the old getPossibleApplicabilities rest call and modified to add/introduce
+    * tuples. This method is here more for documentation purposes than actual use. Note the comment for
+    * getApplicabilityTokens in this method.
+    */
+   @Override
+   public List<String> initializeAllApplicabilityTuples(BranchId branch) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
+         "Adding Tuple2 Entires fro ApplicabilityDefinition Type");
+      TupleQuery query = orcsApi.getQueryFactory().tupleQuery();
+
+      GammaId gamma = GammaId.SENTINEL;
+      if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0),
+         "Base")).isValid()) {
+         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0), "Base");
+      } else {
+         tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+      }
+
+      List<String> apps = new ArrayList<String>();
+      /**
+       * getApplicabilityTokens returns tokens based on tuples for ApplicabilityDefinition, which is what this method is
+       * initializing. For actual use, the tokens returned would need to be from the ViewApplicability tuple.
+       */
+      HashMap<Long, ApplicabilityToken> appTokens = getApplicabilityTokens(branch);
+
+      for (ApplicabilityToken app : appTokens.values()) {
+         apps.add(app.getName());
+      }
+
+      List<String> applicsNoArtifacts = new ArrayList<>(); // Used to keep track of applicability's that exist but are not found within the 3 main loops
+      applicsNoArtifacts.addAll(apps);
+      applicsNoArtifacts.remove("Base");
+
+      for (ArtifactToken view : getConfigurationsForBranch(branch)) {
+         String str = "Config = " + view.getName();
+
+         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, view, str)).isValid()) {
+            tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, view, str);
+         } else {
+            tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+         }
+         if (!apps.contains(str)) {
+            apps.add(str);
+         }
+         applicsNoArtifacts.remove(str);
+      }
+      for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
+         for (String val : feature.getValues()) {
+            String str = feature.getName() + " = " + val;
+            if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition,
+               ArtifactId.valueOf(feature.getId()), str)).isValid()) {
+               tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(feature.getId()), str);
+            } else {
+               tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+            }
+            if (!apps.contains(str)) {
+               apps.add(str);
+            }
+            applicsNoArtifacts.remove(str);
+         }
+      }
+      for (ArtifactToken group : getConfigurationGroupsForBranch(branch)) {
+         String str = "ConfigurationGroup = " + group.getName();
+         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, group, str)).isValid()) {
+            tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, group, str);
+         } else {
+            tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+         }
+         if (!apps.contains(str)) {
+            apps.add(str);
+         }
+         applicsNoArtifacts.remove(str);
+      }
+      for (String app : applicsNoArtifacts) {
+         // These applicabilities are mostly compounds and/or don't have associated artifacts.  Just using ID of 0 for E1
+         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0),
+            app)).isValid()) {
+            tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0), app);
+         } else {
+            tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+         }
+      }
+      TransactionToken commit = tx.commit();
+      List<String> appsNoDups = new ArrayList<>(new HashSet<>(apps));
+      Collections.sort(appsNoDups);
+      return appsNoDups;
    }
 }

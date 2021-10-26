@@ -52,17 +52,6 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Collection<ApplicabilityToken> getApplicabilityTokens();
 
-   /**
-    * getPossibleApplicabilities uses Feature artifacts to compute all possible combinations of a feature and its
-    * values. The computed applicability tags may or may not have been used and therefore might not return using the
-    * getApplicabilityTokens method which only returns applicability tags which have been used at some time and are
-    * already stored in osee_key_value table.
-    */
-   @GET
-   @Path("all")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Collection<String> getPossibleApplicabilities();
-
    @GET
    @Path("artifact/{artId}")
    @Produces(MediaType.APPLICATION_JSON)
