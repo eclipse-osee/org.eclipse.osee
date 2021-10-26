@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -86,7 +86,7 @@ public class GraphDataImplTest {
    @Mock private Relation relation3;
    // @formatter:on
 
-   private final BranchId branch = CoreBranches.COMMON;
+   private final BranchToken branch = CoreBranches.COMMON;
    private Artifact artifact1;
    private Artifact artifact2;
    private Artifact container1;
@@ -102,10 +102,10 @@ public class GraphDataImplTest {
 
       graph = new GraphDataImpl(null, branch, TRANSACTION_ID);
 
-      artifact1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId20.getId(), "artifact1");
-      artifact2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId21.getId(), "artifact2");
-      container1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId30.getId(), "container1");
-      container2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId31.getId(), "container2");
+      artifact1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId20, "artifact1");
+      artifact2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId21, "artifact2");
+      container1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId30, "container1");
+      container2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId31, "container2");
 
       artifactData1 = artifact1.getOrcsData();
       artifactData2 = artifact2.getOrcsData();
