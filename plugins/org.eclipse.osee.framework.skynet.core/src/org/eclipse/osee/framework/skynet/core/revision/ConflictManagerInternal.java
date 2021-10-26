@@ -182,7 +182,7 @@ public class ConflictManagerInternal {
       return conflict;
    }
 
-   private static Collection<Artifact> preloadConflictArtifacts(BranchId sourceBranch, BranchId destBranch, BranchToken mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
+   private static Collection<Artifact> preloadConflictArtifacts(BranchToken sourceBranch, BranchToken destBranch, BranchToken mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
 
       Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(artIdSet, sourceBranch, INCLUDE_DELETED);

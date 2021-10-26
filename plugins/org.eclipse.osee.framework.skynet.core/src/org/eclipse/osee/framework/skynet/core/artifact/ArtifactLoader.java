@@ -72,21 +72,19 @@ public final class ArtifactLoader {
       for (ArtifactId artId : new HashSet<>(artIds)) {
          toLoad.add(ArtifactToken.valueOf(artId, branch));
       }
-      return loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId,
-         BranchManager.isArchived(branch));
-   }
 
-   private static List<Artifact> loadSelectedArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId, boolean isArchived) {
       Set<Artifact> artifacts = new LinkedHashSet<>();
+      boolean isArchived = BranchManager.isArchived(branch);
       if (transactionId.isValid()) {
-         loadArtifacts(toLoad, loadLevel, transactionId, reload, allowDeleted, artifacts, isArchived);
+         loadArtifacts(toLoad, loadLevel, transactionId, reload, allowDeleted, artifacts, branch, isArchived);
       } else {
-         loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted, isArchived);
+         loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted, branch, isArchived);
       }
       return new LinkedList<>(artifacts);
+
    }
 
-   private static void loadActiveArtifacts(List<ArtifactToken> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, boolean isArchived) {
+   private static void loadActiveArtifacts(List<ArtifactToken> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, BranchId branch, boolean isArchived) {
       if (!toLoad.isEmpty()) {
          int numRequested = toLoad.size();
          Iterator<ArtifactToken> iterator = toLoad.iterator();
@@ -112,7 +110,8 @@ public final class ArtifactLoader {
 
          // load arts that are not in the cache
          try {
-            loadArtifacts(toLoad, loadLevel, TransactionId.SENTINEL, reload, allowDeleted, artifacts, isArchived);
+            loadArtifacts(toLoad, loadLevel, TransactionId.SENTINEL, reload, allowDeleted, artifacts, branch,
+               isArchived);
          } finally {
             // remove and unlock locks this thread created but didn't load
             if (artifacts.size() != numRequested) {
@@ -178,7 +177,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, BranchToken branch, boolean isArchived) {
       OseeSql sqlKey;
       boolean historical = transactionId.isValid();
 
@@ -205,7 +204,6 @@ public final class ArtifactLoader {
          Long previousViewId = -1L;
          while (chStmt.next()) {
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("id2"));
-            BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
             Long viewId = chStmt.getLong("id4");
 
             // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
@@ -213,7 +211,7 @@ public final class ArtifactLoader {
                // assumption: sql is returning unwanted deleted artifacts only in the historical case
                if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.valueOf(
                   chStmt.getInt("mod_type")) != ModificationType.DELETED) {
-                  Artifact artifact = retrieveShallowArtifact(chStmt, reload, historical, isArchived);
+                  Artifact artifact = retrieveShallowArtifact(chStmt, reload, historical, branch, isArchived);
                   loadedItems.add(artifact);
                }
             }
@@ -236,19 +234,18 @@ public final class ArtifactLoader {
    /**
     * loads or reloads artifacts based on artifact ids and branch uuids
     */
-   private static void loadArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) {
+   private static void loadArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, BranchId branch, boolean isArchived) {
       if (toLoad != null && !toLoad.isEmpty()) {
 
          Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          for (ArtifactToken artifact : toLoad) {
-            BranchId branch = artifact.getBranch();
             joinQuery.add(branch, artifact, transactionId, branch.getViewId());
          }
-         loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
+         loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, branch, isArchived);
       }
    }
 
-   private static void loadArtifacts(Collection<Artifact> loadedItems, Id4JoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) {
+   private static void loadArtifacts(Collection<Artifact> loadedItems, Id4JoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, BranchId branch, boolean isArchived) {
       if (!joinQuery.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -261,7 +258,7 @@ public final class ArtifactLoader {
          try {
             joinQuery.store();
             loadArtifactsFromQueryId(data, joinQuery.getQueryId(), loadLevel, confirmer, joinQuery.size(), reload,
-               transactionId, allowDeleted, isArchived);
+               transactionId, allowDeleted, BranchManager.getBranchToken(branch), isArchived);
          } finally {
             try {
                if (data != loadedItems) {
@@ -302,10 +299,8 @@ public final class ArtifactLoader {
    /**
     * This method is called only after the cache has been checked
     */
-   private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) {
+   private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, BranchToken branch, boolean isArchived) {
       ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("id2"));
-      BranchId branchId = BranchId.create(chStmt.getLong("branch_id"), ArtifactId.valueOf(chStmt.getLong("id4")));
-      BranchToken branch = BranchManager.getBranchToken(branchId);
 
       TransactionToken transactionId = TransactionToken.SENTINEL;
       ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));

@@ -83,13 +83,12 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    private static Branch load(IOseeCache<Branch> cache, JdbcStatement stmt, Map<MergeBranch, Long> mergeIdMap) {
       Branch branch = createOrUpdate(cache, stmt, mergeIdMap);
 
-      Branch parentBranch;
       Branch sourceTxBranch;
 
       if (branch.equals(SYSTEM_ROOT)) {
          sourceTxBranch = branch;
       } else {
-         parentBranch = cache.getById(stmt.getLong("parent_branch_id"));
+         Branch parentBranch = cache.getById(stmt.getLong("parent_branch_id"));
          sourceTxBranch = parentBranch;
          branch.setParentBranch(parentBranch);
       }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -274,7 +275,7 @@ public interface IAtsChangeReportTaskNameProvider {
 
       Collection<RelationTypeToken> incRelTypes = crtd.getSetDef().getChgRptOptions().getRelationTypes();
       Collection<RelationTypeToken> exclRelTypes = crtd.getSetDef().getChgRptOptions().getNotRelationTypes();
-      BranchId workingOrParentBranch = crtd.getWorkOrParentBranch();
+      BranchToken workingOrParentBranch = crtd.getWorkOrParentBranch();
       Set<ArtifactId> arts = new HashSet<>();
       ChangeItemData data = getChangeItemData(crtd.getChangeItems(), crtd.getWorkOrParentBranch(), atsApi);
 

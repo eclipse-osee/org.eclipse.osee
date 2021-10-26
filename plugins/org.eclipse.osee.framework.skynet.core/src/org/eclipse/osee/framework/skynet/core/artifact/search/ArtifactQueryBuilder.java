@@ -375,7 +375,6 @@ public class ArtifactQueryBuilder {
       private final BranchId branch;
 
       public LocalIdQueryBuilder(BranchId branch) {
-         super();
          this.branch = branch;
       }
 

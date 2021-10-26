@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -203,7 +204,7 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifacts);
 
-   Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> modified, BranchId branch, DeletionFlag deletionFlag);
+   Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> modified, BranchToken branch, DeletionFlag deletionFlag);
 
    Collection<ArtifactToken> getArtifacts(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
 
