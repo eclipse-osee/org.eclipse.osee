@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
@@ -74,7 +73,6 @@ public class AtsWidgetProvider implements IXWidgetProvider {
    public AtsWidgetProvider() {
       register(XHyperlinkWfdForEnum.class);
       register(XHyperlinkWfdForProgramAi.class);
-      register(XHyperlinkWfdForEnumAttr.class);
       register(XHyperlinkWfdForConfiguration.class);
       register(XHyperlinkWfdForConfigurationDam.class);
       register(XHyperlinkWfdForActiveAis.class);

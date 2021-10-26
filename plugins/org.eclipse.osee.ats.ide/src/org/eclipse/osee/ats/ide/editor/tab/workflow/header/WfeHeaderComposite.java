@@ -151,6 +151,7 @@ public class WfeHeaderComposite extends Composite {
       gd.widthHint = 100;
       this.setLayoutData(gd);
       this.setLayout(ALayout.getZeroMarginLayout(1, false));
+      setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
 
       try {
          titleHeader = new WfeTitleHeader(this, SWT.NONE, workItem, editor, xModListener);

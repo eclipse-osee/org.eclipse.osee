@@ -281,4 +281,11 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXHyperlinkTriStateBoolean(String name) {
+      newXWidget();
+      currItem.setXWidgetName("XHyperlinkTriStateBoolean");
+      currItem.setName(name);
+      return this;
+   }
+
 }

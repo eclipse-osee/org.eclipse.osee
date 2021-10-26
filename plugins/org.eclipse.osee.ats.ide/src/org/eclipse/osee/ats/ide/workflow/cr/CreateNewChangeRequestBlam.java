@@ -48,10 +48,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -88,7 +88,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    protected XWidgetBuilder wb;
    private ActionResult actionResult;
    protected XHyperlinkWfdForProgramAi programWidget;
-   private XRadioButtonsBooleanTriState crashWidget;
+   private XHyperlinkTriStateBoolean crashWidget;
    private XHyperlinkLabelDate needByWidget;
    private String overrideTitle;
 
@@ -112,7 +112,8 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       wb.andXHyperLinkEnumAttr(getPriorityAttrType()).andRequired().endWidget();
       wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endComposite().endWidget();
 
-      wb.andXRadioBooleanTriState(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName()).andRequired().endWidget();
+      wb.andXHyperlinkTriStateBoolean(
+         AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName()).andRequired().endWidget();
 
       return wb.getItems();
    }
@@ -137,7 +138,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XHyperlinkWfdForEnumAttr) xWidget;
       } else if (xWidget.getLabel().equals(AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName())) {
-         crashWidget = (XRadioButtonsBooleanTriState) xWidget;
+         crashWidget = (XHyperlinkTriStateBoolean) xWidget;
       } else if (xWidget.getLabel().equals(PROGRAM)) {
 
          if (xWidget instanceof XHyperlinkWfdForProgramAi) {

@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -62,6 +63,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
    private XRelatedWidget siblingWidget, tasksWidget, reviewsWidget, parentTeamWfWidget, parentActionWfWidget,
       supportingWidget, derivedFromWidget, derivedToWidget;
    private final AtsApi atsApi;
+   private final String SPACE = " ";
 
    public WfeRelatedComposite(Composite parent, int style, WorkflowEditor editor) {
       super(parent, style);
@@ -71,8 +73,8 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
    }
 
    public void create() {
-      setLayout(ALayout.getZeroMarginLayout(7, false));
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      setLayout(ALayout.getZeroMarginLayout(15, false));
+      GridData gd = new GridData(SWT.NONE, SWT.NONE, false, false);
       setLayoutData(gd);
       editor.getToolkit().adapt(this);
 
@@ -98,6 +100,8 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
          parentActionWfWidget.setToolTip("Select to Open");
          parentActionWfWidget.setIncludeColon(false);
          parentActionWfWidget.createWidgets(this, 2);
+
+         addSpaceWidget();
       }
       if (workItem.isTask() || workItem.isReview()) {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
@@ -107,6 +111,8 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
             parentTeamWfWidget.setToolTip("Select to Open");
             parentTeamWfWidget.setToolkit(editor.getToolkit());
             parentTeamWfWidget.createWidgets(this, 2);
+
+            addSpaceWidget();
          }
       }
       if (workItem.isTeamWorkflow()) {
@@ -115,21 +121,30 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
          siblingWidget.setToolTip("Select to Open");
          siblingWidget.createWidgets(this, 2);
 
+         addSpaceWidget();
+
          tasksWidget = new XRelatedWidget("Tasks: ", this);
          tasksWidget.setToolkit(editor.getToolkit());
          tasksWidget.setToolTip("Select to Open");
          tasksWidget.createWidgets(this, 2);
 
+         addSpaceWidget();
+
          reviewsWidget = new XRelatedWidget("Reviews: ", this);
          reviewsWidget.setToolkit(editor.getToolkit());
          reviewsWidget.setToolTip("Select to Open");
          reviewsWidget.createWidgets(this, 2);
+
+         addSpaceWidget();
+
       }
 
       supportingWidget = new XRelatedWidget("Supporting: ", this);
       supportingWidget.setToolkit(editor.getToolkit());
       supportingWidget.setToolTip("Select to Open");
       supportingWidget.createWidgets(this, 2);
+
+      addSpaceWidget();
 
       Collection<ArtifactToken> derivedFrom =
          atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Derive_From);
@@ -138,6 +153,8 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
          derivedFromWidget.setToolkit(editor.getToolkit());
          derivedFromWidget.setToolTip("Select to Open");
          derivedFromWidget.createWidgets(this, 2);
+
+         addSpaceWidget();
       }
 
       Collection<ArtifactToken> derived = atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Derive_To);
@@ -146,8 +163,16 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
          derivedToWidget.setToolkit(editor.getToolkit());
          derivedToWidget.setToolTip("Select to Open");
          derivedToWidget.createWidgets(this, 2);
+
+         addSpaceWidget();
       }
 
+   }
+
+   private void addSpaceWidget() {
+      XLabel label = new XLabel(SPACE);
+      label.createWidgets(this, 1);
+      label.adaptControls(editor.getWorkFlowTab().getManagedForm().getToolkit());
    }
 
    @Override
