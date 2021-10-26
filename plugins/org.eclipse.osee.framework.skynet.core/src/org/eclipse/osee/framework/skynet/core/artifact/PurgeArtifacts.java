@@ -108,7 +108,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
             getJdbcClient().runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION, txJoin.getQueryId());
          }
 
-         BranchId branch = artifactsToPurge.iterator().next().getBranch();
+         BranchToken branch = artifactsToPurge.iterator().next().getBranch();
          artifactEvent = new ArtifactEvent(branch);
          for (Artifact artifact : artifactsToPurge) {
             EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(EventModType.Purged, artifact);

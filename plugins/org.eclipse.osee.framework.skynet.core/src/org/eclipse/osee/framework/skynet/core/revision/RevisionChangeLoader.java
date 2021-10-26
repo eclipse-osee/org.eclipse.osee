@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -193,7 +194,7 @@ public final class RevisionChangeLoader {
          ChangeVersion currentVersion = changeItem.getCurrentVersion();
          TransactionToken currentTx = currentVersion.getTransactionToken();
          ArtifactId changeArtId = changeItem.getArtId();
-         BranchId currentBranch = currentTx.getBranch();
+         BranchToken currentBranch = BranchManager.getBranchToken(currentTx.getBranch());
          GammaId currentGammaId = currentVersion.getGammaId();
          ModificationType modType = currentVersion.getModType();
          ChangeVersion startVersion = changeItem.getBaselineVersion();
@@ -286,7 +287,7 @@ public final class RevisionChangeLoader {
     * name for the was/is values. If the modtype is deleted, we do not include the isValue name, it becomes blank since
     * it should no longer exist
     */
-   private ArtifactChange getApplicabilityChange(ChangeVersion startVersion, ChangeVersion currentVersion, BranchId branchId, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, Artifact artifact, ArtifactDelta artDelta) {
+   private ArtifactChange getApplicabilityChange(ChangeVersion startVersion, ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, Artifact artifact, ArtifactDelta artDelta) {
       String wasValue = "";
       String isValue = "";
       if (startVersion.isValid()) {
@@ -295,13 +296,13 @@ public final class RevisionChangeLoader {
       if (currentVersion.isValid() && !ChangeItemUtil.isDeleted(currentVersion)) {
          isValue = currentVersion.getApplicabilityToken().getName();
       }
-      ArtifactChange applicChange = new ArtifactChange(branchId, gammaId, artId, txDelta,
-         ModificationType.APPLICABILITY, isValue, wasValue, artifact.isHistorical(), artifact, artDelta);
+      ArtifactChange applicChange = new ArtifactChange(branch, gammaId, artId, txDelta, ModificationType.APPLICABILITY,
+         isValue, wasValue, artifact.isHistorical(), artifact, artDelta);
 
       return applicChange;
    }
 
-   private AttributeChange getAttributeChange(ChangeItem changeItem, ChangeVersion startVersion, ChangeVersion currentVersion, BranchId branchId, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
+   private AttributeChange getAttributeChange(ChangeItem changeItem, ChangeVersion startVersion, ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
       String isValue = currentVersion.getValue();
       String isUri = currentVersion.getUri();
       String wasValue = startVersion.getValue();
@@ -309,19 +310,19 @@ public final class RevisionChangeLoader {
       AttributeId attrId = AttributeId.valueOf(changeItem.getItemId().getId());
       AttributeTypeToken typeToken = tokenService.getAttributeType(changeItem.getItemTypeId().getId());
 
-      AttributeChange attrChange = new AttributeChange(branchId, gammaId, artId, txDelta, modType, isValue, isUri,
+      AttributeChange attrChange = new AttributeChange(branch, gammaId, artId, txDelta, modType, isValue, isUri,
          wasValue, wasUri, attrId, typeToken, modType, artifact.isHistorical(), artifact, artDelta);
 
       return attrChange;
    }
 
-   private RelationChange getRelationChange(ChangeItem changeItem, CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap, ChangeVersion startVersion, ChangeVersion currentVersion, BranchId branchId, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
+   private RelationChange getRelationChange(ChangeItem changeItem, CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap, ChangeVersion startVersion, ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
       RelationId relationId = RelationId.valueOf(changeItem.getItemId().getId());
       String value = currentVersion.getValue();
       RelationTypeToken relationType = tokenService.getRelationType(changeItem.getItemTypeId().getId());
       Artifact artifactB = loadedMap.get(currentVersion.getTransactionToken(), changeItem.getArtIdB());
 
-      RelationChange relChange = new RelationChange(branchId, gammaId, artId, txDelta, modType, changeItem.getArtIdB(),
+      RelationChange relChange = new RelationChange(branch, gammaId, artId, txDelta, modType, changeItem.getArtIdB(),
          relationId, value, "", relationType, artifact.isHistorical(), artifact, artDelta, artifactB);
 
       return relChange;

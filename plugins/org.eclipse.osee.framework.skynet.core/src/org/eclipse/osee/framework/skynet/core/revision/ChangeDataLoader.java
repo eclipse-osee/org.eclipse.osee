@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -97,7 +97,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
          monitor.setTaskName("Compute artifact deltas");
          double workAmount = 0.60 / changeItems.size();
-         BranchId startTxBranch = txDelta.getStartTx().getBranch();
+         BranchToken startTxBranch = BranchManager.getBranchToken(txDelta.getStartTx().getBranch());
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
             if ((ChangeItemUtil.hasValueChange(
@@ -127,7 +127,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
       monitor.setTaskName("Compute artifact deltas");
       double workAmount = 0.30 / changeItems.size();
-      BranchId startTxBranch = txDelta.getStartTx().getBranch();
+      BranchToken startTxBranch = BranchManager.getBranchToken(txDelta.getStartTx().getBranch());
       for (ChangeItem item : changeItems) {
          checkForCancelledStatus(monitor);
          if (ChangeItemUtil.hasValueChange(item) && ChangeItemUtil.hasApplicabilityChange(item)) {
@@ -141,7 +141,7 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
+   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchToken startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          ArtifactId artId = item.getArtId();
@@ -181,7 +181,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change computeChange(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
+   private Change computeChange(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchToken startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          ArtifactId artId = item.getArtId();
@@ -210,7 +210,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change createChangeObject(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchId startTxBranch, ArtifactDelta artifactDelta) {
+   private Change createChangeObject(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchToken startTxBranch, ArtifactDelta artifactDelta) {
       Change change = null;
 
       Long itemId = item.getItemId().getId();

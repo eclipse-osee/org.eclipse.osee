@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -36,13 +36,13 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    private final TransactionDelta txDelta;
    private final ArtifactDelta artifactDelta;
    private final ModificationType modType;
-   private final BranchId branch;
+   private final BranchToken branch;
    private final boolean isHistorical;
    private final Artifact changeArtifact;
    private ChangeItem changeItem;
    public static Boolean showTokenForChangeName;
 
-   public Change(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public Change(BranchToken branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
@@ -153,7 +153,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    }
 
    @Override
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 
