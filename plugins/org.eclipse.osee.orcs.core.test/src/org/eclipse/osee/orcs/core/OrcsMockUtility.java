@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -41,6 +42,10 @@ public class OrcsMockUtility {
       Artifact artifact = createTestArtifact(branch, artifactType, artifactId, name);
       artifact.setGraph(graph);
       return artifact;
+   }
+
+   public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId, String name) {
+      return createTestArtifact(branch, artifactType, artifactId.getId(), name);
    }
 
    public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
