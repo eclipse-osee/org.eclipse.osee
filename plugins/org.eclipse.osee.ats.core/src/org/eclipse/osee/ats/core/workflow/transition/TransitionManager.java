@@ -89,6 +89,10 @@ public class TransitionManager implements IExecuteListener {
    private final IAtsStoreService storeService;
 
    public TransitionManager(ITransitionHelper helper) {
+      this(helper, false);
+   }
+
+   public TransitionManager(ITransitionHelper helper, boolean overrideClientCheck) {
       this.helper = helper;
       this.userService = helper.getServices().getUserService();
       this.reviewService = helper.getServices().getReviewService();
@@ -98,7 +102,7 @@ public class TransitionManager implements IExecuteListener {
       this.taskService = helper.getServices().getTaskService();
       this.storeService = helper.getServices().getStoreService();
       this.workItemFromStateMap = new HashMap<>();
-      if (helper.getServices().isIde() && !AtsUtil.isInTest()) {
+      if (helper.getServices().isIde() && !overrideClientCheck && !AtsUtil.isInTest()) {
          // Capture stack trace so it's easy to determine where this is being called from
          try {
             throw new OseeArgumentException(
