@@ -52,6 +52,11 @@ public interface AtsConfigEndpointApi {
    @POST
    public XResultData createUpdateConfig();
 
+   @GET
+   @Path("convertAisAndTeamDefs")
+   @Produces(MediaType.TEXT_HTML)
+   public String convertAisAndTeamDefs();
+
    /**
     * @return non-cached copy of AtsConfigurations read straight from database. Will update server cache with newly read
     * copy. Can take 30ish seconds to load. Use get() for quick access to cached copy. This should not be used unless

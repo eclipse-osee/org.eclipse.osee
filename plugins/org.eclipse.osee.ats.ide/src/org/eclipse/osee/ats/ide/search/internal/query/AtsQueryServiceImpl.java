@@ -297,6 +297,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public Collection<ArtifactToken> getArtifacts(AttributeTypeToken attrType, String value, BranchToken branch) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(attrType, value, branch));
+   }
+
+   @Override
    public ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeToken artType, String name) {
 
       if (ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch()) != null) {
@@ -373,7 +378,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch) {
+   public ArtifactToken getArtifactFromAttribute(AttributeTypeToken attrType, String value, BranchId branch) {
       return ArtifactQuery.getArtifactFromAttribute(attrType, value, branch);
    }
 

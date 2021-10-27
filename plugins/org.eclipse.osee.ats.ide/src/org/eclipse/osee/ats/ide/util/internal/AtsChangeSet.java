@@ -242,6 +242,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public void deleteAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, Object value) {
+      Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(artifact);
+      art.deleteAttribute(attributeType, value);
+      add(art);
+   }
+
+   @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
       Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       Attribute<T> attribute = (Attribute<T>) attr;

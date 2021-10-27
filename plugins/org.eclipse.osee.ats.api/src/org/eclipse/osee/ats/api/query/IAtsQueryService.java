@@ -211,12 +211,14 @@ public interface IAtsQueryService {
    Collection<ArtifactToken> getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
 
    @NonNull
-   ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch);
+   ArtifactToken getArtifactFromAttribute(AttributeTypeToken attrType, String value, BranchId branch);
 
    List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount);
 
    Collection<ArtifactToken> getArtifactsFromObjects(Collection<? extends IAtsObject> atsObjects);
 
    ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch);
+
+   Collection<ArtifactToken> getArtifacts(AttributeTypeToken attrType, String value, BranchToken branch);
 
 }
