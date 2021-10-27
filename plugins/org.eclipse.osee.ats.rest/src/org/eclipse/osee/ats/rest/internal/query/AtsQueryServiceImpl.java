@@ -289,7 +289,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch) {
+   public ArtifactToken getArtifactFromAttribute(AttributeTypeToken attrType, String value, BranchId branch) {
       List<ArtifactReadable> arts = orcsApi.getQueryFactory().fromBranch(branch).and(attrType, Arrays.asList(value),
          QueryOption.EXACT_MATCH_OPTIONS).getResults().getList();
       if (arts.size() == 1) {
@@ -311,6 +311,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch) {
       return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).and(attributeType,
          Arrays.asList(value)).getResults().getOneOrNull();
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifacts(AttributeTypeToken attrType, String value, BranchToken branch) {
+      return Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(branch).and(attrType, Arrays.asList(value)).getResults().getList());
    }
 
 }

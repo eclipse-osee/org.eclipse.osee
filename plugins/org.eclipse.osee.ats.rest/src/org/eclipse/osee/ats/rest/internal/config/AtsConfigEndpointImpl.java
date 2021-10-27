@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.rest.internal.config.operation.ConvertAtsAisAndTeamDefsOperation;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
@@ -86,6 +87,14 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          atsApi.getConfigService().getConfigurationsWithPend();
       }
    };
+
+   @Override
+   public String convertAisAndTeamDefs() {
+      ConvertAtsAisAndTeamDefsOperation op = new ConvertAtsAisAndTeamDefsOperation(atsApi);
+      XResultData rd = op.run();
+      rd.sortResults();
+      return rd.getHtml();
+   }
 
    @Override
    public AtsConfigurations get() {

@@ -74,6 +74,8 @@ public interface IAtsChangeSet {
 
    void deleteAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value);
 
+   void deleteAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, Object value);
+
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name);

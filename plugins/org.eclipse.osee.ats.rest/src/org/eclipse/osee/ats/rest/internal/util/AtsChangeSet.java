@@ -140,6 +140,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public void deleteAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, Object value) {
+      getTransaction().deleteAttributesWithValue(getArtifact(artifact), attributeType, value);
+      add(artifact);
+   }
+
+   @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
       ArtifactId artifactId = getArtifact(workItem);
       getTransaction().setAttributeById(artifactId, attr, value);
