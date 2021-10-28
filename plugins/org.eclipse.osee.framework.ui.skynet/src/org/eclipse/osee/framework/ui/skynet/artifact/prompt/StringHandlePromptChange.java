@@ -19,6 +19,7 @@ import java.util.Collection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,22 +33,26 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    private final EntryDialog entryDialog;
    private final AttributeTypeToken attributeType;
    private final boolean persist;
-   private final boolean multiLine;
    private final Collection<? extends Artifact> artifacts;
    private final NumberFormat format;
 
-   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, boolean multiLine) {
+   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format) {
       this.attributeType = attributeType;
       this.persist = persist;
       this.artifacts = artifacts;
-      this.multiLine = multiLine;
       this.format = format;
       this.entryDialog = new EntryDialog("Enter " + displayName, "Enter " + displayName);
    }
 
    @Override
    public boolean promptOk() {
-      entryDialog.setFillVertically(multiLine);
+      boolean multiLine = false;
+      if (attributeType.getDisplayHints().contains(DisplayHint.MultiLine)) {
+         multiLine = true;
+      }
+      if (multiLine) {
+         entryDialog.setFillVertically(multiLine);
+      }
       setInitialText(artifacts, entryDialog, format, attributeType);
       entryDialog.setNumberFormat(format);
       return entryDialog.open() == Window.OK;

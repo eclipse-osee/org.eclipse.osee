@@ -45,9 +45,4 @@ public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   @Override
-   public boolean isMultiLineStringAttribute() {
-      return true;
-   }
-
 }

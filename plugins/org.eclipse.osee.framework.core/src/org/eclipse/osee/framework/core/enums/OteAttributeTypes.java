@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeDate;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 
 public interface OteAttributeTypes {
 
@@ -48,7 +49,7 @@ public interface OteAttributeTypes {
    AttributeTypeString Revision = ote.createString(1152921504606847283L, "Revision", MediaType.TEXT_PLAIN, "Version");
    AttributeTypeBoolean ScriptAborted = ote.createBoolean(1152921504606847300L, "Script Aborted", MediaType.TEXT_PLAIN, "Test Abort status");
    AttributeTypeDate StartDate = ote.createDate(1152921504606847294L, "Start Date", AttributeTypeToken.TEXT_CALENDAR, "Start Date");
-   AttributeTypeString TestDisposition = ote.createString(1152921504606847308L, "Test Disposition", MediaType.TEXT_PLAIN, "Disposition");
+   AttributeTypeString TestDisposition = ote.createString(1152921504606847308L, "Test Disposition", MediaType.TEXT_PLAIN, "Disposition", DisplayHint.SingleLine);
    AttributeTypeString TestScriptUrl = ote.createString(1152921504606847282L, "Test Script URL", MediaType.TEXT_PLAIN, "Url of the test script used");
    AttributeTypeInteger TotalTestPoints = ote.createInteger(1152921504606847299L, "Total Test Points", MediaType.TEXT_PLAIN, "Total test points");
    // @formatter:on

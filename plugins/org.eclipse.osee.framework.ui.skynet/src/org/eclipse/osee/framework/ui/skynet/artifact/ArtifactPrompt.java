@@ -38,11 +38,11 @@ public final class ArtifactPrompt {
       this.promptFactory = promptFactory;
    }
 
-   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts, boolean persist, boolean multiLine) {
+   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts, boolean persist) {
       boolean toReturn = false;
-      XResultData rd = ServiceUtil.accessControlService().hasAttributeTypePermission(artifacts,
-         attributeType, PermissionEnum.WRITE,
-         AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute", artifacts, attributeType));
+      XResultData rd =
+         ServiceUtil.accessControlService().hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,
+            AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute", artifacts, attributeType));
 
       if (rd.isErrors()) {
          XResultDataDialog.open(rd, "Change Attribute", "Permission Denied Changing Attribute %s",
@@ -60,7 +60,7 @@ public final class ArtifactPrompt {
       }
 
       IHandlePromptChange promptChange =
-         promptFactory.createPrompt(attributeType, attributeType.getUnqualifiedName(), artifacts, persist, multiLine);
+         promptFactory.createPrompt(attributeType, attributeType.getUnqualifiedName(), artifacts, persist);
       if (promptChange.promptOk()) {
          toReturn = promptChange.store();
       }

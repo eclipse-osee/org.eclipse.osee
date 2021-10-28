@@ -45,9 +45,4 @@ public class AssumptionsColumn extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   @Override
-   public boolean isMultiLineStringAttribute() {
-      return true;
-   }
-
 }

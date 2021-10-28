@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttri
  */
 public class AtsAttributeColumnUtility {
 
-   public static boolean handleAltLeftClick(Object columnData, Object item, boolean multiLineStringAttribute, boolean persist) {
+   public static boolean handleAltLeftClick(Object columnData, Object item, boolean persist) {
       try {
          if (columnData instanceof IAttributeColumn) {
             IAttributeColumn attrColumn = (IAttributeColumn) columnData;
@@ -52,7 +52,7 @@ public class AtsAttributeColumnUtility {
                   }
                }
                boolean modified = PromptChangeUtil.promptChangeAttribute((AbstractWorkflowArtifact) useArt,
-                  attrColumn.getAttributeType(), false, multiLineStringAttribute);
+                  attrColumn.getAttributeType(), false);
                if (modified && persist) {
                   useArt.persist("persist attribute via alt-left-click");
                }

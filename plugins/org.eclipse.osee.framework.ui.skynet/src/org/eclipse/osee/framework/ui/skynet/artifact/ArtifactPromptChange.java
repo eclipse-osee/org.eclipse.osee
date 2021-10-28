@@ -36,17 +36,13 @@ public final class ArtifactPromptChange {
       return ArtifactPromptChange.prompt;
    }
 
-   public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
-      return promptChangeAttribute(attributeType, artifacts, persist, true);
-   }
-
    @SuppressWarnings("unchecked")
-   public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
       boolean result = false;
       ArtifactPrompt prompt = getArtifactPrompt();
       if (prompt != null) {
          try {
-            result = prompt.promptChangeAttribute(attributeType, (Collection<Artifact>) artifacts, persist, multiLine);
+            result = prompt.promptChangeAttribute(attributeType, (Collection<Artifact>) artifacts, persist);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

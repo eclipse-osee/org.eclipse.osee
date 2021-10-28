@@ -17,8 +17,8 @@ package org.eclipse.osee.framework.core.data;
  * @author Ryan D. Brooks
  */
 public final class AttributeTypeDouble extends AttributeTypeGeneric<Double> {
-   public AttributeTypeDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      super(id, namespace, name, mediaType, description, taggerType, "", 0.0);
+   public AttributeTypeDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+      super(id, namespace, name, mediaType, description, taggerType, "", 0.0, displayHints);
    }
 
    @Override
@@ -35,4 +35,5 @@ public final class AttributeTypeDouble extends AttributeTypeGeneric<Double> {
    public Double valueFromStorageString(String storedValue) {
       return Double.valueOf(storedValue);
    }
+
 }

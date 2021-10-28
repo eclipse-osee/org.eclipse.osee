@@ -71,7 +71,7 @@ public class WfeEstimatedHoursHeader extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true, false);
+                     PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -101,7 +101,7 @@ public class WfeEstimatedHoursHeader extends Composite {
       if (awaEst < 0) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP,
             "Negative estimated hours not allowed.  Please set to the expected estimated hours.");
-         PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true, false);
+         PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true);
       } else {
          totalEst = AtsApiService.get().getEarnedValueService().getEstimatedHoursTotal(workItem);
       }

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeLong;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
@@ -57,7 +58,7 @@ public interface AtsAttributeTypes {
    ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(new ApplicableToProgramAttributeType());
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ApproveRequestedHoursDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", AttributeTypeToken.TEXT_CALENDAR, "");
-   AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
    AttributeTypeString AtsId = ats.createString(1152921504606847877L, "ats.Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString AtsIdPrefix = ats.createString(1162773128791720837L, "ats.ATS Id Prefix", MediaType.TEXT_PLAIN, "ATS Id Prefix");
    AttributeTypeString AtsIdSequenceName = ats.createString(1163054603768431493L, "ats.ATS Id Sequence Name", MediaType.TEXT_PLAIN, "ATS Id Sequence Name");
@@ -92,13 +93,13 @@ public interface AtsAttributeTypes {
    AttributeTypeString Decision = ats.createString(1152921504606847221L, "ats.Decision", MediaType.TEXT_PLAIN, "Option selected during decision review.");
    AttributeTypeString DecisionReviewOptions = ats.createString(1152921504606847220L, "ats.Decision Review Options", MediaType.TEXT_PLAIN, "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>\")");
    AttributeTypeBoolean Default = ats.createBoolean(1152921875139002538L, "ats.Default", MediaType.TEXT_PLAIN, "Default");
-   AttributeTypeString Description = ats.createString(1152921504606847196L, "ats.Description", MediaType.TEXT_PLAIN, "Detailed explanation.");
+   AttributeTypeString Description = ats.createString(1152921504606847196L, "ats.Description", MediaType.TEXT_PLAIN, "Detailed explanation.", DisplayHint.MultiLine);
    AttributeTypeString DslSheet = ats.createString(1152921504606847197L, "ats.DSL Sheet", MediaType.TEXT_PLAIN, ""); //TODO: In production but not used in code anymore, need to have a talk about how to deal with these
    AttributeTypeString DuplicatedPcrId = ats.createString(1152922093378076842L, "ats.Duplicated PCR Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate EndDate = ats.createDate(1152921504606847383L, "ats.End Date", AttributeTypeToken.TEXT_CALENDAR, "");
-   AttributeTypeString EstimateAssumptions = ats.createString(7714952282787917834L, "ats.Estimate Assumptions", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString EstimateAssumptions = ats.createString(7714952282787917834L, "ats.Estimate Assumptions", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
    AttributeTypeDate EstimatedCompletionDate = ats.createDate(1152921504606847165L, "ats.Estimated Completion Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes will be completed.");
-   AttributeTypeDouble EstimatedHours = ats.createDouble(1152921504606847182L, "ats.Estimated Hours", MediaType.TEXT_PLAIN, "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.");
+   AttributeTypeDouble EstimatedHours = ats.createDouble(1152921504606847182L, "ats.Estimated Hours", MediaType.TEXT_PLAIN, "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.", DisplayHint.SingleLine);
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes will be made available to the users.");
    AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", MediaType.TEXT_PLAIN, "Associated External PCR Number");
    AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", MediaType.TEXT_PLAIN, "Expanded and descriptive name.");
@@ -118,7 +119,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString LegacyBuildId = ats.createString(4636732132432803380L, "ats.Legacy Build Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger LocChanged = ats.createInteger(1152921504606847207L, "ats.LOC Changed", MediaType.TEXT_PLAIN, "Total Lines of Code Changed");
    AttributeTypeInteger LocReviewed = ats.createInteger(1152921504606847208L, "ats.LOC Reviewed", MediaType.TEXT_PLAIN, "Total Lines of Code Reviewed");
-   AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", MediaType.TEXT_PLAIN, "Enter location of materials to review.");
+   AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", MediaType.TEXT_PLAIN, "Enter location of materials to review.", DisplayHint.MultiLine);
    AttributeTypeString Log = ats.createString(1152921504606847202L, "ats.Log", MediaType.TEXT_XML, "");
    AttributeTypeString MeetingAttendee = ats.createString(1152921504606847225L, "ats.Meeting Attendee", MediaType.TEXT_PLAIN, "Attendee of meeting.");
    AttributeTypeDate MeetingDate = ats.createDate(5605018543870805270L, "ats.Meeting Date", AttributeTypeToken.TEXT_CALENDAR, "");
@@ -144,15 +145,15 @@ public interface AtsAttributeTypes {
    AttributeTypeInteger PlannedPoints = ats.createInteger(232851836925913430L, "ats.Planned Points", MediaType.TEXT_PLAIN, "");
    PointAttributeType Points = ats.createEnum(new PointAttributeType());
    AttributeTypeString PointsAttributeType = ats.createString(1152921573057888257L, "ats.Points Attribute Type", MediaType.TEXT_PLAIN, "Used to store the agile points type name (ats.Points or ats.Points Numeric).");
-   AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", MediaType.TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.");
+   AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", MediaType.TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.", DisplayHint.SingleLine);
    PriorityAttributeType Priority = ats.createEnum(new PriorityAttributeType());
-   AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", MediaType.TEXT_PLAIN, "Problem found during analysis.");
+   AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", MediaType.TEXT_PLAIN, "Problem found during analysis.", DisplayHint.MultiLine);
    AttributeTypeDate ProblemFirstObserved = ats.createDate(8431670117014503949L, "ats.Problem First Observed", AttributeTypeToken.TEXT_CALENDAR, "Date of Problem First Observed");
    AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", MediaType.TEXT_PLAIN, "Recommended resolution.");
-   AttributeTypeString Rationale = ats.createString(1152922093379715242L, "ats.Rationale", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", MediaType.TEXT_PLAIN, "Recommended resolution.", DisplayHint.MultiLine);
+   AttributeTypeString Rationale = ats.createString(1152922093379715242L, "ats.Rationale", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
    AttributeTypeArtifactId RelatedPeerWorkflowDefinitionReference = ats.createArtifactId(6245695017677665082L, "ats.Related Peer Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Peer To Peer Reviews for this Team");
    AttributeTypeString RelatedTaskWorkflowDefinitionOld = ats.createString(1152921504606847151L, "ats.Related Task Workflow Definition Old", MediaType.TEXT_PLAIN, "");
    AttributeTypeArtifactId RelatedTaskWorkflowDefinitionReference = ats.createArtifactId(2492475839748929444L, "ats.Related Task Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Tasks related to this Workflow");
@@ -160,7 +161,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate ReleaseDate = ats.createDate(1152921504606847175L, "ats.Release Date", AttributeTypeToken.TEXT_CALENDAR, "Date the changes were made available to the users.");
    AttributeTypeBoolean Released = ats.createBoolean(1152921504606847155L, "ats.Released", MediaType.TEXT_PLAIN, "True if object is in a released state.");
    AttributeTypeBoolean RequireTargetedVersion = ats.createBoolean(1152921504606847159L, "ats.Require Targeted Version", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString Resolution = ats.createString(1152921504606847195L, "ats.Resolution", MediaType.TEXT_PLAIN, "Implementation details.");
+   AttributeTypeString Resolution = ats.createString(1152921504606847195L, "ats.Resolution", MediaType.TEXT_PLAIN, "Implementation details.", DisplayHint.MultiLine);
    ReviewBlocksAttributeType ReviewBlocks = ats.createEnum(new ReviewBlocksAttributeType());
    AttributeTypeString ReviewDefect = ats.createString(1152921504606847222L, "ats.Review Defect", MediaType.TEXT_PLAIN, "");
    ReviewFormalTypeAttributeType ReviewFormalType = ats.createEnum(new ReviewFormalTypeAttributeType());
@@ -172,7 +173,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString SignalDbSystemId = ats.createString(1153126013769613779L, "Signal Db System ID", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", MediaType.TEXT_PLAIN, "States of workflow state machine.");
-   AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "");
+   AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "", DisplayHint.MultiLine);
    AttributeTypeString SwEnhancement = ats.createString(1152921504606847227L, "ats.SW Enhancement", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean SignalImpact = ats.createBoolean(2380093348200994L, "ats.Signal Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeLong TaskSetId = ats.createLong(2412431655932432L, "ats.Task Set Id", MediaType.TEXT_PLAIN, "");
@@ -197,13 +198,13 @@ public interface AtsAttributeTypes {
    AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", MediaType.TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact");
    AttributeTypeDouble WeeklyBenefit = ats.createDouble(1152921504606847186L, "ats.Weekly Benefit", MediaType.TEXT_PLAIN, "Estimated number of hours that will be saved over a single year if this change is completed.");
    AttributeTypeString Workaround = ats.createString(1311070965L, "ats.Workaround", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
+   AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.", DisplayHint.SingleLine);
    AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", MediaType.TEXT_PLAIN, "");
    AttributeTypeArtifactId WorkPackageReference = ats.createArtifactId(473096133909456789L, "ats.Work Package Reference", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
    WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(new WorkPackageTypeAttributeType());
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
-   AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Workflow Notes", MediaType.TEXT_PLAIN, "Notes applicable to ATS Workflow");
+   AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Workflow Notes", MediaType.TEXT_PLAIN, "Notes applicable to ATS Workflow", DisplayHint.MultiLine);
    AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", MediaType.TEXT_PLAIN, "Work Type of this Team.");
 
    // IcTeam Types
