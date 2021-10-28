@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.ats.ide.util.xviewer.column;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -29,7 +27,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
@@ -60,7 +57,6 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    String booleanOnTrueShow = null;
    String booleanOnFalseShow = null;
    String booleanNotSetShow = null;
-   List<String> multiLineColumns = Arrays.asList(AtsColumnId.Notes.getId());
 
    public XViewerAtsAttributeValueColumn(AttributeTypeToken attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(attributeType, attributeType.getName(), attributeType.getUnqualifiedName(), width, align, show,
@@ -180,7 +176,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed()) {
          return AtsAttributeColumnUtility.handleAltLeftClick(treeColumn.getData(), treeItem.getData(),
-            isMultiLineStringAttribute(), isPersistAltLeftClick());
+            isPersistAltLeftClick());
       }
       return false;
    }
@@ -204,15 +200,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          return;
       }
       PromptChangeUtil.promptChangeAttribute(awas, getAttributeType(),
-         AtsAttributeColumnUtility.isPersistViewer((XViewer) getXViewer()), isMultiLineStringAttribute());
+         AtsAttributeColumnUtility.isPersistViewer((XViewer) getXViewer()));
       ((XViewer) getXViewer()).update(awas.toArray(), null);
-   }
-
-   /**
-    * Set if promptChange should display a multi-lined dialog. Only valid for Textual attributes.
-    */
-   public boolean isMultiLineStringAttribute() {
-      return multiLineColumns.contains(getId());
    }
 
    /**

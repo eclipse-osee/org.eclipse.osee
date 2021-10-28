@@ -44,9 +44,4 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   @Override
-   public boolean isMultiLineStringAttribute() {
-      return true;
-   }
-
 }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -31,7 +32,7 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    private final NamespaceToken namespace;
    private final String fileExtension;
    private final T defaultValue;
-   protected final Set<DisplayHint> displayHints;
+   protected final Set<DisplayHint> displayHints = new HashSet<DisplayHint>();
 
    public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, Set<DisplayHint> displayHints) {
       super(id, name, description);
@@ -40,7 +41,7 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
       this.taggerType = taggerType;
       this.fileExtension = fileExtension;
       this.defaultValue = defaultValue;
-      this.displayHints = displayHints;
+      this.displayHints.addAll(displayHints);
    }
 
    public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue) {
@@ -108,4 +109,9 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    public Set<DisplayHint> getDisplayHints() {
       return displayHints;
    }
+
+   public void addDisplayHint(DisplayHint displayHint) {
+      displayHints.add(displayHint);
+   }
+
 }

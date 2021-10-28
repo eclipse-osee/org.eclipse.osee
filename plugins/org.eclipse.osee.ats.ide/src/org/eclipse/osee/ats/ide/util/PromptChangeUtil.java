@@ -34,31 +34,30 @@ public final class PromptChangeUtil {
       // Utility class
    }
 
-   public static boolean promptChangeAttributeWI(final Collection<? extends IAtsWorkItem> workItems, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttributeWI(final Collection<? extends IAtsWorkItem> workItems, AttributeTypeToken attributeType, boolean persist) {
       List<AbstractWorkflowArtifact> awas = new LinkedList<>();
       for (IAtsWorkItem workItem : workItems) {
          awas.add((AbstractWorkflowArtifact) workItem.getStoreObject());
       }
-      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist, multiLine);
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist);
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {
-      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist, multiLine);
+   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, AttributeTypeToken attributeType, boolean persist) {
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist);
    }
 
-   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, AttributeTypeToken attributeType, final boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, AttributeTypeToken attributeType, final boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist, multiLine);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
 
-   public static boolean promptChangeAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, boolean persist) {
       if (workItem.getStoreObject() instanceof AbstractWorkflowArtifact) {
-         return promptChangeAttribute((AbstractWorkflowArtifact) workItem.getStoreObject(), attributeType, persist,
-            multiLine);
+         return promptChangeAttribute((AbstractWorkflowArtifact) workItem.getStoreObject(), attributeType, persist);
       }
       return false;
 

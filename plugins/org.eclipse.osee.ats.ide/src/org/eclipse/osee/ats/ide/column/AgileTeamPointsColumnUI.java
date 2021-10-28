@@ -103,19 +103,18 @@ public class AgileTeamPointsColumnUI extends XViewerAtsColumnIdColumn implements
          AWorkbench.popup("Can not determine Agile Team for %s", firstWf.toStringWithId());
          return false;
       }
-      AttributeTypeId attributeType =
-         AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+      AttributeTypeId attributeType = AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
       if (attributeType == null) {
          AWorkbench.popup("Can not determine Agile Team points attribute type for team %s", agileTeam.toStringWithId());
          return false;
       }
 
       if (AtsAttributeTypes.Points.equals(attributeType)) {
-         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.Points, true, false)) {
+         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.Points, true)) {
             modified = true;
          }
       } else if (AtsAttributeTypes.PointsNumeric.equals(attributeType)) {
-         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.PointsNumeric, true, false)) {
+         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.PointsNumeric, true)) {
             modified = true;
          }
       }

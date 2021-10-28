@@ -108,8 +108,12 @@ public class OrcsTypeTokens {
     * Methods for creating ArtifactId AttributeType
     */
    public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return attributeTypes.addAndReturn(
+      AttributeTypeArtifactId attrType = attributeTypes.addAndReturn(
          new AttributeTypeArtifactId(id, namespace, name, mediaType, description, taggerType));
+      if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
+         attrType.addDisplayHint(DisplayHint.SingleLine);
+      }
+      return attrType;
    }
 
    public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description) {
@@ -171,17 +175,21 @@ public class OrcsTypeTokens {
    /**
     * Methods for creating Double AttributeType
     */
-   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return attributeTypes.addAndReturn(
-         new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType));
+   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+      AttributeTypeDouble attrType = attributeTypes.addAndReturn(
+         new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType, displayHints));
+      if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
+         attrType.addDisplayHint(DisplayHint.SingleLine);
+      }
+      return attrType;
    }
 
-   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description) {
-      return createDouble(id, name, mediaType, description, determineTaggerType(mediaType));
+   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+      return createDouble(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeDouble createDoubleNoTag(Long id, String name, String mediaType, String description) {
-      return createDouble(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   public @NonNull AttributeTypeDouble createDoubleNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+      return createDouble(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
@@ -214,8 +222,12 @@ public class OrcsTypeTokens {
     * Methods for creating Integer AttributeType
     */
    public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return attributeTypes.addAndReturn(
-         new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType));
+      AttributeTypeInteger attrType =
+         attributeTypes.addAndReturn(new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType));
+      if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
+         attrType.addDisplayHint(DisplayHint.SingleLine);
+      }
+      return attrType;
    }
 
    public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description) {
@@ -230,8 +242,12 @@ public class OrcsTypeTokens {
     * Methods for creating Long AttributeType
     */
    public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return attributeTypes.addAndReturn(
-         new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType));
+      AttributeTypeLong attrType =
+         attributeTypes.addAndReturn(new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType));
+      if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
+         attrType.addDisplayHint(DisplayHint.SingleLine);
+      }
+      return attrType;
    }
 
    public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description) {

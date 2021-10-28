@@ -25,29 +25,29 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public final class PromptFactory implements IPromptFactory {
 
    @Override
-   public IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
+   public IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist) {
       IHandlePromptChange promptChange;
 
       if (attributeType.isDate()) {
          promptChange = new DateHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else if (attributeType.isDouble()) {
-         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getInstance(), false);
+         promptChange =
+            new StringHandlePromptChange(attributeType, persist, displayName, artifacts, NumberFormat.getInstance());
       } else if (attributeType.isInteger()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getIntegerInstance(), false);
+            NumberFormat.getIntegerInstance());
       } else if (attributeType.isLong()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getNumberInstance(), false);
+            NumberFormat.getNumberInstance());
       } else if (attributeType.isBoolean()) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
       } else if (attributeType.isEnumerated()) {
          promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType.toEnum(), displayName, persist);
       } else if (attributeType.isString()) {
-         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null, multiLine);
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null);
       } else if (attributeType.isArtifactId()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getIntegerInstance(), false);
+            NumberFormat.getIntegerInstance());
       } else {
          throw new OseeStateException("Unhandled attribute type.  Can't edit through this view");
       }

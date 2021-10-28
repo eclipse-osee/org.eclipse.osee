@@ -84,7 +84,7 @@ public class WfeWorkPackage extends Composite {
                      if (atsApi.getEarnedValueService().isUseTextWorkPackages(Collections.singleton(teamWf))) {
                         PromptChangeUtil.promptChangeAttribute(
                            Collections.singleton((AbstractWorkflowArtifact) teamWf.getStoreObject()),
-                           AtsAttributeTypes.WorkPackage, true, false);
+                           AtsAttributeTypes.WorkPackage, true);
                      } else {
                         WorkPackageColumnUI.promptChangeActivityId(teamWf, true);
                      }

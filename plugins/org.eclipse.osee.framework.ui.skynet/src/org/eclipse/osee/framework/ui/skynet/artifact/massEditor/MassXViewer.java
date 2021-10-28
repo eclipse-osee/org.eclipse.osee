@@ -26,7 +26,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -160,9 +159,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             if (attributeType != null) {
                Artifact useArt = (Artifact) treeItem.getData();
                boolean persist = false;
-               boolean multiColumnEditable = ((XViewerColumn) treeColumn.getData()).isMultiColumnEditable();
-               if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist,
-                  multiColumnEditable)) {
+               if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist)) {
                   refresh();
                   editor.onDirtied();
                   return true;
