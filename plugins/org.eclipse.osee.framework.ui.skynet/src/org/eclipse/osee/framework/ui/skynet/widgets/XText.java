@@ -100,7 +100,10 @@ public class XText extends XWidget {
 
    @Override
    public Control getControl() {
-      return labelWidget;
+      if (Widgets.isAccessible(labelWidget)) {
+         return labelWidget;
+      }
+      return sText;
    }
 
    /**
