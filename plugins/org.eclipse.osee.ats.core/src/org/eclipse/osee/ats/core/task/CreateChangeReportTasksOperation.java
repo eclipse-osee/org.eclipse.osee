@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTableColumn;
@@ -603,7 +604,7 @@ public class CreateChangeReportTasksOperation {
             task.setRelatedToState(createTaskDef.getRelatedToState());
          }
       } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.AdditionalTskCompAsNeeded) {
-         task.setAssigneeAccountIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getArtifactId()));
+         task.setAssigneeAccountIds(Arrays.asList(SystemUser.UnAssigned));
          task.setDescription("see title");
       } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
          if (taskMatch.isChgRptArtValid()) {

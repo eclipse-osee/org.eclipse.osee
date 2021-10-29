@@ -47,10 +47,7 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
       Collection<AtsUser> users2 = AtsApiService.get().getUserService().getUsers(Active.Active);
       Assert.assertEquals(DemoUsers.values().size(), users2.size());
 
-      Pdd10SetupAndImportReqs create = new Pdd10SetupAndImportReqs();
-      create.run();
-
+      new Pdd10SetupAndImportReqs().run();
       DemoUtil.setPopulateDbSuccessful(true);
    }
-
 }

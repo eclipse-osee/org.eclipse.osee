@@ -14,15 +14,17 @@
 package org.eclipse.osee.ats.ide.integration.tests.util;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -64,7 +66,7 @@ public class DbInitTest {
 
       TestUtil.setDbInitSuccessful(true);
 
-      // Re-authenticate so we can continue and NOT be bootstrap
+      // Re-authenticate so we can continue and NOT be OSEE System
       ClientSessionManager.releaseSession();
       ClientSessionManager.getSession();
       UserManager.releaseUser();
@@ -72,19 +74,18 @@ public class DbInitTest {
       AtsApi atsApi = AtsApiService.get();
       atsApi.reloadServerAndClientCaches();
 
-      if (AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
-         throw new OseeStateException("Should not be bootstrap user here");
-      }
+      UserService userService = atsApi.userService();
+      assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
 
       UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
       UserManager.getUser().saveSettings();
 
-      atsApi.userService().getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
+      userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
 
       OseeProperties.setIsInTest(false);
 
       //Ensure that all workDefs loaded without error
-      AtsApiService.get().getWorkDefinitionService().getAllWorkDefinitions();
+      atsApi.getWorkDefinitionService().getAllWorkDefinitions();
 
       System.out.println("End Database Initialization\n");
 

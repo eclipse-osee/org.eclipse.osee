@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -214,7 +215,7 @@ public interface IAtsWorkItem extends IAtsObject {
    }
 
    default public boolean isUnAssigned() {
-      return getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
+      return getAssignees().contains(SystemUser.UnAssigned);
    }
 
    public static IAtsWorkItem createSentinel() {
