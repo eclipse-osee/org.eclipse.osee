@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class AtsObjectsTest {
       List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.UNASSIGNED_USER);
-      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getId(), AtsCoreUsers.UNASSIGNED_USER.getId()),
+      Assert.assertEquals(Arrays.asList(SystemUser.OseeSystem, SystemUser.UnAssigned),
          AtsObjects.toIds(objs));
    }
 

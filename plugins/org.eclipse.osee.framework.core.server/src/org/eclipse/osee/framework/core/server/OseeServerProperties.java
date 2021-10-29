@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.core.server;
 import java.io.File;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -35,14 +34,7 @@ public class OseeServerProperties {
    }
 
    private static String internalGetOseeApplicationServerData() {
-      String toReturn = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (toReturn == null) {
-         String userHome = System.getProperty("user.home");
-         if (Strings.isValid(userHome)) {
-            toReturn = userHome;
-         }
-      }
-      return toReturn;
+      return System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA, System.getProperty("user.home"));
    }
 
    /**

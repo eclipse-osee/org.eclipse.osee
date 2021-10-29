@@ -82,8 +82,7 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
    abstract public IAtsActionableItem getAi();
 
    public List<AtsUser> getAssignees() {
-      AtsUser unassigned = atsApi.getUserService().getUserById(AtsCoreUsers.UNASSIGNED_USER);
-      return Arrays.asList(unassigned);
+      return Arrays.asList(AtsCoreUsers.UNASSIGNED_USER);
    }
 
    private final XModifiedListener listener = new XModifiedListener() {
