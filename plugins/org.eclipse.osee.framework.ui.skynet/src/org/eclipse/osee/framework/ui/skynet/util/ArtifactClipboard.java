@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -82,16 +83,13 @@ public class ArtifactClipboard {
       authFailedList.removeAll(authorizedArtifacts);
 
       if (authorizedArtifacts.size() > 0) {
-         ArrayList<String> textTransferData = new ArrayList<>();
-         for (Artifact cur : authorizedArtifacts) {
-            textTransferData.add(cur.getName());
-         }
+         String textTransfer = Collections.toString(authorizedArtifacts, ", ", Named::getName);
          Artifact[] artifacts = authorizedArtifacts.toArray(new Artifact[authorizedArtifacts.size()]);
          clipboard.setContents(
             new Object[] {
                new ArtifactData(artifacts, STATUS, viewId),
                HTMLTransferFormatter.getHtml(artifacts),
-               Collections.toString(textTransferData, null, ", ", null)},
+               textTransfer},
             new Transfer[] {ArtifactTransfer.getInstance(), HTMLTransfer.getInstance(), TextTransfer.getInstance()});
       }
       if (authFailedList.size() > 0) {

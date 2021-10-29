@@ -16,10 +16,10 @@ package org.eclipse.osee.ats.ide.integration.tests;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -50,7 +50,7 @@ public class DirtyArtifactCacheTest {
       }
       Assert.assertTrue(
          String.format("After all tests are run, there should be no dirty artifacts in Artifact Cache; \n Found [%s]",
-            Artifacts.getNames(dirtyArtifacts)),
+            Named.getNames(dirtyArtifacts)),
          dirtyArtifacts.isEmpty());
    }
 }

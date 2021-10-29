@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,9 +24,9 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -46,15 +45,11 @@ public class TeamResource extends AbstractConfigResource {
    @Path("{id}/Version")
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getVersionNames(@PathParam("id") ArtifactId teamId) {
-      List<String> versions = new LinkedList<>();
       IAtsTeamDefinition teamDef = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamId.getId());
       if (teamDef == null) {
          teamDef = atsApi.getQueryService().getConfigItem(teamId);
       }
-      for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDef)) {
-         versions.add(version.getName());
-      }
-      return versions;
+      return Named.getNames(atsApi.getVersionService().getVersions(teamDef));
    }
 
    @Path("{id}/ai")

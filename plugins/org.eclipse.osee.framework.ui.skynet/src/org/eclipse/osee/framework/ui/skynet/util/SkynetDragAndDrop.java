@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -152,15 +152,9 @@ public abstract class SkynetDragAndDrop {
 
    public void textTransferDragSetData(DragSourceEvent event) {
       try {
-         if (getArtifacts() != null && getArtifacts().length > 0) {
-            Artifact[] artifacts = getArtifacts();
-            Collection<String> names = new ArrayList<>(artifacts.length);
-
-            for (Artifact artifact : artifacts) {
-               names.add(artifact.getName());
-            }
-
-            event.data = Collections.toString(names, null, ", ", null);
+         Artifact[] artifacts = getArtifacts();
+         if (artifacts != null && artifacts.length > 0) {
+            event.data = Collections.toString(Arrays.asList(artifacts), ", ", Named::getName);
          }
       } catch (Exception ex) {
          //         OSEELog.logException(ChangeReportView.class, ex, true);

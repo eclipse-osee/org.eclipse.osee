@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.framework.jdk.core.type.Named;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IStateToken {
-
-   public String getName();
+public interface IStateToken extends Named {
 
    public String getDescription();
 

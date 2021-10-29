@@ -15,17 +15,16 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Donald G. Dunne
  */
-public interface WorkState {
+public interface WorkState extends Named {
 
    void setHoursSpent(double hoursSpent);
 
    void setPercentComplete(int percentComplete);
-
-   String getName();
 
    List<AtsUser> getAssignees();
 

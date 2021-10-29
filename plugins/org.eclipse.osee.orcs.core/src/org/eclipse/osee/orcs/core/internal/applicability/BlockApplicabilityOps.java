@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -613,11 +614,7 @@ public class BlockApplicabilityOps {
       for (ArtifactReadable groupConfig : groupConfigs) {
          List<ArtifactReadable> branchViews =
             groupConfig.getRelatedList(CoreRelationTypes.PlConfigurationGroup_BranchView);
-         List<String> viewNames = new ArrayList<>();
-         for (ArtifactReadable view : branchViews) {
-            viewNames.add(view.getName());
-         }
-         configMap.put(groupConfig.getName(), viewNames);
+         configMap.put(groupConfig.getName(), Named.getNames(branchViews));
       }
 
       return configMap;

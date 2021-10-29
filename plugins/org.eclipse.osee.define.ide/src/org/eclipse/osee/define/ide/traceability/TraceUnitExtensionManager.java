@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +24,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.ide.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -98,11 +98,7 @@ public class TraceUnitExtensionManager {
    }
 
    public List<String> getAllTraceHandlerNames() {
-      List<String> handlerNames = new LinkedList<>();
-      for (TraceHandler handler : getAllTraceHandlers()) {
-         handlerNames.add(handler.getName());
-      }
-      return handlerNames;
+      return Named.getNames(getAllTraceHandlers());
    }
 
    public Collection<ITraceParser> getAllTraceParsers() {
@@ -169,7 +165,7 @@ public class TraceUnitExtensionManager {
       return object;
    }
 
-   public static final class TraceHandler {
+   public static final class TraceHandler implements Named {
       private final String name;
       private final String id;
       private final ITraceUnitResourceLocator locator;
@@ -186,6 +182,7 @@ public class TraceUnitExtensionManager {
       /**
        * @return the name
        */
+      @Override
       public String getName() {
          return name;
       }

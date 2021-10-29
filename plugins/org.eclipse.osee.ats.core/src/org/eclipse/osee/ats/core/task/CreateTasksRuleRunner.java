@@ -24,10 +24,10 @@ import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -109,10 +109,6 @@ public class CreateTasksRuleRunner {
    }
 
    private List<String> getExistingTaskNames() {
-      List<String> taskNames = new ArrayList<String>();
-      for (IAtsTask task : atsApi.getTaskService().getTasks(teamWf)) {
-         taskNames.add(task.getName());
-      }
-      return taskNames;
+      return Named.getNames(atsApi.getTaskService().getTasks(teamWf));
    }
 }

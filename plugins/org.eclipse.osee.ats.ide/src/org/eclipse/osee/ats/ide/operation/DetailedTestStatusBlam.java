@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.enums.OteArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -652,9 +653,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
     */
    private Collection<String> getAliases(Artifact artifact) {
       // TODO: this method should return history of names
-      ArrayList<String> aliases = new ArrayList<>(1);
-      aliases.add(artifact.getName());
-      return aliases;
+      return Named.getNames(artifact);
    }
 
    @Override

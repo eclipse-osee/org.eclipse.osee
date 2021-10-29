@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -82,11 +83,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    @Override
    public List<String> getPossibleApplicabilities(BranchId branch) {
-      List<String> apps = new ArrayList<String>();
       HashMap<Long, ApplicabilityToken> appTokens = getApplicabilityTokens(branch);
-      for (ApplicabilityToken app : appTokens.values()) {
-         apps.add(app.getName());
-      }
+      List<String> apps = Named.getNames(appTokens.values());
+
       for (ArtifactToken view : getConfigurationsForBranch(branch)) {
          apps.add("Config = " + view.getName());
       }

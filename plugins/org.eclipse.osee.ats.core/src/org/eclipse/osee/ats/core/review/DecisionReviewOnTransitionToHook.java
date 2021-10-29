@@ -30,8 +30,8 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -47,7 +47,7 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
     * Creates decision review if one of same name doesn't already exist
     */
    public static IAtsDecisionReview createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
-      if (Lib.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(revDef.getReviewTitle())) {
+      if (Named.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
       }

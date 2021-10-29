@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.workflow.hooks;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
@@ -39,7 +39,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Contributed through OSGI-INF as both workflow and transition hooks
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHookIde, IAtsTransitionHook {
@@ -62,13 +62,9 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
          }
          if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) xWidget;
-            List<String> options = new ArrayList<>();
             DecisionReviewOptions xDecOptions =
                new DecisionReviewOptions((IAtsDecisionReview) art, AtsApiService.get());
-            for (DecisionReviewOption opt : xDecOptions.getDecisionOptions()) {
-               options.add(opt.getName());
-            }
-            decisionComboDam.setDataStrings(options.toArray(new String[options.size()]));
+            decisionComboDam.setDataStrings(Named.getNamesArray(xDecOptions.getDecisionOptions()));
          }
       }
       return Result.TrueResult;

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
@@ -137,7 +137,7 @@ public final class WordOutlineAndStyleTest {
    @Test
    public void testStyleResolution() throws Exception {
       buildUpTest(wordMLFileName);
-      Assert.assertEquals(testComment, expected, Artifacts.getNames(folder.getDescendants()));
+      Assert.assertEquals(testComment, expected, Named.getNames(folder.getDescendants()));
    }
 
    @Parameters

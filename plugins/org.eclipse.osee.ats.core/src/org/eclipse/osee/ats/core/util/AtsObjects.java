@@ -82,14 +82,6 @@ public class AtsObjects {
       return "";
    }
 
-   public static Collection<String> getNames(Collection<? extends IAtsObject> atsObjects) {
-      ArrayList<String> names = new ArrayList<>();
-      for (IAtsObject namedAtsObject : atsObjects) {
-         names.add(namedAtsObject.getName());
-      }
-      return names;
-   }
-
    public static String toAtsIdsFromActions(Collection<IAtsAction> actions) {
       List<String> atsIds = new ArrayList<>(actions.size());
       for (IAtsAction action : actions) {

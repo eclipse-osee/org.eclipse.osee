@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -387,11 +388,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public Collection<String> getStateNames(IAtsWorkDefinition workDef) {
-      List<String> names = new ArrayList<>();
-      for (IAtsStateDefinition state : workDef.getStates()) {
-         names.add(state.getName());
-      }
-      return names;
+      return Named.getNames(workDef.getStates());
    }
 
    @Override

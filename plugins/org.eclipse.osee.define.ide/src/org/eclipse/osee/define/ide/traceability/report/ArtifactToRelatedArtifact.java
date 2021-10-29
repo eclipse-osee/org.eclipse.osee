@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.ide.internal.Activator;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,10 +46,7 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       int maxSize = 0;
       List<List<String>> items = new ArrayList<>();
       for (RelationTypeSide relationEnum : relations) {
-         List<String> entries = new ArrayList<>();
-         for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
-            entries.add(relArtifact.getName());
-         }
+         List<String> entries = Named.getNames(artifact.getRelatedArtifacts(relationEnum));
          items.add(entries);
          maxSize = Math.max(maxSize, entries.size());
       }

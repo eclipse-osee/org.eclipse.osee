@@ -28,14 +28,13 @@ import org.eclipse.osee.define.ide.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.ide.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -224,7 +222,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       } else {
          List<Artifact> relatedArtifacts =
             softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
-         testScripts = Artifacts.getNames(relatedArtifacts);
+         testScripts = Named.getNames(relatedArtifacts);
       }
       if (testScripts != null) {
          for (String testScript : testScripts) {
