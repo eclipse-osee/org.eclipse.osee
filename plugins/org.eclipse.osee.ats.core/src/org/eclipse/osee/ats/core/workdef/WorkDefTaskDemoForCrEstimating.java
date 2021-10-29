@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Assumptions;
@@ -52,11 +51,12 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         
+
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(Description, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
             new WidgetDefinition(Assumptions, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkWfdForEnumAttr", AUTO_SAVE), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
