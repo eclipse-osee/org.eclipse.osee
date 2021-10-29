@@ -58,20 +58,22 @@ public class OseePerspective implements IPerspectiveFactory {
       final String editorArea = layout.getEditorArea();
 
       final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.2f, editorArea);
+      final IFolderLayout leftBottom = layout.createFolder("leftBottom", IPageLayout.BOTTOM, 0.7f, "left");
       final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .75f, editorArea);
-      final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea);
-      final IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.7f, "left");
-      final IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.7f, "right");
+
+      layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea);
+      final IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.LEFT, 0.7f, "bottom");
+      final IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.3f, "bottom");
 
       left.addView(NavigateView.VIEW_ID);
-      bottomLeft.addView(QuickSearchView.VIEW_ID);
+      leftBottom.addView(QuickSearchView.VIEW_ID);
       right.addView(ArtifactExplorer.VIEW_ID);
 
+      bottomLeft.addView(BranchView.VIEW_ID);
+      bottomLeft.addView(NewSearchUI.SEARCH_VIEW_ID);
+      bottomLeft.addPlaceholder(MergeView.VIEW_ID);
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
          bottomRight.addView("org.eclipse.pde.runtime.LogView");
       }
-      bottom.addView(BranchView.VIEW_ID);
-      bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
-      bottom.addPlaceholder(MergeView.VIEW_ID);
    }
 }
