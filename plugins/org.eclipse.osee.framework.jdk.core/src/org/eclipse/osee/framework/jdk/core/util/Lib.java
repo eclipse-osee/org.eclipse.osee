@@ -70,7 +70,6 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
@@ -1735,14 +1734,6 @@ public final class Lib {
          }
       }
       return isWriteable;
-   }
-
-   public static Collection<String> getNames(Collection<? extends Named> objects) {
-      Collection<String> names = new LinkedList<>();
-      for (Object obj : objects) {
-         names.add(((Named) obj).getName());
-      }
-      return names;
    }
 
    /**

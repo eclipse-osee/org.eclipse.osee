@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -53,18 +52,6 @@ public final class Artifacts {
          guids.add(artifact.getGuid());
       }
       return guids;
-   }
-
-   /**
-    * getName() all artifacts, else toString()
-    */
-
-   public static Collection<String> getNames(Collection<? extends Named> artifacts) {
-      ArrayList<String> names = new ArrayList<>();
-      for (Named namedArtifact : artifacts) {
-         names.add(namedArtifact.getName());
-      }
-      return names;
    }
 
    /**

@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -465,11 +466,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public List<String> getVisitedStateNames() {
-      List<String> stateNames = new LinkedList<>();
-      for (WorkState state : states) {
-         stateNames.add(state.getName());
-      }
-      return stateNames;
+      return Named.getNames(states);
    }
 
    @Override

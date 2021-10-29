@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,7 +52,7 @@ public interface IPopulateDemoDatabaseTest {
       Assert.assertEquals(title, review.getName());
       Assert.assertEquals(currentStateName, review.getStateMgr().getCurrentStateName());
 
-      Collection<String> assigneeNames = AtsObjects.getNames(review.getStateMgr().getAssignees());
+      Collection<String> assigneeNames = Named.getNames(review.getStateMgr().getAssignees());
 
       Assert.assertEquals(assigneeStrs.length, assigneeNames.size());
       for (String assignee : assigneeStrs) {

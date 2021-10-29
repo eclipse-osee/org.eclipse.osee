@@ -35,7 +35,9 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -158,12 +160,8 @@ public class AgileItemWriter {
                workItem.getStateMgr().setAssignees(assignees);
                changes.add(workItem);
             }
-            // set return assignees string
-            List<String> assigneeNames = new LinkedList<>();
-            for (AtsUser user : assignees) {
-               assigneeNames.add(user.getName());
-            }
-            String assigneesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString("; ", assigneeNames);
+
+            String assigneesStr = Collections.toString(assignees, "; ", Named::getName);
             newItem.setAssigneesStr(assigneesStr);
             newItem.setAssigneesStrShort(Strings.truncate(assigneesStr, 30, true));
          }

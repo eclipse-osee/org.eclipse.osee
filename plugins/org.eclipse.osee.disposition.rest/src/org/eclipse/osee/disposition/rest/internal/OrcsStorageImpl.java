@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.enums.CoverageOseeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -486,15 +487,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public List<String> getCheckedReruns(HashMap<String, DispoItem> items, String setId) {
-      List<String> reruns = new ArrayList<>();
-
-      List<DispoItem> dispoItems = new ArrayList<DispoItem>(items.values());
-      for (DispoItem item : dispoItems) {
-         if (item.getNeedsRerun()) {
-            reruns.add(item.getName());
-         }
-      }
-      return reruns;
+      return Named.getNames(items.values(), DispoItem::getNeedsRerun);
    }
 
    @Override

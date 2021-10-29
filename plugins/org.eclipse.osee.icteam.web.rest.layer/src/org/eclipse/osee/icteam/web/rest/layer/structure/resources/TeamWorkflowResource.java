@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType.PriorityE
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -62,6 +61,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -220,13 +220,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          if ((tasks != null) && (tasks.size() > 0)) {
             for (ArtifactReadable task : tasks) {
                IAtsWorkItem workItem = OseeCoreData.getAtsServer().getWorkItemService().getWorkItem(task);
-               List<IAtsStateDefinition> toStates = workItem.getStateDefinition().getToStates();
-               ArrayList<String> states = new ArrayList<String>();
-
-               for (Object element : toStates) {
-                  IAtsStateDefinition iAtsStateDefinition = (IAtsStateDefinition) element;
-                  states.add(iAtsStateDefinition.getName());
-               }
+               List<String> states = Named.getNames(workItem.getStateDefinition().getToStates());
 
                String shortname =
                   task.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project).getExactlyOne().getAttributes(
@@ -850,7 +844,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          new InterfaceAdapter<TransferableArtifact>()).create();
       TransferableArtifact transferableArtifact = gson.fromJson(str, TransferableArtifact.class);
       String guid = transferableArtifact.getUuid();
-      ArrayList<String> states = getNextStateList(guid);
+      List<String> states = getNextStateList(guid);
       TransferableArtifact artifact = new TransferableArtifact();
       artifact.putAttributes("states", states);
 
@@ -1283,7 +1277,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       TransferableArtifact art = new TransferableArtifact();
       art.setArtifactType("State");
 
-      ArrayList<String> states = getNextStateList(guid);
+      List<String> states = getNextStateList(guid);
       art.putAttributes("states", states);
       assigneeList.add(art);
 
@@ -1422,7 +1416,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
             if (!currentState.equals(toState)) {
                transitionStateWeb(json);
 
-               ArrayList<String> nextStateList = getNextStateList(artifact.getUuid());
+               List<String> nextStateList = getNextStateList(artifact.getUuid());
                teamWorkFlowArtifact.putAttributes("states", nextStateList);
             }
          }
@@ -1578,7 +1572,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          }
          priorityTypeList.addAll(valuesAsOrderedStringSetPriority);
 
-         ArrayList<String> nextStateList = getNextStateList(guid);
+         List<String> nextStateList = getNextStateList(guid);
          CustomizedTeamWorkFlowArtifact ar = new CustomizedTeamWorkFlowArtifact();
          ar.putAttributes("ChangeTypeList", changeTypeList);
          ar.putAttributes("priorityList", priorityTypeList);
@@ -1640,7 +1634,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
     * @param uuid {@link String} task uuid
     * @return states {@linkArrayList<String>}
     */
-   private ArrayList<String> getNextStateList(String uuid) {
+   private List<String> getNextStateList(String uuid) {
       ArtifactReadable action = null;
 
       if (uuid.matches("[0-9]+")) {
@@ -1650,15 +1644,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       }
 
       IAtsWorkItem workItem = OseeCoreData.getAtsServer().getWorkItemService().getWorkItem(action);
-      List<IAtsStateDefinition> toStates = workItem.getStateDefinition().getToStates();
-      ArrayList<String> states = new ArrayList<String>();
-
-      for (Object element : toStates) {
-         IAtsStateDefinition iAtsStateDefinition = (IAtsStateDefinition) element;
-         states.add(iAtsStateDefinition.getName());
-      }
-
-      return states;
+      return Named.getNames(workItem.getStateDefinition().getToStates());
    }
 
    /**
@@ -1695,7 +1681,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                   artifactReadable.getAttributes(AtsAttributeTypes.WorkPackage).getExactlyOne().toString();
                String taskId = shortName + "-" + workPackageId;
                TransferableArtifact ar = new TransferableArtifact();
-               ArrayList<String> states = getNextStateList(artifactReadable.getGuid());
+               List<String> states = getNextStateList(artifactReadable.getGuid());
                TranferableArtifactLoader.copyBasicTaskInfoToTransferableArtifact(artifactReadable, ar);
                ar.putAttributes("states", states);
                ar.putAttributes("TaskId", Arrays.asList(taskId));

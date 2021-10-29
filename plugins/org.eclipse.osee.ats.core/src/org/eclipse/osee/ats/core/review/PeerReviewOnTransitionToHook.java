@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -50,7 +50,7 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamWf.getName());
       }
-      if (Lib.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(title)) {
+      if (Named.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(title)) {
          // Already created this review
          return null;
       }
@@ -66,8 +66,7 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
       if (Strings.isValid(peerRevDef.getLocation())) {
          changes.setSoleAttributeFromString(peerRev, AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
-      Collection<AtsUser> assignees =
-         AtsApiService.get().getUserService().getUsersByUserIds(peerRevDef.getAssignees());
+      Collection<AtsUser> assignees = AtsApiService.get().getUserService().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerRev.getStateMgr().setAssignees(assignees);
       }

@@ -16,6 +16,8 @@ package org.eclipse.osee.authentication.ldap.internal.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 
 /**
  * <pre>
@@ -23,16 +25,16 @@ import java.util.Map;
  *  Example:
  *    pattern = ${a}-${b}-${c}
  *    indexedPattern = {0}-{1}-{2}
- * 
+ *
  *    Parameters Map -
  *       "b" = dog;
  *       "a" = cat;
  *       "c" = ball;
- * 
+ *
  *    getVariableValues = {cat, dog, ball};
  *    expandVariables = cat-dog-ball
  * </pre>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public final class VariablePattern {
@@ -57,11 +59,7 @@ public final class VariablePattern {
    }
 
    public List<String> getVariableNames() {
-      List<String> toReturn = new ArrayList<>(variables.size());
-      for (Variable variable : variables) {
-         toReturn.add(variable.getName());
-      }
-      return toReturn;
+      return Named.getNames(variables);
    }
 
    public String[] getVariableValues(Map<String, String> params) {
@@ -129,22 +127,15 @@ public final class VariablePattern {
       return new Variable(variableString);
    }
 
-   private static class Variable {
-
-      private final String name;
+   private static class Variable extends NamedBase {
 
       public Variable(String name) {
-         this.name = name;
-      }
-
-      public String getName() {
-         return name;
+         super(name);
       }
 
       public void format(StringBuilder builder, Map<String, String> parameters) {
-         String value = parameters.get(name);
+         String value = parameters.get(getName());
          builder.append(value != null ? value : "");
       }
    }
-
 }

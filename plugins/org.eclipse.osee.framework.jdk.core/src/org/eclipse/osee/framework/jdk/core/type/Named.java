@@ -13,6 +13,13 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 /**
  * @author Andrew M. Finkbeiner
  */
@@ -29,5 +36,35 @@ public interface Named extends Comparable<Named> {
          return getName().compareTo(other.getName());
       }
       return -1;
+   }
+
+   public static List<String> getNames(Collection<? extends Named> namedObjects) {
+      return namedObjects.stream().map(Named::getName).collect(Collectors.toCollection(ArrayList::new));
+   }
+
+   public static <T extends Named> List<String> getNames(Collection<T> namedObjects, Predicate<T> predicate) {
+      return namedObjects.stream().filter(predicate).map(Named::getName).collect(
+         Collectors.toCollection(ArrayList::new));
+   }
+
+   public static List<String> getNames(Named... namedObjects) {
+      return getNames(Arrays.asList(namedObjects));
+   }
+
+   public static String[] getNamesArray(Named... namedObjects) {
+      String[] names = new String[namedObjects.length];
+      for (int i = 0; i < names.length; i++) {
+         names[i] = namedObjects[i].getName();
+      }
+      return names;
+   }
+
+   public static String[] getNamesArray(Collection<? extends Named> namedObjects) {
+      String[] names = new String[namedObjects.size()];
+      int i = 0;
+      for (Named namedObject : namedObjects) {
+         names[i++] = namedObject.getName();
+      }
+      return names;
    }
 }

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -103,7 +103,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
          List<String> pids = getRequirementsCellOutput(node, CoreRelationTypes.Validation_Requirement);
          List<Artifact> testProcedures = node.getRelatedArtifacts(CoreRelationTypes.Executes_TestProcedure);
 
-         List<String> testProcedureNames = Lists.newLinkedList(Artifacts.getNames(testProcedures));
+         List<String> testProcedureNames = Lists.newLinkedList(Named.getNames(testProcedures));
          TestStatusAndResults testStatusAndResults = calculateTestStatusAndResults(testProcedures);
 
          writeRow(testPlan, perfSpecs, pids, testProcedureNames, testStatusAndResults.testStatus,

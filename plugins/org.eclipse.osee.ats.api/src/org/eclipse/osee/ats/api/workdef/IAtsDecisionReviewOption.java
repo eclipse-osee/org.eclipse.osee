@@ -15,13 +15,12 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsDecisionReviewOption {
-
-   String getName();
+public interface IAtsDecisionReviewOption extends Named {
 
    void setName(String name);
 
@@ -36,8 +35,5 @@ public interface IAtsDecisionReviewOption {
    Collection<String> getUserNames();
 
    void setUserNames(List<String> userNames);
-
-   @Override
-   String toString();
 
 }

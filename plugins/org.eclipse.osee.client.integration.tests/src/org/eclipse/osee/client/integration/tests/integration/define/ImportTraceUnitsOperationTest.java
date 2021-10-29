@@ -28,18 +28,18 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.define.ide.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -132,7 +132,7 @@ public final class ImportTraceUnitsOperationTest {
             List<Artifact> reqArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.CodeRequirement_Requirement);
             Assert.assertEquals(5, reqArtifacts.size());
 
-            Collection<String> actual = Artifacts.getNames(reqArtifacts);
+            Collection<String> actual = Named.getNames(reqArtifacts);
 
             Assert.assertFalse(Compare.isDifferent(expectedReqs, actual));
          }

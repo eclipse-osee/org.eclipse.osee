@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
@@ -40,11 +41,7 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
 
    @Override
    public String getCurrentValue() {
-      Collection<String> assigneeNames = new HashSet<>();
-      for (AtsUser singleAssignee : assignees) {
-         assigneeNames.add(singleAssignee.getName());
-      }
-      return Collections.toString("; ", assigneeNames);
+      return Collections.toString(assignees, "; ", Named::getName);
    }
 
    @Override

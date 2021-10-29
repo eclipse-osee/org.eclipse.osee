@@ -25,9 +25,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
@@ -103,11 +105,7 @@ public class ImportOutfileOperation {
    }
 
    private String toString(Artifact[] artifacts) {
-      List<String> toReturn = new ArrayList<>();
-      for (Artifact artifact : artifacts) {
-         toReturn.add(artifact.getName());
-      }
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", toReturn);
+      return Collections.toString(Arrays.asList(artifacts), ",\n", Named::getName);
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {

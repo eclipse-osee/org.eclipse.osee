@@ -22,9 +22,6 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
  */
 public interface IAtsStateDefinition extends IStateToken {
 
-   @Override
-   String getName();
-
    String getFullName();
 
    int getOrdinal();

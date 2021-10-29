@@ -12,14 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -104,11 +102,7 @@ public class XComboEnumDam extends XCombo implements AttributeWidget, EditorWidg
    }
 
    private void setComboOptions() {
-      List<String> valueStrs = new ArrayList<>();
-      for (EnumToken enumTok : this.attributeType.toEnum().getEnumValues()) {
-         valueStrs.add(enumTok.getName());
-      }
-      setDataStrings(valueStrs);
+      setDataStrings(Named.getNames(attributeType.toEnum().getEnumValues()));
    }
 
    @Override
