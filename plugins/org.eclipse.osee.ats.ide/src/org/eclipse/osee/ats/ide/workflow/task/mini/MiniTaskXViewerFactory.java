@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.ide.column.AssumptionsColumn;
 import org.eclipse.osee.ats.ide.column.AtsColumnIdUi;
 import org.eclipse.osee.ats.ide.column.DescriptionColumn;
 import org.eclipse.osee.ats.ide.column.PointsColumn;
+import org.eclipse.osee.ats.ide.column.RiskFactorColumn;
 import org.eclipse.osee.ats.ide.column.TleReviewedColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -65,6 +66,7 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       ptsCol.setWidth(30);
       cols.add(ptsCol);
       cols.add(TleReviewedColumn.instance);
+      cols.add(RiskFactorColumn.instance);
       DescriptionColumn descCol = DescriptionColumn.instance.copy();
       descCol.setShow(true);
       cols.add(descCol);

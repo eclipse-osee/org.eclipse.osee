@@ -65,6 +65,7 @@ public class CreateTasksOperation {
    private XResultData results;
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
+   private IAtsWorkDefinition taskWorkDef;
 
    public CreateTasksOperation(NewTaskSet newTaskSet, AtsApi atsApi) {
       this.newTaskSet = newTaskSet;
@@ -99,7 +100,7 @@ public class CreateTasksOperation {
             results.errorf("Team Workflow id %s does not exist", teamWfId);
             continue;
          }
-         IAtsWorkDefinition taskWorkDef = null;
+         taskWorkDef = null;
 
          // If task work def is defined in NewTaskData, get from there and validate
          AtsWorkDefinitionToken taskWorkDefTok = newTaskData.getTaskWorkDef();
@@ -267,22 +268,13 @@ public class CreateTasksOperation {
       for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
          for (JaxAtsTask jTask : newTaskData.getTasks()) {
 
-            IAtsWorkDefinition workDefinition = null;
             IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());
 
             // If task work def already specified, use it
-            if (Strings.isNumeric(jTask.getTaskWorkDef())) {
-               workDefinition =
-                  atsApi.getWorkDefinitionService().getWorkDefinition(Long.valueOf(jTask.getTaskWorkDef()));
-            }
-            // Else compute and set
-            else {
-               workDefinition = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
-            }
-            Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", newTaskData);
+            Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", newTaskData);
             ArtifactTypeToken artType = AtsArtifactTypes.Task;
-            if (workDefinition.getArtType() != null && workDefinition.getArtType().isValid()) {
-               artType = workDefinition.getArtType();
+            if (taskWorkDef.getArtType() != null && taskWorkDef.getArtType().isValid()) {
+               artType = taskWorkDef.getArtType();
             }
 
             ArtifactToken taskArt = null;
@@ -295,7 +287,7 @@ public class CreateTasksOperation {
             jTask.setId(taskArt.getId());
 
             IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
-            atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
+            atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, taskWorkDef, changes);
 
             atsApi.getActionService().setAtsId(task, teamWf.getTeamDefinition(), null, changes);
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
@@ -317,8 +309,8 @@ public class CreateTasksOperation {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jTask.getDescription());
             }
             AtsUser createdBy = atsApi.getUserService().getUserByUserId(jTask.getCreatedByUserId());
-            atsApi.getActionService().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
-               workDefinition, changes);
+            atsApi.getActionService().initializeNewStateMachine(task, assignees, createdByDate, createdBy, taskWorkDef,
+               changes);
 
             // Set parent state task is related to if set
             if (Strings.isValid(jTask.getRelatedToState())) {
