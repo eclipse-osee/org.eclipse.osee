@@ -16,7 +16,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, of, OperatorFunction } from 'rxjs';
 import { take, switchMap, filter, tap } from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { applic } from '../../../shared/types/NamedId.applic';
+import { applic } from '../../../../../types/applicability/applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
 import { enumeration } from '../../../shared/types/enum';

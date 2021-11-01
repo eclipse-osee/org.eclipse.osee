@@ -12,7 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { BranchListing } from '../types/BranchListing';
+import { BranchListing } from '../../../../types/branches/BranchListing';
 
 import { CurrentBranchTypeService } from './current-branch-type.service';
 import { BranchService } from './http/branch.service';

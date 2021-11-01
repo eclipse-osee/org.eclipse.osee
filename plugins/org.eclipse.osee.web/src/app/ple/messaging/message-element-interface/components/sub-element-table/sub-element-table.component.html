@@ -11,58 +11,15 @@
  *     Boeing - initial API and implementation
  -->
 <table mat-table [dataSource]="dataSource" class="message-element-interface-table-view-element mat-elevation-z9 message-element-interface-table-view-width-100">
-    <ng-container [matColumnDef]="subHeader" *ngFor="let subHeader of subMessageHeaders;let j=index;trackBy:valueTracker">
-     <th mat-header-cell *matHeaderCellDef class="message-element-interface-table-view-sub-message-header" [matTooltip]="(getHeaderByName(subHeader)|async)?.description||''">{{(getHeaderByName(subHeader)|async)?.humanReadable||''}}</th>
-     <td mat-cell *matCellDef="let value" class="message-element-interface-table-center" [ngStyle]="subHeader==='description'||subHeader==='EnumLiteralsDesc'||subHeader==='notes'?{
+    <ng-container [matColumnDef]="header" *ngFor="let header of subMessageHeaders;let j=index;trackBy:valueTracker">
+     <th mat-header-cell *matHeaderCellDef class="message-element-interface-table-view-sub-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''">{{(getHeaderByName(header)|async)?.humanReadable||''}}</th>
+     <td mat-cell *matCellDef="let element" class="message-element-interface-table-center" [ngStyle]="header==='description'||header==='EnumLiteralsDesc'||header==='notes'?{
         'width':(layout|async)?.tableRecommendations?.width,
         'white-space': 'nowrap',
         'overflow': 'hidden',
         'text-overflow': 'ellipsis'
-    }:{}">
-        <ng-container *ngIf="editMode===true; else no_edit">
-            <ng-container *ngIf="subHeader==='platformTypeName2'">
-                <osee-messaging-edit-element-field [header]="subHeader" [structureId]="element.id" [elementId]="value['id']" [elementStart]="value['interfaceElementIndexStart']" [elementEnd]="value['interfaceElementIndexEnd']" [value]="value['platformTypeName2'].toString()" (contextMenu)="openGeneralMenu($event,value)"></osee-messaging-edit-element-field>
-            </ng-container>
-            <ng-container *ngIf="subHeader!=='platformTypeName2'">
-                <ng-container *ngIf="editableElementHeaders.includes(subHeader);else no_edit">
-                    <osee-messaging-edit-element-field [header]="subHeader" [structureId]="element.id" [elementId]="value['id']" [elementStart]="value['interfaceElementIndexStart']" [elementEnd]="value['interfaceElementIndexEnd']" [value]="value[subHeader]"></osee-messaging-edit-element-field>
-                </ng-container>
-            </ng-container>
-        </ng-container>
-        <ng-template #no_edit>
-            <!-- <div *ngIf="subHeader==='description'||subHeader==='EnumLiteralsDesc'||subHeader==='notes'" [matTooltip]="value[subHeader]" [matTooltipDisabled]="value[subHeader].length<15" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader] | displayTruncatedStringWithFieldOverflow:(15+(16-subMessageHeaders.length)*4)" classToApply="ple-message-element-interface-table-highlighted-text">
-            </div> -->
-            <div *ngIf="subHeader==='description'||subHeader==='EnumLiteralsDesc'||subHeader==='notes'" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]" classToApply="ple-message-element-interface-table-highlighted-text" [ngStyle]="{
-                'width':(layout|async)?.tableRecommendations?.width,
-                'white-space': 'nowrap',
-                'overflow': 'hidden',
-                'text-overflow': 'ellipsis'
-            }">
-                {{value[subHeader]}}
-            </div>
-            <div *ngIf="subHeader!=='notes' &&subHeader!=='platformTypeName2' && subHeader!=='name' && subHeader !=='description' && subHeader !=='applicability'" appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]" classToApply="ple-message-element-interface-table-highlighted-text">
-                <!-- subHeader!=='description'&&subHeader!=='EnumLiteralsDesc'&& -->
-                {{value[subHeader]}}
-            </div>
-            <div *ngIf="subHeader==='name'">
-                <ng-container *ngIf="value['interfaceElementIndexEnd']-value['interfaceElementIndexStart']>0">
-                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]+'['+value['interfaceElementIndexStart']+'...'+value['interfaceElementIndexEnd']+']'" classToApply="ple-message-element-interface-table-highlighted-text"></div>
-                </ng-container>
-                <ng-container *ngIf="value['interfaceElementIndexEnd']-value['interfaceElementIndexStart']<=0">
-                    <div appHighlightFilteredText [searchTerms]="filter" [text]="value[subHeader]" classToApply="ple-message-element-interface-table-highlighted-text"></div>
-                </ng-container>
-            </div>
-            <ng-container *ngIf="subHeader==='platformTypeName2'">
-                <button mat-stroked-button (click)="navigateTo(value[subHeader])" (contextmenu)="openGeneralMenu($event,value)">
-                    {{value[subHeader]}}
-                </button>
-            </ng-container>
-            <ng-container *ngIf="subHeader==='applicability'">
-                <ng-container *ngIf="value[subHeader].name !== 'Base'">
-                    {{value[subHeader].name}}
-                </ng-container>
-            </ng-container>
-        </ng-template>
+    }:{}" (contextmenu)="openGeneralMenu($event, element,header,element[header])">
+        <app-sub-element-table-row [header]="header" [editMode]="editMode" [element]="element" [structure]="structure" (navigate)="navigateTo($event)" (menu)="openGeneralMenu($event.event,element,header,element[header])"></app-sub-element-table-row>
      </td>
     </ng-container>
     <ng-container matColumnDef="footer">
@@ -74,11 +31,11 @@
     </ng-container>
  <tr mat-header-row *matHeaderRowDef="subMessageHeaders; sticky:true"></tr>    
  <tr mat-row *matRowDef= "let row2; columns: subMessageHeaders; let k=index;"
- [ngClass]="k%2===0? 'message-table-sub-element-row-even':'message-table-sub-element-row-odd'" (contextmenu)="openGeneralMenu($event,row2)"></tr>
+ [ngClass]="k%2===0? 'message-table-sub-element-row-even':'message-table-sub-element-row-odd'"></tr><!--(contextmenu)="openGeneralMenu($event,row2)"-->
  <tr mat-footer-row *matFooterRowDef="['footer']"></tr>
 </table>
 <mat-menu #generalMenu="matMenu">
-    <ng-template matMenuContent let-element="element" let-structure="structure">
+    <ng-template matMenuContent let-element="element" let-structure="structure" let-field="field" let-header="header">
         <button mat-menu-item (click)="navigateTo(element.platformTypeName2)">Open Platform Type</button>
         <button mat-menu-item (click)="navigateToInNewTab(element.platformTypeName2)">Open Platform Type in new tab</button>
         <ng-container *ngIf="element.logicalType==='enumeration'">
@@ -86,6 +43,9 @@
         </ng-container>
         <button mat-menu-item (click)="openDescriptionDialog(element.description,element.id,structure.id)">Open Description</button>
         <button mat-menu-item (click)="openNotesDialog(element.notes,element.id,structure.id)">Open Notes</button>
+        <ng-container *ngIf="(getHeaderByName(header)|async)?.humanReadable||'' as headername">
+            <button mat-menu-item (click)="viewDiff(field,headername)">View Diff</button>
+        </ng-container>
         <ng-container *ngIf='editMode===true'>
             <button mat-menu-item (click)="removeElement(element,structure)">Remove element from structure</button>
             <button mat-menu-item (click)="deleteElement(element)">Delete element globally</button>

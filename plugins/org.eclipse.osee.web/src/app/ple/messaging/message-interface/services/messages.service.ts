@@ -77,7 +77,7 @@ export class MessagesService {
     return of(this.builder.deleteArtifact(messageId, transaction, branchId, "Deleting message"));
   }
   deleteRelation(branchId: string, relation: relation) {
-    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,'10','Removing message'))
+    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Removing message'))
   }
   performMutation(branchId:string,connectionId:string,body:transaction) {
     return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)

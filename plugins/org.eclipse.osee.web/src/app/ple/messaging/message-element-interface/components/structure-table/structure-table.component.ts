@@ -16,8 +16,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, from, iif, Observable, of } from 'rxjs';
-import { take, switchMap, filter, first, map, mergeMap, reduce, share, shareReplay, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, iif, Observable, of } from 'rxjs';
+import { take, switchMap, filter, first, map, mergeMap, reduce, share, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
@@ -30,6 +30,7 @@ import { structure } from '../../types/structure';
 import { AddStructureDialogComponent } from '../add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../delete-structure-dialog/delete-structure-dialog.component';
 import { RemoveStructureDialogComponent } from '../remove-structure-dialog/remove-structure-dialog.component';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
   selector: 'app-structure-table',
@@ -67,7 +68,7 @@ export class StructureTableComponent implements OnInit {
     'applicability'];
   
 
-  expandedElement: Array<any> = [];
+  expandedElement: string[] = [];
   filter: string = '';
   searchTerms: string = '';
   @Input() breadCrumb: string = '';
@@ -164,13 +165,18 @@ export class StructureTableComponent implements OnInit {
   }
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
+  sideNav = this.structureService.sideNavContent;
+  sideNavOpened = this.sideNav.pipe(
+    map((value)=>value.opened)
+  )
   constructor(
     public dialog: MatDialog,
     private structureService: CurrentStateService,
     private layoutNotifier: LayoutNotifierService,
     private loadingService: HttpLoadingService,
     private headerService: HeaderService,
-    private route: ActivatedRoute, private router: Router) { }
+    private route: ActivatedRoute, private router: Router,
+  private angLocation:LocationStrategy) { }
 
   ngOnInit(): void {
   }
@@ -178,19 +184,19 @@ export class StructureTableComponent implements OnInit {
     return index;
   }
 
-  expandRow(value: any) {
+  expandRow(value: string) {
     if (this.expandedElement.indexOf(value) === -1) {
       this.expandedElement.push(value);
     }
   }
-  hideRow(value: any) {
+  hideRow(value: string) {
     let index = this.expandedElement.indexOf(value);
     if (index > -1) {
       this.expandedElement.splice(index, 1);
     }
   }
 
-  rowChange(value: any, type: boolean) {
+  rowChange(value: string, type: boolean) {
     if (type) {
       this.expandRow(value);
     } else {
@@ -218,14 +224,16 @@ export class StructureTableComponent implements OnInit {
     this.structureDialog.subscribe();
   }
 
-  openMenu(event: MouseEvent, id: string, name: string,description:string) {
+  openMenu(event: MouseEvent, id: string, name: string,description:string,structure:structure,header:string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
     this.matMenuTrigger.menuData = {
       id: id,
       name: name,
-      description:description
+      description: description,
+      structure: structure,
+      header:header
     }
     this.matMenuTrigger.openMenu();
   }
@@ -282,14 +290,20 @@ export class StructureTableComponent implements OnInit {
     return this.headerService.getHeaderByName(value,'structure');
   }
   navigateToInNewTab(location: string) {
+    let currentUrl = this.router.url.split("/");
+    currentUrl.shift()
     combineLatest([this.structureService.branchType, this.structureService.BranchId, this.structureService.connectionId, this.structureService.MessageId, this.structureService.SubMessageId]).pipe(
       take(1),
-      switchMap(([type, id, connection, messageId, submessageId]) => of(this.router.serializeUrl(this.router.createUrlTree([type, id, connection, "messages", messageId, submessageId, this.breadCrumb, "elements", location],{
+      switchMap(([type, id, connection, messageId, submessageId]) => of(this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref(),...currentUrl,location],{
         relativeTo: this.route.parent?.parent,
         queryParamsHandling: 'merge',
       }))).pipe(
         switchMap((url) => of(window.open(url, "_blank")))
       ))
     ).subscribe();
+  }
+
+  viewDiff(open:boolean,value:string|number, header:string) {
+    this.structureService.sideNav = { opened: open,field:header, currentValue: value };
   }
 }

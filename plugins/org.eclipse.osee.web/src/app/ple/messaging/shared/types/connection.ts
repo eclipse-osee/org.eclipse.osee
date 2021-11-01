@@ -10,14 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from "../../shared/types/NamedId.applic";
+import { Edge } from "@swimlane/ngx-graph";
+import { difference } from "src/app/types/change-report/change-report";
+import { applic } from "../../../../types/applicability/applic";
 
 export interface connection {
     id?: string,
     name: string,
+    dashed?:boolean,
     description?: string,
     transportType: transportType
-    applicability?:applic
+    applicability?: applic
+}
+export interface connectionWithChanges extends connection{
+    deleted:boolean,
+    changes: {
+        name?: difference,
+        description?: difference,
+        transportType?: difference,
+        applicability?:difference
+    }
 }
 
 export enum transportType {
@@ -29,4 +41,8 @@ export enum transportType {
 export interface newConnection {
     connection: connection,
     nodeId:string
+}
+
+export interface OseeEdge<T> extends Omit<Edge, 'data'>{
+    data:T
 }

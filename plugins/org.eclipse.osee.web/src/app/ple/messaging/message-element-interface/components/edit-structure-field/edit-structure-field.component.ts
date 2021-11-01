@@ -14,7 +14,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
 import { EnumsService } from '../../../shared/services/http/enums.service';
-import { applic } from '../../../shared/types/NamedId.applic';
+import { applic } from '../../../../../types/applicability/applic';
 import { CurrentStateService } from '../../services/current-state.service';
 
 interface structure {

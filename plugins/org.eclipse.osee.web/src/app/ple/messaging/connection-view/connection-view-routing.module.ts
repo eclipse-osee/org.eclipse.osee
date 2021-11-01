@@ -12,12 +12,17 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
 import { ConnectionViewComponent } from './connection-view.component';
 
 const routes: Routes = [
   { path: '', component: ConnectionViewComponent },
   { path: ':branchType', component: ConnectionViewComponent },
-  { path: ':branchType/:branchId', component: ConnectionViewComponent }
+  { path: ':branchType/:branchId', component: ConnectionViewComponent },
+  {
+    path: ':branchType/:branchId/diff', component: ConnectionViewComponent, resolve: {
+    diff:DiffReportResolver
+  }}
 ];
 
 @NgModule({

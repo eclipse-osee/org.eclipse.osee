@@ -14,7 +14,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { applic } from '../../../types/NamedId.applic';
+import { applic } from '../../../../../../types/applicability/applic';
 import { enumerationSet } from '../../../types/enum';
 import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
 import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';

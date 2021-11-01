@@ -40,8 +40,10 @@ import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-nod
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
 import { of } from 'rxjs';
-import { connection, transportType } from 'src/app/ple/messaging/shared/types/connection';
+import { connection, connectionWithChanges, OseeEdge, transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { node } from 'src/app/ple/messaging/shared/types/node';
+import { GraphLinkMenuDummy } from '../../../testing/MockComponents/graph-link-menu.mock';
+import { GraphNodeMenuDummy } from '../../../testing/MockComponents/graph-node-menu.mock';
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
@@ -63,7 +65,7 @@ describe('GraphComponent', () => {
           { provide: CurrentGraphService, useValue: graphServiceMock },
           {provide: EnumsService,useValue:enumsServiceMock}
       ],
-      declarations: [ GraphComponent,ConfirmRemovalDialogComponent,CreateConnectionDialogComponent,CreateNewNodeDialogComponent,EditConnectionDialogComponent,EditNodeDialogComponent ]
+      declarations: [ GraphComponent,ConfirmRemovalDialogComponent,CreateConnectionDialogComponent,CreateNewNodeDialogComponent,EditConnectionDialogComponent,EditNodeDialogComponent,GraphLinkMenuDummy,GraphNodeMenuDummy ]
     })
       .compileComponents();
     routerService=TestBed.inject(ConnectionViewRouterService)
@@ -160,18 +162,31 @@ describe('GraphComponent', () => {
             expect(menuLinkHarness).toBeDefined();
           })
           describe('Testing open function', () => {
-            it('should open the menu with proper initialization and close/reset', async() => {
-              component.openLinkDialog(new MouseEvent("contextmenu", { clientX: 100, clientY: 100 }), { id: '1', source: '10', target: '15', data: { name: '1' } }, [{ id: '10', label: '10' }, { id: '15', label: '15' }]);
+            it('should open the menu with proper initialization and close/reset', async () => {
+              const testMenuData:connectionWithChanges={
+                id: "1",
+                name: "edge",
+                applicability: {
+                  id: "1",
+                  name: "Base"
+                },
+                transportType: transportType.Ethernet,
+                deleted:false,
+                changes: {
+                  name: {
+                    previousValue: "abcdef",
+                    currentValue: "jkl",
+                    transactionToken: {
+                      id: "-1",
+                      branchId: "-1"
+                    }
+                  }
+                }
+              }
+              component.openLinkDialog(new MouseEvent("contextmenu", { clientX: 100, clientY: 100 }), { id: '1', source: '10', target: '15', data: testMenuData }, [{ id: '10', label: '10',data:{id:'10',name:'10'} }, { id: '15', label: '15',data:{id:'15',name:'15'} }]);
               expect(await menuLinkHarness.isOpen()).toBeTrue();
               component.linkMenuTrigger.menuData = {
-                data: {
-                  "id": "1",
-                  "name": "edge",
-                  "applicability": {
-                    "id": "1",
-                    "name": "Base"
-                  }
-                },
+                data: testMenuData,
                 source: {
                   "id" : "2",
                   "label" : "Node 1",
@@ -206,99 +221,12 @@ describe('GraphComponent', () => {
               menuLinkHarness.close();
             })
           })
-          describe('Open Menu Tests', () => {
-            let items : MatMenuItemHarness[]=[];
-            beforeEach(async () => {
-              await menuLinkHarness.open();
-              items = await menuLinkHarness.getItems();
-            })
-            it('should have the correct amount of items(4)', () => {
-              expect(items.length).toEqual(4)
-            })
-            it('should be able to navigate to a url', async() => {
-              let spy = spyOn(component, 'navigateToMessages').and.callThrough();
-              await menuLinkHarness.clickItem({ text: 'Go to edge' });
-              expect(spy).toHaveBeenCalledWith('1')
-            })
-            it('should be able to navigate to a url in a new tab', async () => {
-              let spy = spyOn(component, 'navigateToMessagesInNewTab').and.callThrough();
-              await menuLinkHarness.clickItem({ text: 'Go to edge in new tab' });
-              expect(spy).toHaveBeenCalledWith('1')
-            })
-            it('should open the connection edit dialog', async () => {
-              let connection = {
-                id: "1",
-                name: "edge",
-                applicability: {
-                  id: "1",
-                  name: "Base"
-                },
-                dashed: false,
-                description: '',
-                transportType:transportType.Ethernet
-              }
-              let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(connection), close: null });
-              let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-              let spy = spyOn(component, 'openConnectionEditDialog').and.callThrough();
-              await menuLinkHarness.clickItem({ text: 'Edit edge' });
-              expect(spy).toHaveBeenCalledWith(connection);
-            })
-
-            it('should open the remove connection dialog', async () => {
-              let connection = {
-                id: "1",
-                name: "edge",
-                applicability: {
-                  id: "1",
-                  name: "Base"
-                },
-                dashed: false,
-                description: '',
-                transportType:transportType.Ethernet
-              }
-              let source = {
-                id: "2",
-                label: "Node 1",
-                data: {
-                  id: "2",
-                  name: "Node 1",
-                  applicability: {
-                    id: "1",
-                    name: "Base"
-                  },
-                  interfaceNodeBgColor: "",
-                  interfaceNodeAddress: "",
-                  description: ""
-                }
-              }
-              let target ={
-                id : "3",
-                label : "Node 2",
-                data : {
-                  id : "3",
-                  name : "Node 2",
-                  applicability : {
-                    id : "1",
-                    name : "Base"
-                  },
-                  interfaceNodeBgColor : "",
-                  interfaceNodeAddress : "",
-                  description : ""
-                }
-              }
-              let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:connection.id,name:connection.name,extraNames:[source.label,target.label],type:'connection'}), close: null });
-              let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-              let spy = spyOn(component, 'openRemoveConnectionDialog').and.callThrough();
-              await menuLinkHarness.clickItem({ text: 'Remove connection edge' });
-              expect(spy).toHaveBeenCalledWith(connection,source,target);
-            })
-            afterEach(async () => {
-              if (await menuLinkHarness.isOpen()) {
-                await menuLinkHarness.close();
-              } else {
-                await 0;
-              }
-            })
+          afterEach(async () => {
+            if (await menuLinkHarness.isOpen()) {
+              await menuLinkHarness.close();
+            } else {
+              await 0;
+            }
           })
         })
         describe('Node Menu', () => {
@@ -317,7 +245,7 @@ describe('GraphComponent', () => {
               description : ""
             }
           }
-          let connections:Edge[]=[{source:'2',target:'5'},{target:'2',source:'7'}]
+          let connections: OseeEdge<connectionWithChanges>[] = [{ source: '2', target: '5', data: { name: '', transportType: transportType.Ethernet,deleted:false, changes: {}}},{target:'2',source:'7',data: { name: '', transportType: transportType.Ethernet,deleted:false, changes: {}}}]
           beforeEach(async() => {
             menuNodeHarness = await loader.getHarness(MatMenuHarness.with({ triggerText: 'NodeMenu' }));
             component.nodeMenuTrigger.menuData = {
@@ -331,7 +259,7 @@ describe('GraphComponent', () => {
           })
           describe('Testing open function', () => {
             it('should open the menu with proper initialization and close/reset', async() => {
-              component.openNodeDialog(new MouseEvent("contextmenu", { clientX: 200, clientY: 200 }), {id:'1',data:{name:'first'}},[{id:'a3',source:'1',target:'2',data:{name:'a'}},{id:'a4',source:'2',target:'1',data:{name:'b'}}]);
+              component.openNodeDialog(new MouseEvent("contextmenu", { clientX: 200, clientY: 200 }), {id:'1',data:{name:'first'}},[{id:'a3',source:'1',target:'2',data:{name:'a',transportType:transportType.Ethernet}},{id:'a4',source:'2',target:'1',data:{name:'b',transportType:transportType.Ethernet}}]);
               expect(await menuNodeHarness.isOpen()).toBeTrue();
               component.nodeMenuTrigger.menuData={
                 data: node.data,
@@ -339,39 +267,6 @@ describe('GraphComponent', () => {
                 targets:[connections[1]]
               }
               menuNodeHarness.close();
-            })
-          })
-          describe('Open Menu Tests', () => {
-            let items : MatMenuItemHarness[]=[];
-            beforeEach(async () => {
-              await menuNodeHarness.open();
-              items = await menuNodeHarness.getItems();
-            })
-            it('should have the correct amount of items(3)', () => {
-              expect(items.length).toEqual(3)
-            })
-            it('should open the edit node dialog', async() => {
-              let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(node.data), close: null });
-              let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-              let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
-              await menuNodeHarness.clickItem({ text: 'Edit Node 1' });
-              expect(spy).toHaveBeenCalledWith(node.data);
-            })
-
-            it('should open the remove node and connection dialog', async () => {
-              let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:node.data.id,name:node.data.name,extraNames:[connections[0].label,connections[1].label],type:'node'}), close: null });
-              let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-              let spy = spyOn(component, 'removeNodeAndConnection').and.callThrough();
-              await menuNodeHarness.clickItem({ text: 'Remove Node 1 & Connection' });
-              expect(spy).toHaveBeenCalledWith(node.data,[connections[0]],[connections[1]]);
-            })
-
-            it('should open the create connection to dialog', async () => {
-              let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({data:node.data}), close: null });
-              let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-              let spy = spyOn(component, 'createConnectionToNode').and.callThrough();
-              await menuNodeHarness.clickItem({ text: 'Create Connection To Node 1' });
-              expect(spy).toHaveBeenCalledWith(node.data);
             })
           })
           afterEach(async () => {

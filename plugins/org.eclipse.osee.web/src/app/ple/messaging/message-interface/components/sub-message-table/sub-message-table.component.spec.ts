@@ -28,6 +28,7 @@ import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
+import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
@@ -64,10 +65,10 @@ describe('SubMessageTableComponent', () => {
 ]
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl']);
+    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], { 'url': "/route/to/location/" });
     await TestBed.configureTestingModule({
       imports:[MatTableModule,MatTooltipModule, MatButtonModule,OseeStringUtilsDirectivesModule,OseeStringUtilsPipesModule, RouterTestingModule, MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
-      declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent],
+      declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent,HighlightFilteredTextDirective],
       providers: [{provide: CurrentMessagesService, useValue:CurrentMessageServiceMock},
         { provide: Router, useValue: router },
         {
@@ -166,7 +167,7 @@ describe('SubMessageTableComponent', () => {
       mEvent = document.createEvent("MouseEvent");
     })
     it('should open the menu and open sub message details', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'navigateToElementsTable').and.callThrough();
@@ -175,7 +176,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and open sub message details in new tab', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'navigateToElementsTableInNewTab').and.callThrough();
@@ -183,8 +184,17 @@ describe('SubMessageTableComponent', () => {
       expect(spy).toHaveBeenCalled();
     })
 
+    it('should open the menu and open the view diff sidenav', async () => {
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','field','header');
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'viewDiff').and.callThrough();
+      await menu.clickItem({ text: "View Diff" });
+      expect(spy).toHaveBeenCalled();
+    })
+
     it('should open the menu and dismiss a description', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -197,7 +207,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and edit a description', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -210,7 +220,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and remove a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeSubMessage').and.callThrough();
@@ -223,7 +233,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and not remove a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeSubMessage').and.callThrough();
@@ -236,7 +246,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and delete a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
@@ -249,7 +259,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and not delete a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteSubMessage').and.callThrough();

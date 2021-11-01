@@ -11,7 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { combineLatest, iif, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { CurrentGraphService } from './services/current-graph.service';
 import { RouteStateService } from './services/route-state-service.service';
 
 @Component({
@@ -21,13 +24,21 @@ import { RouteStateService } from './services/route-state-service.service';
 })
 export class ConnectionViewComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private router: Router, private routerState: RouteStateService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private routerState: RouteStateService, private graph: CurrentGraphService) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((values) => {
-      this.routerState.branchId = values.get('branchId') || '';
-      this.routerState.branchType = values.get('branchType') || '';
-    });
+    combineLatest([this.route.paramMap,this.route.data,iif(() => this.router.url.includes('diff'),
+    of(false),
+    of(true)
+    )]).subscribe(([params,data, mode])=> {
+      if (mode) {
+        this.routerState.branchId = params.get('branchId') || '';
+        this.routerState.branchType = params.get('branchType') || '';
+        this.routerState.DiffMode = false;
+      } else {
+        this.graph.difference=data.diff;
+      }
+    })
   }
 
 }

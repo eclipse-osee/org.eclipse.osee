@@ -13,13 +13,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouteStateService } from './route-state-service.service';
+import { LocationStrategy } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConnectionViewRouterService {
 
-  constructor (private routerState: RouteStateService, private router: Router) { }
+  constructor (private routerState: RouteStateService, private router: Router , private angLocationStrategy:LocationStrategy) { }
   
   set branchType(value: string) {
     let baseUrl;
@@ -56,8 +57,13 @@ export class ConnectionViewRouterService {
   }
 
   set connectionInNewTab(value: string) {
-    let baseUrl = this.router.url.split("connections")[0];
-    let url = this.router.serializeUrl(this.router.createUrlTree([baseUrl,this.routerState.type.getValue(),this.routerState.id.getValue(),value,"messages"]))
+    let currentUrl = this.router.url.split("/");
+    currentUrl.shift()
+    currentUrl.splice(currentUrl.indexOf('connections'),1)
+    let url = this.router.serializeUrl(this.router.createUrlTree([this.angLocationStrategy.getBaseHref(),...currentUrl,value,"messages"]))
     window.open(url, '_blank');
+  }
+  get inDiffMode() {
+    return this.routerState.isInDiff;
   }
 }

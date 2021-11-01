@@ -49,7 +49,7 @@ export class StructuresService {
     return of(this.builder.modifyArtifact(body, undefined, branchId, "Change Structure"));
   }
   addRelation(branchId:string,relation:relation) {
-    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,'10','Relating SubMessage'))
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Relating SubMessage'))
   }
   performMutation(branchId: string, messageId:string,subMessageId:string,connectionId:string,transaction:transaction): Observable<OSEEWriteApiResponse> {
     return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",transaction);

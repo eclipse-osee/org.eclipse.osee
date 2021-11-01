@@ -61,11 +61,11 @@ export class ElementService {
     return of(this.builder.modifyArtifact(body, undefined, branchId, "Change Element"));
   }
   addRelation(branchId:string,relation:relation,transaction?:transaction) {
-    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,'10','Relating Element'))
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))
   }
 
   deleteRelation(branchId:string,relation:relation,transaction?:transaction) {
-    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,'10','Relating Element'))
+    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))
   }
 
   deleteElement(branchId:string,elementId: string) {

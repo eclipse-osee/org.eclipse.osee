@@ -14,6 +14,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ConnectionViewComponent } from './connection-view.component';
+import { graphServiceMock } from './mocks/CurrentGraphService.mock';
+import { CurrentGraphService } from './services/current-graph.service';
 import { BaseDummy } from './testing/MockComponents/Base.mock';
 import { BranchDummySelector } from './testing/MockComponents/BranchSelector.mock';
 import { BranchTypeDummySelector } from './testing/MockComponents/BranchTypeSelector.mock';
@@ -25,7 +27,8 @@ describe('ConnectionViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[RouterTestingModule],
+      imports: [RouterTestingModule],
+      providers:[{provide: CurrentGraphService,useValue:graphServiceMock}],
       declarations: [ ConnectionViewComponent, BaseDummy, BranchDummySelector, BranchTypeDummySelector, GraphDummy ]
     })
     .compileComponents();

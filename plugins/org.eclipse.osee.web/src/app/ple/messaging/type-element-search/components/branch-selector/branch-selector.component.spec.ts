@@ -18,7 +18,7 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { BranchSelectorComponent } from './branch-selector.component';
 import { CurrentBranchTypeService } from '../../services/current-branch-type.service';
 import { of } from 'rxjs';
-import { BranchListing } from '../../types/BranchListing';
+import { BranchListing } from '../../../../../types/branches/BranchListing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';

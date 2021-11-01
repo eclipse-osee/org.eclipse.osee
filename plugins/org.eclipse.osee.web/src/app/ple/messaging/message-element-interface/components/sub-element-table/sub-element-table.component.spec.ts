@@ -34,6 +34,7 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
+import { SubElementTableRowComponentMock } from '../../mocks/components/sub-element-table-row.component.mock';
 import { elementsMock } from '../../mocks/ReturnObjects/element.mock';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
@@ -87,7 +88,7 @@ describe('SubElementTableComponent', () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
     await TestBed.configureTestingModule({
       imports:[CommonModule,MatDialogModule,MatTableModule,MatTooltipModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
-      declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent],
+      declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent,SubElementTableRowComponentMock],
       providers: [{ provide: Router, useValue: router }, {
         provide: ActivatedRoute, useValue: {
           paramMap: of(convertToParamMap({ branchId: "10",branchType:"working" }))
@@ -156,7 +157,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should open the menu and open the enum dialog', async () => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openEnumDialog').and.callThrough();
@@ -168,8 +169,18 @@ describe('SubElementTableComponent', () => {
       //expect(serviceSpy).toHaveBeenCalled();
     })
 
+    // it('should open the menu and open diff sidenav', async () => {
+    //   component.openGeneralMenu(mEvent, elementsMock[0],'field','header');
+    //   await fixture.whenStable();
+    //   let menu = await loader.getHarness(MatMenuHarness);
+    //   let spy = spyOn(component, 'viewDiff').and.callThrough();
+    //   await menu.clickItem({ text: "View Diff" });
+    //   expect(spy).toHaveBeenCalled();
+    //   //expect(serviceSpy).toHaveBeenCalled();
+    // })
+
     it('should open the menu and dismiss a description', async () => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -182,7 +193,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should open the menu and edit a description', async () => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -195,7 +206,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should open the menu and dismiss a notes popup', async () => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openNotesDialog').and.callThrough();
@@ -208,7 +219,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should open the menu and edit a notes popup', async () => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openNotesDialog').and.callThrough();
@@ -221,7 +232,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should open the remove element dialog', async() => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeElement').and.callThrough();
@@ -234,7 +245,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should open the delete element dialog', async() => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteElement').and.callThrough();
@@ -247,7 +258,7 @@ describe('SubElementTableComponent', () => {
     })
 
     it('should navigate to in new tab', async() => {
-      component.openGeneralMenu(mEvent, elementsMock[0]);
+      component.openGeneralMenu(mEvent, elementsMock[0],'');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();

@@ -40,13 +40,13 @@
           <ng-template #nodeTemplate let-node>
             <svg:g class="node" (contextmenu)="openNodeDialog($event,node,graphData.edges)">
               <ng-container *ngIf="node.data.interfaceNodeBgColor!==''; else noBgColor">
-                <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.interfaceNodeBgColor" />
+                <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.interfaceNodeBgColor?node.data.interfaceNodeBgColor:''" />
               </ng-container>
               <ng-template #noBgColor>
                 <!--Default to @swimlane/ngx-graph's handling of color-->
-                <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+                <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color?node.data.color:''" />
               </ng-template>
-              <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}</svg:text>
+              <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}<ng-container *ngIf="node.data.changes!==undefined && node.data.changes!=={}">*</ng-container></svg:text>
             </svg:g>
           </ng-template>
   
@@ -63,6 +63,7 @@
               <svg:text class="edge-label" text-anchor="middle">
                 <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
                   {{link.label}}
+                  <ng-container *ngIf="link.data.changes!==undefined && link.data.changes!=={}">*</ng-container>
                 </textPath>
               </svg:text>
               <!--
@@ -80,26 +81,12 @@
 </ng-container>
 <mat-menu #linkMenu="matMenu" class="linkMenu">
   <ng-template matMenuContent let-data="data" let-source="source" let-target="target">
-    <button mat-menu-item (click)="navigateToMessages(data.id)"> Go to {{data.name}}</button>
-    <button mat-menu-item (click)="navigateToMessagesInNewTab(data.id)"> Go to {{data.name}} in new tab</button>
-    <ng-container *ngIf="editMode">
-      <button mat-menu-item (click)="openConnectionEditDialog(data)"> Edit {{data.name}}</button>
-      <button mat-menu-item (click)="openRemoveConnectionDialog(data,source,target)"> Remove connection {{data.name}}</button>
-    </ng-container>
+    <app-graph-link-menu [data]="data" [source]="source" [target]="target" [editMode]="editMode"></app-graph-link-menu>
   </ng-template>
 </mat-menu>
 <mat-menu #nodeMenu="matMenu">
   <ng-template matMenuContent let-data="data" let-sources="sources" let-targets="targets">
-    <ng-container *ngIf="editMode">
-      <button mat-menu-item (click)="openEditNodeDialog(data)">Edit {{data.name}}</button>
-      <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)">Remove {{data.name}} & Connection</button>
-      <button mat-menu-item (click)="createConnectionToNode(data)">Create Connection To {{data.name}}</button>
-    </ng-container>
-    <ng-container *ngIf="!editMode">
-      <mat-label>
-        No Viewing Options Available for Node {{data.name}}.
-      </mat-label>
-    </ng-container>
+    <app-graph-node-menu [editMode]="editMode" [data]="data" [sources]="sources" [targets]="targets"></app-graph-node-menu>
   </ng-template>
 </mat-menu>
 <mat-menu #graphMenu="matMenu">

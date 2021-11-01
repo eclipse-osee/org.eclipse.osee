@@ -3,6 +3,7 @@
         "target":"http://localhost:8089",
         "secure":true,
         "changeOrigin":true,
+        "timeout":900000,
         "logLevel":"debug",
         "pathReWrite":{
             "^/orcs":""

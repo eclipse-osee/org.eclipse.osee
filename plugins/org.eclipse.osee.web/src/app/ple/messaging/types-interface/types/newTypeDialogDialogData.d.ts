@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from "../../shared/types/NamedId.applic";
+import { applic } from "../../../../types/applicability/applic";
 import { enumeration } from "../../shared/types/enum";
 
 export interface newTypeDialogData {

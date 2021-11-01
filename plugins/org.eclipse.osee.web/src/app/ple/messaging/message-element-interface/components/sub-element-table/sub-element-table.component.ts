@@ -31,6 +31,8 @@ import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';
+import { applic } from '../../../../../types/applicability/applic';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
   selector: 'ple-messaging-message-element-interface-sub-element-table',
@@ -42,7 +44,15 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   @Input() filter: string = "";
   
-  @Input() element: any = {};
+  @Input() structure: structure = {
+    id: '',
+    name: '',
+    description: '',
+    interfaceMaxSimultaneity: '',
+    interfaceMinSimultaneity: '',
+    interfaceTaskFileType: 0,
+    interfaceStructureCategory: ''
+  };
   @Output() expandRow = new EventEmitter();
   @Input() subMessageHeaders: string[] = [];
   private _branchId: string = "";
@@ -53,20 +63,10 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     x: '0',
     y:'0'
   }
-  editableElementHeaders: string[] = [
-    'name',
-    'platformTypeName2',
-    'interfaceElementAlterable',
-    'description',
-    'notes',
-    'applicability',
-    'interfaceElementIndexStart',
-    'interfaceElementIndexEnd',
-  ];
 
   @ViewChild('generalMenuTrigger', { static: true })
   generalMenuTrigger!: MatMenuTrigger;
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService, private angLocation: LocationStrategy) {
     this.subMessageHeaders = ["name", "beginWord", "endWord", "BeginByte", "EndByte",  "interfaceElementAlterable", "description", "notes"];
     this.dataSource.data = this.data;
   }
@@ -78,7 +78,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       this.dataSource.filter = this.filter.replace('element: ', '');
       this.filter = this.filter.replace('element: ', "");
       if (this.dataSource.filteredData.length > 0) {
-        this.expandRow.emit(this.element);
+        this.expandRow.emit(this.structure);
       }
     }
   }
@@ -109,7 +109,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   }
 
   navigateToInNewTab(location: string) {
-    const url = this.router.serializeUrl(this.router.createUrlTree([this._branchType,this._branchId,"types", location], {
+    const url = this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref()+"ple/messaging/"+this._branchType+"/"+this._branchId+"/"+"types/", location], {
       relativeTo: this.route.parent?.parent,
       queryParamsHandling: 'merge',
     }))
@@ -118,8 +118,8 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
   openAddElementDialog() {
     let dialogData: AddElementDialog = {
-      id: this.element?.id||'',
-      name: this.element?.name||'',
+      id: this.structure?.id||'',
+      name: this.structure?.name||'',
       element: {
         id: '-1',
         name: '',
@@ -138,20 +138,22 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
       switchMap((value:AddElementDialog) =>
         iif(() => value.element.id !== '-1' && value.element.id.length > 0,
-          this.structureService.relateElement(this.element.id, value.element.id),
-          this.structureService.createNewElement(value.element, this.element.id,value.type.id))
+          this.structureService.relateElement(this.structure.id, value.element.id),
+          this.structureService.createNewElement(value.element, this.structure.id,value.type.id))
       ),
       take(1)
     );
     createElement.subscribe();
   }
-  openGeneralMenu(event: MouseEvent, element: element) {
+  openGeneralMenu(event: MouseEvent, element: element,header:string, field?: string | number | boolean | applic) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
     this.generalMenuTrigger.menuData = {
       element: element,
-      structure:this.element
+      structure: this.structure,
+      field: field,
+      header:header
     }
     this.generalMenuTrigger.openMenu();
   }
@@ -218,7 +220,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       //do nothing
       of(),
       //change description
-      this.structureService.partialUpdateElement({id:elementId,description:(response as EditViewFreeTextDialog).return},this.element.id)
+      this.structureService.partialUpdateElement({id:elementId,description:(response as EditViewFreeTextDialog).return},this.structure.id)
       ))
     ).subscribe();
   }
@@ -238,12 +240,16 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       //do nothing
       of(),
       //change notes
-      this.structureService.partialUpdateElement({id:elementId,notes:(response as EditViewFreeTextDialog).return},this.element.id)
+      this.structureService.partialUpdateElement({id:elementId,notes:(response as EditViewFreeTextDialog).return},this.structure.id)
       ))
     ).subscribe();
   }
 
   getHeaderByName(value: string) {
     return this.headerService.getHeaderByName(value,'element');
+  }
+
+  viewDiff(value: string | number | applic, header: string) {
+    this.structureService.sideNav = { opened: true,field:header, currentValue: value,previousValue:undefined };
   }
 }

@@ -27,6 +27,7 @@ import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/d
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { HeaderService } from '../../../shared/services/ui/header.service';
+import { applic } from '../../../../../types/applicability/applic';
 
 @Component({
   selector: 'ple-messaging-message-table',
@@ -69,6 +70,10 @@ export class MessageTableComponent implements OnInit {
   }
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
+  sideNav = this.messageService.sideNavContent;
+  sideNavOpened = this.sideNav.pipe(
+    map((value)=>value.opened)
+  )
   constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService) {}
 
   ngOnInit(): void {}
@@ -142,12 +147,14 @@ export class MessageTableComponent implements OnInit {
     ).subscribe();
   }
 
-  openMenu(event: MouseEvent, message: message) {
+  openMenu(event: MouseEvent, message: message, field: string|boolean|applic, header: string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
     this.matMenuTrigger.menuData = {
       message: message,
+      field: field,
+      header:header
     }
     this.matMenuTrigger.openMenu();
   }
@@ -198,5 +205,9 @@ export class MessageTableComponent implements OnInit {
 
   getHeaderByName(value: string) {
     return this.headerService.getHeaderByName(value,'message');
+  }
+
+  viewDiff(open:boolean,value:string|number, header:string) {
+    this.messageService.sideNav = { opened: open,field:header, currentValue: value };
   }
 }

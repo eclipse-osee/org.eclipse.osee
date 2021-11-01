@@ -20,6 +20,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
+import { applic } from '../../../../../types/applicability/applic';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { message } from '../../types/messages';
@@ -27,6 +28,7 @@ import { subMessage } from '../../types/sub-messages';
 import { DeleteSubmessageDialogComponent } from '../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveSubmessageDialogComponent } from '../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
+import { LocationStrategy } from '@angular/common';
 
 @Component({
   selector: 'ple-messaging-sub-message-table',
@@ -50,7 +52,7 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   }
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
-  constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService, private headerService: HeaderService) {
+  constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService, private headerService: HeaderService, private angLocation:LocationStrategy) {
     this.dataSource.data = this.data;
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -75,19 +77,23 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     })
   }
 
-  openMenu(event: MouseEvent, message: message, submessage: subMessage, location: string) {
+  openMenu(event: MouseEvent, message: message, submessage: subMessage, location: string,field:string|applic,header:string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
     this.matMenuTrigger.menuData = {
       message: message,
       submessage: submessage,
-      location:location
+      location: location,
+      field: field,
+      header:header
     }
     this.matMenuTrigger.openMenu();
   }
   navigateToElementsTableInNewTab(id: string | undefined, submessage: string, location: string) {
-    const url = this.router.serializeUrl(this.router.createUrlTree([id,submessage,location, 'elements'], {
+    let currentUrl = this.router.url.split("/");
+    currentUrl.shift()
+    const url = this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref(),...currentUrl,id,submessage,location, 'elements'], {
       relativeTo: this.route,
       queryParamsHandling: 'merge',
     }))
@@ -156,5 +162,9 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
 
   getHeaderByName(value: string) {
     return this.headerService.getHeaderByName(value,'submessage');
+  }
+
+  viewDiff(open:boolean,value:string|number, header:string) {
+    this.messageService.sideNav = { opened: open,field:header, currentValue: value };
   }
 }
