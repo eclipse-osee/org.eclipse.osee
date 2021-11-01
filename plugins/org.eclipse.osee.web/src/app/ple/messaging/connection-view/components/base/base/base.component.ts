@@ -16,8 +16,11 @@ import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/c
 import { RouteStateService } from '../../../services/route-state-service.service';
 import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { map, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { map, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
+import { transportType } from 'src/app/ple/messaging/shared/types/connection';
+import { applic } from 'src/app/types/applicability/applic';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'osee-connectionview-base',
@@ -32,10 +35,14 @@ export class BaseComponent implements OnInit {
     share(),
     shareReplay(1)
   )
-  constructor (private routeState: RouteStateService, public dialog: MatDialog, private graphService: CurrentGraphService) {
+  inDiffMode=this.graphService.InDiff;
+  sideNav = this.graphService.sideNavContent;
+  sideNavOpened = this.sideNav.pipe(
+    map((value) => value.opened),
+  )
+  constructor (private routeState: RouteStateService, public dialog: MatDialog, private graphService: CurrentGraphService, private router:Router, private route: ActivatedRoute) {
    }
   
-
   ngOnInit(): void {}
 
   openSettingsDialog() {
@@ -58,5 +65,14 @@ export class BaseComponent implements OnInit {
         switchMap((result) => this.graphService.updatePreferences(result))))
     ).subscribe();
   }
+  viewDiff(open:boolean,value:string|number|applic|transportType, header:string) {
+    this.graphService.sideNav = { opened: open,field:header, currentValue: value };
+  }
 
+  navigateToDiff() {
+    this.router.navigate(['diff'], {
+      relativeTo: this.route,
+      queryParamsHandling: 'merge',
+    });
+  }
 }

@@ -24,11 +24,15 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 import { BaseComponent } from './base.component';
 import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatDrawerHarness } from '@angular/material/sidenav/testing'
 import { EditAuthService } from 'src/app/ple/messaging/shared/services/edit-auth-service.service';
 import { editAuthServiceMock } from '../../../mocks/EditAuthService.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { of } from 'rxjs';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('BaseComponent', () => {
   let component: BaseComponent;
@@ -38,12 +42,12 @@ describe('BaseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatButtonModule, NoopAnimationsModule],
+      imports: [MatDialogModule, MatButtonModule,MatSidenavModule,RouterTestingModule, NoopAnimationsModule],
       providers: [
         { provide: EditAuthService, useValue: editAuthServiceMock },
         { provide: CurrentGraphService, useValue: graphServiceMock }
       ],
-      declarations: [ BaseComponent, BranchDummySelector, BranchTypeDummySelector, GraphDummy ]
+      declarations: [ BaseComponent, BranchDummySelector, BranchTypeDummySelector, GraphDummy,MimSingleDiffDummy ]
     })
       .compileComponents();
     routeState = TestBed.inject(RouteStateService);
@@ -65,7 +69,7 @@ describe('BaseComponent', () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
     let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-    (await (await loader.getHarness(MatButtonHarness)).click());
+    (await (await loader.getHarness(MatButtonHarness.with({text:'Settings'}))).click());
     expect(spy).toHaveBeenCalled();
   })
 });

@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from 'src/environments/environment';
-import { BranchListing } from '../../types/BranchListing';
+import { BranchListing } from '../../../../../types/branches/BranchListing';
 
 @Injectable({
   providedIn: 'root'

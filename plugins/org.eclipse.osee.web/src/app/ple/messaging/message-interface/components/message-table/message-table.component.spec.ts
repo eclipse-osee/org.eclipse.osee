@@ -50,6 +50,9 @@ import { MessageUiService } from '../../services/ui.service'
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
 import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
 import { MatMenuHarness } from '@angular/material/menu/testing';
+import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 
 let loader: HarnessLoader;
 
@@ -93,6 +96,7 @@ describe('MessageTableComponent', () => {
         MatTableModule,
         MatSlideToggleModule,
         MatButtonModule,
+        MatSidenavModule,
         OseeStringUtilsDirectivesModule,
         OseeStringUtilsPipesModule,
         NoopAnimationsModule,
@@ -101,7 +105,7 @@ describe('MessageTableComponent', () => {
         MatDialogModule,
         RouterTestingModule
       ],
-      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent],
+      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective],
       providers: [{
         provide: CurrentMessagesService, useValue: CurrentMessageServiceMock
       },
@@ -205,7 +209,7 @@ describe('MessageTableComponent', () => {
     })
 
     it('should open the menu and dismiss a description', async () => {
-      component.openMenu(mEvent, messagesMock[0]);
+      component.openMenu(mEvent, messagesMock[0],'','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -218,7 +222,7 @@ describe('MessageTableComponent', () => {
     })
 
     it('should open the menu and edit a description', async () => {
-      component.openMenu(mEvent, messagesMock[0]);
+      component.openMenu(mEvent, messagesMock[0],'','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -230,8 +234,17 @@ describe('MessageTableComponent', () => {
       expect(serviceSpy).toHaveBeenCalled();
     })
 
+    it('should open the menu and open the sidenav for diffs', async () => {
+      component.openMenu(mEvent, messagesMock[0],'field','header');
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'viewDiff').and.callThrough();
+      await menu.clickItem({ text: "View Diff" });
+      expect(spy).toHaveBeenCalled();
+    })
+
     it('should open a dialog and remove a message', async() => {
-      component.openMenu(mEvent, messagesMock[0]);
+      component.openMenu(mEvent, messagesMock[0],'','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeMessage').and.callThrough();
@@ -244,7 +257,7 @@ describe('MessageTableComponent', () => {
     })
 
     it('should open a dialog and delete a message', async() => {
-      component.openMenu(mEvent, messagesMock[0]);
+      component.openMenu(mEvent, messagesMock[0],'','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteMessage').and.callThrough();

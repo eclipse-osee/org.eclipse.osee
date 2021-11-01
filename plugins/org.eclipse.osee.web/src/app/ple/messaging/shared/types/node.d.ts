@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from "../../shared/types/NamedId.applic";
+import { difference } from "src/app/types/change-report/change-report";
+import { applic } from "../../../../types/applicability/applic";
+import { Node } from "@swimlane/ngx-graph";
 
 export interface nodeData {
     id: string,
@@ -18,7 +20,20 @@ export interface nodeData {
     description?:string
     interfaceNodeBgColor: string,
     interfaceNodeAddress:string,
-    applicability?:applic
+    applicability?: applic
+}
+
+export interface nodeDataWithChanges extends nodeData {
+    deleted: boolean,
+    changes: nodeChanges
+}
+
+export interface nodeChanges{
+    name?: difference,
+    description?: difference,
+    interfaceNodeBgColor?: difference,
+    interfaceNodeAddress?: difference,
+    applicability?:difference
 }
 
 export interface node {
@@ -27,4 +42,8 @@ export interface node {
     description?: string
     applicability?:applic
     
+}
+
+export interface OseeNode<T> extends Omit<Node, 'data'>{
+    data:T
 }

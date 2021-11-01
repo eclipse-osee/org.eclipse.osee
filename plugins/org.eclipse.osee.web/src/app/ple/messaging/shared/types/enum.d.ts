@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from "./NamedId.applic";
+import { applic } from "../../../../types/applicability/applic";
 
 export interface enumeration{
     id?:string,

@@ -10,9 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-raised-button (click)="openSettingsDialog()" style="float:right">Settings</button>
-<div class="connection-view">
-    <osee-connectionview-branch-type-selector></osee-connectionview-branch-type-selector>
-    <osee-connectionview-branch-selector></osee-connectionview-branch-selector>
-    <osee-connectionview-graph [editMode]="(inEditMode | async) || false"></osee-connectionview-graph>
-</div>
+<mat-drawer-container>
+    <mat-drawer-content>
+        <div style="float:right">
+            <ng-container *ngIf="(inDiffMode|async)===false">
+                <button mat-raised-button (click)="navigateToDiff()">View Diff</button>
+            </ng-container>
+            <button mat-raised-button (click)="openSettingsDialog()">Settings</button>
+        </div>
+        <div class="connection-view">
+            <osee-connectionview-branch-type-selector></osee-connectionview-branch-type-selector>
+            <osee-connectionview-branch-selector></osee-connectionview-branch-selector>
+            <osee-connectionview-graph [editMode]="(inEditMode | async) || false"></osee-connectionview-graph>
+        </div>
+    </mat-drawer-content>
+    <mat-drawer position="end" mode="side" [opened]="(sideNavOpened|async)" class="mat-elevation-z9">
+        <ng-container *ngIf="(sideNav|async) as nav">
+            <button mat-icon-button mat-stroked-button (click)="viewDiff(false,'','')" style="transform: rotate(90deg);">V</button>
+            <app-mim-single-diff [contents]="nav"></app-mim-single-diff>
+        </ng-container>
+    </mat-drawer>
+</mat-drawer-container>

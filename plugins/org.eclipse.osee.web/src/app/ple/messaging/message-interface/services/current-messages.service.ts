@@ -17,6 +17,7 @@ import { transaction } from 'src/app/transactions/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
+import { applic } from '../../../../types/applicability/applic';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { message } from '../types/messages';
 import { subMessage } from '../types/sub-messages';
@@ -49,6 +50,7 @@ export class CurrentMessagesService {
   )
 
   private _done = new Subject();
+  private _sideNavContent = new Subject<{opened:boolean, field:string, currentValue:string|number|applic, previousValue?:string|number|applic,user?:string,date?:string}>();
   constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: MessageUiService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private userService: UserDataAccountService) { }
 
   get messages() {
@@ -88,6 +90,14 @@ export class CurrentMessagesService {
 
   get BranchPrefs() {
     return this.preferenceService.BranchPrefs;
+  }
+
+  get sideNavContent() {
+    return this._sideNavContent;
+  }
+
+  set sideNav(value: {opened:boolean, field:string, currentValue:string|number|applic, previousValue?:string|number|applic,user?:string,date?:string}) {
+    this._sideNavContent.next(value);
   }
 
   partialUpdateSubMessage(body: Partial<subMessage>, messageId: string) {

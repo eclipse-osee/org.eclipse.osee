@@ -33,13 +33,18 @@ import { ConfirmRemovalDialogComponent } from './components/dialogs/confirm-remo
 import { EditNodeDialogComponent } from './components/dialogs/edit-node-dialog/edit-node-dialog.component';
 import { CreateConnectionDialogComponent } from './components/dialogs/create-connection-dialog/create-connection-dialog.component';
 import { CreateNewNodeDialogComponent } from './components/dialogs/create-new-node-dialog/create-new-node-dialog.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
+import { GraphLinkMenuComponent } from './components/menu/graph-link-menu/graph-link-menu.component';
+import { GraphNodeMenuComponent } from './components/menu/graph-node-menu/graph-node-menu.component';
 
 
 @NgModule({
-  declarations: [ConnectionViewComponent, BranchTypeSelectorComponent, BranchSelectorComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent],
+  declarations: [ConnectionViewComponent, BranchTypeSelectorComponent, BranchSelectorComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, GraphLinkMenuComponent, GraphNodeMenuComponent],
   imports: [
     CommonModule,
     ConnectionViewRoutingModule,
+    DiffViewsModule,
     MatRadioModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -48,6 +53,7 @@ import { CreateNewNodeDialogComponent } from './components/dialogs/create-new-no
     FormsModule,
     MatSelectModule,
     MatInputModule,
+    MatSidenavModule,
     NgxGraphModule
   ]
 })

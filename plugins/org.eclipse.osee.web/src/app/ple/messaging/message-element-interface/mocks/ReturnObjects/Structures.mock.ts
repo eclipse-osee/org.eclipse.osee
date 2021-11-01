@@ -13,7 +13,7 @@
 import { structure } from "../../types/structure";
 
 export const structuresMock:structure[] = [{
-    id: '0',
+    id: '1',
     name: 'name',
     elements: [{
       id: '1',

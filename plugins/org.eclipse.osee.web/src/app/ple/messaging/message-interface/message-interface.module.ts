@@ -42,6 +42,8 @@ import { RemoveSubmessageDialogComponent } from './components/dialogs/remove-sub
 import { DeleteSubmessageDialogComponent } from './components/dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveMessageDialogComponent } from './components/dialogs/remove-message-dialog/remove-message-dialog.component';
 import { DeleteMessageDialogComponent } from './components/dialogs/delete-message-dialog/delete-message-dialog.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
 
 
 @NgModule({
@@ -59,10 +61,12 @@ import { DeleteMessageDialogComponent } from './components/dialogs/delete-messag
     MatTooltipModule,
     MatDialogModule,
     MatProgressBarModule,
+    MatSidenavModule,
     PleSharedMaterialModule,
     OseeStringUtilsPipesModule,
     OseeStringUtilsDirectivesModule,
     SharedMessagingModule,
+    DiffViewsModule,
     MessageInterfaceRoutingModule
   ]
 })

@@ -24,7 +24,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { applic } from '../../../shared/types/NamedId.applic';
+import { applic } from '../../../../../types/applicability/applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { enumeration, enumerationSet } from '../../../shared/types/enum';
 import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../types/logicaltype';

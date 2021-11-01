@@ -20,7 +20,7 @@ import { MimPreferencesService } from '../../shared/services/http/mim-preference
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { transaction } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
-import { applic } from '../../shared/types/NamedId.applic';
+import { applic } from '../../../../types/applicability/applic';
 import { enumeration, enumerationSet } from '../../shared/types/enum';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { EnumerationUIService } from '../../shared/services/ui/enumeration-ui.service';

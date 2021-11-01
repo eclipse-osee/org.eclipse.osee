@@ -1,3 +1,5 @@
+import { applic } from "../../../../types/applicability/applic";
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -11,6 +13,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface element {
+    [index:string]:string|number|boolean|applic|undefined,
     id: string,
     name: string,
     description: string,
@@ -24,5 +27,6 @@ export interface element {
     beginByte?: number,
     endWord?: number,
     endByte?: number,
-    logicalType?:string
+    logicalType?: string,
+    applicability?:applic,
 }

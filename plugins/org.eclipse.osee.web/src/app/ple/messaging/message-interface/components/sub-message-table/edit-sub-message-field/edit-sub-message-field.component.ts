@@ -13,7 +13,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, map, switchMap, tap, takeUntil } from 'rxjs/operators';
-import { applic } from 'src/app/ple/messaging/shared/types/NamedId.applic';
+import { applic } from 'src/app/types/applicability/applic';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 import { subMessage } from '../../../types/sub-messages';
 

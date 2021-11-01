@@ -12,6 +12,7 @@
  **********************************************************************/
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
+import { applic } from "../../../../../types/applicability/applic";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentStateService } from "../../services/current-state.service";
 import { structure } from "../../types/structure";
@@ -19,6 +20,8 @@ import { platformTypesMock } from "../ReturnObjects/PlatformTypes.mock";
 import { elementResponseMock } from "../ReturnObjects/response.mock";
 import { structuresMock } from "../ReturnObjects/Structures.mock";
 
+let sideNavContentPlaceholder = new Subject<{ opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }>();
+sideNavContentPlaceholder.next({opened:false,field:'',currentValue:''})
 export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     createStructure(body: Partial<structure>) {
         return of(elementResponseMock)
@@ -63,5 +66,9 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     },
     getStructureRepeating(structureId: string) {
         return of(structuresMock[0])
+    },
+    sideNavContent: sideNavContentPlaceholder,
+    set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) {
+        
     }
 }

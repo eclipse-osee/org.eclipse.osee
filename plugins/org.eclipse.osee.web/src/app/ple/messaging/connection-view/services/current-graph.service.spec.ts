@@ -31,13 +31,19 @@ import { NodeService } from './node.service';
 import { RouteStateService } from './route-state-service.service';
 import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { relation, transaction } from 'src/app/transactions/transaction';
+import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
+import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
+import { DifferenceReportService } from 'src/app/ple-services/http/difference-report.service';
+import { DifferenceReportServiceMock } from 'src/app/ple-services/http/difference-report.service.mock';
+import { tap } from 'rxjs/operators';
+import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
 
 describe('CurrentGraphService', () => {
   let service: CurrentGraphService;
   let scheduler: TestScheduler;
   let graphService: Partial<GraphService> = {
     getNodes(id:string) {
-      return of({nodes:[{id:'1',name:'1'},{id:'2',name:'2'}],edges:[{id:'1234',source:'1',target:'2'}]})
+      return of({nodes:[{id:'1',name:'1',data:{id:'1',name:'1',interfaceNodeAddress:'',interfaceNodeBgColor:''}},{id:'2',name:'2',data:{id:'2',name:'2',interfaceNodeAddress:'',interfaceNodeBgColor:''}}],edges:[{id:'1234',source:'1',target:'2',data:{name:'abcd',transportType:transportType.Ethernet}}]})
     },
   }
   let nodeService: Partial<NodeService> = {
@@ -93,7 +99,9 @@ describe('CurrentGraphService', () => {
         { provide: ConnectionService, useValue: connectionService },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock }
+        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
+        { provide: BranchInfoService, useValue: BranchInfoServiceMock },
+        { provide: DifferenceReportService,useValue:DifferenceReportServiceMock}
       ]
     });
     service = TestBed.inject(CurrentGraphService);
@@ -149,7 +157,7 @@ describe('CurrentGraphService', () => {
       const expectedfilterValues = { a: response };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.deleteNodeAndUnrelate('10', [{id:'20',source:'15',target:'10'},{id:'20',source:'10',target:'15'}])).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.deleteNodeAndUnrelate('10', [{id:'20',source:'15',target:'10',data:{name:'abcd',transportType:transportType.Ethernet}},{id:'20',source:'10',target:'15',data:{name:'abcd',transportType:transportType.Ethernet}}])).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -184,7 +192,7 @@ describe('CurrentGraphService', () => {
 
   it('should fetch empty array of nodes and edges', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: {nodes:[{id:'1',name:'1'},{id:'2',name:'2'}],edges:[{id:'a1234',source:'1',target:'2'}]} };
+      const expectedfilterValues = { a: { nodes: [{ id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }], edges: [{ id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' }}]} };
       const expectedMarble = 'a'
       routeState.branchId='10'
       scheduler.expectObservable(service.nodes).toBe(expectedMarble, expectedfilterValues);
@@ -226,4 +234,34 @@ describe('CurrentGraphService', () => {
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
     })
   })
+
+    it('should set and get differences', () => {
+        scheduler.run(({ expectObservable, cold }) => {
+          routeState.branchId = '10';
+          const coldValues = { a: [], b: changeReportMock};
+          const values = { a: [], b: changeReportMock,c:undefined };
+          const coldMarbles='---a---b--------------a--------------b'
+          const coldObs = cold(coldMarbles, coldValues).pipe(tap((t) => service.difference = t));
+          expectObservable(coldObs).toBe(coldMarbles, coldValues);
+          expectObservable(service.differences).toBe('c--a---b--------------a--------------b', values);
+        })
+      })
+      it('should get differences in graph', () => {
+        scheduler.run(({ expectObservable }) => {
+          service.difference = changeReportMock;
+          routeState.DiffMode = true;
+          routeState.branchId = '10';
+          const expectedfilterValues = { a: { nodes:[{ id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, ],edges:[{ id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' } }]} };
+          const expectedMarble = 'a';
+          expectObservable(service.nodes).toBe(expectedMarble,expectedfilterValues)
+        })
+      })
+     
+      it('should get diff service diff', () => {
+        scheduler.run(({ expectObservable }) => {
+          routeState.branchId = '10';
+          expectObservable(service.diff).toBe('(b|)',{a:changeReportMock,b:undefined})
+        })
+      })
+    
 });

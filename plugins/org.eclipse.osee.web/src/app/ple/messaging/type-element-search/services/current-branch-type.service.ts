@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import { iif, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { BranchListing } from '../types/BranchListing';
+import { BranchListing } from '../../../../types/branches/BranchListing';
 import { BranchService } from './http/branch.service';
 import { BranchTypeService } from './router/branch-type.service';
 

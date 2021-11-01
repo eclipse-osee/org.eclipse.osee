@@ -133,7 +133,7 @@ export class LayoutNotifierService {
     switchMap(([xsmall, small, medium, large, xlarge, cardColumnCount, tableRecommendations]) => of({ xsmall: xsmall, small: small, medium: medium, large: large, xlarge: xlarge, recommendedCardColumnCount: cardColumnCount, tableRecommendations: tableRecommendations })
     ),
     share(),
-    shareReplay(1)
+    shareReplay({refCount:true,bufferSize:1})
     // tap((value) => {
     //   console.log(value)
     // })

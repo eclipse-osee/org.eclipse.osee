@@ -14,7 +14,7 @@
     <table mat-table [dataSource]="dataSource" class="message-interface-table-view-width-100">
         <ng-container [matColumnDef]="header" *ngFor="let header of (headers|async)||[];let j=index;trackBy:valueTracker">
          <th mat-header-cell *matHeaderCellDef class="message-interface-table-view-sub-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''">{{(getHeaderByName(header)|async)?.humanReadable||''}}</th>
-         <td mat-cell *matCellDef="let value" class="message-interface-table-center">
+         <td mat-cell *matCellDef="let value" class="message-interface-table-center" (contextmenu)="openMenu($event,element,value,element.name+' > '+value.name,value[header],header)">
             <ng-container *ngIf="editMode==false; else edit_Mode;">
                 <ng-container *ngIf="header==='description'">
                     <div appHighlightFilteredText [searchTerms]="filter" [text]="value[header] | displayTruncatedStringWithFieldOverflow:75" classToApply="ple-message-interface-table-highlighted-text">
@@ -55,15 +55,16 @@
         </ng-container>
      <tr mat-header-row *matHeaderRowDef="(headers|async)||[];"></tr>    
      <tr mat-row *matRowDef= "let row2; columns: (headers|async)||[]; let k=index;"
-     [ngClass]="k%2===0? 'message-table-sub-message-row-even':'message-table-sub-message-row-odd'" (contextmenu)="openMenu($event,element,row2,element.name+' > '+row2.name)"></tr>
+     [ngClass]="k%2===0? 'message-table-sub-message-row-even':'message-table-sub-message-row-odd'"></tr>
      <tr mat-footer-row *matFooterRowDef="['footer']"></tr>
     </table>
 </div>
 <mat-menu #contextMenu="matMenu">
-    <ng-template matMenuContent let-message="message" let-submessage="submessage" let-location="location">
+    <ng-template matMenuContent let-message="message" let-submessage="submessage" let-location="location" let-field="field" let-header="header">
         <button mat-menu-item (click)="navigateToElementsTable(message.id,submessage.id,location)"> Open submessage details</button>
         <button mat-menu-item (click)="navigateToElementsTableInNewTab(message.id,submessage.id,location)"> Open submessage details in new tab</button>
         <button mat-menu-item (click)="openDescriptionDialog(submessage.description,submessage.id,message.id)">Open Description</button>
+        <button mat-menu-item (click)="viewDiff(true,field,header)">View Diff</button>
         <ng-container *ngIf="editMode==true;">
             <button mat-menu-item (click)="removeSubMessage(submessage,message)">Remove submessage from message</button>
             <button mat-menu-item (click)="deleteSubMessage(submessage)">Delete submessage globally</button>

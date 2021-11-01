@@ -12,29 +12,36 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RouteStateService {
-
-  private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  constructor () { }
+  constructor (private uiService: UiService) { }
   
   get type() {
-    return this._branchType
+    return this.uiService.type;
   }
 
   get id() {
-    return this._branchId;
+    return this.uiService.id;
   }
 
   set branchType(value: string) {
-    this._branchType.next(value);
+    this.uiService.typeValue = value;
   }
 
   set branchId(value: string) {
-    this._branchId.next(value);
+    this.uiService.idValue = value;
+  }
+
+  get isInDiff() {
+    return this.uiService.isInDiff;
+  }
+
+  set DiffMode(value: boolean) {
+    this.uiService.diffMode = value;
   }
 }

@@ -12,8 +12,9 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Node,Edge } from '@swimlane/ngx-graph';
 import { apiURL } from 'src/environments/environment';
+import { connection, connectionWithChanges, OseeEdge } from '../../shared/types/connection';
+import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,6 @@ export class GraphService {
   constructor (private http: HttpClient) { }
   
   getNodes(id: string) {
-    return this.http.get<{nodes:Node[],edges:Edge[]}>(apiURL+'/mim/branch/'+id+"/graph")
+    return this.http.get<{nodes:OseeNode<nodeData>[],edges:OseeEdge<connection>[]}>(apiURL+'/mim/branch/'+id+"/graph")
   }
 }

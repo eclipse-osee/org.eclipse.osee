@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { BranchListing } from '../../types/BranchListing';
+import { BranchListing } from '../../../../../types/branches/BranchListing';
 
 import { BranchService } from './branch.service';
 

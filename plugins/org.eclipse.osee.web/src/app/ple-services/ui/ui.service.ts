@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BranchUIService } from './branch/branch-ui.service';
+import { DiffModeService } from './diff/diff-mode.service';
 import { UpdateService } from './update/update.service';
 
 @Injectable({
@@ -19,7 +20,7 @@ import { UpdateService } from './update/update.service';
 })
 export class UiService {
 
-  constructor (private branchService: BranchUIService, private updateService: UpdateService) { }
+  constructor (private branchService: BranchUIService, private updateService: UpdateService, private diffModeService:DiffModeService) { }
   
   get id() {
     return this.branchService.id;
@@ -43,5 +44,13 @@ export class UiService {
 
   set updated(value: boolean) {
     this.updateService.updated = value;
+  }
+
+  get isInDiff() {
+    return this.diffModeService.isInDiff;
+  }
+
+  set diffMode(value: boolean) {
+    this.diffModeService.DiffMode = value;
   }
 }

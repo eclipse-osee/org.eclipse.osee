@@ -12,12 +12,16 @@
  **********************************************************************/
 import { BehaviorSubject, of, Subject } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
+import { applic } from "../../../../../types/applicability/applic";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentMessagesService } from "../../services/current-messages.service";
 import { message } from "../../types/messages";
 import { subMessage } from "../../types/sub-messages";
 import { messageResponseMock } from "../ReturnObjects/response.mock";
 
+
+let sideNavContentPlaceholder = new Subject<{ opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }>();
+sideNavContentPlaceholder.next({opened:true,field:'',currentValue:''})
 let expectedData: message[] = [{
     id:'10',
     name: 'name',
@@ -73,5 +77,7 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   deleteSubMessage(subMessageId: string) {
     return of(messageResponseMock);
   },
-  done:new Subject()
+  done: new Subject(),
+  sideNavContent: sideNavContentPlaceholder,
+  set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) {}
 }

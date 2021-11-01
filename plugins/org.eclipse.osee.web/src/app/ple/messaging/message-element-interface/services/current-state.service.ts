@@ -17,6 +17,7 @@ import { relation, transaction } from 'src/app/transactions/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
+import { applic } from '../../../../types/applicability/applic';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { element } from '../types/element';
 import { structure } from '../types/structure';
@@ -51,6 +52,8 @@ export class CurrentStateService {
     shareReplay({ bufferSize: 1, refCount: true }),
   )
   private _done = new Subject();
+
+  private _sideNavContent = new Subject<{opened:boolean, field:string, currentValue:string|number|applic, previousValue?:string|number|applic,user?:string,date?:string}>();
   constructor (private ui: ElementUiService, private structure: StructuresService, private messages:MessagesService, private elements:ElementService, private typeService: PlatformTypeService, private applicabilityService: ApplicabilityListUIService,private preferenceService: PreferencesUIService, private userService: UserDataAccountService) { }
   
   get structures() {
@@ -123,6 +126,14 @@ export class CurrentStateService {
   
   get updated() {
     return this.ui.UpdateRequired;
+  }
+
+  get sideNavContent() {
+    return this._sideNavContent;
+  }
+
+  set sideNav(value: {opened:boolean, field:string, currentValue:string|number|applic, previousValue?:string|number|applic,user?:string,date?:string}) {
+    this._sideNavContent.next(value);
   }
 
   set update(value: boolean) {
