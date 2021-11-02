@@ -52,8 +52,8 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken SoftwareRequirementsFolder    = ArtifactToken.valueOf(37334, "Software Requirements", Folder);
    public static final ArtifactToken TestSupportUnitsFolder    = ArtifactToken.valueOf(34522345, "Test Support Units", Folder);
 
-   public static final ArtifactToken InterfaceMessagesFolder = ArtifactToken.valueOf(2121138078, "Interface Messages", Folder);
-   public static final ArtifactToken InterfacePlatformTypesFolder = ArtifactToken.valueOf(2121138079, "Interface Platform Types", Folder);
+   public static final ArtifactToken InterfaceMessagesFolder = ArtifactToken.valueOf(8255184, "Interface Messages", Folder);
+   public static final ArtifactToken InterfacePlatformTypesFolder = ArtifactToken.valueOf(8255185, "Interface Platform Types", Folder);
    // @formatter:on
 
    public static final String SAW_PRODUCT_DECOMP = "SAW Product Decomposition";
