@@ -48,11 +48,6 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
       this.factory = factory;
    }
 
-   @Override
-   public QuerySqlContextFactory getSqlContextFactory() {
-      return queryContextFactory;
-   }
-
    private boolean isLoadLevelTooLow(LoadLevel level) {
       return LoadLevel.ARTIFACT_DATA == level;
    }

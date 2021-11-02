@@ -14,9 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import com.google.common.collect.Iterables;
-import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -24,8 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryCollector;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -52,33 +48,12 @@ public class CallableQueryFactory {
    private final ExternalArtifactManager proxyManager;
 
    public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, GraphBuilderFactory builderFactory, GraphProvider provider, ExternalArtifactManager proxyManager) {
-      super();
       this.logger = logger;
       this.queryEngine = queryEngine;
       this.collector = collector;
       this.builderFactory = builderFactory;
       this.provider = provider;
       this.proxyManager = proxyManager;
-   }
-
-   public CancellableCallable<ResultSet<? extends ArtifactId>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<ResultSet<? extends ArtifactId>>(session, queryData) {
-
-         @Override
-         protected ResultSet<? extends ArtifactId> innerCall() throws Exception {
-            final List<ArtifactId> results = new LinkedList<>();
-            LoadDataHandlerAdapter handler = new LoadDataHandlerAdapter() {
-               @Override
-               public void onData(ArtifactData data) {
-                  results.add(data);
-               }
-            };
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
-            queryEngine.runArtifactQuery(getQueryData(), handler);
-            setItemsFound(results.size());
-            return ResultSets.newResultSet(results);
-         }
-      };
    }
 
    public CancellableCallable<ResultSet<ArtifactReadable>> createSearch(OrcsSession session, QueryData queryData) {
@@ -169,9 +144,5 @@ public class CallableQueryFactory {
 
       protected abstract T innerCall() throws Exception;
 
-   }
-
-   public QueryEngine getQueryEngine() {
-      return queryEngine;
    }
 }
