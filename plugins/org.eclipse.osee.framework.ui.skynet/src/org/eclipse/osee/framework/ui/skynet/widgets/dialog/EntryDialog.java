@@ -436,4 +436,8 @@ public class EntryDialog extends MessageDialog {
       this.addOpenInEditorOption = addOpenInEditorOption;
    }
 
+   public void setMultiline(boolean multiline) {
+      setFillVertically(multiline);
+   }
+
 }
