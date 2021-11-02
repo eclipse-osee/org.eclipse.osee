@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.UserService;
-import org.eclipse.osee.framework.core.executor.CancellableCallable;
-import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -50,8 +48,6 @@ public interface QueryEngine {
    int getTxCount(QueryData queryData);
 
    void runTxQuery(UserService userService, QueryData queryData, List<? super TransactionReadable> txs);
-
-   CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
    List<ArtifactToken> asArtifactTokens(QueryData queryData);
 

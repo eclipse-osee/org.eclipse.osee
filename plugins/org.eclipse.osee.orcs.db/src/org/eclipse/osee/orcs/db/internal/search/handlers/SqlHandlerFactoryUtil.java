@@ -88,14 +88,6 @@ public final class SqlHandlerFactoryUtil {
       return new SqlHandlerFactoryImpl(null, handleMap);
    }
 
-   public static SqlHandlerFactory createObjectSqlHandlerFactory(Log logger, TagProcessor tagProcessor) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
-      addBranchHandlers(handleMap);
-      addTxHandlers(handleMap);
-      addArtifactHandlers(handleMap);
-      return new SqlHandlerFactoryImpl(tagProcessor, handleMap);
-   }
-
    private static void addArtifactHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactIds.class, ArtifactIdsSqlHandler.class);

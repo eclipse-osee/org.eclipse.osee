@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newArtifactQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newIndexingEngine;
-import static org.eclipse.osee.orcs.db.internal.search.Engines.newQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newTaggingEngine;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -80,10 +79,7 @@ public class QueryModule {
          Engines.newBranchSqlContextFactory(logger, sqlJoinFactory, jdbcClient);
       QuerySqlContextFactory txSqlContextFactory = Engines.newTxSqlContextFactory(logger, sqlJoinFactory, jdbcClient);
 
-      QueryCallableFactory factory4 =
-         newQueryEngine(logger, sqlJoinFactory, jdbcClient, taggingEngine, executorAdmin, loaderFactory);
-      return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
-         sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, tokenService, keyValue,
-         resourceManager);
+      return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, jdbcClient, sqlJoinFactory,
+         artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, tokenService, keyValue, resourceManager);
    }
 }

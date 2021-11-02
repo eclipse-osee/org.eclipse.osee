@@ -42,11 +42,6 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
    }
 
    @Override
-   public QuerySqlContextFactory getSqlContextFactory() {
-      return queryContextFactory;
-   }
-
-   @Override
    public CancellableCallable<Integer> createQuery(OrcsSession session, final QueryData queryData, final LoadDataHandler handler) {
       return new AbstractSearchCallable(logger, session, queryData) {
 
@@ -67,5 +62,4 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
    }
 
    protected abstract LoadDataHandler createCountingHandler(AtomicInteger counter, LoadDataHandler handler);
-
 }

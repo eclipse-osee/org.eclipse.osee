@@ -39,14 +39,12 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -80,7 +78,6 @@ public class QueryEngineImpl implements QueryEngine {
    private final QueryCallableFactory artifactQueryEngineFactory;
    private final QuerySqlContextFactory branchSqlContextFactory;
    private final QuerySqlContextFactory txSqlContextFactory;
-   private final QueryCallableFactory allQueryEngineFactory;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
    private final SqlObjectLoader sqlObjectLoader;
@@ -89,11 +86,10 @@ public class QueryEngineImpl implements QueryEngine {
    private final OrcsTokenService tokenService;
    private final IResourceManager resourceManager;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
-      this.allQueryEngineFactory = allQueryEngineFactory;
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
       this.sqlObjectLoader = sqlObjectLoader;
@@ -151,11 +147,6 @@ public class QueryEngineImpl implements QueryEngine {
       QuerySqlContext queryContext = txSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
       sqlObjectLoader.loadTransactions(userService, txs, queryContext);
       queryData.reset();
-   }
-
-   @Override
-   public CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
-      return allQueryEngineFactory.createQuery(session, queryData, handler);
    }
 
    @Override

@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createBranchSqlHandlerFactory;
-import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createObjectSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -28,7 +27,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQueryCallableFactory;
-import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryFilterFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
@@ -61,18 +59,6 @@ public final class Engines {
    }
 
    public static ObjectQueryCallableFactory newArtifactQueryEngine(QuerySqlContextFactory sqlContextFactory, Log logger, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader) {
-      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine);
-      QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
-      return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
-   }
-
-   public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, //
-      JdbcClient jdbcClient, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, //
-      DataLoaderFactory objectLoader) {
-
-      SqlHandlerFactory handlerFactory = createObjectSqlHandlerFactory(logger, taggingEngine.getTagProcessor());
-      QuerySqlContextFactory sqlContextFactory =
-         new ObjectQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
