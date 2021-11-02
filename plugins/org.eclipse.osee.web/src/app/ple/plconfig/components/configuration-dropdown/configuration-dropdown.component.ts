@@ -101,7 +101,7 @@ export class ConfigurationDropdownComponent implements OnInit {
       if (result) {
         let body = {
           ...result.currentConfig,
-          copyFrom: result.ConfigurationToCopyFrom.id && result.ConfigurationToCopyFrom.id || '',
+          copyFrom: result.copyFrom && result.copyFrom || '',
           configurationGroup: result.group && result.group || ''
         };
         this.currentBranchService.editConfigurationDetails(body).pipe(take(1)).subscribe((response:response) => {

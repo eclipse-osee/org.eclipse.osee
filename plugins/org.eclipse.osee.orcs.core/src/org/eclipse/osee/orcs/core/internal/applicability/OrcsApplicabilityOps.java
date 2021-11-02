@@ -664,6 +664,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             results.errorf(Lib.exceptionToString(ex));
             return results;
          }
+         newView = getView(view.getName(), branch);
       }
       if (view.getCopyFrom().isValid() || view.getConfigurationGroup().isValid()) {
          if (newView.isValid()) {
