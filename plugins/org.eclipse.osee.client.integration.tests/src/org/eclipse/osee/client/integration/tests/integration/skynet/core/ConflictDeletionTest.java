@@ -24,6 +24,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.C
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -34,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -116,7 +117,7 @@ public class ConflictDeletionTest {
        */
 
       //Check that artifacts are deleted
-      TransactionId deletionTransaction = TransactionId.SENTINEL;
+      TransactionToken deletionTransaction = TransactionToken.SENTINEL;
       for (Artifact artifact : artifactsToCheck) {
          deletionTransaction = artifact.getTransaction();
          assertTrue("Artifact " + artifact + " should be deleted, but isn't", artifact.isDeleted());
@@ -172,7 +173,7 @@ public class ConflictDeletionTest {
       //OK now lets delete the transaction and check for the same thing
 
       if (DELETE_TRANSACTION_TEST) {
-         IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(deletionTransaction);
+         IOperation operation = PurgeTransactionOperation.getPurgeTransactionOperation(deletionTransaction);
          Asserts.assertOperation(operation, IStatus.OK);
          //This is only a DB deletion so it won't be reflected in the
          for (Artifact artifact : artifactsToCheck) {

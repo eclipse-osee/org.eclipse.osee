@@ -10,4 +10,5 @@
    <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setSystemProperties" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemProperties" name="SystemProperties" policy="static"/>
    <reference bind="setSqlJoinFactory" cardinality="1..1" interface="org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory" name="SqlJoinFactory" policy="static"/>
+   <reference bind="bindActivityLog" cardinality="1..1" interface="org.eclipse.osee.activity.api.ActivityLog" name="ActivityLog" policy="static"/>
 </scr:component>

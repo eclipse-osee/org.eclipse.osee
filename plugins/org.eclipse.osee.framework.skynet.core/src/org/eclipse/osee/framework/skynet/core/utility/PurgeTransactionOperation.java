@@ -13,21 +13,37 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
 /**
@@ -35,43 +51,62 @@ import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
  */
 public class PurgeTransactionOperation extends AbstractOperation {
 
-   private final List<Long> txIdsToDelete;
-   public static interface PurgeTransactionListener {
-      void onPurgeTransactionSuccess(List<Long> txIdsToDelete, Pair<TransactionEvent, Map<String, Long>> transEventAndIds);
+   private final Pair<TransactionEvent, Map<String, Long>> transEventAndIds;
+   private final String deleteTxs;
+
+   public static IOperation getPurgeTransactionOperation(TransactionToken txIdsToDelete) {
+      return getPurgeTransactionOperation(Arrays.asList(txIdsToDelete));
    }
 
-   private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<>();
-   private final Pair<TransactionEvent, Map<String, Long>> transEventAndIds;
+   public static IOperation getPurgeTransactionOperation(List<TransactionToken> txIdsToDelete) {
+      return new PurgeTransactionOperation(txIdsToDelete, createPurgeTransactionEvent(txIdsToDelete));
+   }
 
-   public PurgeTransactionOperation(List<Long> txIdsToDelete, Pair<TransactionEvent, Map<String, Long>> transEventAndIds) {
-      super("Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, NullOperationLogger.getSingleton());
-      this.txIdsToDelete = txIdsToDelete;
+   private PurgeTransactionOperation(List<TransactionToken> txsToDelete, Pair<TransactionEvent, Map<String, Long>> transEventAndIds) {
+      super("Purge transactions " + txsToDelete, Activator.PLUGIN_ID, NullOperationLogger.getSingleton());
+      deleteTxs = Collections.toString(",", txsToDelete);
       this.transEventAndIds = transEventAndIds;
    }
 
-   public void addListener(PurgeTransactionListener listener) {
-      if (listener != null) {
-         listeners.add(listener);
-      }
-   }
+   private static Pair<TransactionEvent, Map<String, Long>> createPurgeTransactionEvent(Collection<TransactionToken> purgedTransactions) {
+      TransactionEvent transactionEvent = new TransactionEvent();
+      transactionEvent.setEventType(TransactionEventType.Purged);
+      Map<String, Long> guidToId = new HashMap<>();
+      for (TransactionToken transId : purgedTransactions) {
 
-   public void removeListener(PurgeTransactionListener listener) {
-      if (listener != null) {
-         listeners.remove(listener);
+         TransactionChange txChg = new TransactionChange();
+         txChg.setBranch(transId.getBranch());
+         txChg.setTransactionId(transId.getId().intValue());
+         transactionEvent.getTransactionChanges().add(txChg);
+
+         Collection<Change> changes = new ArrayList<>();
+         IOperation operation = ChangeManager.comparedToPreviousTx(transId, changes);
+         Operations.executeWorkAndCheckStatus(operation);
+         if (!changes.isEmpty()) {
+            for (Change change : changes) {
+               try {
+                  Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId(), transId.getBranch(),
+                     DeletionFlag.INCLUDE_DELETED);
+                  guidToId.put(art.getGuid(), art.getId());
+                  DefaultBasicGuidArtifact guidArt =
+                     new DefaultBasicGuidArtifact(change.getBranch(), change.getArtifactType(), art.getGuid());
+                  txChg.getArtifacts().add(guidArt);
+               } catch (ArtifactDoesNotExist ex) {
+                  OseeLog.log(Activator.class, Level.WARNING, ex);
+               }
+            }
+         }
       }
+      return new Pair<>(transactionEvent, guidToId);
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      OseeClient client = ServiceUtil.getOseeClient();
-      TransactionEndpoint txEndpoint = client.getTransactionEndpoint();
-
-      String deleteTxs = Collections.toString(",", txIdsToDelete);
+      TransactionEndpoint txEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
       Response result = txEndpoint.purgeTxs(deleteTxs);
+
       if (Status.OK.getStatusCode() == result.getStatus()) {
-         for (PurgeTransactionListener listener : listeners) {
-            listener.onPurgeTransactionSuccess(txIdsToDelete, transEventAndIds);
-         }
+         OseeEventManager.kickTransactionEvent(this, transEventAndIds.getFirst());
       }
    }
 }

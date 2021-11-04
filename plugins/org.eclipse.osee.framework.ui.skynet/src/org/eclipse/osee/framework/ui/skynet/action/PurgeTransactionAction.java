@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -60,14 +60,13 @@ public class PurgeTransactionAction extends Action {
 
    @Override
    public void run() {
-      final List<TransactionId> useTransactions = new ArrayList<>(transactions);
-      if (useTransactions.isEmpty()) {
-         if (!getTransactions(useTransactions)) {
+      if (transactions.isEmpty()) {
+         if (!getTransactions()) {
             return;
          }
       }
       if (MessageDialog.openConfirm(Displays.getActiveShell(), NAME,
-         "Are you sure you want to purge\n\n" + getTransactionListStr(useTransactions))) {
+         "Are you sure you want to purge\n\n" + getTransactionListStr())) {
 
          IJobChangeListener jobChangeListener = new JobChangeAdapter() {
 
@@ -89,27 +88,29 @@ public class PurgeTransactionAction extends Action {
 
          };
 
-         IOperation op = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(useTransactions);
+         IOperation op = PurgeTransactionOperation.getPurgeTransactionOperation(transactions);
+         transactions.clear();
          Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
       }
-
    }
 
-   private boolean getTransactions(List<TransactionId> transactions) {
+   private boolean getTransactions() {
       EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction(s), comma delimited");
       boolean success = false;
       if (dialog.open() == 0) {
-         transactions.addAll(Collections.fromString(dialog.getEntry(), TransactionId::valueOf));
+
+         transactions.addAll(
+            Collections.fromString(dialog.getEntry(), tx -> TransactionManager.getTransaction(Long.valueOf(tx))));
          success = !transactions.isEmpty();
       }
       return success;
    }
 
-   private String getTransactionListStr(List<TransactionId> transactions) {
+   private String getTransactionListStr() {
       StringBuilder transStrs = new StringBuilder();
       int count = 1;
       for (TransactionId transactionId : transactions) {
-         transStrs.append(String.format("Tranaction Id [%s] Comment [%s]\n", transactionId,
+         transStrs.append(String.format("Tranaction Id [%s] Comment [%s]\n", transactionId.getIdString(),
             TransactionManager.getComment(transactionId)));
          if (count++ > 30) {
             transStrs.append("(truncated at 25)...");
@@ -118,5 +119,4 @@ public class PurgeTransactionAction extends Action {
       }
       return transStrs.toString();
    }
-
 }

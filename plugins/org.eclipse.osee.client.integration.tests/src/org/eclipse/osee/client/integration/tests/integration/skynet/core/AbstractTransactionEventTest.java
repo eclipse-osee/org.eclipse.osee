@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -95,7 +95,7 @@ public abstract class AbstractTransactionEventTest {
       newArt.setName(CHANGE_NAME);
       SkynetTransaction transaction = TransactionManager.createTransaction(newArt.getBranch(), "changed");
       newArt.persist(transaction);
-      TransactionId transIdToDelete = transaction.execute();
+      TransactionToken transIdToDelete = transaction.execute();
 
       if (!isRemoteTest()) {
          Assert.assertEquals(CHANGE_NAME, newArt.getName());
@@ -111,7 +111,7 @@ public abstract class AbstractTransactionEventTest {
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Delete it
-      IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transIdToDelete);
+      IOperation operation = PurgeTransactionOperation.getPurgeTransactionOperation(transIdToDelete);
       Asserts.assertOperation(operation, IStatus.OK);
 
       // Verify that all stuff reverted

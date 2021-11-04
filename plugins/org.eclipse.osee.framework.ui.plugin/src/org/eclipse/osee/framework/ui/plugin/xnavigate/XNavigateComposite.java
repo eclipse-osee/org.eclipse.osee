@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -190,11 +189,10 @@ public abstract class XNavigateComposite extends Composite {
          filteredTree.getViewer().setExpandedState(item, true);
       } else {
          try {
-            long uuid = Lib.generateUuid();
             ActivityLogEndpoint activityEp = OsgiUtil.getService(getClass(), OseeClient.class).getActivityLogEndpoint();
-            activityEp.createEntry(XNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
+            activityEp.createEntry(XNAVIGATEITEM, 0L, ActivityLog.INITIAL_STATUS, item.getName());
             item.run(tableLoadOptions);
-            activityEp.createEntry(XNAVIGATEITEM, uuid, ActivityLog.COMPLETE_STATUS, item.getName());
+            activityEp.createEntry(XNAVIGATEITEM, 0L, ActivityLog.COMPLETE_STATUS, item.getName());
          } catch (Exception ex) {
             OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }
