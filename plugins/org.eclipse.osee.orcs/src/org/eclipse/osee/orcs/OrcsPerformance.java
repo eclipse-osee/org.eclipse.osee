@@ -14,18 +14,13 @@
 package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;
-import org.eclipse.osee.orcs.statistics.QueryStatistics;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface OrcsPerformance {
 
-   QueryStatistics getQueryStatistics();
-
    IndexerStatistics getIndexerStatistics();
-
-   void clearQueryStatistics();
 
    void clearIndexerStatistics();
 

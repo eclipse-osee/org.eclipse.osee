@@ -685,11 +685,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranchId {
    @Override
    public ResultSet<ArtifactReadable> getResults() {
       setQueryType(QueryType.SELECT);
-      try {
-         return artQueryFactory.createSearch(null, this).call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return artQueryFactory.createSearch(this);
    }
 
    @Override
@@ -704,11 +700,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranchId {
 
    @Override
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
-      try {
-         return artQueryFactory.createSearchWithMatches(null, this).call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return artQueryFactory.createSearchWithMatches(null, this);
    }
 
    @Override

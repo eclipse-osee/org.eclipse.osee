@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -42,15 +41,13 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
 
-   private final OrcsSession session;
    private final ExternalArtifactManager proxyManager;
 
    private Map<ArtifactId, ArtifactMatch> matches;
    private List<Match<ArtifactReadable, AttributeReadable<?>>> results;
 
-   public ArtifactMatchDataHandler(OrcsSession session, GraphBuilder handler, ExternalArtifactManager proxyManager) {
+   public ArtifactMatchDataHandler(GraphBuilder handler, ExternalArtifactManager proxyManager) {
       super(handler);
-      this.session = session;
       this.proxyManager = proxyManager;
    }
 
@@ -92,7 +89,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       for (Artifact item : loaded) {
          ArtifactMatch artifactMatch = matches.get(item);
          if (artifactMatch != null) {
-            ArtifactReadable readable = proxyManager.asExternalArtifact(session, item);
+            ArtifactReadable readable = proxyManager.asExternalArtifact(null, item);
             artifactMatch.setArtifactReadable(readable);
          }
          if (results == null) {

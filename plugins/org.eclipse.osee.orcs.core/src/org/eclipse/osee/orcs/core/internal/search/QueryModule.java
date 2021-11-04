@@ -19,20 +19,16 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
-import org.eclipse.osee.orcs.statistics.QueryStatistics;
 
 /**
  * @author Roberto E. Escobar
  */
-public class QueryModule implements HasStatistics<QueryStatistics> {
-
-   private final QueryStatisticsImpl statistics = new QueryStatisticsImpl();
+public class QueryModule {
    private final CallableQueryFactory artQueryFactory;
    private final BranchCriteriaFactory branchCriteriaFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
@@ -48,9 +44,7 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    public QueryModule(OrcsApi orcsApi, Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTokenService tokenService, ExternalArtifactManager proxyManager) {
       this.orcsApi = orcsApi;
       this.queryEngine = queryEngine;
-      QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
-      artQueryFactory =
-         new CallableQueryFactory(logger, queryEngine, queryStatsCollector, builderFactory, provider, proxyManager);
+      artQueryFactory = new CallableQueryFactory(logger, queryEngine, builderFactory, provider, proxyManager);
       branchCriteriaFactory = new BranchCriteriaFactory();
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
@@ -65,15 +59,5 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
 
    public CallableQueryFactory getArtQueryFactory() {
       return artQueryFactory;
-   }
-
-   @Override
-   public QueryStatistics getStatistics(OrcsSession session) {
-      return statistics.clone();
-   }
-
-   @Override
-   public void clearStatistics(OrcsSession session) {
-      statistics.clear();
    }
 }

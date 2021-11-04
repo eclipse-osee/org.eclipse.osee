@@ -22,7 +22,6 @@ import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.indexer.statistics.IndexerStatisticsCollectorImpl;
 import org.eclipse.osee.orcs.core.internal.indexer.statistics.IndexerStatisticsImpl;
 import org.eclipse.osee.orcs.search.IndexerCollector;
@@ -32,7 +31,7 @@ import org.eclipse.osee.orcs.statistics.IndexerStatistics;
 /**
  * @author Roberto E. Escobar
  */
-public class IndexerModule implements HasStatistics<IndexerStatistics> {
+public class IndexerModule {
 
    private final IndexerStatisticsImpl statistics = new IndexerStatisticsImpl();
 
@@ -73,7 +72,6 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       }
    }
 
-   @Override
    public IndexerStatistics getStatistics(OrcsSession session) {
       try {
          IndexerData indexerData = queryIndexer.getIndexerData(session).call();
@@ -84,7 +82,6 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       return statistics;
    }
 
-   @Override
    public void clearStatistics(OrcsSession session) {
       statistics.clear();
    }

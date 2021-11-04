@@ -25,7 +25,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
-import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QueryFilterFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
@@ -33,7 +32,7 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class ObjectQueryCallableFactory implements QueryCallableFactory {
+public class ObjectQueryCallableFactory {
 
    private final Log logger;
    private final DataLoaderFactory dataLoaderFactory;
@@ -52,7 +51,6 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
       return LoadLevel.ARTIFACT_DATA == level;
    }
 
-   @Override
    public int getArtifactCount(QueryData queryData) {
       QuerySqlContext queryContext = queryContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
 
@@ -68,7 +66,6 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
       return countingHandler.getCount();
    }
 
-   @Override
    public CancellableCallable<Integer> createQuery(OrcsSession session, final QueryData queryData, final LoadDataHandler handler) {
       return new AbstractObjectSearchCallable(logger, session, queryData) {
 
