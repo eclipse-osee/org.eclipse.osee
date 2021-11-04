@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -59,7 +60,7 @@ public class AddRelationColumnAction extends Action {
       FilteredCheckboxTreeDialog<RelationTypeSide> dialog =
          new FilteredCheckboxTreeDialog<RelationTypeSide>("Add Relation Column", "Select Relation Type and Side",
             getInput(), new ArrayTreeContentProvider(), new RelationSideLabelProvider(), new ToStringViewerSorter());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          CustomizeData custData = xViewer.getCustomizeMgr().generateCustDataFromTable();
          List<XViewerColumn> xCols = custData.getColumnData().getColumns();
          List<XViewerColumn> newXCols = new ArrayList<>();

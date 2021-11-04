@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +42,7 @@ public class XWidgetsDialogExampleAction extends Action {
    public void run() {
       try {
          XWidgetsExampleDialog dialog = new XWidgetsExampleDialog(TITLE, "Enter and select Ok");
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             String title = dialog.getXtextString("title");
             String desc = dialog.getXtextString("desc");
             boolean valid = dialog.getXCheckBoxChecked("valid");

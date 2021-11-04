@@ -25,6 +25,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -261,7 +262,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       FilteredCheckboxAttributeTypeDialog dialog =
          new FilteredCheckboxAttributeTypeDialog("Delete Attributes", "Select attribute type(s) to delete.");
       dialog.setSelectable(attrTypesUsed);
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          // perform deletion
          SkynetTransaction transaction = TransactionManager.createTransaction(
             selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Attributes");

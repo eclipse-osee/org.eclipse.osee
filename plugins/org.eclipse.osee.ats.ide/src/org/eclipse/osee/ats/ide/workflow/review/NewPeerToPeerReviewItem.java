@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.workflow.review;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -42,7 +43,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
          NewPeerReviewDialog dialog = new NewPeerReviewDialog("Add New Stand-alone Peer to Peer Review",
             "Enter Title, Select Review Type and select Actionable Item", null, null,
             AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             if (!Strings.isValid(dialog.getReviewTitle())) {
                AWorkbench.popup("ERROR", "Must enter review title");
                return;

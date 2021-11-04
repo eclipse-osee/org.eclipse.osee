@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.workflow.goal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -55,7 +56,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
             new FilteredTreeArtifactDialog("Select Goal", "Artifact has multiple Goals\n\nSelect Goal to change order",
                goals, new ArrayTreeContentProvider(), new MembersLabelProvider(), new MembersViewerSorter());
          dialog.setMultiSelect(false);
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             goal = (GoalArtifact) dialog.getSelectedFirst();
          } else {
             return null;

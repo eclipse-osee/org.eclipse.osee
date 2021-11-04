@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -38,7 +39,7 @@ public class OpenChangeReportByTransactionIdAction extends Action {
    @Override
    public void run() {
       EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction Id");
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          String entry = dialog.getEntry();
          if (Strings.isNumeric(entry)) {
             ChangeUiUtil.open(TransactionManager.getTransaction(Long.valueOf(entry)));

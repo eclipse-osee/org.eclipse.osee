@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -72,7 +73,7 @@ public class SortAgileBacklog extends XNavigateItemAction {
       }
       FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          Artifact agileTeamArt = dialog.getSelectedFirst();
          Artifact backlog = agileTeamArt.getRelatedArtifactOrNull(AtsRelationTypes.AgileTeamToBacklog_Backlog);
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Sort Agile Team",

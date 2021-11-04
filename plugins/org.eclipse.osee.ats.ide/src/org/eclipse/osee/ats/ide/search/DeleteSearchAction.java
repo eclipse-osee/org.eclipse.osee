@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.SavedActionSearchNavigateItem;
@@ -52,7 +53,7 @@ public final class DeleteSearchAction extends Action {
          new ArrayTreeContentProvider(), new StringLabelProvider());
       dialog.setInput(searchDatas);
 
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
          AtsApiService.get().getQueryService().removeSearch(selected);
 

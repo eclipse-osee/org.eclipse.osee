@@ -142,7 +142,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
       SprintFilteredListDialog dialog = createDialog(items, activeSprints);
 
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          if (dialog.isRemoveFromSprint()) {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Remove Sprint");
             for (Artifact awa : awas) {

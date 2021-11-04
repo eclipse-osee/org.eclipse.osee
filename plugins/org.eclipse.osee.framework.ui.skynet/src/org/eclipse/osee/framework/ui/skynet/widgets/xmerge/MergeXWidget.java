@@ -27,6 +27,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -585,7 +586,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                   String.format("Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
                      destBranch),
                   "Archive Source Branch");
-               if (dialog.open() == 0) {
+               if (dialog.open() == Window.OK) {
                   archiveSourceBranch.setValue(dialog.isChecked());
                }
             }
@@ -721,7 +722,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                         Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
                         "Select the destination branch that the previous commit was appplied to", 2,
                         new String[] {"Apply", "Cancel"}, 1);
-                     if (dialog.open() == 0) {
+                     if (dialog.open() == Window.OK) {
                         Branch selected = (Branch) dialog.getSelected();
                         applyPreviousMerge(selected);
                      }

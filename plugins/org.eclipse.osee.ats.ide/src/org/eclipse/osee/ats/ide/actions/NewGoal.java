@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -41,7 +42,7 @@ public class NewGoal extends AbstractAtsAction {
       String title = titleOverride;
       if (!Strings.isValid(title)) {
          EntryDialog dialog = new EntryDialog("New Goal", "Enter Title");
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             title = dialog.getEntry();
          }
       }

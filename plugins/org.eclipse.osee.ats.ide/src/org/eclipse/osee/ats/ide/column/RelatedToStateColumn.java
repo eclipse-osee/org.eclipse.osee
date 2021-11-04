@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
@@ -102,7 +103,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
                dialog.setInitialSelections(new Object[] {selectedState});
             }
          }
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             String selectedState = dialog.getSelectedState();
             if (selectedState.isEmpty()) {
                AWorkbench.popup("No Related-to-State selected");

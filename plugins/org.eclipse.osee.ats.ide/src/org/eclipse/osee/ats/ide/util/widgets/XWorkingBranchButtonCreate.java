@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
@@ -102,7 +103,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
                AtsBranchServiceIde.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
                new String[] {"Select Targeted Version", "Cancel"}, 0);
-            if (dialog.open() == 0) {
+            if (dialog.open() == Window.OK) {
                WfeTargetedVersionHeader.promptChangeVersion(getTeamArt());
             }
          } else {

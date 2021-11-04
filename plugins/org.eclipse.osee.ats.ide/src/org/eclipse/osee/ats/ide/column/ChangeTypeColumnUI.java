@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -87,7 +88,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
                dialog.setSelected(changeType);
             }
          }
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
 
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Type");
 

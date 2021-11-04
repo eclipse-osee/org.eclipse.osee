@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -81,7 +82,7 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements Attri
                getAttributeType().getUnqualifiedName(), currState);
          ListSelectionDialogNoSave dialog = new ListSelectionDialogNoSave(Collections.castAll(states),
             Displays.getActiveShell().getShell(), title, null, message, 2, new String[] {"Ok", "Cancel"}, 0);
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             Object obj = dialog.getSelected();
             checkState = (CheckState) obj;
             saveToArtifact();

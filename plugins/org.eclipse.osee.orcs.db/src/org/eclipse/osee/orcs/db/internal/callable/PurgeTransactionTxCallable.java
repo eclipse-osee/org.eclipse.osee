@@ -145,7 +145,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          purgeCount++;
 
          activityLog.createEntry(PURGE_TRANSACTION, logEntryId, COMPLETE_STATUS,
-            "Purged transaction: " + txIdToDelete.getIdString() + " with artifacts " + artsMsg);
+            "Purged transaction " + txIdToDelete.getIdString() + " with artifacts " + artsMsg);
       }
       return purgeCount;
    }

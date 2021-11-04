@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -91,7 +92,7 @@ public class WfePromptChangeStatus {
       TransitionStatusData data = new TransitionStatusData(awas, true);
       TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent",
          "Enter percent complete and number of hours you spent since last status.", data);
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          performChangeStatus(awas, null, data.getAdditionalHours(), data.getPercent(), data.isSplitHoursBetweenItems(),
             changes);
          return Result.TrueResult;

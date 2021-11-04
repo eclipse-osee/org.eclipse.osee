@@ -222,7 +222,7 @@ public class XHistoryWidget extends GenericXWidget {
          public void widgetSelected(SelectionEvent e) {
             EntryDialogWithBranchSelect dialog =
                new EntryDialogWithBranchSelect("Open by Artifact ID", "Enter Artifact ID");
-            if (dialog.open() == 0) {
+            if (dialog.open() == Window.OK) {
                String artId = dialog.getEntry();
                Conditions.checkNotNullOrEmpty(artId, "Artifact ID");
                BranchId branch = dialog.getBranch();

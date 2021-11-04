@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.search;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
@@ -26,7 +27,7 @@ public class AtsQuickSearchOperationFactory implements IOperationFactory {
    public IOperation createOperation() {
       EntryCheckDialog dialog =
          new EntryCheckDialog("Search by Strings", "Enter search strings", "Include Completed/Cancelled Workflows");
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          return new AtsQuickSearchOperation(
             new AtsQuickSearchData("Search by Strings", dialog.getEntry(), dialog.isChecked()));
       }

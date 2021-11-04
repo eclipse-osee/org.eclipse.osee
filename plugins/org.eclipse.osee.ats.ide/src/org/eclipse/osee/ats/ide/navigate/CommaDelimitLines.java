@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,7 +39,7 @@ public class CommaDelimitLines extends XNavigateItemAction {
          new EntryCheckDialog(getName(), "Enter Lines.  Lines to be commma delimited.", "Remove pre/post spaces");
       dialog.setChecked(true);
       dialog.setFillVertically(true);
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          XResultData resultData = new XResultData();
          boolean cleanSpaces = dialog.isChecked();
          StringBuffer sb = new StringBuffer();

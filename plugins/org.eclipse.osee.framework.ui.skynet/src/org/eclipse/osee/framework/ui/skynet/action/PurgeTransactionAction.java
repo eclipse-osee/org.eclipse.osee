@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -97,11 +98,12 @@ public class PurgeTransactionAction extends Action {
    private boolean getTransactions() {
       EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction(s), comma delimited");
       boolean success = false;
-      if (dialog.open() == 0) {
-
+      if (dialog.open() == Window.OK) {
          transactions.addAll(
             Collections.fromString(dialog.getEntry(), tx -> TransactionManager.getTransaction(Long.valueOf(tx))));
          success = !transactions.isEmpty();
+      } else {
+         transactions.clear();
       }
       return success;
    }
