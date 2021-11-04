@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -71,7 +72,7 @@ public class EmailUserGroups extends XNavigateItemAction {
          Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser());
          FilteredCheckboxTreeArtifactDialog dialog =
             new FilteredCheckboxTreeArtifactDialog("Select Groups to Email", groupOptions);
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
 
             Set<String> emails = new HashSet<>();
             for (Artifact artifact : dialog.getChecked()) {

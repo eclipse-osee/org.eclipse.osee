@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -79,7 +80,7 @@ public class Dialogs {
       EmailWizard ew = new EmailWizard(text, title, null, null);
       WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
       dialog.create();
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          return Result.TrueResult;
       }
       return Result.FalseResult;

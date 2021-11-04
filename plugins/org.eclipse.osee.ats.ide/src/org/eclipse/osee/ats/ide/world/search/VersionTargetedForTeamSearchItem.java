@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -126,7 +127,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
             final VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version",
                AtsApiService.get().getVersionService().getVersions(selectedTeamDef, VersionReleaseType.Both,
                   VersionLockedType.Both));
-            if (dialog.open() == 0) {
+            if (dialog.open() == Window.OK) {
                selectedVersionArt = dialog.getSelectedFirst();
                return;
             }

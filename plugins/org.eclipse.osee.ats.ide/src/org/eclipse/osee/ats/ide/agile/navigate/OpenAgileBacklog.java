@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.agile.navigate;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -54,7 +55,7 @@ public class OpenAgileBacklog extends XNavigateItemAction {
       }
       FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          Artifact agileTeamArt = dialog.getSelectedFirst();
          Artifact backlog = agileTeamArt.getRelatedArtifactOrNull(AtsRelationTypes.AgileTeamToBacklog_Backlog);
          if (backlog == null) {

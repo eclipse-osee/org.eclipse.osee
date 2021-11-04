@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -78,7 +79,7 @@ public class SearchTeamWorkflowsByProgramSearchItem extends WorldUISearchItem {
             new ArrayTreeContentProvider(), new AtsConfigLabelProvider(null));
          dialog.setInput(AtsApiService.get().getProgramService().getPrograms());
          dialog.setMultiSelect(false);
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             program = dialog.getSelectedFirst();
          } else {
             cancelled = true;

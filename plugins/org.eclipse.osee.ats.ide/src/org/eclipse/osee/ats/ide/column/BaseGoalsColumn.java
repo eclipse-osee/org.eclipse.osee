@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
@@ -125,7 +126,7 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
       }
       GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
       dialog.setInitialSelections(selected);
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          for (Artifact awa : awas) {
             awa.setRelations(AtsRelationTypes.Goal_Goal, dialog.getChecked());
          }

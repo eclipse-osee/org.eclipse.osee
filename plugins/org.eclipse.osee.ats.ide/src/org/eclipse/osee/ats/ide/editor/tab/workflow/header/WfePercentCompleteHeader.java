@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.text.NumberFormat;
 import java.util.logging.Level;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -80,7 +81,7 @@ public class WfePercentCompleteHeader extends Composite {
                         percent = workItem.getStateMgr().getPercentCompleteValue();
                      }
                      dialog.setEntry(String.valueOf(percent));
-                     if (dialog.open() == 0) {
+                     if (dialog.open() == Window.OK) {
                         Integer intValue = dialog.getInt();
                         workItem.getStateMgr().setPercentCompleteValue(intValue);
                         AtsApiService.get().getStoreService().executeChangeSet(

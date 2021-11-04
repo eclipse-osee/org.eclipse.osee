@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -71,7 +72,7 @@ public class XWorkingBranchButtonDeleteMergeBranches extends XWorkingBranchButto
                         new FilteredCheckboxBranchDialog("Select Destination Branch(es)",
                            "Select the Destination branch(es) for which you want to Delete the Merge Branch",
                            destinationMinusAlreadyCommitted);
-                     if (dialog.open() == 0) {
+                     if (dialog.open() == Window.OK) {
                         for (BranchId branchToken : dialog.getChecked()) {
                            selectedBranches.add(branchToken);
                         }

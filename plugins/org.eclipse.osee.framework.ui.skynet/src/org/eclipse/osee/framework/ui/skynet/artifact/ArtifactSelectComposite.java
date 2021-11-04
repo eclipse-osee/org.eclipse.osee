@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -105,7 +106,7 @@ public class ArtifactSelectComposite extends Composite {
             new ArrayTreeContentProvider(), new StringLabelProvider(), new ToStringViewerSorter());
          dialog.setMultiSelect(false);
          dialog.setInput(artifactProvider.getSelectableArtifacts());
-         if (dialog.open() == 0 && !dialog.getSelected().isEmpty()) {
+         if (dialog.open() == Window.OK && !dialog.getSelected().isEmpty()) {
             setSelected((Artifact) dialog.getSelected().iterator().next());
          }
       }

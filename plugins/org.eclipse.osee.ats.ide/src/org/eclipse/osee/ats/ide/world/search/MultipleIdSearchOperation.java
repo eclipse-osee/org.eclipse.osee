@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -157,7 +158,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                   "Select Available Change Reports", "Select available Change Reports to run.",
                   new ArrayTreeContentProvider(), new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter());
                dialog.setInput(addedArts);
-               if (dialog.open() == 0) {
+               if (dialog.open() == Window.OK) {
                   if (dialog.getResult().length == 0) {
                      return;
                   }

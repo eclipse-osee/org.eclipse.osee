@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
@@ -115,7 +116,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       FilteredCheckboxTreeArtifactDialog dialog =
          new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", allGroups);
       dialog.setInitialSelections(selected);
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          for (AbstractWorkflowArtifact awa : awas) {
             Collection<Artifact> checked = dialog.getChecked();
             awa.setRelations(CoreRelationTypes.UniversalGrouping_Group, checked);

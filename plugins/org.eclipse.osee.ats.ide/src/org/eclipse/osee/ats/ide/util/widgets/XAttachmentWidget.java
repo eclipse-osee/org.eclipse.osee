@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsAttachment;
@@ -121,7 +122,7 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
                   deletePreviouslySelectedArtifact();
                }
 
-               if (dialog.open() == 0) {
+               if (dialog.open() == Window.OK) {
 
                   // Check if these files are stored in OSEE
                   String selection = dialog.getSelectedFirst();

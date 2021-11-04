@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -68,7 +69,7 @@ public class OpenOrphanedTasks extends Action {
    public void run() {
       final String title = "Search Orphaned Tasks";
       EntryCheckDialog dialog = new EntryCheckDialog(title, title, "Add to New Team Workflow");
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          IAtsActionableItem ai = null;
          if (dialog.isChecked()) {
             ActionableItemListDialog dialog2 = new ActionableItemListDialog(Active.Active, "Select AI for Action");

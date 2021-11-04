@@ -66,7 +66,7 @@ public class CommitIntoHandler extends CommitHandler {
                String.format("Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
                   branchSelection.getSelection()),
                "Archive Source Branch");
-            if (dialog.open() == 0) {
+            if (dialog.open() == Window.OK) {
                Jobs.startJob(new CommitJob(sourceBranch, branchSelection.getSelection(), dialog.isChecked()));
             }
          }

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.util.widgets.commit.menu;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -53,7 +54,7 @@ public class CommitOverrideAction extends Action {
    public void run() {
       try {
          EntryDialog dialog = new EntryDialog("Override Commit", getText() + "\n\nEnter Reason");
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             Result result =
                atsApi.getBranchService().getCommitOverrideOps().setCommitOverride(teamWf, branch, dialog.getEntry());
             if (result.isFalse()) {

@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
@@ -56,7 +57,7 @@ public class RevertDuplicateAtsTransitionsAction extends Action {
    public void run() {
       final String title = getText();
       CheckBoxDialog dialog = new CheckBoxDialog(title, "Fix all duplicate transitions?", "Persist");
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
 
          final boolean persist = dialog.isChecked();
          AbstractOperation operation =
@@ -70,8 +71,7 @@ public class RevertDuplicateAtsTransitionsAction extends Action {
                      TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getName());
 
                   boolean changed = false;
-                  for (Artifact art : ArtifactQuery.getArtifactListFrom(artIds,
-                     AtsApiService.get().getAtsBranch())) {
+                  for (Artifact art : ArtifactQuery.getArtifactListFrom(artIds, AtsApiService.get().getAtsBranch())) {
                      results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                      if (RevertDuplicateAtsTransitionByIdAction.revertTransition(art, results, persist, trans)) {
                         changed = true;

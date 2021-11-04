@@ -20,6 +20,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -59,7 +60,7 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
          new ArrayTreeContentProvider(), new StringLabelProvider());
       dialog.setInput(searchDatas);
 
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
          searchItem.loadWidgets(selected);
       }

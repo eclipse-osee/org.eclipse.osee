@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -91,7 +92,7 @@ public class AddNoteAction extends AbstractAtsAction {
       WizardDialog dialog =
          new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
       dialog.create();
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          selectedState = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
          noteType = NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName());
          noteText = noteWizard.mainPage.noteText.get();
@@ -108,5 +109,4 @@ public class AddNoteAction extends AbstractAtsAction {
    public void setEmulateUi(boolean emulate) {
       this.emulate = emulate;
    }
-
 }

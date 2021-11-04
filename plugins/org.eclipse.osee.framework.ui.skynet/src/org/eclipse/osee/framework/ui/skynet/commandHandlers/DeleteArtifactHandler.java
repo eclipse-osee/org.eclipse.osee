@@ -18,6 +18,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +42,7 @@ public class DeleteArtifactHandler extends CommandHandler {
          MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
             " Are you sure you want to delete this artifact and all of the default hierarchy children?",
             MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
-         if (dialog.open() == 0) {
+         if (dialog.open() == Window.OK) {
             Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
             SkynetTransaction transaction =
                TransactionManager.createTransaction(artifactsArray[0].getBranch(), "Delete Artifact Handler");
@@ -62,8 +63,8 @@ public class DeleteArtifactHandler extends CommandHandler {
       boolean enabled = false;
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {
-         enabled = ServiceUtil.accessControlService().hasArtifactPermission(artifacts, PermissionEnum.WRITE,
-            null).isSuccess();
+         enabled =
+            ServiceUtil.accessControlService().hasArtifactPermission(artifacts, PermissionEnum.WRITE, null).isSuccess();
       }
       return enabled;
    }

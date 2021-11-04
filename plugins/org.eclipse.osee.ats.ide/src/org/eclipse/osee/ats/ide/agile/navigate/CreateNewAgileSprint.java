@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.agile.navigate;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
@@ -64,7 +65,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
       }
       FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
 
          EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Sprint name(s) (comma delimited)");
          if (ed.open() == 0) {

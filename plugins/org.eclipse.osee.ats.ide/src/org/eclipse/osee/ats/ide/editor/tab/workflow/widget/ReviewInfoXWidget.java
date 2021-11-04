@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -134,7 +135,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      "Select state to that review will be associated with.",
                      AtsApiService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()));
                   dialog.setInitialSelections(new Object[] {forState.getName()});
-                  if (dialog.open() == 0) {
+                  if (dialog.open() == Window.OK) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
@@ -177,7 +178,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         AtsApiService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()),
                         forState.getName(), null);
                   dialog.setReviewTitle(AtsApiService.get().getReviewService().getDefaultReviewTitle(teamArt));
-                  if (dialog.open() == 0) {
+                  if (dialog.open() == Window.OK) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
@@ -309,8 +310,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            (AbstractReviewArtifact) AtsApiService.get().getQueryService().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
-                              revArt.getStateMgr().setAssignee(
-                                 AtsApiService.get().getUserService().getCurrentUser());
+                              revArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
                            }
                            awas.add(revArt);
                         }

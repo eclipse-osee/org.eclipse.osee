@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -108,7 +109,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                public void run() {
                   FilteredCheckboxTreeArtifactDialog dialog =
                      new FilteredCheckboxTreeArtifactDialog(TITLE, "Select Artifacts to Search", srchArts);
-                  if (dialog.open() == 0) {
+                  if (dialog.open() == Window.OK) {
                      processArts.addAll(dialog.getChecked());
                   }
                }

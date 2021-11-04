@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.agile.navigate;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -54,7 +55,7 @@ public class OpenAgileSprintReports extends XNavigateItemAction {
       }
       FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          Artifact agileTeamArt = dialog.getSelectedFirst();
          Collection<Artifact> sprints =
             Collections.castAll(AtsApiService.get().getRelationResolver().getRelated(agileTeamArt,

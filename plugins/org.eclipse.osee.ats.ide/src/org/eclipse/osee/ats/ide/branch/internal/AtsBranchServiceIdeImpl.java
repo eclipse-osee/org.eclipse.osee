@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
@@ -247,7 +248,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
          new NameLabelProvider(), comparator);
 
       dialog.setInput(branchToTx.keySet());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          BranchToken branch = dialog.getSelectedFirst();
          if (branch != null) {
             TransactionId id = branchToTx.get(branch);

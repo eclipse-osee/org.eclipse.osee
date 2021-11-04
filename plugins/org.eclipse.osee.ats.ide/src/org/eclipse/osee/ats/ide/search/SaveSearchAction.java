@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.search;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.SavedActionSearchNavigateItem;
@@ -51,7 +52,7 @@ public final class SaveSearchAction extends Action {
    public void run() {
       EntryDialog dialog = new EntryDialog("Save Search", "Save Search?\n\n(edit to change Search Name)");
       dialog.setEntry(searchItem.getSearchName());
-      if (dialog.open() == 0) {
+      if (dialog.open() == Window.OK) {
          if (!Strings.isValid(dialog.getEntry())) {
             AWorkbench.popup("Invalid Search Name");
             return;
