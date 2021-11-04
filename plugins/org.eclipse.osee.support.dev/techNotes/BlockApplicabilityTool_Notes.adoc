@@ -1,0 +1,64 @@
+= BlockApplicabilityTool =
+
+Branden W. Phillips
+
+== Code ==
+
+=== Rest Calls ===
+
+applyBlockVisibility(BlockApplicabilityStageRequest data)
+	Primary rest call for applying block applicability to an entire directory, creating a staging directory or refreshing as needed
+	
+refreshStagedFiles(BlockApplicabilityStageRequest data)
+	Rest call that is able to refresh a specific portion / single files of an already created staging directory
+
+startBlockVisibilityWatcher(BlockApplicabilityStageRequest data)
+	Called on a directory to start a file watcher (like an ide compiler) that detects changes to files and processes the block applicability in real time
+
+stopBlockVisibilityWatcher
+	steps the watcher
+	
+=== Arhitecture ===
+
+OrcsApplicabilityOps
+	Where the primary rest calls start, within applyApplicabilityToFiles and refreshStagedFiles, the code sets up various options.  
+
+BlockApplicabilityOps
+	Operations file, this sets up / reads the cache, populates the applicability map, and starts the directory processing.
+	This class is also where logic for evaluating blocks lives.
+
+BatStagingCreator
+	processDirectory
+		Primary directory processor, either goes through the directories, or identifies a file to process. 
+		There is included logic for reading the .fileApplicability files and tracking excluded files within the directory processor
+		Creates hard (not symbolic) links for files that are unchanged by the applicability processing.  Also, using isStageFileNew, compares files with existing staged files to determine if changes have been made.
+		When processing a file, if it is a file that is defined in the fileTypeApplicabilityDataMap, it will go to BatFileProcessory.processFile
+	processConfig
+		Processes the .fileApplicability file type
+		Note: As of now, any line left over after processing will be considered an excluded file
+
+BatFileProcessor
+	This class is for the processing/rewriting of a file, starting/finishing applicability blocks as they are found.  
+	finishApplicabilityBlock
+		evaluates the applicability expression found to determine if that block should be included or excluded
+		Important note for this section, the regex is very sensitive.  There is an option for commenting out items or just removing them, to get the spacing correct between these two different modes is fairly difficult.
+		
+beginFeature = whole matched text
+applicabilityexpression = feature[tag]
+startInsert = start matcher.start
+starttextindex = start matcher.end
+begintag = whole matched text
+endInsert = end matcher.end
+endtextindex = end matcher.start
+inside text = raw inside text, starttextindex-endtextindex
+
+To change testing PL Preferences Json
+	CreateSystemBranches.JSON_PL_PREFERENCES
+	
+== Using the Tool ==
+
+See bat_README.pptx within the tool's distributed files for information on how to run the tool, including set up and how to launch the OSEE server.
+
+== Updating the Tool ==
+
+See BlockApplicabilityTool_UpdateProcess.adoc in the OSEE repo for information on manual updates.
