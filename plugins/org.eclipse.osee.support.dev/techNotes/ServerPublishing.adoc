@@ -1,0 +1,40 @@
+= Server Word Publishing =
+
+Branden W. Phillips
+
+== Overview ==
+
+Word Publishing is the operation of combining Microsoft Word content from various artifacts into one document.  For years this was done via client-side code but over the last few years an effort has been made to perform these actions on the server code to help performance.  The operation that is currently available on the server is a more streamlined version of what has existed on the client and has been used mostly for program-specific publishes.  The effort of brining the entirety of publishing to the server is getting closer to the finishing line.  
+
+== Design == 
+
+=== Protocol ===
+
+The REST API call to access the server publishing preview can be found at RenderEndpoint.java.  The rest call for publishing uses StreamingOutput to return a type of Response back to whatever makes the request.  
+
+=== Java Classes ===
+
+The majority of the server publishing functionality lives under MSWordTemplatePublisher.  This class is meant to contain many of operations needed across all publishing types.  There are a set of methods at the top of the class that are meant to be the main methods that all publishes go through.  To create more specific publishes with their own capabilities and features, the MSWordTemplatePublisher has been designed to allow a sub-class implementation that overrides the necessary methods with their own versions.  This way the publishing operation can seamlessly go back and forward between specific and generic capabilities.  The overall structure and idea behind this class was taken and stripped down from WordTemplateProcessor.java.
+
+The current implementation for server publishing is the MS Word Preview capability, found with the MSWordPreviewPublisher.java class. This class is set up to act like the client-side publisher for previewing a set of artifacts.  This class includes some of the primary features that would be seen during a preview, such as data rights footers.  In the future, more effort will be needed to re-create client-side features within the server publishing.  
+
+== Client-Side vs. Server-Side ==
+
+Some difficulty for porting the code to the server is determining the breaking off point for when the client calls the server.  Renderers have been heavily used to determine correct templates and processing methods for the publisher. This can be seen with the relation of WordTemplateRenderer and WordTemplateProcessor.  Right now, the template determination is done on the client but if it is assumed that Microsoft Word is the program of choice, this code can be moved to the server.  
+
+=== Future Changes ===
+
+Right now, there have been a number of features identified that will most likely need to be supported on the server before complete implementation of server-side Word Publishing Code and the removal of WordTemplateProcessor.
+	1. Nested Templates
+	2. MS Word Edit
+	3. MS Word Diffs
+	4. MS Word Merging
+	5. Page Orientation Attribute
+	6. UUID Insertion Support
+	7. OLE Data needs to be tested/supported
+
+	
+=== Current Preview Implementation ===
+
+At the moment there is a single client-side preview publish that uses the server capabilities, that is MS Word Preview Recurse (w/o Attributes).  To accomplish this, a new Renderer was created called MSWordRestRenderer.  When the code is determining which renderer is best for the selected operation, using a new presentation type (PREVIEW_SERVER) helps dictate to the renderer that makes the server call and processes the Response into a word document.  For each preview that is desired to utilize the server, a template match criteria line will need to be created specifying the MSWordRestRenderer and PREVIEW_SERVER presentation type.
+	
