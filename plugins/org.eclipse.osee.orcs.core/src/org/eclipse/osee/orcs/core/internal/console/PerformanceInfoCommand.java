@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;
-import org.eclipse.osee.orcs.statistics.QueryStatistics;
 
 /**
  * @author Roberto E. Escobar
@@ -103,7 +102,6 @@ public class PerformanceInfoCommand implements ConsoleCommand {
       private final boolean isResetAllowed;
 
       public PerformanceCallable(Console console, OrcsPerformance performance, Collection<StatsType> statsType, boolean isResetAllowed) {
-         super();
          this.console = console;
          this.performance = performance;
          this.statsType = statsType;
@@ -120,15 +118,6 @@ public class PerformanceInfoCommand implements ConsoleCommand {
 
       @Override
       public Boolean call() throws Exception {
-         if (isResetAllowed(StatsType.QUERY)) {
-            performance.clearQueryStatistics();
-         }
-
-         if (isWriteAllowed(StatsType.QUERY)) {
-            QueryStatistics queryStats = performance.getQueryStatistics();
-            writeStatistics(queryStats);
-         }
-
          if (isResetAllowed(StatsType.INDEXER)) {
             performance.clearIndexerStatistics();
          }
@@ -138,16 +127,6 @@ public class PerformanceInfoCommand implements ConsoleCommand {
             IndexerUtil.writeStatistics(console, indexerStats);
          }
          return Boolean.TRUE;
-      }
-
-      private void writeStatistics(QueryStatistics stats) {
-         console.writeln("\n----------------------------------------------");
-         console.writeln("                  Search Stats");
-         console.writeln("----------------------------------------------");
-         console.writeln("Total Searches - [%d]", stats.getTotalSearches());
-         console.writeln("Search Time    - avg: [%s] ms - longest: [%s] ms", stats.getAverageSearchTime(),
-            stats.getLongestSearchTime());
-         console.writeln("Longest Search  - %s", stats.getLongestSearch());
       }
    }
 }

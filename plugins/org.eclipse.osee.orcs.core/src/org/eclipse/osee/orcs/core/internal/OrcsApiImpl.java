@@ -224,7 +224,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public OrcsPerformance getOrcsPerformance() {
       OrcsSession session = getSession();
-      return new OrcsPerformanceImpl(logger, session, queryModule, indexerModule);
+      return new OrcsPerformanceImpl(logger, session, indexerModule);
    }
 
    @Override

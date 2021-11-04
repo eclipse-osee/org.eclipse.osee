@@ -13,17 +13,13 @@
 
 package org.eclipse.osee.orcs.core.internal.search;
 
-import com.google.common.collect.Iterables;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryCollector;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -40,109 +36,32 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public class CallableQueryFactory {
 
-   private final Log logger;
    private final QueryEngine queryEngine;
-   private final QueryCollector collector;
    private final GraphBuilderFactory builderFactory;
    private final GraphProvider provider;
    private final ExternalArtifactManager proxyManager;
 
-   public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, GraphBuilderFactory builderFactory, GraphProvider provider, ExternalArtifactManager proxyManager) {
-      this.logger = logger;
+   public CallableQueryFactory(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, ExternalArtifactManager proxyManager) {
       this.queryEngine = queryEngine;
-      this.collector = collector;
       this.builderFactory = builderFactory;
       this.provider = provider;
       this.proxyManager = proxyManager;
    }
 
-   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<ResultSet<ArtifactReadable>>(session, queryData) {
-
-         @Override
-         protected ResultSet<ArtifactReadable> innerCall() throws Exception {
-            GraphBuilder handler = builderFactory.createGraphBuilder(provider);
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
-            queryEngine.runArtifactQuery(getQueryData(), handler);
-            Iterable<Artifact> results = handler.getArtifacts();
-            setItemsFound(Iterables.size(results));
-            return proxyManager.asExternalArtifacts(getSession(), results);
-         }
-      };
+   public ResultSet<ArtifactReadable> createSearch(QueryData queryData) {
+      GraphBuilder handler = builderFactory.createGraphBuilder(provider);
+      OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
+      queryEngine.runArtifactQuery(queryData, handler);
+      Iterable<Artifact> results = handler.getArtifacts();
+      return proxyManager.asExternalArtifacts(null, results);
    }
 
-   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>>(session, queryData) {
-
-         @Override
-         protected ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
-            GraphBuilder handler = builderFactory.createGraphBuilder(provider);
-            ArtifactMatchDataHandler matchHandler = new ArtifactMatchDataHandler(getSession(), handler, proxyManager);
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
-            queryEngine.runArtifactQuery(getQueryData(), matchHandler);
-            List<Match<ArtifactReadable, AttributeReadable<?>>> results = matchHandler.getResults();
-            setItemsFound(Iterables.size(results));
-            return ResultSets.newResultSet(results);
-         }
-      };
-   }
-   private abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
-
-      private final OrcsSession session;
-      private final QueryData queryData;
-      private int itemsFound = 0;
-
-      public AbstractSearchCallable(OrcsSession session, QueryData queryData) {
-         super();
-         this.session = session;
-         this.queryData = queryData;
-      }
-
-      protected OrcsSession getSession() {
-         return session;
-      }
-
-      protected QueryData getQueryData() {
-         return queryData;
-      }
-
-      protected void setItemsFound(int itemsFound) {
-         this.itemsFound = itemsFound;
-      }
-
-      @Override
-      public final T call() throws Exception {
-         long startTime = System.currentTimeMillis();
-         long endTime = startTime;
-         T result = null;
-         try {
-            if (logger.isTraceEnabled()) {
-               logger.trace("%s [start] - [%s]", getClass().getSimpleName(), queryData);
-            }
-            result = innerCall();
-         } finally {
-            endTime = System.currentTimeMillis() - startTime;
-         }
-         if (result != null) {
-            notifyStats(endTime);
-         }
-         if (logger.isTraceEnabled()) {
-            logger.trace("%s [%s] - completed [%s]", getClass().getSimpleName(), Lib.asTimeString(endTime), queryData);
-         }
-         return result;
-      }
-
-      private void notifyStats(long processingTime) {
-         if (collector != null) {
-            try {
-               collector.collect(session, itemsFound, processingTime, queryData);
-            } catch (Exception ex) {
-               logger.error(ex, "Error reporting search to search collector\n%s", queryData);
-            }
-         }
-      }
-
-      protected abstract T innerCall() throws Exception;
-
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> createSearchWithMatches(OrcsSession session, QueryData queryData) {
+      GraphBuilder handler = builderFactory.createGraphBuilder(provider);
+      ArtifactMatchDataHandler matchHandler = new ArtifactMatchDataHandler(handler, proxyManager);
+      OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
+      queryEngine.runArtifactQuery(queryData, matchHandler);
+      List<Match<ArtifactReadable, AttributeReadable<?>>> results = matchHandler.getResults();
+      return ResultSets.newResultSet(results);
    }
 }

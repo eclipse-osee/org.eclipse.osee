@@ -59,7 +59,6 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
-import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SelectiveArtifactSqlWriter;
@@ -75,7 +74,7 @@ public class QueryEngineImpl implements QueryEngine {
    private static final int DefaultArtifactNum = 500;
    // set HashMap capacity to accommodate the artifactCount given the default load factor of 75%
    private static final int DefaultMapCapacity = (int) (DefaultArtifactNum / 0.75) + 1;
-   private final QueryCallableFactory artifactQueryEngineFactory;
+   private final ObjectQueryCallableFactory artifactQueryEngineFactory;
    private final QuerySqlContextFactory branchSqlContextFactory;
    private final QuerySqlContextFactory txSqlContextFactory;
    private final JdbcClient jdbcClient;
@@ -86,7 +85,7 @@ public class QueryEngineImpl implements QueryEngine {
    private final OrcsTokenService tokenService;
    private final IResourceManager resourceManager;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
+   public QueryEngineImpl(ObjectQueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
@@ -113,9 +112,14 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public void runArtifactQuery(QueryData queryData, LoadDataHandler handler) throws Exception {
-      artifactQueryEngineFactory.createQuery(null, queryData, handler).call();
-      queryData.reset();
+   public void runArtifactQuery(QueryData queryData, LoadDataHandler handler) {
+      try {
+         artifactQueryEngineFactory.createQuery(null, queryData, handler).call();
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      } finally {
+         queryData.reset();
+      }
    }
 
    @Override

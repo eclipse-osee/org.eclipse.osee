@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({QueryStatisticsTest.class, SearchCriteriaTest.class})
+@Suite.SuiteClasses(SearchCriteriaTest.class)
 public class QueryTestSuite {
    // Test Suite
 }

@@ -35,7 +35,7 @@ public interface QueryEngine {
 
    int getArtifactCount(QueryData queryData);
 
-   void runArtifactQuery(QueryData queryData, LoadDataHandler handler) throws Exception;
+   void runArtifactQuery(QueryData queryData, LoadDataHandler handler);
 
    int getBranchCount(QueryData queryData);
 
