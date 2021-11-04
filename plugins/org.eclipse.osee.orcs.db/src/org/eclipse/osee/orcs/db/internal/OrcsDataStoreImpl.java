@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal;
 
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -51,6 +52,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    private QueryModule queryModule;
    private IdentityManager idManager;
    private SqlJoinFactory joinFactory;
+   private ActivityLog activityLog;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -76,6 +78,10 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.joinFactory = joinFactory;
    }
 
+   public void bindActivityLog(ActivityLog activityLog) {
+      this.activityLog = activityLog;
+   }
+
    public void start(BundleContext context) throws Exception {
       JdbcClient jdbcClient = jdbcService.getClient();
 
@@ -92,7 +98,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       BranchModule branchModule =
          new BranchModule(logger, jdbcClient, joinFactory, idManager, properties, executorAdmin, resourceManager);
 
-      TxModule txModule = new TxModule(logger, jdbcClient, joinFactory, idManager);
+      TxModule txModule = new TxModule(logger, jdbcClient, joinFactory, idManager, activityLog);
 
       DataStoreAdmin adminModule = new DataStoreAdminImpl(logger, jdbcClient, properties);
 

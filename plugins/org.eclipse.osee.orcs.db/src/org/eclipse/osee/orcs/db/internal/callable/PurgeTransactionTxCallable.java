@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import static org.eclipse.osee.activity.api.ActivityLog.COMPLETE_STATUS;
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.PURGE_TRANSACTION;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -30,8 +33,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -65,10 +68,12 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
    private final SqlJoinFactory joinFactory;
    private final Collection<? extends TransactionId> txIdsToDelete;
+   private final ActivityLog activityLog;
    private int previousItem;
 
-   public PurgeTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends TransactionId> txIdsToDelete) {
-      super(logger, session, jdbcClient);
+   public PurgeTransactionTxCallable(ActivityLog activityLog, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends TransactionId> txIdsToDelete) {
+      super(null, session, jdbcClient);
+      this.activityLog = activityLog;
       this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
       previousItem = -1;
@@ -96,7 +101,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       List<TransactionId> txIds = sortTxs(txIdsToDelete);
       int purgeCount = 0;
       for (TransactionId txIdToDelete : txIds) {
-         getLogger().info("Purging Transaction: [%s]", txIdToDelete);
+         Long logEntryId =
+            activityLog.createUpdateableEntry(PURGE_TRANSACTION, "Purging transaction: " + txIdToDelete.getIdString());
 
          List<Object[]> txsToDelete = new ArrayList<>();
 
@@ -115,10 +121,13 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                txIdToDelete);
          }
          //Find affected items
-         Map<BranchId, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);
-         Map<BranchId, IdJoinQuery> attrs = findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete);
+         StringBuilder artsMsg = new StringBuilder(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH);
+         Map<BranchId, IdJoinQuery> arts =
+            findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete, artsMsg);
+         Map<BranchId, IdJoinQuery> attrs =
+            findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete, null);
          Map<BranchId, IdJoinQuery> rels =
-            findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete);
+            findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete, null);
 
          //Update Baseline txs for Child Branches
          setChildBranchBaselineTxs(connection, txIdToDelete, previousTransactionId);
@@ -134,7 +143,9 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
          getJdbcClient().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
          purgeCount++;
-         getLogger().info("Transaction: [%s] - purged", txIdToDelete);
+
+         activityLog.createEntry(PURGE_TRANSACTION, logEntryId, COMPLETE_STATUS,
+            "Purged transaction: " + txIdToDelete.getIdString() + " with artifacts " + artsMsg);
       }
       return purgeCount;
    }
@@ -162,7 +173,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       }
    }
 
-   private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) {
+   private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
       Map<BranchId, IdJoinQuery> items = new HashMap<>();
       JdbcStatement statement = getJdbcClient().getStatement(connection);
 
@@ -174,7 +185,11 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             items.put((BranchId) bindData[0], joinId);
 
             while (statement.next()) {
-               Integer id = statement.getInt("item_id");
+               Long id = statement.getLong("item_id");
+               if (artsMsg != null && artsMsg.length() < JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+                  artsMsg.append(id);
+                  artsMsg.append(",");
+               }
                joinId.add(id);
             }
             joinId.store();

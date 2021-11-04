@@ -20,7 +20,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
@@ -53,9 +52,9 @@ public interface ActivityLogEndpoint {
     * @return entryId
     */
    @POST
-   @Path("/entry")
+   @Path("/entry/{activity-type}/{parent-id}/{status}")
    @Produces({MediaType.APPLICATION_JSON})
-   ActivityEntryId createEntry(@QueryParam("type") ActivityTypeId type, @QueryParam("parentId") Long parentId, @QueryParam("status") Integer status, @QueryParam("message") String message);
+   ActivityEntryId createEntry(@PathParam("activity-type") ActivityTypeId type, @PathParam("parent-id") Long parentId, @PathParam("status") Integer status, String message);
 
    /**
     * Create a new activity type with the given token fields. If id is not valid then a new one will be generated and

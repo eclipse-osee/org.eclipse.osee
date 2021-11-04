@@ -25,6 +25,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -32,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
+import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.junit.After;
@@ -66,7 +67,7 @@ public class PurgeTransactionTest {
    @Test
    public void testPurgeTransaction() throws Exception {
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
-      TransactionId createTxId = createArtifacts();
+      TransactionToken createTxId = createArtifacts();
 
       Map<String, Integer> preModifyCount = TestUtil.getTableRowCounts(TABLES);
       int initialTxCurrents = getCurrentRows(createTxId);
@@ -80,7 +81,7 @@ public class PurgeTransactionTest {
       assertThatEquals(initialRowCount, TestUtil.getTableRowCounts(TABLES));
    }
 
-   private TransactionId createArtifacts() throws Exception {
+   private TransactionToken createArtifacts() throws Exception {
       SkynetTransaction createTransaction = TransactionManager.createTransaction(SAW_Bld_2, "Purge Transaction Test");
       softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10,
          getClass().getSimpleName(), SAW_Bld_2);
@@ -90,7 +91,7 @@ public class PurgeTransactionTest {
       return createTransaction.execute();
    }
 
-   private TransactionId modifyArtifacts() throws Exception {
+   private TransactionToken modifyArtifacts() throws Exception {
       SkynetTransaction modifyTransaction = TransactionManager.createTransaction(SAW_Bld_2, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
@@ -99,8 +100,8 @@ public class PurgeTransactionTest {
       return modifyTransaction.execute();
    }
 
-   private void purge(TransactionId transactionId) throws Exception {
-      IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionId);
+   private void purge(TransactionToken transactionId) throws Exception {
+      IOperation operation = PurgeTransactionOperation.getPurgeTransactionOperation(transactionId);
       Asserts.assertOperation(operation, IStatus.OK);
       txEndpoint.purgeUnusedBackingDataAndTransactions();
    }

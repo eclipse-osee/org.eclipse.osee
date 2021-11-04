@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -47,15 +48,16 @@ public class TxModule {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
+   private final ActivityLog activityLog;
    private static final String UPDATE_TRANSACTION_COMMIT_ART_ID =
       "UPDATE osee_tx_details SET commit_art_id = ? WHERE transaction_id = ?";
 
-   public TxModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityManager identityService) {
-      super();
+   public TxModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityManager identityService, ActivityLog activityLog) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
       this.idManager = identityService;
+      this.activityLog = activityLog;
    }
 
    public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, OrcsTokenService tokenService) {
@@ -74,7 +76,8 @@ public class TxModule {
 
          @Override
          public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends TransactionId> transactionsToPurge) {
-            return new PurgeTransactionTxCallable(logger, session, jdbcClient, sqlJoinFactory, transactionsToPurge);
+            return new PurgeTransactionTxCallable(activityLog, session, jdbcClient, sqlJoinFactory,
+               transactionsToPurge);
          }
 
          @Override
