@@ -176,4 +176,8 @@ public class UserServiceImpl implements UserService {
    public UserToken getUser(Long accountId) {
       return UserManager.getUserByArtId(UserId.valueOf(accountId));
    }
+
+   public static void clearCache() {
+      userGrps = null;
+   }
 }
