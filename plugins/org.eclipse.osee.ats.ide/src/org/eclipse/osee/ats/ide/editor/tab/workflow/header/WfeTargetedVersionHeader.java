@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
@@ -47,6 +48,8 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class WfeTargetedVersionHeader extends Composite {
 
    private final static String TARGET_VERSION = "Target Version:";
+   private final static String TARGET_VERSION_POPUP =
+      "This Team Workflow has a Working Branch based on the current Targeted Version.  Changing this version will commit changes to the Branch associated with the new Version.  Are you sure?";
    Label valueLabel;
    Hyperlink link;
    private final IAtsTeamWorkflow teamWf;
@@ -108,6 +111,12 @@ public class WfeTargetedVersionHeader extends Composite {
 
          if (editor.isDirty()) {
             editor.doSave(null);
+         }
+         if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamWf)) {
+            if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Warning: Changing target branch",
+               TARGET_VERSION_POPUP)) {
+               return false;
+            }
          }
          if (TargetedVersionColumnUI.getInstance().promptChangeVersion((TeamWorkFlowArtifact) teamWf,
             AtsApiService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
