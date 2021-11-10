@@ -168,13 +168,12 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
    public void populateArtifactAccessControlList() {
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = UserId.valueOf(stmt.getLong("privilege_entity_id"));
-         ArtifactId artifactId = ArtifactId.valueOf(stmt.getLong("art_id"));
          BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
          ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
+         ArtifactToken artifact = ArtifactToken.valueOf(stmt.getLong("art_id"), branchId);
 
-         artAclOps.populateArtifactAccessControlListEntry(subjectId, artifactId, branchId, permission,
-            subjectArtifactType);
+         artAclOps.populateArtifactAccessControlListEntry(subjectId, artifact, permission, subjectArtifactType);
       };
 
       jdbcClient.runQuery(consumer, AccessQueries.GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
