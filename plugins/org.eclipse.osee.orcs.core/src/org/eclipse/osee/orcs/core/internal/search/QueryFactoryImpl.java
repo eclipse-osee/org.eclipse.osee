@@ -61,17 +61,17 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public QueryBuilder fromBranch(BranchId branch) {
-      return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch);
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, tokenService.getBranch(branch));
    }
 
    @Override
    public QueryBuilder fromBranch(BranchId branch, ArtifactId view) {
-      return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch, view);
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, tokenService.getBranch(branch), view);
    }
 
    @Override
    public QueryBuilder fromBranch(BranchId branch, ApplicabilityId appId) {
-      return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch, appId);
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, tokenService.getBranch(branch), appId);
    }
 
    @Override
