@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
@@ -236,8 +235,8 @@ public class QueryEngineImpl implements QueryEngine {
       ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
       ArtifactTypeToken artifactType = tokenService.getArtifactTypeOrCreate(artifactTypeId);
       ApplicabilityId applic = ApplicabilityId.valueOf(stmt.getLong("app_id"));
-      return new ArtifactReadableImpl(artId, artifactType, BranchToken.create(queryData.getBranch(), "unknown"),
-         queryData.getView(), applic, txId, modType, queryFactory);
+      return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
+         modType, queryFactory);
    }
 
    @Override

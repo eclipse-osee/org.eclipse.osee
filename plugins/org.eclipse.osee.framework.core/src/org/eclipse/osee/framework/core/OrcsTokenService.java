@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
@@ -28,6 +30,8 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
  * @author Ryan D. Brooks
  */
 public interface OrcsTokenService {
+
+   BranchToken getBranch(BranchId branch);
 
    /**
     * @return singleton full artifact type token with the given id or throw OseeTypeDoesNotExist if not found

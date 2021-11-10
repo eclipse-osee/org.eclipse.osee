@@ -56,6 +56,11 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public BranchToken getBranch(BranchId branch) {
+      return BranchToken.valueOf(branch);
+   }
+
+   @Override
    public ArtifactTypeToken getArtifactType(Long id) {
       ArtifactTypeToken artifactType = artifactTypes.get(id);
       if (artifactType == null) {

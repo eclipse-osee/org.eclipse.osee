@@ -40,7 +40,17 @@ public interface BranchToken extends BranchId, NamedId {
    }
 
    public static BranchToken create(BranchId id, String name) {
+      if (id instanceof BranchToken) {
+         return (BranchToken) id;
+      }
       return create(id.getId(), name, ArtifactId.SENTINEL);
+   }
+
+   public static BranchToken valueOf(BranchId id) {
+      if (id instanceof BranchToken) {
+         return (BranchToken) id;
+      }
+      return create(id.getId(), "Not Loaded", ArtifactId.SENTINEL);
    }
 
    public static BranchToken create(long id, String name) {
