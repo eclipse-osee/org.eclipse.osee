@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -131,11 +132,7 @@ public class ArtifactQuery {
    private static Artifact getOrCheckArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) {
       Conditions.assertNotSentinel(artifactId);
       ArtifactToken artifactToken;
-      if (artifactId instanceof ArtifactToken) {
-         artifactToken = ArtifactToken.valueOf((ArtifactToken) artifactId, branch);
-      } else {
-         artifactToken = ArtifactToken.valueOf(artifactId, branch);
-      }
+      artifactToken = ArtifactToken.valueOf(artifactId, BranchManager.getBranchToken(branch));
       Artifact artifact = ArtifactCache.getActive(artifactToken);
       if (artifact != null) {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
@@ -792,7 +789,7 @@ public class ArtifactQuery {
       }
    }
 
-   public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchId branch, Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType) {
+   public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchToken branch, Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType) {
       List<Long> artIds = new LinkedList<>();
       String ids = "";
       for (ArtifactId art : artifacts) {

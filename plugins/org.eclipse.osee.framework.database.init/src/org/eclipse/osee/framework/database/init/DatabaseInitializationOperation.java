@@ -26,9 +26,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -50,13 +47,10 @@ import org.osgi.framework.FrameworkUtil;
 public class DatabaseInitializationOperation extends AbstractOperation {
 
    private final String preSelectedChoice;
-   public static ArtifactToken MAPPING_ARTIFACT;
 
    private DatabaseInitializationOperation(String preSelectedChoice) {
       super("Database Initialization", Activator.PLUGIN_ID);
       this.preSelectedChoice = preSelectedChoice;
-      MAPPING_ARTIFACT = ArtifactToken.valueOf(5443258, "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters", BranchId.SENTINEL,
-         CoreArtifactTypes.GeneralData);
    }
 
    public static void execute(IDbInitChoiceEnum choice) {

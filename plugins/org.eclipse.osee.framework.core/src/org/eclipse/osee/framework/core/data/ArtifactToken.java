@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.core.data;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.logging.Level;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -31,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 @JsonSerialize(using = NamedIdSerializer.class)
 public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifactType, Identity<String> {
-   public static final ArtifactToken SENTINEL = valueOf(ArtifactId.SENTINEL, BranchId.SENTINEL);
+   public static final ArtifactToken SENTINEL = valueOf(ArtifactId.SENTINEL, BranchToken.SENTINEL);
 
    @Override
    default String getGuid() {
@@ -42,22 +41,18 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
       return getArtifactType().isValidAttributeType(attributeType);
    }
 
-   public static ArtifactToken valueOf(Id id, BranchId branch) {
-      return valueOf(id.getId(), GUID.create(), null, branch, ArtifactTypeToken.SENTINEL);
-   }
-
    public static ArtifactToken valueOf(ArtifactId id, String name) {
-      return valueOf(id.getId(), GUID.create(), name, BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
+      return valueOf(id.getId(), GUID.create(), name, BranchToken.SENTINEL, ArtifactTypeToken.SENTINEL);
    }
 
-   public static ArtifactToken valueOf(ArtifactId id, BranchId branch) {
+   public static ArtifactToken valueOf(ArtifactId id, BranchToken branch) {
       if (id instanceof ArtifactToken) {
          return valueOf((ArtifactToken) id, branch);
       }
       return valueOf(id.getId(), GUID.create(), "", branch, ArtifactTypeToken.SENTINEL);
    }
 
-   public static ArtifactToken valueOf(ArtifactToken token, BranchId branch) {
+   public static ArtifactToken valueOf(ArtifactToken token, BranchToken branch) {
       String useGuid = null;
       try {
          useGuid = token.getGuid();
@@ -71,19 +66,19 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
       return valueOf(id, GUID.create(), "", branch, ArtifactTypeToken.SENTINEL);
    }
 
-   public static ArtifactToken valueOf(long id, String name, BranchId branch) {
+   public static ArtifactToken valueOf(long id, String name, BranchToken branch) {
       return valueOf(id, GUID.create(), name, branch, ArtifactTypeToken.SENTINEL);
    }
 
    public static @NonNull ArtifactToken valueOf(long id, String name) {
-      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
+      return valueOf(id, GUID.create(), name, BranchToken.SENTINEL, ArtifactTypeToken.SENTINEL);
    }
 
    public static ArtifactToken valueOf(long id, String name, ArtifactTypeToken artifactType) {
-      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, artifactType);
+      return valueOf(id, GUID.create(), name, BranchToken.SENTINEL, artifactType);
    }
 
-   public static ArtifactToken valueOf(long id, String name, BranchId branch, ArtifactTypeToken artifactType) {
+   public static ArtifactToken valueOf(long id, String name, BranchToken branch, ArtifactTypeToken artifactType) {
       return valueOf(id, GUID.create(), name, branch, artifactType);
    }
 
@@ -104,7 +99,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
             String msg = String.format(
                "Token id (as int) must be > 0 or SENTINAL, not int [%s] for long id [%s] name [%s] and type [%s])",
                idInt, id, name, artifactType.getName());
-            // Log to console which shows the id, name and type on contruction where exception doesn't show till loading
+            // Log to console which shows the id, name and type on construction where exception doesn't show till loading
             OseeLog.log(ArtifactToken.class, Level.SEVERE, msg);
             throw new OseeArgumentException(msg);
          }
@@ -124,7 +119,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
 
       @Override
       public BranchToken getBranch() {
-         return BranchToken.create(branch, "unknown");
+         return BranchToken.valueOf(branch);
       }
 
       @Override

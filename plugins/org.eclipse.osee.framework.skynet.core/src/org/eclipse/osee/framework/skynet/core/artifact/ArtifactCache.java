@@ -162,7 +162,7 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(ArtifactId artId, BranchId branch) {
-      return getActive(ArtifactToken.valueOf(artId, branch));
+      return getActive(ArtifactToken.valueOf(artId, BranchManager.getBranchToken(branch)));
    }
 
    public static Artifact getActive(ArtifactToken artifact) {

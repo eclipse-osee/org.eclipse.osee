@@ -34,7 +34,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -47,6 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -358,7 +358,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             String branchId = memento.getString(BRANCH_ID);
             if (Strings.isNumeric(id) && Strings.isValid(name) && Strings.isNumeric(branchId)) {
                ArtifactToken artTok =
-                  ArtifactToken.valueOf(Long.valueOf(id), name, BranchId.valueOf(Long.valueOf(branchId)));
+                  ArtifactToken.valueOf(Long.valueOf(id), name, BranchManager.getBranchToken(Long.valueOf(branchId)));
                if (!loadingSet.contains(artTok.getId())) {
                   openViewUpon(artTok, false);
                }

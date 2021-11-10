@@ -70,7 +70,7 @@ public final class ArtifactLoader {
    public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
       List<ArtifactToken> toLoad = new LinkedList<>();
       for (ArtifactId artId : new HashSet<>(artIds)) {
-         toLoad.add(ArtifactToken.valueOf(artId, branch));
+         toLoad.add(ArtifactToken.valueOf(artId, BranchManager.getBranchToken(branch)));
       }
 
       Set<Artifact> artifacts = new LinkedHashSet<>();

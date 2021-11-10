@@ -77,6 +77,6 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl<ArtifactTypeToken>
 
    @Override
    public BranchToken getBranch() {
-      return BranchToken.create(getVersion().getBranch(), "unknown");
+      return BranchToken.valueOf(getVersion().getBranch());
    }
 }
