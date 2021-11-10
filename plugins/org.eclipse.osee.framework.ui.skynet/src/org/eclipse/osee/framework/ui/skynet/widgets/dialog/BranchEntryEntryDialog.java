@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -35,7 +35,7 @@ public class BranchEntryEntryDialog extends EntryDialog {
    private String entryText2 = "";
    private final String text2Label;
    private Listener okListener;
-   private BranchId branch;
+   private BranchToken branch;
 
    public BranchEntryEntryDialog(String dialogTitle, String dialogMessage, String text1Label, String text2Label) {
       super(dialogTitle, dialogMessage);
@@ -111,7 +111,7 @@ public class BranchEntryEntryDialog extends EntryDialog {
       }
    }
 
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 

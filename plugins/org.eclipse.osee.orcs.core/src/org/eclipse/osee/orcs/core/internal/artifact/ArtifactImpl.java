@@ -96,7 +96,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public BranchToken getBranch() {
-      return BranchToken.create(artifactData.getVersion().getBranch(), "unknown");
+      return BranchToken.valueOf(artifactData.getVersion().getBranch());
    }
 
    @Override

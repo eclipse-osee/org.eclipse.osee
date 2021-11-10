@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -75,7 +75,7 @@ public class CompareTwoArtifactIdListsAction extends Action {
       }
    }
 
-   private String getArtifactList(BranchId branch, String idString) {
+   private String getArtifactList(BranchToken branch, String idString) {
       List<String> guids = new LinkedList<>();
       List<String> artIds = new LinkedList<>();
       String[] idList = idString.split("[\n\r]");
