@@ -87,9 +87,7 @@ public interface IAtsQueryService {
 
    ArtifactToken getArtifactTokenOrSentinal(ArtifactId valueOf);
 
-   List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data);
-
-   Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType);
+   Collection<ArtifactToken> getRelatedToTokens(BranchToken branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType);
 
    /**
     * @param id artifact id or ATS Id

@@ -54,7 +54,6 @@ import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
@@ -259,7 +258,7 @@ public class CreateChangeReportTasksOperation {
                crttwd.setDestTeamWf(destTeamWf.getStoreObject());
                crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
                crtd.getDestTeamWfs().add(ArtifactToken.valueOf(destTeamWf.getStoreObject().getId(),
-                  destTeamWf.getName(), BranchId.valueOf(atsApi.getAtsBranch().getId())));
+                  destTeamWf.getName(), atsApi.getAtsBranch()));
             }
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects

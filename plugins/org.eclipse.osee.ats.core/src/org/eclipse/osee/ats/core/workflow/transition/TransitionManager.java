@@ -57,7 +57,6 @@ import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -376,8 +375,8 @@ public class TransitionManager implements IExecuteListener {
                results.addResult(workItem,
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
             }
-            results.getWorkItemIds().add(ArtifactToken.valueOf(workItem.getId(), workItem.getName(),
-               BranchId.valueOf(helper.getServices().getAtsBranch().getId())));
+            results.getWorkItemIds().add(
+               ArtifactToken.valueOf(workItem.getId(), workItem.getName(), helper.getServices().getAtsBranch()));
          }
       } catch (Exception ex) {
          results.addResult(

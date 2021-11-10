@@ -145,9 +145,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
+   public Collection<ArtifactToken> getRelatedToTokens(BranchToken branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
       HashCollection<ArtifactId, ArtifactToken> tokenMap = TokenSearchOperations.getArtifactTokenListFromRelated(branch,
-         java.util.Collections.singleton(artifact), artifactType, relationType, orcsApi, jdbcService);
+         java.util.Collections.singleton(artifact), artifactType, relationType, orcsApi, jdbcClient);
       Collection<ArtifactToken> result = tokenMap.getValues(artifact);
       if (result != null) {
          return result;

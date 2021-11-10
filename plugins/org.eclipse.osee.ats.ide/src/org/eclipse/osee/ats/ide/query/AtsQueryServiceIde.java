@@ -26,10 +26,8 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -101,14 +99,6 @@ public class AtsQueryServiceIde {
 
    public Artifact getArtifactToken(ArtifactId artifactId) {
       return toArtifact(queryService.getArtifactToken(artifactId));
-   }
-
-   public List<Artifact> getArtifactTokensFromQuery(String query, Object... data) {
-      return toArtifacts(queryService.getArtifactTokensFromQuery(query, data));
-   }
-
-   public Collection<Artifact> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
-      return toArtifacts(queryService.getRelatedToTokens(branch, artifact, relationType, artifactType));
    }
 
    public List<Artifact> getArtifactsByIds(String ids) {

@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
@@ -52,7 +52,7 @@ import org.eclipse.osee.jdbc.JdbcService;
  */
 public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
-   protected final JdbcService jdbcService;
+   protected final JdbcClient jdbcClient;
    private final AtsApi atsApi;
    /**
     * Quick Search for single attribute search takes 22 seconds, just use straight database call instead. Replace this
@@ -65,14 +65,14 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          + "attr.ATTR_TYPE_ID = ? and attr.VALUE = ?";
 
    public AbstractAtsQueryService(JdbcService jdbcService, AtsApi atsApi) {
-      this.jdbcService = jdbcService;
+      jdbcClient = jdbcService.getClient();
       this.atsApi = atsApi;
    }
 
    @Override
    public Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data) {
       List<ArtifactId> ids = new LinkedList<>();
-      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
+      jdbcClient.runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch())) {
          if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
@@ -88,22 +88,14 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    @Override
    public Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data) {
       List<ArtifactId> ids = new LinkedList<>();
-      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
+      jdbcClient.runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       return atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch());
    }
 
    @Override
    public List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data) {
       List<ArtifactId> ids = new LinkedList<>();
-      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
-      return ids;
-   }
-
-   @Override
-   public List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data) {
-      List<ArtifactToken> ids = new LinkedList<>();
-      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
-         stmt.getString("name"), BranchId.valueOf(stmt.getLong("branch_id")))), query, data);
+      jdbcClient.runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       return ids;
    }
 
@@ -114,7 +106,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public void runUpdate(String query, Object... data) {
-      jdbcService.getClient().runPreparedUpdate(query, data);
+      jdbcClient.runPreparedUpdate(query, data);
    }
 
    @Override
