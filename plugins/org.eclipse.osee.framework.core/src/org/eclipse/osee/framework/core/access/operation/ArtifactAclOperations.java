@@ -128,15 +128,13 @@ public class ArtifactAclOperations {
       return userPermission;
    }
 
-   public void populateArtifactAccessControlListEntry(ArtifactId subjectId, ArtifactId artifactId, BranchId branchId, PermissionEnum permission, ArtifactTypeToken subjectArtifactType) {
+   public void populateArtifactAccessControlListEntry(ArtifactId subjectId, ArtifactToken artifact, PermissionEnum permission, ArtifactTypeToken subjectArtifactType) {
       if (permission != null) {
          // Check for lock by User
          if (permission.equals(PermissionEnum.USER_LOCK)) {
-            cache.artifactLockCache.put(branchId, artifactId, subjectId);
+            cache.artifactLockCache.put(artifact.getBranch(), artifact, subjectId);
          } else {
-            AccessObject accessObject =
-               ArtifactAccessObject.valueOf(ArtifactToken.valueOf(artifactId.getId(), "unknown", branchId));
-            cache.cacheAccessObject(subjectId, permission, accessObject);
+            cache.cacheAccessObject(subjectId, permission, ArtifactAccessObject.valueOf(artifact));
 
             if (subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
                accessService.populateGroupMembers(subjectId);
