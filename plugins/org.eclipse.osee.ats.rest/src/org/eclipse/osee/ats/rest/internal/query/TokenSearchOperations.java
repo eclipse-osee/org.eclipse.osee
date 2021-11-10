@@ -26,9 +26,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -38,7 +40,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class TokenSearchOperations {
 
-   public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchId branch, Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType, OrcsApi orcsApi, JdbcService jdbcService) {
+   public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchToken branch, Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType, OrcsApi orcsApi, JdbcClient jdbcClient) {
       List<Long> artIds = new LinkedList<>();
       String ids = "";
       for (ArtifactId art : artifacts) {
@@ -49,7 +51,7 @@ public class TokenSearchOperations {
 
       Map<Long, Long> artBIdToArtAId = new HashMap<>();
       Map<Long, Long> artAIdToArtBId = new HashMap<>();
-      JdbcStatement chStmt = jdbcService.getClient().getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       boolean isSideA = relationType.getSide().isSideA();
       try {
          String query = OseeSql.ARTIFACT_TO_RELATED_B_ARTIFACT_ID.getSql().replaceFirst("ART_IDS_HERE", ids);
@@ -67,7 +69,7 @@ public class TokenSearchOperations {
          chStmt.close();
       }
 
-      chStmt = jdbcService.getClient().getStatement();
+      chStmt = jdbcClient.getStatement();
       HashCollection<ArtifactId, ArtifactToken> artToRelatedTokens = new HashCollection<>();
       try {
          String query = OseeSql.ARTIFACT_TOKENS_RELATED_TO_ARTIFACT_QUERY.getSql().replaceFirst("ART_IDS_HERE", ids);

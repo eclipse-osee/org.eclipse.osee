@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -259,7 +258,7 @@ public interface IAtsChangeReportTaskNameProvider {
    /**
     * Create CID and set all art types in rollups
     */
-   default ChangeItemData getChangeItemData(Collection<ChangeItem> changes, BranchId branchId, AtsApi atsApi) {
+   default ChangeItemData getChangeItemData(Collection<ChangeItem> changes, BranchToken branchId, AtsApi atsApi) {
       ChangeItemData data = new ChangeItemData(changes);
       for (ChangeReportRollup rollup : data.getRollups().values()) {
          ArtifactId artId = rollup.getArtId();
