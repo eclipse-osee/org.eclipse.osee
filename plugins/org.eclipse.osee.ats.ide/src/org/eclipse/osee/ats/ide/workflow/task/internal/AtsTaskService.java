@@ -71,7 +71,8 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
       List<Artifact> arts = new ArrayList<>();
       for (NewTaskData newTaskData : newTaskSet.getNewTaskDatas()) {
          Long teamWfId = newTaskData.getTeamWfId();
-         Artifact art = ArtifactCache.getActive(teamWfId, atsApi.getAtsBranch());
+
+         Artifact art = ArtifactCache.getActive(ArtifactToken.valueOf(teamWfId, atsApi.getAtsBranch()));
          if (art != null) {
             arts.add(art);
          }

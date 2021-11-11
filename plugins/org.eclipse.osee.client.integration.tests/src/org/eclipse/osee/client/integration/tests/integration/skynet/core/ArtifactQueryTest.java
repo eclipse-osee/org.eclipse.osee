@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -46,7 +45,6 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -93,7 +91,7 @@ public class ArtifactQueryTest {
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted
-      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON, DeletionFlag.INCLUDE_DELETED);
+      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact, COMMON, DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
       newArtifact.deleteAndPersist(getClass().getSimpleName());
@@ -187,40 +185,6 @@ public class ArtifactQueryTest {
       } catch (Exception ex) {
          Assert.fail(ex.getMessage());
       }
-   }
-
-   @Test
-   public void testGetOrCreate() throws Exception {
-      String guid = GUID.create();
-      BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-         branch, PermissionEnum.FULLACCESS);
-
-      Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
-      Assert.assertNotNull(artifact1);
-      Artifact artifact2 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
-      Assert.assertEquals(artifact1, artifact2);
-      Job job = BranchManager.deleteBranch(branch);
-      job.join();
-   }
-
-   @Test
-   public void testLargeAttributeIndexing() throws Exception {
-      String guid = GUID.create();
-      BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-         branch, PermissionEnum.FULLACCESS);
-
-      Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
-      artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
-      artifact1.persist(testInfo.getTestName());
-      Thread.sleep(1000);
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName("Wikipedia", branch,
-         DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
-      Job job = BranchManager.deleteBranch(branch);
-      job.join();
-      Assert.assertEquals(1, artifacts.size());
-      Assert.assertEquals(artifact1, artifacts.iterator().next());
    }
 
    private TransactionToken createArtifactFortestQueryById(List<ArtifactId> newIdsInOrder, BranchToken branch) {

@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.workflow;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.client.TopicEventUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -43,7 +44,7 @@ public class AtsWorkItemRemoteTopicEventHandler implements EventHandler {
          if (isRemote != null && isRemote) {
             if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
                String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
-               for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
+               for (ArtifactId workItemId : Collections.fromString(ids, ";", ArtifactId::valueOf)) {
                   // If artifact in cache, then could be in open editor/view. Just reload.
                   Artifact artifact = ArtifactCache.getActive(workItemId, AtsApiService.get().getAtsBranch());
                   TransactionId transaction = EventUtil.getTransaction(event);
