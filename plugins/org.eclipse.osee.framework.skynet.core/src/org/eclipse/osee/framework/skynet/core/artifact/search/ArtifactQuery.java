@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -574,18 +573,6 @@ public class ArtifactQuery {
          artIds.clear();
       }
       return reloadedArts;
-   }
-
-   public static Artifact getOrCreate(String guid, ArtifactTypeToken type, BranchToken branch) {
-      Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch, EXCLUDE_DELETED);
-
-      if (artifact == null) {
-         artifact = ArtifactTypeManager.addArtifact(type, branch, null, guid);
-      }
-      if (artifact == null) {
-         throw new ArtifactDoesNotExist("Artifact of type [%s] does not exist on branch [%s]", type, branch);
-      }
-      return artifact;
    }
 
    public static QueryBuilderArtifact createQueryBuilder(BranchId branch) {
