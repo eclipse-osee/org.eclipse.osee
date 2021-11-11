@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -105,7 +106,7 @@ public class RelationCache {
    /**
     * Find RelationById Related On ArtA or ArtB
     */
-   public RelationLink getByRelIdOnArtifact(int relLinkId, int aArtifactId, int bArtifactId, BranchId branch) {
+   public RelationLink getByRelIdOnArtifact(int relLinkId, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchToken branch) {
       RelationMatcher relIdMatcher = RelationFilterUtil.createFindFirstRelationLinkIdMatcher(relLinkId);
       List<RelationLink> links = new ArrayList<>();
       findRelations(links, ArtifactToken.valueOf(aArtifactId, branch), relIdMatcher);
