@@ -68,9 +68,9 @@ public class TxDataManager {
 
       GraphData createGraph(OrcsSession session, BranchId branch);
 
-      ResultSet<Artifact> loadArtifacts(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds);
+      ResultSet<Artifact> loadArtifact(OrcsSession session, BranchId branch, ArtifactId artifactId);
 
-      ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> singleton);
+      ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> artifactIds);
 
    }
 
@@ -238,8 +238,7 @@ public class TxDataManager {
          }
       }
       if (source == null) {
-         ResultSet<Artifact> loadArtifacts =
-            loader.loadArtifacts(txData.getSession(), fromBranch, singleton(artifactId));
+         ResultSet<Artifact> loadArtifacts = loader.loadArtifact(txData.getSession(), fromBranch, artifactId);
          source = loadArtifacts.getExactlyOne();
       }
       return source;

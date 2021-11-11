@@ -32,8 +32,4 @@ public interface DataLoaderFactory {
 
    DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> artifactIds);
 
-   DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... artifactGuids);
-
-   DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> artifactGuids);
-
 }

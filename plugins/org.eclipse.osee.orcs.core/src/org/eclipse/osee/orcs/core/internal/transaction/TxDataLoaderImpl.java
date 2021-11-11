@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -59,11 +60,11 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    private DataLoader createLoader(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds) {
-      Set<Integer> ids = new LinkedHashSet<>();
+      Set<ArtifactId> ids = new LinkedHashSet<>();
       for (ArtifactId artifactId : artifactIds) {
-         ids.add(artifactId.getUuid().intValue());
+         ids.add(artifactId);
       }
-      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, branch, ids);
+      DataLoader loader = dataLoaderFactory.newDataLoader(session, branch, artifactIds);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedAttributes();
       loader.includeDeletedRelations();
@@ -71,8 +72,8 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public ResultSet<Artifact> loadArtifacts(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds) {
-      DataLoader loader = createLoader(session, branch, artifactIds);
+   public ResultSet<Artifact> loadArtifact(OrcsSession session, BranchId branch, ArtifactId artifactId) {
+      DataLoader loader = createLoader(session, branch, Collections.singleton(artifactId));
       GraphBuilder handler = graphBuilderFactory.createGraphBuilder(graphProvider);
       loader.load(null, handler);
       return ResultSets.newResultSet(handler.getArtifacts());

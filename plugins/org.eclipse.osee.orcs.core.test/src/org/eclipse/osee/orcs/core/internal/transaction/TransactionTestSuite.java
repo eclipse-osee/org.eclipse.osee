@@ -21,8 +21,7 @@ import org.junit.runners.Suite;
    ChangeSetBuilderTest.class,
    TransactionBuilderImplTest.class,
    TransactionFactoryImplTest.class,
-   TxCallableFactoryTest.class,
-   TxDataManagerTest.class})
+   TxCallableFactoryTest.class})
 public class TransactionTestSuite {
    // Test Suite
 }

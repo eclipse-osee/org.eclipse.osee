@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -122,18 +121,6 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       return new DataLoaderImpl(logger, ids, options, session, branch, loader, joinFactory);
    }
 
-   @Override
-   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... guids) {
-      return newDataLoaderFromGuids(session, branch, Arrays.asList(guids));
-   }
-
-   @Override
-   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> guids) {
-      Conditions.checkNotNull(branch, "branch");
-      Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, options, session, branch, loader, guids, joinFactory);
-   }
-
    @SuppressWarnings("unchecked")
    private <T> T adapt(Class<T> clazz, QueryContext queryContext) {
       T toReturn = null;
@@ -145,5 +132,4 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       }
       return toReturn;
    }
-
 }
