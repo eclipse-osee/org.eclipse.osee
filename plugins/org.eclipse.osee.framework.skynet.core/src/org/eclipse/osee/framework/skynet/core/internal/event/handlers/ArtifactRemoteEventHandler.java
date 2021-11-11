@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -194,7 +195,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
             boolean bArtifactLoaded = bArtifact != null;
 
             if (aArtifactLoaded || bArtifactLoaded) {
-               BranchId branch = guidArt.getArtA().getBranch();
+               BranchToken branch = BranchManager.getBranchToken(guidArt.getArtA().getBranch());
                ArtifactToken artifactIdA = ArtifactToken.valueOf(guidArt.getArtAId(), branch);
                ArtifactToken artifactIdB = ArtifactToken.valueOf(guidArt.getArtBId(), branch);
                RelationLink relation = RelationManager.getLoadedRelationById(guidArt.getRelationId().intValue(),

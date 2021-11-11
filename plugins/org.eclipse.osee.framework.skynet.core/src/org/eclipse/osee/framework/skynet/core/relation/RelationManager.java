@@ -609,7 +609,7 @@ public class RelationManager {
     * @param relationId 0 or relationId if already created
     */
    public static synchronized RelationLink getOrCreate(ArtifactToken aArtifactId, ArtifactToken bArtifactId, RelationTypeToken relationType, int relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
-      BranchId branch = aArtifactId.getBranch();
+      BranchToken branch = aArtifactId.getBranch();
       RelationLink relation = null;
       if (relationId != 0) {
          relation = getLoadedRelationById(relationId, aArtifactId, bArtifactId, branch);
@@ -631,9 +631,8 @@ public class RelationManager {
          bArtifactId.getId().intValue(), branch);
    }
 
-   public static RelationLink getLoadedRelationById(int relLinkId, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchId branch) {
-      return relationCache.getByRelIdOnArtifact(relLinkId, aArtifactId.getId().intValue(),
-         bArtifactId.getId().intValue(), branch);
+   public static RelationLink getLoadedRelationById(int relLinkId, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchToken branch) {
+      return relationCache.getByRelIdOnArtifact(relLinkId, aArtifactId, bArtifactId, branch);
    }
 
    public static List<RelationLink> getRelationsAll(Artifact artifact, DeletionFlag deletionFlag) {
