@@ -15,14 +15,13 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactDataImpl extends OrcsVersionedObjectImpl<ArtifactTypeToken> implements ArtifactData {
 
-   private String guid = RelationalConstants.DEFAULT_GUID;
+   private String guid = null;
    private boolean useBackingData = false;
 
    public ArtifactDataImpl(VersionData version) {
