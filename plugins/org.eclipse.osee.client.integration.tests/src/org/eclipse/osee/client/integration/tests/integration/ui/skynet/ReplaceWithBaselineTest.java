@@ -242,7 +242,7 @@ public final class ReplaceWithBaselineTest {
                switch (testData.changeItem) {
                   case NEW:
                      //setup a and b artifacts so a new relation can be created.
-                     testData.setbArtifactId(createNewArtifact(baselineBranch, GUID.create()).getArtId());
+                     testData.setbArtifactId(createNewArtifact(baselineBranch, GUID.create()));
                      testData.setRelationType(CoreRelationTypes.SupportingInfo_SupportingInfo);
                      break;
                   case DELETED:
@@ -250,7 +250,7 @@ public final class ReplaceWithBaselineTest {
                      Artifact c = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), baselineBranch);
                      Artifact d = createNewArtifact(baselineBranch, GUID.create());
 
-                     testData.setbArtifactId(d.getArtId());
+                     testData.setbArtifactId(d);
 
                      RelationManager.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, c, d,
                         "Supporting info for c to d");
@@ -264,8 +264,8 @@ public final class ReplaceWithBaselineTest {
                      Artifact child = createNewArtifact(baselineBranch, GUID.create());
                      Artifact newParent = createNewArtifact(baselineBranch, GUID.create());
 
-                     testData.setbArtifactId(child.getArtId());
-                     testData.setcArtId(newParent.getArtId());
+                     testData.setbArtifactId(child);
+                     testData.setcArtId(newParent);
 
                      parent.addChild(USER_DEFINED, child);
 
@@ -458,7 +458,7 @@ public final class ReplaceWithBaselineTest {
       List<Change> attrChanges = new ArrayList<>(1);
 
       for (Change change : changes) {
-         if (change.getChangeType().isAttributeChange() && change.getItemId().getId().intValue() == attributeToRevert.getId()) {
+         if (change.getChangeType().isAttributeChange() && change.getItemId().equals(attributeToRevert)) {
             attrChanges.add(change);
          }
       }
@@ -482,11 +482,11 @@ public final class ReplaceWithBaselineTest {
 
       private ArtifactId artifactId;
       private RelationTypeSide relationType;
-      private int bArtifactId;
+      private ArtifactId bArtifactId;
 
       private AttributeId attrId;
 
-      private int cArtId;
+      private ArtifactId cArtId;
 
       public TestData(Item item, ChangeItem changeItem, boolean isBaseline) {
          this.item = item;
@@ -494,11 +494,11 @@ public final class ReplaceWithBaselineTest {
          this.isBaseline = isBaseline;
       }
 
-      public int getcArtId() {
+      public ArtifactId getcArtId() {
          return cArtId;
       }
 
-      public void setcArtId(int cArtId) {
+      public void setcArtId(ArtifactId cArtId) {
          this.cArtId = cArtId;
       }
 
@@ -518,11 +518,11 @@ public final class ReplaceWithBaselineTest {
          this.relationType = relationType;
       }
 
-      public int getbArtifactId() {
+      public ArtifactId getbArtifactId() {
          return bArtifactId;
       }
 
-      public void setbArtifactId(int bArtifactId) {
+      public void setbArtifactId(ArtifactId bArtifactId) {
          this.bArtifactId = bArtifactId;
       }
 

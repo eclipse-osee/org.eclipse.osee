@@ -43,12 +43,12 @@ public class ActionableItemResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsAiRestCall() {
-      testUrl("/ats/ai/" + getSawCodeAi().getArtId(), "SAW Code");
+      testUrl("/ats/ai/" + getSawCodeAi().getIdString(), "SAW Code");
    }
 
    @Test
    public void testAtsAiDetailsRestCall() {
-      testActionableItemUrl("/ats/ai/" + getSawCodeAi().getArtId() + "/details", 1, true);
+      testActionableItemUrl("/ats/ai/" + getSawCodeAi().getIdString() + "/details", 1, true);
    }
 
    private Artifact getSawCodeAi() {

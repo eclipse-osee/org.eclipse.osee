@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GlobalPref
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -37,7 +38,7 @@ public class EventBasicGuidRelationTest {
       DefaultBasicGuidArtifact eventArt2 = new DefaultBasicGuidArtifact(COMMON, Artifact, eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 = new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranch(),
-         0x02L, 234L, GammaId.valueOf(333), 34, eventArt1, 33, eventArt2);
+         0x02L, 234L, GammaId.valueOf(333), ArtifactId.valueOf(34), eventArt1, ArtifactId.valueOf(33), eventArt2);
       EventBasicGuidRelation eventRel2 = new EventBasicGuidRelation(RelationEventType.Added, eventRel1.getBranch(),
          eventRel1.getRelTypeGuid(), eventRel1.getRelationId(), eventRel1.getGammaId(), eventRel1.getArtAId(),
          eventRel1.getArtA(), eventRel1.getArtBId(), eventRel1.getArtB());

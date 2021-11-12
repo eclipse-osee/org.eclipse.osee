@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -70,8 +71,8 @@ public class ArtifactTypeEventFilterTest {
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
-         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234L, GammaId.valueOf(123), 55, guidArtA, 66,
-         guidArtB);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234L, GammaId.valueOf(123), ArtifactId.valueOf(55),
+         guidArtA, ArtifactId.valueOf(66), guidArtB);
       relations.add(relation);
 
       // guidArt in relation matches
