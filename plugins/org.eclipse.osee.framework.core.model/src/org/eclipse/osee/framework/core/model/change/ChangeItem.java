@@ -280,7 +280,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    @Override
    public int hashCode() {
-      return itemId.getId().hashCode();
+      return itemId.hashCode();
    }
 
    public boolean isDeleted() {

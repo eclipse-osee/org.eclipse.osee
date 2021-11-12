@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -114,24 +115,22 @@ public class ConflictTestManager {
    }
 
    protected static class ArtifactModification {
-      Type itemToChange;
-      Modification modificationToPerform;
-      protected String name;
-      protected String value;
-      protected Object object;
-      protected Object object2;
-      protected Class<?> clas;
-      protected BranchId branch;
-      protected int rootArtifact;
-      protected ArtifactTypeToken type;
+      private final Type itemToChange;
+      private final Modification modificationToPerform;
+      private final String name;
+      private String value;
+      private Object object;
+      private Object object2;
+      private Class<?> clas;
+      private BranchId branch;
+      private ArtifactTypeToken type;
 
-      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, BranchId branch, ArtifactTypeToken type, String name) {
+      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, BranchId branch, ArtifactTypeToken type, String name) {
          if (!itemToChange.equals(Type.ARTIFACT)) {
             throw new OseeCoreException("This is the Artifact Constructor");
          }
          this.itemToChange = itemToChange;
          this.modificationToPerform = modificationToPerform;
-         this.rootArtifact = rootArtifact;
          this.branch = branch;
          this.type = type;
          this.name = name;
@@ -157,6 +156,7 @@ public class ConflictTestManager {
          this.modificationToPerform = modificationToPerform;
          this.object = object;
          this.object2 = object2;
+         name = null;
       }
    }
 
@@ -168,8 +168,8 @@ public class ConflictTestManager {
 
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
-         if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
-            destArtifacts[i] = destArtifacts[conflictDefs[i].rootArtifact].addNewChild(USER_DEFINED,
+         if (conflictDefs[i].rootArtifactIndex > 0 && conflictDefs[i].rootArtifactIndex < i) {
+            destArtifacts[i] = destArtifacts[conflictDefs[i].rootArtifactIndex].addNewChild(USER_DEFINED,
                conflictDefs[i].artifactType, "Test Artifact Number " + i);
          } else {
             destArtifacts[i] =
@@ -252,8 +252,7 @@ public class ConflictTestManager {
             case CREATE:
                switch (modification.itemToChange) {
                   case ARTIFACT:
-                     createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                        modification.name);
+                     createArtifact(modification.branch, modification.type, modification.name);
                      break;
                   case ATTRIBUTE:
                      createAttribute((Artifact) modification.object, AttributeTypeManager.getType(modification.name),
@@ -271,8 +270,8 @@ public class ConflictTestManager {
             case CREATE_AND_DELETE:
                switch (modification.itemToChange) {
                   case ARTIFACT:
-                     createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                        modification.name).deleteAndPersist(ConflictTestManager.class.getSimpleName());
+                     createArtifact(modification.branch, modification.type, modification.name).deleteAndPersist(
+                        ConflictTestManager.class.getSimpleName());
                      break;
                   case ATTRIBUTE:
                      createAttribute((Artifact) modification.object, AttributeTypeManager.getType(modification.name),
@@ -298,16 +297,8 @@ public class ConflictTestManager {
       }
    }
 
-   protected static Artifact createArtifact(int rootArtifactId, BranchId branch, ArtifactTypeToken type, String name) {
+   protected static Artifact createArtifact(BranchId branch, ArtifactTypeToken type, String name) {
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, branch);
-      if (rootArtifactId > 0 && rootArtifactId < NUMBER_OF_ARTIFACTS) {
-         if (branch.equals(destArtifacts[0].getBranch())) {
-            rootArtifact = destArtifacts[rootArtifactId];
-         }
-         if (branch.equals(sourceArtifacts[0].getBranch())) {
-            rootArtifact = sourceArtifacts[rootArtifactId];
-         }
-      }
       Artifact child = rootArtifact.addNewChild(USER_DEFINED, type, name);
       child.persist(ConflictTestManager.class.getSimpleName());
       rootArtifact.persist(ConflictTestManager.class.getSimpleName());
@@ -373,12 +364,12 @@ public class ConflictTestManager {
    }
 
    public static void resolveAttributeConflict(AttributeConflict conflict) throws Exception {
-      int sourceArtifactId = conflict.getSourceArtifact().getArtId();
+      ArtifactId sourceArtifactId = conflict.getSourceArtifact();
       AttributeTypeId attributeType = conflict.getSourceAttribute(true).getAttributeType();
       AttributeValue aValue = null;
       int artNumber = -1;
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
-         if (sourceArtifactId == sourceArtifacts[i].getArtId()) {
+         if (sourceArtifactId.equals(sourceArtifacts[i])) {
             artNumber = i;
             break;
          }
@@ -459,7 +450,7 @@ public class ConflictTestManager {
 
    public static void createModifications() {
       modifications.clear();
-      modifications.add(new ArtifactModification(Type.ARTIFACT, Modification.CREATE_AND_DELETE, 0,
+      modifications.add(new ArtifactModification(Type.ARTIFACT, Modification.CREATE_AND_DELETE,
          sourceArtifacts[0].getBranch(), CoreArtifactTypes.SoftwareRequirementMsWord, "Test create an Delete"));
       modifications.add(new ArtifactModification(Type.ATTRIBUTE, Modification.CREATE_AND_DELETE, sourceArtifacts[2],
          "Page Orientation", StringAttribute.class, "Portrait"));
@@ -662,38 +653,38 @@ public class ConflictTestManager {
       return value;
    }
 
-   static final class ConflictDefinition {
-      final Collection<AttributeValue> values = new HashSet<>();
-      final Collection<AttributeValue> newAttributes = new HashSet<>();
-      ArtifactTypeToken artifactType;
-      boolean sourceDelete;
-      boolean destDelete;
-      int rootArtifact;
-      int queryNumber;
-      int numConflicts = 0;
-      boolean sourceModified = false;
-      boolean destModified = false;
+   private static final class ConflictDefinition {
+      private final Collection<AttributeValue> values = new HashSet<>();
+      private final Collection<AttributeValue> newAttributes = new HashSet<>();
+      private ArtifactTypeToken artifactType;
+      private boolean sourceDelete;
+      private boolean destDelete;
+      private int rootArtifactIndex;
+      private int queryNumber;
+      private int numConflicts = 0;
+      private boolean sourceModified = false;
+      private boolean destModified = false;
 
-      protected void setValues(ArtifactTypeToken artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
+      protected void setValues(ArtifactTypeToken artifactType, boolean sourceDelete, boolean destDelete, int rootArtifactIndex, int queryNumber) {
          this.artifactType = artifactType;
          this.sourceDelete = sourceDelete;
          this.destDelete = destDelete;
-         this.rootArtifact = rootArtifact;
+         this.rootArtifactIndex = rootArtifactIndex;
          this.queryNumber = queryNumber;
       }
 
       protected boolean destinationDeleted(ConflictDefinition[] conflictDefs) {
-         if (rootArtifact == 0) {
+         if (rootArtifactIndex == 0) {
             return destDelete;
          }
-         return destDelete || conflictDefs[rootArtifact].destinationDeleted(conflictDefs);
+         return destDelete || conflictDefs[rootArtifactIndex].destinationDeleted(conflictDefs);
       }
 
       protected boolean sourceDeleted(ConflictDefinition[] conflictDefs) {
-         if (rootArtifact == 0) {
+         if (rootArtifactIndex == 0) {
             return sourceDelete;
          }
-         return sourceDelete || conflictDefs[rootArtifact].sourceDeleted(conflictDefs);
+         return sourceDelete || conflictDefs[rootArtifactIndex].sourceDeleted(conflictDefs);
       }
 
       protected int getNumberConflicts(ConflictDefinition[] conflictDefs) {
@@ -714,6 +705,5 @@ public class ConflictTestManager {
          }
          return false;
       }
-
    }
 }

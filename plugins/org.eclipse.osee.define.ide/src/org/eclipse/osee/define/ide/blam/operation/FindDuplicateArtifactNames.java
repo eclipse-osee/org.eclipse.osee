@@ -85,7 +85,7 @@ public class FindDuplicateArtifactNames extends AbstractBlam {
                for (Artifact art : artifactListFromName) {
                   String subsystem = art.getSoleAttributeValueAsString(CoreAttributeTypes.Subsystem, "");
                   excelWriter.writeRow(artifact.getName(), subsystem, art.getName(), art.getArtifactType().getName(),
-                     art.getArtId(), art.getGuid());
+                     art.getIdString(), art.getGuid());
                }
             }
          }
