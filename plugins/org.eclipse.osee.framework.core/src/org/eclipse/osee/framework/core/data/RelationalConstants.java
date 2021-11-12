@@ -24,21 +24,9 @@ public final class RelationalConstants {
       // Constants class
    }
 
-   public static final int JOIN_QUERY_ID_SENTINEL = -1;
    public static final boolean IS_HISTORICAL_DEFAULT = false;
-   public static final int ART_ID_SENTINEL = -1;
    public static final String DEFAULT_RATIONALE = "";
-   public static final String DEFAULT_NAME = "";
    public static final String DEFAULT_COMMENT = "";
-
-   public static final Integer DEFAULT_ITEM_ID = -1;
-   public static final long DEFAULT_TYPE_UUID = -1L;
-
    public static final ModificationType DEFAULT_MODIFICATION_TYPE = ModificationType.NEW;
-
-   public static final String DEFAULT_GUID = null;
-   public static final Long DEFAULT_UUID = -1L;
-
    public static final int MIN_FETCH_SIZE = 10;
-
 }

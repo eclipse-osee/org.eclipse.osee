@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
@@ -145,7 +144,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             dataProxy.setGamma(data.getVersion().getGammaId(), createNewGamma);
             binaryStores.add(dataProxy);
 
-            if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
+            if (data.isInvalid()) {
                int id = idManager.getNextAttributeId();
                data.setLocalId(id);
             }
@@ -260,7 +259,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          updateTxValues(data);
          if (!reuseGamma && !data.getDirtyState().isApplicOnly()) {
             updateGamma(data);
-            if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
+            if (data.isInvalid()) {
                int id = idManager.getNextRelationId();
                data.setLocalId(id);
             }

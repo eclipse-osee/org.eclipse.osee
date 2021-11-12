@@ -23,6 +23,7 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HI
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design_Design;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -359,7 +360,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
+      assertTrue(actual.isInvalid());
       assertEquals(ModificationType.NEW, actual.getModType());
       assertEquals(Name, actual.getType());
       assertEquals(ModificationType.NEW, actual.getBaseModType());

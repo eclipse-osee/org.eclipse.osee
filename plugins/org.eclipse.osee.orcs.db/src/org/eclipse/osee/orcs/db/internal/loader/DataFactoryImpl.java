@@ -131,7 +131,7 @@ public class DataFactoryImpl implements DataFactory {
    public AttributeData copy(BranchId destination, AttributeData orcsData) {
       AttributeData copy = objectFactory.createCopy(orcsData);
       updateDataForCopy(destination, copy);
-      copy.setLocalId(RelationalConstants.DEFAULT_ITEM_ID);
+      copy.setLocalId(Id.SENTINEL);
       return copy;
    }
 
