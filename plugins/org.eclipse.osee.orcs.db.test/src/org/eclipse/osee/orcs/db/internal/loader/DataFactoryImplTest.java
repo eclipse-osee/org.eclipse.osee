@@ -70,7 +70,7 @@ public class DataFactoryImplTest {
    private static final TransactionId tx333 = TransactionId.valueOf(333);
    private static final TransactionId tx444 = TransactionId.valueOf(444);
    private static final GammaId gamma222 = GammaId.valueOf(222);
-   private static final Long ART_ID = 987L;
+   private static final ArtifactId ART_ID = ArtifactId.valueOf(987L);
    private static final Long SHARED_ID = 555L;
    private static final ArtifactId artifactId555 = ArtifactId.valueOf(SHARED_ID);
 
@@ -104,7 +104,7 @@ public class DataFactoryImplTest {
 
       OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, tokenService);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory);
-      when(idFactory.getNextArtifactId()).thenReturn(ART_ID.intValue());
+      when(idFactory.getNextArtifactId()).thenReturn(ART_ID);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
       // VERSION
@@ -188,7 +188,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(ART_ID, actual.getId());
+      assertEquals(ART_ID, actual);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(DesignMsWord, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
@@ -212,7 +212,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(ART_ID, actual.getId());
+      assertEquals(ART_ID, actual);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(Artifact, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
@@ -339,7 +339,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(ART_ID, actual.getId());
+      assertEquals(ART_ID, actual);
       assertEquals(ModificationType.NEW, actual.getModType());
       assertEquals(actual.getType(), Artifact);
       assertEquals(ModificationType.NEW, actual.getBaseModType());

@@ -319,7 +319,7 @@ public class OrcsCollectorWriter {
          if (artifactId < 1) {
             artifact = getTransaction().createArtifact(artType, name, appId);
          } else {
-            artifact = getTransaction().createArtifact(artType, name, artifactId, appId);
+            artifact = getTransaction().createArtifact(artType, name, ArtifactId.valueOf(artifactId), appId);
          }
 
          if (idToArtifact == null) {

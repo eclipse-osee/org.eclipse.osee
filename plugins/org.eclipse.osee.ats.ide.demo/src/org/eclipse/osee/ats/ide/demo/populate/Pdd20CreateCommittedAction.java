@@ -196,13 +196,8 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
             }
             throw new OseeArgumentException("Artifact Attribute did not update in Parent Branch after commit");
          }
-         Boolean artFound = false;
-         for (Artifact art : parentArtifact.getRelatedArtifacts(CoreRelationTypes.Allocation_Component)) {
-            if (art.getArtId() == testRelArtifact.getArtId()) {
-               artFound = true;
-            }
-         }
-         if (!artFound) {
+         ArtifactToken testRelOnSameBranch = ArtifactToken.valueOf(testRelArtifact, parentArtifact.getBranch());
+         if (!parentArtifact.isRelated(CoreRelationTypes.Allocation_Component, testRelOnSameBranch)) {
             if (x < loops) {
                continue;
             }

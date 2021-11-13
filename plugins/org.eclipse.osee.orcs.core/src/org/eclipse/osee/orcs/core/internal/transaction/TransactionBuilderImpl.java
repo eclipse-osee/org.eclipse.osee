@@ -151,17 +151,17 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
       validateBuilder();
-      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getUuid());
+      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token);
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId) {
       validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, artifactId);
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, ApplicabilityId appId) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId, ApplicabilityId appId) {
       validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, artifactId, appId);
    }

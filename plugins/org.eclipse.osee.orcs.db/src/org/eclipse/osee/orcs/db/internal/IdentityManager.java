@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
@@ -23,7 +24,7 @@ public interface IdentityManager {
 
    TransactionId getNextTransactionId();
 
-   int getNextArtifactId();
+   ArtifactId getNextArtifactId();
 
    int getNextAttributeId();
 

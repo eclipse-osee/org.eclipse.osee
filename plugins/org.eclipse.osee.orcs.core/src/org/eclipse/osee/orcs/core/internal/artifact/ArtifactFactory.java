@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -62,14 +63,14 @@ public class ArtifactFactory {
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, Long artifactId) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId) {
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, Long artifactId, ApplicabilityId appId) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId, ApplicabilityId appId) {
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId, appId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);

@@ -74,7 +74,7 @@ public final class AttributeChange extends Change {
       if (obj instanceof AttributeChange) {
          AttributeChange change = (AttributeChange) obj;
          return super.equals(obj) && //
-            change.getArtId() == getArtId() && //
+            change.getArtId().equals(getArtId()) && //
             change.getArtModType() == getArtModType() && //
             change.getAttrId() == getAttrId();
       }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -38,7 +39,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt, Options options) {
       ArtifactData toReturn = null;
 
-      int artifactId = chStmt.getInt("id2");
+      ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("id2"));
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
 
       CreateConditions onCreate = asConditions(conditions);
@@ -77,14 +78,14 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    }
 
    private static final class CreateConditions {
-      int previousArtId = -1;
+      ArtifactId previousArtId = ArtifactId.SENTINEL;
       BranchId previousBranchId = BranchId.SENTINEL;
 
-      boolean isSame(BranchId branch, int artifactId) {
+      boolean isSame(BranchId branch, ArtifactId artifactId) {
          return previousBranchId.equals(branch) && previousArtId == artifactId;
       }
 
-      void saveConditions(BranchId branch, int artifactId) {
+      private void saveConditions(BranchId branch, ArtifactId artifactId) {
          previousBranchId = branch;
          previousArtId = artifactId;
       }

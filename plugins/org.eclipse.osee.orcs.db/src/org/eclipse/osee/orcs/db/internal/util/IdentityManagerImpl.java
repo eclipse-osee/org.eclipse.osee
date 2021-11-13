@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.util;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -39,8 +40,8 @@ public class IdentityManagerImpl implements IdentityManager {
    }
 
    @Override
-   public int getNextArtifactId() {
-      return (int) client.getNextSequence(OseeData.ART_ID_SEQ, true);
+   public ArtifactId getNextArtifactId() {
+      return ArtifactId.valueOf(client.getNextSequence(OseeData.ART_ID_SEQ, true));
    }
 
    @Override

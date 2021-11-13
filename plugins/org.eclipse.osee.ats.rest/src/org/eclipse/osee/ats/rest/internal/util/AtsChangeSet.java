@@ -179,7 +179,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
-      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, artifactId);
+      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, ArtifactId.valueOf(artifactId));
       add(artifact);
       return artifact;
    }
