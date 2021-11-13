@@ -524,14 +524,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
-      Artifact artifact =
-         ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), name, guid, artifactId);
-      add(artifact);
-      return artifact;
-   }
-
-   @Override
    public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artType, AtsApiService.get().getAtsBranch(), name);
       addChild(parent, artifact);
@@ -549,5 +541,4 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          transaction.execute();
       }
    }
-
 }
