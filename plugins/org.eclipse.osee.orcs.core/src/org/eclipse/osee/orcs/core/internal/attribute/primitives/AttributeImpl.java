@@ -259,10 +259,6 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
       getOrcsData().getVersion().setGammaId(gammaId);
    }
 
-   public void internalSetAttributeId(int attrId) {
-      getOrcsData().setLocalId(attrId);
-   }
-
    /**
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory

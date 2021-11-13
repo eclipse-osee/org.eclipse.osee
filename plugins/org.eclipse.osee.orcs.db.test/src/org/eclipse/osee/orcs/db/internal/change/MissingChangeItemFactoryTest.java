@@ -364,7 +364,7 @@ public class MissingChangeItemFactoryTest {
       return null;
    }
 
-   private static AttributeData createAttributeData(ArtifactId artId, int attrId, GammaId gamma, ModificationType modType) {
+   private static AttributeData createAttributeData(ArtifactId artId, long attrId, GammaId gamma, ModificationType modType) {
       VersionData version = new VersionDataImpl();
       version.setGammaId(gamma);
       DataProxy<?> proxy = mock(DataProxy.class);
@@ -385,7 +385,7 @@ public class MissingChangeItemFactoryTest {
 
       ArtifactData data = new ArtifactDataImpl(version);
       data.setModType(modType);
-      data.setLocalId(artId.getId().intValue());
+      data.setLocalId(artId);
       data.setApplicabilityId(ApplicabilityId.BASE);
       return data;
    }
@@ -396,7 +396,7 @@ public class MissingChangeItemFactoryTest {
 
       RelationData data = new RelationDataImpl(version);
       data.setModType(modType);
-      data.setLocalId(relId.getId().intValue());
+      data.setLocalId(relId);
       data.setApplicabilityId(ApplicabilityId.BASE);
       data.setArtIdA(artA);
       data.setArtIdB(artB);

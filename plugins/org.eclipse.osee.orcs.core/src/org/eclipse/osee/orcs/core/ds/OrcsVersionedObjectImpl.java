@@ -186,4 +186,9 @@ public abstract class OrcsVersionedObjectImpl<T extends Id> implements OrcsData<
    public void setLocalId(long localId) {
       this.localId = (int) localId;
    }
+
+   @Override
+   public void setLocalId(Id id) {
+      this.localId = id.getIdIntValue();
+   }
 }
