@@ -179,12 +179,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
-      validateBuilder();
-      return txManager.createArtifact(txData, artifactType, name, artifactId, guid);
-   }
-
-   @Override
    public List<ArtifactToken> createArtifacts(ArtifactTypeToken artifactType, ArtifactId parent, List<String> names) {
       validateBuilder();
       ResultSet<ArtifactReadable> results =

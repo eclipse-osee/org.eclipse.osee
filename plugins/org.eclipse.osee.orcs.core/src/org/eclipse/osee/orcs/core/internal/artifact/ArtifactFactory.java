@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationO
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -58,13 +57,6 @@ public class ArtifactFactory {
 
    public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, String guid, ApplicabilityId appId) {
       ArtifactData artifactData = factory.create(branch, artifactType, guid, appId);
-      Artifact artifact = createArtifact(session, artifactData);
-      artifact.setLoaded(true);
-      return artifact;
-   }
-
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, String guid, long uuid) {
-      ArtifactData artifactData = factory.create(branch, artifactType, guid, uuid);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;

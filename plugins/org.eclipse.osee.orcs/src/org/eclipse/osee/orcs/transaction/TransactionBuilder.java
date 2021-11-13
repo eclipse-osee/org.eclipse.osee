@@ -80,8 +80,6 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid, ApplicabilityId appId);
 
-   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid);
-
    /**
     * If parent is invalid, the artifact will be created with no parent
     */

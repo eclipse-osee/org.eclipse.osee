@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -131,7 +132,7 @@ public class DataFactoryImpl implements DataFactory {
    public AttributeData copy(BranchId destination, AttributeData orcsData) {
       AttributeData copy = objectFactory.createCopy(orcsData);
       updateDataForCopy(destination, copy);
-      copy.setLocalId(Id.SENTINEL);
+      copy.setLocalId(AttributeId.SENTINEL);
       return copy;
    }
 

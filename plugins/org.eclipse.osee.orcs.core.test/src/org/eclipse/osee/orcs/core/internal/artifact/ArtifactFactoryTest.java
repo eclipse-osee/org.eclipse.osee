@@ -120,18 +120,6 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromBranchTypeAndGuidAndUuid() {
-      long uuid = 93456L;
-      when(dataFactory.create(COMMON, Artifact, guid, uuid)).thenReturn(artifactData);
-
-      Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid, uuid);
-
-      verify(dataFactory).create(COMMON, Artifact, guid, uuid);
-      assertEquals(Artifact, artifact.getArtifactType());
-      assertEquals(guid, artifact.getGuid());
-   }
-
-   @Test
    public void testCreateArtifactFromArtifactData() {
       Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 
