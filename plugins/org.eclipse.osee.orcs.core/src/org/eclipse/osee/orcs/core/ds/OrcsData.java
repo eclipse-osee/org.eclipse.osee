@@ -22,6 +22,8 @@ public interface OrcsData<T extends Id> extends HasVersion {
 
    void setLocalId(long localId);
 
+   void setLocalId(Id id);
+
    Integer getLocalId();
 
    T getType();

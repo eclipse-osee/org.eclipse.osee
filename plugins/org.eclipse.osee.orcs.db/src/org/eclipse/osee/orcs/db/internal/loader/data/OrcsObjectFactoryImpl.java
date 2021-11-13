@@ -126,9 +126,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, Integer generateArtId, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, Integer generateAttId, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
       DataProxy<T> proxy = proxyFactory.createProxy(attributeType, "", "");
-      return createAttributeFromRow(version, generateArtId, attributeType, modType, attributeType, modType, artId,
+      return createAttributeFromRow(version, generateAttId, attributeType, modType, attributeType, modType, artId,
          proxy, applicId);
    }
 

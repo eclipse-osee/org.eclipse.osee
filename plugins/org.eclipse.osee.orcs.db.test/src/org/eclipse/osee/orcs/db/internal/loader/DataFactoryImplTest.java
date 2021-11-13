@@ -116,7 +116,7 @@ public class DataFactoryImplTest {
 
       // ARTIFACT
       artData = new ArtifactDataImpl(verData);
-      artData.setLocalId(SHARED_ID.intValue());
+      artData.setLocalId(SHARED_ID);
       artData.setModType(ModificationType.MODIFIED);
       artData.setType(Artifact);
       artData.setBaseModType(ModificationType.NEW);

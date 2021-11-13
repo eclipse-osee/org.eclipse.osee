@@ -39,16 +39,12 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 public class OrcsMockUtility {
 
    public static Artifact createTestArtifact(GraphData graph, BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
-      Artifact artifact = createTestArtifact(branch, artifactType, artifactId, name);
+      Artifact artifact = createTestArtifact(branch, artifactType, ArtifactId.valueOf(artifactId), name);
       artifact.setGraph(graph);
       return artifact;
    }
 
    public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId, String name) {
-      return createTestArtifact(branch, artifactType, artifactId.getId(), name);
-   }
-
-   public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
       AttributeFactory attributeFactory = mock(AttributeFactory.class);
 
       VersionData version = new VersionDataImpl();
@@ -56,7 +52,7 @@ public class OrcsMockUtility {
 
       ArtifactData artifactData = new ArtifactDataImpl(version);
       artifactData.setType(artifactType);
-      artifactData.setLocalId(artifactId.intValue());
+      artifactData.setLocalId(artifactId);
       artifactData.setModType(ModificationType.NEW);
 
       Artifact artifact = new ArtifactImpl(artifactData, attributeFactory);
