@@ -70,9 +70,9 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ApplicabilityId appId);
 
-   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId);
 
-   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, ApplicabilityId appId);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId, ApplicabilityId appId);
 
    ArtifactToken createArtifact(ArtifactToken token);
 

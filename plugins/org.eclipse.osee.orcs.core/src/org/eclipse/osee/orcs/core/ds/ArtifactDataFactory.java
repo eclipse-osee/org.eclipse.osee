@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 
@@ -26,13 +27,13 @@ public interface ArtifactDataFactory {
 
    ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, ApplicabilityId appId);
 
-   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, long artifactId);
+   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, ArtifactId artifactId);
 
-   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, long artifactId, ApplicabilityId appId);
+   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, ArtifactId artifactId, ApplicabilityId appId);
 
-   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, Long artifactId);
+   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId);
 
-   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, Long artifactId, ApplicabilityId appId);
+   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId, ApplicabilityId appId);
 
    ArtifactData copy(BranchId destination, ArtifactData source);
 

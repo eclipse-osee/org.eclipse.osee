@@ -96,16 +96,16 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, Integer generateArtId, ArtifactTypeToken artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
-      return createArtifactFromRow(version, generateArtId, artifactType, modType, artifactType, modType, guidToSet,
+   public ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
+      return createArtifactFromRow(version, artifactId, artifactType, modType, artifactType, modType, guidToSet,
          applicId);
    }
 
    @Override
    public ArtifactData createCopy(ArtifactData source) {
       VersionData newVersion = createCopy(source.getVersion());
-      return createArtifactFromRow(newVersion, source.getLocalId(), source.getType(), source.getModType(),
-         source.getBaseType(), source.getBaseModType(), source.getGuid(), source.getApplicabilityId());
+      return createArtifactFromRow(newVersion, source, source.getType(), source.getModType(), source.getBaseType(),
+         source.getBaseModType(), source.getGuid(), source.getApplicabilityId());
    }
 
    @Override
@@ -138,9 +138,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          applicId);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, int generateArtId, ArtifactTypeToken artifactType, ModificationType modType, ArtifactTypeToken baseArtifactType, ModificationType baseModType, String guid, ApplicabilityId applicId) {
+   private ArtifactData createArtifactFromRow(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType, ModificationType modType, ArtifactTypeToken baseArtifactType, ModificationType baseModType, String guid, ApplicabilityId applicId) {
       ArtifactData data = new ArtifactDataImpl(version);
-      data.setLocalId(generateArtId);
+      data.setLocalId(artifactId);
       data.setType(artifactType);
       data.setBaseType(baseArtifactType);
       data.setModType(modType);
@@ -234,8 +234,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, Integer generateArtId, long artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
-      return createArtifactData(version, generateArtId, tokenService.getArtifactType(artifactType), modType, guidToSet,
+   public ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, Long artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
+      return createArtifactData(version, artifactId, tokenService.getArtifactType(artifactType), modType, guidToSet,
          applicId);
    }
 

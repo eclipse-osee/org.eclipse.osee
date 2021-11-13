@@ -35,6 +35,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -230,7 +231,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * Check if artifacts are related to each other by relation type
     */
-   public final boolean isRelated(RelationTypeSide relationEnum, Artifact other) {
+   public final boolean isRelated(RelationTypeSide relationEnum, ArtifactId other) {
       List<Artifact> relatedArtifacts = getRelatedArtifacts(relationEnum);
       return relatedArtifacts.contains(other);
    }
