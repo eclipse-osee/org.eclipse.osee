@@ -240,7 +240,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       Artifact result = null;
       try {
          if (atsObject.getStoreObject() instanceof Artifact) {
-            result = ArtifactQuery.getArtifactFromToken((Artifact) atsObject.getStoreObject());
+            result = (Artifact) atsObject.getStoreObject();
          } else {
             result = getArtifact(atsObject.getId());
             if (result != null) {
