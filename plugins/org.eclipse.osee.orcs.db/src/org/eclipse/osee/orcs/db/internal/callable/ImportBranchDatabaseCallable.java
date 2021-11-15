@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -43,15 +42,10 @@ import org.eclipse.osee.orcs.db.internal.exchange.TranslationManager;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.DbTableSaxHandler;
-import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.IExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.MetaData;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.MetaDataSaxHandler;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeDataProcessor;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformProvider;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformer;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
 /**
@@ -66,12 +60,10 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private final List<? extends BranchId> selectedBranches;
    private final PropertyStore options;
 
-   private ExchangeTransformer exchangeTransformer;
    private ManifestSaxHandler manifestHandler;
    private TranslationManager translator;
    private MetaDataSaxHandler metadataHandler;
    private IOseeExchangeDataProvider exportDataProvider;
-   private ExchangeDataProcessor exchangeDataProcessor;
 
    public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemProperties preferences, IResourceManager resourceManager, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
       super(logger, session, jdbcClient);
@@ -105,8 +97,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          processImportFiles(selectedBranches, manifestHandler.getImportFiles());
 
          importBranchesTx.updateBaselineAndParentTransactionId();
-
-         exchangeTransformer.applyFinalTransforms();
 
          savePointManager.setCurrentSetPointId("stop");
          savePointManager.addCurrentSavePointToProcessed();
@@ -143,18 +133,11 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private void setup() throws Exception {
       IResourceLocator exportDataLocator = findResourceToCheck(exchangeFile);
       exportDataProvider = createExportDataProvider(exportDataLocator);
-      exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
 
       savePointManager.setCurrentSetPointId("sourceSetup");
 
-      IExchangeTransformProvider transformProvider = new ExchangeTransformProvider();
-      exchangeTransformer =
-         new ExchangeTransformer(getLogger(), getSession(), getJdbcClient(), transformProvider, exchangeDataProcessor);
-      exchangeTransformer.applyTransforms();
-
       savePointManager.setCurrentSetPointId("manifest");
       manifestHandler = new ManifestSaxHandler();
-      exchangeDataProcessor.parse(ExportItem.EXPORT_MANIFEST, manifestHandler);
 
       savePointManager.setCurrentSetPointId("setup");
       translator = new TranslationManager(getJdbcClient());
@@ -163,7 +146,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       // Process database meta data
       savePointManager.setCurrentSetPointId(manifestHandler.getMetadataFile());
       metadataHandler = new MetaDataSaxHandler(getJdbcClient());
-      exchangeDataProcessor.parse(ExportItem.EXPORT_DB_SCHEMA, metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
       // Load Import Indexes
@@ -205,11 +187,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       if (cleanDataTable) {
          handler.clearDataTable();
       }
-      try {
-         exchangeDataProcessor.parse(exportItem, handler);
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+
    }
 
    private MetaData checkMetadata(IExportItem importFile) {
@@ -229,11 +207,9 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
             "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
       } finally {
-         exchangeDataProcessor.cleanUp();
          translator = null;
          manifestHandler = null;
          metadataHandler = null;
-         exchangeTransformer = null;
          savePointManager.clear();
       }
    }

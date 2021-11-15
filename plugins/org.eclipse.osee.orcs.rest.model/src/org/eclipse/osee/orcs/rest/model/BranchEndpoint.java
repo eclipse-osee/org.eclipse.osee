@@ -199,24 +199,6 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData);
 
-   @DELETE
-   @Path("exchange")
-   Response deleteBranchExchange(@QueryParam("path") String path);
-
-   @POST
-   @Path("exchange/export")
-   @Consumes({MediaType.APPLICATION_JSON})
-   Response exportBranches(BranchExportOptions options);
-
-   @POST
-   @Path("exchange/import")
-   @Consumes({MediaType.APPLICATION_JSON})
-   Response importBranches(BranchImportOptions options);
-
-   @POST
-   @Path("exchange/validation")
-   Response validateExchange(@QueryParam("path") String path);
-
    @POST
    @Path("{branch}/permission/{permission}/{subject}")
    void setBranchPermission(@PathParam("subject") ArtifactId subject, @PathParam("branch") BranchId branch, @PathParam("permission") PermissionEnum permission);

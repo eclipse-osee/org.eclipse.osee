@@ -214,11 +214,6 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck) {
-      return branchStore.checkBranchExchangeIntegrity(session, fileToCheck);
-   }
-
-   @Override
    public Branch createBaselineBranch(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData = branchDataFactory.createBaselineBranchData(branch, parent, associatedArtifact);
       Branch newBranch = createBranch(branchData);

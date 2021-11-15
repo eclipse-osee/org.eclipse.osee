@@ -11,13 +11,6 @@
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
-			id="SkynetDbBranchDataImport"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.internal.SkynetDbBranchDataImport">
-   	</DatabaseInitializationTask>
-	</extension>
-	<extension
 			id="DbBootstrapTask"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask

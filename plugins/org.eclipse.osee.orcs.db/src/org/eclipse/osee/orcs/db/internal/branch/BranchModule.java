@@ -48,7 +48,6 @@ import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.BranchInheritACLCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchFieldCallable;
-import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompositeDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable;
@@ -169,12 +168,6 @@ public class BranchModule {
             ImportBranchDatabaseCallable callable = new ImportBranchDatabaseCallable(logger, session, jdbcClient,
                preferences, resourceManager, fileToImport, branches, options);
             return callable;
-         }
-
-         @Override
-         public Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck) {
-            return new CheckBranchExchangeIntegrityCallable(logger, session, jdbcClient, preferences, resourceManager,
-               fileToCheck);
          }
 
          @Override

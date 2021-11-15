@@ -11,7 +11,6 @@
    <extension-point id="WebPage" name="WebPage" schema="OSEE-INF/extensionPts/WebPage.exsd"/>
    <extension-point id="AttributeType" name="AttributeType" schema="OSEE-INF/extensionPts/AttributeType.exsd"/>
    <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="OSEE-INF/extensionPts/AttributeDataProvider.exsd"/>
-   <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="OSEE-INF/extensionPts/OseeDbImportData.exsd"/>
    <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="OSEE-INF/extensionPts/ClientLoopbackCmd.exsd"/>
    <extension-point id="CommitActions" name="CommitActions" schema="OSEE-INF/extensionPts/CommitActions.exsd"/>
    <extension-point id="OseeValidator" name="OseeValidator" schema="OSEE-INF/extensionPts/OseeValidator.exsd"/>

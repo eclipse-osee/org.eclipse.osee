@@ -55,8 +55,6 @@ public interface BranchDataStore {
 
    Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
 
-   Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck);
-
    Callable<Void> changeBranchState(OrcsSession session, BranchId branch, BranchState branchState);
 
    Callable<Void> changeBranchType(OrcsSession session, BranchId branch, BranchType branchType);
