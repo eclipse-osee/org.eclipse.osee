@@ -40,7 +40,7 @@ public class MassEditTeamVersionItemTest {
 
       MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", AtsImage.ACTION);
       search.setSelectedTeamDef(teamDef);
-      Collection<Artifact> results = search.getResults();
+      Collection<Artifact> results = search.getResults(teamDef);
       Assert.assertEquals(3, results.size());
       List<String> versionNames = Arrays.asList(DemoBranches.SAW_Bld_1.getName(), DemoBranches.SAW_Bld_2.getName(),
          DemoBranches.SAW_Bld_3.getName());
