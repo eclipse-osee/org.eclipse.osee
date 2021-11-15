@@ -39,6 +39,7 @@ public class AtsColumnToken {
    public static AtsColumnIdValueColumn AssigneeColumn = new AtsColumnIdValueColumn(AtsColumnId.Assignees, AtsColumnId.Assignees.name(), 100, ColumnAlign.Left.name(), true, ColumnType.String, true, "", true, false);
    public static AtsColumnIdValueColumn AtsIdColumn = new AtsColumnIdValueColumn(AtsColumnId.AtsId, "ATS Id", 75, ColumnAlign.Left.name(), false, ColumnType.String, false, "ATS ID", false, false);
    public static AtsColumnIdValueColumn AtsIdColumnShow = new AtsColumnIdValueColumn(AtsColumnId.AtsId, "ATS Id", 75, ColumnAlign.Left.name(), true, ColumnType.String, false, "ATS ID", false, false);
+   public static AtsColumnIdValueColumn SiblingAtsIdsColumn = new AtsColumnIdValueColumn(AtsColumnId.SiblingAtsIds, "Sibling ATS Ids", 75, ColumnAlign.Left.name(), false, ColumnType.String, false, "ATS ID", false, false);
    public static AtsColumnIdValueColumn CancelledByColumn = new AtsColumnIdValueColumn(AtsColumnId.CancelledBy, "Cancelled By", 80, ColumnAlign.Left.name(), false, ColumnType.String, false, "User transitioning action to cancelled state.", true, false);
    public static AtsColumnIdValueColumn CancelledDateColumn = new AtsColumnIdValueColumn(AtsColumnId.CancelledDate, "Cancelled Date", 80, ColumnAlign.Left.name(), false, ColumnType.Date, false, null, true, false);
    public static AtsColumnIdValueColumn CancelledReason = new AtsColumnIdValueColumn(AtsColumnId.CancelledReason, "Cancelled Reason", 80, ColumnAlign.Left.name(), false, ColumnType.String, false, "Reason for cancelling action.", true, false);

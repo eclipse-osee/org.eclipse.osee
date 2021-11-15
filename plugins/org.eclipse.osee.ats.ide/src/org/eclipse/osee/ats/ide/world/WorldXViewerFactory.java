@@ -177,6 +177,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          ParentTopTeamColumnUI.getInstance(),
          ActionableItemOwner.getInstance(),
          getColumnServiceColumn(AtsColumnToken.AtsIdColumn),
+         getColumnServiceColumn(AtsColumnToken.SiblingAtsIdsColumn),
          AgileFeatureGroupColumn.getInstance(),
          SprintOrderColumn.getInstance(),
          RemainingPointsNumericWorkflowColumn.getInstance(),
