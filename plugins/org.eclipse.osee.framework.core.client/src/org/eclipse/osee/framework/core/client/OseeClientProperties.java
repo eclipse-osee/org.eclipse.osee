@@ -26,7 +26,6 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_LOCAL_HTTP_WORKER_PORT = "osee.local.http.worker.port";
 
    // Database Initialization Properties
-   private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
 
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
 
@@ -41,15 +40,6 @@ public class OseeClientProperties extends OseeProperties {
     */
    public static String getChoiceOnDbInit() {
       return getProperty(OSEE_CHOICE_ON_DB_INIT);
-   }
-
-   /**
-    * Retrieves whether OSEE database initialization should import database data as part of its tasks.
-    *
-    * @return <b>true</b> if database initialization should import database data as part of its tasks.
-    */
-   public static boolean isOseeImportAllowed() {
-      return Boolean.valueOf(getProperty(OSEE_IMPORT_DURING_DB_INIT));
    }
 
    /**

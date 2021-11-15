@@ -19,10 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.IExportItem;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeDataProcessor;
 
 /**
  * @author Ryan D. Brooks
@@ -90,17 +87,4 @@ public class ReferentialIntegrityConstraint {
       return collector.getUnreferencedPrimaryKeys();
    }
 
-   public void checkConstraint(Log logger, JdbcClient jdbcClient, ExchangeDataProcessor processor) {
-      collector = new PrimaryKeyCollector(logger, jdbcClient);
-
-      for (IExportItem primaryTable : getPrimaryItems()) {
-         collector.setPrimaryKey(getPrimaryKey());
-         processor.parse(primaryTable, collector);
-      }
-      for (IExportItem foreignTable : getForeignItems()) {
-         ForeignKeyReader foreignKeyReader =
-            new ForeignKeyReader(logger, jdbcClient, collector, foreignTable, getForeignKeys());
-         processor.parse(foreignTable, foreignKeyReader);
-      }
-   }
 }

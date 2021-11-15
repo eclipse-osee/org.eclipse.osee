@@ -19,8 +19,7 @@ package org.eclipse.osee.framework.database.init;
 public enum DefaultDbInitTasks {
    DB_INIT_TASK("org.eclipse.osee.framework.database.init.DatabaseInitializationTask"),
    BOOTSTRAP_TASK("org.eclipse.osee.framework.database.init.DbBootstrapTask"),
-   DB_USER_CLEANUP("org.eclipse.osee.framework.database.init.PostDbUserCleanUp"),
-   BRANCH_DATA_IMPORT("org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport");
+   DB_USER_CLEANUP("org.eclipse.osee.framework.database.init.PostDbUserCleanUp");
 
    private String extensionId;
    public static final String PREVIEW_ALL_RECURSE = "PREVIEW_ALL_RECURSE";

@@ -96,8 +96,6 @@ public interface OrcsBranch {
 
    Callable<URI> importBranch(URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
 
-   Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
-
    void addMissingApplicabilityFromParentBranch(BranchId branch);
 
    BranchToken createProgramBranch(BranchToken branch);
