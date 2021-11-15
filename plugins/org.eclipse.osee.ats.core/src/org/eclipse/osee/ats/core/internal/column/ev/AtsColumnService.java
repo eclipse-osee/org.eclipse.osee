@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
 import org.eclipse.osee.ats.core.column.ParentTitleColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
+import org.eclipse.osee.ats.core.column.SiblingAtsIdColumn;
 import org.eclipse.osee.ats.core.column.SprintOrderColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TargetedVersionColumn;
@@ -105,6 +106,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AssigneeColumn(atsApi);
          } else if (id.equals(AtsColumnId.AtsId.getId())) {
             column = new AtsIdColumn(atsApi);
+         } else if (id.equals(AtsColumnId.SiblingAtsIds.getId())) {
+            column = new SiblingAtsIdColumn(atsApi);
          } else if (id.equals(AtsColumnId.ActivityId.getId())) {
             column = new WorkPackageColumn(atsApi.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.Implementers.getId())) {
@@ -159,8 +162,6 @@ public class AtsColumnService implements IAtsColumnService {
             column = new WorkPackageProgramColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.State.getId())) {
             column = new StateColumn(atsApi);
-         } else if (id.equals(AtsColumnId.Id.getId())) {
-            column = new IdColumn(atsApi);
          } else if (id.equals(AtsColumnId.Insertion.getId())) {
             column = new InsertionColumn(atsApi);
          } else if (id.equals(AtsColumnId.InsertionActivity.getId())) {

@@ -25,6 +25,7 @@ public enum AtsColumnId implements IAtsColumnId {
    AgileTeamPoints("ats.agileTeam.Points"),
    Assignees("ats.column.assignees"),
    AtsId("ats.id"),
+   SiblingAtsIds("ats.sibling.id"),
    ChangeType("ats.column.changetype"),
    CreatedDate("ats.column.createdDate"),
    CompletedDate("ats.column.completedDate"),
