@@ -38,7 +38,7 @@ public class XStateCombo extends XComboDam {
    public static final String WIDGET_ID = XStateCombo.class.getSimpleName();
 
    public XStateCombo() {
-      super("State");
+      super("");
    }
 
    private String[] getStateNames() {
