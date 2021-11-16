@@ -50,4 +50,14 @@ public class UserSearchWidget extends AbstractXComboViewerSearchWidget<AtsUser> 
    public Collection<AtsUser> getInput() {
       return Collections.castAll(AtsApiService.get().getUserService().getUsers(Active.Both));
    }
+
+   @Override
+   public AtsUser get() {
+      Object obj = super.get();
+      if (obj instanceof AtsUser) {
+         return (AtsUser) obj;
+      }
+      return null;
+   }
+
 }

@@ -43,4 +43,14 @@ public class UserTypeSearchWidget extends AbstractXComboViewerSearchWidget<AtsSe
       return Arrays.asList(AtsSearchUserType.Assignee, AtsSearchUserType.Originated, AtsSearchUserType.Favorites,
          AtsSearchUserType.Subscribed);
    }
+
+   @Override
+   public AtsSearchUserType get() {
+      Object obj = super.get();
+      if (obj instanceof AtsSearchUserType) {
+         return (AtsSearchUserType) obj;
+      }
+      return AtsSearchUserType.None;
+   }
+
 }

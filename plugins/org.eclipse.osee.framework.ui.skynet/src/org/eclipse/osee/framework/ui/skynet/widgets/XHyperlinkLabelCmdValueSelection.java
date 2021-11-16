@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -184,6 +185,9 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
       toolkit.adapt(selectHyperLinkLabel, true, true);
       if (supportClear) {
          toolkit.adapt(clearHyperLinkLabel, true, true);
+      }
+      if (Widgets.isAccessible(valueLabel)) {
+         toolkit.adapt(valueLabel, true, true);
       }
    }
 

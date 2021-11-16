@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +64,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -76,6 +78,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final Map<IAtsWorkItem, IAtsWorkDefinition> bootstrappingWorkItemToWorkDefCache = new HashMap<>();
    private final Set<IAtsWorkItem> logOnce = new HashSet<>();
+   public static final String VALID_STATE_NAMES_KEY = "validStateNames";
 
    public AtsWorkDefinitionServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
@@ -413,7 +416,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
+   public Collection<String> computeAllValidStateNames() {
       Set<String> allValidStateNames = new HashSet<>();
       for (IAtsWorkDefinition workDef : getAllWorkDefinitions()) {
          for (String stateName : getStateNames(workDef)) {
@@ -423,6 +426,25 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       return allValidStateNames;
+   }
+
+   @Override
+   public Collection<String> getAllValidStateNamesFromConfig() {
+      String stateNamesStr = atsApi.getConfigValue(VALID_STATE_NAMES_KEY);
+      List<String> stateNames = new LinkedList<>();
+      if (Strings.isValid(stateNamesStr)) {
+         for (String stateName : stateNamesStr.split(",")) {
+            stateNames.add(stateName);
+         }
+      }
+      return stateNames;
+   }
+
+   @Override
+   public Collection<String> updateAllValidStateNames() {
+      Collection<String> validStateNames = atsApi.getWorkDefinitionService().computeAllValidStateNames();
+      atsApi.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
+      return validStateNames;
    }
 
    @Override

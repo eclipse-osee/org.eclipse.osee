@@ -128,6 +128,8 @@ public class AtsDbConfigBase {
 
       createPeerReviewUserGroup();
 
+      atsApi.getWorkDefinitionService().updateAllValidStateNames();
+
       return results;
    }
 

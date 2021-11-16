@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +43,6 @@ public class UpdateAtsConfiguration {
    public static final String VIEWS_KEY = "views";
    private static final String VIEWS_EQUAL_KEY = VIEWS_KEY + "=";
    public static final String COLOR_COLUMN_KEY = "colorColumns";
-   public static final String VALID_STATE_NAMES_KEY = "validStateNames";
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
@@ -136,19 +133,7 @@ public class UpdateAtsConfiguration {
    }
 
    private void createUpdateValidStateAttributes() throws Exception {
-
-      Collection<String> validStateNames = atsApi.getWorkDefinitionService().getAllValidStateNames(new XResultData());
-      atsApi.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
-   }
-
-   public Collection<String> getValidStateNames(String stateNamesStr) {
-      List<String> stateNames = new LinkedList<>();
-      if (Strings.isValid(stateNamesStr)) {
-         for (String stateName : stateNamesStr.split(",")) {
-            stateNames.add(stateName);
-         }
-      }
-      return stateNames;
+      atsApi.getWorkDefinitionService().updateAllValidStateNames();
    }
 
    public AtsViews getConfigViews(String viewsStr) {
