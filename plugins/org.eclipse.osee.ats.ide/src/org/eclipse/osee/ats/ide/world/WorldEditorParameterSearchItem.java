@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -115,8 +116,41 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          if (workItemType != null && workItemType.get().isEmpty()) {
             return new Result("You must select a workflow type.");
          }
-         if (teamDef != null && teamDef.get() != null && teamDef.get().isEmpty() && ai != null && ai.get().isEmpty() && isTeamDefWorkItemTypesSelected()) {
-            return new Result("You must select either Actionable Item(s) or Team Definition(s).");
+         boolean teamExists = teamDef != null;
+         boolean teamSelected = teamDef != null && teamDef.get() != null && !teamDef.get().isEmpty();
+         boolean aiExists = ai != null;
+         boolean aiSelected = ai != null && ai.get() != null && !ai.get().isEmpty();
+         boolean teamDefWorkItemSel = isTeamDefWorkItemTypesSelected();
+         if (teamDefWorkItemSel) {
+            // Only Team Def exists
+            if (teamExists && !aiExists) {
+               if (!teamSelected) {
+                  return new Result("You must select Team Definition(s).");
+               }
+            }
+            // Only AI exists
+            if (aiExists && !teamExists) {
+               if (!aiSelected) {
+                  return new Result("You must select either Actionable Item(s).");
+               }
+            }
+            // Both Team Def and AI exist
+            if (aiExists && teamExists) {
+               if (!aiSelected && !teamSelected) {
+                  return new Result("You must select either Actionable Item(s) or Team Definition(s).");
+               }
+            }
+
+         }
+         if (userType != null) {
+            AtsSearchUserType type = userType.get();
+            AtsUser selUser = user.get();
+            if (type != null && type != AtsSearchUserType.None && selUser == null) {
+               return new Result("You must select User when User Type is selected.");
+            }
+            if (selUser != null && (type == null || type == AtsSearchUserType.None)) {
+               return new Result("You must select User Type when User is selected.");
+            }
          }
          return Result.TrueResult;
       } catch (Exception ex) {

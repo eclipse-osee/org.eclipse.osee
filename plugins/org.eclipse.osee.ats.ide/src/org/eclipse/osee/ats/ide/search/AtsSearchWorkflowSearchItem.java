@@ -42,7 +42,7 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
-   private static final AtsImage IMAGE = AtsImage.SEARCH;
+   protected static final AtsImage IMAGE = AtsImage.SEARCH;
    private static final String TITLE = "Action Search";
    protected WorldSearchItem searchItem;
    private long searchId = Lib.generateId();
@@ -89,7 +89,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
 
    protected void addBaseWidgets() {
       getTitle().addWidget();
-      getAi().addWidget(3);
+      if (isAdvanced()) {
+         getAi().addWidget(3);
+      }
       getTeamDef().addWidget(2);
       getVersion().addWidget(6);
       getStateType().addWidget();
@@ -137,7 +139,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getTeamDefIds().clear();
          data.getTeamDefIds().addAll(getTeamDef().getIds());
       }
-      if (getAi().getIds() != null) {
+      if (isAdvanced() && getAi().getIds() != null) {
          data.getAiIds().clear();
          data.getAiIds().addAll(getAi().getIds());
       }
@@ -185,7 +187,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
             getWorkItemType().set(data);
          }
          getTeamDef().set(data);
-         getAi().set(data);
+         if (isAdvanced()) {
+            getAi().set(data);
+         }
          getVersion().set(data);
          getStateName().set(data);
          if (showWorkPackageWidgets()) {
@@ -307,4 +311,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       this.savedData = savedData;
    }
 
+   protected boolean isAdvanced() {
+      return false;
+   }
 }

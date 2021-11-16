@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.ide.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.ide.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.ide.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchOperationFactory;
+import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowAdvSearchItem;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;
@@ -281,6 +282,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
       // Admin
       items.add(new ClearAtsConfigCache());
+      items.add(new UpdateWorkDefValidStateNameConfig());
       items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(
          new XNavigateItemAction(new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
@@ -336,6 +338,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
       items.add(new XNavigateItemFolder(ATS_ADVANCED_SEARCHES.getName(), AtsImage.SEARCH, TOP));
 
+      items.add(new SearchNavigateItem(new AtsSearchWorkflowAdvSearchItem(), ATS_ADVANCED_SEARCHES));
       items.add(new SearchNavigateItem(new MyFavoritesSearchItem("My Favorites", null), ATS_ADVANCED_SEARCHES));
       items.add(new SearchNavigateItem(new MySubscribedSearchItem("My Subscribed", null), ATS_ADVANCED_SEARCHES));
       items.add(new SearchNavigateItem(new AtsSearchTeamWorkflowSearchItem(), ATS_ADVANCED_SEARCHES));
