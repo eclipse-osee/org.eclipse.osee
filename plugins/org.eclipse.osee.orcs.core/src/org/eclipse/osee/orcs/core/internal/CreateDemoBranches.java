@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -39,6 +40,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.internal.applicability.DemoFeatures;
 import org.eclipse.osee.orcs.core.util.Artifacts;
+import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -105,7 +107,20 @@ public class CreateDemoBranches {
 
       tx.createBranchCategory(branch, CoreBranchCategoryTokens.PLE);
       tx.createBranchCategory(branch, CoreBranchCategoryTokens.ATS);
-      tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(1), "Base");
+
+      /*
+       * Depending on the order in which the branches are created, Base may have already been created. If so it would be
+       * an introduce on another branch
+       **/
+
+      TupleQuery query = orcsApi.getQueryFactory().tupleQuery();
+      GammaId gamma = GammaId.SENTINEL;
+      if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0),
+         "Base")).isValid()) {
+         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0), "Base");
+      } else {
+         tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+      }
       tx.commit();
       ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
       group.setName("abGroup");
