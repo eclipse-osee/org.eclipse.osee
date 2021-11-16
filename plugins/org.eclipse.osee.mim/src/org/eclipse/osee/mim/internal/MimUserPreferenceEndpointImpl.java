@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint {
 
-   MimApi mimApi;
+   private final MimApi mimApi;
 
    public MimUserPreferenceEndpointImpl(MimApi mimApi) {
       this.mimApi = mimApi;
@@ -39,8 +39,8 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
 
    @Override
    public MimUserPreference getPreferences(BranchId branch, UserId accountId) {
-      ArtifactReadable user = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         ArtifactId.valueOf(accountId.getId())).asArtifact();
+      ArtifactReadable user =
+         mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(accountId).asArtifact();
       BranchToken selectedBranch = mimApi.getOrcsApi().getQueryFactory().branchQuery().andId(branch).getOneOrSentinel();
       boolean hasWriteAccess = !mimApi.getOrcsApi().getAccessControlService().hasBranchPermission(user, selectedBranch,
          PermissionEnum.WRITE, null).isErrors();

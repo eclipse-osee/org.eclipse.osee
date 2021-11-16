@@ -575,7 +575,7 @@ public class BranchEndpointTest {
 
       // check to see if the original committed branch shows up as a branch with a modified artifact  - should be no
       List<BranchId> branches =
-         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.valueOf(newArtifact.getId()));
+         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
       Assert.assertTrue(branches.isEmpty());
 
       // modify the artifact on the current branch, then check to see if another branch shows up as a branch with a modified artifact
@@ -584,13 +584,12 @@ public class BranchEndpointTest {
       branchEndpoint.setBranchName(testBranchIdTwo, "testBranchIdTwo");
       workingBranchArtifactEndpoint.deleteArtifact(testBranchIdTwo, newArtifact);
 
-      branches =
-         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.valueOf(newArtifact.getId()));
+      branches = branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
       // since testBranchIdtwo has deleted the artifact, we expect to see it as a branch with a modified artifact
       Assert.assertFalse(branches.isEmpty());
 
       List<BranchId> branchesModded =
-         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.valueOf(newArtifact.getId()));
+         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.create(newArtifact));
       // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
       Assert.assertTrue(branchesModded.isEmpty());
 

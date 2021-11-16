@@ -111,7 +111,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
          IAtsWorkPackage workPkg = AtsApiService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) awa);
          if (workPkg != null) {
             if (!ids.contains(workPkg.getStoreObject())) {
-               ids.add(ArtifactId.valueOf(workPkg.getId()));
+               ids.add(workPkg.getArtifactId());
             }
          }
       }

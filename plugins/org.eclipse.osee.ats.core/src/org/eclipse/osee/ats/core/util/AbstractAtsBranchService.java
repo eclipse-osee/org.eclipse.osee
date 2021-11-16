@@ -658,7 +658,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public void setWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf, boolean inProgress) {
       synchronized (workingBranchCreatingInProgress) {
-         workingBranchCreatingInProgress.put(ArtifactId.valueOf(teamWf.getId()), inProgress);
+         workingBranchCreatingInProgress.put(teamWf.getArtifactId(), inProgress);
       }
    }
 
@@ -671,7 +671,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public void setWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf, boolean inProgress) {
       synchronized (workingBranchCommitInProgress) {
-         workingBranchCommitInProgress.put(ArtifactId.valueOf(teamWf.getId()), inProgress);
+         workingBranchCommitInProgress.put(teamWf.getArtifactId(), inProgress);
       }
    }
 
@@ -713,5 +713,4 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       return bd;
    }
-
 }

@@ -109,7 +109,7 @@ public class TaskEstUtil {
                CoreAttributeTypes.Description, "");
             List<ArtifactId> assigneeAccountIds = new LinkedList<>();
             for (UserToken user : atsApi.userService().getUserGroup(childArt).getMembers()) {
-               assigneeAccountIds.add(ArtifactId.valueOf(user.getId()));
+               assigneeAccountIds.add(ArtifactId.create(user));
             }
             ArtifactToken aiArt = atsApi.getRelationResolver().getRelatedOrSentinel(childArt,
                AtsRelationTypes.UserGroupToActionableItem_AI);

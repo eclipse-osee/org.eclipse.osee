@@ -142,7 +142,7 @@ public class ArtifactFormPageViewApplicability {
          result = "Error: Applicabilty Service not found";
       } else {
          try {
-            result = applEndpoint.getApplicabilityToken(ArtifactId.valueOf(artifact.getArtId())).getName();
+            result = applEndpoint.getApplicabilityToken(ArtifactId.create(artifact)).getName();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             result = "Error retrieving applicability. (see log)";

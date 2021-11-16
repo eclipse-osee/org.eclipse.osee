@@ -279,7 +279,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          JsonArtifact jArt = new JsonArtifact();
          jArt.setType(art.getArtifactType());
          jArt.setTypeName(art.getArtifactType().getName());
-         jArt.setId(ArtifactId.valueOf(art.getId()));
+         jArt.setId(ArtifactId.create(art));
          jArt.setName(art.getName());
          List<JsonAttribute> attrList = new ArrayList<JsonAttribute>();
          List<? extends AttributeReadable<Object>> list = art.getAttributes().getList();

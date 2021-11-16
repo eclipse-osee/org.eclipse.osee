@@ -963,7 +963,7 @@ public class WordTemplateProcessor {
    private boolean isArtifactIncluded(Artifact artifact) {
       boolean excludedArtifact =
          (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || (artifactsToExclude.containsKey(
-            ArtifactId.valueOf(artifact.getId())) || emptyFolders.contains(artifact));
+            ArtifactId.create(artifact)) || emptyFolders.contains(artifact));
       boolean excludedArtifactType = excludeArtifactTypes != null && isOfType(artifact, excludeArtifactTypes);
 
       return !excludedArtifact && !excludedArtifactType;

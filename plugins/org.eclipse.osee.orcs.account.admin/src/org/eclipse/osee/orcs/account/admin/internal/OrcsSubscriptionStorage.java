@@ -125,7 +125,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       SubscriptionGroup subscriptionGroup = getSubscriptionGroupById(subscriptionId);
 
       if (subscriptionGroup != null) {
-         ArtifactId subscriptionAsArtId = ArtifactId.valueOf(subscriptionId.getId());
+         ArtifactId subscriptionAsArtId = ArtifactId.create(subscriptionId);
          String comment = String.format("Delete subscription group [%s]", subscriptionGroup.getName());
          TransactionBuilder tx = newTransaction(comment);
          tx.deleteArtifact(subscriptionAsArtId);
@@ -148,7 +148,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public ResultSet<Account> getSubscriptionMembersById(SubscriptionGroupId groupId) {
-      ArtifactId groupArtId = ArtifactId.valueOf(groupId.getId());
+      ArtifactId groupArtId = ArtifactId.create(groupId);
       ResultSet<ArtifactReadable> results =
          newQuery().andTypeEquals(CoreArtifactTypes.User).andRelatedTo(CoreRelationTypes.Users_Artifact,
             groupArtId).getResults();

@@ -155,7 +155,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                configs.addTeamDef(teamDef);
                handleTeamDef(art, teamDef, idToArtifact, configs);
                if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
-                  configs.setTopTeamDefinition(ArtifactId.valueOf(art.getId()));
+                  configs.setTopTeamDefinition(ArtifactId.create(art));
                }
                teamDef.setAtsApi(atsApi);
             } else if (art.isOfType(ActionableItem)) {
@@ -163,7 +163,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                configs.addAi(ai);
                handleAi(art, ai, idToArtifact, configs);
                if (AtsArtifactToken.TopActionableItem.equals(art)) {
-                  configs.setTopActionableItem(ArtifactId.valueOf(art.getId()));
+                  configs.setTopActionableItem(ArtifactId.create(art));
                }
                ai.setAtsApi(atsApi);
             } else if (art.isOfType(Version)) {

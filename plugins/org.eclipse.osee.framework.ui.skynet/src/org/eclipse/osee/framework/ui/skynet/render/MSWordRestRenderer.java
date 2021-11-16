@@ -66,12 +66,12 @@ public class MSWordRestRenderer extends WordRenderer {
       // Get the template used for this publish
       String option = (String) getRendererOptionValue(RendererOption.TEMPLATE_OPTION);
       Artifact template = TemplateManager.getTemplate(this, artifacts.get(0), presentationType, option);
-      ArtifactId templateId = ArtifactId.valueOf(template.getId());
+      ArtifactId templateId = ArtifactId.create(template);
 
       // Create the list of artifact ids to be published
       List<ArtifactId> artifactIds = new LinkedList<>();
       for (Artifact art : artifacts) {
-         artifactIds.add(ArtifactId.valueOf(art.getId()));
+         artifactIds.add(ArtifactId.create(art));
       }
 
       // Get the view for the publish

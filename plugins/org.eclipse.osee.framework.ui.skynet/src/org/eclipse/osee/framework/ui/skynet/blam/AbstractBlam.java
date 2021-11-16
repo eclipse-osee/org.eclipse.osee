@@ -250,7 +250,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public void excludeArtifacts(Iterator<Artifact> iter) {
       while (iter.hasNext()) {
          Artifact artifact = iter.next();
-         if (excludedArtifactIdMap.contains(ArtifactId.valueOf(artifact.getId()))) {
+         if (excludedArtifactIdMap.contains(ArtifactId.create(artifact))) {
             iter.remove();
          }
       }
