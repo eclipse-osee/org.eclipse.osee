@@ -49,6 +49,16 @@ public interface ArtifactId extends Id {
       return valueOf(Long.valueOf(id));
    }
 
+   /**
+    * @return Always returns a new ArtifactId even though the argument passed in is already an ArtifactToken (at least).
+    * This is used in the special case where the added information in the argument is undesirable. Such a case occurs
+    * with Artifact where its equals method takes into account the branchId if the object being compared to it
+    * implements HasBranch. Another possible case is with JSON serialization
+    */
+   public static ArtifactId create(Id artifact) {
+      return valueOf(artifact.getId());
+   }
+
    public static @NonNull ArtifactId valueOf(Long id) {
       final class ArtifactIdImpl extends BaseId implements ArtifactId, Comparable<ArtifactId> {
          private final Long id;

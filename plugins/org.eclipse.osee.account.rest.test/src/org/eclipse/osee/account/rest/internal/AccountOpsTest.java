@@ -236,7 +236,7 @@ public class AccountOpsTest {
 
       AccountPreferences preferences = mock(AccountPreferences.class);
       when(preferences.asMap()).thenReturn(map);
-      when(preferences.getId()).thenReturn(ArtifactId.valueOf(789L).getId());
+      when(preferences.getId()).thenReturn(789L);
       when(account.getPreferences()).thenReturn(preferences);
 
       ResultSet<Account> accounts = ResultSets.singleton(account);

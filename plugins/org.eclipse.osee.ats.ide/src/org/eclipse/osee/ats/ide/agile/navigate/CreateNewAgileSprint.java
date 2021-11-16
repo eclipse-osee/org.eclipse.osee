@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -92,7 +91,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                         long id = sprint.getId();
                         Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsApiService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
-                        AtsEditors.openArtifactById(ArtifactId.valueOf(sprintArt.getId()), OseeCmEditor.CmPcrEditor);
+                        AtsEditors.openArtifactById(sprintArt, OseeCmEditor.CmPcrEditor);
                      } else {
                         AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
                         return;

@@ -533,7 +533,7 @@ public class CreateChangeReportTasksOperation {
             task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactName, taskMatch.getChgRptArtName());
             task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactDeleted, taskMatch.isChgRptArtDeleted());
             task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference,
-               ArtifactId.valueOf(taskMatch.getChgRptArt().getId()));
+               ArtifactId.create(taskMatch.getChgRptArt()));
          }
          task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
       } else {

@@ -392,7 +392,7 @@ public class ChangeDataLoader extends AbstractOperation {
          artifacts = ArtifactQuery.getArtifactListFrom(artIds, tx.getBranch());
       }
       for (Artifact artifact : artifacts) {
-         bulkLoaded.put(tx, ArtifactId.valueOf(artifact.getId()), artifact);
+         bulkLoaded.put(tx, ArtifactId.create(artifact), artifact);
       }
    }
 

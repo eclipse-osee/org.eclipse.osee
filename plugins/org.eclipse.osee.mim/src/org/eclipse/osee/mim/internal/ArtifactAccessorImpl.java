@@ -65,8 +65,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
             T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
             if (hasSetApplic(clazz)) {
                getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
-                     ArtifactId.valueOf(artifact.getId()), branch));
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
             }
             artifactList.add(returnObj);
          }
@@ -98,8 +97,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
             T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
             if (hasSetApplic(clazz)) {
                getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
-                     ArtifactId.valueOf(artifact.getId()), branch));
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
             }
             artifactList.add(returnObj);
          }
@@ -118,8 +116,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
             T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
             if (hasSetApplic(clazz)) {
                getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
-                     ArtifactId.valueOf(artifact.getId()), branch));
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
             }
             artifactList.add(returnObj);
          }
@@ -137,8 +134,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
             T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
             if (hasSetApplic(clazz)) {
                getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
-                     ArtifactId.valueOf(artifact.getId()), branch));
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
             }
             artifactList.add(returnObj);
          }
@@ -167,8 +163,8 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       if (artifact.isValid()) {
          T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
          if (hasSetApplic(clazz)) {
-            getSetApplic(clazz).invoke(returnObj, orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(
-               ArtifactId.valueOf(artifact.getId()), branch));
+            getSetApplic(clazz).invoke(returnObj,
+               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
          }
          return returnObj;
       }

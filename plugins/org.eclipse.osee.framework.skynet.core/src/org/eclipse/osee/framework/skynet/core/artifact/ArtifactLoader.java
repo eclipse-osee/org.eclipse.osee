@@ -327,8 +327,7 @@ public final class ArtifactLoader {
 
    static void loadArtifactData(Artifact artifact, LoadLevel loadLevel, boolean isArchived) {
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
-         joinQuery.add(artifact.getBranch(), ArtifactId.valueOf(artifact.getId()), TransactionId.SENTINEL,
-            artifact.getBranch().getViewId());
+         joinQuery.add(artifact.getBranch(), artifact, TransactionId.SENTINEL, artifact.getBranch().getViewId());
          joinQuery.store();
 
          List<Artifact> artifacts = new ArrayList<>(1);

@@ -105,7 +105,7 @@ public class AtsWorldEndpointImplTest {
 
    @Test
    public void testGetMyWorldUICustomized() {
-      String html = worldEp.getMyWorldUICustomized(ArtifactId.valueOf(DemoUsers.Joe_Smith.getId()), GUID_LOCAL);
+      String html = worldEp.getMyWorldUICustomized(ArtifactId.create(DemoUsers.Joe_Smith), GUID_LOCAL);
       Assert.assertNotNull(html);
       Assert.assertTrue(html.startsWith("<h2>MY World - Joe Smith - Customization: guid local"));
    }

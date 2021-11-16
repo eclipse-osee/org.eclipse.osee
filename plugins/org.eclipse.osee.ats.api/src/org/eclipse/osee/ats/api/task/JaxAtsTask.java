@@ -168,7 +168,7 @@ public class JaxAtsTask extends JaxAtsObject {
 
    @JsonIgnore
    public ArtifactToken getToken() {
-      return ArtifactToken.valueOf(ArtifactId.valueOf(getId()), atsApi.getAtsBranch());
+      return ArtifactToken.valueOf(getId(), atsApi.getAtsBranch());
    }
 
    public Double getHoursSpent() {
@@ -178,5 +178,4 @@ public class JaxAtsTask extends JaxAtsObject {
    public void setHoursSpent(Double hoursSpent) {
       this.hoursSpent = hoursSpent;
    }
-
 }

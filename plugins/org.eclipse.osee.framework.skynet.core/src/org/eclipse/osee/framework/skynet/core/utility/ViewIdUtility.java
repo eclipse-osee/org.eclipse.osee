@@ -44,10 +44,9 @@ public class ViewIdUtility {
    public static void removeExcludedArtifacts(Iterator<Artifact> iterator, Set<ArtifactId> excludedArtifactIdMap) {
       while (iterator.hasNext()) {
          Artifact artifact = iterator.next();
-         if (excludedArtifactIdMap.contains(ArtifactId.valueOf(artifact.getId()))) {
+         if (excludedArtifactIdMap.contains(ArtifactId.create(artifact))) {
             iterator.remove();
          }
       }
    }
-
 }

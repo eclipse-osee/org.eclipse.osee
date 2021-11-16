@@ -192,7 +192,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
       ArtifactId previousVersion = ArtifactId.SENTINEL;
       if (!previousVersions.isEmpty()) {
-         previousVersion = ArtifactId.valueOf(previousVersions.iterator().next().getId());
+         previousVersion = ArtifactId.create(previousVersions.iterator().next());
       }
       changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
       changes.addExecuteListener(getPostPersistExecutionListener(teamWf, version, previousVersion));
@@ -389,8 +389,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       for (IAtsVersion version : getVersions(teamDef)) {
          if (version.isLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
-         } else if (!version.isLocked() && lockType == VersionLockedType.UnLocked
-            || lockType == VersionLockedType.Both) {
+         } else if (!version.isLocked() && lockType == VersionLockedType.UnLocked || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }
@@ -401,11 +400,9 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public Collection<IAtsVersion> getVersionsReleased(IAtsTeamDefinition teamDef, VersionReleaseType releaseType) {
       ArrayList<IAtsVersion> versions = new ArrayList<>();
       for (IAtsVersion version : getVersions(teamDef)) {
-         if (version.isReleased()
-            && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
+         if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
-         } else if (!version.isReleased() && releaseType == VersionReleaseType.UnReleased
-            || releaseType == VersionReleaseType.Both) {
+         } else if (!version.isReleased() && releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
             versions.add(version);
          }
       }

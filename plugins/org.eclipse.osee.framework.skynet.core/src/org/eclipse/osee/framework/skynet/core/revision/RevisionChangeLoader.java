@@ -175,7 +175,7 @@ public final class RevisionChangeLoader {
                ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), txToken, DeletionFlag.INCLUDE_DELETED);
          }
          for (Artifact art : artifacts) {
-            loadedMap.put(txToken, ArtifactId.valueOf(art.getId()), art);
+            loadedMap.put(txToken, ArtifactId.create(art), art);
          }
       }
 

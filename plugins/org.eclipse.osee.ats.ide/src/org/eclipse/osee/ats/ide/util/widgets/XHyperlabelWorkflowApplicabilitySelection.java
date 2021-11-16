@@ -120,7 +120,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
       if (isDirty().isTrue()) {
          List<ApplicabilityData> appDatas = new LinkedList<>();
          ApplicabilityData data = new ApplicabilityData();
-         data.setArtifact(ArtifactId.valueOf(workItem.getStoreObject().getId()));
+         data.setArtifact(ArtifactId.create(workItem.getStoreObject()));
          data.setApplIds(Collections.castAll(selectedAppls));
          appDatas.add(data);
          AtsApiService.get().getOseeClient().getApplicabilityEndpoint(
