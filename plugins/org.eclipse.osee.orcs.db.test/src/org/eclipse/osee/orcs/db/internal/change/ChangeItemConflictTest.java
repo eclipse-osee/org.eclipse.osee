@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -98,10 +99,10 @@ public class ChangeItemConflictTest {
       ChangeItem item;
       if (itemType == ItemType.artifact) {
          item = ChangeItemUtil.newArtifactChange(ArtifactId.SENTINEL, ArtifactTypeId.SENTINEL, GAMMA,
-            ModificationType.MODIFIED, ApplicabilityToken.BASE);
+            ModificationType.MODIFIED, ApplicabilityToken.BASE, TransactionToken.SENTINEL);
       } else {
          item = ChangeItemUtil.newAttributeChange(AttributeId.SENTINEL, AttributeTypeId.SENTINEL, ArtifactId.SENTINEL,
-            GAMMA, ModificationType.MODIFIED, "change", ApplicabilityToken.BASE);
+            GAMMA, ModificationType.MODIFIED, "change", ApplicabilityToken.BASE, TransactionToken.SENTINEL);
       }
 
       buildTestCase(GAMMA, item);

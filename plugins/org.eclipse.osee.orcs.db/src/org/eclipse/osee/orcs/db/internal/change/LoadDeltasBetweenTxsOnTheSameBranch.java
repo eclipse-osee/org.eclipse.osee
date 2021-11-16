@@ -50,23 +50,23 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
 
   // @formatter:off
    private static final String SELECT_ITEMS_BETWEEN_TRANSACTIONS =
-      "with txsOuter as (select gamma_id, mod_type, app_id from %s where branch_id = ? and transaction_id > ? and transaction_id <= ?) \n" +
-      "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id \n" +
+      "with txsOuter as (select gamma_id, mod_type, app_id, transaction_id from %s where branch_id = ? and transaction_id > ? and transaction_id <= ?) \n" +
+      "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
       "FROM osee_attribute item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
       "FROM osee_artifact item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
       "FROM osee_relation_link item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
       "from osee_tuple2 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
       "from osee_tuple3 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
       "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id";
    // @formatter:on
 
@@ -116,6 +116,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+         TransactionToken txToken = TransactionToken.valueOf(stmt.getLong("transaction_id"), destinationTx.getBranch());
          int tableType = stmt.getInt("table_type");
          Long itemId = stmt.getLong("item_id");
          Long itemTypeId = stmt.getLong("item_type_id");
@@ -126,12 +127,12 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                hashChangeData.put(1, itemId,
                   ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
                      tokenService.getAttributeType(itemTypeId), artId, gammaId, modType, value,
-                     getApplicabilityToken(appId)));
+                     getApplicabilityToken(appId), txToken));
                break;
             }
             case 2: {
                hashChangeData.put(2, itemId, ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(itemId),
-                  tokenService.getArtifactType(itemTypeId), gammaId, modType, getApplicabilityToken(appId)));
+                  tokenService.getArtifactType(itemTypeId), gammaId, modType, getApplicabilityToken(appId), txToken));
                break;
             }
             case 3: {
@@ -140,14 +141,14 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                String rationale = stmt.getString("item_value");
                hashChangeData.put(3, itemId,
                   ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId), tokenService.getRelationType(itemTypeId),
-                     gammaId, modType, aArtId, bArtId, rationale, getApplicabilityToken(appId)));
+                     gammaId, modType, aArtId, bArtId, rationale, getApplicabilityToken(appId), txToken));
                break;
             }
             case 4: {
                long e1 = stmt.getLong("item_first");
                long e2 = stmt.getLong("item_second");
                hashChangeData.put(4, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), modType, e1, e2));
+                  gammaId, getApplicabilityToken(appId), modType, txToken, e1, e2));
                break;
             }
             case 5: {
@@ -155,7 +156,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                long e2 = stmt.getLong("item_second");
                long e3 = stmt.getLong("item_third");
                hashChangeData.put(5, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), modType, e1, e2, e3));
+                  gammaId, getApplicabilityToken(appId), modType, txToken, e1, e2, e3));
                break;
             }
             case 6: {
@@ -164,7 +165,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                long e3 = stmt.getLong("item_third");
                long e4 = stmt.getLong("item_fourth");
                hashChangeData.put(6, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
-                  gammaId, getApplicabilityToken(appId), modType, e1, e2, e3, e4));
+                  gammaId, getApplicabilityToken(appId), modType, txToken, e1, e2, e3, e4));
                break;
             }
          }
@@ -197,10 +198,14 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
+         TransactionToken txToken =
+            TransactionToken.valueOf(stmt.getLong("transaction_id"), transactionLimit.getBranch());
          ChangeItem change = changesByItemId.get(tableType, itemId);
+
          change.getDestinationVersion().setModType(modType);
          change.getDestinationVersion().setGammaId(gammaId);
          change.getDestinationVersion().setApplicabilityToken(getApplicabilityToken(appId));
+         change.getDestinationVersion().setTransactionToken(txToken);
          change.getBaselineVersion().copy(change.getDestinationVersion());
       };
 

@@ -200,7 +200,8 @@ public class MissingChangeItemFactoryTest {
       GammaId artGamma = GammaId.valueOf(7L);
 
       ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(ci1AttrId), CoreAttributeTypes.Category,
-         artId, GammaId.valueOf(4L), ModificationType.MODIFIED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
+         artId, GammaId.valueOf(4L), ModificationType.MODIFIED, Strings.EMPTY_STRING, ApplicabilityToken.BASE,
+         TransactionToken.SENTINEL);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -235,7 +236,7 @@ public class MissingChangeItemFactoryTest {
       ArtifactId artC = ArtifactId.valueOf(artB.getId() + 1);
       GammaId srcGamma = GammaId.valueOf(7L);
       ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, RelationTypeToken.SENTINEL, srcGamma,
-         ModificationType.NEW, artA, artB, "", ApplicabilityToken.BASE);
+         ModificationType.NEW, artA, artB, "", ApplicabilityToken.BASE, TransactionToken.SENTINEL);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -274,7 +275,8 @@ public class MissingChangeItemFactoryTest {
       ArtifactId artId = ArtifactId.valueOf(3);
 
       ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), CoreAttributeTypes.Category, artId,
-         GammaId.valueOf(4L), ModificationType.DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
+         GammaId.valueOf(4L), ModificationType.DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE,
+         TransactionToken.SENTINEL);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -302,7 +304,8 @@ public class MissingChangeItemFactoryTest {
       List<ChangeItem> changes = new LinkedList<>();
       final ArtifactId artId = ArtifactId.valueOf(3);
       ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), CoreAttributeTypes.Category, artId,
-         GammaId.valueOf(4L), ModificationType.ARTIFACT_DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
+         GammaId.valueOf(4L), ModificationType.ARTIFACT_DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE,
+         TransactionToken.SENTINEL);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -335,17 +338,19 @@ public class MissingChangeItemFactoryTest {
    private static ChangeItem createExpected(RelationData data) {
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()), RelationTypeToken.SENTINEL,
          data.getVersion().getGammaId(), determineModType(data), ArtifactId.valueOf(data.getArtIdA()),
-         ArtifactId.valueOf(data.getArtIdB()), "", ApplicabilityToken.BASE);
+         ArtifactId.valueOf(data.getArtIdB()), "", ApplicabilityToken.BASE,
+         TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
    }
 
    private static ChangeItem createExpected(AttributeData data) {
       return ChangeItemUtil.newAttributeChange(data, AttributeTypeId.SENTINEL, data.getArtifactId(),
-         data.getVersion().getGammaId(), determineModType(data), "", ApplicabilityToken.BASE);
+         data.getVersion().getGammaId(), determineModType(data), "", ApplicabilityToken.BASE,
+         TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
    }
 
    private static ChangeItem createExpected(ArtifactData data) {
       return ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()), ArtifactTypeId.SENTINEL,
-         data.getVersion().getGammaId(), determineModType(data), ApplicabilityToken.BASE);
+         data.getVersion().getGammaId(), determineModType(data), ApplicabilityToken.BASE, TransactionToken.SENTINEL);
    }
 
    private ChangeItem getMatchingChangeItem(ChangeItem item) {
