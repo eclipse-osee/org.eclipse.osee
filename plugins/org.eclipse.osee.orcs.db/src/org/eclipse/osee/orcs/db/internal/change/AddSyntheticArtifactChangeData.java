@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -72,7 +73,7 @@ public class AddSyntheticArtifactChangeData {
                artifactChange = syntheticArtifactChanges.get(artIdToCheck);
                if (artifactChange == null) {
                   artifactChange = ChangeItemUtil.newArtifactChange(artIdToCheck, ArtifactTypeId.SENTINEL,
-                     GammaId.SENTINEL, null, null);
+                     GammaId.SENTINEL, null, null, TransactionToken.SENTINEL);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                   artifactChange.setSynthetic(true);
                }

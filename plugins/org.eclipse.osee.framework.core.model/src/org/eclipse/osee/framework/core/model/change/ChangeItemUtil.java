@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -39,7 +40,7 @@ public final class ChangeItemUtil {
       // Utility Class
    }
 
-   public static ChangeItem newArtifactChange(ArtifactId artId, ArtifactTypeId artTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityToken appToken) {
+   public static ChangeItem newArtifactChange(ArtifactId artId, ArtifactTypeId artTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Artifact);
 
@@ -51,12 +52,13 @@ public final class ChangeItemUtil {
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
+      current.setTransactionToken(txToken);
 
       item.setArtId(artId);
       return item;
    }
 
-   public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId, GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken) {
+   public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId, GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Attribute);
 
@@ -68,13 +70,14 @@ public final class ChangeItemUtil {
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
+      current.setTransactionToken(txToken);
 
       item.setArtId(artId);
       item.getCurrentVersion().setValue(value);
       return item;
    }
 
-   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken) {
+   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Relation);
 
@@ -86,6 +89,7 @@ public final class ChangeItemUtil {
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
+      current.setTransactionToken(txToken);
 
       item.setArtId(aArtId);
       item.setArtIdB(bArtId);
@@ -93,7 +97,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, ModificationType currentSourceModType, Long... e) {
+   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, ModificationType currentSourceModType, TransactionToken txToken, Long... e) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Tuple);
 
@@ -105,6 +109,7 @@ public final class ChangeItemUtil {
       current.setGammaId(gammaId);
       current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
+      current.setTransactionToken(txToken);
 
       if (e.length == 2) {
          item.getCurrentVersion().setValue(String.format("Tuple2|%s, %s", e[0], e[1]));

@@ -148,7 +148,7 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
                ArtifactId artifactId = ArtifactId.valueOf(itemId);
                ArtifactTypeId artTypeId = tokenService.getArtifactType(itemTypeId);
                ChangeItem artChange =
-                  ChangeItemUtil.newArtifactChange(artifactId, artTypeId, gammaId, modType, applicToken);
+                  ChangeItemUtil.newArtifactChange(artifactId, artTypeId, gammaId, modType, applicToken, txToken);
                ChangeVersion currentVersion = artChange.getCurrentVersion();
                currentVersion.setTransactionToken(txToken);
                currentVersion.setUri(uri);
@@ -173,7 +173,7 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
                AttributeTypeId attrTypeId = tokenService.getAttributeType(itemTypeId);
                ArtifactId artifactId = ArtifactId.valueOf(itemFirst);
                ChangeItem attrChange = ChangeItemUtil.newAttributeChange(attrId, attrTypeId, artifactId, gammaId,
-                  modType, value, applicToken);
+                  modType, value, applicToken, txToken);
                ChangeVersion currentVersion = attrChange.getCurrentVersion();
                currentVersion.setTransactionToken(txToken);
                currentVersion.setUri(uri);
@@ -205,7 +205,7 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
                ArtifactId artifactIdA = ArtifactId.valueOf(itemFirst);
                ArtifactId artifactIdB = ArtifactId.valueOf(itemSecond);
                ChangeItem relationChange = ChangeItemUtil.newRelationChange(relId, relTypeToken, gammaId, modType,
-                  artifactIdA, artifactIdB, value, applicToken);
+                  artifactIdA, artifactIdB, value, applicToken, txToken);
                ChangeVersion currentVersion = relationChange.getCurrentVersion();
                currentVersion.setTransactionToken(txToken);
 

@@ -220,7 +220,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    private ChangeItem createArtifactChangeItem(ArtifactData data) {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()), data.getType(),
-         data.getVersion().getGammaId(), determineModType(data), getApplicabilityToken(appId));
+         data.getVersion().getGammaId(), determineModType(data), getApplicabilityToken(appId),
+         TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getBranch()));
       return artChange;
    }
 
@@ -228,7 +229,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem attrChange =
          ChangeItemUtil.newAttributeChange(data, data.getType(), data.getArtifactId(), data.getVersion().getGammaId(),
-            determineModType(data), data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
+            determineModType(data), data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId),
+            TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
@@ -237,6 +239,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       ApplicabilityId appId = data.getApplicabilityId();
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId().longValue()), data.getType(),
          data.getVersion().getGammaId(), determineModType(data), data.getArtifactIdA(), data.getArtifactIdB(),
-         data.getRationale(), getApplicabilityToken(appId));
+         data.getRationale(), getApplicabilityToken(appId),
+         TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
    }
 }
