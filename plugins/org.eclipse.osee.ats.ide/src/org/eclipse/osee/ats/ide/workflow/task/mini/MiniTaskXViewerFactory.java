@@ -73,15 +73,12 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       AssumptionsColumn assumptCol = AssumptionsColumn.instance.copy();
       assumptCol.setShow(true);
       cols.add(assumptCol);
-      cols.add(getAttributeConfigColumn(AtsColumnToken.NotesColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
       addPostColumns(cols);
 
       for (XViewerColumn col : cols) {
          if (col.getName().equals(AtsColumnToken.TitleColumn.getName())) {
             col.setWidth(250);
-         } else if (col.getName().equals(AtsColumnToken.NotesColumn.getName())) {
-            col.setWidth(150);
          }
       }
       for (XViewerColumn col : WorldXViewerFactory.getWorldViewColumns()) {

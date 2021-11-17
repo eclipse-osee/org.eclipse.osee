@@ -13,10 +13,8 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Assumptions;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Category1;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedCompletionDate;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.WorkflowNotes;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
@@ -62,11 +60,7 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
             ), //
             new WidgetDefinition("TLE Reviewed Estimate", AtsAttributeTypes.TleReviewedDate, "XTleReviewedWidget",
-               REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
-            new CompositeLayoutItem(4, //
-               new WidgetDefinition(WorkflowNotes, "XTextDam", AUTO_SAVE), //
-               new WidgetDefinition(Category1, "XTextDam", AUTO_SAVE) //
-            ) //
+               REQUIRED_FOR_TRANSITION, AUTO_SAVE) //
          );
 
       bld.andState(2, "Completed", StateType.Completed) //
