@@ -56,7 +56,7 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
          .andLayout( //
             new WidgetDefinition(Description, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
             new WidgetDefinition(Assumptions, "XTextDam", FILL_VERTICALLY, AUTO_SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkWfdForEnumAttr", AUTO_SAVE), //
+            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
