@@ -76,11 +76,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttrDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttrDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
@@ -127,6 +128,8 @@ public final class FrameworkXWidgetProvider {
       register(XHyperlinkWfdForEnumAttrDam.class);
       register(XHyperlinkTriStateBoolean.class);
       register(XHyperlinkTriStateBooleanDam.class);
+      register(XHyperlinkLabelValueStringSel.class);
+      register(XHyperlinkLabelValueSelectionDam.class);
       return nameToClass;
    }
 

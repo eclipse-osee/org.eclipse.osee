@@ -288,4 +288,11 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXHyperlinkLabelValueStringSel(String name) {
+      newXWidget();
+      currItem.setXWidgetName("XHyperlinkLabelValueStringSel");
+      currItem.setName(name);
+      return this;
+   }
+
 }
