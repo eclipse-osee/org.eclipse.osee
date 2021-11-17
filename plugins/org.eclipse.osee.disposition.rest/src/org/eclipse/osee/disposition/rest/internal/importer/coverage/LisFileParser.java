@@ -217,14 +217,18 @@ public class LisFileParser implements DispoImporterApi {
                if (uncoveredAnnotation != null) {
                   if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
                      uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
+                     addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                        uncoveredAnnotation.getLastResolution());
                   } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
                      DispoStrings.Exception_Handling_Resolution)) {
                      uncoveredAnnotation.setLastResolution("Exception_Handling");
+                     addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                        uncoveredAnnotation.getLastResolution());
+                  } else {
+                     keepExistingAnnotation(item, uncoveredAnnotation);
                   }
-                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
-                     uncoveredAnnotation.getLastResolution());
                } else {
-                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(), "N/A");
+                  keepExistingAnnotation(item, uncoveredAnnotation);
                }
             }
          }
@@ -708,6 +712,13 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
       return toReturn;
+   }
+
+   private void keepExistingAnnotation(DispoItemData item, DispoAnnotationData existingAnnotation) {
+      List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
+      int newIndex = annotationsList.size();
+      existingAnnotation.setIndex(newIndex);
+      annotationsList.add(newIndex, existingAnnotation);
    }
 
    private void addBlankAnnotationForUncoveredLine(DispoItemData item, String location, String text, String lastResolution) {
