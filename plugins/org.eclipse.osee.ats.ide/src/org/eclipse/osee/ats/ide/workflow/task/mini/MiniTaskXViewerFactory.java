@@ -70,7 +70,9 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       DescriptionColumn descCol = DescriptionColumn.instance.copy();
       descCol.setShow(true);
       cols.add(descCol);
-      cols.add(AssumptionsColumn.instance);
+      AssumptionsColumn assumptCol = AssumptionsColumn.instance.copy();
+      assumptCol.setShow(true);
+      cols.add(assumptCol);
       cols.add(getAttributeConfigColumn(AtsColumnToken.NotesColumn));
       cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
       addPostColumns(cols);
