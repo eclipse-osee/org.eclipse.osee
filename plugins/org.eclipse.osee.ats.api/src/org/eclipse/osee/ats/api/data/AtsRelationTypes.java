@@ -24,6 +24,7 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsArtifact;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsConfigArtifact;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsTeamDefinitionOrAi;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.BuildImpactData;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Country;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Insertion;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.InsertionActivity;
@@ -267,5 +268,18 @@ public interface AtsRelationTypes {
    RelationTypeToken TaskLink = ats.add(144115188075855994L, "TaskLink", MANY_TO_MANY, UNORDERED, TeamWorkflow, "From", TeamWorkflow, "To");
    RelationTypeSide TaskLink_From = RelationTypeSide.create(TaskLink, SIDE_A);
    RelationTypeSide TaskLink_To = RelationTypeSide.create(TaskLink, SIDE_B);
+
+   RelationTypeToken BuildImpactTableToData = ats.add(3882602607123235820L, "BuildImpactTableToData", ONE_TO_MANY, UNORDERED, TeamWorkflow, "CR/PR TeamWf", BuildImpactData, "BuildImpactData");
+   RelationTypeSide BuildImpactTableToData_TeamWf = RelationTypeSide.create(BuildImpactTableToData, SIDE_A);
+   RelationTypeSide BuildImpactTableToData_Bid = RelationTypeSide.create(BuildImpactTableToData, SIDE_B);
+
+   RelationTypeToken BuildImpactDataToTeamWf = ats.add(353139807960131327L, "BuildImpactDataToTeamWf", ONE_TO_MANY, UNORDERED, BuildImpactData, "BuildImpactData", TeamWorkflow, "TeamWf" );
+   RelationTypeSide BuildImpactDataToTeamWf_Bid = RelationTypeSide.create(BuildImpactDataToTeamWf, SIDE_A);
+   RelationTypeSide BuildImpactDataToTeamWf_TeamWf = RelationTypeSide.create(BuildImpactDataToTeamWf, SIDE_B);
+
+   RelationTypeToken BuildImpactDataToVer = ats.add(6805617497107248393L, "BuildImpactDataToVer", MANY_TO_ONE, UNORDERED, BuildImpactData, "BuildImpactdata", Version, "Version");
+   RelationTypeSide BuildImpactDataToVer_Bid = RelationTypeSide.create(BuildImpactDataToVer, SIDE_A);
+   RelationTypeSide BuildImpactDataToVer_Version = RelationTypeSide.create(BuildImpactDataToVer, SIDE_B);
+
    //@formatter:on
 }

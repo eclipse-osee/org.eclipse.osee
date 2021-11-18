@@ -40,6 +40,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    boolean recurseChildren = false;
    protected Composite dialogComp;
    Collection<IAtsActionableItem> actionableItems;
+   boolean addIncludeAllCheckbox = true;
 
    public ActionableItemTreeWithChildrenDialog(Active active) {
       this(active, AtsApiService.get().getActionableItemService().getTopLevelActionableItems(active));
@@ -75,20 +76,26 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
       dialogComp.setLayout(new GridLayout(2, false));
       dialogComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      recurseChildrenCheck.createWidgets(dialogComp, 2);
-      recurseChildrenCheck.set(recurseChildren);
-      recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
+      if (addIncludeAllCheckbox) {
+         recurseChildrenCheck.createWidgets(dialogComp, 2);
+         recurseChildrenCheck.set(recurseChildren);
+         recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            recurseChildren = recurseChildrenCheck.isSelected();
-         };
-      });
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               recurseChildren = recurseChildrenCheck.isSelected();
+            };
+         });
+      }
       if (actionableItems.size() == 1) {
          getTreeViewer().getCheckboxTreeViewer().expandToLevel(actionableItems.iterator().next(), 1);
       }
 
       return container;
+   }
+
+   public void setAddIncludeAllCheckbox(boolean addIncludeAllCheckbox) {
+      this.addIncludeAllCheckbox = addIncludeAllCheckbox;
    }
 
 }

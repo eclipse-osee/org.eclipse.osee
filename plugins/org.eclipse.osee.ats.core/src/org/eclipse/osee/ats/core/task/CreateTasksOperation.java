@@ -157,15 +157,15 @@ public class CreateTasksOperation {
 
             // If task work def is defined in NewTaskData, get from there and validate
             if (taskWorkDef == null) {
-               if (Strings.isValid(jTask.getTaskWorkDef())) {
+               if (Strings.isValid(jTask.getWorkDef())) {
                   try {
                      taskWorkDef =
-                        atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(jTask.getTaskWorkDef()));
+                        atsApi.getWorkDefinitionService().getWorkDefinition(ArtifactId.valueOf(jTask.getWorkDef()));
                      if (taskWorkDef == null) {
-                        results.errorf("Error finding Task Work Def [%s].\n", jTask.getTaskWorkDef());
+                        results.errorf("Error finding Task Work Def [%s].\n", jTask.getWorkDef());
                      }
                   } catch (Exception ex) {
-                     results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", jTask.getTaskWorkDef(),
+                     results.errorf("Exception finding Task Work Def [%s].  Exception: %s\n", jTask.getWorkDef(),
                         ex.getMessage());
                   }
                }
@@ -173,7 +173,7 @@ public class CreateTasksOperation {
             if (taskWorkDef == null) {
                taskWorkDef = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
             }
-            Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", jTask.getTaskWorkDef());
+            Conditions.assertNotNull(taskWorkDef, "Work Definition can not be null for [%s]", jTask.getWorkDef());
 
             for (JaxAttribute attribute : jTask.getAttributes()) {
                AttributeTypeId attrType = attribute.getAttrType();

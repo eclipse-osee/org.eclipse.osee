@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.editor.event.WfeBranchEventManager;
 import org.eclipse.osee.ats.ide.editor.tab.attributes.WfeAttributesTab;
+import org.eclipse.osee.ats.ide.editor.tab.bit.WfeBitTab;
 import org.eclipse.osee.ats.ide.editor.tab.defects.WfeDefectsTab;
 import org.eclipse.osee.ats.ide.editor.tab.details.WfeDetailsTab;
 import org.eclipse.osee.ats.ide.editor.tab.journal.WfeJournalTab;
@@ -56,6 +57,7 @@ import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalMemberProvider;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
@@ -115,6 +117,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeReloadTab reloadTab;
    private WfeMetricsTab metricsTab;
    private WfeDetailsTab detailsTab;
+   private WfeBitTab bitTab;
 
    public void loadPages() {
       addPages();
@@ -157,6 +160,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             createDefectsTab();
             createMetricsTab();
             createDetailsTab();
+            createBitTab();
          }
          updatePartName();
 
@@ -340,6 +344,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       if (journalTab != null) {
          removePage(journalTab.getIndex());
       }
+      if (bitTab != null) {
+         removePage(bitTab.getIndex());
+      }
       if (reloadTab != null) {
          removePage(reloadTab.getIndex());
          reloadTab = null;
@@ -392,6 +399,23 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    protected void createPages() {
       super.createPages();
       OseeStatusContributionItemFactory.addTo(this, true);
+   }
+
+   private void createBitTab() {
+      try {
+         if (workItem.isTeamWorkflow()) {
+            for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
+               WfeBitTab bitTab = item.createBitTab(this, (IAtsTeamWorkflow) workItem);
+               if (bitTab != null) {
+                  this.bitTab = bitTab;
+                  addPage(bitTab);
+               }
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
    }
 
    private void createDetailsTab() {
@@ -468,6 +492,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          }
          if (detailsTab != null) {
             detailsTab.refresh();
+         }
+         if (bitTab != null) {
+            bitTab.refresh();
          }
          // Don't refresh attribute tab, it listens for reload events and ArtifactEvents
          onDirtied();
@@ -769,6 +796,16 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    @Override
    public String getEditorName() {
       return "Workflow Editor";
+   }
+
+   public void openBitTab() {
+      if (bitTab != null) {
+         setActivePage(bitTab.getIndex());
+      }
+   }
+
+   public WfeBitTab getBitTab() {
+      return bitTab;
    }
 
 }

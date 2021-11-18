@@ -51,18 +51,18 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
 public class TransitionToMenu {
-   public static MenuManager createTransitionToMenuManager(final XViewer xViewer, String name, final Collection<TreeItem> selectedTreeItems) {
+   public static MenuManager createTransitionToMenuManager(final XViewer xViewer, String name, final Set<Artifact> workflowArtifacts) {
       MenuManager editMenuManager =
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
       final Set<IAtsWorkItem> workItems = new HashSet<>();
@@ -70,9 +70,9 @@ public class TransitionToMenu {
       String workDefinitionId = null;
       Map<String, IAtsStateDefinition> stateNameToStateDef = new HashMap<>();
       boolean multipleWorkDefinitions = false;
-      for (TreeItem treeItem : selectedTreeItems) {
-         if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
+      for (Artifact art : workflowArtifacts) {
+         if (art instanceof AbstractWorkflowArtifact) {
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
             workItems.add(awa);
             if (!multipleWorkDefinitions) {
                if (workDefinitionId == null) {

@@ -17,6 +17,7 @@ import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
+import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
@@ -64,8 +65,10 @@ public interface AtsAttributeTypes {
    AttributeTypeString AtsIdPrefix = ats.createString(1162773128791720837L, "ats.ATS Id Prefix", MediaType.TEXT_PLAIN, "ATS Id Prefix");
    AttributeTypeString AtsIdSequenceName = ats.createString(1163054603768431493L, "ats.ATS Id Sequence Name", MediaType.TEXT_PLAIN, "ATS Id Sequence Name");
    AttributeTypeString BaselineBranchId = ats.createString(1152932018686787753L, "ats.Baseline Branch Id", MediaType.TEXT_PLAIN, "Baseline branch associated with ATS object.");
+   BitStateEnumAttributeType BitState = ats.createEnum(new BitStateEnumAttributeType());
    AttributeTypeString BlockedReason = ats.createString(7797797474874870503L, "ats.Blocked Reason", MediaType.TEXT_PLAIN, "Reason for action being blocked");
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString BitConfig = ats.createString(2382915711248L, "ats.BIT Config", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", MediaType.TEXT_PLAIN, "CSCI this Team is reponsible for.");
    AttributeTypeString CancelledBy = ats.createString(1152921504606847170L, "ats.Cancelled By", MediaType.TEXT_PLAIN, "UserId of the user who cancelled workflow.");
@@ -197,6 +200,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean ValidationRequired = ats.createBoolean(1152921504606847146L, "ats.Validation Required", MediaType.TEXT_PLAIN, "If selected, originator will be asked to validate the implementation.");
    AttributeTypeBoolean VerificationCodeInspection = ats.createBoolean(3454966334779726518L, "ats.Verification Code Inspection", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean VersionLocked = ats.createBoolean(1152921504606847156L, "ats.Version Locked", MediaType.TEXT_PLAIN, "True if version artifact is locked.");
+   AttributeTypeArtifactId VersionReference = ats.createArtifactId(3865529427237311670L, "ats.Version Reference", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", MediaType.TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact");
    AttributeTypeDouble WeeklyBenefit = ats.createDouble(1152921504606847186L, "ats.Weekly Benefit", MediaType.TEXT_PLAIN, "Estimated number of hours that will be saved over a single year if this change is completed.");
    AttributeTypeString Workaround = ats.createString(1311070965L, "ats.Workaround", MediaType.TEXT_PLAIN, "");

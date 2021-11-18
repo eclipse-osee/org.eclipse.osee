@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.ide.agile.XOpenStoredSprintReportsButton;
 import org.eclipse.osee.ats.ide.agile.XStoreSprintReportsButton;
 import org.eclipse.osee.ats.ide.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.ide.column.OperationalImpactXWidget;
+import org.eclipse.osee.ats.ide.editor.tab.bit.XHyperlinkOpenBitTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XRequestedHoursApprovalWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -76,6 +77,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       register(XHyperlinkWfdForConfiguration.class);
       register(XHyperlinkWfdForConfigurationDam.class);
       register(XHyperlinkWfdForActiveAis.class);
+      register(XHyperlinkOpenBitTab.class);
    }
 
    @Override

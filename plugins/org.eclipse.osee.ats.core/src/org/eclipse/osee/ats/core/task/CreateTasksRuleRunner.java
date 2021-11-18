@@ -87,7 +87,7 @@ public class CreateTasksRuleRunner {
             IAtsWorkDefinition workDef =
                atsApi.getWorkDefinitionService().getWorkDefinition(createTaskDef.getWorkDefTok());
             if (workDef != null) {
-               jTask.setTaskWorkDef(workDef.getIdString());
+               jTask.setWorkDef(workDef.getIdString());
             }
          }
       }
