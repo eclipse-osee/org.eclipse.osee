@@ -16,18 +16,12 @@ package org.eclipse.osee.framework.core.model;
 import org.eclipse.osee.framework.core.model.access.AccessTestSuite;
 import org.eclipse.osee.framework.core.model.cache.CacheTestSuite;
 import org.eclipse.osee.framework.core.model.change.ChangeTestSuite;
-import org.eclipse.osee.framework.core.model.fields.FieldTestSuite;
 import org.eclipse.osee.framework.core.model.type.TypeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   AccessTestSuite.class,
-   CacheTestSuite.class,
-   ChangeTestSuite.class,
-   FieldTestSuite.class,
-   TypeTestSuite.class})
+@Suite.SuiteClasses({AccessTestSuite.class, CacheTestSuite.class, ChangeTestSuite.class, TypeTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */
