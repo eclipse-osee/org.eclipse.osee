@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -33,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -292,5 +294,22 @@ public interface AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public JournalData getJournalData(@PathParam("atsId") String atsId);
+
+   @Path("{atsId}/bids")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas updateBids(@PathParam("atsId") String atsId, BuildImpactDatas bids);
+
+   @Path("{atsId}/bids")
+   @DELETE
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids);
+
+   @Path("{atsId}/bids")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBids(@PathParam("atsId") String atsId);
 
 }

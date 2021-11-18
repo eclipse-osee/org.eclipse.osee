@@ -119,9 +119,9 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
                JaxAtsTask.create(newTaskData, title, atsApi.getUserService().getCurrentUser(), new Date());
             task.setId(ArtifactId.SENTINEL.getId());
             if (ed2 != null) {
-               task.setTaskWorkDef(((IAtsWorkDefinition) ed2.getSelection2()).getIdString());
+               task.setWorkDef(((IAtsWorkDefinition) ed2.getSelection2()).getIdString());
             } else if (taskWorkDefs.size() == 1) {
-               task.setTaskWorkDef(taskWorkDefs.iterator().next().getIdString());
+               task.setWorkDef(taskWorkDefs.iterator().next().getIdString());
             }
             if (Strings.isValid(ed.getSelection())) {
                task.setRelatedToState(ed.getSelection());

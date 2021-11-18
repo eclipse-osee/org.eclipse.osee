@@ -115,7 +115,7 @@ public class NewTaskData {
          task.setCreatedByUserId(createdBy.getUserId());
          task.setCreatedDate(createdDate);
          if (Strings.isValid(taskWorkDef)) {
-            task.setTaskWorkDef(taskWorkDef);
+            task.setWorkDef(taskWorkDef);
          }
          newTaskData.getTasks().add(task);
          if (attributes != null) {

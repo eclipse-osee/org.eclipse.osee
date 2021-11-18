@@ -22,9 +22,11 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersion;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -61,8 +63,10 @@ public class AtsObjectLabelProvider extends LabelProvider {
          return ArtifactImageManager.getImage(AtsArtifactTypes.ActionableItem);
       } else if (element instanceof IAtsTeamDefinition || element instanceof TeamDefinition) {
          return ArtifactImageManager.getImage(AtsArtifactTypes.TeamDefinition);
-      } else if (element instanceof IAtsVersion) {
-         return ArtifactImageManager.getImage(AtsArtifactTypes.Version);
+      } else if (element instanceof IAtsProgram) {
+         return ArtifactImageManager.getImage(AtsArtifactTypes.Program);
+      } else if (element instanceof ProgramVersion) {
+         return ImageManager.getImage(AtsImage.VERSION);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
          return ArtifactImageManager.getImage(
             AtsApiService.get().getQueryServiceIde().getArtifact(((Match) element).getElement()));

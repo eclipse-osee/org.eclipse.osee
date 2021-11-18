@@ -145,7 +145,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       parent.addDisposeListener(new DisposeListener() {
          @Override
          public void widgetDisposed(DisposeEvent e) {
-            ((WorldContentProvider) getContentProvider()).clear(false);
+            if (getContentProvider() instanceof WorldContentProvider) {
+               ((WorldContentProvider) getContentProvider()).clear(false);
+            }
          }
       });
       createMenuActions();
@@ -350,11 +352,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       MenuManager editMenuManager = updateEditMenu(mm);
       mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
 
-      final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
       Set<Artifact> workflowArtifacts = getSelectedWorkflowArtifacts();
       if (!workflowArtifacts.isEmpty()) {
          mm.insertBefore(MENU_GROUP_PRE,
-            TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
+            TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", workflowArtifacts));
       }
 
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
@@ -398,11 +399,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
-      mm.insertBefore(XViewer.MENU_GROUP_PRE, addTaskAction);
-      addTaskAction.updateEnablement(isAddTaskEnabled());
+      if (showTaskMenu()) {
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, addTaskAction);
+         addTaskAction.updateEnablement(isAddTaskEnabled());
 
-      mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteTasksAction);
-      deleteTasksAction.updateEnablement(getSelectedArtifacts());
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteTasksAction);
+         deleteTasksAction.updateEnablement(getSelectedArtifacts());
+      }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OPEN));
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
@@ -426,6 +429,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       for (IMenuActionProvider provider : menuActionProviders) {
          provider.updateMenuActionsForTable();
       }
+   }
+
+   protected boolean showTaskMenu() {
+      return true;
    }
 
    protected boolean isAddTaskEnabled() {

@@ -85,7 +85,7 @@ public class AtsTaskEndpointImplTest {
 
       // Test add relation where task on A side
       JaxAtsTask newTask = createJaxAtsTask(taskId1, "Task 4", "description", createdByUserId, createdDate, null);
-      newTask.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+      newTask.setWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
       newTaskData.getTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_IsSupportedBy, codeTeamWfId);
 
@@ -113,7 +113,7 @@ public class AtsTaskEndpointImplTest {
          DemoUsers.Joe_Smith.getUserId());
       newTaskData = newTaskSet.getTaskData();
       newTask = createJaxAtsTask(taskId4, "Task 4", "description", createdByUserId, createdDate, null);
-      newTask.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+      newTask.setWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
       newTaskData.getTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfId);
 
@@ -150,7 +150,7 @@ public class AtsTaskEndpointImplTest {
       NewTaskData newTaskData = newTaskSet.getTaskData();
 
       JaxAtsTask task = createJaxAtsTask(taskId1, "Task 1", "description", createdByUserId, createdDate, null);
-      task.setTaskWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+      task.setWorkDef(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
       newTaskData.getTasks().add(task);
 
       JaxAtsTask task2 = createJaxAtsTask(taskId2, "Task 2", "description", createdByUserId, createdDate, null);

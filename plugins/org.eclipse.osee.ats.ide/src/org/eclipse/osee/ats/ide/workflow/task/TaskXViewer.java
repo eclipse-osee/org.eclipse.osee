@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
@@ -72,9 +71,8 @@ public class TaskXViewer extends WorldXViewer {
       MenuManager editMenuManager = updateEditMenu(mm);
       mm.insertBefore(MENU_GROUP_ATS_WORLD_EDIT, editMenuManager);
 
-      final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
       mm.insertBefore(MENU_GROUP_PRE,
-         TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
+         TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", getSelectedWorkflowArtifacts()));
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editStatusAction);
       editStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);

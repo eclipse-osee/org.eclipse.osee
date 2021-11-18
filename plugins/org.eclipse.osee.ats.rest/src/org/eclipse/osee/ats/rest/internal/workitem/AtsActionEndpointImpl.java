@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -60,6 +61,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -68,6 +70,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
+import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportDiffOperation;
@@ -837,6 +840,35 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public JournalData getJournalData(@PathParam("atsId") String atsId) {
       JournalData journalData = atsApi.getWorkItemService().getJournalData(atsId);
       return journalData;
+   }
+
+   @Override
+   @Path("{atsId}/bids")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas updateBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
+      BidsOperations ops = new BidsOperations(atsApi);
+      return ops.createBids(bids);
+   }
+
+   @Override
+   @Path("{atsId}/bids")
+   @DELETE
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
+      BidsOperations ops = new BidsOperations(atsApi);
+      return ops.deleteBids(bids);
+   }
+
+   @Override
+   @Path("{atsId}/bids")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBids(@PathParam("atsId") String atsId) {
+      BidsOperations ops = new BidsOperations(atsApi);
+      return ops.getBids(atsId);
    }
 
 }
