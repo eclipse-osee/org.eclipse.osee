@@ -72,7 +72,7 @@ public class ProgramOperations {
    private AtwNode getNodeFromArt(ArtifactToken artifact) {
       AtwNode node = new AtwNode();
       node.setName(artifact.getName());
-      node.setId(artifact.getId().toString());
+      node.setId(artifact.getIdString());
       node.setImage(getImage(artifact));
       return node;
    }

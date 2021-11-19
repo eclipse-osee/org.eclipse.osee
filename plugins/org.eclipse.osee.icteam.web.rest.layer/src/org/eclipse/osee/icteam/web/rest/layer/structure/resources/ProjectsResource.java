@@ -405,7 +405,7 @@ public class ProjectsResource extends AbstractConfigResource {
             List<ITransferableArtifact> listTras = new ArrayList<ITransferableArtifact>();
 
             for (ArtifactReadable artifactReadable : list) {
-               if (artifactReadable.getUuid().toString().equals(attribute)) {
+               if (artifactReadable.getIdString().equals(attribute)) {
                   TransferableArtifact ar = new TransferableArtifact();
                   TranferableArtifactLoader.copyProjectArtifactReadbleToTransferableArtifact(artifactReadable, ar);
                   listTras.add(ar);

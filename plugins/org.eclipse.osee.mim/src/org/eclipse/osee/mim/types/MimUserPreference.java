@@ -96,8 +96,8 @@ public class MimUserPreference extends PLGenericDBObject {
    @JsonIgnore
    private boolean filterBranches(List<String> branches, BranchId branch) {
       for (String editValues : branches) {
-         if (editValues.contains(branch.getId().toString())) {
-            return Boolean.parseBoolean(editValues.split(branch.getId().toString() + ":")[1].split("\"")[0]);
+         if (editValues.contains(branch.getIdString())) {
+            return Boolean.parseBoolean(editValues.split(branch.getIdString() + ":")[1].split("\"")[0]);
          }
       }
       return false;
@@ -106,7 +106,7 @@ public class MimUserPreference extends PLGenericDBObject {
    @JsonIgnore
    private boolean hasBranchAttribute(List<String> branches, BranchId branch) {
       for (String editValues : branches) {
-         if (editValues.contains(branch.getId().toString())) {
+         if (editValues.contains(branch.getIdString())) {
             return true;
          }
       }

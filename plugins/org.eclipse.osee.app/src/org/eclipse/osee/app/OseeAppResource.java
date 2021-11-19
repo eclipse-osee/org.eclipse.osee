@@ -56,7 +56,7 @@ public final class OseeAppResource {
          orcsApi.getQueryFactory().fromBranch(branchId).andTypeEquals(CoreArtifactTypes.OseeApp).getResults();
       for (ArtifactReadable art : apps) {
          String description = art.getSoleAttributeAsString(CoreAttributeTypes.Description, "Not Available");
-         String uuid = String.format("%d", art.getUuid());
+         String uuid = art.getIdString();
          if (filterText == null) {
             results.add(createTransfer(art.getName(), description, uuid));
          } else if (description.matches(filterText)) {
