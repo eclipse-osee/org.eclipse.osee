@@ -10,6 +10,7 @@ Require-Bundle: javax.activation,
  javax.ws.rs
 Import-Package: javax.mail,
  javax.mail.internet,
+ javax.transaction,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
