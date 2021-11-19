@@ -781,7 +781,7 @@ public class ArtifactQuery {
       String ids = "";
       for (ArtifactId art : artifacts) {
          artIds.add(art.getId());
-         ids += art.getId().toString() + ",";
+         ids += art.getIdString() + ",";
       }
       ids = ids.replaceFirst(",$", "");
 
@@ -793,7 +793,7 @@ public class ArtifactQuery {
          String query = OseeSql.ARTIFACT_TO_RELATED_B_ARTIFACT_ID.getSql().replaceFirst("ART_IDS_HERE", ids);
          query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
          query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
-         query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
+         query = query.replaceAll("BRANCH_ID_HERE", branch.getIdString());
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
             Long aArtId = chStmt.getLong("a_art_id");
@@ -812,7 +812,7 @@ public class ArtifactQuery {
          query = query.replaceAll("OPPOSITE_REL_SIDE_HERE", isSideA ? "a_art_id" : "b_art_id");
          query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
          query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
-         query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
+         query = query.replaceAll("BRANCH_ID_HERE", branch.getIdString());
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");

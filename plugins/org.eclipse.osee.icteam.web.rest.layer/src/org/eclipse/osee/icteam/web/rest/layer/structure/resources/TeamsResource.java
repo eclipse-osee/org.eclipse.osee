@@ -332,7 +332,7 @@ public class TeamsResource extends AbstractConfigResource {
                   }
 
                   List<String> attributes2 =
-                     artifact.getAttributes(AtsAttributeTypes.WorkflowDefinition.getId().toString());
+                     artifact.getAttributes(AtsAttributeTypes.WorkflowDefinition.getIdString());
 
                   if ((attributes2 != null) && (attributes2.size() > 0)) {
                      tx.setSoleAttributeFromString(artifactReadable, AtsAttributeTypes.WorkflowDefinition,

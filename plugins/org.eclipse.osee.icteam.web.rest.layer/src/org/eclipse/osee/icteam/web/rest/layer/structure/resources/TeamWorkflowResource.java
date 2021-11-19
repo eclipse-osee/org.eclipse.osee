@@ -359,7 +359,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                      tx.setSoleAttributeValue(teamwfartifact,
                         AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), date);
 
-                     if (Long.parseLong(AtsAttributeTypes.EstimatedCompletionDate.getId().toString()) == Long.parseLong(
+                     if (Long.parseLong(AtsAttributeTypes.EstimatedCompletionDate.getIdString()) == Long.parseLong(
                         split[0])) {
                         estimatedDate = date;
                      }
@@ -369,7 +369,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                updateProjectAttributes(teamwfartifact, tx, split[0], string);
             } else {
                if (split[0].matches(".*[1-9].*")) {
-                  if (Long.parseLong(AtsAttributeTypes.CurrentState.getId().toString()) == Long.parseLong(split[0])) {
+                  if (Long.parseLong(AtsAttributeTypes.CurrentState.getIdString()) == Long.parseLong(split[0])) {
                      if (!(string.contains("Cancelled") || string.contains("Completed"))) {
                         List<ITransferableArtifact> assignees2 = CommonUtil.getAssignees(string);
                         List<String> users = new ArrayList<String>();
@@ -406,7 +406,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                      }
                   }
 
-                  if (Long.parseLong(AtsAttributeTypes.Rank.getId().toString()) == Long.parseLong(split[0])) {
+                  if (Long.parseLong(AtsAttributeTypes.Rank.getIdString()) == Long.parseLong(split[0])) {
                   }
 
                   if (split[0].equalsIgnoreCase("1152921504606847192")) {
@@ -651,7 +651,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       String artName = "";
 
       if (artifact.getName() == null) {
-         List<String> artNameList = artifact.getAttributes(CoreAttributeTypes.Name.getId().toString());
+         List<String> artNameList = artifact.getAttributes(CoreAttributeTypes.Name.getIdString());
 
          if ((artNameList != null) && !artNameList.isEmpty()) {
             artName = artNameList.get(0);
@@ -691,7 +691,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                   AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), date);
                tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.WorkflowDefinition, "WorkDef_ICTeam");
 
-               if (Long.parseLong(AtsAttributeTypes.EstimatedCompletionDate.getId().toString()) == Long.parseLong(
+               if (Long.parseLong(AtsAttributeTypes.EstimatedCompletionDate.getIdString()) == Long.parseLong(
                   split[0])) {
                   estimatedDate = date;
                }
@@ -702,14 +702,14 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                   tx.setSoleAttributeFromString(childArtifact,
                      AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), string);
 
-                  if (Long.parseLong(AtsAttributeTypes.CurrentState.getId().toString()) == Long.parseLong(split[0])) {
+                  if (Long.parseLong(AtsAttributeTypes.CurrentState.getIdString()) == Long.parseLong(split[0])) {
                      notify = string.substring(0, string.indexOf(";"));
 
                      String assigneesStr = string.substring(string.indexOf("<") + 1, string.lastIndexOf(">"));
                      String[] _assignees =
                         ((assigneesStr != null) && !assigneesStr.isEmpty()) ? assigneesStr.split("><") : new String[0];
                      assignees.addAll(Arrays.asList(_assignees));
-                  } else if (Long.parseLong(AtsAttributeTypes.CreatedBy.getId().toString()) == Long.parseLong(
+                  } else if (Long.parseLong(AtsAttributeTypes.CreatedBy.getIdString()) == Long.parseLong(
                      split[0])) {
                      createdUserId = string;
                   }
@@ -742,11 +742,11 @@ public class TeamWorkflowResource extends AbstractConfigResource {
 
             String taskCountAttr = setAndVerifyRange(taskCount);
             tx.setSoleAttributeFromString(childArtifact, AttributeTypeToken.valueOf(
-               Long.parseLong(AtsAttributeTypes.WorkPackage.getId().toString()), "Attribute"), taskCountAttr);
+               Long.parseLong(AtsAttributeTypes.WorkPackage.getIdString()), "Attribute"), taskCountAttr);
 
             if (project.getArtifactType().equals(AtsArtifactTypes.AgileProject)) {
                tx.setSoleAttributeFromString(childArtifact,
-                  AttributeTypeToken.valueOf(Long.parseLong(AtsAttributeTypes.Rank.getId().toString()), "Attribute"),
+                  AttributeTypeToken.valueOf(Long.parseLong(AtsAttributeTypes.Rank.getIdString()), "Attribute"),
                   taskCountAttr);
             }
 
@@ -931,7 +931,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          Long.valueOf(projectGuid)).getResults().getAtMostOneOrNull();
       String cancelComment = "";
       List<String> cancelCommentAttr =
-         transferableArtifact.getAttributes(AtsAttributeTypes.StateNotes.getId().toString());
+         transferableArtifact.getAttributes(AtsAttributeTypes.StateNotes.getIdString());
 
       if ((cancelCommentAttr != null) && (cancelCommentAttr.size() > 0)) {
          cancelComment = cancelCommentAttr.get(0);
@@ -1795,15 +1795,15 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          TransferableArtifactsContainer container = new TransferableArtifactsContainer();
          Date estimatedDate = null;
          String notify = "";
-         String createdUserId = artifact.getAttributesOrElse(AtsAttributeTypes.CreatedBy.getId().toString()).get(0);
+         String createdUserId = artifact.getAttributesOrElse(AtsAttributeTypes.CreatedBy.getIdString()).get(0);
          List<String> assignees = new ArrayList<String>();
          List<String> listTemp = new ArrayList<String>();
          listTemp.add(new Date().toString());
-         artifact.putAttributes(AtsAttributeTypes.EstimatedCompletionDate.getId().toString() + ";Date", listTemp);
+         artifact.putAttributes(AtsAttributeTypes.EstimatedCompletionDate.getIdString() + ";Date", listTemp);
 
          List<String> listTemp1 = new ArrayList<String>();
          listTemp1.add(new Date().toString());
-         artifact.putAttributes(AtsAttributeTypes.CreatedDate.getId().toString() + ";Date", listTemp1);
+         artifact.putAttributes(AtsAttributeTypes.CreatedDate.getIdString() + ";Date", listTemp1);
          childArtifact =
             createNewTask(tx, artifact, orcsApi, estimatedDate, notify, createdUserId, assignees, productBacklog);
          childArtifact.getUuid();

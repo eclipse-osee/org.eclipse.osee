@@ -264,7 +264,7 @@ public class Pdd93CreateDemoAgile {
 
       // Create Team
       JaxNewAgileTeam newTeam = getJaxAgileTeam();
-      newTeam.setProgramId(aProgram.getId().toString());
+      newTeam.setProgramId(aProgram.getIdString());
       Response response = agile.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 

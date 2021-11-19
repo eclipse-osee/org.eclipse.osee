@@ -119,7 +119,7 @@ public class TokenSearchOperations {
       try {
          String query = ARTIFACTS_MATCHING_ATTRIBUTE_VALUE_QUERY.replaceFirst("ART_IDS_HERE", ids);
          query = query.replaceAll("ATTR_TYPE_ID_HERE", attributeType.getIdString());
-         query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
+         query = query.replaceAll("BRANCH_ID_HERE", branch.getIdString());
          chStmt.runPreparedQuery(query, branch.getId(), attributeType.getId(), value);
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
