@@ -39,7 +39,6 @@ import org.junit.runners.Suite;
    ChangeDataTest.class,
    ChangeManagerTest.class,
    ComputedCharacteristicTest.class,
-   ConflictDeletionTest.class,
    ConflictIntroduceTest.class,
    ConflictTest.class,
    CreateBranchOperationTest.class,

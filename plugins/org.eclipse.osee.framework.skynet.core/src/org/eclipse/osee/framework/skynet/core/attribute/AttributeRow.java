@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -26,13 +27,13 @@ public final class AttributeRow {
 
    private final BranchId branch;
    private final GammaId gammaId;
-   private final Integer artId;
+   private final ArtifactId artId;
    private final ModificationType modType;
    private final String value;
    private final AttributeId attrId;
    private final AttributeTypeToken attributeType;
 
-   public AttributeRow(BranchId branch, GammaId gammaId, Integer artId, ModificationType modType, String value, AttributeId attrId, AttributeTypeToken attributeType) {
+   public AttributeRow(BranchId branch, GammaId gammaId, ArtifactId artId, ModificationType modType, String value, AttributeId attrId, AttributeTypeToken attributeType) {
       this.branch = branch;
       this.gammaId = gammaId;
       this.artId = artId;
@@ -50,7 +51,7 @@ public final class AttributeRow {
       return gammaId;
    }
 
-   public Integer getArtId() {
+   public ArtifactId getArtId() {
       return artId;
    }
 

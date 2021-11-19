@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -25,11 +26,11 @@ public final class RelationRow {
    private final BranchId branch;
    private Long rel_id;
    private RelationTypeToken relationType;
-   private Long a_art_id, b_art_id;
+   private ArtifactId a_art_id, b_art_id;
    private String rationale;
    private GammaId gamma_id;
 
-   public RelationRow(BranchId branch, Long rel_id, RelationTypeToken relationType, Long a_art_id, Long b_art_id, String rationale, GammaId gamma_id) {
+   public RelationRow(BranchId branch, Long rel_id, RelationTypeToken relationType, ArtifactId a_art_id, ArtifactId b_art_id, String rationale, GammaId gamma_id) {
       super();
       this.branch = branch;
       this.rel_id = rel_id;
@@ -40,19 +41,19 @@ public final class RelationRow {
       this.gamma_id = gamma_id;
    }
 
-   public Long getA_art_id() {
+   public ArtifactId getA_art_id() {
       return a_art_id;
    }
 
-   public void setA_art_id(Long a_art_id) {
+   public void setA_art_id(ArtifactId a_art_id) {
       this.a_art_id = a_art_id;
    }
 
-   public Long getB_art_id() {
+   public ArtifactId getB_art_id() {
       return b_art_id;
    }
 
-   public void setB_art_id(Long b_art_id) {
+   public void setB_art_id(ArtifactId b_art_id) {
       this.b_art_id = b_art_id;
    }
 

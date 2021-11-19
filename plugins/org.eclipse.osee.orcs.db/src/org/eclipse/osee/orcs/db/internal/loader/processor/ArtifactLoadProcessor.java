@@ -82,10 +82,10 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       BranchId previousBranchId = BranchId.SENTINEL;
 
       boolean isSame(BranchId branch, ArtifactId artifactId) {
-         return previousBranchId.equals(branch) && previousArtId == artifactId;
+         return previousBranchId.equals(branch) && previousArtId.equals(artifactId);
       }
 
-      private void saveConditions(BranchId branch, ArtifactId artifactId) {
+      void saveConditions(BranchId branch, ArtifactId artifactId) {
          previousBranchId = branch;
          previousArtId = artifactId;
       }

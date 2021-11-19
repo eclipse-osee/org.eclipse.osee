@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -228,17 +226,6 @@ public class ConflictTestManager {
                System.out.println("Deleting Artifact with ID " + sourceArtifacts[i] + " index " + i);
             }
             sourceArtifacts[i].deleteAndPersist(ConflictTestManager.class.getSimpleName());
-         }
-         if (DEBUG) {
-            ConflictDeletionTest.dumpArtifact(sourceArtifacts[i]);
-            for (RelationLink link : sourceArtifacts[i].getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-               ConflictDeletionTest.dumpRelation(link, sourceArtifacts[i]);
-            }
-            ConflictDeletionTest.dumpArtifact(destArtifacts[i]);
-            for (RelationLink link : destArtifacts[i].getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-               ConflictDeletionTest.dumpRelation(link, destArtifacts[i]);
-            }
-            System.out.println(" ");
          }
       }
       rootArtifact.persist(ConflictTestManager.class.getSimpleName());

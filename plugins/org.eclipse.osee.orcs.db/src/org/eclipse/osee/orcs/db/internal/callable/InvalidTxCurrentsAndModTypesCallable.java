@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -173,8 +174,9 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
          TxCurrent txCurrent = TxCurrent.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.valueOf(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
-         Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
-            stmt.getLong("transaction_id"), GammaId.valueOf(stmt.getLong("gamma_id")), modType, appId, txCurrent);
+         Address address =
+            new Address(type.isBaseline(), stmt.getLong("branch_id"), Id.valueOf(stmt.getLong(columnName)),
+               stmt.getLong("transaction_id"), GammaId.valueOf(stmt.getLong("gamma_id")), modType, appId, txCurrent);
 
          if (!address.isSimilar(previousAddress[0])) {
             if (!addresses.isEmpty()) {
