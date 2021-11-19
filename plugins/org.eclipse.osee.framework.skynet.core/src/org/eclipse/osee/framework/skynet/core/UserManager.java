@@ -209,4 +209,10 @@ public final class UserManager {
       }
       return showTokenForChangeName.get();
    }
+
+   public static void reloadUser() {
+      UserManager.getUser().reloadAttributesAndRelations();
+      getUserAdmin().reset();
+      UserManager.getUser();
+   }
 }

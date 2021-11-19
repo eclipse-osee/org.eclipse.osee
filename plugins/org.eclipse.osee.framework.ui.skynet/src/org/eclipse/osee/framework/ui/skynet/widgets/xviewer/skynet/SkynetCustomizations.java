@@ -88,7 +88,16 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    @Override
    public void saveCustomization(CustomizeData customizeData) {
-      ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(customizeData);
+      String xml = customizeData.getXml(true);
+      CustomizeData newCustData = new CustomizeData(xml);
+      newCustData.setPersonal(customizeData.isPersonal());
+      ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(newCustData);
+      if (customizeData.isPersonal()) {
+         UserManager.reloadUser();
+      } else {
+         globalCustomizationsArtifact.reloadAttributesAndRelations();
+      }
+
       ensurePopulated(true);
    }
 
