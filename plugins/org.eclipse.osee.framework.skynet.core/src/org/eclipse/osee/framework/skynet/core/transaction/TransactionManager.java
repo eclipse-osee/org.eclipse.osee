@@ -396,8 +396,8 @@ public final class TransactionManager {
       RelationTypeToken relationType = tokenService.getRelationType(chStmt.getLong("rel_link_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
-      Long aArtId = Long.valueOf(chStmt.getInt("a_art_id"));
-      Long bArtId = Long.valueOf(chStmt.getInt("b_art_id"));
+      ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
+      ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
       Long relId = Long.valueOf(chStmt.getInt("rel_link_id"));
       String rationale = chStmt.getString("rationale");
       return new RelationRow(branch, relId, relationType, aArtId, bArtId, rationale, gammaId);
@@ -408,7 +408,7 @@ public final class TransactionManager {
       AttributeTypeToken attributeType = tokenService.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
-      Integer artId = Integer.valueOf(chStmt.getInt("art_id"));
+      ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
       ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
       AttributeId attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
       String value = chStmt.getString("value");

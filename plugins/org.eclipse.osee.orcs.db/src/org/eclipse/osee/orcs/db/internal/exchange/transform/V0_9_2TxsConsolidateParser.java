@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.eclipse.osee.orcs.db.internal.util.Address;
@@ -85,7 +86,7 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
          int transactionId = Integer.parseInt(attributes.getValue("transaction_id"));
          TxCurrent txCurrent = TxCurrent.valueOf(Integer.parseInt(attributes.getValue("tx_current")));
 
-         return new Address(false, targetBranchId, -1, transactionId, gammaId, modificationType,
+         return new Address(false, targetBranchId, Id.valueOf(Id.SENTINEL), transactionId, gammaId, modificationType,
             ApplicabilityId.valueOf(1L), txCurrent);
       } catch (OseeCoreException ex) {
          throw new XMLStreamException(ex);

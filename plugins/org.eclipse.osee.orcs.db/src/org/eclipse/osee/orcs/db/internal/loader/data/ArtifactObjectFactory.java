@@ -24,7 +24,6 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  * @author Roberto E. Escobar
  */
 public interface ArtifactObjectFactory extends VersionObjectFactory {
-
    ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, Long artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId);
 
    ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId);

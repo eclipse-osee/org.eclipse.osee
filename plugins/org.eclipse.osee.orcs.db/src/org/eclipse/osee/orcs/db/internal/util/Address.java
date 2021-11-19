@@ -18,13 +18,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
    private final BranchId branch;
-   private final int itemId;
+   private final Id itemId;
    private final long transactionId;
    private final GammaId gammaId;
    private ModificationType modType;
@@ -34,7 +35,7 @@ public final class Address implements Comparable<Address> {
    private TxCurrent correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, Long branchId, int itemId, long transactionId, GammaId gammaId, ModificationType modType, ApplicabilityId appId, TxCurrent txCurrent) {
+   public Address(boolean isBaseline, Long branchId, Id itemId, long transactionId, GammaId gammaId, ModificationType modType, ApplicabilityId appId, TxCurrent txCurrent) {
       super();
       this.branch = BranchId.valueOf(branchId);
       this.itemId = itemId;
@@ -107,7 +108,7 @@ public final class Address implements Comparable<Address> {
       return branch;
    }
 
-   public int getItemId() {
+   public Id getItemId() {
       return itemId;
    }
 

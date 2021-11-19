@@ -98,7 +98,7 @@ public class DataFactoryImpl implements DataFactory {
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       ArtifactData artifactData =
-         objectFactory.createArtifactData(version, artifactId, token, modType, guidToSet, appId);
+         objectFactory.createArtifactData(version, ArtifactId.valueOf(artifactId), token, modType, guidToSet, appId);
       return artifactData;
    }
 

@@ -19,6 +19,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -35,14 +38,14 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation {
    private class LocalValues {
-      public int relLinkId;
-      public int artId;
-      public int attributeId;
+      public long relLinkId;
+      public ArtifactId artId;
+      public AttributeId attributeId;
       public GammaId gammaId;
       public long transactionId;
-      public long branchUuid;
+      public BranchId branchUuid;
 
-      public LocalValues(int artId, int attributeId, long branchUuid, GammaId gammaId, int relLinkId, long transactionId) {
+      public LocalValues(ArtifactId artId, AttributeId attributeId, BranchId branchUuid, GammaId gammaId, long relLinkId, long transactionId) {
          super();
          this.artId = artId;
          this.attributeId = attributeId;
@@ -76,8 +79,9 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       try {
          chStmt.runPreparedQuery(sql, txChange, modificationType, modificationType);
          while (chStmt.next()) {
-            addressing.add(new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"),
-               chStmt.getLong("branch_id"), GammaId.valueOf(chStmt.getLong("gamma_id")), chStmt.getInt("rel_link_id"),
+            addressing.add(new LocalValues(ArtifactId.valueOf(chStmt.getLong("art_id")),
+               AttributeId.valueOf(chStmt.getLong("attr_id")), BranchId.valueOf(chStmt.getLong("branch_id")),
+               GammaId.valueOf(chStmt.getLong("gamma_id")), chStmt.getLong("rel_link_id"),
                chStmt.getLong("transaction_id")));
          }
       } finally {
@@ -147,10 +151,10 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    private void displayData(StringBuffer sbFull, Appendable builder, boolean verify) throws IOException {
       int attributeCount = 0, artifactCount = 0, relLinkCount = 0;
       for (LocalValues value : addressing) {
-         if (value.artId != 0) {
+         if (value.artId != ArtifactId.valueOf(0)) {
             artifactCount++;
          }
-         if (value.attributeId != 0) {
+         if (value.attributeId != AttributeId.valueOf(0)) {
             attributeCount++;
          }
          if (value.relLinkId != 0) {
