@@ -6,7 +6,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: javax.activation
+Require-Bundle: javax.activation,
+ javax.ws.rs
 Import-Package: javax.mail,
  javax.mail.event,
  javax.mail.internet,
