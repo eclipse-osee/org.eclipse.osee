@@ -51,7 +51,7 @@
     </ng-template>
 </mat-form-field>
 <ng-template #writeAccess>
-    <mat-slide-toggle [(ngModel)]="value" [labelPosition]='value? "after":"before"' (ngModelChange)="updateMessage(header,value)">
+    <mat-slide-toggle [(ngModel)]="value" [labelPosition]='value? "after":"before"' color="primary" (ngModelChange)="updateMessage(header,value)">
         <ng-container *ngIf="value;else read">
             Writable
         </ng-container>

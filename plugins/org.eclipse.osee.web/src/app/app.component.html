@@ -18,5 +18,12 @@
         		</osee-display-user>
         </div>
     </mat-toolbar>
-    <router-outlet></router-outlet>
+    <mat-drawer-container>
+        <mat-drawer-content>
+            <router-outlet></router-outlet>
+        </mat-drawer-content>
+        <mat-drawer position="end" mode="side" [opened]="(opened|async)" class="mat-elevation-z9">
+            <router-outlet name="rightSideNav"></router-outlet>
+        </mat-drawer>
+    </mat-drawer-container>
 </div>

@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of, BehaviorSubject, Subject } from "rxjs";
+import { of, BehaviorSubject, Subject, ReplaySubject } from "rxjs";
 import { MimPreferencesMock } from "../../shared/mocks/MimPreferences.mock";
 import { OSEEWriteApiResponse } from "../../shared/types/ApiWriteResponse";
 import { CurrentGraphService } from "../services/current-graph.service";
-import { connection } from '../../shared/types/connection'
+import { connection, transportType } from '../../shared/types/connection'
 import { node } from '../../shared/types/node'
 import { response } from "./Response.mock";
 import { settingsDialogData } from "../../shared/types/settingsdialog";
@@ -22,7 +22,7 @@ import { applic } from "../../../../types/applicability/applic";
 import { changeReportMock } from "src/app/ple-services/http/change-report.mock";
 import { changeInstance } from "src/app/types/change-report/change-report";
 
-let sideNavContentPlaceholder = new Subject<{ opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }>();
+let sideNavContentPlaceholder = new ReplaySubject<{ opened: boolean, field: string, currentValue: string | number | applic|boolean|transportType, previousValue?: string | number | applic|boolean|transportType, user?: string, date?: string }>();
 sideNavContentPlaceholder.next({opened:true,field:'',currentValue:''})
 export const graphServiceMock: Partial<CurrentGraphService> = {
   nodes: of({ nodes: [], edges: [] }),

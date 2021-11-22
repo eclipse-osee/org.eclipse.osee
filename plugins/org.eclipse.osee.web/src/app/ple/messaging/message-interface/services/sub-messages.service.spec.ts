@@ -104,4 +104,12 @@ describe('SubMessagesService', () => {
     httpTestingController.verify();
   })
 
+  it('should get a submessage', () => {
+    service.getSubMessage('10', '20', '30', '40').subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 10 + "/connections/" + 20 + "/messages/" + 30 + "/submessages/" + 40);
+    expect(req.request.method).toEqual('GET');
+    req.flush({});
+    httpTestingController.verify();
+  })
+
 });

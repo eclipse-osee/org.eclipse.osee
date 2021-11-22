@@ -103,14 +103,15 @@ describe('MessageTableComponent', () => {
         MatTooltipModule,
         MatMenuModule,
         MatDialogModule,
-        RouterTestingModule
+        RouterTestingModule.withRoutes([{ path: 'diff', component: MessageTableComponent, },{path:'diffOpen',component:MimSingleDiffDummy,outlet:'rightSideNav'}])
       ],
       declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective],
-      providers: [{
-        provide: CurrentMessagesService, useValue: CurrentMessageServiceMock
-      },
-        { provide: EditAuthService, useValue: editAuthServiceMock },
-      {provide:EnumsService,useValue:enumsServiceMock}]
+      providers:
+        [
+          { provide: CurrentMessagesService, useValue: CurrentMessageServiceMock },
+          { provide: EditAuthService, useValue: editAuthServiceMock },
+          { provide: EnumsService, useValue: enumsServiceMock }
+      ]
     })
       .compileComponents();
     uiService=TestBed.inject(MessageUiService)
@@ -141,6 +142,13 @@ describe('MessageTableComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should navigate to the diff page', async() => {
+    let spy = spyOn(component, 'navigateToDiff').and.callThrough();
+    const button = await loader.getHarness(MatButtonHarness.with({ text: 'View Diff' }));
+    await button.click();
+    expect(spy).toHaveBeenCalled();
+  })
 
   it('should expand a row and hide a row on click', async () => {
     expect(component).toBeTruthy();
@@ -235,9 +243,10 @@ describe('MessageTableComponent', () => {
     })
 
     it('should open the menu and open the sidenav for diffs', async () => {
-      component.openMenu(mEvent, messagesMock[0],'field','header');
+      component.openMenu(mEvent, messagesMock[0],'field','name');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
+      expect(menu).toBeDefined();
       let spy = spyOn(component, 'viewDiff').and.callThrough();
       await menu.clickItem({ text: "View Diff" });
       expect(spy).toHaveBeenCalled();

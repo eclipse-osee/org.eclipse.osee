@@ -28,6 +28,9 @@ export class SubMessagesService {
 
   constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
 
+  getSubMessage(branchId: string, connectionId: string, messageId: string, subMessageId: string) {
+    return this.http.get<subMessage>(apiURL + "/mim/branch/" + branchId + "/connections/" + connectionId + "/messages/" + messageId + "/submessages/" + subMessageId);
+  }
   createMessageRelation(messageId:string,subMessageId?:string) {
     let relation: relation = {
       typeName: 'Interface Message SubMessage Content',

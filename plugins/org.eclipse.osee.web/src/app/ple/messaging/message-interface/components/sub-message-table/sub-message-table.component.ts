@@ -29,6 +29,7 @@ import { DeleteSubmessageDialogComponent } from '../dialogs/delete-submessage-di
 import { RemoveSubmessageDialogComponent } from '../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
 import { LocationStrategy } from '@angular/common';
+import { difference } from 'src/app/types/change-report/change-report';
 
 @Component({
   selector: 'ple-messaging-sub-message-table',
@@ -71,10 +72,17 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   }
 
   navigateToElementsTable(id: string | undefined, submessage: string, location: string) {
-    this.router.navigate([id,submessage,location, 'elements'], {
-      relativeTo: this.route,
-      queryParamsHandling: 'merge',
-    })
+    if (this.route.toString().includes('diff')) {
+      this.router.navigate([id,submessage,location, 'elements'], {
+        relativeTo: this.route.parent,
+        queryParamsHandling: 'merge',
+      })
+    } else {
+      this.router.navigate([id,submessage,location, 'elements'], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge',
+      }) 
+    }
   }
 
   openMenu(event: MouseEvent, message: message, submessage: subMessage, location: string,field:string|applic,header:string) {
@@ -93,6 +101,9 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   navigateToElementsTableInNewTab(id: string | undefined, submessage: string, location: string) {
     let currentUrl = this.router.url.split("/");
     currentUrl.shift()
+    if (currentUrl.indexOf('diff') !== -1) {
+      currentUrl.splice(currentUrl.indexOf('diff'),1) 
+    }
     const url = this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref(),...currentUrl,id,submessage,location, 'elements'], {
       relativeTo: this.route,
       queryParamsHandling: 'merge',
@@ -164,7 +175,12 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     return this.headerService.getHeaderByName(value,'submessage');
   }
 
-  viewDiff(open:boolean,value:string|number, header:string) {
-    this.messageService.sideNav = { opened: open,field:header, currentValue: value };
+  viewDiff(open: boolean, value: difference, header: string) {
+    this.messageService.sideNav = { opened: open, field: header, currentValue: value?.currentValue || '', previousValue: value?.previousValue || '', transaction: value.transactionToken };
+    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
+      relativeTo: this.route.parent,
+      queryParamsHandling: 'merge',
+      skipLocationChange:true
+    });
   }
 }

@@ -30,6 +30,7 @@ import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.servic
 import { ATTRIBUTETYPEID } from '../../shared/constants/AttributeTypeId.enum';
 import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
 import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
+import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 
 @Injectable({
   providedIn: 'root'
@@ -103,10 +104,9 @@ export class CurrentGraphService {
     shareReplay(1),
   )
 
-  private _sideNavContent = new Subject<{opened:boolean, field:string, currentValue:string|number|applic|transportType, previousValue?:string|number|applic|transportType,transaction?:transactionToken,user?:string,date?:string}>();
   private _update = new Subject<boolean>();
   private _differences = new BehaviorSubject<changeInstance[]|undefined>(undefined);
-  constructor (private graphService: GraphService, private nodeService: NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService, private preferenceService: MimPreferencesService, private userService: UserDataAccountService, private diffService: DiffUIService) {}
+  constructor (private graphService: GraphService, private nodeService: NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService, private preferenceService: MimPreferencesService, private userService: UserDataAccountService, private diffService: DiffUIService, private sideNavService: SideNavService) {}
   get differences() {
     return this._differences;
   }
@@ -141,7 +141,7 @@ export class CurrentGraphService {
     return this._branchPrefs;
   }
   get sideNavContent() {
-    return this._sideNavContent;
+    return this.sideNavService.sideNavContent;
   }
 
   get diff() {
@@ -149,7 +149,7 @@ export class CurrentGraphService {
   }
 
   set sideNav(value: {opened:boolean, field:string, currentValue:string|number|applic|transportType, previousValue?:string|number|applic|transportType,transaction?:transactionToken,user?:string,date?:string}) {
-    this._sideNavContent.next(value);
+    this.sideNavService.sideNav = value;
   }
 
   get InDiff() {
@@ -457,10 +457,12 @@ export class CurrentGraphService {
         node.data.changes.interfaceNodeBgColor = changes;
       }
     } else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
-      node.data.changes.applicability = {
-        previousValue: change.baselineVersion.applicabilityToken,
-        currentValue: change.currentVersion.applicabilityToken,
-        transactionToken:change.currentVersion.transactionToken
+      if (change.currentVersion.transactionToken.id !=='-1') {
+        node.data.changes.applicability = {
+          previousValue: change.baselineVersion.applicabilityToken,
+          currentValue: change.currentVersion.applicabilityToken,
+          transactionToken:change.currentVersion.transactionToken
+        }
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
       //do nothing currently
@@ -499,10 +501,12 @@ export class CurrentGraphService {
         edge.data.changes.transportType = changes;
       }
     } else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
-      edge.data.changes.applicability = {
-        previousValue: change.baselineVersion.applicabilityToken,
-        currentValue: change.currentVersion.applicabilityToken,
-        transactionToken:change.currentVersion.transactionToken
+      if (change.currentVersion.transactionToken.id !== '-1') {
+        edge.data.changes.applicability = {
+          previousValue: change.baselineVersion.applicabilityToken,
+          currentValue: change.currentVersion.applicabilityToken,
+          transactionToken:change.currentVersion.transactionToken
+        }
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
       //do nothing currently
@@ -549,10 +553,12 @@ export class CurrentGraphService {
       }
     } else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
       node.data.applicability = change.currentVersion.applicabilityToken as applic;
-      node.data.changes.applicability = {
-        previousValue: change.baselineVersion.applicabilityToken,
-        currentValue: change.currentVersion.applicabilityToken,
-        transactionToken:change.currentVersion.transactionToken
+      if (change.currentVersion.transactionToken.id !== '-1') {
+        node.data.changes.applicability = {
+          previousValue: change.baselineVersion.applicabilityToken,
+          currentValue: change.currentVersion.applicabilityToken,
+          transactionToken:change.currentVersion.transactionToken
+        }
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
       //do nothing currently
@@ -622,10 +628,12 @@ export class CurrentGraphService {
         edge.data.changes.transportType = changes;
       }
     } else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
-      edge.data.changes.applicability = {
-        previousValue: change.baselineVersion.applicabilityToken,
-        currentValue: change.currentVersion.applicabilityToken,
-        transactionToken:change.currentVersion.transactionToken
+      if (change.currentVersion.transactionToken.id!=='-1') {
+        edge.data.changes.applicability = {
+          previousValue: change.baselineVersion.applicabilityToken,
+          currentValue: change.currentVersion.applicabilityToken,
+          transactionToken:change.currentVersion.transactionToken
+        }
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
       //do nothing currently

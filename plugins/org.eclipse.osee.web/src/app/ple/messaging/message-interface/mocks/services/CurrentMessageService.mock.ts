@@ -10,19 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of, Subject } from "rxjs";
+import { BehaviorSubject, of, ReplaySubject, Subject } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
 import { applic } from "../../../../../types/applicability/applic";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
 import { CurrentMessagesService } from "../../services/current-messages.service";
-import { message } from "../../types/messages";
+import { message, messageWithChanges } from "../../types/messages";
 import { subMessage } from "../../types/sub-messages";
 import { messageResponseMock } from "../ReturnObjects/response.mock";
+import { transactionToken } from "src/app/transactions/transaction";
 
 
-let sideNavContentPlaceholder = new Subject<{ opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }>();
-sideNavContentPlaceholder.next({opened:true,field:'',currentValue:''})
-let expectedData: message[] = [{
+let sideNavContentPlaceholder = new ReplaySubject<{ opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined }>();
+sideNavContentPlaceholder.next({opened:true,field:'',currentValue:'',previousValue:''})
+let expectedData: (message|messageWithChanges)[] = [{
     id:'10',
     name: 'name',
     description: 'description',
@@ -44,8 +45,19 @@ let expectedData: message[] = [{
     applicability: {
       id: '1',
       name:'Base'
-    }
-  }];
+  },
+  changes: {
+    name: {
+      previousValue: '',
+      currentValue: 'name',
+      transactionToken: {
+        id: '-1',
+        branchId:'-1'
+      } 
+    }  
+  }
+}];
+const diffmode= new BehaviorSubject<boolean>(false);
 export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   messages: of(expectedData),
   applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
@@ -78,6 +90,7 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
     return of(messageResponseMock);
   },
   done: new Subject(),
+  isInDiff:diffmode,
   sideNavContent: sideNavContentPlaceholder,
-  set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) {}
+  set sideNav(value: { opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined }) {}
 }

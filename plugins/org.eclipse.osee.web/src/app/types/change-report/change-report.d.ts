@@ -83,7 +83,7 @@ export const enum changeTypeNumber{
  */
 export class version {
     transactionToken: transactionToken;
-    gammaId: string;
+    gammaId: string|null;
     modType: ModificationType;
     value: string | number | boolean | null | undefined;
     uri: string;
@@ -104,5 +104,5 @@ export class itemTypeIdRelation{
     ordered: boolean;
     multiplicity: string;
     idString: string;
-    idIntValue: string;
+    idIntValue: number;
 }

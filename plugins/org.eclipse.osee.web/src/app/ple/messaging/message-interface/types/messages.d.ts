@@ -10,18 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { difference } from "src/app/types/change-report/change-report";
 import { applic } from "../../../../types/applicability/applic";
-import { subMessage } from "./sub-messages";
+import { subMessage, subMessageWithChanges } from "./sub-messages";
 
 export interface message {
     id: string,
     name: string,
     description: string ,
-    subMessages: Array<Required<subMessage>>,
+    subMessages: Array<subMessage|subMessageWithChanges>,
     interfaceMessageRate: string ,
     interfaceMessagePeriodicity: string ,
     interfaceMessageWriteAccess: boolean ,
     interfaceMessageType: string ,
     interfaceMessageNumber: string,
     applicability?:applic
+}
+
+export interface messageWithChanges extends message{
+    added: boolean,
+    deleted: boolean,
+    hasSubMessageChanges:boolean,
+    changes: messageChanges
+}
+
+export interface messageChanges{
+    name?: difference,
+    description?: difference ,
+    interfaceMessageRate?: difference ,
+    interfaceMessagePeriodicity?: difference ,
+    interfaceMessageWriteAccess?: difference ,
+    interfaceMessageType?: difference ,
+    interfaceMessageNumber?: difference,
+    applicability?:difference 
 }

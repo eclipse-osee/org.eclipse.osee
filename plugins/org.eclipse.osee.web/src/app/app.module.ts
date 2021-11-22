@@ -23,6 +23,7 @@ import { httpInterceptorProviders } from './interceptors/http/interceptor-provid
 
 //Sub-component imports
 import { DisplayUserComponent } from './userdata/components/display-user/display-user.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { DisplayUserComponent } from './userdata/components/display-user/display
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    MatSidenavModule,
     MatToolbarModule,
     BrowserAnimationsModule
   ],

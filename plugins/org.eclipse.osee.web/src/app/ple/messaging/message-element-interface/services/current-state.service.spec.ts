@@ -203,8 +203,8 @@ describe('CurrentStateService', () => {
   })
   it('should get available structures', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: structuresMock };
-      let expectedMarble = '(a|)';
+      let expectedObservable = { a: structuresMock,b:[structuresMock[0],structuresMock[0]], c:[structuresMock[0],structuresMock[0],structuresMock[0]],d:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]],e:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]], };
+      let expectedMarble = '(ab|)';
       scheduler.expectObservable(service.availableStructures).toBe(expectedMarble, expectedObservable);
     })
   })

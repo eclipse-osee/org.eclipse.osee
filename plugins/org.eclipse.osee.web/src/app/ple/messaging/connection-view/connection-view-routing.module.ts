@@ -13,6 +13,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
+import { MimSingleDiffComponent } from '../../diff-views/mim-single-diff/mim-single-diff.component';
 import { ConnectionViewComponent } from './connection-view.component';
 
 const routes: Routes = [
@@ -22,7 +23,11 @@ const routes: Routes = [
   {
     path: ':branchType/:branchId/diff', component: ConnectionViewComponent, resolve: {
     diff:DiffReportResolver
-  }}
+    }
+  },
+  {
+    path: 'diffOpen', component: MimSingleDiffComponent, outlet:'rightSideNav'
+  }
 ];
 
 @NgModule({

@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { message } from "../../types/messages";
+import { message, messageWithChanges } from "../../types/messages";
 import { subMessagesMock } from "./submessages.mock";
 
-export const messagesMock: message[] = [
+export const messagesMock: (message|messageWithChanges)[] = [
     {
         id: '0',
         name: 'message0',
@@ -27,6 +27,16 @@ export const messagesMock: message[] = [
         applicability: {
             id: '1',
             name: 'Base'
+        },
+        changes: {
+            name: {
+              previousValue: '',
+              currentValue: 'name',
+              transactionToken: {
+                id: '-1',
+                branchId:'-1'
+              }
+            }
         }
     },
     {
@@ -44,4 +54,60 @@ export const messagesMock: message[] = [
             name: 'Base'
         }
     },
+    {
+        id: "201304",
+        name: 'message2',
+        description: 'description',
+        subMessages: [],
+        interfaceMessageRate: '5',
+        interfaceMessagePeriodicity: 'Periodic',
+        interfaceMessageWriteAccess: true,
+        interfaceMessageType: 'Connection',
+        interfaceMessageNumber: "2",
+        applicability: {
+            id: '1',
+            name: 'Base'
+        }
+    },
+    {
+        id: '201300',
+        name: 'message3',
+        description: 'description',
+        subMessages: [
+            {
+                id: '201305',
+                name: 'abcdef',
+                description: 'ghijk',
+                interfaceSubMessageNumber: '25',
+                applicability: {
+                    id: '1',
+                    name: 'Base'
+                }
+            }
+        ],
+        interfaceMessageRate: '5',
+        interfaceMessagePeriodicity: 'Periodic',
+        interfaceMessageWriteAccess: true,
+        interfaceMessageType: 'Connection',
+        interfaceMessageNumber: "2",
+        applicability: {
+            id: '1',
+            name: 'Base'
+        }
+    },
+    {
+        id: '201289',
+        name: 'message4',
+        description: 'description',
+        subMessages: [],
+        interfaceMessageRate: '5',
+        interfaceMessagePeriodicity: 'Periodic',
+        interfaceMessageWriteAccess: true,
+        interfaceMessageType: 'Connection',
+        interfaceMessageNumber: "2",
+        applicability: {
+            id: '1',
+            name: 'Base'
+        }
+    }
 ]

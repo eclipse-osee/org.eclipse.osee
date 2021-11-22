@@ -23,7 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
@@ -41,14 +41,17 @@ describe('GraphNodeMenuComponent', () => {
   let fixture: ComponentFixture<GraphNodeMenuComponent>;
   let loader: HarnessLoader;
   let router: any;
+  let route: any;
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],{'url':new String()});
+    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], { 'url': new String() });
+    route = jasmine.createSpyObj('ActivatedRoute',[],{parent:''})
     await TestBed.configureTestingModule({
       imports:[MatButtonModule,MatDialogModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
       providers:
         [
           { provide: Router, useValue: router },
+          {provide: ActivatedRoute,useValue:route},
           { provide: CurrentGraphService, useValue: graphServiceMock },
           {provide: EnumsService,useValue:enumsServiceMock}
       ],

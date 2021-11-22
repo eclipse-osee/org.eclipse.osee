@@ -146,7 +146,7 @@ export class CurrentStateService {
         mergeMap(message => of(message?.subMessages).pipe(
           mergeMap(submessage => from(submessage).pipe(
             distinct((x) => { return x.id }),
-            mergeMap((submessage) => this.structure.getFilteredStructures("", this.BranchId.getValue(), message?.id, submessage?.id,this.connectionId.getValue()).pipe(
+            mergeMap((submessage) => this.structure.getFilteredStructures("", this.BranchId.getValue(), message?.id, submessage?.id||'',this.connectionId.getValue()).pipe(
               mergeMap(structures => from(structures).pipe(
                 distinct((structure)=>{return structure.id})
               ))

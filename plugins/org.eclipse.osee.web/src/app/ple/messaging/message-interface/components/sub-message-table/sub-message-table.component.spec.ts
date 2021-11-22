@@ -31,6 +31,7 @@ import { TestScheduler } from 'rxjs/testing';
 import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
+import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
 import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
 import { subMessagesMock } from '../../mocks/ReturnObjects/submessages.mock';
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
@@ -48,6 +49,7 @@ describe('SubMessageTableComponent', () => {
   let fixture: ComponentFixture<SubMessageTableComponent>;
   let loader: HarnessLoader;
   let router: any;
+  let route: any;
   let scheduler: TestScheduler;
   let expectedData = [
     {
@@ -66,22 +68,14 @@ describe('SubMessageTableComponent', () => {
 
   beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], { 'url': "/route/to/location/" });
+    route = jasmine.createSpyObj('ActivatedRoute',[],{parent:''})
     await TestBed.configureTestingModule({
-      imports:[MatTableModule,MatTooltipModule, MatButtonModule,OseeStringUtilsDirectivesModule,OseeStringUtilsPipesModule, RouterTestingModule, MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
+      imports: [MatTableModule, MatTooltipModule, MatButtonModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule.withRoutes([{ path: 'diffOpen', component: MimSingleDiffDummy,outlet:'rightSideNav' }]), MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
       declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent,HighlightFilteredTextDirective],
       providers: [{provide: CurrentMessagesService, useValue:CurrentMessageServiceMock},
         { provide: Router, useValue: router },
         {
-          provide: ActivatedRoute, useValue: {
-        //     paramMap: of(
-        //       convertToParamMap(
-        //         {
-        //           name:"Name > Name"
-        //         }
-        //       )
-        //     )
-            // 
-          }  
+          provide: ActivatedRoute, useValue: route  
         },
     ]
     })
@@ -115,7 +109,7 @@ describe('SubMessageTableComponent', () => {
 
   it('should navigate to Hello/10/10/elements', () => {
     component.navigateToElementsTable("10","10",'Hello');
-    expect(router.navigate).toHaveBeenCalledWith(['10','10','Hello','elements'],{relativeTo: Object({ }), queryParamsHandling:'merge'});
+    expect(router.navigate).toHaveBeenCalledWith(['10','10','Hello','elements'],{relativeTo: Object({parent:'' }), queryParamsHandling:'merge'});
   });
 
   it('should update the datasource filter', () => {
@@ -185,7 +179,7 @@ describe('SubMessageTableComponent', () => {
     })
 
     it('should open the menu and open the view diff sidenav', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','field','header');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','field','name');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'viewDiff').and.callThrough();
