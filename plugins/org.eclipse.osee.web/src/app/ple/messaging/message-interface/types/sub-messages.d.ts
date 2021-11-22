@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { difference } from "src/app/types/change-report/change-report";
 import { applic } from "../../../../types/applicability/applic";
 
 export interface subMessage {
@@ -18,4 +19,15 @@ export interface subMessage {
     description: string,
     interfaceSubMessageNumber: string,
     applicability?:applic
+}
+
+export interface subMessageWithChanges extends subMessage{
+    added: boolean,
+    deleted: boolean,
+    changes: {
+        name?: difference,
+        description?: difference,
+        interfaceSubMessageNumber?: difference,
+        applicability?:difference
+    }
 }

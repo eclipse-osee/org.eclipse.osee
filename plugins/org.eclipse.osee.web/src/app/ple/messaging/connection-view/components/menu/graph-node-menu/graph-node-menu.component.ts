@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { connection, connectionWithChanges, newConnection, OseeEdge, transportType } from 'src/app/ple/messaging/shared/types/connection';
@@ -39,7 +40,7 @@ export class GraphNodeMenuComponent implements OnInit {
   }
   @Input() sources: OseeEdge<connection | connectionWithChanges>[] = []
   @Input() targets: OseeEdge<connection | connectionWithChanges>[] = []
-  constructor(private graphService: CurrentGraphService, public dialog:MatDialog) { }
+  constructor(private graphService: CurrentGraphService, public dialog:MatDialog, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
   }
@@ -107,12 +108,17 @@ export class GraphNodeMenuComponent implements OnInit {
     let current = value.currentValue as string | number | applic | transportType;
     let prev = value.previousValue as string | number | applic | transportType;
     if (prev === null) {
-      prev=''
+      prev = ''
     }
     if (current === null) {
-      current=''
+      current = ''
     }
-    this.graphService.sideNav = { opened: open,field:header, currentValue: current,previousValue:prev,transaction:value.transactionToken };
+    this.graphService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
+    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
+      relativeTo: this.route.parent,
+      queryParamsHandling: 'merge',
+      skipLocationChange:true
+    });
   }
 
   hasChanges(value: nodeData|nodeDataWithChanges): value is nodeDataWithChanges {

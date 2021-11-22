@@ -30,6 +30,10 @@ import { MessagesService } from './messages.service';
 import { SubMessagesService } from './sub-messages.service';
 import { MessageUiService } from './ui.service';
 import { subMessagesMock } from '../mocks/ReturnObjects/submessages.mock';
+import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
+import { message, messageWithChanges } from '../types/messages';
+import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
+import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
 
 describe('CurrentMessagesService', () => {
   let service: CurrentMessagesService;
@@ -43,8 +47,8 @@ describe('CurrentMessagesService', () => {
         { provide: MessagesService, useValue: messageServiceMock },
         { provide: SubMessagesService, useValue: subMessageServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        {provide:UserDataAccountService,useValue:userDataAccountServiceMock}],
+        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },  
+        { provide: BranchInfoService, useValue: BranchInfoServiceMock }],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(CurrentMessagesService);
@@ -195,6 +199,1041 @@ describe('CurrentMessagesService', () => {
       let delayMarble = '-a';
       cold(delayMarble).subscribe(() => service.toggleDone=true);
       expectObservable(service.done).toBe(expectedMarble,expectedFilterValues)
+    })
+  })
+
+  it('should get messages,submessages with differences', () => {
+    scheduler.run(({ expectObservable }) => {
+      const expectedValues: { a: (message | messageWithChanges)[], b: (message | messageWithChanges)[], c:(message | messageWithChanges)[],d:(message | messageWithChanges)[], e:(message | messageWithChanges)[], f:(message|messageWithChanges)[] } = {
+        a: [
+          {
+            id: '0',
+            name: 'message0',
+            description: 'description',
+            subMessages:
+              [
+                {
+                  name: 'submessage0',
+                  description: '',
+                  interfaceSubMessageNumber: '0',
+                  id: '1',
+                  applicability: {
+                    id: '1',
+                    name: 'Base'
+                  },
+                  changes: {
+                    name: {
+                      previousValue: '',
+                      currentValue: 'submessage0',
+                      transactionToken: {
+                        id: '-1',
+                        branchId:'-1'
+                      }
+                    }
+                  }
+                }
+              ],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              name: { previousValue: '', currentValue: 'name', transactionToken:{id:'-1',branchId:'-1'}}
+            }
+          }
+        ],
+        b: [
+          {
+            id: '0',
+            name: 'message0',
+            description: 'description',
+            subMessages:
+              [
+                {
+                  name: 'submessage0',
+                  description: '',
+                  interfaceSubMessageNumber: '0',
+                  id: '1',
+                  applicability: {
+                    id: '1',
+                    name: 'Base'
+                  },
+                  changes: {
+                    name: {
+                      previousValue: '',
+                      currentValue: 'submessage0',
+                      transactionToken: {
+                        id: '-1',
+                        branchId:'-1'
+                      }
+                    }
+                  }
+                }
+              ],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              name: { previousValue: '', currentValue: 'name', transactionToken:{id:'-1',branchId:'-1'}}
+            }
+          },
+          {
+            id: '1',
+            name: 'message1',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '1',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            }
+          }
+        ],
+        c: [
+          {
+            id: '0',
+            name: 'message0',
+            description: 'description',
+            subMessages:
+              [
+                {
+                  name: 'submessage0',
+                  description: '',
+                  interfaceSubMessageNumber: '0',
+                  id: '1',
+                  applicability: {
+                    id: '1',
+                    name: 'Base'
+                  },
+                  changes: {
+                    name: {
+                      previousValue: '',
+                      currentValue: 'submessage0',
+                      transactionToken: {
+                        id: '-1',
+                        branchId:'-1'
+                      }
+                    }
+                  }
+                }
+              ],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
+            }
+          },
+          {
+            id: '1',
+            name: 'message1',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '1',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            }
+          },
+          {
+            id: '201304',
+            name: 'message2',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '5',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            added: false,
+            hasSubMessageChanges:false,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              interfaceMessageWriteAccess: {
+                previousValue: null,
+                currentValue: 'true',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              name: {
+                previousValue: null,
+                currentValue: 'test message 7',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessagePeriodicity: {
+                previousValue: null,
+                currentValue: 'Periodic',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageType: {
+                previousValue: null,
+                currentValue: 'Operational',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              description: {
+                previousValue: null,
+                currentValue: 'dafda',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageNumber: {
+                previousValue: null,
+                currentValue: '741',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              },
+              interfaceMessageRate: {
+                previousValue: null,
+                currentValue: '20',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              }
+            }
+          }
+        ],
+        d:[
+          {
+            id: '0',
+            name: 'message0',
+            description: 'description',
+            subMessages:
+              [
+                {
+                  name: 'submessage0',
+                  description: '',
+                  interfaceSubMessageNumber: '0',
+                  id: '1',
+                  applicability: {
+                    id: '1',
+                    name: 'Base'
+                  },
+                  changes: {
+                    name: {
+                      previousValue: '',
+                      currentValue: 'submessage0',
+                      transactionToken: {
+                        id: '-1',
+                        branchId:'-1'
+                      }
+                    }
+                  }
+                }
+              ],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
+            }
+          },
+          {
+            id: '1',
+            name: 'message1',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '1',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            }
+          },
+          {
+            id: '201300',
+            name: 'message3',
+            interfaceMessageRate: '5',
+            description: 'description',
+            subMessages: [
+              {
+                id: '201305',
+                name: 'abcdef',
+                description: 'ghijk',
+                interfaceSubMessageNumber: '25',
+                applicability: {
+                  id: '1',
+                  name: 'Base'
+                },
+                changes: {
+                  name:{
+                    previousValue: null,
+                    currentValue:'test submessage 8',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  interfaceSubMessageNumber:{
+                    previousValue: null,
+                    currentValue:'85',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  description:{
+                    previousValue: null,
+                    currentValue:'dfd',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                },
+                added:false
+              },
+            ],
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            hasSubMessageChanges:true,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+          },
+          {
+            id: '201304',
+            name: 'message2',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '5',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            added: false,
+            hasSubMessageChanges:false,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              interfaceMessageWriteAccess: {
+                previousValue: null,
+                currentValue: 'true',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              name: {
+                previousValue: null,
+                currentValue: 'test message 7',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessagePeriodicity: {
+                previousValue: null,
+                currentValue: 'Periodic',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageType: {
+                previousValue: null,
+                currentValue: 'Operational',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              description: {
+                previousValue: null,
+                currentValue: 'dafda',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageNumber: {
+                previousValue: null,
+                currentValue: '741',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              },
+              interfaceMessageRate: {
+                previousValue: null,
+                currentValue: '20',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              }
+            }
+          }
+        ],
+        e: [
+          {
+            id: '0',
+            name: 'message0',
+            description: 'description',
+            subMessages:
+              [
+                {
+                  name: 'submessage0',
+                  description: '',
+                  interfaceSubMessageNumber: '0',
+                  id: '1',
+                  applicability: {
+                    id: '1',
+                    name: 'Base'
+                  },
+                  changes: {
+                    name: {
+                      previousValue: '',
+                      currentValue: 'submessage0',
+                      transactionToken: {
+                        id: '-1',
+                        branchId:'-1'
+                      }
+                    }
+                  }
+                }
+              ],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
+            }
+          },
+          {
+            id: '1',
+            name: 'message1',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '1',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            }
+          },
+          {
+            id: '201289',
+            name: 'message4',
+            interfaceMessageRate: '5',
+            description: 'description',
+            subMessages: [
+              {
+                id: '201300',
+                name: 'submessage0',
+                description: '',
+                interfaceSubMessageNumber: '',
+                applicability: {
+                  id: '1',
+                  name: 'Base'
+                },
+                added: false,
+                deleted: true,
+                changes: {}
+              },
+              {
+                added: false,
+                deleted: true,
+                changes: {
+                  name: {
+                    previousValue: 'test submessage 6',
+                    currentValue: 'test submessage 6',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  interfaceSubMessageNumber: {
+                    previousValue: '762',
+                    currentValue: '762',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  description: {
+                    previousValue: 'uiop',
+                    currentValue: 'uiop',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  }
+                },
+                id: '201302',
+                name: 'submessage0',
+                description: '',
+                interfaceSubMessageNumber: '',
+                applicability: {
+                  id: '1',
+                  name:'Base'
+                }
+              },
+              {
+                added: false,
+                deleted: true,
+                changes: {
+                  name: {
+                    previousValue: null,
+                    currentValue: 'test submessage 8',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  interfaceSubMessageNumber: {
+                    previousValue: null,
+                    currentValue: '85',
+                    transactionToken: {
+                      id: "-1",
+                      branchId:'-1'
+                    }
+                  },
+                  description: {
+                    previousValue: null,
+                    currentValue: 'dfd',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                },
+                id: '201305',
+                name: 'submessage0',
+                description: '',
+                interfaceSubMessageNumber: '',
+                applicability: {
+                  id: '1',
+                  name:'Base'
+                }
+              }
+            ],
+            changes: {
+            },
+            added: false,
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            hasSubMessageChanges:true,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+          },
+          {
+            id: '201300',
+            name: 'message3',
+            description: 'description',
+            subMessages: [
+              {
+                id: '201305',
+                name: 'abcdef',
+                description: 'ghijk',
+                interfaceSubMessageNumber: '25',
+                applicability: {
+                  id: '1',
+                  name: 'Base'
+                },
+                changes: {
+                  name: {
+                    previousValue: null,
+                    currentValue: 'test submessage 8',
+                    transactionToken: {
+                      id: '-1',
+                      branchId: '-1'
+                    }
+                  },
+                  interfaceSubMessageNumber: {
+                    previousValue: null,
+                    currentValue: '85',
+                    transactionToken: {
+                      id: '-1',
+                      branchId: '-1'
+                    }
+                  },
+                  description: {
+                    previousValue: null,
+                    currentValue: 'dfd',
+                    transactionToken: {
+                      id: '-1',
+                      branchId: '-1'
+                    }
+                  }
+                }, added: false
+              }
+            ],
+            interfaceMessageRate: '5',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            hasSubMessageChanges:true,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+          },
+          {
+            id: '201304',
+            name: 'message2',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '5',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            added: false,
+            hasSubMessageChanges:false,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              interfaceMessageWriteAccess: {
+                previousValue: null,
+                currentValue: 'true',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              name: {
+                previousValue: null,
+                currentValue: 'test message 7',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessagePeriodicity: {
+                previousValue: null,
+                currentValue: 'Periodic',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageType: {
+                previousValue: null,
+                currentValue: 'Operational',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              description: {
+                previousValue: null,
+                currentValue: 'dafda',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageNumber: {
+                previousValue: null,
+                currentValue: '741',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              },
+              interfaceMessageRate: {
+                previousValue: null,
+                currentValue: '20',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              }
+            }
+          }
+        ],
+        f:[
+          {
+            id: '0',
+            name: 'message0',
+            description: 'description',
+            subMessages:
+              [
+                {
+                  name: 'submessage0',
+                  description: '',
+                  interfaceSubMessageNumber: '0',
+                  id: '1',
+                  applicability: {
+                    id: '1',
+                    name: 'Base'
+                  },
+                  changes: {
+                    name: {
+                      previousValue: '',
+                      currentValue: 'submessage0',
+                      transactionToken: {
+                        id: '-1',
+                        branchId:'-1'
+                      }
+                    }
+                  }
+                }
+              ],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes: {
+              name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
+            }
+          },
+          {
+            id: '1',
+            name: 'message1',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '1',
+            applicability: {
+              id: '1',
+              name: 'Base'
+            }
+          },
+          {
+            id: '201289',
+            name: 'message4',
+            interfaceMessageRate: '5',
+            description: 'description',
+            subMessages: [
+              {
+                id: '201300',
+                name: 'submessage0',
+                description: '',
+                interfaceSubMessageNumber: '',
+                applicability: {
+                  id: '1',
+                  name: 'Base'
+                },
+                added: false,
+                deleted: true,
+                changes: {}
+              },
+              {
+                added: false,
+                deleted: true,
+                changes: {
+                  name: {
+                    previousValue: 'test submessage 6',
+                    currentValue: 'test submessage 6',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  interfaceSubMessageNumber: {
+                    previousValue: '762',
+                    currentValue: '762',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  description: {
+                    previousValue: 'uiop',
+                    currentValue: 'uiop',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  }
+                },
+                id: '201302',
+                name: 'submessage0',
+                description: '',
+                interfaceSubMessageNumber: '',
+                applicability: {
+                  id: '1',
+                  name:'Base'
+                }
+              },
+              {
+                added: false,
+                deleted: true,
+                changes: {
+                  name: {
+                    previousValue: null,
+                    currentValue: 'test submessage 8',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                  interfaceSubMessageNumber: {
+                    previousValue: null,
+                    currentValue: '85',
+                    transactionToken: {
+                      id: "-1",
+                      branchId:'-1'
+                    }
+                  },
+                  description: {
+                    previousValue: null,
+                    currentValue: 'dfd',
+                    transactionToken: {
+                      id: '-1',
+                      branchId:'-1'
+                    }
+                  },
+                },
+                id: '201305',
+                name: 'submessage0',
+                description: '',
+                interfaceSubMessageNumber: '',
+                applicability: {
+                  id: '1',
+                  name:'Base'
+                }
+              }
+            ],
+            changes: {
+            },
+            added: false,
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            hasSubMessageChanges:true,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+          },
+          {
+            id: '201300',
+            name: 'message3',
+            description: 'description',
+            subMessages: [
+              {
+                id: '201305',
+                name: 'abcdef',
+                description: 'ghijk',
+                interfaceSubMessageNumber: '25',
+                applicability: {
+                  id: '1',
+                  name: 'Base'
+                },
+                changes: {
+                  name: {
+                    previousValue: null,
+                    currentValue: 'test submessage 8',
+                    transactionToken: {
+                      id: '-1',
+                      branchId: '-1'
+                    }
+                  },
+                  interfaceSubMessageNumber: {
+                    previousValue: null,
+                    currentValue: '85',
+                    transactionToken: {
+                      id: '-1',
+                      branchId: '-1'
+                    }
+                  },
+                  description: {
+                    previousValue: null,
+                    currentValue: 'dfd',
+                    transactionToken: {
+                      id: '-1',
+                      branchId: '-1'
+                    }
+                  }
+                }, added: false
+              }
+            ],
+            interfaceMessageRate: '5',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            hasSubMessageChanges:true,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+          },
+          {
+            id: '201303',
+            name: 'message0',
+            description: 'description',
+            subMessages: [],
+            deleted:true,
+            interfaceMessageRate: '1',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '0',
+            added: false,
+            hasSubMessageChanges:false,
+            applicability: {
+              id: '1',
+              name: 'Base'
+            },
+            changes:{}
+          },
+          {
+            id: '201304',
+            name: 'message2',
+            description: 'description',
+            subMessages: [],
+            interfaceMessageRate: '5',
+            interfaceMessagePeriodicity: 'Periodic',
+            interfaceMessageWriteAccess: true,
+            interfaceMessageType: 'Connection',
+            interfaceMessageNumber: '2',
+            applicability: {
+              id: '1',
+              name:'Base'
+            },
+            added: false,
+            hasSubMessageChanges:false,
+            changes: {
+              interfaceMessageWriteAccess: {
+                previousValue: null,
+                currentValue: 'true',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              name: {
+                previousValue: null,
+                currentValue: 'test message 7',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessagePeriodicity: {
+                previousValue: null,
+                currentValue: 'Periodic',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageType: {
+                previousValue: null,
+                currentValue: 'Operational',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              description: {
+                previousValue: null,
+                currentValue: 'dafda',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                }
+              },
+              interfaceMessageNumber: {
+                previousValue: null,
+                currentValue: '741',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              },
+              interfaceMessageRate: {
+                previousValue: null,
+                currentValue: '20',
+                transactionToken: {
+                  id: '-1',
+                  branchId: '-1'
+                },
+              }
+            }
+          }
+        ]
+      }
+      service.difference = changeReportMock;
+      service.DiffMode = true;
+      service.branch = '10';
+      expectObservable(service.messages).toBe('500ms (abcdef)', expectedValues)
     })
   })
 });

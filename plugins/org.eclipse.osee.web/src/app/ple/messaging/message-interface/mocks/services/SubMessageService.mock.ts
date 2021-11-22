@@ -17,10 +17,14 @@ import { response } from "../../../connection-view/mocks/Response.mock";
 import { SubMessagesService } from "../../services/sub-messages.service";
 import { subMessage } from "../../types/sub-messages";
 import { messageResponseMock } from "../ReturnObjects/response.mock";
+import { subMessagesMock } from "../ReturnObjects/submessages.mock";
 
 export const subMessageServiceMock: Partial<SubMessagesService> = {
     changeSubMessage(branchId: string, submessage: Partial<subMessage>) {
         return of(transactionMock);
+    },
+    getSubMessage(branchId, connectionId, messageId, submessageId) {
+        return of(subMessagesMock[0])
     },
     createSubMessage(branchId: string, submessage: Partial<subMessage>, relations: relation[]) {
         return of(transactionMock);

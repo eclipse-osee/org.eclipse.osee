@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { subMessage } from "../../types/sub-messages";
+import { subMessage, subMessageWithChanges } from "../../types/sub-messages";
 
-export const subMessagesMock: Required<subMessage>[] = [
+export const subMessagesMock: Required<subMessage|subMessageWithChanges>[] = [
     {
         name: 'submessage0',
         description: '',
@@ -21,6 +21,16 @@ export const subMessagesMock: Required<subMessage>[] = [
         applicability: {
             id: '1',
             name:'Base'
+        },
+        changes: {
+            name: {
+                previousValue: '',
+                currentValue: 'submessage0',
+                transactionToken: {
+                    id: '-1',
+                    branchId:'-1'
+                }
+            }
         }
     }
 ]

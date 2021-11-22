@@ -43,7 +43,7 @@ describe('CurrentGraphService', () => {
   let scheduler: TestScheduler;
   let graphService: Partial<GraphService> = {
     getNodes(id:string) {
-      return of({nodes:[{id:'1',name:'1',data:{id:'1',name:'1',interfaceNodeAddress:'',interfaceNodeBgColor:''}},{id:'2',name:'2',data:{id:'2',name:'2',interfaceNodeAddress:'',interfaceNodeBgColor:''}}],edges:[{id:'1234',source:'1',target:'2',data:{name:'abcd',transportType:transportType.Ethernet}}]})
+      return of({nodes:[{id:'1',name:'1',data:{id:'1',name:'1',interfaceNodeAddress:'',interfaceNodeBgColor:''}},{id:'2',name:'2',data:{id:'2',name:'2',interfaceNodeAddress:'',interfaceNodeBgColor:''}},{id:'201279',label:'',data:{id:'201279',name:'',interfaceNodeAddress:'',interfaceNodeBgColor:'',applicability:{id:'1',name:'Base'}}}],edges:[{id:'1234',source:'1',target:'2',data:{name:'abcd',transportType:transportType.Ethernet}}]})
     },
   }
   let nodeService: Partial<NodeService> = {
@@ -192,7 +192,7 @@ describe('CurrentGraphService', () => {
 
   it('should fetch empty array of nodes and edges', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: { nodes: [{ id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }], edges: [{ id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' }}]} };
+      const expectedfilterValues = { a: { nodes: [{ id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } },{id:'201279',label:'',data:{id:'201279',name:'',interfaceNodeAddress:'',interfaceNodeBgColor:'',applicability:{id:'1',name:'Base'}}}], edges: [{ id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' }}]} };
       const expectedMarble = 'a'
       routeState.branchId='10'
       scheduler.expectObservable(service.nodes).toBe(expectedMarble, expectedfilterValues);
@@ -251,7 +251,59 @@ describe('CurrentGraphService', () => {
           service.difference = changeReportMock;
           routeState.DiffMode = true;
           routeState.branchId = '10';
-          const expectedfilterValues = { a: { nodes:[{ id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, ],edges:[{ id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' } }]} };
+          const expectedfilterValues = {
+            a: {
+              nodes: [
+                {
+                  id: '1',
+                  name: '1',
+                  data: {
+                    id: '1',
+                    name: '1',
+                    interfaceNodeAddress: '',
+                    interfaceNodeBgColor: ''
+                  }
+                },
+                {
+                  id: '2',
+                  name: '2',
+                  data: {
+                    id: '2',
+                    name: '2',
+                    interfaceNodeAddress: '',
+                    interfaceNodeBgColor: ''
+                  }
+                },
+                {
+                  id: '201279',
+                  label:'',
+                  data: {
+                    interfaceNodeAddress: '',
+                    interfaceNodeBgColor: '',
+                    applicability: {
+                      id: '1',
+                      name:'Base'
+                    },
+                    id: '201279',
+                    name: '',
+                    changes: {
+                      description: {
+                        previousValue: '',
+                        currentValue: 'changed',
+                        transactionToken: {
+                          id: '1014',
+                          branchId:'1014568291390890988'
+                        }
+                      }
+                    }
+                  },
+                },
+              ],
+              edges: [
+                { id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' } }
+              ]
+            }
+          };
           const expectedMarble = 'a';
           expectObservable(service.nodes).toBe(expectedMarble,expectedfilterValues)
         })

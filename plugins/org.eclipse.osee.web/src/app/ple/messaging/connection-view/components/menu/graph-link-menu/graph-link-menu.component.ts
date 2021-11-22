@@ -24,6 +24,7 @@ import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dia
 import { Edge, Node } from '@swimlane/ngx-graph';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-graph-link-menu',
@@ -42,7 +43,7 @@ export class GraphLinkMenuComponent implements OnInit {
   @Input()
   target!: OseeNode<node | nodeData | nodeDataWithChanges>;
 
-  constructor(private graphService: CurrentGraphService, private router: ConnectionViewRouterService,public dialog:MatDialog) { }
+  constructor(private graphService: CurrentGraphService, private router: ConnectionViewRouterService,public dialog:MatDialog, private routerNg: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
   }
@@ -109,7 +110,12 @@ export class GraphLinkMenuComponent implements OnInit {
     if (current === null) {
       current=''
     }
-    this.graphService.sideNav = { opened: open,field:header, currentValue: current,previousValue:prev,transaction:value.transactionToken };
+    this.graphService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
+    this.routerNg.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
+      relativeTo: this.route.parent,
+      queryParamsHandling: 'merge',
+      skipLocationChange:true
+    });
   }
 
   hasChanges(value: connection | connectionWithChanges): value is connectionWithChanges {

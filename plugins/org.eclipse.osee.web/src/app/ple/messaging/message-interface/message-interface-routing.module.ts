@@ -12,9 +12,20 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
+import { MimSingleDiffComponent } from '../../diff-views/mim-single-diff/mim-single-diff.component';
 import { MessageInterfaceComponent } from './message-interface.component';
 
-const routes: Routes = [{ path: '', component: MessageInterfaceComponent }];
+const routes: Routes = [
+  {
+    path: '', component: MessageInterfaceComponent, children: [
+    
+  ] },
+  { path: 'diff', component: MessageInterfaceComponent, resolve: { diff: DiffReportResolver } },
+  {
+    path: 'diffOpen', component: MimSingleDiffComponent, outlet:'rightSideNav'
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

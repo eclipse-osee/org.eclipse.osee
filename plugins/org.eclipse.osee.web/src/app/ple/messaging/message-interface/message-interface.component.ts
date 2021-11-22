@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, iif, of } from 'rxjs';
 import { HttpLoadingService } from '../shared/services/ui/http-loading.service';
 import { CurrentMessagesService } from './services/current-messages.service';
 
@@ -23,16 +24,24 @@ import { CurrentMessagesService } from './services/current-messages.service';
 export class MessageInterfaceComponent implements OnInit,OnDestroy {
 
   isLoading = this.loadingService.isLoading;
-  constructor(private route: ActivatedRoute, private messageService: CurrentMessagesService, private loadingService: HttpLoadingService) { }
+  constructor (private router:Router,private route: ActivatedRoute, private messageService: CurrentMessagesService, private loadingService: HttpLoadingService) { }
   ngOnDestroy(): void {
     this.messageService.toggleDone=true;
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((values) => {
-      this.messageService.filter = values.get('type')?.trim().toLowerCase() || '';
-      this.messageService.branch = values.get('branchId') || '';
-      this.messageService.connection = values.get('connection') || '';
+    combineLatest([this.route.paramMap,this.route.data,iif(() => this.router.url.includes('diff'),
+    of(false),
+      of(true))]).subscribe(([values, data, mode]) => {
+        if (mode) {
+          this.messageService.filter = values.get('type')?.trim().toLowerCase() || '';
+          this.messageService.branch = values.get('branchId') || '';
+          this.messageService.connection = values.get('connection') || '';
+          this.messageService.DiffMode = false;
+        } else {
+          this.messageService.connection = values.get('connection') || '';
+          this.messageService.difference=data.diff;
+        }
     })
   }
 

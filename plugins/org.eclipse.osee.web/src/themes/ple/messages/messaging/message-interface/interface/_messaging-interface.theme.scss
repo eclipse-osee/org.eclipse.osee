@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@import '~@angular/material/theming';
+@import '../../../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
@@ -22,6 +22,7 @@
   $warn: map-get($config, warn);
   $background: map-get($config, background);
   $foreground: map-get($config, foreground);
+  $success: map-get($config,success);
   
   // Define any styles affected by the theme.
   .message-interface-table-view-sub-message-header{
@@ -40,6 +41,22 @@
     background-color:mat-color($background, selected-button)
   }
 
+  .message-table-row-even-added{
+    background-color:mat-color($success,100)
+  }
+  .message-table-row-odd-added{
+    background-color:mat-color($success,300)
+  }
+  .message-table-attribute-changed{
+    background-color: mat-color($accent,100);
+  }
+  .message-table-row-even-deleted{
+    background-color:mat-color($warn,50)
+  }
+  .message-table-row-odd-deleted{
+    background-color:mat-color($warn,100)
+  }
+
   tr.message-detail-row:not(.message-expanded-detail-row):hover {
     background: mat-color($background,app-bar)
   }
@@ -54,6 +71,13 @@
 
   .message-table-sub-message-row-odd{
     background-color:mat-color($primary,100)
+  }
+
+  .message-table-sub-message-row-even-added{
+    background-color:mat-color($success,100)
+  }
+  .message-table-sub-message-row-odd-added{
+    background-color:mat-color($success,300)
   }
 
   .message-interface-table-view-element{

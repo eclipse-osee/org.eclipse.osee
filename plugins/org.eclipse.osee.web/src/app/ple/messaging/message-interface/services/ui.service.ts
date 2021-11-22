@@ -56,4 +56,12 @@ export class MessageUiService {
   set connectionIdString(value: string) {
     this._connectionId.next(value);
   }
+
+  set DiffMode(value:boolean) {
+    this.ui.diffMode = value;
+  }
+
+  get isInDiff() {
+    return this.ui.isInDiff;
+  }
 }

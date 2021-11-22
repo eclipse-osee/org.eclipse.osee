@@ -10,18 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { SideNavService } from './shared-services/ui/side-nav.service';
+import { TestBed } from '@angular/core/testing';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
-})
-export class AppComponent {
-  opened = this.sideNavService.opened;
-  constructor (private sideNavService: SideNavService) {
-    
-  }
-  title = 'OSEE';
-}
+import { SideNavService } from './side-nav.service';
+
+describe('SideNavService', () => {
+  let service: SideNavService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(SideNavService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

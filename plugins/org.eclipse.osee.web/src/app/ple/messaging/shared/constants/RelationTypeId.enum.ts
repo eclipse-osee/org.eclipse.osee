@@ -10,18 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { SideNavService } from './shared-services/ui/side-nav.service';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
-})
-export class AppComponent {
-  opened = this.sideNavService.opened;
-  constructor (private sideNavService: SideNavService) {
-    
-  }
-  title = 'OSEE';
+export const enum RelationTypeId{
+    INTERFACECONNECTIONCONTENT = "6039606571486514298",
+    INTERFACESUBMESSAGECONTENT = "2455059983007225780",
 }

@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 import { MimSingleDiffComponent } from '../mim-single-diff/mim-single-diff.component';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatButtonModule } from '@angular/material/button';
 
 
 
@@ -23,6 +25,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   imports: [
     CommonModule,
     FormsModule,
+    MatButtonModule,
     MatFormFieldModule
   ],
   exports:[MimSingleDiffComponent]

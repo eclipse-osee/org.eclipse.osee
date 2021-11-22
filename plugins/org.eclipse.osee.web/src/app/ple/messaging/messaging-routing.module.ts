@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: '', component: MessagingComponent },
   { path: ':branchType/:branchId/messages/:messageId/:subMessageId/:name/elements', loadChildren: () => import('./message-element-interface/message-element-interface.module').then(m => m.MessageElementInterfaceModule) },
   { path: ':branchType/:branchId/:connection/messages/:messageId/:subMessageId/:name/elements', loadChildren: () => import('./message-element-interface/message-element-interface.module').then(m => m.MessageElementInterfaceModule) },
-  { path: ':branchType/:branchId/messages', loadChildren: () => import('./message-interface/message-interface.module').then(m => m.MessageInterfaceModule) },
+  // { path: ':branchType/:branchId/messages', loadChildren: () => import('./message-interface/message-interface.module').then(m => m.MessageInterfaceModule) },
   { path: ':branchType/:branchId/:connection/messages', loadChildren: () => import('./message-interface/message-interface.module').then(m => m.MessageInterfaceModule) },
   { path: ':branchType/:branchId/types', loadChildren: () => import('./types-interface/types-interface.module').then(m => m.TypesInterfaceModule) },
   { path: ':branchType/:branchId/types/:type', loadChildren: () => import('./types-interface/types-interface.module').then(m => m.TypesInterfaceModule) },

@@ -103,8 +103,8 @@
     </mat-drawer-content>
     <mat-drawer position="end" mode="side" [opened]="(sideNavOpened|async)" class="mat-elevation-z9">
         <ng-container *ngIf="(sideNav|async) as nav">
-            <button mat-icon-button mat-stroked-button (click)="viewDiff(false,'','')" style="transform: rotate(90deg);">V</button>
-            <app-mim-single-diff [contents]="nav"></app-mim-single-diff>
+            <!-- <button mat-icon-button mat-stroked-button (click)="viewDiff(false,'','')" style="transform: rotate(90deg);">V</button>
+            <app-mim-single-diff [contents]="nav"></app-mim-single-diff> -->
         </ng-container>
     </mat-drawer>
 </mat-drawer-container>

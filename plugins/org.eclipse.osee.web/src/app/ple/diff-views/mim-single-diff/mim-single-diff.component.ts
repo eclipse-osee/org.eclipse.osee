@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
  import { Component, Input, OnInit } from '@angular/core';
- import { Observable, of } from 'rxjs';
+ import { iif, Observable, of, Subject } from 'rxjs';
  import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
  import { TransactionService } from 'src/app/transactions/transaction.service';
  import { transactionInfo } from 'src/app/types/change-report/transaction';
  import { transactionToken } from 'src/app/types/change-report/transaction-token';
@@ -26,18 +27,26 @@
  })
  export class MimSingleDiffComponent implements OnInit {
  
-   @Input() contents: Partial<{opened:boolean,field:string,currentValue:string|number|applic|transportType,previousValue?:string|number|applic|transportType,transaction?:transactionToken,user?:string,date?:string}> = {};
+   contents = this.sideNavService.sideNavContent.pipe(
+     switchMap((content) => of(content).pipe(
+       switchMap((val) => iif(()=>val.transaction?.id!==undefined && val.transaction.id!=='-1',this.transactionService.getTransaction(val?.transaction?.id || '-1'),of(undefined)).pipe(
+        switchMap((tx)=>of({navInfo:val,transaction:tx}))
+      ))
+     )),
+   );
  
-   @Input() transaction: Observable<transactionToken|undefined> = of({id:"-1",branchId:"2"});
    transactionInfo!: Observable<transactionInfo>;
-   constructor (private transactionService: TransactionService) {}
+   opened = this.sideNavService.opened;
+   constructor (private transactionService: TransactionService, private sideNavService: SideNavService) {}
  
    ngOnInit(): void {
-     this.transactionInfo = this.transactionService.getTransaction(this.contents.transaction?.id || '-1').pipe();
    }
  
-   isApplic(value:string|number|applic|null|undefined): value is applic{
+   isApplic(value:string | number | boolean | applic|undefined): value is applic{
      return typeof value==='object'
    }
- 
+
+   viewDiff(open:boolean,value:string|number|applic|transportType, header:string) {
+    this.sideNavService.sideNav = { opened: open,field:header, currentValue: value };
+  }
  }

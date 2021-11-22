@@ -10,27 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 matLine>Diff Report for {{contents.field}}</h1>
+<button mat-icon-button mat-stroked-button (click)="viewDiff(false,'','')" style="transform: rotate(90deg);">V</button>
+<ng-container *ngIf="(contents|async)!==undefined && (contents|async) as content">
+    <h1 matLine>Diff Report for {{content.navInfo.field}}</h1>
 <div>
     <mat-label>Current value: 
-        <ng-container *ngIf="isApplic(contents.currentValue);else notApplic">
-            {{contents.currentValue.name}}
+        <ng-container *ngIf="isApplic(content.navInfo.currentValue);else notApplic">
+            {{content.navInfo.currentValue.name}}
         </ng-container> 
         <ng-template #notApplic>
-            {{contents.currentValue}}
+            {{content.navInfo.currentValue}}
         </ng-template>
     </mat-label>
     <br>
     <mat-label>Previous value: 
-        <ng-container *ngIf="isApplic(contents.previousValue);else notApplic2">
-            {{contents.previousValue.name}}
+        <ng-container *ngIf="isApplic(content.navInfo.previousValue);else notApplic2">
+            {{content.navInfo.previousValue.name}}
         </ng-container> 
         <ng-template #notApplic2>
-           {{contents.previousValue}}
+           {{content.navInfo.previousValue}}
         </ng-template>
     </mat-label>
     <br>
-    <mat-label>User: {{(transactionInfo|async)?.author?.name||''}}</mat-label>
+    <mat-label>User: {{content.transaction?.author?.name||''}}</mat-label>
     <br>
-    <mat-label>Time of Change: {{(transactionInfo|async)?.timeStamp||''}}</mat-label>
+    <mat-label>Time of Change: {{content.transaction?.timeStamp||''}}</mat-label>
 </div>
+</ng-container>

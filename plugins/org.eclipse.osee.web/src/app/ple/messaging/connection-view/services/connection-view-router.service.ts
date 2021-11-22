@@ -58,9 +58,14 @@ export class ConnectionViewRouterService {
 
   set connectionInNewTab(value: string) {
     let currentUrl = this.router.url.split("/");
-    currentUrl.shift()
-    currentUrl.splice(currentUrl.indexOf('connections'),1)
-    let url = this.router.serializeUrl(this.router.createUrlTree([this.angLocationStrategy.getBaseHref(),...currentUrl,value,"messages"]))
+    currentUrl.shift();
+    const branchId = currentUrl.pop();
+    const branchType = currentUrl.pop();
+    currentUrl.splice(currentUrl.indexOf('connections'), 1);
+    if (currentUrl.indexOf('diff') !== -1) {
+      currentUrl.splice(currentUrl.indexOf('diff'), 1); 
+    }
+    let url = this.router.serializeUrl(this.router.createUrlTree([this.angLocationStrategy.getBaseHref(), ...currentUrl,branchType,branchId, value, "messages"]))
     window.open(url, '_blank');
   }
   get inDiffMode() {
