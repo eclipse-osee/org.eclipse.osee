@@ -49,27 +49,26 @@ public class RelationResolverImpl implements RelationResolver {
    public <T extends Artifact> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) {
       List<T> toReturn = Collections.emptyList();
       if (!links.isEmpty()) {
-         Set<Integer> toLoad = null;
-         LinkedHashMap<Integer, T> items = new LinkedHashMap<>();
+         Set<ArtifactId> toLoad = null;
+         LinkedHashMap<ArtifactId, T> items = new LinkedHashMap<>();
          for (Relation relation : links) {
             for (RelationSide side : sides) {
                ArtifactId artifactId = relation.getIdForSide(side);
-               int id = artifactId.getIdIntValue();
                Artifact node = graph.getNode(artifactId);
                if (node == null) {
                   if (toLoad == null) {
                      toLoad = new LinkedHashSet<>();
                   }
-                  toLoad.add(id);
+                  toLoad.add(artifactId);
                } else {
-                  items.put(id, (T) node);
+                  items.put(artifactId, (T) node);
                }
             }
          }
          if (toLoad != null && !toLoad.isEmpty()) {
             Iterable<T> result = loader.loadNodes(session, graph, toLoad, LoadLevel.ALL);
             for (T item : result) {
-               items.put(item.getLocalId(), item);
+               items.put(ArtifactId.valueOf(item.getId()), item);
             }
          }
          toReturn = toList(items.values());
@@ -93,7 +92,7 @@ public class RelationResolverImpl implements RelationResolver {
 
    @Override
    public void resolve(OrcsSession session, GraphData graph, Artifact node) {
-      loader.loadNodes(session, graph, Collections.singleton(node.getLocalId()), LoadLevel.RELATION_DATA);
+      loader.loadNodes(session, graph, Collections.singleton(node), LoadLevel.RELATION_DATA);
    }
 
 }

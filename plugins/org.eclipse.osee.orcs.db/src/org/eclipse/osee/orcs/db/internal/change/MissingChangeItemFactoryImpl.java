@@ -117,7 +117,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    private Set<ArtifactId> determineWhichArtifactsNotOnDestination(Set<ArtifactId> artIds, TransactionToken destTx) {
-      DataLoader loader = dataLoaderFactory.newDataLoader(null, destTx.getBranch(), artIds);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(null, destTx.getBranch(), artIds);
       final Set<ArtifactId> missingArtIds = new LinkedHashSet<>(artIds);
       loader.includeDeletedArtifacts();
       loader.fromTransaction(destTx);
@@ -137,7 +137,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
       final Set<RelationData> relations = new LinkedHashSet<>();
 
-      DataLoader loader = dataLoaderFactory.newDataLoader(null, sourceTx.getBranch(), missingArtIds);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(null, sourceTx.getBranch(), missingArtIds);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedArtifacts();
       loader.fromTransaction(sourceTx);
@@ -194,7 +194,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    private Set<ChangeItem> createExistingRelations(TransactionToken destTx, final Multimap<ArtifactId, RelationData> relationChangesToAdd) {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
 
-      DataLoader loader = dataLoaderFactory.newDataLoader(null, destTx.getBranch(), relationChangesToAdd.keySet());
+      DataLoader loader =
+         dataLoaderFactory.newDataLoaderFromIds(null, destTx.getBranch(), relationChangesToAdd.keySet());
       loader.fromTransaction(destTx);
       loader.fromBranchView(destTx.getBranch().getViewId());
       loader.load(null, new LoadDataHandlerAdapter() {

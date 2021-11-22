@@ -64,7 +64,7 @@ public class DataLoaderImpl implements DataLoader {
       this.loadExecutor = loadExecutor;
    }
 
-   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
+   public DataLoaderImpl(Log logger, Collection<ArtifactId> artifactIds, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
       this(logger, options, session, branch, sqlLoader, joinFactory);
       withArtifactIds(artifactIds);
    }
@@ -187,7 +187,7 @@ public class DataLoaderImpl implements DataLoader {
       return this;
    }
 
-   private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
+   private DataLoader withArtifactIds(Collection<ArtifactId> artifactIds) {
       loadExecutor =
          new LoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId, artifactIds);
       return this;

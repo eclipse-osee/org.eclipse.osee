@@ -118,10 +118,10 @@ public class MissingChangeItemFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      when(dataLoaderFactory.newDataLoader(any(OrcsSession.class), eq(sourceBranch), any(Collection.class))).thenReturn(
-         sourceDataLoader);
-      when(dataLoaderFactory.newDataLoader(any(OrcsSession.class), eq(destBranch), any(Collection.class))).thenReturn(
-         destDataLoader);
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(sourceBranch),
+         any(Collection.class))).thenReturn(sourceDataLoader);
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch),
+         any(Collection.class))).thenReturn(destDataLoader);
       when(applicQuery.getApplicabilityTokens(any(BranchId.class), any(BranchId.class))).thenReturn(applicMap);
       changeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);
    }
