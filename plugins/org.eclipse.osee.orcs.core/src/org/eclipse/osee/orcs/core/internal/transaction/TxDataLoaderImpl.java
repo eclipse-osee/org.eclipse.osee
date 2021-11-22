@@ -64,7 +64,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
       for (ArtifactId artifactId : artifactIds) {
          ids.add(artifactId);
       }
-      DataLoader loader = dataLoaderFactory.newDataLoader(session, branch, artifactIds);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, branch, artifactIds);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedAttributes();
       loader.includeDeletedRelations();

@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -24,6 +25,6 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public interface RelationNodeLoader {
 
-   <T extends Artifact> Iterable<T> loadNodes(OrcsSession session, GraphData graph, Collection<Integer> ids, LoadLevel level);
+   <T extends Artifact> Iterable<T> loadNodes(OrcsSession session, GraphData graph, Collection<ArtifactId> ids, LoadLevel level);
 
 }

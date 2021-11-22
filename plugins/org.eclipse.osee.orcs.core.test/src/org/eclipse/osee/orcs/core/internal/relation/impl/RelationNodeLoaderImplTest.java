@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -58,7 +59,8 @@ public class RelationNodeLoaderImplTest {
 
    private static final BranchToken BRANCH = CoreBranches.COMMON;
    private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
-   private static final Collection<Integer> ids = Arrays.asList(4, 5, 6, 7);
+   private static final Collection<ArtifactId> ids =
+      Arrays.asList(ArtifactId.valueOf(4), ArtifactId.valueOf(5), ArtifactId.valueOf(6), ArtifactId.valueOf(7));
 
    private RelationNodeLoaderImpl Artifact;
 

@@ -72,7 +72,7 @@ public class RelationResolverTest {
    @Mock private Artifact node6;
 
    @Mock private ResultSet<Artifact> resultSet;
-   @Captor private ArgumentCaptor<Collection<Integer>> captor;
+   @Captor private ArgumentCaptor<Collection<ArtifactId>> captor;
    // @formatter:on
 
    private RelationResolver resolver;
@@ -89,12 +89,12 @@ public class RelationResolverTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      when(node1.getLocalId()).thenReturn(11);
-      when(node2.getLocalId()).thenReturn(22);
-      when(node3.getLocalId()).thenReturn(33);
-      when(node4.getLocalId()).thenReturn(44);
-      when(node5.getLocalId()).thenReturn(55);
-      when(node6.getLocalId()).thenReturn(66);
+      when(node1.getId()).thenReturn(11L);
+      when(node2.getId()).thenReturn(22L);
+      when(node3.getId()).thenReturn(33L);
+      when(node4.getId()).thenReturn(44L);
+      when(node5.getId()).thenReturn(55L);
+      when(node6.getId()).thenReturn(66L);
 
       when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
       when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId22);
@@ -108,8 +108,9 @@ public class RelationResolverTest {
       when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
       when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId66);
 
-      when(loader.loadNodes(eq(session), eq(graphData), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenReturn(
-         resultSet);
+      when(
+         loader.loadNodes(eq(session), eq(graphData), anyCollectionOf(ArtifactId.class), eq(LoadLevel.ALL))).thenReturn(
+            resultSet);
    }
 
    @Test
@@ -121,7 +122,8 @@ public class RelationResolverTest {
       List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
-      assertCollection(captor.getValue(), 11, 22, 33, 44, 55, 66);
+      assertCollection(captor.getValue(), ArtifactId.valueOf(11), ArtifactId.valueOf(22), ArtifactId.valueOf(33),
+         ArtifactId.valueOf(44), ArtifactId.valueOf(55), ArtifactId.valueOf(66));
       assertCollection(arts, node1, node2, node3, node4, node5, node6);
    }
 
@@ -135,7 +137,7 @@ public class RelationResolverTest {
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
-      assertCollection(captor.getValue(), 11, 33, 55);
+      assertCollection(captor.getValue(), ArtifactId.valueOf(11), ArtifactId.valueOf(33), ArtifactId.valueOf(55));
       assertCollection(arts, node1, node3, node5);
    }
 
@@ -149,7 +151,7 @@ public class RelationResolverTest {
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
-      assertCollection(captor.getValue(), 22, 44, 66);
+      assertCollection(captor.getValue(), ArtifactId.valueOf(22), ArtifactId.valueOf(44), ArtifactId.valueOf(66));
       assertCollection(arts, node2, node4, node6);
    }
 
@@ -169,7 +171,7 @@ public class RelationResolverTest {
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
-      assertCollection(captor.getValue(), 22, 44, 66);
+      assertCollection(captor.getValue(), ArtifactId.valueOf(22), ArtifactId.valueOf(44), ArtifactId.valueOf(66));
       assertCollection(arts, node1, node3, node5, node2, node4, node6);
    }
 

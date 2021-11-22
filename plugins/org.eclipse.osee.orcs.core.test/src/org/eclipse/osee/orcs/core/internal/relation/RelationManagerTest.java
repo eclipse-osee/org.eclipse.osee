@@ -99,7 +99,7 @@ public class RelationManagerTest {
    @Mock private RelationData data3;
    @Mock private RelationData data4;
 
-   @Captor private ArgumentCaptor<Collection<Integer>> captor;
+   @Captor private ArgumentCaptor<Collection<ArtifactId>> captor;
    // @formatter:on
 
    private RelationManager manager;
@@ -128,7 +128,7 @@ public class RelationManagerTest {
 
       manager = RelationManagerFactory.createRelationManager(logger, tokenService, relationFactory, loader, provider);
 
-      when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenAnswer(
+      when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(ArtifactId.class), eq(LoadLevel.ALL))).thenAnswer(
          new LoaderAnswer());
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
@@ -203,12 +203,12 @@ public class RelationManagerTest {
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
-      Collection<Integer> toLoad = captor.getValue();
+      Collection<ArtifactId> toLoad = captor.getValue();
       assertEquals(3, toLoad.size());
-      Iterator<Integer> iterator = toLoad.iterator();
-      assertEquals(22, iterator.next().intValue());
-      assertEquals(33, iterator.next().intValue());
-      assertEquals(55, iterator.next().intValue());
+      Iterator<ArtifactId> iterator = toLoad.iterator();
+      assertEquals(22, iterator.next().getIdIntValue());
+      assertEquals(33, iterator.next().getIdIntValue());
+      assertEquals(55, iterator.next().getIdIntValue());
 
       assertEquals(3, nodes.size());
       Iterator<Artifact> iterator2 = nodes.iterator();
@@ -223,10 +223,10 @@ public class RelationManagerTest {
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
-      Collection<Integer> toLoad = captor.getValue();
+      Collection<ArtifactId> toLoad = captor.getValue();
       assertEquals(1, toLoad.size());
-      Iterator<Integer> iterator = toLoad.iterator();
-      assertEquals(44, iterator.next().intValue());
+      Iterator<ArtifactId> iterator = toLoad.iterator();
+      assertEquals(44, iterator.next().getIdIntValue());
 
       assertEquals(1, readables.size());
       Iterator<Artifact> iterator2 = readables.iterator();
@@ -306,17 +306,17 @@ public class RelationManagerTest {
       assertTrue(rel2.equals(rel3));
 
    }
-   private class LoaderAnswer implements Answer<Iterable<Artifact>> {
+   private class LoaderAnswer implements Answer<Iterable<ArtifactId>> {
 
       @SuppressWarnings("unchecked")
       @Override
-      public Iterable<Artifact> answer(InvocationOnMock invocation) throws Throwable {
-         List<Artifact> artLoaded = new ArrayList<>();
+      public Iterable<ArtifactId> answer(InvocationOnMock invocation) throws Throwable {
+         List<ArtifactId> artLoaded = new ArrayList<>();
 
-         Collection<Integer> toLoad = (Collection<Integer>) invocation.getArguments()[2];
+         Collection<ArtifactId> toLoad = (Collection<ArtifactId>) invocation.getArguments()[2];
          artLoaded.clear();
-         for (Integer item : toLoad) {
-            Artifact node = mockDb.get(item);
+         for (ArtifactId item : toLoad) {
+            Artifact node = mockDb.get(item.getIdIntValue());
             if (node != null) {
                artLoaded.add(node);
             }

@@ -38,9 +38,9 @@ public class LoadExecutor extends AbstractLoadExecutor {
    private final SqlJoinFactory joinFactory;
    private final OrcsSession session;
    private final BranchId branch;
-   private final Collection<Integer> artifactIds;
+   private final Collection<ArtifactId> artifactIds;
 
-   public LoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, BranchId branch, Collection<Integer> artifactIds) {
+   public LoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds) {
       super(loader, jdbcClient);
       this.joinFactory = joinFactory;
       this.session = session;
@@ -54,8 +54,8 @@ public class LoadExecutor extends AbstractLoadExecutor {
 
       Id4JoinQuery join = joinFactory.createId4JoinQuery();
       TransactionId transactionId = OptionsUtil.getFromTransaction(options);
-      for (Integer artId : artifactIds) {
-         join.add(branch, ArtifactId.valueOf(artId), transactionId);
+      for (ArtifactId artId : artifactIds) {
+         join.add(branch, artId, transactionId);
       }
 
       LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);

@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
@@ -63,13 +64,13 @@ public class ComodificationCheck implements TransactionProcessor {
 
    private final class OnLoadChecker extends LoadDataHandlerAdapter implements OrcsVisitor {
 
-      private final Map<Integer, ArtifactData> artifacts = new HashMap<>();
+      private final Map<ArtifactId, ArtifactData> artifacts = new HashMap<>();
       private final Map<Integer, AttributeData> attributes = new HashMap<>();
       private final Map<Integer, RelationData> relations = new HashMap<>();
       private final Map<Integer, TupleData> tuples = new HashMap<>();
       private final Map<Integer, BranchCategoryData> categories = new HashMap<>();
 
-      public Collection<Integer> getArtifactIds() {
+      public Collection<ArtifactId> getArtifactIds() {
          return artifacts.keySet();
       }
 
@@ -93,7 +94,7 @@ public class ComodificationCheck implements TransactionProcessor {
       @Override
       public void visit(ArtifactData data) {
          if (data.getVersion().isInStorage()) {
-            artifacts.put(data.getLocalId(), data);
+            artifacts.put(ArtifactId.valueOf(data.getId()), data);
          }
       }
 

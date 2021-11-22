@@ -71,7 +71,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
          TransactionId transactionId = OptionsUtil.getFromTransaction(options);
 
          getJdbcClient().runQuery(stmt -> {
-            Integer artId = stmt.getInt("art_id");
+            long artId = stmt.getLong("art_id");
             toReturn.add(branch, ArtifactId.valueOf(artId), transactionId);
          }, artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
       }

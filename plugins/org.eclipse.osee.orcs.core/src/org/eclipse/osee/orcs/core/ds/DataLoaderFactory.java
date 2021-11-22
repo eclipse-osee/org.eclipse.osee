@@ -28,8 +28,6 @@ public interface DataLoaderFactory {
 
    DataLoader newDataLoader(QueryContext queryContext);
 
-   DataLoader newDataLoader(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds);
-
-   DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> artifactIds);
+   DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds);
 
 }
