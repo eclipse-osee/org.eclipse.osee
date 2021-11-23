@@ -121,11 +121,11 @@ public class OseeLinkBuilder {
    }
 
    public String getWordMlBookmark(ArtifactReadable source) {
-      return getWordMlBookmark(source.getGuid());
+      return getWordMlBookmark(source.getIdString());
    }
 
-   public String getWordMlBookmark(String guid) {
-      return String.format(WORDML_BOOKMARK_FORMAT, 0, guid, 0);
+   public String getWordMlBookmark(String uuid) {
+      return String.format(WORDML_BOOKMARK_FORMAT, 0, uuid, 0);
    }
 
    public String getStartEditImage(String guid) {
@@ -136,10 +136,10 @@ public class OseeLinkBuilder {
       return getEditImage(false, guid);
    }
 
-   private String getEditImage(boolean isStart, String guid) {
-      String imageId = String.format("%s_%s", guid, isStart ? "START.jpg" : "END.jpg");
+   private String getEditImage(boolean isStart, String uuid) {
+      String imageId = String.format("%s_%s", uuid, isStart ? "START.jpg" : "END.jpg");
       String imageData = isStart ? START_BIN_DATA : END_BIN_DATA;
-      return String.format(PIC_TAG_DATA, imageId, imageData, imageId, guid);
+      return String.format(PIC_TAG_DATA, imageId, imageData, imageId, uuid);
    }
 
    public String getOseeLinkMarker(String guid) {
@@ -177,14 +177,15 @@ public class OseeLinkBuilder {
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(getOseeLink(artifact, presentationType, permanentUrl));
       } else {
-         toReturn = artifact.getGuid();
+         toReturn = artifact.getIdString();
       }
       return toReturn;
    }
 
    private String getOseeLink(ArtifactReadable artifact, PresentationType presentationType, String permanentUrl) {
       Map<String, String> parameters = new HashMap<>();
-      parameters.put("guid", artifact.getGuid());
+      parameters.put("guid", artifact.getIdString());
+      parameters.put("uuid", artifact.getIdString());
       parameters.put("branchUuid", artifact.getBranch().getIdString());
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
 
