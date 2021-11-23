@@ -131,11 +131,15 @@ public class OseeLinkBuilder {
    }
 
    public String getWordMlBookmark(Artifact source) {
-      return getWordMlBookmark(source.getGuid());
+      return getWordMlBookmark(source.getIdString());
    }
 
-   public String getWordMlBookmark(String guid) {
-      return String.format(WORDML_BOOKMARK_FORMAT, 0, guid, 0);
+   public String getWordMlBookmark(String uuid) {
+      return String.format(WORDML_BOOKMARK_FORMAT, 0, uuid, 0);
+   }
+
+   public String getWordMlBookmark(Long uuid) {
+      return String.format(WORDML_BOOKMARK_FORMAT, 0, uuid, 0);
    }
 
    public String getStartEditImage(String guid) {
@@ -200,7 +204,7 @@ public class OseeLinkBuilder {
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(new ArtifactUrlClient().getOpenInOseeLink(artifact, presentationType).toString());
       } else {
-         toReturn = artifact.getGuid();
+         toReturn = artifact.getIdString();
       }
       return toReturn;
    }
