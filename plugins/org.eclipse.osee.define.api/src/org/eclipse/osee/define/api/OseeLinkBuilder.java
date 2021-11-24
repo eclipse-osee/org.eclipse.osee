@@ -136,10 +136,10 @@ public class OseeLinkBuilder {
       return getEditImage(false, guid);
    }
 
-   private String getEditImage(boolean isStart, String uuid) {
-      String imageId = String.format("%s_%s", uuid, isStart ? "START.jpg" : "END.jpg");
+   private String getEditImage(boolean isStart, String guid) {
+      String imageId = String.format("%s_%s", guid, isStart ? "START.jpg" : "END.jpg");
       String imageData = isStart ? START_BIN_DATA : END_BIN_DATA;
-      return String.format(PIC_TAG_DATA, imageId, imageData, imageId, uuid);
+      return String.format(PIC_TAG_DATA, imageId, imageData, imageId, guid);
    }
 
    public String getOseeLinkMarker(String guid) {
@@ -184,7 +184,7 @@ public class OseeLinkBuilder {
 
    private String getOseeLink(ArtifactReadable artifact, PresentationType presentationType, String permanentUrl) {
       Map<String, String> parameters = new HashMap<>();
-      parameters.put("guid", artifact.getIdString());
+      parameters.put("guid", artifact.getGuid());
       parameters.put("uuid", artifact.getIdString());
       parameters.put("branchUuid", artifact.getBranch().getIdString());
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
