@@ -53,7 +53,7 @@
     <button mat-button (click)="onNoClick()">
         Cancel
     </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.copyFrom.id.length===0||data.title.length===0">
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="(data.copyFrom.id==='0' && data.group.id!=='0')||data.title.length===0">
         Ok
     </button>
 </div>

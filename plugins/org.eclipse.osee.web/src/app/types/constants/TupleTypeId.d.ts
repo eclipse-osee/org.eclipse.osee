@@ -10,9 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface ExtendedNameValuePair {
-    id: string,
-    name: string,
-    value:string,
-    values: string[]
+export const enum TupleTypeId{
+    TUPLE_META_TYPE = "1",
+    VIEW_APPLICABILITY = "2",
+    APPLICABILITY_DEFINITION = "11",
+    ARTIFACT_REFERENCED_APPLICABILITY_TYPE = "13",
+    VERSION_CONFIG = "12",
+    ARTIFACT_TYPE_JOIN = "14",
+    ATTRIBUTE_TYPE_JOIN = "15",
+    RELATION_TYPE_JOIN="16"
 }

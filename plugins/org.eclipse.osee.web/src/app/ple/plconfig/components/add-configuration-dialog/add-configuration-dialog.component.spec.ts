@@ -44,7 +44,8 @@ describe('AddConfigurationDialogComponent', () => {
           provide: MAT_DIALOG_DATA, useValue: {
             currentBranch: "3182843164128526558",
             copyFrom: { id: '0', name: '' },
-            title:''
+            title: '',
+            group:{id:'0',name:'',configurations:[]}
         }}]
     })
     .compileComponents();

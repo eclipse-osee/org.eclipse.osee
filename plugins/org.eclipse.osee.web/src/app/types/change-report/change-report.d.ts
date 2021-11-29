@@ -11,6 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { applic } from "../applicability/applic";
+import { ARTIFACTTYPEID } from "../constants/ArtifactTypeId.enum";
+import { ATTRIBUTETYPEID } from "../constants/AttributeTypeId.enum";
+import { RelationTypeId } from "../constants/RelationTypeId.enum";
+import { TupleTypeId } from "../constants/TupleTypeId";
 import { transactionToken } from "./transaction-token";
 
 /**
@@ -21,7 +25,7 @@ export class changeInstance{
     changeType: changeType;
     artId: string;
     itemId: string;
-    itemTypeId: string|itemTypeIdRelation;// update to enum union later, should be artifact type id, attribute type id, relation type id
+    itemTypeId: ARTIFACTTYPEID|ATTRIBUTETYPEID|RelationTypeId|TupleTypeId|itemTypeIdRelation|string;// update to enum union later, should be artifact type id, attribute type id, relation type id
     baselineVersion: version; //information available at beginning of branch
     firstNonCurrentChange: version; // doesn't seem useful for web apps as of yet
     currentVersion: version; //latest instance of information on branch
@@ -35,7 +39,7 @@ export class changeInstance{
 }
 export const enum ignoreType{
     NONE = "NONE",
-    
+    DELETED_AND_DNE_ON_DESTINATION="DELETED_AND_DNE_ON_DESTINATION"
 }
 
 /**
@@ -70,13 +74,15 @@ export class changeType{
 export const enum changeTypeEnum {
     ATTRIBUTE_CHANGE = "AttributeChange",
     ARTIFACT_CHANGE = "ArtifactChange",
-    RELATION_CHANGE="RelationChange"
+    RELATION_CHANGE = "RelationChange",
+    TUPLE_CHANGE= "TupleChange"
 }
 
 export const enum changeTypeNumber{
     ARTIFACT_CHANGE="111",
     ATTRIBUTE_CHANGE = "222",
-    RELATION_CHANGE="333"
+    RELATION_CHANGE = "333",
+    TUPLE_CHANGE = "444"
 }
 /**
  * Useful info includes the {@link transactionToken transaction}, value, uri,whether or not the state is valid, and the {@link applic applicability token}

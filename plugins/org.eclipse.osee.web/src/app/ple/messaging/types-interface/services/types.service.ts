@@ -20,7 +20,7 @@ import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { TypesApiResponse } from '../types/ApiResponse';
 import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
 import { PlatformType } from '../types/platformType';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'

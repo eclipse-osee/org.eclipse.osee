@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { share, take } from 'rxjs/operators';
+import { iif, Observable, of, OperatorFunction } from 'rxjs';
+import { filter, share, shareReplay, switchMap, take } from 'rxjs/operators';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
@@ -30,15 +30,11 @@ import { EditConfigurationDialogComponent } from '../edit-config-dialog/edit-con
   styleUrls: ['./configuration-dropdown.component.sass']
 })
 export class ConfigurationDropdownComponent implements OnInit {
-  selectedBranch: Observable<string> = this.uiStateService.branchId;
+  selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
+    shareReplay({bufferSize:1,refCount:true})
+  );
   branchApplicability = this.currentBranchService.branchApplicability.pipe(share());
-  branchId: string | undefined;
   constructor(private uiStateService: PlConfigUIStateService, private branchService: PlConfigBranchService, private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog) { 
-    this.selectedBranch.subscribe((val) => {
-      this.branchId = val;
-    });
-    this.branchApplicability.subscribe(() => {
-    });
   }
 
   ngOnInit(): void {
@@ -48,65 +44,83 @@ export class ConfigurationDropdownComponent implements OnInit {
     this.currentBranchService.deleteConfiguration(config.id).pipe(take(1)).subscribe();
   }
 
-  openEditDialog(config: { id: string, name: string, hasFeatureApplicabilities: boolean },productApplicabilities?: string[]) {
-    let dialogData = new PLEditConfigData(this.branchId, config,undefined,productApplicabilities,true);
-    const dialogRef = this.dialog.open(EditConfigurationDialogComponent, {
-      data: dialogData,
-      minWidth: '60%'
-    });
-    dialogRef.afterClosed().subscribe((result: PLEditConfigData) => {
-      if (result) {
-        let apiRequest;
-        let body: editConfiguration = {
-          ...result.currentConfig,
-          copyFrom: result.copyFrom.id && result.copyFrom.id || '',
-          configurationGroup: result.group.id && result.group.id || '',
-          productApplicabilities:result.productApplicabilities||[]
-        };
-        apiRequest = this.currentBranchService.editConfigurationDetails(body);
-        apiRequest.pipe(take(1)).subscribe((response:response) => {
-        }); 
-      }
-    });
+  openEditDialog(config: { id: string, name: string, hasFeatureApplicabilities: boolean }, productApplicabilities?: string[]) {
+    this.selectedBranch.pipe(
+      take(1),
+      switchMap((branchId) => of(new PLEditConfigData(branchId, config, undefined, productApplicabilities, true)).pipe(
+        take(1),
+        switchMap((dialogData) => this.dialog.open(EditConfigurationDialogComponent, {
+          data: dialogData,
+          minWidth: '60%'
+        }).afterClosed().pipe(
+          take(1),
+          filter((val) => val !== undefined) as OperatorFunction<PLEditConfigData | undefined, PLEditConfigData>,
+          switchMap((result) => iif(() => result !== undefined,
+            of<editConfiguration>(
+              {
+                ...result.currentConfig,
+                copyFrom: result.copyFrom.id && result.copyFrom.id || '',
+                configurationGroup: result.group.id && result.group.id || '',
+                productApplicabilities: result.productApplicabilities || []
+              }).pipe(
+                take(1),
+                switchMap((request) => this.currentBranchService.editConfigurationDetails(request).pipe(take(1)))
+              ),
+            of(undefined)
+          ))
+        ))
+      ))
+    ).subscribe();
   }
 
   addConfiguration() {
-    let dialogData: PLAddConfigData = {
-      currentBranch: this.branchId?.toString(),
-      copyFrom: { id: '0', name: '', hasFeatureApplicabilities:false, productApplicabilities:[] },
-      title: '',
-      group: { id: '0', name: ''},
-      productApplicabilities:[],
-    }
-    const dialogRef = this.dialog.open(AddConfigurationDialogComponent, {
-      data: dialogData,
-      minWidth: '60%'
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.currentBranchService.addConfiguration({ name: result.title, copyFrom: result.copyFrom.id, configurationGroup: result.group.id, productApplicabilities:result.productApplicabilities }).pipe(take(1)).subscribe((response: response) => {
-        });
-      }
-    })
+    this.selectedBranch.pipe(
+      take(1),
+      switchMap((branchId) => of<PLAddConfigData>(
+        {
+          currentBranch: branchId?.toString(),
+          copyFrom: { id: '0', name: '', hasFeatureApplicabilities: false, productApplicabilities: [] },
+          title: '',
+          group: { id: '0', name: '' },
+          productApplicabilities: [],
+        }).pipe(
+          take(1),
+          switchMap((dialogData) => this.dialog.open(AddConfigurationDialogComponent, {
+            data: dialogData,
+            minWidth: '60%'
+          }).afterClosed().pipe(
+            take(1),
+            filter((val) => val !== undefined) as OperatorFunction<PLAddConfigData | undefined, PLAddConfigData>,
+            switchMap((result) => iif(() => result !== undefined,
+              this.currentBranchService.addConfiguration({ name: result.title, copyFrom: result.copyFrom.id, configurationGroup: result.group.id, productApplicabilities: result.productApplicabilities }).pipe(take(1)),
+              of(undefined)
+            ))
+          ))
+        ))
+    ).subscribe();
   }
   copyConfiguration() {
-    const dialogRef = this.dialog.open(CopyConfigurationDialogComponent, {
-      data: {
-        currentConfig: {id:'',name:''},
-        currentBranch: this.branchId
-      },
-      minWidth: '60%'
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        let body = {
-          ...result.currentConfig,
-          copyFrom: result.copyFrom && result.copyFrom || '',
-          configurationGroup: result.group && result.group || ''
-        };
-        this.currentBranchService.editConfigurationDetails(body).pipe(take(1)).subscribe((response:response) => {
-        }); 
-      }
-    })
+    this.selectedBranch.pipe(
+      take(1),
+      switchMap((branchId)=>this.dialog.open(CopyConfigurationDialogComponent, {
+        data: {
+          currentConfig: {id:'',name:''},
+          currentBranch: branchId
+        },
+        minWidth: '60%'
+      }).afterClosed().pipe(
+        take(1),
+        filter((val) => val !== undefined) as OperatorFunction<PLEditConfigData | undefined, PLEditConfigData>,
+        switchMap((dialog) => iif(() => dialog !== undefined,
+          this.currentBranchService.editConfigurationDetails(
+            {
+          ...dialog.currentConfig,
+          copyFrom: dialog.copyFrom && dialog.copyFrom.id || '',
+          configurationGroup: dialog.group && dialog.group.id || ''
+            }).pipe(take(1)),
+          of(undefined)
+        ))
+      ))
+    ).subscribe()
   }
 }

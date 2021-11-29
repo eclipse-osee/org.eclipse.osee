@@ -27,8 +27,8 @@ import { transaction, transactionToken } from 'src/app/transactions/transaction'
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
-import { ATTRIBUTETYPEID } from '../../shared/constants/AttributeTypeId.enum';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
+import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 
