@@ -11,15 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { view } from "../types/pl-config-applicui-branch-mapping";
-import { configurationGroup } from "../types/pl-config-configurations";
+import { configGroup, configurationGroup } from "../types/pl-config-configurations";
 interface groupInterface{
     id:string,
     name: string,
     count:number,
-    views:(view|configurationGroup)[]
+    views:(view|configGroup)[]
 }
 class group implements groupInterface{
-    constructor(name?: string,views?:view[],view?:view, id?:string) {
+    constructor(name?: string,views?:(view|configGroup)[],view?:view|configGroup, id?:string) {
         this.name = name || "No Group";
         this.views = views || [];
         if (views) {
@@ -33,11 +33,11 @@ class group implements groupInterface{
     }
     name: string = "No Group";
     count: number = 0;
-    views: (view | configurationGroup)[] = [];
+    views: (view | configGroup)[] = [];
     id = "";
-    addView(view: view) {
-        this.views.push(view);
-        if (view.hasFeatureApplicabilities) {
+    addView(view1: view|configGroup) {
+        this.views.push(view1);
+        if ((view1 as view)?.hasFeatureApplicabilities||false) {
             this.count++;   
         }
     }
@@ -91,7 +91,7 @@ class sortedViews implements sortedViewsInterface{
         return groupArray;
     }
     findView(view: string) {
-        let returnValue: view = {
+        let returnValue: view|configGroup = {
             hasFeatureApplicabilities:false,
             id: '-1',
             name:'Not Found'
@@ -117,23 +117,23 @@ class sortedViews implements sortedViewsInterface{
 }
 
 export class GroupViewSorter {
-    groupList: configurationGroup[] = [];
+    groupList: configGroup[] = [];
     viewList: view[] = [];
     viewObj: sortedViews = new sortedViews();
-    constructor(groupDetailList?:configurationGroup[], views?:view[]) {
+    constructor(groupDetailList?:configGroup[], views?:view[]) {
         this.groupList = groupDetailList || [];
         this.viewList = views || [];
     }
     reset() {
         this.viewObj = new sortedViews();
     }
-    syncGroups(groups: configurationGroup[]) {
+    syncGroups(groups: configGroup[]) {
         this.groupList = groups;
     }
     syncViews(views: view[]) {
         this.viewList = views;
     }
-    addGroup(group: configurationGroup) {
+    addGroup(group: configGroup) {
         let tempGroup = this.groupList.find(val => val.id === group.id && val.name === group.name);
         if (tempGroup) {
             tempGroup = group;
@@ -191,7 +191,7 @@ export class GroupViewSorter {
         }
         this.viewObj.syncGroupCount();
     }
-    addViewToGrouping(view: view, groupName: string): void {
+    addViewToGrouping(view: view|configGroup, groupName: string): void {
         let grouping = this.viewObj.groups.find(val => val.name === groupName);
         if (grouping) {
             let existingGrouping = grouping.views.find(el => el.id === view.id);
@@ -216,7 +216,7 @@ export class GroupViewSorter {
             if (value.count > 1 && value.name !=='No Group') {
                 sortedArr.push(value.name);
             }
-            sortedArr.push(...value.views.map(a=>a.hasFeatureApplicabilities?a.name:''))
+            sortedArr.push(...value.views.map((a)=>(a as view).hasFeatureApplicabilities?a.name:''))
         })
         let filteredArr: string[] = sortedArr.filter((el) => {
             return el != '';

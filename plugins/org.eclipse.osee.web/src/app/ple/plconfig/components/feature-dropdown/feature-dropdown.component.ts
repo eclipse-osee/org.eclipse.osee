@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { share, take} from 'rxjs/operators';
+import { Observable, of, OperatorFunction } from 'rxjs';
+import { filter, share, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { trackableFeature } from '../../types/features/base';
@@ -29,20 +29,11 @@ import { EditFeatureDialogComponent } from '../edit-feature-dialog/edit-feature-
   styleUrls: ['./feature-dropdown.component.sass']
 })
 export class FeatureDropdownComponent implements OnInit {
-  selectedBranch: Observable<string> = this.uiStateService.branchId;
+  selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
+    shareReplay({bufferSize:1,refCount:true})
+  );
   branchApplicability = this.currentBranchService.branchApplicability.pipe(share());
-  branchId: string | undefined;
-  groups: string[] = [];
   constructor(private uiStateService: PlConfigUIStateService,private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog) { 
-    this.selectedBranch.subscribe((val) => {
-      this.branchId = val;
-    });
-    this.branchApplicability.subscribe((response) => {
-      this.groups = [];
-      response.groups.forEach((element) => {
-        this.groups.push(element.id);
-      })
-    });
   }
 
   ngOnInit(): void {
@@ -57,40 +48,43 @@ export class FeatureDropdownComponent implements OnInit {
   }
 
   openEditDialog(feature: trackableFeature) {
-    let dialogData = {
-      currentBranch: this.branchId,
-      editable:true,
-      feature: new modifyFeature(feature, "","")
-    }
-    const dialogRef = this.dialog.open(EditFeatureDialogComponent, {
-      data: dialogData,
-      minWidth: '60%',
-    })
-    dialogRef.afterClosed().subscribe((result: PLEditFeatureData) => {
-      if (result) {
-        this.currentBranchService.modifyFeature(result.feature).pipe(take(1)).subscribe((response: response) => {
-        })
-      }
-    })
-
-
+    this.selectedBranch.pipe(
+      take(1),
+      switchMap((branchId) => of({
+        currentBranch: branchId,
+        editable: true,
+        feature: new modifyFeature(feature, "", "")
+      }).pipe(
+        switchMap((dialogData) => this.dialog.open(EditFeatureDialogComponent, {
+          data: dialogData,
+          minWidth: '60%',
+        }).afterClosed().pipe(
+          take(1),
+          filter(val => val !== undefined) as OperatorFunction<PLEditFeatureData | undefined, PLEditFeatureData>,
+          switchMap((result) => this.currentBranchService.modifyFeature(result.feature).pipe(take(1)))
+        ))
+      ))
+    ).subscribe();
   }
 
   addFeature() {
-    let dialogData:PLAddFeatureData ={
-      currentBranch: this.branchId,
-      feature: new writeFeature(new defaultBaseFeature()),
-    }
-    const dialogRef = this.dialog.open(AddFeatureDialogComponent, {
-      data: dialogData,
-      minWidth: '60%'
-    });
-    dialogRef.afterClosed().subscribe((result: PLAddFeatureData) => {
-      if (result) {
-        this.currentBranchService.addFeature(result.feature).pipe(take(1)).subscribe((response: response) => {
-        }); 
-      }
-    });
+    this.selectedBranch.pipe(
+      take(1),
+      switchMap((branchId) => of({
+        currentBranch: branchId,
+        feature: new writeFeature(new defaultBaseFeature())
+      }).pipe(
+        take(1),
+        switchMap((dialogData) => this.dialog.open(AddFeatureDialogComponent, {
+          data: dialogData,
+          minWidth: '60%'
+        }).afterClosed().pipe(
+          take(1),
+          filter(val => val !== undefined) as OperatorFunction<PLAddFeatureData | undefined, PLAddFeatureData>,
+          switchMap((result) => this.currentBranchService.addFeature(result.feature).pipe(take(1)))
+        ))
+      ))
+    ).subscribe();
   }
 
 }

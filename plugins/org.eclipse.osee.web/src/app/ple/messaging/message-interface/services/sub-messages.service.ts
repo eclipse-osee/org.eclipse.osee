@@ -19,7 +19,7 @@ import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { MessageApiResponse } from '../types/ApiResponse';
 import { subMessage } from '../types/sub-messages';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'

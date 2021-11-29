@@ -97,7 +97,14 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
           {
             id: "12345",
             name: "group1",
+            value:'',
             values:[]
+          },
+          {
+            id:'200047',
+            name: 'Product-C',
+            value:'A2453',
+            values:["A2453"]
           }
         ],
         setValueStr(): void {
@@ -130,6 +137,7 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
           {
             id: "12345",
             name: "group1",
+            value:'',
             values:[]
           }
         ],
@@ -163,6 +171,7 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
           {
             id: "12345",
             name: "group1",
+            value:'',
             values:[]
           }
         ],
@@ -197,6 +206,7 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
           {
             id: "12345",
             name: "group1",
+            value:'',
             values:[]
           }
         ],
@@ -213,12 +223,12 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
       {
         id : "736857919",
         name: "abGroup",
-        hasFeatureApplicabilities:true,
+        //hasFeatureApplicabilities:true,
         configurations: [
-          "293076452",
-          "130553732"
+          "200045",
+          "200046"
         ],
-        productApplicabilities:[]
+        //productApplicabilities:[]
       },
     ],
   parentBranch:

@@ -12,11 +12,13 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { share, take } from 'rxjs/operators';
+import { from, iif, of, OperatorFunction, throwError } from 'rxjs';
+import { filter, map, mergeMap, reduce, scan, share, switchMap, take, tap } from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { cfgGroup } from '../../types/pl-config-branch';
 import { addCfgGroup } from '../../types/pl-config-cfggroups';
+import { response } from '../../types/pl-config-responses';
 import { AddConfigurationGroupDialogComponent } from '../add-configuration-group-dialog/add-configuration-group-dialog.component';
 
 @Component({
@@ -33,29 +35,45 @@ export class ConfigurationGroupDropdownComponent implements OnInit {
   ngOnInit(): void {
   }
   public addConfigurationGroup() {
-    let dialogData: addCfgGroup = {
-      title:''
-    }
-    const dialogRef = this.dialog.open(AddConfigurationGroupDialogComponent, {
-      data: dialogData,
+    this.dialog.open(AddConfigurationGroupDialogComponent, {
+      data: {
+        title: ''
+      },
       minWidth: '60%'
-    });
-    dialogRef.afterClosed().subscribe((result:addCfgGroup) => {
-      this.currentBranchService.addConfigurationGroup({name:result.title}).pipe(take(1)).subscribe((response) => {
-      })
-    });
+    }).afterClosed().pipe(
+      take(1),
+      filter((val) => val !== undefined) as OperatorFunction<addCfgGroup | undefined, addCfgGroup>,
+      switchMap((result) => iif(() => result !== undefined,
+        this.currentBranchService.addConfigurationGroup({ name: result.title }).pipe(take(1)),
+        of(undefined)
+      ))
+    ).subscribe();
   }
   deleteGroup(id: string) {
     this.currentBranchService.deleteConfigurationGroup(id).pipe(take(1)).subscribe((response) => {
     })
   }
-  synchronizeGroups(groups:cfgGroup[]) {
-    groups.forEach((value) => {
-      this.currentBranchService.synchronizeGroup(value.id).pipe(take(1)).subscribe((response) => {
-        if (response.success) {
+  synchronizeGroups(groups: cfgGroup[]) {
+    of(undefined).pipe(
+      switchMap((val)=>from(groups).pipe(
+        mergeMap((group) => this.currentBranchService.synchronizeGroup(group.id).pipe(
+          take(1),
+          map((resp)=>resp.success)
+        ))
+      )),
+      scan((acc, curr) => { if (!curr) { return false; } else { return acc } }, true),
+      switchMap((result) => iif(() => result,
+        of().pipe(
+          tap(() => {
+            this.uiStateService.updateReqConfig = true;
+          })
+        ),
+        throwError(() => {
           this.uiStateService.updateReqConfig = true;
-        }
-      })
-    })
+          this.uiStateService.error = "Error synchronizing Configuration Groups."
+        })
+      ))
+    ).subscribe(() => { }, () => { })
+    //silence the error by subscribing to error notification
   }
 }

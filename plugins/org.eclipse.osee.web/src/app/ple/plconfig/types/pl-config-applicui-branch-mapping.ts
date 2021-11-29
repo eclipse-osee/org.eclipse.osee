@@ -14,14 +14,14 @@ import { NameValuePair } from "./base-types/NameValuePair";
 import { showable } from "./base-types/showable";
 import { extendedFeature } from "./features/base";
 import { PlConfigApplicUIBranch } from "./pl-config-branch";
-import { configurationGroup } from "./pl-config-configurations";
+import { configGroup, configurationGroup } from "./pl-config-configurations";
 
 export interface PlConfigApplicUIBranchMapping {
     associatedArtifactId: string,
     branch: PlConfigApplicUIBranch,
     editable: boolean,
     features: extendedFeature[],
-    groups: configurationGroup[],
+    groups: configGroup[],
     parentBranch: PlConfigApplicUIBranch,
     views: view[],
 };

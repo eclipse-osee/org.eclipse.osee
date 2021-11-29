@@ -20,7 +20,8 @@ export interface CfgGroupDialog{
     configGroup: {
         name: string,
         id:string,
-        views:view[]
+        views: view[],
+        configurations:string[]
     },
     editable:boolean,
 }

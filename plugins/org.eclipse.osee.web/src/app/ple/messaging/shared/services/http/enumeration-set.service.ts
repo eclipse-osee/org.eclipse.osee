@@ -16,7 +16,7 @@ import { of } from 'rxjs';
 import { relation, transaction } from 'src/app/transactions/transaction';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
-import { ARTIFACTTYPEID } from '../../constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 

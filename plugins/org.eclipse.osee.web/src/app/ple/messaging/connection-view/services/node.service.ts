@@ -18,7 +18,7 @@ import { TransactionBuilderService } from '../../../../transactions/transaction-
 import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { node } from '../../shared/types/node';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'

@@ -24,10 +24,10 @@ import { MessagesService } from './messages.service';
 import { SubMessagesService } from './sub-messages.service';
 import { MessageUiService } from './ui.service';
 import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEID } from '../../shared/constants/AttributeTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
-import { RelationTypeId } from '../../shared/constants/RelationTypeId.enum';
+import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 
 @Injectable({

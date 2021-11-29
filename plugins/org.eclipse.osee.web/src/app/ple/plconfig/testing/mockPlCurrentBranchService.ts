@@ -10,28 +10,53 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { PlConfigCurrentBranchService } from "../services/pl-config-current-branch.service";
-import { testBranchApplicability } from "./mockBranchService";
-import { testBranchActions, testCommitResponse, testDataPlConfigBranchListingBranch, testWorkFlow } from "./mockTypes";
+import { of } from 'rxjs';
+import { PlConfigCurrentBranchService } from '../services/pl-config-current-branch.service';
+import { modifyFeature } from '../types/pl-config-features';
+import { testBranchApplicability } from './mockBranchService';
+import {
+  testBranchActions,
+  testCommitResponse,
+  testDataPlConfigBranchListingBranch,
+  testDataResponse,
+  testWorkFlow,
+} from './mockTypes';
 
-export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> = {
+export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
+  {
+    get branchState() {
+      return of(testDataPlConfigBranchListingBranch);
+    },
+    get branchAction() {
+      return of(testBranchActions);
+    },
+    commitBranch(
+      parentBranchId: string | number | undefined,
+      body: { committer: string; archive: string }
+    ) {
+      return of(testCommitResponse);
+    },
+    get branchApplicability() {
+      return of(testBranchApplicability);
+    },
+    get branchWorkFlow() {
+      return of(testWorkFlow);
+    },
+    get headers() {
+      return of([
+        'feature',
+        'Product C',
+        'Product D',
+        'abGroup',
+        'Product A',
+        'Product B',
+      ]);
+    },
+    get groupList() {
+      return of(testBranchApplicability.groups);
+    },
+    modifyFeature(feature: modifyFeature) {
+      return of(testDataResponse);
+    },
     
-    
-          get branchState() {
-            return of(testDataPlConfigBranchListingBranch)
-          },
-          get branchAction() {
-            return of(testBranchActions);
-          },  
-          commitBranch(parentBranchId: string | number | undefined, body: { committer: string, archive: string }) {    
-            return of(testCommitResponse);
-          },
-          get branchApplicability() {
-            return of(testBranchApplicability);
-          },
-          get branchWorkFlow() {
-            return of(testWorkFlow);
-          }
-           
-          }
+  };

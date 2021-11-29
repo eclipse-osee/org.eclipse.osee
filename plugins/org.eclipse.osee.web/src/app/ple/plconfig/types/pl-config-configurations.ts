@@ -1,3 +1,5 @@
+import { NameValuePair } from "./base-types/NameValuePair";
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -19,10 +21,11 @@ export interface configuration {
 export interface editConfiguration extends configuration {
     configurationGroup?: string
 }
-export interface configurationGroup {
-    configurations:string[],
-    id: string,
-    name: string,
+export interface configurationGroup extends configGroup {
     hasFeatureApplicabilities: boolean
     productApplicabilities:string[]
+}
+
+export interface configGroup extends NameValuePair{
+    configurations:string[],
 }

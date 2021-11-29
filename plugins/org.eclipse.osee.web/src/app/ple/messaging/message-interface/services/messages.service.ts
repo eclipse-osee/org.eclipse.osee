@@ -21,7 +21,7 @@ import { MessageApiResponse } from '../types/ApiResponse';
 import { message } from '../types/messages';
 import { connection } from '../../shared/types/connection';
 import { map } from 'rxjs/operators';
-import { ARTIFACTTYPEID } from '../../shared/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'
