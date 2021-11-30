@@ -42,7 +42,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    @Override
    public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
       ResultSet<ArtifactReadable> accountResults =
-         newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getResults();
       ArtifactReadable account = accountResults.getExactlyOne();
 
       ResultSet<ArtifactReadable> allGroups =
@@ -57,12 +57,8 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public void updateSubscription(Subscription subscription, boolean activate) {
-      Long intAccountId = subscription.getAccountId().getUuid();
-      Long intGroupId = subscription.getGroupId().getId();
-
-      ArtifactReadable account = newQuery().andUuid(intAccountId).getResults().getExactlyOne();
-      ArtifactReadable group =
-         newQuery().andUuid(intGroupId).andTypeEquals(CoreArtifactTypes.SubscriptionGroup).getResults().getExactlyOne();
+      ArtifactReadable account = newQuery().andId(subscription.getAccountId()).asArtifact();
+      ArtifactReadable group = newQuery().andId(subscription.getGroupId()).asArtifact();
 
       String txComment = String.format("%s user [%s] to [%s].", activate ? "Subscribe" : "Unsubscribe",
          account.getName(), group.getName());
@@ -89,11 +85,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       @Override
       public boolean isActive(ArtifactId accountId, SubscriptionGroupId groupId) {
          if (wasRun.compareAndSet(false, true)) {
-            int intAccountId = Long.valueOf(accountId.getUuid()).intValue();
-            int intGroupId = Long.valueOf(groupId.getId()).intValue();
 
-            ArtifactReadable account = newQuery().andUuid(intAccountId).getResults().getExactlyOne();
-            ArtifactReadable group = newQuery().andUuid(intGroupId).getResults().getExactlyOne();
+            ArtifactReadable account = newQuery().andId(accountId).asArtifact();
+            ArtifactReadable group = newQuery().andId(groupId).asArtifact();
             isActive = account.areRelated(CoreRelationTypes.Users_Artifact, group);
          }
          return isActive;
