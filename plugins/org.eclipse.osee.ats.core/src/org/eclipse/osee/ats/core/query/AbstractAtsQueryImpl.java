@@ -368,21 +368,17 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
 
-         List<Long> taskReviewIds = new ArrayList<>();
          for (T teamWf : teamWfs) {
             for (IAtsTask task : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) teamWf)) {
-               taskReviewIds.add(task.getId());
+               artifactIds.add(task.getArtifactId());
             }
             for (IAtsAbstractReview review : atsApi.getReviewService().getReviews((IAtsTeamWorkflow) teamWf)) {
-               taskReviewIds.add(review.getId());
+               artifactIds.add(review.getArtifactId());
             }
          }
          getBaseSearchCriteria(artTypes, false, allArtTypes);
 
          // team def, ai, version are all covered by team search
-
-         // Start with known task ids
-         addIdCriteria(taskReviewIds);
 
          addEvConfigCriteria();
 
@@ -857,16 +853,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
             stateTypeNames.add(type.name());
          }
          queryAnd(AtsAttributeTypes.CurrentStateType, stateTypeNames);
-      }
-   }
-
-   private void addIdCriteria(Collection<Long> ids) {
-      if (ids != null) {
-         List<Integer> artIds = new LinkedList<>();
-         for (Long id : ids) {
-            artIds.add(id.intValue());
-         }
-
       }
    }
 

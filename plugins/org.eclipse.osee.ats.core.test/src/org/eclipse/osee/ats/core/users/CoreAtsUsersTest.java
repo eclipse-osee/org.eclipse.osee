@@ -69,13 +69,6 @@ public class CoreAtsUsersTest {
    }
 
    @Test
-   public void testHashCode() {
-      TestUser user = new TestUser();
-      user.setUserId(null);
-      Assert.assertEquals(user.getId().intValue(), user.hashCode());
-   }
-
-   @Test
    public void testEqualsObject() {
       TestUser user = new TestUser();
       user.setUserId("99999999");
