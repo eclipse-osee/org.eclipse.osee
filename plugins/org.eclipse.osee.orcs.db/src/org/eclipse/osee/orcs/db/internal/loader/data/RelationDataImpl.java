@@ -60,12 +60,12 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl<RelationTypeToken>
 
    @Override
    public int getArtIdA() {
-      return artIdA.getId().intValue();
+      return artIdA.getIdIntValue();
    }
 
    @Override
    public int getArtIdB() {
-      return artIdB.getId().intValue();
+      return artIdB.getIdIntValue();
    }
 
    @Override

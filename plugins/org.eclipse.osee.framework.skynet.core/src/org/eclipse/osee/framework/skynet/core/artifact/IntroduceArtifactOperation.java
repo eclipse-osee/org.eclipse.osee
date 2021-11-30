@@ -152,7 +152,7 @@ public class IntroduceArtifactOperation {
       } else if (sourceRelation.isInDb()) {
          ArtifactToken srcArtA = sourceRelation.getArtifactIdA();
          ArtifactToken srcArtB = sourceRelation.getArtifactIdB();
-         RelationLink destinationRelation = RelationManager.getLoadedRelationById(sourceRelation.getId().intValue(),
+         RelationLink destinationRelation = RelationManager.getLoadedRelationById(sourceRelation.getIdIntValue(),
             srcArtA, srcArtB, destinationBranch);
 
          if (destinationRelation == null) {
@@ -161,7 +161,7 @@ public class IntroduceArtifactOperation {
                ArtifactToken destArtA = ArtifactToken.valueOf(srcArtA, destinationBranch);
                ArtifactToken destArtB = ArtifactToken.valueOf(srcArtB, destinationBranch);
                destinationRelation = RelationManager.getOrCreate(destArtA, destArtB, sourceRelation.getRelationType(),
-                  sourceRelation.getId().intValue(), sourceRelation.getGammaId(), sourceRelation.getRationale(),
+                  sourceRelation.getIdIntValue(), sourceRelation.getGammaId(), sourceRelation.getRationale(),
                   modType, sourceRelation.getApplicabilityId());
                destinationRelation.internalSetModType(modType, true, true);
             }

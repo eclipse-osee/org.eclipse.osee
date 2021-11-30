@@ -91,7 +91,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
    }
 
    public void setTransaction(TransactionId tx) {
-      this.transactionId = tx.getId().intValue();
+      this.transactionId = tx.getIdIntValue();
    }
 
    /**

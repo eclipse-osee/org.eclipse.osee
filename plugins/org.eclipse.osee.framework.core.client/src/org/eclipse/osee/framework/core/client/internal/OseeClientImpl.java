@@ -101,7 +101,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
       Conditions.checkNotNull(requestType, "RequestType");
       int fromTx = 0;
       if (options.isHistorical()) {
-         fromTx = options.getFromTransaction().getId().intValue();
+         fromTx = options.getFromTransaction().getIdIntValue();
       }
 
       boolean includeDeleted = false;

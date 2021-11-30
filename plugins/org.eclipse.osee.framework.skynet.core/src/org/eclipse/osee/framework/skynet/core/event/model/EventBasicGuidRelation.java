@@ -32,13 +32,13 @@ public class EventBasicGuidRelation extends DefaultBasicIdRelation {
 
    public EventBasicGuidRelation(RelationEventType relationEventType, ArtifactId artAId, ArtifactId artBId, DefaultBasicIdRelation guidRel) {
       this(relationEventType, guidRel.getBranch(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
-         guidRel.getGammaId(), artAId.getId().intValue(), guidRel.getArtA(), artBId.getId().intValue(),
+         guidRel.getGammaId(), artAId.getIdIntValue(), guidRel.getArtA(), artBId.getIdIntValue(),
          guidRel.getArtB());
    }
 
    public EventBasicGuidRelation(RelationEventType relationEventType, BranchId branchUuid, Long relTypeGuid, Long relationId, GammaId gammaId, ArtifactId artAId, DefaultBasicGuidArtifact artA, ArtifactId artBId, DefaultBasicGuidArtifact artB) {
-      this(relationEventType, branchUuid, relTypeGuid, relationId, gammaId, artAId.getId().intValue(), artA,
-         artBId.getId().intValue(), artB);
+      this(relationEventType, branchUuid, relTypeGuid, relationId, gammaId, artAId.getIdIntValue(), artA,
+         artBId.getIdIntValue(), artB);
    }
 
    public EventBasicGuidRelation(RelationEventType relationEventType, BranchId branchUuid, Long relTypeGuid, Long relationId, GammaId gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {

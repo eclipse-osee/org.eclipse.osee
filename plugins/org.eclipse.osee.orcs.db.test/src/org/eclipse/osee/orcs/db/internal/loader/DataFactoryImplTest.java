@@ -126,6 +126,9 @@ public class DataFactoryImplTest {
       when(attrData.getVersion()).thenReturn(verData);
       when(attrData.getLocalId()).thenReturn(SHARED_ID.intValue());
       when(attrData.getId()).thenReturn(SHARED_ID);
+
+      when(attrData.getIdIntValue()).thenReturn(SHARED_ID.intValue());
+
       when(attrData.getModType()).thenReturn(ModificationType.MODIFIED);
       when(attrData.getType()).thenReturn(Name);
       doReturn(CoreAttributeTypes.Name).when(tokenService).getAttributeType(CoreAttributeTypes.Name.getId());
