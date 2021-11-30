@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.ats.api.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Date;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 
 /**
  * @author Donald G. Dunne
@@ -48,9 +51,10 @@ public class JaxAtsTask extends JaxAtsWorkItem {
       return task;
    }
 
+   @Override
    @JsonIgnore
    public ArtifactToken getToken() {
-      return ArtifactToken.valueOf(getId(), atsApi.getAtsBranch());
+      return ArtifactToken.valueOf(getId(), CoreBranches.COMMON);
    }
 
    public String getRelatedToState() {
