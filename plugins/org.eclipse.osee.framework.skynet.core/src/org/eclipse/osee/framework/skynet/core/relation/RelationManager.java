@@ -627,8 +627,8 @@ public class RelationManager {
    }
 
    public static RelationLink getLoadedRelation(RelationTypeToken relationType, ArtifactToken aArtifactId, ArtifactToken bArtifactId, BranchId branch) {
-      return relationCache.getLoadedRelation(relationType, aArtifactId.getId().intValue(),
-         bArtifactId.getId().intValue(), branch);
+      return relationCache.getLoadedRelation(relationType, aArtifactId.getIdIntValue(),
+         bArtifactId.getIdIntValue(), branch);
    }
 
    public static RelationLink getLoadedRelationById(int relLinkId, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchToken branch) {

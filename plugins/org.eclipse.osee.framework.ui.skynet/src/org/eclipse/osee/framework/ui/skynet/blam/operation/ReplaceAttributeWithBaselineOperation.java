@@ -76,7 +76,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
 
    private void revertAttribute(Artifact artifact, Change change) throws SecurityException, IllegalArgumentException {
       Attribute<?> attribute = artifact.getAttributeById(change.getItemId().getId(), true);
-      if (attribute != null && change.getItemId().getId().intValue() == attribute.getId()) {
+      if (attribute != null && change.getItemId().getIdIntValue() == attribute.getId()) {
          IChangeWorker worker = new AttributeChangeWorker(change, artifact);
          worker.revert();
       }

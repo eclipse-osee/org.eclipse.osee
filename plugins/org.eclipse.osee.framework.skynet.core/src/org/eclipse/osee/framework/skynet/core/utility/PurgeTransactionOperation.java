@@ -76,7 +76,7 @@ public class PurgeTransactionOperation extends AbstractOperation {
 
          TransactionChange txChg = new TransactionChange();
          txChg.setBranch(transId.getBranch());
-         txChg.setTransactionId(transId.getId().intValue());
+         txChg.setTransactionId(transId.getIdIntValue());
          transactionEvent.getTransactionChanges().add(txChg);
 
          Collection<Change> changes = new ArrayList<>();

@@ -84,7 +84,7 @@ public class ReportResource {
 
    private void buildArtIdToChangeMap(List<ChangeItem> changes, Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {
       for (ChangeItem change : changes) {
-         int artId = change.getArtId().getId().intValue();
+         int artId = change.getArtId().getIdIntValue();
          ChangeType changeType = change.getChangeType();
          if (changeType.isArtifactChange()) {
             if (!artToChanges.containsKey(artId)) {

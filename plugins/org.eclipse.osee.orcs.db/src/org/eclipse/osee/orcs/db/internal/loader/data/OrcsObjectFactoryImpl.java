@@ -121,7 +121,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(source.getType().getId());
       DataProxy<T> sourceProxy = source.getDataProxy();
       DataProxy<T> newProxy = proxyFactory.createProxy(attributeType, sourceProxy.getRawValue(), sourceProxy.getUri());
-      return createAttributeFromRow(newVersion, source.getId().intValue(), attributeType, source.getModType(),
+      return createAttributeFromRow(newVersion, source.getIdIntValue(), attributeType, source.getModType(),
          source.getBaseType(), source.getBaseModType(), source.getArtifactId(), newProxy, source.getApplicabilityId());
    }
 

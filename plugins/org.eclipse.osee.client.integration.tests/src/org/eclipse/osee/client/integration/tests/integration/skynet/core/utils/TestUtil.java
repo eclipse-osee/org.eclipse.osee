@@ -80,7 +80,7 @@ public final class TestUtil {
    }
 
    public static RelationLink createRelationLink(int relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationTypeToken relationType) {
-      return createRelationLink(relationId, artA.getId().intValue(), artB.getId().intValue(), branch, relationType);
+      return createRelationLink(relationId, artA.getIdIntValue(), artB.getIdIntValue(), branch, relationType);
    }
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, BranchId branch, RelationTypeToken relationType) {

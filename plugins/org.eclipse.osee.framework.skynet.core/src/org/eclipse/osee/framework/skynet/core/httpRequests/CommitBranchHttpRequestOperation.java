@@ -167,7 +167,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
             Artifact changedArtifact = change.getChangeArtifact();
             if (changedArtifact.isValid()) {
 
-               EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getId().intValue());
+               EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getIdIntValue());
                if (artEvent == null) {
                   artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(), change.getArtifactType(),
                      changedArtifact.getGuid(),
@@ -180,7 +180,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
                attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
                attrChangeEvent.setGammaId(attributeChange.getGamma());
-               attrChangeEvent.setAttributeId(attributeChange.getAttrId().getId().intValue());
+               attrChangeEvent.setAttributeId(attributeChange.getAttrId().getIdIntValue());
                attrChangeEvent.setModTypeGuid(
                   AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
 

@@ -267,7 +267,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final int getArtId() {
-      return getId().intValue();
+      return getIdIntValue();
    }
 
    @Override
@@ -336,7 +336,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       List<Integer> items = new ArrayList<>();
       List<Attribute<Object>> data = getAttributes(attributeType);
       for (Attribute<Object> attribute : data) {
-         items.add(attribute.getId().intValue());
+         items.add(attribute.getIdIntValue());
       }
       return items;
    }
