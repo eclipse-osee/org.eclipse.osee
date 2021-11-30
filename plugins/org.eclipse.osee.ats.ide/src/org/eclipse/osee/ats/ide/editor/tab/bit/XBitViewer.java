@@ -13,25 +13,33 @@
 package org.eclipse.osee.ats.ide.editor.tab.bit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactState;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -47,11 +55,6 @@ public class XBitViewer extends TaskXViewer {
       super(parent, style, xViewerFactory, editor, teamWf);
       atsApi = AtsApiService.get();
       crTeamWf = teamWf;
-   }
-
-   @Override
-   protected boolean isAddTaskEnabled() {
-      return false;
    }
 
    @Override
@@ -124,6 +127,50 @@ public class XBitViewer extends TaskXViewer {
 
    @Override
    public boolean isRemoveItemsMenuOptionEnabled() {
+      return false;
+   }
+
+   @Override
+   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      if (treeItem.getData() instanceof BuildImpactData) {
+         BuildImpactData bid = (BuildImpactData) treeItem.getData();
+         if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
+            return handleChangeState(bid);
+         }
+      }
+      return false;
+   }
+
+   private boolean handleChangeState(BuildImpactData bid) {
+      List<String> states = new ArrayList<String>();
+      for (String state : Arrays.asList(BuildImpactState.Open.name(), BuildImpactState.Analyzed.name(),
+         BuildImpactState.InWork.name(), BuildImpactState.Promoted.name(), BuildImpactState.Closed.name(),
+         BuildImpactState.Deferred.name(), BuildImpactState.Cancelled.name())) {
+         if (!bid.getState().equals(state)) {
+            states.add(state);
+         }
+      }
+      states.remove(bid.getState());
+
+      ListSelectionDialogNoSave dialog =
+         new ListSelectionDialogNoSave(Collections.castAll(states), Displays.getActiveShell().getShell(),
+            "Select Transition-To State", null, "Select the state to transition to.\n\n" //
+               + "Transition will happen upon selection and Transition button.\n\n" //
+               + "Double-click will select, close and transition.",
+            2, new String[] {"Transition", "Cancel"}, 0);
+
+      if (dialog.open() == Window.OK) {
+         Artifact bidArt = (Artifact) atsApi.getQueryService().getArtifact(bid.getBidArt());
+         bidArt.setSoleAttributeValue(AtsAttributeTypes.BitState, dialog.getSelected());
+         bidArt.persist("Update BID State");
+         return true;
+      }
+
+      return false;
+   }
+
+   @Override
+   protected boolean isAddTaskEnabled() {
       return false;
    }
 
