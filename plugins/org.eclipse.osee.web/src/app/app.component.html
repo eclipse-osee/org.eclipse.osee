@@ -18,12 +18,12 @@
         		</osee-display-user>
         </div>
     </mat-toolbar>
-    <mat-drawer-container>
-        <mat-drawer-content>
+    <mat-sidenav-container>
+        <mat-sidenav-content>
             <router-outlet></router-outlet>
-        </mat-drawer-content>
-        <mat-drawer position="end" mode="side" [opened]="(opened|async)" class="mat-elevation-z9">
+        </mat-sidenav-content>
+        <mat-sidenav position="end" mode="side" [opened]="(opened|async)" class="mat-elevation-z9" [fixedInViewport]=true>
             <router-outlet name="rightSideNav"></router-outlet>
-        </mat-drawer>
-    </mat-drawer-container>
+        </mat-sidenav>
+    </mat-sidenav-container>
 </div>
