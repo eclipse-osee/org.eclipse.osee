@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -126,17 +127,17 @@ public final class WordTemplateFileDiffer {
 
       Collection<ArtifactDelta> artifactDeltas = new ArrayList<>();
       Set<Integer> addedIds = new HashSet<>();
-      Set<Integer> changeIds = new HashSet<>(changes.size());
+      Set<ArtifactId> changeIds = new HashSet<>(changes.size());
       for (Change change : changes) {
-         changeIds.add(change.getArtId().getId().intValue());
+         changeIds.add(change.getArtId());
       }
       BranchId endBranch = txDelta.getEndTx().getBranch();
       // loop through all artifacts that are on the IS branch
       for (Artifact art : endArtifacts) {
          Integer artId = art.getArtId();
-         if (changeIds.contains(artId)) {
+         if (changeIds.contains(art)) {
             // If there is a change on the IS branch
-            Change newChange = findChange(artId, changes);
+            Change newChange = findChange(art, changes);
             if (newChange != null && !newChange.getChangeItem().getChangeType().isRelationChange() && !addedIds.contains(
                artId)) {
                artifactDeltas.add(newChange.getDelta());
@@ -161,10 +162,10 @@ public final class WordTemplateFileDiffer {
       }
    }
 
-   private Change findChange(Integer artId, List<Change> changes) {
+   private Change findChange(ArtifactId artId, List<Change> changes) {
       Change toReturn = null;
       for (Change change : changes) {
-         if (change.getArtId().getId().intValue() == artId.intValue()) {
+         if (change.getArtId().equals(artId)) {
             toReturn = change;
             break;
          }
