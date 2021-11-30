@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.app;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,11 +76,8 @@ public final class OseeAppResource {
    @GET
    @Path("/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public String getOseeAppJson(@PathParam("id") Long id) {
-      BranchId branchId =
-         orcsApi.getQueryFactory().branchQuery().andNameEquals("Common").getResultsAsId().getExactlyOne();
-      ArtifactReadable app =
-         orcsApi.getQueryFactory().fromBranch(branchId).andId(ArtifactId.valueOf(id)).getResults().getExactlyOne();
+   public String getOseeAppJson(@PathParam("id") ArtifactId id) {
+      ArtifactReadable app = orcsApi.getQueryFactory().fromBranch(COMMON).andId(id).asArtifact();
       return app.getSoleAttributeAsString(CoreAttributeTypes.OseeAppDefinition);
    }
 

@@ -84,7 +84,7 @@ public class OrcsCollectorWriter {
    private void processDelete(XResultData results) {
       for (ArtifactToken owArtifact : collector.getDelete()) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrDefault(
+            orcsApi.getQueryFactory().fromBranch(branch).andId(owArtifact).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
 
          if (artifact.isInvalid()) {
@@ -359,8 +359,7 @@ public class OrcsCollectorWriter {
          if (idToArtifact.containsKey(artToken.getId())) {
             otherArtifact = (ArtifactReadable) idToArtifact.get(artToken.getId());
          } else {
-            otherArtifact =
-               orcsApi.getQueryFactory().fromBranch(branch).andUuid(artToken.getId()).getResults().getExactlyOne();
+            otherArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(artToken).getResults().getExactlyOne();
             idToArtifact.put(artToken.getId(), otherArtifact);
          }
 

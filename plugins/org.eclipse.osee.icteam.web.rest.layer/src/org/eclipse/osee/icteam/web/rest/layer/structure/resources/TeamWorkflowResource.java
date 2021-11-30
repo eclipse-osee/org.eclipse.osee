@@ -709,8 +709,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                      String[] _assignees =
                         ((assigneesStr != null) && !assigneesStr.isEmpty()) ? assigneesStr.split("><") : new String[0];
                      assignees.addAll(Arrays.asList(_assignees));
-                  } else if (Long.parseLong(AtsAttributeTypes.CreatedBy.getIdString()) == Long.parseLong(
-                     split[0])) {
+                  } else if (Long.parseLong(AtsAttributeTypes.CreatedBy.getIdString()) == Long.parseLong(split[0])) {
                      createdUserId = string;
                   }
                }
@@ -741,8 +740,9 @@ public class TeamWorkflowResource extends AbstractConfigResource {
             taskCount++;
 
             String taskCountAttr = setAndVerifyRange(taskCount);
-            tx.setSoleAttributeFromString(childArtifact, AttributeTypeToken.valueOf(
-               Long.parseLong(AtsAttributeTypes.WorkPackage.getIdString()), "Attribute"), taskCountAttr);
+            tx.setSoleAttributeFromString(childArtifact,
+               AttributeTypeToken.valueOf(Long.parseLong(AtsAttributeTypes.WorkPackage.getIdString()), "Attribute"),
+               taskCountAttr);
 
             if (project.getArtifactType().equals(AtsArtifactTypes.AgileProject)) {
                tx.setSoleAttributeFromString(childArtifact,
@@ -930,8 +930,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       ArtifactReadable projectArtifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
          Long.valueOf(projectGuid)).getResults().getAtMostOneOrNull();
       String cancelComment = "";
-      List<String> cancelCommentAttr =
-         transferableArtifact.getAttributes(AtsAttributeTypes.StateNotes.getIdString());
+      List<String> cancelCommentAttr = transferableArtifact.getAttributes(AtsAttributeTypes.StateNotes.getIdString());
 
       if ((cancelCommentAttr != null) && (cancelCommentAttr.size() > 0)) {
          cancelComment = cancelCommentAttr.get(0);
@@ -1836,15 +1835,11 @@ public class TeamWorkflowResource extends AbstractConfigResource {
             workspaceTx.commit();
          }
 
+         QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
          if (linkTaskGuid != null) {
-            ResultSet<ArtifactReadable> taskOneList =
-               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-                  AtsArtifactTypes.TeamWorkflow).andGuid(linkTaskGuid).getResults();
-            ArtifactReadable taskOne = taskOneList.getExactlyOne();
-            ResultSet<ArtifactReadable> taskTwoList =
-               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-                  AtsArtifactTypes.TeamWorkflow).andUuid(childArtifact.getId()).getResults();
-            ArtifactReadable taskTwo = taskTwoList.getExactlyOne();
+
+            ArtifactReadable taskOne = query.andGuid(linkTaskGuid).asArtifact();
+            ArtifactId taskTwo = childArtifact;
             ArtifactReadable currentUser = CommonUtil.getCurrentUser(orcsApi, artifact.getCurrentLoggedInUser());
             UserId userId = UserId.valueOf(currentUser.getId());
             TransactionBuilder linkTaskTx =
@@ -1853,11 +1848,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
             linkTaskTx.commit();
          }
 
-         List<TeamWorkFlowArtifact> listTras = new ArrayList<TeamWorkFlowArtifact>();
-
-         ResultSet<ArtifactReadable> result =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(childArtifact).getResults();
-         ArtifactReadable readableArtifact = result.getExactlyOne();
+         ArtifactReadable readableArtifact = query.andId(childArtifact).getResults().getExactlyOne();
          CustomizedTeamWorkFlowArtifact ar = new CustomizedTeamWorkFlowArtifact();
          CustomizedTeamWorkFlowArtifactLoader.copyArtifactReadbleToTransferableArtifactWithoutRelation(readableArtifact,
             ar);

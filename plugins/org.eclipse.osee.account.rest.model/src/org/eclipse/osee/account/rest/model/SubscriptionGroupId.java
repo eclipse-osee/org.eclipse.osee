@@ -13,12 +13,13 @@
 
 package org.eclipse.osee.account.rest.model;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Angel Avila
  */
-public class SubscriptionGroupId extends NamedIdBase {
+public class SubscriptionGroupId extends NamedIdBase implements ArtifactId {
 
    public SubscriptionGroupId(Long id) {
       super(id, String.valueOf(id));

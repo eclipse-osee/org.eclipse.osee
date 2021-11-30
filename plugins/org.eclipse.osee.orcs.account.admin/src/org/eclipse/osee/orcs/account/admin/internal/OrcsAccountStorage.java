@@ -87,7 +87,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public ResultSet<Account> getAccountById(ArtifactId accountId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
@@ -208,7 +208,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public AccountWebPreferences getAccountWebPreferencesById(ArtifactId accountId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andTypeEquals(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
+         newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getResults();
       return getFactory().newAccountWebPreferences(results.getExactlyOne());
    }
 
