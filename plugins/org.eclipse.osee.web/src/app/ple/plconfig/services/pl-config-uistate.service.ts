@@ -13,42 +13,49 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlConfigUIStateService {
-  private _viewBranchType = new BehaviorSubject<string>("");
-  private _branchId = new BehaviorSubject<string>("");
-  private _deleteRequired = new Subject<string>();
-  private _updateRequired = new Subject<boolean>();
+  // private _viewBranchType = new BehaviorSubject<string>("");
+  // private _branchId = new BehaviorSubject<string>("");
+  // private _deleteRequired = new Subject<string>();
+  // private _updateRequired = new Subject<boolean>();
   private _loading = new BehaviorSubject<string>("false");
   private _editable = new BehaviorSubject<string>("false");
   private _errors = new BehaviorSubject<string>("");
   private _groups = new BehaviorSubject<string[]>([]);
-  constructor() { }
+  constructor(private ui: UiService) { }
 
 
   public set viewBranchTypeString(branchType: string) {
-    this._viewBranchType.next(branchType?.toLowerCase()); 
+    //this._viewBranchType.next(branchType?.toLowerCase());
+    this.ui.typeValue = branchType?.toLowerCase();
     this.updateReqConfig = true;
   }
 
   public get viewBranchType() {
-    return this._viewBranchType;
+    //return this._viewBranchType;
+    return this.ui.type;
   }
 
   public set branchIdNum(branchId: string) {
-    this._branchId.next(branchId);
+    //this._branchId.next(branchId);
+    this.ui.idValue = branchId;
   }
   public get branchId() {
-    return this._branchId.pipe(share());
+    return this.ui.id;
+    // return this._branchId.pipe(share());
   }
   public set updateReqConfig(updateReq: boolean) {
-    this._updateRequired.next(updateReq);
+    this.ui.updated = updateReq;
+    //this._updateRequired.next(updateReq);
   }
   public get updateReq() {
-    return this._updateRequired;
+    return this.ui.update;
+    //return this._updateRequired;
   }
   public get loading() {
     return this._loading;
