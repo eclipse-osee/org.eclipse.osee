@@ -22,6 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
@@ -163,6 +164,10 @@ public class XBitViewer extends TaskXViewer {
          Artifact bidArt = (Artifact) atsApi.getQueryService().getArtifact(bid.getBidArt());
          bidArt.setSoleAttributeValue(AtsAttributeTypes.BitState, dialog.getSelected());
          bidArt.persist("Update BID State");
+         ((Artifact) crTeamWf).reloadAttributesAndRelations();
+         atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, Arrays.asList(crTeamWf),
+            bids.getTransaction());
+
          return true;
       }
 

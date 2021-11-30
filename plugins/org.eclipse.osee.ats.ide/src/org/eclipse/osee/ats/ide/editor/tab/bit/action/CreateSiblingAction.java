@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.bit.action;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
@@ -100,6 +102,8 @@ public class CreateSiblingAction extends Action {
          XResultDataUI.report(bids.getResults(), "Error Creating BID Workflows");
       } else {
          ((Artifact) teamWf).reloadAttributesAndRelations();
+         atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, Arrays.asList(teamWf),
+            bids.getTransaction());
       }
 
    }
