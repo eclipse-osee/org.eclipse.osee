@@ -15,12 +15,10 @@ package org.eclipse.osee.ats.ide.editor.tab.bit;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -30,11 +28,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XBitLabelProvider extends XViewerLabelProvider {
 
-   private final AtsApi atsApi;
-
    public XBitLabelProvider(XBitViewer xBitViewer) {
       super(xBitViewer);
-      this.atsApi = AtsApiService.get();
    }
 
    @Override
