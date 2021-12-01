@@ -220,8 +220,18 @@ public class WfeAttachmentsComposite extends Composite {
                AWorkbench.popup(results.toString());
                return;
             }
-            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Related",
-               "Are you sure you want to delete related artifact\n\n" + delArt.toStringWithId() + " ?")) {
+            int result = MessageDialog.open(MessageDialog.CONFIRM, Displays.getActiveShell(),
+               "Delete/Un-Relate Related", "WARNING: You can DELETE or UN-RELATE...\n\n" + //
+            delArt.toStringWithId() + "\n\n" + //
+            "If you DELETE, this artifact will be REMOVED from the database.\n\n" + //
+            "If you UN-RELATE, this artifact will be un-related, but will remain in the database.", SWT.NONE,
+               "Un-Relate this Artifact", "DELETE this Artifact", "Cancel");
+            if (result == 0) {
+               IAtsChangeSet changes = AtsApiService.get().createChangeSet("Un-Relate Artifact");
+               changes.deleteRelation(relation);
+               changes.execute();
+            }
+            if (result == 1) {
                IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Related Artifact");
                changes.deleteArtifact(delArt);
                changes.execute();
