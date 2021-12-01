@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactState;
+import org.eclipse.osee.ats.ide.editor.tab.bit.WfeBitTab;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersion;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersionTreeDialog;
@@ -47,9 +48,11 @@ public class NewProgramVersionAction extends Action {
 
    private final IAtsTeamWorkflow teamWf;
    private final AtsApi atsApi;
+   private final WfeBitTab wfeBitTab;
 
-   public NewProgramVersionAction(IAtsTeamWorkflow teamWf) {
+   public NewProgramVersionAction(IAtsTeamWorkflow teamWf, WfeBitTab wfeBitTab) {
       this.teamWf = teamWf;
+      this.wfeBitTab = wfeBitTab;
       atsApi = AtsApiService.get();
    }
 
@@ -69,6 +72,7 @@ public class NewProgramVersionAction extends Action {
       if (dialog.open() == Window.OK) {
          BuildImpactDatas bids = new BuildImpactDatas();
          bids.setTeamWf(teamWf.getStoreObject());
+         bids.setBidArtType(wfeBitTab.getBuildImpactDataType());
          for (ProgramVersion pVer : dialog.getChecked()) {
             BuildImpactData bid = new BuildImpactData();
             bid.setBids(bids);

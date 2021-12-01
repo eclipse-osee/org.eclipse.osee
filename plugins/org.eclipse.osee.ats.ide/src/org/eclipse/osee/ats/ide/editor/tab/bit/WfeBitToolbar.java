@@ -43,7 +43,7 @@ public class WfeBitToolbar {
    public void build() {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
-      toolBarMgr.add(new NewProgramVersionAction(teamWf));
+      toolBarMgr.add(new NewProgramVersionAction(teamWf, editor.getBitTab()));
       toolBarMgr.add(new DeleteProgramVersionAction(teamWf));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new CreateSiblingAction(teamWf, editor));
