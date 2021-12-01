@@ -17,7 +17,6 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -71,7 +70,7 @@ public class BidsOperations {
             }
             // Or create if missing and relate
             else {
-               bidArt = changes.createArtifact(AtsArtifactTypes.BuildImpactData, bid.getBidArt().getName());
+               bidArt = changes.createArtifact(bids.getBidArtType(), bid.getBidArt().getName());
                bid.setBidArt(bidArt);
                changes.relate(teamWf, AtsRelationTypes.BuildImpactTableToData_Bid, bidArt);
                // Relate version to bid

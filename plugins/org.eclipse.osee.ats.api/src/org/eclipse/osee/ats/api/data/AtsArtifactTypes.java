@@ -46,9 +46,13 @@ public interface AtsArtifactTypes {
    // @formatter:off
 
    // Build Impact Data
-   ArtifactTypeToken BuildImpactData = ats.add(ats.artifactType(2629918707103L, "ats.Build Impact Data", false, Artifact)
+   ArtifactTypeToken BuildImpactData = ats.add(ats.artifactType(2629918707103L, "Build Impact Data", false, Artifact)
       .zeroOrOne(VersionReference)
       .zeroOrOne(BitConfig)
+      .zeroOrOne(ChangeType)
+      .zeroOrOne(Priority)
+      .zeroOrOne(Workaround)
+      .zeroOrOne(ImpactToMissionOrCrew)
       .zeroOrOne(BitState));
 
    // Base ATS type

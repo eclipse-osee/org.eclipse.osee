@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -32,6 +33,7 @@ public class BuildImpactDatas {
    private Map<ArtifactToken, BuildImpactData> teamWfToBidMap = new HashMap<>();
    private final XResultData results = new XResultData();
    TransactionId transaction;
+   private ArtifactTypeToken bidArtType = ArtifactTypeToken.SENTINEL;
 
    public BuildImpactDatas() {
       // for jax-rs
@@ -77,6 +79,14 @@ public class BuildImpactDatas {
 
    public void setTransaction(TransactionId transaction) {
       this.transaction = transaction;
+   }
+
+   public ArtifactTypeToken getBidArtType() {
+      return bidArtType;
+   }
+
+   public void setBidArtType(ArtifactTypeToken bidArtType) {
+      this.bidArtType = bidArtType;
    }
 
 }
