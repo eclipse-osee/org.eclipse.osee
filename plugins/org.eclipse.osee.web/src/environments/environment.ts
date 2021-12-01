@@ -17,7 +17,8 @@
 export const environment = {
   production: false
 };
-export const apiURL="http://localhost:4200"
+export const apiURL = "http://localhost:4200"
+export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
 
 /*
  * For easier debugging in development mode, you can import the following file

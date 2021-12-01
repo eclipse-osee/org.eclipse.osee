@@ -13,4 +13,5 @@
 export const environment = {
   production: true
 };
-export const apiURL=""
+export const apiURL = "";
+export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
