@@ -81,7 +81,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
          checkActionableItems(isAtsAdmin, atsApi, allArtifacts, results);
          checkTeamDefinitions(isAtsAdmin, atsApi, allArtifacts, results);
          checkAtsWorkDefinitions(isAtsAdmin, atsApi, allArtifacts, results);
-         checkUsers(atsApi, allArtifacts, results);
+         checkUsers(isAtsAdmin, atsApi, allArtifacts, results);
          checkActions(isAtsAdmin, atsApi, allArtifacts, results);
          checkWorkPackages(isAtsAdmin, atsApi, allArtifacts, results);
       }
@@ -239,10 +239,14 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
    }
 
-   private void checkUsers(AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkUsers(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       Set<UserToken> users = new HashSet<>();
       for (ArtifactId art : artifacts) {
          if (art instanceof UserToken) {
+            if (!isAtsAdmin) {
+               results.error("Only Admins can delete users");
+               return;
+            }
             users.add((UserToken) art);
          }
       }

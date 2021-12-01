@@ -260,7 +260,12 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public Collection<ArtifactToken> getDescendants(ArtifactToken art) {
       Set<ArtifactToken> arts = new HashSet<>();
-      Artifact artifact = (Artifact) atsApi.getQueryService().getArtifact(art);
+      Artifact artifact = null;
+      if (art instanceof Artifact) {
+         artifact = (Artifact) art;
+      } else {
+         artifact = (Artifact) atsApi.getQueryService().getArtifact(art);
+      }
       arts.add(artifact);
       for (Artifact child : artifact.getChildren()) {
          arts.addAll(getDescendants(child));
