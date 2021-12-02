@@ -266,6 +266,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return objs;
    }
 
+   @Deprecated // Use artifact directly as ArtifactId or if absolutely necessary use getId()
    public final int getArtId() {
       return getIdIntValue();
    }

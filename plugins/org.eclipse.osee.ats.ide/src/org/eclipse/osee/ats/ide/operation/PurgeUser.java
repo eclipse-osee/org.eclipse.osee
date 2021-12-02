@@ -120,9 +120,9 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) {
-      numOfAuthoredTransactions = jdbcClient.fetch(-1, GET_AUTHORED_TRANSACTIONS, fromUser.getArtId());
+      numOfAuthoredTransactions = jdbcClient.fetch(-1, GET_AUTHORED_TRANSACTIONS, fromUser);
       numOfUpdatedAuthoredTransactions =
-         jdbcClient.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, toUser.getArtId(), fromUser.getArtId());
+         jdbcClient.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, toUser, fromUser);
    }
 
    private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) {
@@ -131,15 +131,13 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) {
-      numOfASideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_ASIDE, fromUser.getArtId());
-      numOfUpdatedASideRelations =
-         jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, toUser.getArtId(), fromUser.getArtId());
+      numOfASideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_ASIDE, fromUser);
+      numOfUpdatedASideRelations = jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, toUser, fromUser);
    }
 
    private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) {
-      numOfBSideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_BSIDE, fromUser.getArtId());
-      numOfUpdatedBSideRelations =
-         jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, toUser.getArtId(), fromUser.getArtId());
+      numOfBSideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_BSIDE, fromUser);
+      numOfUpdatedBSideRelations = jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, toUser, fromUser);
    }
 
    private void deleteArtifact(final User fromUser) {
@@ -165,9 +163,9 @@ public class PurgeUser extends AbstractBlam {
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
             fromUser.getName(),
-            Integer.toString(fromUser.getArtId()),
+            fromUser.getIdString(),
             toUser.getName(),
-            Integer.toString(toUser.getArtId()),
+            toUser.getIdString(),
             Integer.toString(numOfAuthoredTransactions),
             Integer.toString(numOfASideRelations),
             Integer.toString(numOfBSideRelations),

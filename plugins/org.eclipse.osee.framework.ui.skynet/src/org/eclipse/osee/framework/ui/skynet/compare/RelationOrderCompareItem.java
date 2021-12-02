@@ -125,12 +125,12 @@ public class RelationOrderCompareItem extends CompareItem {
             }
          } else if (art.isDeleted()) {
             results.errorf(
-               "Artifact '" + art.getName() + "' with id " + art.getArtId() + " was deleted on this source branch - Save Failed\n");
+               "Artifact '" + art.getName() + "' with id " + art.getIdString() + " was deleted on this source branch - Save Failed\n");
          } else if (!art.isDeleted()) {
             guidList.add(art.getGuid());
          } else {
             results.errorf(
-               "There was a problem with Artifact '" + art.getName() + "' with id " + art.getArtId() + " Save Failed\n");
+               "There was a problem with Artifact '" + art.getName() + "' with id " + art.getIdString() + " Save Failed\n");
          }
       }
 

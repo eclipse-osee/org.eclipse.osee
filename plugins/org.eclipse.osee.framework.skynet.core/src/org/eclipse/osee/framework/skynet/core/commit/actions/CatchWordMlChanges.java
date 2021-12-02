@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -52,8 +53,8 @@ public class CatchWordMlChanges implements CommitAction {
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
 
-      Map<Integer, String> trackedChanges = new HashMap<>();
-      Map<Integer, String> applicabilityTags = new HashMap<>();
+      Map<ArtifactId, String> trackedChanges = new HashMap<>();
+      Map<ArtifactId, String> applicabilityTags = new HashMap<>();
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
             if (change.getChangeType().isAttributeChange()) {
@@ -61,7 +62,7 @@ public class CatchWordMlChanges implements CommitAction {
 
                if (attribute.isOfType(CoreAttributeTypes.WordTemplateContent)) {
                   if (WordCoreUtil.containsWordAnnotations(((StringAttribute) attribute).getValue())) {
-                     trackedChanges.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
+                     trackedChanges.put(attribute.getArtifact(), attribute.getArtifact().getSafeName());
                   }
 
                   Boolean useInvalidTagsCheck =
@@ -72,7 +73,7 @@ public class CatchWordMlChanges implements CommitAction {
                      ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch),
                      ApplicabilityUtility.getConfigurationGroupsUpperCase(destinationBranch)) : useInvalidTagsCheck;
                   if (isInvalidTags) {
-                     applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
+                     applicabilityTags.put(attribute.getArtifact(), attribute.getArtifact().getSafeName());
                   }
 
                }
@@ -104,6 +105,5 @@ public class CatchWordMlChanges implements CommitAction {
       if (err != null) {
          throw new OseeCoreException(err);
       }
-
    }
 }

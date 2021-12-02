@@ -17,12 +17,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -39,8 +41,8 @@ public class CatchArtifactChanges implements CommitAction {
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
 
-      Set<Integer> orphanedArts = new HashSet<>();
-      Set<Integer> shouldBeDeletedArts = new HashSet<>();
+      Set<ArtifactId> orphanedArts = new HashSet<>();
+      Set<ArtifactId> shouldBeDeletedArts = new HashSet<>();
       for (Change change : changes) {
          Artifact artifactChanged = change.getChangeArtifact();
          if (artifactChanged.isOfType(CoreArtifactTypes.AbstractImplementationDetails,
@@ -56,12 +58,14 @@ public class CatchArtifactChanges implements CommitAction {
       String err = null;
       if (!orphanedArts.isEmpty()) {
          err = String.format("Commit Branch Failed. The following artifacts are orphaned. " //
-            + " Please appropriately parent the artifact, then recommit : [%s]\n\n", orphanedArts.toString());
+            + " Please appropriately parent the artifact, then recommit : [%s]\n\n",
+            Collections.toString(orphanedArts, ", ", ArtifactId::getIdString));
       }
       if (!shouldBeDeletedArts.isEmpty()) {
          String temp =
             String.format("Commit Branch Failed. The following artifacts are deleted but still have relations. " //
-               + " Please remove the relations, then recommit : [%s]\n\n", shouldBeDeletedArts.toString());
+               + " Please remove the relations, then recommit : [%s]\n\n",
+               Collections.toString(shouldBeDeletedArts, ", ", ArtifactId::getIdString));
          err = err == null ? temp : err + temp;
       }
 
@@ -71,18 +75,17 @@ public class CatchArtifactChanges implements CommitAction {
 
    }
 
-   private void checkArtIsFullyDeleted(Set<Integer> shouldBeDeletedArts, Artifact artifactChanged) {
+   private void checkArtIsFullyDeleted(Set<ArtifactId> shouldBeDeletedArts, Artifact artifactChanged) {
       Artifact relatedArt = artifactChanged.getRelatedArtifactOrNull(CoreRelationTypes.DefaultHierarchical_Parent);
       if (relatedArt != null) {
-         shouldBeDeletedArts.add(artifactChanged.getArtId());
+         shouldBeDeletedArts.add(artifactChanged);
       }
    }
 
-   private void checkForOrphans(Set<Integer> orphanedArts, Artifact artifactChanged) {
+   private void checkForOrphans(Set<ArtifactId> orphanedArts, Artifact artifactChanged) {
       Artifact relatedArt = artifactChanged.getRelatedArtifactOrNull(CoreRelationTypes.DefaultHierarchical_Parent);
       if (relatedArt == null) {
-         orphanedArts.add(artifactChanged.getArtId());
+         orphanedArts.add(artifactChanged);
       }
    }
-
 }

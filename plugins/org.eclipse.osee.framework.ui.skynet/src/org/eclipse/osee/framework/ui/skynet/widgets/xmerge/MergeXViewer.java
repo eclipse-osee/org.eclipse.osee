@@ -250,7 +250,7 @@ public class MergeXViewer extends XViewer {
             Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
             if (art.isValid()) {
                // Builds a string looking like "ARTIFACT '#ArtId' - 'ArtName'
-               String artifactString = "ARTIFACT '" + art.getArtId() + "' - '" + art.getName() + "'\n";
+               String artifactString = "ARTIFACT '" + art.getIdString() + "' - '" + art.getName() + "'\n";
                content.append(artifactString);
             }
          }

@@ -90,7 +90,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
          ArtifactEvent artifactEvent = new ArtifactEvent(TransactionToken.valueOf(change.getTx(), branch));
 
          for (Artifact artifact : artifacts) {
-            WordArtifactChange artChange = change.getWordArtifactChange(artifact.getArtId());
+            WordArtifactChange artChange = change.getWordArtifactChange(artifact.getId());
             if (artChange != null) {
                artifact.reloadAttributesAndRelations();
                Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);

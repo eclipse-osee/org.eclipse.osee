@@ -77,12 +77,12 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                   if (firstArtifact == null) {
                      throw new OseeCoreException("Must make a selection");
                   }
-                  int teamId = firstArtifact.getArtId();
+                  Long teamId = firstArtifact.getId();
 
                   for (String name : ed.getEntry().split(",")) {
                      newSprint.setName(name);
                      newSprint.setTeamId(teamId);
-                     Response response = ageilEp.createSprint(new Long(teamId), newSprint);
+                     Response response = ageilEp.createSprint(teamId, newSprint);
                      JaxAgileSprint sprint = null;
                      if (response != null) {
                         sprint = response.readEntity(JaxAgileSprint.class);

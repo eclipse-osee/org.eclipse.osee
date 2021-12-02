@@ -122,10 +122,10 @@ public final class ChangeManager {
    public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) {
       HashCollection<Artifact, TransactionId> transactionMap = new HashCollection<>();
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
-         CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
+         CompositeKeyHashMap<Long, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
          for (Artifact artifact : artifacts) {
             BranchId branch = artifact.getBranch();
-            artifactMap.put(artifact.getArtId(), branch, artifact);
+            artifactMap.put(artifact.getId(), branch, artifact);
             TransactionId transaction = TransactionManager.getHeadTransaction(branch);
             joinQuery.add(branch, artifact, transaction, branch.getViewId());
 
@@ -144,7 +144,7 @@ public final class ChangeManager {
                joinQuery.getQueryId());
             while (chStmt.next()) {
                BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-               Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
+               Artifact artifact = artifactMap.get(chStmt.getLong("art_id"), branch);
                transactionMap.put(artifact, TransactionId.valueOf(chStmt.getLong("transaction_id")));
             }
          } finally {
@@ -163,9 +163,9 @@ public final class ChangeManager {
    public static HashCollection<Artifact, BranchId> getModifingBranches(Collection<Artifact> artifacts) {
       HashCollection<Artifact, BranchId> branchMap = new HashCollection<>();
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
-         CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
+         CompositeKeyHashMap<Long, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
          for (Artifact artifact : artifacts) {
-            artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
+            artifactMap.put(artifact.getId(), artifact.getBranch(), artifact);
             // for each combination of artifact and all working branches in its hierarchy
             for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED,
                BranchType.WORKING)) {
@@ -184,7 +184,7 @@ public final class ChangeManager {
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
                   BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-                  Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), BranchManager.getParentBranch(branch));
+                  Artifact artifact = artifactMap.get(chStmt.getLong("art_id"), BranchManager.getParentBranch(branch));
                   branchMap.put(artifact, branch);
                }
             }
