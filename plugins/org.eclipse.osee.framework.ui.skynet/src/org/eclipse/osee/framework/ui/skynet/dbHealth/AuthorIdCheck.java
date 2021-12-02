@@ -17,6 +17,8 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -56,29 +58,28 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
 
-         Set<Integer> authors = new HashSet<>();
+         Set<ArtifactId> authors = new HashSet<>();
          JdbcStatement chStmt1 = ConnectionHandler.getStatement();
          try {
             chStmt1.runPreparedQuery(GET_AUTHOR_IDS);
             while (chStmt1.next()) {
                checkForCancelledStatus(monitor);
-               int author = chStmt1.getInt("author");
-               authors.add(author);
+               authors.add(ArtifactId.valueOf(chStmt1.getLong("author")));
             }
          } finally {
             chStmt1.close();
          }
          int num = 0;
          StringBuffer infoSb = new StringBuffer(500);
-         for (Integer author : authors) {
+         for (ArtifactId author : authors) {
             System.out.println(String.format("Processing [%d] %d/%d...", author, num++, authors.size()));
-            if (author == 0) {
+            if (author.isInvalid()) {
                rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
-                  "Warning: Skipping author == 0; this is ok, but may want to change in future"));
+                  "Warning: Skipping author < 1; this is ok, but may want to change in future"));
                continue;
             }
             try {
-               Artifact artifact = ArtifactQuery.getArtifactFromId(author, COMMON);
+               Artifact artifact = ArtifactQuery.getArtifactOrNull(author, COMMON, DeletionFlag.INCLUDE_DELETED);
                if (artifact == null) {
                   rd.addRaw(
                      AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author), "Error: Artifact Not Found"));
@@ -113,7 +114,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
       }
    }
 
-   private static void updateTxAuthor(int author) throws Exception {
+   private static void updateTxAuthor(ArtifactId author) throws Exception {
       ConnectionHandler.runPreparedUpdate(UPDATE_AUTHOR_IDS, SystemUser.OseeSystem, author);
    }
 
@@ -126,5 +127,4 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
    public String getFixDescription() {
       return "Sets all invalid authors to the \"OSEE System\" user artifact's art_id.";
    }
-
 }

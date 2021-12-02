@@ -14,7 +14,11 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -120,5 +124,9 @@ public interface Id {
 
    default boolean isGreaterThan(Id other) {
       return getId() > other.getId();
+   }
+
+   public static List<String> getIs(Collection<? extends Id> idObjects) {
+      return idObjects.stream().map(Id::getIdString).collect(Collectors.toCollection(ArrayList::new));
    }
 }

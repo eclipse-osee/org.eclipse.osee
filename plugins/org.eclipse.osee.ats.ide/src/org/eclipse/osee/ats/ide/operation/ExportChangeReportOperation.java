@@ -122,7 +122,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                      artIds.remove(ArtifactId.create(endArtifact));
                      if (debug) {
                         logf("skipping: [" + endArtifact.getName().replaceAll("%",
-                           "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getArtId() + "]");
+                           "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getIdString() + "]");
                      }
                      skippedTypes.add(endArtifact.getArtifactTypeName());
                   }

@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -113,10 +112,6 @@ public class ArtifactTypeManager {
                DeletionFlag.INCLUDE_DELETED));
          }
          if (artifacts.size() > 0) {
-            HashMap<Integer, Artifact> artifactMap = new HashMap<>();
-            for (Artifact artifact : artifacts) {
-               artifactMap.put(artifact.getArtId(), artifact);
-            }
             if (newArtifactType == null) {
                HashSet<BranchId> branches = new HashSet<>();
                for (Artifact artifact : artifacts) {
@@ -125,7 +120,7 @@ public class ArtifactTypeManager {
                throw new OseeStateException("Found %d artifact references of type [%s] on branches [%s]",
                   artifacts.size(), purgeArtifactType, branches);
             } else {
-               ChangeArtifactType.changeArtifactType(artifactMap.values(), newArtifactType, true);
+               ChangeArtifactType.changeArtifactType(artifacts, newArtifactType, true);
             }
          }
          purgeArtifactType(purgeArtifactType);

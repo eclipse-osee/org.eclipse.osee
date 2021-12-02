@@ -78,10 +78,10 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                   if (firstArtifact == null) {
                      throw new OseeCoreException("Must make a selection");
                   }
-                  int teamId = firstArtifact.getArtId();
+                  Long teamId = firstArtifact.getId();
 
                   newBacklog.setTeamId(teamId);
-                  Response response = agileEp.createBacklog(new Long(teamId), newBacklog);
+                  Response response = agileEp.createBacklog(teamId, newBacklog);
                   Object entity = null;
                   if (response != null) {
                      entity = response.readEntity(JaxAgileBacklog.class);

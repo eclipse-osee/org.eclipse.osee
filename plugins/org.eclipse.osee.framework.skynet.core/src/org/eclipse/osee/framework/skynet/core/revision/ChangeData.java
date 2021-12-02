@@ -137,7 +137,7 @@ public class ChangeData {
       Set<Artifact> artifacts = new HashSet<>();
       if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
          if (!isEmpty()) {
-            HashMap<Integer, Boolean> excludeArtifact = new HashMap<>();
+            HashMap<ArtifactId, Boolean> excludeArtifacts = new HashMap<>();
             for (Change change : changes) {
                Artifact artifact = change.getChangeArtifact();
 
@@ -145,21 +145,16 @@ public class ChangeData {
                if (artifactTypesToIgnore != null && !artifactTypesToIgnore.isEmpty()) {
                   try {
                      if (change instanceof AttributeChange) {
-                        Integer id = artifact.getArtId();
                         long typeId = change.getItemTypeId().getId();
                         AttributeTypeToken attributeType = AttributeTypeManager.getAttributeType(typeId);
-                        if (excludeArtifact.containsKey(id)) {
+                        if (excludeArtifacts.containsKey(artifact)) {
                            if (!artifactTypesToIgnore.contains(attributeType)) {
-                              if (excludeArtifact.get(id)) {
-                                 excludeArtifact.put(id, false);
+                              if (excludeArtifacts.get(artifact)) {
+                                 excludeArtifacts.put(artifact, false);
                               }
                            }
                         } else {
-                           if (artifactTypesToIgnore.contains(attributeType)) {
-                              excludeArtifact.put(id, true);
-                           } else {
-                              excludeArtifact.put(id, false);
-                           }
+                           excludeArtifacts.put(artifact, artifactTypesToIgnore.contains(attributeType));
                         }
                      }
                   } catch (OseeTypeDoesNotExist ex) {
@@ -190,8 +185,7 @@ public class ChangeData {
             if (artifactTypesToIgnore != null && !artifactTypesToIgnore.isEmpty()) {
                Set<Artifact> excludeList = new HashSet<>();
                for (Artifact artifactToCheck : artifacts) {
-                  Integer id = artifactToCheck.getArtId();
-                  Boolean remove = excludeArtifact.get(id);
+                  Boolean remove = excludeArtifacts.get(artifactToCheck);
                   if (remove != null) {
                      if (remove) {
                         excludeList.add(artifactToCheck);

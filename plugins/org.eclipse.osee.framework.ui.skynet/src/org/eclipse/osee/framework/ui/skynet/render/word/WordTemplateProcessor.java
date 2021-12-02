@@ -727,7 +727,7 @@ public class WordTemplateProcessor {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 
                   if (includeUUIDs) {
-                     String UUIDtext = String.format(" <UUID = %s>", artifact.getArtId());
+                     String UUIDtext = String.format(" <UUID = %s>", artifact.getIdString());
                      headingText = headingText.concat(UUIDtext);
                   }
 

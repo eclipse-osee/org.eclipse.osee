@@ -141,7 +141,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          }
       }
       for (AbstractWorkflowArtifact awa : awas) {
-         updateItem.getIds().add(Long.valueOf(awa.getArtId()));
+         updateItem.getIds().add(awa.getId());
       }
 
       try {

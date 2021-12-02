@@ -85,7 +85,7 @@ public class CatchValidationChecks implements CommitAction {
                @Override
                public void run() {
                   if (MessageDialog.openConfirm(Displays.getActiveShell(), "Override State Validation",
-                     status.getMessage() + " [" + artifactChanged.getName() + "(" + artifactChanged.getArtId() + ")]" //
+                     status.getMessage() + " [" + artifactChanged.getName() + "(" + artifactChanged.getIdString() + ")]" //
                         + "\n\nYou are set as Admin, OVERRIDE this?")) {
                      adminOverride.setValue(true);
                   } else {
@@ -98,7 +98,7 @@ public class CatchValidationChecks implements CommitAction {
    }
 
    private String getArtifactErrorMessage(Artifact artifact) {
-      return String.format("Error validating: [(%s)(%s) - %s] on branchUuid:[%s]", artifact.getArtId(),
+      return String.format("Error validating: [(%s)(%s) - %s] on branchUuid:[%s]", artifact.getIdString(),
          artifact.getGuid(), artifact.getName(), artifact.getBranch());
    }
 

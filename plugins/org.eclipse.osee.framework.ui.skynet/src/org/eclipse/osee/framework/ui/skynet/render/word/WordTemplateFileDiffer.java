@@ -126,7 +126,7 @@ public final class WordTemplateFileDiffer {
    private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta) {
 
       Collection<ArtifactDelta> artifactDeltas = new ArrayList<>();
-      Set<Integer> addedIds = new HashSet<>();
+      Set<ArtifactId> addedIds = new HashSet<>();
       Set<ArtifactId> changeIds = new HashSet<>(changes.size());
       for (Change change : changes) {
          changeIds.add(change.getArtId());
@@ -134,26 +134,24 @@ public final class WordTemplateFileDiffer {
       BranchId endBranch = txDelta.getEndTx().getBranch();
       // loop through all artifacts that are on the IS branch
       for (Artifact art : endArtifacts) {
-         Integer artId = art.getArtId();
          if (changeIds.contains(art)) {
             // If there is a change on the IS branch
             Change newChange = findChange(art, changes);
             if (newChange != null && !newChange.getChangeItem().getChangeType().isRelationChange() && !addedIds.contains(
-               artId)) {
+               art)) {
                artifactDeltas.add(newChange.getDelta());
-               addedIds.add(artId);
+               addedIds.add(art);
             }
             // If artifact on the old branch didn't exist then return the entire artifact as a diff
          } else if (ArtifactQuery.checkArtifactFromId(art, endBranch) == null) {
             // Return the current artifact as being new
             artifactDeltas.add(new ArtifactDelta(txDelta, null, art));
-            addedIds.add(artId);
+            addedIds.add(art);
          } else {
             // No change to this artifact, so show the WAS version as is.
             Artifact wasArt = ArtifactQuery.getArtifactFromId(art, endBranch);
             artifactDeltas.add(new ArtifactDelta(txDelta, wasArt, wasArt, wasArt));
-            addedIds.add(artId);
-
+            addedIds.add(art);
          }
       }
 
