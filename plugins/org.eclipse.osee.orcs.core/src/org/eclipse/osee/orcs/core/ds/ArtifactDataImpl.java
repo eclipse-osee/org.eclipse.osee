@@ -71,7 +71,7 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl<ArtifactTypeToken>
 
    @Override
    public Long getId() {
-      return getLocalId().longValue();
+      return getLocalId().getId();
    }
 
    @Override

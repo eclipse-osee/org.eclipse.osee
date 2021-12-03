@@ -17,9 +17,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -65,20 +68,20 @@ public class ComodificationCheck implements TransactionProcessor {
    private final class OnLoadChecker extends LoadDataHandlerAdapter implements OrcsVisitor {
 
       private final Map<ArtifactId, ArtifactData> artifacts = new HashMap<>();
-      private final Map<Integer, AttributeData> attributes = new HashMap<>();
-      private final Map<Integer, RelationData> relations = new HashMap<>();
-      private final Map<Integer, TupleData> tuples = new HashMap<>();
-      private final Map<Integer, BranchCategoryData> categories = new HashMap<>();
+      private final Map<AttributeId, AttributeData<?>> attributes = new HashMap<>();
+      private final Map<RelationId, RelationData> relations = new HashMap<>();
+      private final Map<Id, TupleData> tuples = new HashMap<>();
+      private final Map<Id, BranchCategoryData> categories = new HashMap<>();
 
       public Collection<ArtifactId> getArtifactIds() {
          return artifacts.keySet();
       }
 
-      public Collection<Integer> getAttributeIds() {
+      public Collection<AttributeId> getAttributeIds() {
          return attributes.keySet();
       }
 
-      public Collection<Integer> getRelationIds() {
+      public Collection<RelationId> getRelationIds() {
          return relations.keySet();
       }
 
@@ -101,14 +104,14 @@ public class ComodificationCheck implements TransactionProcessor {
       @Override
       public <T> void visit(AttributeData<T> data) {
          if (data.getVersion().isInStorage()) {
-            attributes.put(data.getLocalId(), data);
+            attributes.put(AttributeId.valueOf(data.getId()), data);
          }
       }
 
       @Override
       public void visit(RelationData data) {
          if (data.getVersion().isInStorage()) {
-            relations.put(data.getLocalId(), data);
+            relations.put(RelationId.valueOf(data.getId()), data);
          }
       }
 
@@ -119,19 +122,19 @@ public class ComodificationCheck implements TransactionProcessor {
 
       @Override
       public void onData(ArtifactData data) {
-         ArtifactData modified = artifacts.get(data.getLocalId());
+         ArtifactData modified = artifacts.get(ArtifactId.valueOf(data.getId()));
          checkCoModified(data, modified);
       }
 
       @Override
       public void onData(RelationData data) {
-         RelationData modified = relations.get(data.getLocalId());
+         RelationData modified = relations.get(RelationId.valueOf(data.getId()));
          checkCoModified(data, modified);
       }
 
       @Override
       public <T> void onData(AttributeData<T> data) {
-         AttributeData<T> modified = attributes.get(data.getLocalId());
+         AttributeData<?> modified = attributes.get(AttributeId.valueOf(data.getId()));
          checkCoModified(data, modified);
       }
 
@@ -142,7 +145,7 @@ public class ComodificationCheck implements TransactionProcessor {
 
       @Override
       public void visit(BranchCategoryData data) {
-         categories.put(data.getLocalId(), data);
+         categories.put(data.getBranchId(), data);
       }
 
       @Override

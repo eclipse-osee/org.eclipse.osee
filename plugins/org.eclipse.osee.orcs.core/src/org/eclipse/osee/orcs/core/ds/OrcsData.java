@@ -20,11 +20,9 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 
 public interface OrcsData<T extends Id> extends HasVersion {
 
-   void setLocalId(long localId);
-
    void setLocalId(Id id);
 
-   Integer getLocalId();
+   Id getLocalId();
 
    T getType();
 

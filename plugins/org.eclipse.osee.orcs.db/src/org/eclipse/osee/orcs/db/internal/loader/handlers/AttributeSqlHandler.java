@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
@@ -79,11 +80,11 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       writer.write(".query_id = ?");
       writer.addParameter(criteria.getQueryId());
 
-      Collection<Integer> ids = criteria.getIds();
+      Collection<AttributeId> ids = criteria.getIds();
       if (!ids.isEmpty()) {
          writer.write(" AND ");
          if (ids.size() > 1) {
-            joinIdQuery = writer.writeIdJoin(ids);
+            joinIdQuery = writer.writeJoin(ids);
             writer.write(attrAlias);
             writer.write(".attr_id = ");
             writer.write(jIdAlias);

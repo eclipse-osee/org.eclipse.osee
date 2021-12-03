@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -124,7 +125,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateTxValues(data);
             if (!isApplicOnly && !reuseGamma) {
                updateGamma(data);
-               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getVersion().getGammaId(), data.getType(),
+               addRow(SqlOrderEnum.ARTIFACTS, data.getId(), data.getVersion().getGammaId(), data.getType(),
                   data.getGuid());
             }
             addTxs(SqlOrderEnum.ARTIFACTS, data);
@@ -146,9 +147,9 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
             if (data.isInvalid()) {
                int id = idManager.getNextAttributeId();
-               data.setLocalId(id);
+               data.setLocalId(Id.valueOf(id));
             }
-            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getVersion().getGammaId(), data.getArtifactId(),
+            addRow(SqlOrderEnum.ATTRIBUTES, data.getId(), data.getVersion().getGammaId(), data.getArtifactId(),
                data.getType(), dataProxy.getStorageString(), dataProxy.getUri());
          }
          addTxs(SqlOrderEnum.ATTRIBUTES, data);
@@ -261,10 +262,10 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateGamma(data);
             if (data.isInvalid()) {
                int id = idManager.getNextRelationId();
-               data.setLocalId(id);
+               data.setLocalId(Id.valueOf(id));
             }
             addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtIdA(), data.getArtIdB(),
-               data.getVersion().getGammaId(), data.getLocalId(), data.getRationale());
+               data.getVersion().getGammaId(), data.getId(), data.getRationale());
          }
          addTxs(SqlOrderEnum.RELATIONS, data);
       }

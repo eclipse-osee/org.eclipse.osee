@@ -15,7 +15,9 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -62,13 +64,9 @@ public interface DataLoader extends Loader {
 
    //////////// IDS
 
-   DataLoader withAttributeIds(int... attributeIds);
+   DataLoader withAttributeIds(Collection<AttributeId> attributeIds);
 
-   DataLoader withAttributeIds(Collection<Integer> attributeIds);
-
-   DataLoader withRelationIds(int... relationIds);
-
-   DataLoader withRelationIds(Collection<Integer> relationIds);
+   DataLoader withRelationIds(Collection<RelationId> relationIds);
 
    ///////// TYPES
 

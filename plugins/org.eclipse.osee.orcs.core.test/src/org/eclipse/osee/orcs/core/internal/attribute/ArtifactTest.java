@@ -106,7 +106,7 @@ public class ArtifactTest {
       when(branch.getId()).thenReturn(24234L);
       when(branch.getName()).thenReturn("branch");
       when(artifactData.getType()).thenReturn(artifactType);
-      when(artifactData.getLocalId()).thenReturn(0);
+      when(artifactData.getId()).thenReturn(0L);
 
       when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
       when(deleted.isDeleted()).thenReturn(true);

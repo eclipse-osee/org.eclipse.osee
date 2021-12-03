@@ -15,7 +15,8 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -34,7 +35,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    private String relationAlias;
    private String txsAlias;
 
-   private Collection<Long> typeIds;
+   private Collection<RelationTypeToken> typeIds;
    private AbstractJoinQuery joinIdQuery;
    private AbstractJoinQuery joinTypeQuery;
 
@@ -72,10 +73,10 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
-   private Collection<Long> getLocalTypeIds() {
-      Collection<Long> toReturn = new HashSet<>();
-      for (Id type : criteria.getTypes()) {
-         toReturn.add(type.getId());
+   private Collection<RelationTypeToken> getLocalTypeIds() {
+      Collection<RelationTypeToken> toReturn = new HashSet<>();
+      for (RelationTypeToken type : criteria.getTypes()) {
+         toReturn.add(type);
       }
       return toReturn;
    }
@@ -89,11 +90,11 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       writer.write(".query_id = ?");
       writer.addParameter(criteria.getQueryId());
 
-      Collection<Integer> ids = criteria.getIds();
+      Collection<RelationId> ids = criteria.getIds();
       if (!ids.isEmpty()) {
          writer.write(" AND ");
          if (ids.size() > 1) {
-            joinIdQuery = writer.writeIdJoin(ids);
+            joinIdQuery = writer.writeJoin(ids);
             writer.write(relationAlias);
             writer.write(".rel_link_id = ");
             writer.write(jIdAlias);
@@ -111,7 +112,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       if (!typeIds.isEmpty()) {
          writer.write(" AND ");
          if (typeIds.size() > 1) {
-            joinTypeQuery = writer.writeIdJoin(typeIds);
+            joinTypeQuery = writer.writeJoin(ids);
             writer.write(relationAlias);
             writer.write(".rel_link_type_id = ");
             writer.write(jTypeIdAlias);

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -152,7 +153,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    private <T> AttributeData<T> createAttributeFromRow(VersionData version, int id, AttributeTypeGeneric<?> attributeType, ModificationType modType, AttributeTypeToken baseAttributeType, ModificationType baseModType, ArtifactId artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
       AttributeData<T> data = new AttributeDataImpl<>(version);
-      data.setLocalId(id);
+      data.setLocalId(Id.valueOf(id));
       data.setType(attributeType);
       data.setBaseType(baseAttributeType);
       data.setModType(modType);
@@ -165,7 +166,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    private RelationData createRelationData(VersionData version, Integer id, RelationTypeToken relationType, ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
-      data.setLocalId(id);
+      data.setLocalId(Id.valueOf(id));
       data.setType(relationType);
       data.setBaseType(baseRelationType);
       data.setModType(modType);
@@ -182,7 +183,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    @Override
    public RelationData createCopy(RelationData source) {
       VersionData newVersion = createCopy(source.getVersion());
-      return createRelationData(newVersion, source.getLocalId(), source.getType(), source.getModType(),
+      return createRelationData(newVersion, source.getIdIntValue(), source.getType(), source.getModType(),
          source.getBaseType(), source.getBaseModType(), source.getArtifactIdA(), source.getArtifactIdB(),
          source.getRationale(), source.getApplicabilityId());
    }

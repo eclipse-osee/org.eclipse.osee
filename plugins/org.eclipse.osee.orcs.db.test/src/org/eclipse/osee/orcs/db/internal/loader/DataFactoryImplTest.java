@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -116,7 +117,7 @@ public class DataFactoryImplTest {
 
       // ARTIFACT
       artData = new ArtifactDataImpl(verData);
-      artData.setLocalId(SHARED_ID);
+      artData.setLocalId(Id.valueOf(SHARED_ID));
       artData.setModType(ModificationType.MODIFIED);
       artData.setType(Artifact);
       artData.setBaseModType(ModificationType.NEW);
@@ -124,7 +125,7 @@ public class DataFactoryImplTest {
 
       // ATTRIBUTE
       when(attrData.getVersion()).thenReturn(verData);
-      when(attrData.getLocalId()).thenReturn(SHARED_ID.intValue());
+      when(attrData.getIdIntValue()).thenReturn(SHARED_ID.intValue());
       when(attrData.getId()).thenReturn(SHARED_ID);
 
       when(attrData.getIdIntValue()).thenReturn(SHARED_ID.intValue());
@@ -145,7 +146,7 @@ public class DataFactoryImplTest {
 
       // RELATION
       relData = new RelationDataImpl(verData);
-      relData.setLocalId(SHARED_ID.intValue());
+      relData.setLocalId(Id.valueOf(SHARED_ID));
       relData.setModType(ModificationType.MODIFIED);
       relData.setType(Design_Design);
       relData.setBaseModType(ModificationType.NEW);
@@ -267,7 +268,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
+      Assert.assertTrue("local id must be valid", actual.getId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(Design_Design, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
