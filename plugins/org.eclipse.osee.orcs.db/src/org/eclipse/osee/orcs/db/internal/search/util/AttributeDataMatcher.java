@@ -55,7 +55,7 @@ public class AttributeDataMatcher {
    }
 
    public List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
-      logger.debug("Attribute Data match for attr[%s] - [%s]", data.getLocalId(), valuesToMatch);
+      logger.debug("Attribute Data match for attr[%s] - [%s]", data.getId(), valuesToMatch);
       if (Conditions.hasValues(options)) {
          return matchTokenizedValue(cancellation, data, valuesToMatch, typesFilter, options);
       } else {
@@ -98,8 +98,7 @@ public class AttributeDataMatcher {
                }
                return matched;
             } catch (Exception ex) {
-               logger.error(ex, "Error searching attrId [%d] gamma [%d]", data.getLocalId(),
-                  data.getVersion().getGammaId());
+               logger.error(ex, "Error searching attrId [%d] gamma [%d]", data.getId(), data.getVersion().getGammaId());
             }
          }
       }

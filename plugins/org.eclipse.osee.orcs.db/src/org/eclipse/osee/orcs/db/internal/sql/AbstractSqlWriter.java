@@ -226,8 +226,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeTxBranchFilter(String txsAlias) {
       boolean allowDeleted =
-         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(
-            getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
+         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(getOptions())
+            || OptionsUtil.areDeletedRelationsIncluded(getOptions());
       writeTxBranchFilter(txsAlias, allowDeleted);
    }
 
@@ -505,13 +505,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public IdJoinQuery writeJoin(Collection<? extends Id> ids) {
-      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      joinQuery.addAll(ids);
-      addJoin(joinQuery);
-      return joinQuery;
-   }
-
-   public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
       joinQuery.addAll(ids);
       addJoin(joinQuery);

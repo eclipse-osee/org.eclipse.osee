@@ -16,10 +16,11 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -44,10 +45,10 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 public class DataLoaderImpl implements DataLoader {
 
-   private final Collection<Integer> attributeIds = new HashSet<>();
+   private final Collection<AttributeId> attributeIds = new HashSet<>();
    private final Collection<AttributeTypeId> attributeTypes = new HashSet<>();
 
-   private final Collection<Integer> relationIds = new HashSet<>();
+   private final Collection<RelationId> relationIds = new HashSet<>();
    private final Collection<RelationTypeToken> relationTypes = new HashSet<>();
 
    private final Log logger;
@@ -222,33 +223,15 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader withAttributeIds(int... attributeIds) {
-      return withAttributeIds(toCollection(attributeIds));
-   }
-
-   @Override
-   public DataLoader withAttributeIds(Collection<Integer> attributeIds) {
+   public DataLoader withAttributeIds(Collection<AttributeId> attributeIds) {
       this.attributeIds.addAll(attributeIds);
       return this;
    }
 
    @Override
-   public DataLoader withRelationIds(int... relationIds) {
-      return withRelationIds(toCollection(relationIds));
-   }
-
-   @Override
-   public DataLoader withRelationIds(Collection<Integer> relationIds) {
+   public DataLoader withRelationIds(Collection<RelationId> relationIds) {
       this.relationIds.addAll(relationIds);
       return this;
-   }
-
-   private Collection<Integer> toCollection(int... ids) {
-      Set<Integer> toReturn = new HashSet<>();
-      for (Integer id : ids) {
-         toReturn.add(id);
-      }
-      return toReturn;
    }
 
    private <T> Collection<T> copy(Collection<T> source) {

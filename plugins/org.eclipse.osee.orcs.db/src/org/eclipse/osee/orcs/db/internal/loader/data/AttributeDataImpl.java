@@ -83,6 +83,6 @@ public class AttributeDataImpl<T> extends OrcsVersionedObjectImpl<AttributeTypeT
 
    @Override
    public Long getId() {
-      return getLocalId().longValue();
+      return getLocalId().getId();
    }
 }

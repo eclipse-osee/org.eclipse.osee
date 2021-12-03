@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.db.internal.loader.criteria;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
@@ -22,17 +23,17 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
  */
 public class CriteriaAttribute extends CriteriaArtifact {
 
-   private final Collection<Integer> ids;
+   private final Collection<AttributeId> ids;
    private final Collection<? extends AttributeTypeId> types;
 
-   public CriteriaAttribute(Collection<Integer> ids, Collection<? extends AttributeTypeId> types) {
+   public CriteriaAttribute(Collection<AttributeId> ids, Collection<? extends AttributeTypeId> types) {
       super();
       this.ids = ids;
       this.types = types;
    }
 
-   public Collection<Integer> getIds() {
-      return ids != null ? ids : Collections.<Integer> emptyList();
+   public Collection<AttributeId> getIds() {
+      return ids != null ? ids : Collections.<AttributeId> emptyList();
    }
 
    public Collection<? extends AttributeTypeId> getTypes() {

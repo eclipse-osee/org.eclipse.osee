@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  * @author Roberto E. Escobar
  */
 public abstract class OrcsVersionedObjectImpl<T extends Id> implements OrcsData<T> {
-   private Integer localId = Id.SENTINEL.intValue();
+   private Id localId = Id.valueOf(Id.SENTINEL);
    private T type;
    private T baseType;
 
@@ -167,7 +167,7 @@ public abstract class OrcsVersionedObjectImpl<T extends Id> implements OrcsData<
          }
          return true;
       } else if (obj instanceof Id) {
-         return ((Id) obj).getId().equals(getLocalId().longValue());
+         return ((Id) obj).equals(getLocalId());
       }
       return false;
    }
@@ -178,17 +178,12 @@ public abstract class OrcsVersionedObjectImpl<T extends Id> implements OrcsData<
    }
 
    @Override
-   public Integer getLocalId() {
+   public Id getLocalId() {
       return localId;
    }
 
    @Override
-   public void setLocalId(long localId) {
-      this.localId = (int) localId;
-   }
-
-   @Override
    public void setLocalId(Id id) {
-      this.localId = id.getIdIntValue();
+      this.localId = id;
    }
 }

@@ -116,7 +116,7 @@ public class AttributeFactoryTest {
 
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(true);
-      when(attributeData.getLocalId()).thenReturn(12345);
+      when(attributeData.getId()).thenReturn(12345L);
 
       when(dataFactory.introduce(COMMON, attributeData)).thenReturn(introducedAttributeData);
       when(introducedAttributeData.getType()).thenReturn(attributeType);

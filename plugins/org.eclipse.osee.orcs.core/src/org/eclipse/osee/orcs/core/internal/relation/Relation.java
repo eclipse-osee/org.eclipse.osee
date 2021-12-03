@@ -166,7 +166,7 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
 
    @Override
    public Long getId() {
-      return Long.valueOf(getOrcsData().getLocalId());
+      return Long.valueOf(getOrcsData().getId());
    }
 
    @Override

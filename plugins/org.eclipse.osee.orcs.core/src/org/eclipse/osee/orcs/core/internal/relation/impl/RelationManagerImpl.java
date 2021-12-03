@@ -502,7 +502,7 @@ public class RelationManagerImpl implements RelationManager {
          for (Relation sourceRel : sourceAdjacencies.getAll()) {
             if (validRelationTypes.contains(sourceRel.getRelationType())) {
                Relation destinationRel =
-                  findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData().getLocalId());
+                  findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData().getIdIntValue());
                Relation introduceRelation = relationFactory.introduce(branch, sourceRel.getOrcsData());
                if (destinationRel != null) {
                   destinationRel.setOrcsData(introduceRelation.getOrcsData());
@@ -527,7 +527,7 @@ public class RelationManagerImpl implements RelationManager {
 
    private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, Integer id) {
       for (Relation rel : adjacencies.getAll()) {
-         if (id.equals(rel.getOrcsData().getLocalId())) {
+         if (id.equals(rel.getOrcsData().getIdIntValue())) {
             return rel;
          }
       }

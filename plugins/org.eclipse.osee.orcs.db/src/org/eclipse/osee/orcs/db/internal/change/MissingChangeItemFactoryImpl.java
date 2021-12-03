@@ -220,7 +220,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ChangeItem createArtifactChangeItem(ArtifactData data) {
       ApplicabilityId appId = data.getApplicabilityId();
-      ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()), data.getType(),
+      ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getId()), data.getType(),
          data.getVersion().getGammaId(), determineModType(data), getApplicabilityToken(appId),
          TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getBranch()));
       return artChange;
@@ -238,7 +238,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ChangeItem createRelationChangeItem(RelationData data) {
       ApplicabilityId appId = data.getApplicabilityId();
-      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId().longValue()), data.getType(),
+      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getId().longValue()), data.getType(),
          data.getVersion().getGammaId(), determineModType(data), data.getArtifactIdA(), data.getArtifactIdB(),
          data.getRationale(), getApplicabilityToken(appId),
          TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
