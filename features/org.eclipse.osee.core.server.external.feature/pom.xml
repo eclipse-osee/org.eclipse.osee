@@ -93,6 +93,8 @@
 							   <plugin id="org.eclipse.sdk" />
 							   <feature id="org.eclipse.sdk" />
 							   <feature id="org.eclipse.wtp.capabilities.feature" />
+							   <feature id="org.eclipse.jgit.ssh.jsch" />
+							   <feature id="org.eclipse.jgit.ssh.apache" />
 							</excludes>
 						</configuration>
 					</execution>
