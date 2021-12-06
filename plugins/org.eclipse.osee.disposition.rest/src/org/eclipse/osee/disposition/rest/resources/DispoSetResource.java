@@ -37,6 +37,7 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -75,7 +76,7 @@ public class DispoSetResource {
       if (!name.isEmpty() && !importPath.isEmpty() && !dispoType.isEmpty()) {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(branch, name);
          if (isUniqueSetName) {
-            Long createdSetId = dispoApi.createDispoSet(branch, descriptor, userName);
+            ArtifactId createdSetId = dispoApi.createDispoSet(branch, descriptor, userName);
             DispoSet createdSet = dispoApi.getDispoSetById(branch, String.valueOf(createdSetId));
             status = Status.CREATED;
             response = Response.status(status).entity(createdSet).build();

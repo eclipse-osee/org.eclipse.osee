@@ -109,7 +109,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       tx.commit();
 
       ArtifactReadable groupArt = newQuery().andId(artId).getResults().getExactlyOne();
-      return new SubscriptionGroupId(groupArt.getUuid());
+      return new SubscriptionGroupId(groupArt.getId());
    }
 
    @Override

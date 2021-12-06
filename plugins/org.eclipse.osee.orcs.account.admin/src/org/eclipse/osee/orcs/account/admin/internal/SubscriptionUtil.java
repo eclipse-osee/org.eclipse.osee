@@ -33,7 +33,8 @@ public final class SubscriptionUtil {
    }
 
    public static String toEncodedUuid(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName) {
-      String rawData = String.format("%s:%s:%s:%s", accountId.getUuid(), accountDisplayName, groupId, subscriptionName);
+      String rawData =
+         String.format("%s:%s:%s:%s", accountId.getIdString(), accountDisplayName, groupId, subscriptionName);
       return EncryptUtility.encrypt(rawData, SUBSCRIPTION_SECRET);
    }
 

@@ -183,10 +183,10 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public Long getSoleAttributeId(AttributeTypeToken attributeType) {
+   public AttributeId getSoleAttributeId(AttributeTypeToken attributeType) {
       List<IAttribute<?>> list = attributes.getValues(attributeType);
       ensureNotMoreThanOne(attributeType, list.size());
-      return list.iterator().next().getId();
+      return list.iterator().next();
    }
 
    @Override

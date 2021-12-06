@@ -79,7 +79,7 @@ public class AccountResource {
    public Response getSubscriptions(@Context UriInfo uriInfo) {
       URI requestUri = uriInfo.getRequestUri();
       URI uri = UriBuilder.fromUri(requestUri).path("../../../").path("subscriptions").path("for-account").path(
-         "{account-id}").build(accountId.getUuid());
+         "{account-id}").build(accountId.getIdString());
       return Response.seeOther(uri).build();
    }
 

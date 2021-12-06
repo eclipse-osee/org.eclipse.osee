@@ -27,6 +27,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -68,7 +69,7 @@ public interface DispoApi {
    // Writes
    Long createDispoProgram(String name, String userName);
 
-   Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName);
+   ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName);
 
    String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName, boolean isCi);
 

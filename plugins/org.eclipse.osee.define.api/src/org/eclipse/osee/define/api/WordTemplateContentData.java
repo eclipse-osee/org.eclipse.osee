@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
  */
 public class WordTemplateContentData {
 
-   private Long artId;
+   private ArtifactId artId;
    private BranchId branch;
    private String footer;
    private boolean isEdit;
@@ -37,11 +37,11 @@ public class WordTemplateContentData {
    private String permanentLinkUrl;
    private boolean artIsChanged;
 
-   public Long getArtId() {
+   public ArtifactId getArtId() {
       return artId;
    }
 
-   public void setArtId(Long artId) {
+   public void setArtId(ArtifactId artId) {
       this.artId = artId;
    }
 

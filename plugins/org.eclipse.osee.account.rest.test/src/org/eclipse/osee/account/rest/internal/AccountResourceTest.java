@@ -110,7 +110,7 @@ public class AccountResourceTest {
    @Test
    public void testGetSubscriptions() {
       URI uri = UriBuilder.fromPath("http://localhost:8089/oseex/accounts/{account-id}/subscriptions").build(
-         ACCOUNT_ID.getUuid());
+         ACCOUNT_ID.getIdString());
       when(uriInfo.getRequestUri()).thenReturn(uri);
 
       try (Response response = resource.getSubscriptions(uriInfo)) {
@@ -122,7 +122,7 @@ public class AccountResourceTest {
 
          URI expectedLocation =
             UriBuilder.fromUri(uri).path("..").path("..").path("..").path("subscriptions").path("for-account").path(
-               "{account-id}").build(ACCOUNT_ID.getUuid());
+               "{account-id}").build(ACCOUNT_ID.getIdString());
          assertEquals(expectedLocation, location);
       }
    }

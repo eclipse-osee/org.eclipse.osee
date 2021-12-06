@@ -21,6 +21,7 @@ import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -67,7 +68,7 @@ public interface DispoQuery {
 
    DispoConfig findDispoConfig(BranchId branch);
 
-   Long getDispoItemParentSet(BranchId branch, String itemId);
+   ArtifactId getDispoItemParentSet(BranchId branch, String itemId);
 
    HashMap<ArtifactReadable, BranchId> getCiSet(CiSetData setData);
 

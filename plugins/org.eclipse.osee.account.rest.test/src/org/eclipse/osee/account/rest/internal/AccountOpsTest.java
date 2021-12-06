@@ -318,13 +318,13 @@ public class AccountOpsTest {
       Account account = mock(Account.class);
       ResultSet<Account> result = ResultSets.singleton(account);
 
-      when(account.getId()).thenReturn(accountId.getUuid());
+      when(account.getId()).thenReturn(accountId.getId());
       when(account.isActive()).thenReturn(true);
       when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(result);
 
       AccountActiveData actual = ops.isActive(ACCOUNT_UID);
 
-      assertEquals(accountId.getUuid(), actual.getAccountId());
+      assertEquals(accountId.getId(), actual.getAccountId());
       assertEquals(true, actual.isActive());
       verify(accountAdmin).getAccountById(ACCOUNT_UID);
    }
@@ -379,7 +379,7 @@ public class AccountOpsTest {
 
    private static Account mockAccount(ArtifactId id, String name, String email, String username, boolean active) {
       Account account = Mockito.mock(Account.class);
-      when(account.getId()).thenReturn(id.getUuid());
+      when(account.getId()).thenReturn(id.getId());
       when(account.getName()).thenReturn(name);
       when(account.getEmail()).thenReturn(email);
       when(account.getUserName()).thenReturn(username);

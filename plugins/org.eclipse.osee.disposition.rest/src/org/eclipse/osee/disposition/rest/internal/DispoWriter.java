@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.OperationReport;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 
@@ -28,7 +29,7 @@ public interface DispoWriter {
 
    Long createDispoProgram(UserId author, String name);
 
-   Long createDispoSet(UserId author, BranchId branch, DispoSet descriptor);
+   ArtifactId createDispoSet(UserId author, BranchId branch, DispoSet descriptor);
 
    void updateDispoSet(UserId author, BranchId branch, String dispoSetId, DispoSet data);
 

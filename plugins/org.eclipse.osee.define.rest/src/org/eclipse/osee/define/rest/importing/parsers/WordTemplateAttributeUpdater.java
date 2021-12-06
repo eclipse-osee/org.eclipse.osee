@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -35,7 +34,7 @@ public class WordTemplateAttributeUpdater {
 
    public XResultData replaceAttribute(OrcsApi orcsApi, BranchId branch, XResultData results, String source, ArtifactId artToUpdate) {
       ArtifactReadable art = orcsApi.getQueryFactory().fromBranch(branch).andId(artToUpdate).asArtifact();
-      AttributeId attrId = AttributeId.valueOf(art.getSoleAttributeId(CoreAttributeTypes.WordTemplateContent));
+      AttributeId attrId = art.getSoleAttributeId(CoreAttributeTypes.WordTemplateContent);
       if (art.isValid()) {
          String newWordTemplateContent = parseContentFromFile(source, results);
          if (results.isErrors()) {

@@ -69,7 +69,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue);
 
-   Long getSoleAttributeId(AttributeTypeToken attributeType);
+   AttributeId getSoleAttributeId(AttributeTypeToken attributeType);
 
    Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue);
 

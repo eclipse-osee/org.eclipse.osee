@@ -101,7 +101,7 @@ public class AccountAdminImplTest {
       accountAdmin.setAuthenticationAdmin(authenticationAdmin);
       accountAdmin.start(Collections.<String, Object> emptyMap());
 
-      when(account.getId()).thenReturn(newAccountId.getUuid());
+      when(account.getId()).thenReturn(newAccountId.getId());
       when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
    }
 

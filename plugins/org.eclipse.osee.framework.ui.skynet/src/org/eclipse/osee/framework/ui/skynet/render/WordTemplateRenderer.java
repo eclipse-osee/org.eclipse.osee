@@ -190,7 +190,7 @@ public class WordTemplateRenderer extends WordRenderer {
          }
 
          WordTemplateContentData wtcData = new WordTemplateContentData();
-         wtcData.setArtId(artifact.getUuid());
+         wtcData.setArtId(artifact);
          wtcData.setBranch(artifact.getBranch());
          wtcData.setFooter(presentationType != PresentationType.SPECIALIZED_EDIT ? footer : "");
          wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);

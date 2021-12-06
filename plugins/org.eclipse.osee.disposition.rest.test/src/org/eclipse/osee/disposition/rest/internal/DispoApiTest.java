@@ -39,6 +39,7 @@ import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.TmoImporter;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.LisFileParser;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -110,7 +111,7 @@ public class DispoApiTest {
    @Mock
    private OrcsApi orcsApi;
 
-   private final Long mockArtId = 2351315L;
+   private final ArtifactId mockArtId = ArtifactId.valueOf(2351315L);
 
    DispoApiImpl dispoApi = new DispoApiImpl();
 
@@ -274,7 +275,7 @@ public class DispoApiTest {
       when(dataFactory.creteSetDataFromDescriptor(descriptor)).thenReturn(setFromDescriptor);
 
       when(storage.createDispoSet(author, branch, setFromDescriptor)).thenReturn(mockArtId);
-      Long createDispoSetId = dispoApi.createDispoSet(branch, descriptor, author.getIdString());
+      ArtifactId createDispoSetId = dispoApi.createDispoSet(branch, descriptor, author.getIdString());
       assertEquals(mockArtId, createDispoSetId);
    }
 

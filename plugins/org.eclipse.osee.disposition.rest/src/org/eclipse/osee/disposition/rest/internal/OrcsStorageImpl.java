@@ -207,7 +207,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Long createDispoSet(UserId author, BranchId branch, DispoSet descriptor) {
+   public ArtifactId createDispoSet(UserId author, BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoOseeTypes.DispositionSet, descriptor.getName());
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportPath, descriptor.getImportPath());
@@ -225,7 +225,7 @@ public class OrcsStorageImpl implements Storage {
       }
 
       tx.commit();
-      return creatdArtId.getUuid();
+      return creatdArtId;
    }
 
    @Override
@@ -614,9 +614,9 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Long getDispoItemParentSet(BranchId branch, String itemId) {
+   public ArtifactId getDispoItemParentSet(BranchId branch, String itemId) {
       ArtifactReadable artifact = findDispoArtifact(branch, itemId);
-      return artifact.getParent().getUuid();
+      return artifact.getParent();
    }
 
    @Override

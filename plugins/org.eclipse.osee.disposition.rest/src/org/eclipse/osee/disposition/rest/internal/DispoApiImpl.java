@@ -46,6 +46,7 @@ import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdapter;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -150,7 +151,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName) {
+   public ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName) {
       DispoSetData newSet = dataFactory.creteSetDataFromDescriptor(descriptor);
       UserId author = getQuery().findUserByName(userName);
       return getWriter().createDispoSet(author, branch, newSet);
@@ -274,9 +275,9 @@ public class DispoApiImpl implements DispoApi {
       Conditions.notNull(branch);
       Conditions.notNull(itemId);
 
-      Long set = getQuery().getDispoItemParentSet(branch, itemId);
+      ArtifactId set = getQuery().getDispoItemParentSet(branch, itemId);
       if (set != null) {
-         DispoSet dispoSet = getQuery().findDispoSetsById(branch, String.valueOf(set));
+         DispoSet dispoSet = getQuery().findDispoSetsById(branch, set.getIdString());
          if (dispoSet != null) {
             String importPath = dispoSet.getImportPath();
             String name = dispoItemToEdit.getName().replaceAll(config.getFileExtRegex(), ".LIS");
@@ -802,8 +803,8 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public DispoSet getDispoItemParentSet(BranchId branch, String itemId) {
-      Long id = getQuery().getDispoItemParentSet(branch, itemId);
-      return getDispoSetById(branch, String.valueOf(id));
+      ArtifactId id = getQuery().getDispoItemParentSet(branch, itemId);
+      return getDispoSetById(branch, id.getIdString());
    }
 
    @Override

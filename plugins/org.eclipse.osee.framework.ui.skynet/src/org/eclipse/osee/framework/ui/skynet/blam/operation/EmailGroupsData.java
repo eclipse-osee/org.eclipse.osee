@@ -121,7 +121,7 @@ public class EmailGroupsData {
       }
 
       AccountClient client = ServiceUtil.getAccountClient();
-      ResultSet<UnsubscribeInfo> results = client.getUnsubscribeUris(user.getUuid(), groupsAllowed);
+      ResultSet<UnsubscribeInfo> results = client.getUnsubscribeUris(user.getId(), groupsAllowed);
       for (UnsubscribeInfo entry : results) {
          String subscriptionName = entry.getName();
          URI unsubscribeUri = entry.getUnsubscribeUri();

@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
@@ -206,7 +205,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
    private static void writeAssignees(JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem) throws IOException, JsonGenerationException, JsonProcessingException {
       AttributeReadable<Object> attr =
-         action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(AtsAttributeTypes.CurrentState)));
+         action.getAttributeById(action.getSoleAttributeId(AtsAttributeTypes.CurrentState));
       writer.writeArrayFieldStart("AssigneesTokens");
       for (AtsUser assignee : workItem.getStateMgr().getAssignees()) {
          writer.writeStartObject();
@@ -223,8 +222,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       String attrValue = action.getSoleAttributeAsString(attrType, "");
       GammaId gammaId = GammaId.SENTINEL;
       if (Strings.isValid(attrValue)) {
-         AttributeReadable<Object> attr =
-            action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(attrType)));
+         AttributeReadable<Object> attr = action.getAttributeById(action.getSoleAttributeId(attrType));
          gammaId = attr.getGammaId();
       }
       writer.writeObjectField("value", attrValue);
@@ -235,7 +233,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    private static void writeState(JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem) throws IOException, JsonGenerationException, JsonProcessingException {
       writer.writeObjectFieldStart("State");
       AttributeReadable<Object> attr =
-         action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(AtsAttributeTypes.CurrentState)));
+         action.getAttributeById(action.getSoleAttributeId(AtsAttributeTypes.CurrentState));
       writer.writeObjectField("value", workItem.getStateMgr().getCurrentStateName());
       writer.writeNumberField("gammaId", attr.getGammaId().getId());
       writer.writeEndObject();
