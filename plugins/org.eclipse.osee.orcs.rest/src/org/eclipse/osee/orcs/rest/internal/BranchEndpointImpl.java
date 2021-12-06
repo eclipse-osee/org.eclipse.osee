@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -43,6 +42,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonAttribute;
 import org.eclipse.osee.framework.core.data.JsonRelation;
@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -78,7 +77,6 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.internal.branch.UpdateBranchOperation;
-import org.eclipse.osee.orcs.rest.internal.email.SupportEmailService;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchQueryData;
@@ -97,10 +95,8 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class BranchEndpointImpl implements BranchEndpoint {
 
    private final OrcsApi orcsApi;
-   private final IResourceManager resourceManager;
    private final ActivityLog activityLog;
    private final OrcsBranch branchOps;
-   private final SupportEmailService supportEmailService;
    private static final String OTHER_EDIT_SQL =
       "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.branch_type = ? and br.branch_state = ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
 
@@ -110,12 +106,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Context
    private HttpHeaders httpHeaders;
 
-   public BranchEndpointImpl(OrcsApi orcsApi, IResourceManager resourceManager, ActivityLog activityLog) {
+   public BranchEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.orcsApi = orcsApi;
-      this.resourceManager = resourceManager;
       this.activityLog = activityLog;
       this.branchOps = orcsApi.getBranchOps();
-      this.supportEmailService = new SupportEmailService();
    }
 
    public HttpHeaders getHeaders() {
@@ -414,9 +408,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
             Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
             executeCallable(op);
          } catch (Exception ex) {
-            supportEmailService.sendSupportEmail("Exception caught during archival of branch " + branchId.getIdString(),
-               ex.getLocalizedMessage());
-            OseeLog.log(ActivityLog.class, Level.SEVERE, ex);
+            orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.BRANCH_OPERATION, ex,
+               "Archive of branch " + branchId.getIdString());
             return asResponse(modified);
          }
          modified = true;
@@ -440,9 +433,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
             Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
             executeCallable(op);
          } catch (Exception ex) {
-            supportEmailService.sendSupportEmail(
-               "Exception caught during unarchival of branch " + branchId.getIdString(), ex.getLocalizedMessage());
-            OseeLog.log(ActivityLog.class, Level.SEVERE, ex);
+            orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.BRANCH_OPERATION, ex,
+               "Unarchive of branch " + branchId.getIdString());
             return asResponse(modified);
          }
          modified = true;

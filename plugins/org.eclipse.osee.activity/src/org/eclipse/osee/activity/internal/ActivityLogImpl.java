@@ -378,10 +378,16 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    @Override
    public Long createThrowableEntry(ActivityTypeToken type, Throwable throwable) {
+      return createThrowableEntry(type, throwable, "");
+   }
+
+   @Override
+   public Long createThrowableEntry(ActivityTypeToken type, Throwable throwable, String messageSummary) {
       Long entryId = -1L;
       if (isEnabled()) {
          try {
-            String message = captureStackTrace(throwable, exceptionLineCount);
+            String stackTrace = captureStackTrace(throwable, exceptionLineCount);
+            String message = Strings.isValid(messageSummary) ? messageSummary + ": " + stackTrace : stackTrace;
             entryId = createEntry(type, ABNORMALLY_ENDED_STATUS, message);
          } catch (Throwable th) {
             logger.error(th, "logging failed in ActivityLogImpl.createThrowableEntry");

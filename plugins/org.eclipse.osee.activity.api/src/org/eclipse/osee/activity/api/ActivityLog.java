@@ -41,6 +41,8 @@ public interface ActivityLog {
 
    Long createThrowableEntry(ActivityTypeToken type, Throwable throwable);
 
+   Long createThrowableEntry(ActivityTypeToken type, Throwable throwable, String messageSummary);
+
    boolean updateEntry(Long entryId, Integer status);
 
    /**
