@@ -65,7 +65,7 @@ public class OrcsApplication extends Application {
    public void start() {
       // Add all root resource, provider and feature instances.
       singletons.add(new BranchesResource(orcsApi));
-      singletons.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
+      singletons.add(new BranchEndpointImpl(orcsApi, activityLog));
       singletons.add(new ApplicabilityUiEndpointImpl(orcsApi));
       singletons.add(new OrcsWriterEndpointImpl(orcsApi));
       singletons.add(new TransactionEndpointImpl(orcsApi));
