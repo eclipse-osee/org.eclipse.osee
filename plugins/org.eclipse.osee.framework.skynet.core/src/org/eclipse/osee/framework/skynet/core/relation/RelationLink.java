@@ -401,12 +401,12 @@ public class RelationLink implements HasBranchId, IRelationLink {
    }
 
    @Override
-   public int getArtIdA() {
-      return 0;
+   public ArtifactId getArtIdA() {
+      return artifactA;
    }
 
    @Override
-   public int getArtIdB() {
-      return 0;
+   public ArtifactId getArtIdB() {
+      return artifactB;
    }
 }

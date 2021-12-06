@@ -175,12 +175,12 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    }
 
    @Override
-   public int getArtIdA() {
+   public ArtifactId getArtIdA() {
       return getOrcsData().getArtIdA();
    }
 
    @Override
-   public int getArtIdB() {
+   public ArtifactId getArtIdB() {
       return getOrcsData().getArtIdB();
    }
 

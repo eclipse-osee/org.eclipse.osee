@@ -27,11 +27,11 @@ public interface RelationData extends OrcsData<RelationTypeToken>, RelationId {
 
    ArtifactId getArtifactIdB();
 
-   int getArtIdA();
+   ArtifactId getArtIdA();
 
    void setArtIdA(ArtifactId artIdA);
 
-   int getArtIdB();
+   ArtifactId getArtIdB();
 
    void setArtIdB(ArtifactId artIdB);
 
