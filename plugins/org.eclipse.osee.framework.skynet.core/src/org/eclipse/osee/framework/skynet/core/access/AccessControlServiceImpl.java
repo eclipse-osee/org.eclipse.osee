@@ -53,6 +53,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
 
    // for ReviewOsgiXml public void addOseeAccessProvider(IOseeAccessProvider provider)
    // for ReviewOsgiXml public void addArtifactCheck(ArtifactCheck artifactCheck)
+   // for ReviewOsgiXml public void bindUserService(UserService userService) {
 
    private JdbcClient jdbcClient;
    private OrcsTokenService tokenService;

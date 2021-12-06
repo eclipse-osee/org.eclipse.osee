@@ -61,6 +61,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
+   // for ReviewOsgiXml public void bindUserService(UserService userService) {
 
    private PredicateFactory predicateFactory;
    private IAccessControlService accessControlService;
