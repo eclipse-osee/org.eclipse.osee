@@ -26,7 +26,6 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
 import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.ENTRY_ID;
 import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.SERVER_ID;
 import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.START_TIME;
-import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.DEFAULT_ROOT;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.THREAD_ACTIVITY;
 import java.lang.management.GarbageCollectorMXBean;
@@ -237,10 +236,10 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
    public void update(Map<String, Object> properties) {
       //@formatter:off
-      freshnessMillis = ActivityUtil.get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
-      exceptionLineCount = ActivityUtil.get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
+      freshnessMillis = get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
+      exceptionLineCount = get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
       String value = (String)properties.get(ACTIVITY_LOGGER__ENABLED);
-      int newCleanerKeepDays = ActivityUtil.get(properties, ACTIVITY_LOGGER__CLEANER_KEEP_DAYS, DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS);
+      int newCleanerKeepDays = get(properties, ACTIVITY_LOGGER__CLEANER_KEEP_DAYS, DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS);
       if (Strings.isValid(value)) {
          enabled = Boolean.valueOf(value);
       }
@@ -566,5 +565,30 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    @Override
    public Log getDebugLogger() {
       return logger;
+   }
+
+   private String captureStackTrace(Throwable ex, int linesToCapture) {
+      Throwable cause = ex;
+
+      while (cause.getCause() != null) {
+         cause = cause.getCause();
+      }
+
+      StringBuilder sb = new StringBuilder();
+      sb.append(cause.toString() + "\n");
+      StackTraceElement stackElements[] = cause.getStackTrace();
+      for (int i = 0; i < Math.min(stackElements.length, linesToCapture); i++) {
+         sb.append(stackElements[i] + "\n");
+      }
+      return sb.toString();
+   }
+
+   @SuppressWarnings("unchecked")
+   private <T> T get(Map<String, Object> properties, String key, T defaultValue) {
+      T value = properties != null ? (T) properties.get(key) : null;
+      if (value == null) {
+         value = defaultValue;
+      }
+      return value;
    }
 }
