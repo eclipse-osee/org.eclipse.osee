@@ -29,7 +29,7 @@ export class OSEEAuthHeaderInterceptor implements HttpInterceptor {
   currentUser!:user|undefined
 
   constructor (private accountService: UserDataAccountService) {
-    this.accountService.getUser().pipe(
+    this.accountService.user.pipe(
       take(1)
     ).subscribe((user) => {
       this.currentUser = user;

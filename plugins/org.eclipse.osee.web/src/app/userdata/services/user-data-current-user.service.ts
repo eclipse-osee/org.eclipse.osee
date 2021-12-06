@@ -24,7 +24,7 @@ export class UserDataCurrentUserService {
 
   private _userDisplayable: Observable<user>=this.uiStateService.userId.pipe(
     switchMap(val => iif(() => val !== '',
-    this.accountService.getUser()
+    this.accountService.user
     )),
     share()
   )

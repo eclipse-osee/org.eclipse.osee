@@ -31,6 +31,7 @@ import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enu
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
+import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -79,7 +80,7 @@ export class CurrentGraphService {
     shareReplay(1),
   )
   
-  private _preferences = combineLatest([this.routeStateService.id, this.userService.getUser()]).pipe(
+  private _preferences = combineLatest([this.routeStateService.id, this.userService.user]).pipe(
     share(),
     filter(([id, user]) => id !== "" && id !== '-1'),
     switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
@@ -90,7 +91,7 @@ export class CurrentGraphService {
     shareReplay(1)
   )
 
-  private _branchPrefs = combineLatest([this.routeStateService.id, this.userService.getUser()]).pipe(
+  private _branchPrefs = combineLatest([this.routeStateService.id, this.userService.user]).pipe(
     share(),
     switchMap(([branch,user]) => this.preferenceService.getBranchPrefs(user).pipe(
       repeatWhen(_ => this.updated),
@@ -382,9 +383,9 @@ export class CurrentGraphService {
       //not doing this currently, need to update UI to remove relation on both ends before this would work.
       if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
         let relType = change.itemTypeId as itemTypeIdRelation;
-        if (relType.id === "6039606571486514296") {
+        if (relType.id === RelationTypeId.INTERFACECONNECTIONPRIMARYNODE) {
           //sending node
-        } else if (relType.id === "6039606571486514297") {
+        } else if (relType.id === RelationTypeId.INTERFACECONNECTIONSECONDARYNODE) {
           //receiving node
         }
       }

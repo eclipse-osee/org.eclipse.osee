@@ -33,7 +33,8 @@ export class ConfigurationDropdownComponent implements OnInit {
   selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
     shareReplay({bufferSize:1,refCount:true})
   );
-  branchApplicability = this.currentBranchService.branchApplicability.pipe(share());
+  editable = this.currentBranchService.branchApplicEditable;
+  configs = this.currentBranchService.branchApplicViews;
   constructor(private uiStateService: PlConfigUIStateService, private branchService: PlConfigBranchService, private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog) { 
   }
 

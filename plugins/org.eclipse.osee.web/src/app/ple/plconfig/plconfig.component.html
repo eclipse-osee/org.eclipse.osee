@@ -14,6 +14,11 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
 <div class="pl-config">
+    <ng-container *ngIf="(isAllowedToDiff|async)">
+        <div>
+            <button mat-raised-button style="float:right" (click)="navigateToDiff()">Load Diff</button>
+        </div>
+    </ng-container>
     <plconfig-branch-type-selector (selectedType)="branchTypeSelected($event)">
     </plconfig-branch-type-selector>
     <div style="display:flex; flex-direction:row; flex-grow:1; justify-content: space-between; align-items:baseline;">

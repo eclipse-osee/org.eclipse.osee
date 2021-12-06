@@ -1,3 +1,5 @@
+import { difference } from "src/app/types/change-report/change-report";
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -15,4 +17,10 @@ export interface ExtendedNameValuePair {
     name: string,
     value:string,
     values: string[]
+}
+
+export interface ExtendedNameValuePairWithChanges extends ExtendedNameValuePair {
+    changes: {
+        value:difference
+    }
 }

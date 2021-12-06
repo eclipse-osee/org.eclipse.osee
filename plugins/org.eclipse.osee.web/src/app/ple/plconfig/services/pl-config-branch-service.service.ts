@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { BehaviorSubject, iif, Observable, of } from 'rxjs';
+import { map, share, switchMap, take, tap } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
 import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
 import { cfgGroup, PlConfigBranchListingBranch } from '../types/pl-config-branch';
@@ -21,11 +21,14 @@ import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import { configuration, configurationGroup, editConfiguration } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
 import { commitResponse, response } from '../types/pl-config-responses';
+import { NameValuePair } from '../types/base-types/NameValuePair'
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlConfigBranchService {
+  cachedBranch: string | number | undefined;
+  applicabilityTagCache = new Map<string,NameValuePair>();
 
   constructor(private http: HttpClient) { }
   public getBranches(type: string): Observable<PlConfigBranchListingBranch[]> {
@@ -86,6 +89,25 @@ export class PlConfigBranchService {
   }
   public updateConfigurationGroup(branchId: string | number | undefined, cfgGroup: ConfigurationGroupDefinition) {
     return this.http.put<response>(apiURL + '/orcs/branch/' + branchId + '/applic/cfggroup/', cfgGroup);
+  }
+  
+  public getApplicabilityToken(branchId: string | number | undefined, applicablityToken: string) {
+    if (this.cachedBranch === undefined) {
+      this.cachedBranch = branchId;
+    }
+    if (this.cachedBranch !== branchId) {
+      this.cachedBranch = branchId;
+      this.applicabilityTagCache.clear();
+    }
+    if (this.applicabilityTagCache.has(applicablityToken)) {
+      return of(this.applicabilityTagCache.get(applicablityToken) as NameValuePair)
+    } else {
+      return this.http.get<NameValuePair>(apiURL + '/orcs/branch/' + branchId + '/applic/applicabilityToken/' + applicablityToken).pipe(
+        tap((value) => {
+          this.applicabilityTagCache.set(applicablityToken,value)
+        })
+      )
+    }
   }
 }
 

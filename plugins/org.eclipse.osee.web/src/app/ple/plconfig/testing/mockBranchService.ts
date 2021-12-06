@@ -10,10 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NameValuePair } from "../types/base-types/NameValuePair"
 import { PlConfigApplicUIBranchMapping } from "../types/pl-config-applicui-branch-mapping"
 import { PlConfigBranchListingBranch } from "../types/pl-config-branch"
 
-
+export const testApplicabilityTag: NameValuePair = {
+  id: '1234',
+  name:'Test'
+}
 export const testCfgGroups = [
   {
     id: '1',

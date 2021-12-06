@@ -22,7 +22,7 @@ import { MimPreferencesService } from '../http/mim-preferences.service';
 })
 export class PreferencesUIService {
 
-  private _preferences = combineLatest([this.ui.id, this.userService.getUser()]).pipe(
+  private _preferences = combineLatest([this.ui.id, this.userService.user]).pipe(
     share(),
     filter(([id, user]) => id !== "" && id !== '-1'),
     switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
@@ -37,7 +37,7 @@ export class PreferencesUIService {
     map((x) => x.inEditMode)
   );
 
-  private _branchPrefs = combineLatest([this.ui.id, this.userService.getUser()]).pipe(
+  private _branchPrefs = combineLatest([this.ui.id, this.userService.user]).pipe(
     share(),
     switchMap(([branch, user]) => this.preferenceService.getBranchPrefs(user).pipe(
       repeatWhen(_ => this.ui.update),

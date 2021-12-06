@@ -204,6 +204,9 @@ describe('CurrentMessagesService', () => {
 
   it('should get messages,submessages with differences', () => {
     scheduler.run(({ expectObservable }) => {
+      service.difference = changeReportMock;
+      service.DiffMode = true;
+      service.branch = '10';
       const expectedValues: { a: (message | messageWithChanges)[], b: (message | messageWithChanges)[], c:(message | messageWithChanges)[],d:(message | messageWithChanges)[], e:(message | messageWithChanges)[], f:(message|messageWithChanges)[] } = {
         a: [
           {
@@ -1230,9 +1233,6 @@ describe('CurrentMessagesService', () => {
           }
         ]
       }
-      service.difference = changeReportMock;
-      service.DiffMode = true;
-      service.branch = '10';
       expectObservable(service.messages).toBe('500ms (abcdef)', expectedValues)
     })
   })

@@ -56,11 +56,17 @@ import { AddConfigurationGroupDialogComponent } from './components/add-configura
 import { ConfigGroupDialogComponent } from './components/config-group-dialog/config-group-dialog.component';
 
 import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module'
+import { DiffViewsModule } from '../diff-views/diff-views/diff-views.module';
+import { FeatureMenuComponent } from './components/menus/feature-menu/feature-menu.component';
+import { ArrayDiffMenuComponent } from './components/menus/array-diff-menu/array-diff-menu.component';
+import { ConfigMenuComponent } from './components/menus/config-menu/config-menu.component';
+import { ConfigGroupMenuComponent } from './components/menus/config-group-menu/config-group-menu.component';
+import { ValueMenuComponent } from './components/menus/value-menu/value-menu.component';
 
 
 
 @NgModule({
-  declarations: [PlconfigComponent, BranchTypeSelectorComponent, BranchSelectorComponent, ApplicabilityTableComponent, ConfigurationDropdownComponent, EditConfigurationDialogComponent, AddConfigurationDialogComponent, FeatureDropdownComponent, AddFeatureDialogComponent, EditFeatureDialogComponent, ActionDropDownComponent, CreateActionDialogComponent, TransitionActionToReviewDialogComponent, CommitBranchDialogComponent, CopyConfigurationDialogComponent, ConfigurationGroupDropdownComponent, AddConfigurationGroupDialogComponent, ConfigGroupDialogComponent],
+  declarations: [PlconfigComponent, BranchTypeSelectorComponent, BranchSelectorComponent, ApplicabilityTableComponent, ConfigurationDropdownComponent, EditConfigurationDialogComponent, AddConfigurationDialogComponent, FeatureDropdownComponent, AddFeatureDialogComponent, EditFeatureDialogComponent, ActionDropDownComponent, CreateActionDialogComponent, TransitionActionToReviewDialogComponent, CommitBranchDialogComponent, CopyConfigurationDialogComponent, ConfigurationGroupDropdownComponent, AddConfigurationGroupDialogComponent, ConfigGroupDialogComponent, FeatureMenuComponent, ArrayDiffMenuComponent, ConfigMenuComponent, ConfigGroupMenuComponent, ValueMenuComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -80,6 +86,7 @@ import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-mater
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatListModule,
+    DiffViewsModule,
     PlconfigRoutingModule
   ],
   providers: [{
