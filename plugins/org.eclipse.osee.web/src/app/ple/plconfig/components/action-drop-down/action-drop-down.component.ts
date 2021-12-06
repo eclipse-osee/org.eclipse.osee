@@ -31,23 +31,19 @@ export class ActionDropDownComponent implements OnInit {
   branchInfo = this.currentBranchService.branchState.pipe(share(), shareReplay(1));
   branchAction = this.currentBranchService.branchAction.pipe(share(), shareReplay(1));
   branchWorkflow = this.currentBranchService.branchWorkFlow.pipe(share(), shareReplay(1));
-  userDisplayable = this.accountService.getUser();
+  userDisplayable = this.accountService.user;
 
-  branchApproved = this.branchAction.pipe(switchMap((action) => iif(() => action.length > 0 && action[0].TeamWfAtsId.length > 0, this.actionService.getBranchApproved(action[0].TeamWfAtsId).pipe(
-    switchMap((approval) => iif(() => approval.errorCount > 0, of('false'), of('true')))
-  ))));
+  branchApproved = this.currentBranchService.branchApproved;
 
-  teamsLeads = this.branchWorkflow.pipe(
-    switchMap((workflow) => iif(() => workflow['ats.Team Definition Reference'].length > 0, this.actionService.getTeamLeads(workflow['ats.Team Definition Reference']), of([]))));
+  teamsLeads = this.currentBranchService.teamsLeads;
 
-  branchTransitionable = this.branchWorkflow.pipe(
-    switchMap((workflow) => iif(() => workflow.State === "InWork", of('true'), of('false'))));
+  branchTransitionable = this.currentBranchService.branchTransitionable;
 
 
-  branchApprovable = combineLatest([this.branchApproved, this.teamsLeads, this.branchWorkflow, this.userDisplayable]).pipe
+  branchApprovable = combineLatest([this.currentBranchService.branchApproved, this.currentBranchService.teamsLeads, this.currentBranchService.branchWorkFlow, this.userDisplayable]).pipe
     (switchMap(([approved, leads, workflow, currentUser]) => iif(() => leads.filter(e => e.id === currentUser.id).length > 0 && approved === 'false' && workflow.State === 'Review', of('true'), of('false'))));
 
-  branchCommitable = combineLatest([this.branchApproved, this.branchWorkflow]).pipe
+  branchCommitable = combineLatest([this.currentBranchService.branchApproved, this.currentBranchService.branchWorkFlow]).pipe
     (switchMap(([approved, workflow]) => iif(() => approved === 'true' && workflow.State === 'Review', of('true'), of('false'))));
 
   doAddAction = this.userDisplayable.pipe(take(1),switchMap((thisUser) =>

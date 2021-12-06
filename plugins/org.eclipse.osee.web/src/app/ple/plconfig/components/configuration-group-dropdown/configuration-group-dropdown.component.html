@@ -10,13 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(branchApplicability | async)?.editable" class="pl-config-configuration-group-dropdown-dd-button">Change Configuration Groups</button>
+<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-configuration-group-dropdown-dd-button">Change Configuration Groups</button>
 <mat-menu #mainMenu="matMenu">
     <button mat-menu-item (click)="addConfigurationGroup()">Add Configuration Group</button>
     <div *ngIf="(cfgGroups|async) as groups">
         <button mat-menu-item (click)="synchronizeGroups(groups)">Synchronize Groups</button>
     </div>
-    <button mat-menu-item [matMenuTriggerFor]="deleteConfigGroupMenu" *ngIf="(branchApplicability | async)?.editable">Delete Configuration Group</button>
+    <button mat-menu-item [matMenuTriggerFor]="deleteConfigGroupMenu" *ngIf="(editable|async)===true">Delete Configuration Group</button>
 </mat-menu>
 <mat-menu #deleteConfigGroupMenu="matMenu">
     <button *ngFor="let group of (cfgGroups | async)" mat-menu-item (click)="deleteGroup(group.id)">{{group.name}}</button>

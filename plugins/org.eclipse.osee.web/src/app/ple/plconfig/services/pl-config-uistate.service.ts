@@ -11,18 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { share, shareReplay } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { changeInstance } from 'src/app/types/change-report/change-report';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlConfigUIStateService {
-  // private _viewBranchType = new BehaviorSubject<string>("");
-  // private _branchId = new BehaviorSubject<string>("");
-  // private _deleteRequired = new Subject<string>();
-  // private _updateRequired = new Subject<boolean>();
+  private _differences = new ReplaySubject<changeInstance[]|undefined>(undefined);
   private _loading = new BehaviorSubject<string>("false");
   private _editable = new BehaviorSubject<string>("false");
   private _errors = new BehaviorSubject<string>("");
@@ -46,7 +44,7 @@ export class PlConfigUIStateService {
     this.ui.idValue = branchId;
   }
   public get branchId() {
-    return this.ui.id;
+    return this.ui.id.pipe(shareReplay({ bufferSize: 1, refCount: true }));
     // return this._branchId.pipe(share());
   }
   public set updateReqConfig(updateReq: boolean) {
@@ -80,5 +78,15 @@ export class PlConfigUIStateService {
   }
   public get groups() {
     return this._groups;
+  }
+  get differences() {
+    return this._differences.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  }
+  set difference(value: changeInstance[]) {
+    this._differences.next(value);
+  }
+
+  get isInDiff() {
+    return this.ui.isInDiff.pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 }

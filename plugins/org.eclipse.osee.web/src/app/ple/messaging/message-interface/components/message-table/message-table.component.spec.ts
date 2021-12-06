@@ -145,7 +145,7 @@ describe('MessageTableComponent', () => {
 
   it('should navigate to the diff page', async() => {
     let spy = spyOn(component, 'navigateToDiff').and.callThrough();
-    const button = await loader.getHarness(MatButtonHarness.with({ text: 'View Diff' }));
+    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Load Diff' }));
     await button.click();
     expect(spy).toHaveBeenCalled();
   })

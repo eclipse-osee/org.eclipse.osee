@@ -23,7 +23,7 @@ import { UserDataUIStateService } from '../../services/user-data-uistate.service
   styleUrls: ['./display-user.component.sass']
 })
 export class DisplayUserComponent implements OnInit {
-  userInfo: Observable<user> = this.accountService.getUser();
+  userInfo: Observable<user> = this.accountService.user;
   
   constructor(private accountService: UserDataAccountService) { }
 

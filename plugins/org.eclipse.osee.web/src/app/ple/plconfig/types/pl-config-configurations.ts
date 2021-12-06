@@ -1,3 +1,4 @@
+import { difference } from "src/app/types/change-report/change-report";
 import { NameValuePair } from "./base-types/NameValuePair";
 
 /*********************************************************************
@@ -28,4 +29,12 @@ export interface configurationGroup extends configGroup {
 
 export interface configGroup extends NameValuePair{
     configurations:string[],
+}
+export interface configGroupWithChanges extends configGroup{
+    deleted: boolean,
+    added: boolean,
+    changes: {
+        name?: difference,
+        configurations?:difference[]
+    }
 }

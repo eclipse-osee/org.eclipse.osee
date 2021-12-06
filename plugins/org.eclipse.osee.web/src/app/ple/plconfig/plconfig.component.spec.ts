@@ -69,7 +69,7 @@ describe('PlconfigComponent', () => {
         ConfigurationGroupDropdownComponent,
         FeatureDropdownComponent,
       ],
-      providers: [{ provide: Router, useValue: { navigate: () => { }}},
+      providers: [{ provide: Router, useValue: { navigate: () => { },events:of()}},
         {
           provide: ActivatedRoute, useValue: {
             paramMap: of(

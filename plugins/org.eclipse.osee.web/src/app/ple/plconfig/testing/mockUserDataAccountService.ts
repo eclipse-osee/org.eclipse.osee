@@ -15,7 +15,5 @@ import { UserDataAccountService } from "src/app/userdata/services/user-data-acco
 import { testDataUser } from "./mockTypes";
 
 export const userDataAccountServiceMock: Partial<UserDataAccountService> = {
-    getUser() {
-        return of(testDataUser);
-    }
+    user:of(testDataUser)
   }

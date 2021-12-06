@@ -32,7 +32,8 @@ export class FeatureDropdownComponent implements OnInit {
   selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
     shareReplay({bufferSize:1,refCount:true})
   );
-  branchApplicability = this.currentBranchService.branchApplicability.pipe(share());
+  editable = this.currentBranchService.branchApplicEditable;
+  features = this.currentBranchService.branchApplicFeatures;
   constructor(private uiStateService: PlConfigUIStateService,private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog) { 
   }
 

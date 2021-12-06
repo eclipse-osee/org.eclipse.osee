@@ -11,11 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
-import { testBranchApplicability, testBranchListing } from '../testing/mockBranchService';
+import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { changeInstance } from 'src/app/types/change-report/change-report';
+import { testApplicabilityTag, testBranchApplicability, testBranchListing } from '../testing/mockBranchService';
 import { testBranchActions, testDataResponse, testWorkFlow } from '../testing/mockTypes';
-import { view } from '../types/pl-config-applicui-branch-mapping';
+import { view, viewWithChanges } from '../types/pl-config-applicui-branch-mapping';
 import { configGroup } from '../types/pl-config-configurations';
 import { PlConfigActionService } from './pl-config-action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
@@ -26,6 +30,7 @@ import { PlConfigUIStateService } from './pl-config-uistate.service';
 describe('PlConfigCurrentBranchService', () => {
   let service: PlConfigCurrentBranchService;
   let ui: PlConfigUIStateService;
+  let baseUi: UiService;
   let branchServiceSpy: jasmine.SpyObj<PlConfigBranchService>;
   let actionServiceSpy: jasmine.SpyObj<PlConfigActionService>;
   let scheduler: TestScheduler;
@@ -41,7 +46,8 @@ describe('PlConfigCurrentBranchService', () => {
         addFeature:of(testDataResponse),
         modifyFeature:of(testDataResponse),
         deleteFeature:of(testDataResponse),
-        commitBranch:of(testDataResponse)
+        commitBranch: of(testDataResponse),
+        getApplicabilityToken:of(testApplicabilityTag)
       }
     );
     actionServiceSpy = jasmine.createSpyObj(
@@ -59,10 +65,13 @@ describe('PlConfigCurrentBranchService', () => {
     });
     service = TestBed.inject(PlConfigCurrentBranchService);
     ui = TestBed.inject(PlConfigUIStateService)
+    baseUi = TestBed.inject(UiService);
   });
   beforeEach(() => {
     ui.branchIdNum = '10';
     ui.updateReqConfig = true;
+    ui.difference = [];
+    //baseUi.diffMode = false;
   })
   beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
     expect(actual).toEqual(expected);
@@ -76,6 +85,20 @@ describe('PlConfigCurrentBranchService', () => {
     scheduler.run(({ expectObservable }) => {
       const expectedValues: { a: configGroup[] } = { a: testBranchApplicability.groups }
       expectObservable(service.groupList).toBe('a',expectedValues)
+    })
+  })
+
+  it('should find that abGroup is a cfgGroup', () => {
+    scheduler.run(({ expectObservable }) => {
+      const expectedValues: { a: boolean, b:boolean } = { a: true, b:false }
+      expectObservable(service.isACfgGroup('abGroup')).toBe('a',expectedValues)
+    })
+  })
+
+  it('should find that Product D is not a cfgGroup', () => {
+    scheduler.run(({ expectObservable }) => {
+      const expectedValues: { a: boolean, b:boolean } = { a: true, b:false }
+      expectObservable(service.isACfgGroup('Product D')).toBe('b',expectedValues)
     })
   })
 
@@ -93,19 +116,19 @@ describe('PlConfigCurrentBranchService', () => {
 
   it('should return the grouping', () => {
     scheduler.run(({ expectObservable }) => {
-      const expectedValues: { a: { group: configGroup, views: view[] }[] ,b:{ group: configGroup, views: view[] }[]} = {
+      const expectedValues: { a: { group: configGroup, views: (view|viewWithChanges)[] }[] ,b:{ group: configGroup, views: (view|viewWithChanges)[] }[]} = {
         a:
           [  
             {   
               group: { id: '736857919', name: 'abGroup', configurations: ['200045', '200046'] },  
-              views: [{ id: '200045', name: 'Product A', hasFeatureApplicabilities: true }, { id: '200046', name: 'Product B', hasFeatureApplicabilities: true }]  
+              views: [{ id: '200045', name: 'Product A', hasFeatureApplicabilities: true }, { id: '200046', name: 'Product B', hasFeatureApplicabilities: true, }]  
             }
           ],
         b:
           [
             {
               group: { id: '-1', name: 'No Group', configurations: [] },
-              views:[{ id: '200047', name: 'Product C', hasFeatureApplicabilities: true },{ id: '200048', name: 'Product D', hasFeatureApplicabilities: true }]
+              views:[{ id: '200047', name: 'Product C', hasFeatureApplicabilities: true, },{ id: '200048', name: 'Product D', hasFeatureApplicabilities: true, }]
             },
             {
               group: { id: '736857919', name: 'abGroup', configurations: ['200045', '200046'] },
@@ -190,6 +213,227 @@ describe('PlConfigCurrentBranchService', () => {
           configurations:['200045','200046']
       }})
     })
+  })
+  describe('difference testing', () => {
+    beforeEach(() => {
+      //baseUi.diffMode = true;
+      //ui.difference = changeReportMock;
+    })
+
+    it('should filter differences', () => {
+      scheduler.run(({ expectObservable, cold }) => {
+        const coldValues = { a: [], b: changeReportMock};
+        const values = { a: [], b: changeReportMock,c:undefined };
+        const coldMarbles='a-b'
+        const coldObs = cold(coldMarbles, coldValues).pipe(tap((t) => {
+          service.difference = t; if (t !== []) {
+            baseUi.diffMode = true;
+        } }));
+        expectObservable(coldObs).toBe(coldMarbles, coldValues);
+        expectObservable(service.branchApplicability).toBe('(aa) 498ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 999ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 999ms a 499ms a 499ms a 999ms a 499ms a 499ms a 999ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 999ms a 499ms a 999ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 999ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a 499ms a', {
+          a: {
+            associatedArtifactId: "200578",
+            branch:
+            {
+              id: "3182843164128526558",
+              name : "TW195 aaa",
+              viewId : "-1",
+              idIntValue : -1918287650  
+            },
+            editable: true,  
+            features:
+              [
+                {
+                  id: "1939294030",
+                  name : "ENGINE_5",
+                  values:
+                    [
+                      "A2543",
+                      "B5543"
+                    ],
+                  defaultValue : "A2543",
+                  description : "Used select type of engine",
+                  multiValued : false,
+                  valueType : "String",
+                  type : null,
+                  productApplicabilities:
+                    [
+                      "OFP"
+                    ],
+                  idIntValue: 1939294030,
+                  idString: "1939294030",
+                  configurations: [
+                    {
+                      id: "12345",
+                      name: "group1",
+                      value:'',
+                      values:[]
+                    },
+                    {
+                      id:'200047',
+                      name: 'Product-C',
+                      value:'A2453',
+                      values:["A2453"]
+                    }
+                  ],
+                  setValueStr:jasmine.any(Function),
+                  setProductAppStr:jasmine.any(Function)
+                },
+                {
+                  id: "758071644",
+                  name : "JHU_CONTROLLER",
+                  values:
+                    [
+                      "Included",
+                      "Excluded"
+                    ],
+                  defaultValue : "Included",
+                  description : "A small point of variation",
+                  multiValued : false,
+                  valueType : "String",
+                  type : null,
+                  productApplicabilities:
+                    [
+          
+                    ],
+                  idIntValue : 758071644,
+                  idString: "758071644",
+                  configurations: [
+                    {
+                      id: "12345",
+                      name: "group1",
+                      value:'',
+                      values:[]
+                    }
+                  ],
+                  setValueStr:jasmine.any(Function),
+                  setProductAppStr:jasmine.any(Function)
+                },
+                {
+                  id : "130553732",
+                  name : "ROBOT_ARM_LIGHT",
+                  values:
+                    [
+                      "Included",
+                      "Excluded"
+                    ],
+                  defaultValue : "Included",
+                  description : "A significant capability",
+                  multiValued : false,
+                  valueType : "String",
+                  type : null,
+                  productApplicabilities:
+                    [
+                      "OFP"
+                    ],
+                  idIntValue : 130553732,
+                  idString: "130553732",
+                  configurations: [
+                    {
+                      id: "12345",
+                      name: "group1",
+                      value:'',
+                      values:[]
+                    }
+                  ],
+                  setValueStr:jasmine.any(Function),
+                  setProductAppStr:jasmine.any(Function)
+                },
+                {
+                  id : "293076452",
+                  name : "ROBOT_SPEAKER",
+                  values:
+                    [
+                      "SPKR_A",
+                      "SPKR_B",
+                      "SPKR_C"
+                    ],
+                  defaultValue : "SPKR_A",
+                  description : "This feature is multi-select.",
+                  multiValued : true,
+                  valueType : "String",
+                  type : null,
+                  productApplicabilities:
+                    [
+          
+                    ],
+                  idIntValue : 293076452,
+                  idString: "293076452",
+                  configurations: [
+                    {
+                      id: "12345",
+                      name: "group1",
+                      value:'',
+                      values:[]
+                    }
+                  ],
+                  setValueStr:jasmine.any(Function),
+                  setProductAppStr:jasmine.any(Function)
+                }
+              ],
+            groups:
+              [
+                {
+                  id : "736857919",
+                  name: "abGroup",
+                  //hasFeatureApplicabilities:true,
+                  configurations: [
+                    "200045",
+                    "200046"
+                  ],
+                  //productApplicabilities:[]
+                },
+              ],
+            parentBranch:
+            {
+              id : "8",
+              name : "SAW Product Line",
+              viewId : "-1",
+              idIntValue : 8  
+            },  
+            views:
+              [
+                {
+                  id: "200045",
+                  name: "Product A",
+                  hasFeatureApplicabilities: true,
+                },
+                {
+                  id : "200046",
+                  name: "Product B",
+                  hasFeatureApplicabilities: true,
+                  changes: {
+                    productApplicabilities:[]
+                  }
+                },
+                {
+                  id : "200047",
+                  name: "Product C",
+                  hasFeatureApplicabilities: true,
+                  changes: {
+                    productApplicabilities:[]
+                  }
+                },
+                {
+                  id : "200048",
+                  name: "Product D",
+                  hasFeatureApplicabilities: true,
+                  deleted:true,
+                  changes: { name: { currentValue: null, previousValue: 'Product D', transactionToken: { id: '1146', branchId: '3361000790344842462' } } }
+                }
+              ], 
+          },
+        b:testBranchApplicability})
+      })
+    })
+
+    afterEach(() => {
+      //baseUi.diffMode = false;
+      //ui.difference = [];
+    })
+  })
+  afterEach(() => {
+    //baseUi.diffMode = false;
   })
   // it('#branchApplicability should return expected branch applicability', done => {
   //   const expectedBranchApplicability = testBranchApplicability;

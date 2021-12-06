@@ -16,7 +16,7 @@ import { view } from '../../types/pl-config-applicui-branch-mapping';
 import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 
 @Component({
-  selector: 'app-config-group-dialog',
+  selector: 'plconfig-config-group-dialog',
   templateUrl: './config-group-dialog.component.html',
   styleUrls: ['./config-group-dialog.component.sass']
 })

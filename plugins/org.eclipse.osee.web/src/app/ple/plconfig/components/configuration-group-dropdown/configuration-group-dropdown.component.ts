@@ -27,7 +27,7 @@ import { AddConfigurationGroupDialogComponent } from '../add-configuration-group
   styleUrls: ['./configuration-group-dropdown.component.sass']
 })
 export class ConfigurationGroupDropdownComponent implements OnInit {
-  branchApplicability = this.currentBranchService.branchApplicability.pipe(share());
+  editable = this.currentBranchService.branchApplicEditable;
   cfgGroups = this.currentBranchService.cfgGroups;
   constructor(private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog,private uiStateService: PlConfigUIStateService) {
   }

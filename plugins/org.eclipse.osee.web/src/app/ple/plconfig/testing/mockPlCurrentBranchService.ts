@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
+import { iif, of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../services/pl-config-current-branch.service';
+import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
+import { editConfiguration } from '../types/pl-config-configurations';
 import { modifyFeature } from '../types/pl-config-features';
 import { testBranchApplicability } from './mockBranchService';
 import {
@@ -57,6 +59,25 @@ export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
     },
     modifyFeature(feature: modifyFeature) {
       return of(testDataResponse);
-    },
-    
+  },
+  findViewByName(viewName: string) {
+      return of(testBranchApplicability.views[0])
+  },
+  findViewById(viewId: string) {
+    return of(testBranchApplicability.views[0])
+  },
+  findGroup(groupName: string) {
+    return of(testBranchApplicability.groups[0])
+  },
+  isACfgGroup(name: string) {
+    return iif(()=>name.includes('group')||name.includes('Group'),of(true),of(false))
+  },
+  editConfigurationDetails(body: editConfiguration) {
+    return of(testDataResponse);
+  },
+  updateConfigurationGroup(cfgGroup: ConfigurationGroupDefinition) {
+    return of(testDataResponse);
+  },
+  branchApproved: of('false'),
+  teamsLeads:of([{id:'61106791',name:'Joe Smith'}])
   };

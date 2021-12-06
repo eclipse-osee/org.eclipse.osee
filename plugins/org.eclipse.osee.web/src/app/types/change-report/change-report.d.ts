@@ -104,7 +104,7 @@ export interface difference{
     transactionToken:transactionToken
 }
 export class itemTypeIdRelation{
-    id: string;
+    id: RelationTypeId;
     name: string;
     order: string;
     ordered: boolean;

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@import '~@angular/material/theming';
+@import '../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
@@ -22,6 +22,7 @@
   $warn: map-get($config, warn);
   $background: map-get($config, background);
   $foreground: map-get($config, foreground);
+  $success: map-get($config,success);
   
   // Define any styles affected by the theme.
   .config-group-header {
@@ -51,6 +52,47 @@
   }
   .table-container::-webkit-scrollbar-corner{
     background-color:mat-color($background,app-bar);
+  }
+
+  .applic-table-row-even-added{
+    background-color:mat-color($success,100);
+  }
+  .applic-table-row-odd-added{
+    background-color:mat-color($success,300);
+  }
+
+  .applic-table-row-even-deleted{
+    background-color:mat-color($warn,50);
+  }
+  .applic-table-row-odd-deleted{
+    background-color:mat-color($warn,100);
+  }
+
+  .applic-table-row-even-changed{
+    background-color:mat-color($accent,100);
+  }
+  .applic-table-row-odd-changed{
+    background-color:mat-color($accent,100);
+  }
+  .applic-table-column-changed{
+    background-color:mat-color($accent,100);
+  }
+
+  .applic-table-column-added-row-even{
+    background-color:mat-color($success,100);
+  }
+
+  .applic-table-column-added-row-odd{
+    background-color:mat-color($success,300);
+  }
+  .applic-table-column-deleted{
+    background-color:mat-color($warn,50);
+  }
+  .applic-table-column-added{
+    background-color:mat-color($success,300);
+  }
+  .applicabilityChanged{
+    background-color:mat-color($accent,100);
   }
 }
 @mixin typography($config-or-theme){
