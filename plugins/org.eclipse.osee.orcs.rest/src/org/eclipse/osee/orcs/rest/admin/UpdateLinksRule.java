@@ -15,6 +15,8 @@ package org.eclipse.osee.orcs.rest.admin;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -50,15 +52,15 @@ public class UpdateLinksRule extends Rule {
 
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branchId).andGuid(artifactGuid);
       ArtifactReadable artifact = query.getResults().getExactlyOne();
-      Long artifactId = artifact.getUuid();
+      ArtifactId artifactId = artifact;
 
-      Long attributeId = getAttributeId(artifact);
+      AttributeId attributeId = getAttributeId(artifact);
 
-      return String.format("<a href=\"http://osee.msc.az.boeing.com/orcs/branch/%s/artifact/%s/attribute/%s", branchId,
-         artifactId, attributeId);
+      return String.format("<a href=\"http://osee.msc.az.boeing.com/orcs/branch/%s/artifact/%s/attribute/%s",
+         branchId.getIdString(), artifactId.getIdString(), attributeId.getIdString());
    }
 
-   private Long getAttributeId(ArtifactReadable artifact) {
+   private AttributeId getAttributeId(ArtifactReadable artifact) {
       AttributeTypeToken attributeType;
 
       if (artifact.isOfType(CoreArtifactTypes.MsWordWholeDocument)) {

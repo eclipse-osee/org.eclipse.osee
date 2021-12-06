@@ -25,6 +25,7 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +43,8 @@ public class DispoSetResourceTest {
    private BranchId branch;
 
    private DispoSetResource resource;
-   private final Long id1 = 21351L;
-   private final Long id2 = 222325L;
+   private final ArtifactId id1 = ArtifactId.valueOf(21351L);
+   private final ArtifactId id2 = ArtifactId.valueOf(222325L);
 
    private final String id1AsString = String.valueOf(id1);
    private final String id2AsString = String.valueOf(id2);;

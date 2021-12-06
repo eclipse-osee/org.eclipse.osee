@@ -61,7 +61,7 @@ public class AccountFactory {
 
    public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, Date createdOn, Date lastAccessedOn, String accessedFrom, String accessDetails) {
       AccountSessionImpl session = new AccountSessionImpl();
-      session.setAccountId(accountId.getUuid());
+      session.setAccountId(accountId.getId());
       session.setSessionToken(sessionToken);
       session.setCreatedOn(createdOn);
       session.setLastAccessedOn(lastAccessedOn);

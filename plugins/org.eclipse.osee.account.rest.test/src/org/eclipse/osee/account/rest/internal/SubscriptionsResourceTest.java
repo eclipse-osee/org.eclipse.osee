@@ -87,7 +87,7 @@ public class SubscriptionsResourceTest {
       when(group.getGroupId()).thenReturn(GROUP_ID);
 
       when(account.getName()).thenReturn(ACCOUNT_NAME);
-      when(account.getId()).thenReturn(ACCOUNT_ID.getUuid());
+      when(account.getId()).thenReturn(ACCOUNT_ID.getId());
       when(account.getUserName()).thenReturn(ACCOUNT_USERNAME);
       when(account.getEmail()).thenReturn(ACCOUNT_EMAIL);
       when(account.isActive()).thenReturn(ACCOUNT_IS_ACTIVE);
@@ -98,7 +98,7 @@ public class SubscriptionsResourceTest {
       ResultSet<Subscription> results = ResultSets.singleton(subscription);
       when(manager.getSubscriptionsByAccountId(ACCOUNT_ID)).thenReturn(results);
 
-      SubscriptionData[] actual = resource.getSubscriptions(ACCOUNT_ID.getUuid());
+      SubscriptionData[] actual = resource.getSubscriptions(ACCOUNT_ID.getId());
 
       assertEquals(1, actual.length);
       SubscriptionData data = actual[0];
@@ -233,7 +233,7 @@ public class SubscriptionsResourceTest {
 
    private static void checkAccount(AccountInfoData actual, String name, ArtifactId accountId, String username, String email, boolean active) {
       assertEquals(name, actual.getName());
-      assertEquals(accountId.getUuid(), actual.getAccountId());
+      assertEquals(accountId.getId(), actual.getAccountId());
       assertEquals(username, actual.getUserName());
       assertEquals(email, actual.getEmail());
       assertEquals(active, actual.isActive());

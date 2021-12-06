@@ -940,7 +940,7 @@ public class MSWordTemplatePublisher {
       }
 
       WordTemplateContentData wtcData = new WordTemplateContentData();
-      wtcData.setArtId(artifact.getUuid());
+      wtcData.setArtId(artifact);
       wtcData.setBranch(artifact.getBranch());
       wtcData.setFooter(footer);
       wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);

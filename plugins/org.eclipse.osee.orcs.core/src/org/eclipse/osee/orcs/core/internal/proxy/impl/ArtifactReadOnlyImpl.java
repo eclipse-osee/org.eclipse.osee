@@ -169,8 +169,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Long getSoleAttributeId(AttributeTypeToken attributeType) {
-      return getProxiedObject().getSoleAttribute(attributeType).getId();
+   public AttributeId getSoleAttributeId(AttributeTypeToken attributeType) {
+      return getProxiedObject().getSoleAttribute(attributeType);
    }
 
    @Override

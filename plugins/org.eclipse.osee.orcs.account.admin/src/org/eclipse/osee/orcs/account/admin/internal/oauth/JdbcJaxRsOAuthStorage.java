@@ -123,7 +123,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
          clientArtId = clientStorage.insert(principal, client);
       }
 
-      long clientId = clientArtId.getUuid();
+      Long clientId = clientArtId.getId();
       ArtifactReadable artifact = clientStorage.getClientByClientId(clientArtId).getExactlyOne();
       Long applicationId = artifact.getId();
 
