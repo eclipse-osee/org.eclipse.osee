@@ -29,8 +29,7 @@ public class AtsNotificationCollector {
 
    private String subject, body;
    private final List<AtsNotificationEvent> notificationEvents = new ArrayList<>();
-   private final List<AtsWorkItemNotificationEvent> workItemNotificationEvents =
-      new ArrayList<>();
+   private final List<AtsWorkItemNotificationEvent> workItemNotificationEvents = new ArrayList<>();
    private boolean includeCancelHyperlink = false;
 
    public void addNotificationEvent(AtsNotificationEvent notificationEvent) {
@@ -71,6 +70,15 @@ public class AtsNotificationCollector {
 
    public void setIncludeCancelHyperlink(boolean includeCancelHyperlink) {
       this.includeCancelHyperlink = includeCancelHyperlink;
+   }
+
+   @Override
+   public String toString() {
+      return "AtsNotificationCollector [subject=" + subject + ", body=" + body + ", notificationEvents=" + notificationEvents + ", workItemNotificationEvents=" + workItemNotificationEvents + ", includeCancelHyperlink=" + includeCancelHyperlink + "]";
+   }
+
+   public boolean isValid() {
+      return !notificationEvents.isEmpty() || !workItemNotificationEvents.isEmpty();
    }
 
 }
