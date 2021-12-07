@@ -158,7 +158,7 @@ public class ArtifactAclOperations {
             AccessControlData data = new AccessControlData(subject, accessObject, PermissionEnum.USER_LOCK, true);
             storeOps.persistPermission(data);
             cache.artifactLockCache.put(objectBranch, artifact, subject);
-            event.addArtifact(artifact.getUuid());
+            event.addArtifact(artifact);
             lockedArts.add(artifact);
          }
       }
@@ -180,7 +180,7 @@ public class ArtifactAclOperations {
             storeOps.removeAccessControlDataIf(true,
                new AccessControlData(subject, accessObject, PermissionEnum.USER_LOCK, false));
             cache.artifactLockCache.removeAndGet(branch, artifact);
-            event.addArtifact(artifact.getUuid());
+            event.addArtifact(artifact);
             lockedArts.add(artifact);
          }
       }

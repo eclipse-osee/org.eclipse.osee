@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.core.access;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 
@@ -26,7 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public class AccessTopicEventPayload {
    BranchId branch;
-   List<String> artifactUuids = new ArrayList<>();
+   List<ArtifactToken> artifactTokens = new ArrayList<>();
 
    public BranchId getBranch() {
       return branch;
@@ -36,32 +35,24 @@ public class AccessTopicEventPayload {
       this.branch = branch;
    }
 
-   public List<String> getArtifactUuids() {
-      return artifactUuids;
+   public List<ArtifactToken> getArtifactTokens() {
+      return artifactTokens;
    }
 
-   public void setArtifactUuids(List<String> artifactUuids) {
-      this.artifactUuids = artifactUuids;
+   public void setArtifactTokens(List<ArtifactToken> artifactTokens) {
+      this.artifactTokens = artifactTokens;
    }
 
-   public void addArtifact(ArtifactId artifact) {
-      addArtifact(artifact.getUuid());
-   }
-
-   public void addArtifact(Long artifactUuid) {
-      getArtifactUuids().add(String.valueOf(artifactUuid));
-   }
-
-   public void addArtifact(Integer artifactId) {
-      getArtifactUuids().add(String.valueOf(Long.valueOf(artifactId)));
+   public void addArtifact(ArtifactToken artifactToken) {
+      this.artifactTokens.add(artifactToken);
    }
 
    /**
     * @return true if this artifact matches event branch and contains artifact
     */
-   public boolean matches(ArtifactToken artifact) {
-      if (!artifactUuids.isEmpty()) {
-         return artifact.isOnBranch(branch) && artifactUuids.contains(artifact.getIdString());
+   public boolean matches(ArtifactToken artifactToken) {
+      if (!artifactTokens.isEmpty()) {
+         return artifactToken.isOnBranch(branch) && artifactTokens.contains(artifactToken);
       }
       return false;
    }
