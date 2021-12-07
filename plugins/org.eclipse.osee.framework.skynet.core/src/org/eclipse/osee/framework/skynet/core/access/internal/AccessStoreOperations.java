@@ -145,7 +145,7 @@ public class AccessStoreOperations implements IAccessStoreOperations {
                jdbcClient.runPreparedUpdate(AccessQueries.UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
                   data.getSubject().getId(), artifactAccessObject, artifactAccessObject.getBranch());
             }
-            event.addArtifact(artifactAccessObject);
+            event.addArtifact(artifactAccessObject.getArtifact());
 
             if (recurse) {
                Artifact artifact = ArtifactQuery.getArtifactFromToken(artifactAccessObject);
@@ -196,7 +196,7 @@ public class AccessStoreOperations implements IAccessStoreOperations {
       AccessTopicEventPayload event = new AccessTopicEventPayload();
       event.setBranch(accessControlledObject.getBranch());
       if (isArtifact) {
-         event.addArtifact((ArtifactAccessObject) accessControlledObject);
+         event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtifact());
       }
 
       OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_MODIFIED);

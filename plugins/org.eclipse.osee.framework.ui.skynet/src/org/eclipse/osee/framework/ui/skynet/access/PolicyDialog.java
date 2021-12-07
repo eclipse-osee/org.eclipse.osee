@@ -155,8 +155,8 @@ public class PolicyDialog extends Dialog {
       setMaxModificationLevel();
 
       if (accessControlledObject instanceof ArtifactAccessObject) {
-         isArtifactLockedBeforeDialog = ServiceUtil.accessControlService().hasLock(
-            ((ArtifactAccessObject) accessControlledObject).getArtifact());
+         isArtifactLockedBeforeDialog =
+            ServiceUtil.accessControlService().hasLock(((ArtifactAccessObject) accessControlledObject).getArtifact());
       }
 
       return mainComposite;
@@ -263,8 +263,8 @@ public class PolicyDialog extends Dialog {
          permission = ServiceUtil.accessControlService().getPermission(
             ((ArtifactAccessObject) accessControlledObject).getArtifact());
       } else if (accessControlledObject.isBranch()) {
-         permission = ServiceUtil.accessControlService().getPermission(
-            ((BranchAccessObject) accessControlledObject).getBranch());
+         permission =
+            ServiceUtil.accessControlService().getPermission(((BranchAccessObject) accessControlledObject).getBranch());
       } else {
          throw new OseeArgumentException("Unhandled object %s", accessControlledObject);
       }
@@ -323,7 +323,7 @@ public class PolicyDialog extends Dialog {
             if (isArtifactLockedAfterDialog != isArtifactLockedBeforeDialog) {
                AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
                event.setBranch(artifact.getBranch());
-               event.addArtifact(artifact.getUuid());
+               event.addArtifact(artifact);
                OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
             }
          } catch (Exception ex) {

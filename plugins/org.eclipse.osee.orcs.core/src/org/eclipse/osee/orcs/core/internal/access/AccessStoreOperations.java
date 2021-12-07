@@ -129,7 +129,7 @@ public class AccessStoreOperations implements IAccessStoreOperations {
             jdbcClient.runPreparedUpdate(AccessQueries.UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
                data.getSubject().getId(), artifactAccessObject, artifactAccessObject.getBranch());
          }
-         event.addArtifact(artifactAccessObject);
+         event.addArtifact(artifactAccessObject.getArtifact());
 
          if (recurse) {
             ArtifactToken artifact = orcsApi.getQueryFactory().fromBranch(artifactAccessObject.getBranch()).andId(
@@ -180,7 +180,7 @@ public class AccessStoreOperations implements IAccessStoreOperations {
       AccessTopicEventPayload event = new AccessTopicEventPayload();
       event.setBranch(accessControlledObject.getBranch());
       if (isArtifact) {
-         event.addArtifact((ArtifactAccessObject) accessControlledObject);
+         event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtifact());
       }
    }
 
