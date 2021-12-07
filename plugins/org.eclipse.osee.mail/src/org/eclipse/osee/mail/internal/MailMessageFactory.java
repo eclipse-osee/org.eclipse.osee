@@ -95,8 +95,17 @@ public class MailMessageFactory {
       Address addr = toAddress(from);
       System.err.println(String.format("MMF addr [%s]", addr));
       message.setFrom(addr);
+      System.err.println(String.format("MMF subject [%s]", email.getSubject()));
       message.setSubject(email.getSubject(), "UTF-8");
-      message.setReplyTo(toAddress(email.getReplyTo()));
+      System.err.println(String.format("MMF subject [%s]", email.getSubject()));
+      Collection<String> replyTo = email.getReplyTo();
+      System.err.println(String.format("MMF replyTo [%s]", replyTo));
+      Address[] replyAddrs = toAddress(replyTo);
+      for (Address replyAddr : replyAddrs) {
+         System.err.println(String.format("MMF replyAddr  [%s]", replyAddr));
+      }
+      message.setReplyTo(replyAddrs);
+      System.err.println(String.format("MMF recipients [%s]", email.getRecipients()));
       message.setRecipients(Message.RecipientType.TO, toAddress(email.getRecipients()));
       message.addHeader(MAIL_UUID_HEADER, email.getId());
       message.setSentDate(sendDate);
