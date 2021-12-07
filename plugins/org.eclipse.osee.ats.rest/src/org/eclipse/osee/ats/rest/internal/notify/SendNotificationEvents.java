@@ -185,6 +185,9 @@ public class SendNotificationEvents {
          String useEmail = isTesting() ? testingUserEmail : email;
          String useFromEmail = Strings.isValid(fromUserEmail) ? fromUserEmail : "no-reply@boeing.com";
 
+         System.out.println(String.format("useEmail [%s]", useEmail));
+         System.out.println(String.format("useFromEmail [%s]", useFromEmail));
+
          MailMessage msg = MailMessage.newBuilder() //
             .from(useFromEmail) //
             .recipients(Arrays.asList(useEmail)) //
