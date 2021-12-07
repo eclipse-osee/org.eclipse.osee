@@ -89,7 +89,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             }
          } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
             return XAbstractSignDateAndByButton.getText((Artifact) task.getStoreObject(),
-               AtsAttributeTypes.TleReviewedDate, AtsAttributeTypes.TleReviewedBy);
+               AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy);
          } else if (xViewerColumn.getName().equals("Related Workflow")) {
             if (task.isCancelled()) {
                return "";
@@ -122,7 +122,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
          if (xViewerColumn.getName().equals("Select")) {
             return ImageManager.getImage(AtsImage.TASK);
          } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
-            if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.TleReviewedBy) > 0) {
+            if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.ReviewedBy) > 0) {
                return ImageManager.getImage(AtsImage.CHECK_BLUE);
             }
          } else if (xViewerColumn.getName().equals("Related Workflow")) {

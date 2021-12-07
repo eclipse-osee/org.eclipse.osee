@@ -19,12 +19,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton
 /**
  * @author Donald G. Dunne
  */
-public class XTleReviewedWidget extends XAbstractSignDateAndByButton {
+public class XReviewedWidget extends XAbstractSignDateAndByButton {
 
-   public static String WIDGET_ID = XTleReviewedWidget.class.getSimpleName();
-
-   public XTleReviewedWidget() {
-      super("TLE Reviewed", "Sign or clear changes", AtsAttributeTypes.TleReviewedDate, AtsAttributeTypes.TleReviewedBy,
+   public XReviewedWidget() {
+      super("Reviewed By", "Sign or clear changes", AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy,
          FrameworkImage.RUN_EXC, true);
    }
 

@@ -78,6 +78,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       register(XHyperlinkWfdForConfigurationDam.class);
       register(XHyperlinkWfdForActiveAis.class);
       register(XHyperlinkOpenBitTab.class);
+      register(XReviewedWidget.class);
    }
 
    @Override
@@ -249,8 +250,6 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XEstimatedPointsWidget();
       } else if (widgetName.equals(XTaskEstDemoWidget.WIDGET_ID)) {
          return new XTaskEstDemoWidget();
-      } else if (widgetName.equals(XTleReviewedWidget.WIDGET_ID)) {
-         return new XTleReviewedWidget();
       } else if (widgetName.equals(XActionableItemWidget.WIDGET_ID)) {
          return new XActionableItemWidget();
       } else if (widgetName.equals(XTaskEstSiblingWorldDemoWidget.WIDGET_ID)) {
