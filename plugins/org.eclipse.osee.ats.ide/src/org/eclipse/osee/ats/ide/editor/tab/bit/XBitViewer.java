@@ -14,15 +14,18 @@ package org.eclipse.osee.ats.ide.editor.tab.bit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
@@ -31,10 +34,12 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -56,6 +61,20 @@ public class XBitViewer extends TaskXViewer {
       super(parent, style, xViewerFactory, editor, teamWf);
       atsApi = AtsApiService.get();
       crTeamWf = teamWf;
+   }
+
+   public List<BuildImpactData> getSelectedBuildImpactDatas() {
+      List<BuildImpactData> bids = new ArrayList<>();
+      TreeItem items[] = getTree().getSelection();
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            if (item.getData() instanceof BuildImpactData) {
+               BuildImpactData bid = (BuildImpactData) item.getData();
+               bids.add(bid);
+            }
+         }
+      }
+      return bids;
    }
 
    @Override
@@ -98,6 +117,7 @@ public class XBitViewer extends TaskXViewer {
       try {
          if (getContentProvider() != null) {
             setInput(bids);
+            setLoading(false);
             refresh();
          }
       } catch (Exception ex) {
@@ -143,22 +163,9 @@ public class XBitViewer extends TaskXViewer {
    }
 
    private boolean handleChangeState(BuildImpactData bid) {
-      List<String> states = new ArrayList<String>();
-      for (String state : Arrays.asList(BuildImpactState.Open.name(), BuildImpactState.Analyzed.name(),
-         BuildImpactState.InWork.name(), BuildImpactState.Promoted.name(), BuildImpactState.Closed.name(),
-         BuildImpactState.Deferred.name(), BuildImpactState.Cancelled.name())) {
-         if (!bid.getState().equals(state)) {
-            states.add(state);
-         }
-      }
+      List<String> states = getStates();
       states.remove(bid.getState());
-
-      ListSelectionDialogNoSave dialog =
-         new ListSelectionDialogNoSave(Collections.castAll(states), Displays.getActiveShell().getShell(),
-            "Select Transition-To State", null, "Select the state to transition to.\n\n" //
-               + "Transition will happen upon selection and Transition button.\n\n" //
-               + "Double-click will select, close and transition.",
-            2, new String[] {"Transition", "Cancel"}, 0);
+      ListSelectionDialogNoSave dialog = getListSelectionDialog(states);
 
       if (dialog.open() == Window.OK) {
          Artifact bidArt = (Artifact) atsApi.getQueryService().getArtifact(bid.getBidArt());
@@ -174,9 +181,71 @@ public class XBitViewer extends TaskXViewer {
       return false;
    }
 
+   private ListSelectionDialogNoSave getListSelectionDialog(List<String> states) {
+      ListSelectionDialogNoSave dialog =
+         new ListSelectionDialogNoSave(Collections.castAll(states), Displays.getActiveShell().getShell(),
+            "Select Transition-To State", null, "Select the state to transition to.\n\n" //
+               + "Transition will happen upon selection and Transition button.\n\n" //
+               + "Double-click will select, close and transition.",
+            2, new String[] {"Transition", "Cancel"}, 0);
+      return dialog;
+   }
+
+   private List<String> getStates() {
+      List<String> states = new ArrayList<String>();
+      for (String state : Arrays.asList(BuildImpactState.Open.name(), BuildImpactState.InWork.name(),
+         BuildImpactState.Promoted.name(), BuildImpactState.Closed.name(), BuildImpactState.Deferred.name(),
+         BuildImpactState.Cancelled.name())) {
+         states.add(state);
+      }
+      return states;
+   }
+
    @Override
    protected boolean isAddTaskEnabled() {
       return false;
+   }
+
+   @Override
+   public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      if (!(treeColumn.getData() instanceof XViewerColumn)) {
+         return false;
+      }
+      if (((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
+         return true;
+      }
+      return false;
+   }
+
+   @Override
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      if (treeColumn.getText().equals(XBitXViewerFactory.State_Col.getName())) {
+         List<BuildImpactData> bids = getSelectedBuildImpactDatas();
+         if (bids.isEmpty()) {
+            AWorkbench.popup("Select one or more Build Impact Items");
+            return;
+         } else {
+            List<String> states = getStates();
+            ListSelectionDialogNoSave dialog = getListSelectionDialog(states);
+            if (dialog.open() == Window.OK) {
+               String newState = (String) dialog.getSelected();
+               IAtsChangeSet changes = atsApi.createChangeSet("Update BID State");
+               for (BuildImpactData bid : bids) {
+                  Artifact art = (Artifact) atsApi.getQueryService().getArtifact(bid.getBidArt());
+                  changes.setSoleAttributeValue(art, AtsAttributeTypes.BitState, newState);
+               }
+               TransactionToken transaction = changes.executeIfNeeded();
+               ((Artifact) crTeamWf).reloadAttributesAndRelations();
+               atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
+                  Arrays.asList(crTeamWf), transaction);
+            }
+         }
+      }
+   }
+
+   @Override
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, boolean persist) {
+      super.handleColumnMultiEdit(treeColumn, treeItems);
    }
 
 }

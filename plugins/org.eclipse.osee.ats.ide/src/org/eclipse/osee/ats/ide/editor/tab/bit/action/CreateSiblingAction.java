@@ -21,11 +21,13 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactState;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.bit.WfeBitTab;
 import org.eclipse.osee.ats.ide.editor.tab.bit.XBitViewer;
@@ -67,9 +69,18 @@ public class CreateSiblingAction extends Action {
       Object obj = item.getData();
       if (obj instanceof BuildImpactData) {
          BuildImpactData bid = (BuildImpactData) obj;
+         if (!bid.getState().equals(BuildImpactState.InWork.name())) {
+            AWorkbench.popup("Build Impact selected must be in InWork state");
+            return;
+         }
          ArtifactToken progArt = bid.getProgram();
          IAtsProgram program = atsApi.getProgramService().getProgramById(progArt);
          Collection<IAtsActionableItem> ais = atsApi.getProgramService().getAis(program);
+         // Remove top AI
+         IAtsTeamDefinition teamDef = atsApi.getProgramService().getTeamDefHoldingVersions(program);
+         IAtsActionableItem ai = teamDef.getActionableItems().iterator().next();
+         ais.remove(ai);
+
          ActionableItemTreeWithChildrenDialog dialog = new ActionableItemTreeWithChildrenDialog(Active.Active, ais);
          dialog.setAddIncludeAllCheckbox(false);
          if (dialog.open() == Window.OK) {
