@@ -196,6 +196,10 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamWfToTask_TeamWorkflow = RelationTypeSide.create(TeamWfToTask, SIDE_A);
    RelationTypeSide TeamWfToTask_Task = RelationTypeSide.create(TeamWfToTask, SIDE_B);
 
+   RelationTypeToken ResolvedBy = ats.add(2864831368914816583L, "ResolvedBy", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", TeamWorkflow, "Resolved By");
+   RelationTypeSide ResolvedBy_TeamWorkflow = RelationTypeSide.create(ResolvedBy, SIDE_A);
+   RelationTypeSide ResolvedBy_ResolvedBy = RelationTypeSide.create(ResolvedBy, SIDE_B);
+
    RelationTypeToken TeamWorkflowTargetedForVersion = ats.add(2305843009213694319L, "TeamWorkflowTargetedForVersion", MANY_TO_ONE, UNORDERED, TeamWorkflow, "Team Workflow", Version, "Version");
    RelationTypeSide TeamWorkflowTargetedForVersion_TeamWorkflow = RelationTypeSide.create(TeamWorkflowTargetedForVersion, SIDE_A);
    RelationTypeSide TeamWorkflowTargetedForVersion_Version = RelationTypeSide.create(TeamWorkflowTargetedForVersion, SIDE_B);
