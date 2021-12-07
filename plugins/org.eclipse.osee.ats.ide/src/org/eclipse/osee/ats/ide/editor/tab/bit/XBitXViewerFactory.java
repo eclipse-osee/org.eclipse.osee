@@ -29,7 +29,7 @@ public class XBitXViewerFactory extends XViewerFactory {
    public static XViewerColumn Program_Col = new XViewerColumn("ats.bit.program", "Program", 150, XViewerAlign.Left, true, SortDataType.String, false, "");
    public static XViewerColumn Build_Col = new XViewerColumn("ats.bit.build", "Build", 110, XViewerAlign.Left, true, SortDataType.String, false, "");
    public static XViewerColumn Config_Col = new XViewerColumn("ats.bit.config", "Config", 60, XViewerAlign.Left, true, SortDataType.String, false, "");
-   public static XViewerColumn State_Col = new XViewerColumn("ats.bibit.state", "State", 80, XViewerAlign.Left, true, SortDataType.String, false, "");
+   public static XViewerColumn State_Col = new XViewerColumn("ats.bibit.state", "State", 80, XViewerAlign.Left, true, SortDataType.String, true, "");
    public static XViewerColumn Id_Col = new XViewerColumn("ats.bibit.cr.id", "Id", 55, XViewerAlign.Left, true, SortDataType.String, false, "");
    public static XViewerColumn Cr_State_Col = new XViewerColumn("ats.bibit.cr.state", "CR State", 100, XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflows, if created");
    public static XViewerColumn Cr_Type_Col = new XViewerColumn("ats.bibit.cr.type", "CR Type", 100, XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflows, if created");

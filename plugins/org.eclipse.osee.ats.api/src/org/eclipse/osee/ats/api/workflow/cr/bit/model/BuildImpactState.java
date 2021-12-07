@@ -23,12 +23,11 @@ public class BuildImpactState extends OseeEnum {
    private static final Long ENUM_ID = 321817019823L;
 
    public static BuildImpactState Open = new BuildImpactState(111L, "Open");
-   public static BuildImpactState Analyzed = new BuildImpactState(222L, "Analyzed");
-   public static BuildImpactState InWork = new BuildImpactState(333L, "InWork");
-   public static BuildImpactState Promoted = new BuildImpactState(444L, "Promoted");
-   public static BuildImpactState Closed = new BuildImpactState(555L, "Closed");
-   public static BuildImpactState Deferred = new BuildImpactState(666L, "Deferred");
-   public static BuildImpactState Cancelled = new BuildImpactState(777L, "Cancelled");
+   public static BuildImpactState InWork = new BuildImpactState(222L, "InWork");
+   public static BuildImpactState Promoted = new BuildImpactState(333L, "Promoted");
+   public static BuildImpactState Closed = new BuildImpactState(444L, "Closed");
+   public static BuildImpactState Deferred = new BuildImpactState(555L, "Deferred");
+   public static BuildImpactState Cancelled = new BuildImpactState(666L, "Cancelled");
 
    public BuildImpactState(long id, String name) {
       super(ENUM_ID, id, name);

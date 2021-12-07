@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -144,6 +145,9 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
 
                @Override
                public void run() {
+                  if (!Widgets.isAccessible(bodyComp)) {
+                     return;
+                  }
                   storeExpandState();
                   xViewer.setBids(bids);
                   xViewer.loadTable();
@@ -159,6 +163,9 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
 
    private final Set<ArtifactToken> expanded = new HashSet<>();
    private void storeExpandState() {
+      if (!Widgets.isAccessible(bodyComp)) {
+         return;
+      }
       expanded.clear();
       for (TreeItem item : xViewer.getVisibleItems()) {
          if (item.getExpanded()) {
@@ -169,6 +176,9 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
    }
 
    private void restoreExpandState() {
+      if (!Widgets.isAccessible(bodyComp)) {
+         return;
+      }
       for (TreeItem item : xViewer.getVisibleItems()) {
          BuildImpactData bid = (BuildImpactData) item.getData();
          if (expanded.contains(bid.getBidArt())) {

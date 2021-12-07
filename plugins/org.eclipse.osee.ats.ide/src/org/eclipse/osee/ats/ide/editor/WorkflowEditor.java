@@ -153,6 +153,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
             createMembersTab();
             createWorkflowTab();
+            createBitTab();
             createAttributesTab();
             createRelationsTab();
             createTaskTab();
@@ -160,7 +161,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             createDefectsTab();
             createMetricsTab();
             createDetailsTab();
-            createBitTab();
          }
          updatePartName();
 
