@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public class AtsXWidgetAttrValidator extends AtsXWidgetValidator {
 
    private final List<AttributeWidget> widgets = Arrays.asList( //
-      new AttributeWidget("XTleReviewedWidget", AtsAttributeTypes.TleReviewedBy, AtsAttributeTypes.TleReviewedDate) //
+      new AttributeWidget("XReviewedWidget", AtsAttributeTypes.ReviewedBy, AtsAttributeTypes.ReviewedByDate) //
    );
 
    @Override

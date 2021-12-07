@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XTleReviewedWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XReviewedWidget;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -58,16 +58,16 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class TleReviewedColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class ReviewedByColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
-   public static TleReviewedColumn instance = new TleReviewedColumn();
+   public static ReviewedByColumn instance = new ReviewedByColumn();
    private final AtsApi atsApi;
 
-   public static TleReviewedColumn getInstance() {
+   public static ReviewedByColumn getInstance() {
       return instance;
    }
 
-   private TleReviewedColumn() {
+   private ReviewedByColumn() {
       super("ats.taskest.reviewed", "TLE Reviewed", 20, XViewerAlign.Left, true, SortDataType.String, true, "");
       atsApi = AtsApiService.get();
    }
@@ -77,8 +77,8 @@ public class TleReviewedColumn extends XViewerAtsColumn implements IXViewerValue
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public TleReviewedColumn copy() {
-      TleReviewedColumn newXCol = new TleReviewedColumn();
+   public ReviewedByColumn copy() {
+      ReviewedByColumn newXCol = new ReviewedByColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -103,7 +103,7 @@ public class TleReviewedColumn extends XViewerAtsColumn implements IXViewerValue
 
             IAtsWorkItem workItem = (IAtsWorkItem) useArt;
 
-            XTleReviewedWidget widget = new XTleReviewedWidget();
+            XReviewedWidget widget = new XReviewedWidget();
             widget.setArtifact((Artifact) workItem.getStoreObject());
             widget.handleSelection();
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
@@ -135,11 +135,11 @@ public class TleReviewedColumn extends XViewerAtsColumn implements IXViewerValue
                   artifacts.add((Artifact) workItem.getStoreObject());
                }
                if (res == 2) {
-                  XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.TleReviewedDate,
-                     AtsAttributeTypes.TleReviewedBy, "TLE Reviewed", false);
+                  XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.ReviewedByDate,
+                     AtsAttributeTypes.ReviewedBy, "TLE Reviewed", false);
                } else if (res == 0) {
-                  XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.TleReviewedDate,
-                     AtsAttributeTypes.TleReviewedBy, "TLE Reviewed", true);
+                  XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.ReviewedByDate,
+                     AtsAttributeTypes.ReviewedBy, "TLE Reviewed", true);
                }
                return Status.OK_STATUS;
             }
@@ -171,7 +171,7 @@ public class TleReviewedColumn extends XViewerAtsColumn implements IXViewerValue
          }
          IAtsWorkItem workItem = (IAtsWorkItem) element;
          return XAbstractSignDateAndByButton.getText((Artifact) workItem.getStoreObject(),
-            AtsAttributeTypes.TleReviewedDate, AtsAttributeTypes.TleReviewedBy);
+            AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
