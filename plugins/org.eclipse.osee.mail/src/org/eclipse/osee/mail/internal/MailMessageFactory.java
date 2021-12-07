@@ -88,8 +88,13 @@ public class MailMessageFactory {
    }
 
    public MimeMessage createMimeMessage(Session session, MailMessage email, Date sendDate) throws AddressException, MessagingException {
+      System.err.println(String.format("MMF session [%s]", session));
       MimeMessage message = new MimeMessage(session);
-      message.setFrom(toAddress(email.getFrom()));
+      String from = email.getFrom();
+      System.err.println(String.format("MMF getFrom [%s]", from));
+      Address addr = toAddress(from);
+      System.err.println(String.format("MMF addr [%s]", addr));
+      message.setFrom(addr);
       message.setSubject(email.getSubject(), "UTF-8");
       message.setReplyTo(toAddress(email.getReplyTo()));
       message.setRecipients(Message.RecipientType.TO, toAddress(email.getRecipients()));
