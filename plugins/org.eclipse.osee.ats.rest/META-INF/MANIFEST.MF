@@ -13,6 +13,7 @@ Osee-Template: OSEE-INF/templates/*.html
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.google.common.base,
+ javax.activation,
  javax.mail,
  javax.mail.internet,
  javax.ws.rs,
