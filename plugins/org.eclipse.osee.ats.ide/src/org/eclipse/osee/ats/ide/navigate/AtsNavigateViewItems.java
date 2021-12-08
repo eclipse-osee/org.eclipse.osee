@@ -390,6 +390,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - email", debug);
       items.add(new XNavigateItemFolder(EMAIL_NOTIFICATIONS.getName(), FrameworkImage.EMAIL, BOT));
 
+      items.add(new TestEmailSend());
       items.add(new EmailTeamsItem(null, MemberType.Both));
       items.add(new EmailTeamsItem(null, MemberType.Leads));
       items.add(new EmailTeamsItem(null, MemberType.Members));

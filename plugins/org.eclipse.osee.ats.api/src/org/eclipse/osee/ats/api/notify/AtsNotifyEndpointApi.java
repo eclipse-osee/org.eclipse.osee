@@ -16,8 +16,10 @@ package org.eclipse.osee.ats.api.notify;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -28,5 +30,11 @@ public interface AtsNotifyEndpointApi {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    public Response sendNotifications(AtsNotificationCollector notifications);
+
+   @Path("test")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData sendEmail();
 
 }
