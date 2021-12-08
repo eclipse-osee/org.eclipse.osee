@@ -97,7 +97,9 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
 
          messageLabel = new Label(mainComp, SWT.NONE);
          messageLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         messageLabel.setText("Debug Here");
+         if (atsApi.getUserService().isAtsAdmin()) {
+            messageLabel.setText("Debug Here");
+         }
          messageLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          managedForm.getToolkit().adapt(messageLabel, true, true);
 

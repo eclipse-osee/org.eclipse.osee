@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -397,4 +398,10 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public AtsSearchData createSearchData(String namespace, String searchName) {
       return atsApi.getSearchDataProvider(namespace).createSearchData(namespace, searchName);
    }
+
+   @Override
+   public ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch) {
+      return getArtifactFromTypeAndAttribute(artType, CoreAttributeTypes.Name, name, branch);
+   }
+
 }

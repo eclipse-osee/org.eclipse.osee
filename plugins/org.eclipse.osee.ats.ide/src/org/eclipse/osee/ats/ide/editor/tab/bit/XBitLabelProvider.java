@@ -12,13 +12,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.bit;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -28,8 +35,11 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XBitLabelProvider extends XViewerLabelProvider {
 
+   private final XBitViewer xBitViewer;
+
    public XBitLabelProvider(XBitViewer xBitViewer) {
       super(xBitViewer);
+      this.xBitViewer = xBitViewer;
    }
 
    @Override
@@ -57,6 +67,17 @@ public class XBitLabelProvider extends XViewerLabelProvider {
             return bid.getProgram().getName();
          } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Build_Col.getName())) {
             return bid.getBuild().getName();
+         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Config_Col.getName())) {
+            Artifact bidArt = (Artifact) AtsApiService.get().getQueryService().getArtifact(bid.getBidArt());
+            List<String> configs = new ArrayList<String>();
+            for (String configIdStr : AtsApiService.get().getAttributeResolver().getAttributesToStringList(bidArt,
+               AtsAttributeTypes.BitConfig)) {
+               Long configId = Long.valueOf(configIdStr);
+               ArtifactToken config = xBitViewer.getBids().getIdToConfig().get(configId);
+               configs.add(config.getName());
+
+            }
+            return Collections.toString(",", configs);
          } else if (xViewerColumn.getName().equals(XBitXViewerFactory.State_Col.getName())) {
             return bid.getState();
          }

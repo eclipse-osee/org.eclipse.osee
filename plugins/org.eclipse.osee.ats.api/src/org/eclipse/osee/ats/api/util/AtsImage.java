@@ -33,6 +33,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage ARROW_LEFT_YELLOW = new AtsImage("nav_forward.gif");
    public static AtsImage ART_VIEW = new AtsImage("artView.gif");
    public static AtsImage ATS = new AtsImage("atsPerspective.gif");
+   public static AtsImage BUILD_IMPACT = new AtsImage("buildImpact.gif");
    public static AtsImage CENTER = new AtsImage("center.gif");
    public static AtsImage CHECK_BLUE = new AtsImage("check.gif");
    public static AtsImage CHECK_CLIPBOARD = new AtsImage("checkClipboard.gif");

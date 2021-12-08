@@ -78,7 +78,6 @@ public class NewProgramVersionAction extends Action {
             bid.setBids(bids);
             bid.setBidArt(ArtifactToken.valueOf(ArtifactId.SENTINEL, pVer.getVersion().getName()));
             bid.setBuild(pVer.getVersion().getArtifactToken());
-            bid.setConfig("USG");
             bid.setProgram(pVer.getProgram().getArtifactToken());
             bid.setState(BuildImpactState.Open.getName());
             bids.addBuildImpactData(bid);

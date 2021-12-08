@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,6 +52,8 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
       } else if (element instanceof ArtifactExplorerLinkNode) {
          return ImageManager.getImage(FrameworkImage.RELATION);
+      } else if (element instanceof ArtifactTypeToken) {
+         return ArtifactImageManager.getImage((ArtifactTypeToken) element);
       }
       return ImageManager.getImage(ImageManager.MISSING);
    }

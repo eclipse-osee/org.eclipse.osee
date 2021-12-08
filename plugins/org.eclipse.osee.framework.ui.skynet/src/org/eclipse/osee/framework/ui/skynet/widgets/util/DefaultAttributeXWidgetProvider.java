@@ -53,8 +53,9 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
-      return attributeType.matches(CoreAttributeTypes.WordTemplateContent) || attributeType.matches(
-         CoreAttributeTypes.WholeWordContent) || attributeType.matches(CoreAttributeTypes.PlainTextContent);
+      return attributeType.matches(CoreAttributeTypes.WordTemplateContent) || //
+         attributeType.matches(CoreAttributeTypes.WholeWordContent) || //
+         attributeType.matches(CoreAttributeTypes.PlainTextContent);
    }
 
    @Override
@@ -76,7 +77,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          } else if (attributeType.isBranchId()) {
             xWidgetName = XBranchSelectWidget.WIDGET_ID;
-         } else if (attributeType.isArtifactId()) {
+         } else if (attributeType.isArtifactId() & artType.getMax(attributeType) == 1) {
             xWidgetName = XIntegerDam.WIDGET_ID;
          } else if (xFlatAttributeTypes.contains(attributeType)) {
             xWidgetName = XTextFlatDam.WIDGET_ID;

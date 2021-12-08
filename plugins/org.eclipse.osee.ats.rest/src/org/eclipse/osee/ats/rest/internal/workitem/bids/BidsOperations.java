@@ -30,10 +30,13 @@ import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
@@ -41,9 +44,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class BidsOperations {
 
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public BidsOperations(AtsApi atsApi) {
+   public BidsOperations(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    public BuildImpactDatas createBids(BuildImpactDatas bids) {
@@ -83,10 +88,10 @@ public class BidsOperations {
                   bid.setProgram(program.getArtifactToken());
                }
             }
-            // Create/update config
-            if (Strings.isValid(bid.getConfig())) {
-               changes.setSoleAttributeValue(bidArt, AtsAttributeTypes.BitConfig, bid.getConfig());
-            }
+
+            // Create/Update configs
+            changes.setAttributeValues(bidArt, AtsAttributeTypes.BitConfig, Collections.castAll(bid.getConfigs()));
+
             // Create/update state
             if (Strings.isValid(bid.getState())) {
                changes.setSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, bid.getState());
@@ -137,11 +142,23 @@ public class BidsOperations {
       }
       bids.setTeamWf(teamWf.getStoreObject());
 
+      IAtsProgram program = atsApi.getProgramService().getProgram(teamWf);
+      BranchToken branch = atsApi.getProgramService().getProductLineBranch(program);
+      for (ArtifactToken view : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
+         bids.addConfig(view);
+      }
+
       for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
          AtsRelationTypes.BuildImpactTableToData_Bid)) {
          BuildImpactData bid = new BuildImpactData();
          bid.setBidArt(bidArt);
-         bid.setConfig(atsApi.getAttributeResolver().getSoleAttributeValue(bidArt, AtsAttributeTypes.BitConfig, ""));
+
+         for (Object obj : atsApi.getAttributeResolver().getAttributeValues(bidArt, AtsAttributeTypes.BitConfig)) {
+            ArtifactId configArt = (ArtifactId) obj;
+            ArtifactToken config = bids.getIdToConfig().get(configArt.getId());
+            bid.getConfigs().add(config);
+         }
+
          bid.setState(atsApi.getAttributeResolver().getSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, ""));
 
          // Populate related version
@@ -152,8 +169,8 @@ public class BidsOperations {
          if (verArt != null) {
             IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
             IAtsTeamDefinition teamDef = atsApi.getVersionService().getTeamDefinition(version);
-            IAtsProgram program = atsApi.getProgramService().getProgram(teamDef);
-            bid.setProgram(program.getArtifactToken());
+            IAtsProgram prog = atsApi.getProgramService().getProgram(teamDef);
+            bid.setProgram(prog.getArtifactToken());
          }
 
          // Populate related teamWf(s)
