@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
  * @author Donald G. Dunne
@@ -140,4 +141,6 @@ public interface IAtsProgramService {
     * @return this object casted, else if hard artifact constructed, else load and construct
     */
    IAtsCountry getCountryById(ArtifactId countryId);
+
+   BranchToken getProductLineBranch(IAtsProgram program);
 }

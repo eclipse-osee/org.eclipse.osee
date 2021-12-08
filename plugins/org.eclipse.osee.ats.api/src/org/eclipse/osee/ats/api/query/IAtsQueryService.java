@@ -219,4 +219,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(AttributeTypeToken attrType, String value, BranchToken branch);
 
+   ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch);
+
 }

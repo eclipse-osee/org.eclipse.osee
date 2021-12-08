@@ -56,6 +56,8 @@ import org.eclipse.osee.ats.core.program.operations.AtsProgramOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -527,5 +529,16 @@ public class AtsProgramService implements IAtsProgramService {
    public ArtifactToken getProgramFromVersion(ArtifactId version) {
       AtsProgramOperations ops = new AtsProgramOperations(atsApi);
       return ops.getProgramFromVersion(version);
+   }
+
+   @Override
+   public BranchToken getProductLineBranch(IAtsProgram program) {
+      String branchIdStr =
+         atsApi.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.ProductLineBranchId, "");
+      if (Strings.isNumeric(branchIdStr)) {
+         Long branchId = Long.valueOf(branchIdStr);
+         return atsApi.getBranchService().getBranch(BranchId.valueOf(branchId));
+      }
+      return BranchToken.SENTINEL;
    }
 }

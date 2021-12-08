@@ -17,6 +17,7 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.ats.api.util.AtsImage.ACTION;
 import static org.eclipse.osee.ats.api.util.AtsImage.ACTIONABLE_ITEM;
+import static org.eclipse.osee.ats.api.util.AtsImage.BUILD_IMPACT;
 import static org.eclipse.osee.ats.api.util.AtsImage.CHANGE_REQUEST;
 import static org.eclipse.osee.ats.api.util.AtsImage.DECISION_REVIEW;
 import static org.eclipse.osee.ats.api.util.AtsImage.GOAL;
@@ -46,9 +47,9 @@ public interface AtsArtifactTypes {
    // @formatter:off
 
    // Build Impact Data
-   ArtifactTypeToken BuildImpactData = ats.add(ats.artifactType(2629918707103L, "Build Impact Data", false, Artifact)
+   ArtifactTypeToken BuildImpactData = ats.add(ats.artifactType(2629918707103L, "Build Impact Data", false, BUILD_IMPACT, Artifact)
       .zeroOrOne(VersionReference)
-      .zeroOrOne(BitConfig)
+      .any(BitConfig)
       .zeroOrOne(ChangeType)
       .zeroOrOne(Priority)
       .zeroOrOne(Workaround)
@@ -90,6 +91,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(Description)
       .zeroOrOne(Namespace)
+      .zeroOrOne(ProductLineBranchId)
       .zeroOrOne(TeamDefinitionReference));
 
    ArtifactTypeToken ResponsibleTeam = ats.add(ats.artifactType(8943243743202487405L, "Responsible Team", false, AtsTeamDefinitionOrAi));

@@ -848,7 +848,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas updateBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
-      BidsOperations ops = new BidsOperations(atsApi);
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.createBids(bids);
    }
 
@@ -858,7 +858,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
-      BidsOperations ops = new BidsOperations(atsApi);
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.deleteBids(bids);
    }
 
@@ -867,7 +867,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas getBids(@PathParam("atsId") String atsId) {
-      BidsOperations ops = new BidsOperations(atsApi);
+      BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.getBids(atsId);
    }
 

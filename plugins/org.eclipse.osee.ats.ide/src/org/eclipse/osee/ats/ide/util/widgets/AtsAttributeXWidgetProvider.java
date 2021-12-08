@@ -47,6 +47,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       xFlatAttributeTypes.add(CoreAttributeTypes.WorkTransition);
       xFlatAttributeTypes.add(CoreAttributeTypes.WorkData);
       xFlatAttributeTypes.add(AtsAttributeTypes.State);
+      xFlatAttributeTypes.add(AtsAttributeTypes.BitConfig);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.ActionableItemReference, AtsArtifactTypes.ActionableItem);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TeamDefinitionReference, AtsArtifactTypes.TeamDefinition);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactTypeId.SENTINEL);

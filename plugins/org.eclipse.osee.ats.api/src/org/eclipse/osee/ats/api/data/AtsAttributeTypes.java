@@ -68,7 +68,7 @@ public interface AtsAttributeTypes {
    BitStateEnumAttributeType BitState = ats.createEnum(new BitStateEnumAttributeType());
    AttributeTypeString BlockedReason = ats.createString(7797797474874870503L, "ats.Blocked Reason", MediaType.TEXT_PLAIN, "Reason for action being blocked");
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString BitConfig = ats.createString(2382915711248L, "ats.BIT Config", MediaType.TEXT_PLAIN, "");
+   AttributeTypeArtifactId BitConfig = ats.createArtifactId(2382915711248L, "ats.BIT Config", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", MediaType.TEXT_PLAIN, "CSCI this Team is reponsible for.");
    AttributeTypeString CancelledBy = ats.createString(1152921504606847170L, "ats.Cancelled By", MediaType.TEXT_PLAIN, "UserId of the user who cancelled workflow.");
@@ -155,6 +155,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate ProblemFirstObserved = ats.createDate(8431670117014503949L, "ats.Problem First Observed", AttributeTypeToken.TEXT_CALENDAR, "Date of Problem First Observed");
    AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
+   AttributeTypeString ProductLineBranchId = ats.createString(8728667450560659060L, "ats.Product Line Branch Id", MediaType.TEXT_PLAIN, "PL branch associated with ATS object.");
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", MediaType.TEXT_PLAIN, "Recommended resolution.", DisplayHint.MultiLine);
    AttributeTypeString Rationale = ats.createString(1152922093379715242L, "ats.Rationale", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);

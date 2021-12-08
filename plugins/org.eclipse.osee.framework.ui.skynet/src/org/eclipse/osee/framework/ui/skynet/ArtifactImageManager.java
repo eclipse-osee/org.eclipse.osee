@@ -293,6 +293,14 @@ public final class ArtifactImageManager {
       return ImageManager.getImage(FrameworkImage.INFO_LG);
    }
 
+   public synchronized static Image getImageFromType(ArtifactTypeToken type) {
+      OseeImage image = type.getImage();
+      if (image != null) {
+         return ImageManager.getImage(image);
+      }
+      return null;
+   }
+
    public synchronized static Image getImage(Artifact artifact) {
       ArtifactTypeToken type = artifact.getArtifactType();
       OseeImage image = type.getImage();

@@ -140,5 +140,16 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
          }
          return equal;
       }
+
+      @Override
+      public ArtifactToken getToken() {
+         return ArtifactToken.valueOf(getId(), getName(), getBranch());
+      }
+
    }
+
+   public default ArtifactToken getToken() {
+      return ArtifactToken.valueOf(getId(), getName(), getBranch());
+   }
+
 }

@@ -27,7 +27,7 @@ public class BuildImpactData {
    private ArtifactToken program = ArtifactToken.SENTINEL;
    private ArtifactToken build = ArtifactToken.SENTINEL;
    private String state = BuildImpactState.Open.getName();
-   private String config = "TBD";
+   private List<ArtifactToken> configs = new ArrayList<ArtifactToken>();
    private List<JaxTeamWorkflow> teamWfs = new ArrayList<>();
    @JsonIgnore
    private BuildImpactDatas bids;
@@ -43,14 +43,6 @@ public class BuildImpactData {
 
    public void setBuild(ArtifactToken build) {
       this.build = build;
-   }
-
-   public String getConfig() {
-      return config;
-   }
-
-   public void setConfig(String config) {
-      this.config = config;
    }
 
    public List<JaxTeamWorkflow> getTeamWfs() {
@@ -92,6 +84,18 @@ public class BuildImpactData {
 
    public void setState(String state) {
       this.state = state;
+   }
+
+   public List<ArtifactToken> getConfigs() {
+      return configs;
+   }
+
+   public void setConfigs(List<ArtifactToken> configs) {
+      this.configs = configs;
+   }
+
+   public void addConfig(ArtifactToken config) {
+      this.configs.add(config);
    }
 
 }
