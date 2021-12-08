@@ -103,7 +103,9 @@ public class MailMessageFactory {
       for (Address replyAddr : replyAddrs) {
          System.err.println(String.format("MMF replyAddr  [%s]", replyAddr));
       }
-      message.setReplyTo(replyAddrs);
+      if (replyAddrs.length > 0) {
+         message.setReplyTo(replyAddrs);
+      }
       System.err.println(String.format("MMF recipients [%s]", email.getRecipients()));
       message.setRecipients(Message.RecipientType.TO, toAddress(email.getRecipients()));
       System.err.println(String.format("MMF uuid [%s]", email.getId()));
