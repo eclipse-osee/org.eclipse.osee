@@ -332,9 +332,11 @@ public class OseeEmail extends MimeMessage {
     */
    private static Session getSession(AtsApi atsApi) {
       ArtifactToken artifact = atsApi.getQueryService().getArtifact(CoreArtifactTokens.GlobalPreferences);
+      System.err.println(String.format("getSession art %s", artifact.toStringWithId()));
       Properties props = System.getProperties();
       String mailServer =
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, CoreAttributeTypes.DefaultMailServer, "");
+      System.err.println(String.format("getSession mailServer %s", mailServer));
       props.put(emailType, mailServer);
       return Session.getDefaultInstance(props, null);
    }
