@@ -299,7 +299,7 @@ public class OseeEmail extends MimeMessage {
          CommandMap.setDefaultCommandMap(mc);
 
          // Set class loader so can find the mail handlers
-         //         Thread.currentThread().setContextClassLoader(new ExportClassLoader(ServiceUtil.getPackageAdmin()));
+         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
          if (bodyType == null) {
             bodyType = plainText;
             body = "";
