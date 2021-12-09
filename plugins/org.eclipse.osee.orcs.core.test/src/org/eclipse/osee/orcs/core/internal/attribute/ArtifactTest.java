@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PublishInline;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
@@ -32,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -69,7 +69,6 @@ public class ArtifactTest {
 
    @Mock private VersionData version;
    @Mock private AttributeData attributeData;
-   @Mock private Branch branch;
 
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute;
@@ -102,11 +101,8 @@ public class ArtifactTest {
 
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
-      when(version.getBranch()).thenReturn(branch);
-      when(branch.getId()).thenReturn(24234L);
-      when(branch.getName()).thenReturn("branch");
+      when(version.getBranch()).thenReturn(COMMON);
       when(artifactData.getType()).thenReturn(artifactType);
-      when(artifactData.getId()).thenReturn(0L);
 
       when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
       when(deleted.isDeleted()).thenReturn(true);
