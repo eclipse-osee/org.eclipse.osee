@@ -96,7 +96,7 @@ public class ConflictManagerInternal {
             AttributeConflict attributeConflict =
                new AttributeConflict(GammaId.valueOf(chStmt.getLong("source_gamma_id")),
                   GammaId.valueOf(chStmt.getLong("dest_gamma_id")), ArtifactId.valueOf(chStmt.getLong("art_id")), null,
-                  commitTransaction, chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
+                  commitTransaction, chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getLong("attr_id")),
                   ServiceUtil.getOrcsTokenService().getAttributeTypeOrCreate(chStmt.getLong("attr_type_id")),
                   BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                   BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
@@ -279,7 +279,7 @@ public class ConflictManagerInternal {
          AttributeId attrId = AttributeId.SENTINEL;
 
          while (chStmt.next()) {
-            AttributeId nextAttrId = AttributeId.valueOf(chStmt.getInt("attr_id"));
+            AttributeId nextAttrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("source_gamma"));
             GammaId destGamma = GammaId.valueOf(chStmt.getLong("dest_gamma"));

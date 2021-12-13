@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -40,8 +41,8 @@ public class SkynetTransactionTest {
 
    public static final Artifact artifactA = new Artifact(54L, COMMON);
    public static final Artifact artifactB = new Artifact(55L, COMMON);
-   public static final RelationLink link = new RelationLink(artifactA, artifactB, COMMON, WorkItem, 77,
-      GammaId.valueOf(88), "", ModificationType.MODIFIED, ApplicabilityId.BASE);
+   public static final RelationLink link = new RelationLink(artifactA, artifactB, COMMON, WorkItem,
+      RelationId.valueOf(77L), GammaId.valueOf(88), "", ModificationType.MODIFIED, ApplicabilityId.BASE);
 
    @Test
    public void getCheckAccessErrorTest() {

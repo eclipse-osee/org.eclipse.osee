@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,14 +38,14 @@ public class IndexerDataSourceImpl extends ByteSource implements IndexedResource
 
    private final IResourceManager resourceManager;
 
-   private final int id;
+   private final AttributeId id;
    private final AttributeTypeToken attributeType;
    private final GammaId gammaId;
 
    private final String value;
    private final String uri;
 
-   public IndexerDataSourceImpl(IResourceManager resourceManager, int id, AttributeTypeToken attributeType, GammaId gammaId, String value, String uri) {
+   public IndexerDataSourceImpl(IResourceManager resourceManager, AttributeId id, AttributeTypeToken attributeType, GammaId gammaId, String value, String uri) {
       this.resourceManager = resourceManager;
       this.id = id;
       this.attributeType = attributeType;

@@ -18,9 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -139,21 +142,22 @@ public class RelationIntegrityCheckTest {
          chStmt.runPreparedQuery(sqlQuery);
          while (chStmt.next()) {
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
-            Long transactionId = chStmt.getLong("transaction_id");
-            int relationId = chStmt.getInt("rel_link_id");
+            TransactionId transactionId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
+            RelationId relationId = RelationId.valueOf(chStmt.getLong("rel_link_id"));
             BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-            int a_sideArtifactId = chStmt.getInt("a_art_id");
-            int b_sideArtifactId = chStmt.getInt("b_art_id");
-            int deletedTransaction = chStmt.getInt("deleted_tran");
+            ArtifactId a_sideArtifactId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
+            ArtifactId b_sideArtifactId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
+            TransactionId deletedTransaction = TransactionId.valueOf(chStmt.getLong("deleted_tran"));
 
             //note: aliased column only present in RelationIntegrityCheck.DELETED_ARTIFACTS_QUERY
-            int commitTransId = chStmt.getInt("commit_trans_art_id");
+            TransactionId commitTransId = TransactionId.valueOf(chStmt.getLong("commit_trans_art_id"));
             int modType = chStmt.getInt("creating_trans_mod_type");
 
-            if (!map.containsKey(gammaId.getId(), transactionId)) {
-               if (commitTransId > 0 && modType == 1) {
-                  map.put(gammaId.getId(), transactionId, new LocalRelationLink(relationId, gammaId, transactionId,
-                     branch, a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
+            if (!map.containsKey(gammaId.getId(), transactionId.getId())) {
+               if (commitTransId.isGreaterThan(TransactionId.valueOf(0)) && modType == 1) {
+                  map.put(gammaId.getId(), transactionId.getId(),
+                     new LocalRelationLink(relationId, gammaId, transactionId, branch, a_sideArtifactId,
+                        b_sideArtifactId, deletedTransaction, commitTransId, modType));
                }
             }
          }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -79,20 +80,17 @@ public final class TestUtil {
       return ConnectionHandler.getJdbcClient().fetch(0, "SELECT count(1) FROM " + tableName);
    }
 
-   public static RelationLink createRelationLink(int relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationTypeToken relationType) {
-      return createRelationLink(relationId, artA.getIdIntValue(), artB.getIdIntValue(), branch, relationType);
-   }
-
-   public static RelationLink createRelationLink(int relationId, int artA, int artB, BranchId branch, RelationTypeToken relationType) {
-      return new RelationLink(ArtifactToken.valueOf(artA, branch), ArtifactToken.valueOf(artB, branch), branch,
-         relationType, relationId, GammaId.valueOf(0), "relation: " + relationId, ModificationType.MODIFIED,
-         ApplicabilityId.BASE);
+   public static RelationLink createRelationLink(RelationId relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationTypeToken relationType) {
+      return new RelationLink(ArtifactToken.valueOf(artA, BranchToken.valueOf(branch)),
+         ArtifactToken.valueOf(artB, BranchToken.valueOf(branch)), branch, relationType, relationId, GammaId.valueOf(0),
+         "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
    }
 
    public static List<RelationLink> createLinks(int total, BranchId branch) {
       List<RelationLink> links = new ArrayList<>();
       for (int index = 0; index < total; index++) {
-         RelationLink link = createRelationLink(index, index + 1, index + 2, branch, CoreRelationTypes.Allocation);
+         RelationLink link = createRelationLink(RelationId.valueOf(index), ArtifactId.valueOf(index + 1),
+            ArtifactId.valueOf(index + 2), branch, CoreRelationTypes.Allocation);
          links.add(link);
       }
       return links;

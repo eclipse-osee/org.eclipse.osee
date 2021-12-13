@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
@@ -38,7 +39,7 @@ public class RelationFilterUtil {
       return new FirstSideRelatedArtIdMatcher(aArtifactId, side.isSideA());
    }
 
-   public static RelationMatcher createFindFirstRelationLinkIdMatcher(int relLinkId) {
+   public static RelationMatcher createFindFirstRelationLinkIdMatcher(RelationId relLinkId) {
       return new FirstRelationLinkIdMatcher(relLinkId);
    }
 
@@ -78,15 +79,15 @@ public class RelationFilterUtil {
    }
    private static final class FirstRelationLinkIdMatcher implements RelationMatcher {
 
-      private final int relLinkId;
+      private final RelationId relLinkId;
 
-      public FirstRelationLinkIdMatcher(int relLinkId) {
+      public FirstRelationLinkIdMatcher(RelationId relLinkId) {
          this.relLinkId = relLinkId;
       }
 
       @Override
       public boolean matches(RelationLink relationLink) {
-         return relationLink.getId() == relLinkId;
+         return relLinkId.equals(relationLink.getId());
       }
 
       @Override

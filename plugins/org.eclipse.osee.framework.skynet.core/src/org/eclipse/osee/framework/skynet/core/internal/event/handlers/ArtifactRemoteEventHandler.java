@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -198,8 +199,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                BranchToken branch = BranchManager.getBranchToken(guidArt.getArtA().getBranch());
                ArtifactToken artifactIdA = ArtifactToken.valueOf(guidArt.getArtAId(), branch);
                ArtifactToken artifactIdB = ArtifactToken.valueOf(guidArt.getArtBId(), branch);
-               RelationLink relation = RelationManager.getLoadedRelationById(guidArt.getRelationId().intValue(),
-                  artifactIdA, artifactIdB, branch);
+               RelationLink relation = RelationManager.getLoadedRelationById(
+                  RelationId.valueOf(guidArt.getRelationId()), artifactIdA, artifactIdB, branch);
 
                RelationEventType eventType = guidArt.getModType();
                switch (eventType) {
@@ -207,7 +208,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                      if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
                         ApplicabilityId appId = relation == null ? ApplicabilityId.BASE : relation.getApplicabilityId();
                         relation = RelationManager.getOrCreate(artifactIdA, artifactIdB, relationType,
-                           guidArt.getRelationId().intValue(), guidArt.getGammaId(), guidArt.getRationale(),
+                           RelationId.valueOf(guidArt.getRelationId()), guidArt.getGammaId(), guidArt.getRationale(),
                            ModificationType.NEW, appId);
                      }
                      break;

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -398,7 +399,7 @@ public final class TransactionManager {
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
-      Long relId = Long.valueOf(chStmt.getInt("rel_link_id"));
+      RelationId relId = RelationId.valueOf(chStmt.getLong("rel_link_id"));
       String rationale = chStmt.getString("rationale");
       return new RelationRow(branch, relId, relationType, aArtId, bArtId, rationale, gammaId);
    }

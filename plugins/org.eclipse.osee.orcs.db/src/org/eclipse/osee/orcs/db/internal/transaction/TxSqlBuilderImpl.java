@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -146,8 +147,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             binaryStores.add(dataProxy);
 
             if (data.isInvalid()) {
-               int id = idManager.getNextAttributeId();
-               data.setLocalId(Id.valueOf(id));
+               AttributeId id = idManager.getNextAttributeId();
+               data.setLocalId(id);
             }
             addRow(SqlOrderEnum.ATTRIBUTES, data.getId(), data.getVersion().getGammaId(), data.getArtifactId(),
                data.getType(), dataProxy.getStorageString(), dataProxy.getUri());
@@ -261,8 +262,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          if (!reuseGamma && !data.getDirtyState().isApplicOnly()) {
             updateGamma(data);
             if (data.isInvalid()) {
-               int id = idManager.getNextRelationId();
-               data.setLocalId(Id.valueOf(id));
+               RelationId id = idManager.getNextRelationId();
+               data.setLocalId(id);
             }
             addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtIdA(), data.getArtIdB(),
                data.getVersion().getGammaId(), data.getId(), data.getRationale());
