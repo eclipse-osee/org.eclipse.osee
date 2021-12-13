@@ -229,11 +229,11 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             teamDef.getChildren().add(child.getId());
          }
       }
-      for (Long versionId : teamDefArt.getRelatedIds(TeamDefinitionToVersion_Version)) {
-         teamDef.getVersions().add(versionId);
+      for (ArtifactId versionId : teamDefArt.getRelatedIds(TeamDefinitionToVersion_Version)) {
+         teamDef.getVersions().add(versionId.getId());
       }
-      for (Long aiId : teamDefArt.getRelatedIds(TeamActionableItem_ActionableItem)) {
-         teamDef.getAis().add(aiId);
+      for (ArtifactId aiId : teamDefArt.getRelatedIds(TeamActionableItem_ActionableItem)) {
+         teamDef.getAis().add(aiId.getId());
       }
       teamDef.setHasWorkPackages(
          teamDefArt.getRelatedIds(AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage).size() > 0);
@@ -241,8 +241,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    private Version handleVersion(ArtifactReadable verArt, Version ver, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
-      for (Long teamDefId : verArt.getRelatedIds(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition)) {
-         ver.setTeamDefId(teamDefId);
+      for (ArtifactId teamDefId : verArt.getRelatedIds(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition)) {
+         ver.setTeamDefId(teamDefId.getId());
       }
       return ver;
    }
@@ -257,8 +257,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             ai.getChildren().add(child.getId());
          }
       }
-      for (Long teamDefId : aiArt.getRelatedIds(AtsRelationTypes.TeamActionableItem_TeamDefinition)) {
-         ai.setTeamDefId(teamDefId);
+      for (ArtifactId teamDefId : aiArt.getRelatedIds(AtsRelationTypes.TeamActionableItem_TeamDefinition)) {
+         ai.setTeamDefId(teamDefId.getId());
       }
       return ai;
    }
