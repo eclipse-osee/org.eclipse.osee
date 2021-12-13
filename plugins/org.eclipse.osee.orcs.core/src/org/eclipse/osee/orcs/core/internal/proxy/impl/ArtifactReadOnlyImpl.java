@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -405,20 +406,20 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Collection<Long> getChildrentIds() {
+   public Collection<ArtifactId> getChildrentIds() {
       return getRelatedIds(CoreRelationTypes.DefaultHierarchical_Child);
    }
 
    @Override
-   public List<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
-      List<Long> relatedIds = new ArrayList<>();
+   public List<ArtifactId> getRelatedIds(RelationTypeSide relationTypeSide) {
+      List<ArtifactId> relatedIds = new ArrayList<>();
       for (Relation relation : getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)) {
          if (relation.getRelationType().equals(relationTypeSide.getRelationType())) {
             boolean aSide = relationTypeSide.getSide().isSideA();
-            if (aSide && relation.getArtIdB().equals(this.getId())) {
-               relatedIds.add(relation.getArtIdA().getId());
-            } else if (!aSide && relation.getArtIdA().equals(this.getId())) {
-               relatedIds.add(relation.getArtIdB().getId());
+            if (aSide && relation.getArtIdB().equals(this)) {
+               relatedIds.add(relation.getArtIdA());
+            } else if (!aSide && relation.getArtIdA().equals(this)) {
+               relatedIds.add(relation.getArtIdB());
             }
          }
       }

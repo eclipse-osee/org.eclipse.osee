@@ -195,8 +195,8 @@ public class AtsConfigOperation extends AbstractOperation {
                         AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsApiService.get().getAtsBranch()),
-                     PresentationType.SPECIALIZED_EDIT, monitor);
+                     workDefinition.getName(), AtsApiService.get().getAtsBranch()), PresentationType.SPECIALIZED_EDIT,
+                     monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

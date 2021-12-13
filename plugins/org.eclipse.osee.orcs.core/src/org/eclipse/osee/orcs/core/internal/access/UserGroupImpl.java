@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.internal.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -70,7 +71,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    public boolean isMember(Long id) {
       checkGroupExists();
       for (IRelationLink rel : getArtifact().getRelations(CoreRelationTypes.Users_User)) {
-         if (rel.getArtIdB().equals(id)) {
+         if (rel.getArtIdB().equals(ArtifactId.valueOf(id))) {
             return true;
          }
       }
