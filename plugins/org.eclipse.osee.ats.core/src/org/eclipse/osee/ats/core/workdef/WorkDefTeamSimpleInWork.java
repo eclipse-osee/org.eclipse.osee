@@ -41,8 +41,8 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
-         .andToStates(StateToken.Completed) //
-         
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
+
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
