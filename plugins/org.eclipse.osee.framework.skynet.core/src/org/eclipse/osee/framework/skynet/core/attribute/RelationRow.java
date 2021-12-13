@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
@@ -24,13 +25,13 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 public final class RelationRow {
 
    private final BranchId branch;
-   private Long rel_id;
+   private RelationId rel_id;
    private RelationTypeToken relationType;
    private ArtifactId a_art_id, b_art_id;
    private String rationale;
    private GammaId gamma_id;
 
-   public RelationRow(BranchId branch, Long rel_id, RelationTypeToken relationType, ArtifactId a_art_id, ArtifactId b_art_id, String rationale, GammaId gamma_id) {
+   public RelationRow(BranchId branch, RelationId rel_id, RelationTypeToken relationType, ArtifactId a_art_id, ArtifactId b_art_id, String rationale, GammaId gamma_id) {
       super();
       this.branch = branch;
       this.rel_id = rel_id;
@@ -77,11 +78,11 @@ public final class RelationRow {
       return branch;
    }
 
-   public Long getRel_id() {
+   public RelationId getRel_id() {
       return rel_id;
    }
 
-   public void setRel_id(Long rel_id) {
+   public void setRel_id(RelationId rel_id) {
       this.rel_id = rel_id;
    }
 

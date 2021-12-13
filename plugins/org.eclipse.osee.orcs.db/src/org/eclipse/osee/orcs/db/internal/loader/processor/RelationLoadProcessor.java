@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -67,7 +68,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         int id = chStmt.getInt("rel_link_id");
+         RelationId id = RelationId.valueOf(chStmt.getLong("rel_link_id"));
          ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          String rationale = chStmt.getString("rationale");

@@ -13,16 +13,22 @@
 
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 public class LocalRelationLink {
-   public int relLinkId, aArtId, bArtId, transIdForArtifactDeletion, commitTrans, modType;
+   public RelationId relLinkId;
+   public ArtifactId aArtId, bArtId;
+   public TransactionId transIdForArtifactDeletion, commitTrans;
+   public int modType;
    public BranchId branch;
    public GammaId gammaId;
-   public Long relTransId;
+   public TransactionId relTransId;
 
-   public LocalRelationLink(int relLinkId, GammaId gammaId, Long transactionId, BranchId branch, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
+   public LocalRelationLink(RelationId relLinkId, GammaId gammaId, TransactionId transactionId, BranchId branch, ArtifactId aArtId, ArtifactId bArtId, TransactionId transIdForArtifactDeletion, TransactionId commitTrans, int modType) {
       this.aArtId = aArtId;
       this.bArtId = bArtId;
       this.branch = branch;
@@ -36,7 +42,8 @@ public class LocalRelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", gammaId, relTransId, relLinkId, branch, aArtId, bArtId,
-         transIdForArtifactDeletion, commitTrans, modType);
+      return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", gammaId, relTransId.getIdString(),
+         relLinkId.getIdString(), branch.getIdString(), aArtId.getIdString(), bArtId.getIdString(),
+         transIdForArtifactDeletion.getIdString(), commitTrans.getIdString(), modType);
    }
 }

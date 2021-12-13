@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -50,7 +51,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
    private int loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService) {
       Collection<AttributeData> attrData = new HashSet<>();
       Consumer<JdbcStatement> consumer = stmt -> {
-         int itemId = stmt.getInt("attr_id");
+         AttributeId itemId = AttributeId.valueOf(stmt.getLong("attr_id"));
          AttributeTypeToken attributeType = tokenService.getAttributeTypeOrCreate(stmt.getLong("attr_type_id"));
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          String uri = stmt.getString("uri");
@@ -91,13 +92,13 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
 
    private class AttributeData {
 
-      private final int itemId;
+      private final AttributeId itemId;
       private final AttributeTypeToken attributeType;
       private final GammaId gammaId;
       private final String uri;
       private final String value;
 
-      public AttributeData(int itemId, AttributeTypeToken attributeType, GammaId gammaId, String uri, String value) {
+      public AttributeData(AttributeId itemId, AttributeTypeToken attributeType, GammaId gammaId, String uri, String value) {
          this.itemId = itemId;
          this.attributeType = attributeType;
          this.gammaId = gammaId;
@@ -105,7 +106,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          this.value = value;
       }
 
-      public int getItemId() {
+      public AttributeId getItemId() {
          return itemId;
       }
 

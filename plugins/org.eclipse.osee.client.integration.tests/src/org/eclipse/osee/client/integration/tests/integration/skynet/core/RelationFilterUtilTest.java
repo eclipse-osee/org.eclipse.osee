@@ -22,6 +22,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -96,7 +97,7 @@ public class RelationFilterUtilTest {
       List<RelationLink> sourceLinks = TestUtil.createLinks(4, branch1);
       List<RelationLink> destination = new ArrayList<>();
 
-      int relationLinkToFind = 2;
+      RelationId relationLinkToFind = RelationId.valueOf(2);
       RelationMatcher relationLinkIdMatcher =
          RelationFilterUtil.createFindFirstRelationLinkIdMatcher(relationLinkToFind);
 
@@ -108,8 +109,10 @@ public class RelationFilterUtilTest {
 
       // Add two more Relations with RelationId == 2 so we have more than one match
       // Check we only return the first match
-      sourceLinks.add(TestUtil.createRelationLink(2, 55, 66, branch1, relationType));
-      sourceLinks.add(TestUtil.createRelationLink(2, 77, 88, branch1, relationType));
+      sourceLinks.add(TestUtil.createRelationLink(RelationId.valueOf(2), ArtifactId.valueOf(55), ArtifactId.valueOf(66),
+         branch1, relationType));
+      sourceLinks.add(TestUtil.createRelationLink(RelationId.valueOf(2), ArtifactId.valueOf(77), ArtifactId.valueOf(88),
+         branch1, relationType));
       Assert.assertEquals(6, sourceLinks.size());
 
       destination.clear();
@@ -122,8 +125,10 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testFindFirstArtifactIdFilter() {
-      RelationLink link1 = TestUtil.createRelationLink(0, id55, id66, branch1, relationType);
-      RelationLink link2 = TestUtil.createRelationLink(1, id77, id55, branch1, relationType);
+      RelationLink link1 = TestUtil.createRelationLink(RelationId.valueOf(0), ArtifactId.valueOf(id55),
+         ArtifactId.valueOf(id66), branch1, relationType);
+      RelationLink link2 = TestUtil.createRelationLink(RelationId.valueOf(1), ArtifactId.valueOf(id77),
+         ArtifactId.valueOf(id55), branch1, relationType);
 
       List<RelationLink> sourceLinks = Arrays.asList(link1, link2);
 
@@ -147,11 +152,15 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testCompositeFilter() {
-      RelationLink link1 = TestUtil.createRelationLink(0, 55, 66, branch1, relationType);
-      RelationLink link2 = TestUtil.createRelationLink(1, 77, 55, branch1, relationType);
+      RelationLink link1 = TestUtil.createRelationLink(RelationId.valueOf(0), ArtifactId.valueOf(55),
+         ArtifactId.valueOf(66), branch1, relationType);
+      RelationLink link2 = TestUtil.createRelationLink(RelationId.valueOf(1), ArtifactId.valueOf(77),
+         ArtifactId.valueOf(55), branch1, relationType);
       link2.delete(false);
-      RelationLink link3 = TestUtil.createRelationLink(3, 88, 55, branch1, relationType);
-      RelationLink link4 = TestUtil.createRelationLink(4, 99, 55, branch1, relationType);
+      RelationLink link3 = TestUtil.createRelationLink(RelationId.valueOf(3), ArtifactId.valueOf(88),
+         ArtifactId.valueOf(55), branch1, relationType);
+      RelationLink link4 = TestUtil.createRelationLink(RelationId.valueOf(4), ArtifactId.valueOf(99),
+         ArtifactId.valueOf(55), branch1, relationType);
 
       List<RelationLink> sourceLinks = Arrays.asList(link1, link2, link3, link4);
 

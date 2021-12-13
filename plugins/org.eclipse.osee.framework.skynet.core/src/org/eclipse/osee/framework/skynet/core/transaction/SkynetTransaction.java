@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -106,8 +107,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       return AttributeId.valueOf(ConnectionHandler.getNextSequence(ATTR_ID_SEQ, true));
    }
 
-   private int getNewRelationId() {
-      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true);
+   private RelationId getNewRelationId() {
+      return RelationId.valueOf(ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true));
    }
 
    private User getAuthor() {
@@ -140,8 +141,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          }
          for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
             if (rel.isDirty()) {
-               XResultData rd = ServiceUtil.getOseeClient().getAccessControlService().hasRelationTypePermission(artifact,
-                  rel.getRelationType(), Collections.emptyList(), PermissionEnum.WRITE,
+               XResultData rd = ServiceUtil.getOseeClient().getAccessControlService().hasRelationTypePermission(
+                  artifact, rel.getRelationType(), Collections.emptyList(), PermissionEnum.WRITE,
                   AccessControlArtifactUtil.getXResultAccessHeader("Skynet Transaction: " + comment, artifact));
                if (rd.isErrors()) {
                   throw new OseeCoreException(rd.toString());
@@ -182,8 +183,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
             RelationSide sideToCheck = link.getSide(artifact).oppositeSide();
             RelationTypeSide relTypeSide = new RelationTypeSide(link.getRelationType(), sideToCheck);
             XResultData rd =
-               ServiceUtil.getOseeClient().getAccessControlService().hasRelationTypePermission(artifact, relTypeSide, null,
-                  PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Relation Access Denied",
+               ServiceUtil.getOseeClient().getAccessControlService().hasRelationTypePermission(artifact, relTypeSide,
+                  null, PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Relation Access Denied",
                      Collections.singleton(artifact), relTypeSide));
             if (rd.isErrors()) {
                throw new OseeCoreException(rd.toString());

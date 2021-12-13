@@ -30,8 +30,10 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -230,7 +232,7 @@ public class DataFactoryImplTest {
       when(otherDataProxy.getRawValue()).thenReturn(2389);
       when(otherDataProxy.getUri()).thenReturn("");
 
-      when(idFactory.getNextAttributeId()).thenReturn(1);
+      when(idFactory.getNextAttributeId()).thenReturn(AttributeId.valueOf(1));
 
       AttributeData actual = dataFactory.create(artData, Name);
 
@@ -256,7 +258,7 @@ public class DataFactoryImplTest {
    public void testCreateRelationData() {
       ArtifactId aArt = ArtifactId.valueOf(4562);
       ArtifactId bArt = ArtifactId.valueOf(9513);
-      when(idFactory.getNextRelationId()).thenReturn(1);
+      when(idFactory.getNextRelationId()).thenReturn(RelationId.valueOf(1));
 
       RelationData actual = dataFactory.createRelationData(Design_Design, COMMON, aArt, bArt, "My rationale");
 

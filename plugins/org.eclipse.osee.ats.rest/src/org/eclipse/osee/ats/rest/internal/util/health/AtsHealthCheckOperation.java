@@ -493,7 +493,7 @@ public class AtsHealthCheckOperation {
       try {
          chStmt.runPreparedQuery(AtsHealthQueries.getWorkItemsInCurrentStateType(atsApi, StateType.Working));
          while (chStmt.next()) {
-            artIds.add(Long.valueOf(chStmt.getInt(1)));
+            artIds.add(chStmt.getLong(1));
          }
       } finally {
          chStmt.close();

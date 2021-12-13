@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -49,7 +50,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("id2"));
-      int attrId = chStmt.getInt("attr_id");
+      AttributeId attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
@@ -96,15 +97,15 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    private static final class CreateConditions {
       ArtifactId previousArtId = ArtifactId.SENTINEL;
       BranchId previousBranchId = BranchId.SENTINEL;
-      int previousAttrId = -1;
+      AttributeId previousAttrId = AttributeId.SENTINEL;
       GammaId previousGammaId = GammaId.SENTINEL;
       ModificationType previousModType = null;
 
-      boolean isSame(BranchId branch, ArtifactId artifactId, int attrId) {
-         return previousBranchId.equals(branch) && previousArtId.equals(artifactId) && previousAttrId == attrId;
+      boolean isSame(BranchId branch, ArtifactId artifactId, AttributeId attrId) {
+         return previousBranchId.equals(branch) && previousArtId.equals(artifactId) && previousAttrId.equals(attrId);
       }
 
-      void saveConditions(BranchId branch, ArtifactId artifactId, int attrId, GammaId gammaId, ModificationType modType) {
+      void saveConditions(BranchId branch, ArtifactId artifactId, AttributeId attrId, GammaId gammaId, ModificationType modType) {
          previousBranchId = branch;
          previousArtId = artifactId;
          previousAttrId = attrId;

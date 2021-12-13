@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -55,8 +56,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    private ExportImportJoinQuery gammaJoin;
    private JdbcConnection connection;
    private long previousRelationTypeId;
-   private int previousArtifactAId;
-   private int previousArtiafctBId;
+   private ArtifactId previousArtifactAId;
+   private ArtifactId previousArtifactBId;
    private long netGamma;
    private String netRationale;
    boolean materiallyDifferent;
@@ -81,8 +82,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private void init() {
       previousRelationTypeId = -1;
-      previousArtifactAId = -1;
-      previousArtiafctBId = -1;
+      previousArtifactAId = ArtifactId.SENTINEL;
+      previousArtifactBId = ArtifactId.SENTINEL;
       materiallyDifferent = true;
       obsoleteGammas.clear();
 
@@ -122,8 +123,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private void findObsoleteRelations(JdbcStatement stmt) {
       long relationTypeId = stmt.getLong("rel_link_type_id");
-      int artifactAId = stmt.getInt("a_art_id");
-      int artiafctBId = stmt.getInt("b_art_id");
+      ArtifactId artifactAId = ArtifactId.valueOf(stmt.getLong("a_art_id"));
+      ArtifactId artiafctBId = ArtifactId.valueOf(stmt.getLong("b_art_id"));
 
       if (isNextConceptualRelation(relationTypeId, artifactAId, artiafctBId)) {
          consolidate();
@@ -146,7 +147,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       if (materiallyDifferent) {
          counter++;
          console.writeln("rel_type:[%s] a_art_id:[%s]  b_art_id:[%s]", previousRelationTypeId, previousArtifactAId,
-            previousArtiafctBId);
+            previousArtifactBId);
       }
    }
 
@@ -250,8 +251,9 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       console.writeln(strB.toString());
    }
 
-   private boolean isNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId) {
-      return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
+   private boolean isNextConceptualRelation(long relationTypeId, ArtifactId artifactAId, ArtifactId artiafctBId) {
+      return previousRelationTypeId != relationTypeId || previousArtifactAId.notEqual(
+         artifactAId) || previousArtifactBId.notEqual(artiafctBId);
    }
 
    private void relationMateriallyDiffers(String currentRationale) {
@@ -260,11 +262,11 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       }
    }
 
-   private void initNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId, long gammaId, String rationale) {
+   private void initNextConceptualRelation(long relationTypeId, ArtifactId artifactAId, ArtifactId artifactBId, long gammaId, String rationale) {
       obsoleteGammas.clear();
       previousRelationTypeId = relationTypeId;
       previousArtifactAId = artifactAId;
-      previousArtiafctBId = artiafctBId;
+      previousArtifactBId = artifactBId;
       netGamma = gammaId;
       netRationale = rationale;
       materiallyDifferent = false;

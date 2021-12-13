@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Ryan D. Brooks
  */
 public class RelationLink implements HasBranchId, IRelationLink {
-   private long relationId;
+   private RelationId relationId;
    private GammaId gammaId;
    private String rationale;
    private final RelationTypeToken relationType;
@@ -62,7 +62,7 @@ public class RelationLink implements HasBranchId, IRelationLink {
 
    private boolean useBackingData;
 
-   public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, int relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
+   public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, RelationId relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -306,13 +306,13 @@ public class RelationLink implements HasBranchId, IRelationLink {
       ArtifactCache.updateCachedArtifact(artifactB);
    }
 
-   public void internalSetRelationId(int relationId) {
+   public void internalSetRelationId(RelationId relationId) {
       this.relationId = relationId;
    }
 
    @Override
    public Long getId() {
-      return relationId;
+      return relationId.getId();
    }
 
    @Override
