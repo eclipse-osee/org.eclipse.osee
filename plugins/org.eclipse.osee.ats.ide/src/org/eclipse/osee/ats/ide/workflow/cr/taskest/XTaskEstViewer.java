@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -139,10 +138,7 @@ public abstract class XTaskEstViewer extends TaskXViewer {
       }
 
       IAtsTeamDefinition teamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(useAi);
-      List<AtsUser> assignees = TaskEstUtil.getAssignees(tedMatch, atsApi);
-      if (assignees.isEmpty()) {
-         assignees.add(AtsCoreUsers.UNASSIGNED_USER);
-      }
+      List<AtsUser> assignees = task.getImplementers();
       IAtsAction action = crTeamWf.getParentAction();
 
       // Create workflow with configured or selected AI

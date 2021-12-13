@@ -82,7 +82,6 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
       super(label);
       this.xViewerFactory = xViewerFactory;
       atsApi = AtsApiService.get();
-      OseeEventManager.addListener(this);
    }
 
    abstract public Collection<IAtsTask> getTasks();
@@ -111,6 +110,9 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
             OseeEventManager.removeListener(fWidget);
          }
       });
+
+      // Only add event listener if this widget is drawn
+      OseeEventManager.addListener(this);
 
       redrawComposite();
    }

@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -143,13 +142,7 @@ public class CreateSiblingOffTaskEstOperation {
          ArtifactToken aiTok = ted.getActionableItem();
          IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(aiTok);
          IAtsTeamDefinition teamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(ai);
-         List<AtsUser> assignees = new ArrayList<>();
-         for (ArtifactId id : ted.getAssigneeAccountIds()) {
-            AtsUser user = atsApi.getUserService().getUserById(id);
-            if (user.isActive()) {
-               assignees.add(user);
-            }
-         }
+         List<AtsUser> assignees = task.getImplementers();
          IAtsTeamWorkflow newTeamWf = createTaskEstSiblingWorkflow(rd, changes, createdDate, task, ai, teamDef,
             assignees, teamWf.getParentAction(), atsApi);
          workflows.add(newTeamWf);
@@ -160,6 +153,7 @@ public class CreateSiblingOffTaskEstOperation {
 
    public static IAtsTeamWorkflow createTaskEstSiblingWorkflow(XResultData rd, IAtsChangeSet changes, Date createdDate, IAtsTask task, //
       IAtsActionableItem ai, IAtsTeamDefinition teamDef, List<AtsUser> assignees, IAtsAction action, AtsApi atsApi) {
+
       IAtsTeamWorkflow newTeamWf = AtsApiService.get().getActionService().createTeamWorkflow(action, teamDef,
          Arrays.asList(ai), new LinkedList<AtsUser>(assignees), changes, createdDate,
          atsApi.getUserService().getCurrentUser(), null, CreateTeamOption.Duplicate_If_Exists);

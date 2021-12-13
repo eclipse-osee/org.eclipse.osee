@@ -68,7 +68,7 @@ public class ReviewedByColumn extends XViewerAtsColumn implements IXViewerValueC
    }
 
    private ReviewedByColumn() {
-      super("ats.taskest.reviewed", "TLE Reviewed", 20, XViewerAlign.Left, true, SortDataType.String, true, "");
+      super("ats.taskest.reviewed", "Reviewed By", 20, XViewerAlign.Left, true, SortDataType.String, true, "");
       atsApi = AtsApiService.get();
    }
 
@@ -124,9 +124,9 @@ public class ReviewedByColumn extends XViewerAtsColumn implements IXViewerValueC
    public static boolean promptChange(final Collection<IAtsWorkItem> workItems, AtsApi atsApi) {
       try {
          // Ok --> 0, Cancel --> 1, Clear --> 2
-         int res = MessageDialog.open(3, Displays.getActiveShell(), "TLE Reviewed", "Has TLE Reviewed", SWT.NONE,
+         int res = MessageDialog.open(3, Displays.getActiveShell(), "Reviewed By", "Has been Reviewed", SWT.NONE,
             new String[] {"Ok", "Cancel", "Clear"});
-         Job signJob = new Job("Set TLE Reviewed") {
+         Job signJob = new Job("Set Reviewed By") {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -136,10 +136,10 @@ public class ReviewedByColumn extends XViewerAtsColumn implements IXViewerValueC
                }
                if (res == 2) {
                   XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.ReviewedByDate,
-                     AtsAttributeTypes.ReviewedBy, "TLE Reviewed", false);
+                     AtsAttributeTypes.ReviewedBy, "Reviewed By", false);
                } else if (res == 0) {
                   XAbstractSignDateAndByButton.setSigned(artifacts, AtsAttributeTypes.ReviewedByDate,
-                     AtsAttributeTypes.ReviewedBy, "TLE Reviewed", true);
+                     AtsAttributeTypes.ReviewedBy, "Reviewed By", true);
                }
                return Status.OK_STATUS;
             }
