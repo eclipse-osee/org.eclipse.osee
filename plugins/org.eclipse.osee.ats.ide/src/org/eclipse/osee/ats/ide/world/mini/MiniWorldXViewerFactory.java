@@ -69,7 +69,7 @@ public abstract class MiniWorldXViewerFactory extends SkynetXViewerFactory {
       for (XViewerColumn col : cols) {
          if (col.getName().equals(AtsColumnToken.NotesColumn.getName())) {
             col.setWidth(350);
-         } else if (col.getName().equals(AtsColumnToken.TargtedVersionColumn.getName())) {
+         } else if (col.getName().equals(AtsColumnToken.TargetedVersionColumn.getName())) {
             col.setWidth(120);
          }
       }
