@@ -15,6 +15,7 @@ package org.eclipse.osee.vcast.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -124,6 +125,30 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer numPairsOrPaths = stmt.getInt("num_pairs_or_paths");
             toReturn.add(new VCastFunction(id, instrumented_file_id, findex, name, canonical_name, total_lines,
                complexity, numPairsOrPaths));
+         }
+      } finally {
+         stmt.close();
+      }
+      return toReturn;
+   }
+
+   @Override
+   public Collection<VCastInstrumentedFile> getAllInstrumentedFiles(Map<String, String> idToFileName) {
+      Collection<VCastInstrumentedFile> toReturn = new ArrayList<>();
+
+      JdbcStatement stmt = getStatement();
+      try {
+         stmt.runPreparedQuery("SELECT * FROM instrumented_files if");
+         while (stmt.next()) {
+            Integer id = stmt.getInt("id");
+            Integer source_file_id = stmt.getInt("source_file_id");
+            Integer project_id = stmt.getInt("project_id");
+            Integer unit_index = stmt.getInt("unit_index");
+            Integer coverage_type = stmt.getInt("coverage_type");
+            String LIS_file = idToFileName.get(source_file_id.toString());
+            Integer checksum = stmt.getInt("checksum");
+            toReturn.add(new VCastInstrumentedFile(id, source_file_id, project_id, unit_index,
+               VCastCoverageType.valueOf(coverage_type), LIS_file, checksum));
          }
       } finally {
          stmt.close();
