@@ -25,7 +25,7 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector {
    public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
 
    public TargetedVersionColumnUI() {
-      super(AtsColumnToken.TargtedVersionColumn);
+      super(AtsColumnToken.TargetedVersionColumn);
    }
 
    public static TargetedVersionColumnUI getInstance() {
