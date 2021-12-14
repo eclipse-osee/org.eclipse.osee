@@ -15,6 +15,8 @@ Import-Package:
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,
+ org.apache.commons.io,
+ org.apache.commons.io.filefilter,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.disposition.model,
  org.eclipse.osee.framework.core,

@@ -19,6 +19,7 @@ import static org.eclipse.osee.disposition.model.DispoSummarySeverity.ERROR;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -228,7 +230,7 @@ public class LisFileParser implements DispoImporterApi {
                      keepExistingAnnotation(item, uncoveredAnnotation);
                   }
                } else {
-                  keepExistingAnnotation(item, uncoveredAnnotation);
+                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(), "N/A");
                }
             }
          }
@@ -261,12 +263,37 @@ public class LisFileParser implements DispoImporterApi {
           * Note: the LIS_file field of the instrumentedFiles may have a fictious absolute path - but the path is
           * ignored and only the file name is used.
           */
-         instrumentedFiles = dataStore.getAllInstrumentedFiles();
+         Map<String, String> idToFileName = getDispoFileNamesById();
+         instrumentedFiles = dataStore.getAllInstrumentedFiles(idToFileName);
       } catch (OseeCoreException ex) {
          report.addEntry("SQL", String.format("SQL error while reading functions for directory: [%s]", vCastDir),
             ERROR);
       }
       return instrumentedFiles;
+   }
+
+   public Map<String, String> getDispoFileNamesById() {
+      File vcastFolder = new File(vCastDir);
+      FileFilter fileFilter = new WildcardFileFilter("*.LIS");
+      File[] lisFiles = vcastFolder.listFiles(fileFilter);
+      Map<String, String> idToLisFileName = new HashMap<String, String>();
+
+      for (int i = 0; i < lisFiles.length; i++) {
+         boolean fileFound = false;
+         String[] parts = lisFiles[i].getName().split("\\.");
+         for (String s : parts) {
+            if (Pattern.matches("\\-?\\d+", s) && !s.equals("2")) {
+               idToLisFileName.put(s, lisFiles[i].getName());
+               fileFound = true;
+               break;
+            }
+         }
+         if (!fileFound) {
+            idToLisFileName.put("2", lisFiles[i].getName());
+         }
+      }
+
+      return idToLisFileName;
    }
 
    private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, HashMap<String, File> nameToFileMap, OperationReport report) {
@@ -282,7 +309,6 @@ public class LisFileParser implements DispoImporterApi {
 
       if (sourceFile != null) {
          int fileNum = sourceFile.getUnitIndex();
-
          String lisFileNameFullPath = instrumentedFile.getLISFile();
          if (!Strings.isValid(lisFileNameFullPath)) {
             report.addEntry("SQL",
