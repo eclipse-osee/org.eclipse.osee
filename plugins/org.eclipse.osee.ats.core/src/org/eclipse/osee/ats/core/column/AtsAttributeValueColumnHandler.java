@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
@@ -35,10 +35,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsAttributeValueColumnHandler implements IAtsColumn {
 
-   private final AtsAttributeValueColumn column;
+   private final AtsAttrVaCol column;
    private final AtsApi atsApi;
 
-   public AtsAttributeValueColumnHandler(AtsAttributeValueColumn column, AtsApi atsApi) {
+   public AtsAttributeValueColumnHandler(AtsAttrVaCol column, AtsApi atsApi) {
       this.column = column;
       this.atsApi = atsApi;
    }

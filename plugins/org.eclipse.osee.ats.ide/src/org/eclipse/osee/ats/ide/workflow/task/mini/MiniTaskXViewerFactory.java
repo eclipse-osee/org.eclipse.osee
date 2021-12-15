@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.AssumptionsColumn;
@@ -97,9 +97,9 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       return new AtsColumnIdUi(columnToken, AtsApiService.get());
    }
 
-   private XViewerColumn getAttributeConfigColumn(AtsAttributeValueColumn attrValueColumn) {
+   private XViewerColumn getAttributeConfigColumn(AtsAttrVaCol attrValueColumn) {
       XViewerColumn result = null;
-      for (AtsAttributeValueColumn column : AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttrVaCol column : AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (column.getNamespace().equals(namespace) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;

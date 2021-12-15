@@ -16,6 +16,20 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.column.IAtsColumnId;
 
 /**
+ * NOTE: column ids can NOT be changed without affecting the stored customizations<br/>
+ * <br/>
+ * Architecture/Design<br/>
+ * <br/>
+ * - First, declare a column id. This needs to be a unique string that will be used to store/restore customizations<br/>
+ * <br/>
+ * - Second, declare a column token for each column id. This either specifies an attr column (preferred) or value
+ * column.<br/>
+ * - If attr column, this is what brings the id together with column data and the attr type token<br/>
+ * <br/>
+ * - Third, add to AtsColumnService or an AtsColumnProvider to resolve and instantiate columns<br/>
+ * <br/>
+ * - Fourth, add to Register column in WorldXViewerFactory(ATS bundle) or an IAtsWorldEditorItem (other bundles)<br/>
+ *
  * @author Donald G. Dunne
  */
 public enum AtsColumnId implements IAtsColumnId {
