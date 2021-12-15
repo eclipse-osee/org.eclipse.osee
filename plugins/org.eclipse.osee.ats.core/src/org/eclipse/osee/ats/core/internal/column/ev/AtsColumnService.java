@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.column.AgileFeatureGroupColumn;
@@ -62,6 +62,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 
 /**
+ * See AtsColumnId javadoc for architecture/design
+ *
  * @author Donald G. Dunne
  */
 public class AtsColumnService implements IAtsColumnService {
@@ -87,7 +89,7 @@ public class AtsColumnService implements IAtsColumnService {
       }
 
       // Add from database configurations
-      for (AtsAttributeValueColumn attrCol : atsApi.getConfigService().getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttrVaCol attrCol : atsApi.getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (id.equals(attrCol.getId())) {
             column = new AtsAttributeValueColumnHandler(attrCol, atsApi);
             break;

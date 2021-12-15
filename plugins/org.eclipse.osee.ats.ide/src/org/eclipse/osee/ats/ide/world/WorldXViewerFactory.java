@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.ide.agile.SprintColumn;
@@ -210,9 +210,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     * Provides XViewerColumn for attribute based columns like Legacy PCR Id and Change Type. These columns can be
     * overridden (or defined) by entries in the AtsConfig views.attrColumns entry.
     */
-   public static XViewerColumn getAttributeConfigColumn(AtsAttributeValueColumn attrValueColumn) {
+   public static XViewerColumn getAttributeConfigColumn(AtsAttrVaCol attrValueColumn) {
       XViewerColumn result = null;
-      for (AtsAttributeValueColumn column : AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttrVaCol column : AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;

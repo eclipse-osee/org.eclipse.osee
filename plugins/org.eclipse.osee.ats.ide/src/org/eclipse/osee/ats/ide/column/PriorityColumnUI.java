@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
    public static PriorityColumnUI instance = null;
-   private final AtsAttributeValueColumn colToken;
+   private final AtsAttrVaCol colToken;
    private final AttributeTypeEnum<?> attrToken;
 
    public static PriorityColumnUI getInstance() {
@@ -62,7 +62,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   private PriorityColumnUI(AtsAttributeValueColumn priColToken, AttributeTypeEnum<?> priAttrToken) {
+   private PriorityColumnUI(AtsAttrVaCol priColToken, AttributeTypeEnum<?> priAttrToken) {
       super(priColToken);
       this.colToken = priColToken;
       this.attrToken = priAttrToken;

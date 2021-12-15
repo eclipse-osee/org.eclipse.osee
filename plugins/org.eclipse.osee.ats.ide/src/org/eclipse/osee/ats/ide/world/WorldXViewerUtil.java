@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -61,8 +61,8 @@ public class WorldXViewerUtil {
       }
    }
 
+   // Add Access controlled - show all attr columns
    public static void registerAtsAttributeColumns(SkynetXViewerFactory factory) {
-      // Register all ats.* attribute columns
       try {
          if (AtsApiService.get().userService().isInUserGroup(AtsUserGroups.AtsAddAttrColumns)) {
             for (AttributeTypeToken attributeType : AttributeTypeManager.getAllTypes()) {
@@ -84,10 +84,10 @@ public class WorldXViewerUtil {
    }
 
    public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
-      List<AtsAttributeValueColumn> columns =
+      List<AtsAttrVaCol> columns =
          AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns();
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
-      for (AtsAttributeValueColumn column : columns) {
+      for (AtsAttrVaCol column : columns) {
          try {
             AttributeTypeToken attrType = null;
             try {

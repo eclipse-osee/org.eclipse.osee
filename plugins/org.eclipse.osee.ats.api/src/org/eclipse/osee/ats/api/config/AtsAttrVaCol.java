@@ -21,21 +21,27 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeValueColumn extends AtsValueColumn {
+public class AtsAttrVaCol extends AtsValueColumn {
    private long attrTypeId;
    private String attrTypeName;
 
-   public AtsAttributeValueColumn() {
+   public AtsAttrVaCol() {
       // For JaxRs Instantiation
    }
 
-   public AtsAttributeValueColumn(AttributeTypeToken attributeType, String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
+   public AtsAttrVaCol(AttributeTypeToken attributeType, String id, int width, ColumnType columnType, ColumnAlign align, Show show, //
+      MultiEdit multi, String description) {
+      this(attributeType, id, attributeType.getUnqualifiedName(), width, columnType, align, show, multi,
+         ActionRollup.No, InheritParent.No, description);
+   }
+
+   public AtsAttrVaCol(AttributeTypeToken attributeType, String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
       MultiEdit multi, String description) {
       this(attributeType, id, name, width, columnType, align, show, multi, ActionRollup.No, InheritParent.No,
          description);
    }
 
-   public AtsAttributeValueColumn(AttributeTypeToken attributeType, String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
+   public AtsAttrVaCol(AttributeTypeToken attributeType, String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
       MultiEdit multi, ActionRollup actionRollup, InheritParent inheritParent, String description) {
       this(attributeType, id, name, width, align.name(), show.yes(), columnType, multi.yes(), description,
          actionRollup.yes(), inheritParent.yes());
@@ -45,7 +51,7 @@ public class AtsAttributeValueColumn extends AtsValueColumn {
     * Use non-boolean constructors above
     */
    @Deprecated
-   public AtsAttributeValueColumn(AttributeTypeToken attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
+   public AtsAttrVaCol(AttributeTypeToken attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup, inheritParent);
       this.attrTypeId = attributeType.getId();
       this.attrTypeName = attributeType.getName();
