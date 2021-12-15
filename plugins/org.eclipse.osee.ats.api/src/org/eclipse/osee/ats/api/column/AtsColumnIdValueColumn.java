@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.ats.api.column;
 
+import org.eclipse.osee.ats.api.config.ActionRollup;
+import org.eclipse.osee.ats.api.config.ColumnAlign;
+import org.eclipse.osee.ats.api.config.InheritParent;
+import org.eclipse.osee.ats.api.config.MultiEdit;
+import org.eclipse.osee.ats.api.config.Show;
 import org.eclipse.osee.ats.api.util.ColumnType;
 
 /**
@@ -25,6 +30,22 @@ public class AtsColumnIdValueColumn extends AtsValueColumn {
    public AtsColumnIdValueColumn() {
       // For JaxRs Instantiation
    }
+
+   public AtsColumnIdValueColumn(IAtsColumnId columnId, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
+      MultiEdit multi, String description) {
+      this(columnId, name, width, columnType, align, show, multi, ActionRollup.No, InheritParent.No, description);
+   }
+
+   public AtsColumnIdValueColumn(IAtsColumnId columnId, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
+      MultiEdit multi, ActionRollup actionRollup, InheritParent inheritParent, String description) {
+      this(columnId, name, width, align.name(), show.yes(), columnType, multi.yes(), description, actionRollup.yes(),
+         inheritParent.yes());
+   }
+
+   /**
+    * Use non-boolean constructors above
+    */
+   @Deprecated
 
    public AtsColumnIdValueColumn(IAtsColumnId columnId, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
       super(columnId.getId(), name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup,
