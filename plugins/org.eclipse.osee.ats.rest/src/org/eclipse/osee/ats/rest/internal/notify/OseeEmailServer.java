@@ -6,18 +6,23 @@
 package org.eclipse.osee.ats.rest.internal.notify;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class OseeEmailServer extends OseeEmail {
 
-   public OseeEmailServer() {
+   private OseeEmailServer() {
    }
 
-   public OseeEmailServer(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+   private OseeEmailServer(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
       super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
    }
 
-   public OseeEmailServer(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
+   private OseeEmailServer(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
       super(fromEmail, toAddress, subject, body, bodyType);
    }
 
@@ -26,9 +31,29 @@ public class OseeEmailServer extends OseeEmail {
       Thread.currentThread().setContextClassLoader(new ExportClassLoader(ServiceUtil.getPackageAdmin()));
    }
 
-   public static void emailHtml(String fromEmail, Collection<String> emails, String subject, String htmlBody) {
-      OseeEmail emailMessage = new OseeEmailServer(emails, fromEmail, fromEmail, subject, htmlBody, BodyType.Html);
-      emailMessage.send();
+   public static OseeEmailServer create() {
+      loadDefaultMailServer();
+      return new OseeEmailServer();
+   }
+
+   public static OseeEmailServer create(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+      loadDefaultMailServer();
+      return new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
+   }
+
+   public static OseeEmailServer create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
+      loadDefaultMailServer();
+      return new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType);
+   }
+
+   private static void loadDefaultMailServer() {
+      if (defaultMailServer == null) {
+         OrcsApi orcsApi = ServiceUtil.getOrcsApi();
+         ArtifactReadable globalArt =
+            (ArtifactReadable) orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+               CoreArtifactTokens.GlobalPreferences).getArtifactOrSentinal();
+         defaultMailServer = globalArt.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer, "");
+      }
    }
 
 }

@@ -45,12 +45,11 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
    }
 
    @Override
-   public XResultData sendEmail() {
+   public XResultData sendEmail(String email) {
       XResultData rd = new XResultData();
       rd.log("Send Test Email - Server");
       try {
-         OseeEmail emailMessage = new OseeEmailServer(Arrays.asList("donald.g.dunne@boeing.com"),
-            "donald.g.dunne@boeing.com", "donald.g.dunne@boeing.com", "Test Email - Server",
+         OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(email), email, email, "Test Email - Server",
             AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
          emailMessage.send();
       } catch (Exception ex) {

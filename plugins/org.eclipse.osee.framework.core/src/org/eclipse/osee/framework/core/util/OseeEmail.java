@@ -23,6 +23,7 @@ import javax.mail.internet.MimeMultipart;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -37,6 +38,7 @@ public abstract class OseeEmail extends MimeMessage {
    public static final String plainText = "text/plain";
    public static final String HTMLText = "text/html";
 
+   protected static String defaultMailServer;
    private String body = null;
    private String bodyType = null;
    private final Multipart mainMessage;
@@ -240,7 +242,9 @@ public abstract class OseeEmail extends MimeMessage {
     * Sends the message.
     */
    public void send() {
-      new SendThread(this).start();
+      if (Strings.isValid(defaultMailServer)) {
+         new SendThread(this).start();
+      }
    }
 
    private class SendThread extends Thread {
@@ -331,6 +335,14 @@ public abstract class OseeEmail extends MimeMessage {
 
    public void addAttachment(String contents, String attachmentName) throws MessagingException {
       addAttachment(new StringDataSource(contents, attachmentName), attachmentName);
+   }
+
+   public static String getDefaultMailServer() {
+      return defaultMailServer;
+   }
+
+   public static void setDefaultMailServer(String defaultMailServer) {
+      OseeEmail.defaultMailServer = defaultMailServer;
    }
 
 }

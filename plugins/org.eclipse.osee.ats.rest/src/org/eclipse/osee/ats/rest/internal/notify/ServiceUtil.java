@@ -2,6 +2,7 @@ package org.eclipse.osee.ats.rest.internal.notify;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -39,6 +40,10 @@ public final class ServiceUtil {
     */
    public static PackageAdmin getPackageAdmin() throws OseeCoreException {
       return getService(PackageAdmin.class);
+   }
+
+   public static OrcsApi getOrcsApi() {
+      return getService(OrcsApi.class);
    }
 
 }
