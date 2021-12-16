@@ -19,12 +19,13 @@ import java.util.List;
 import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 
 /**
  * @author Donald G. Dunne
@@ -64,7 +65,7 @@ public class EmailWizard extends Wizard {
             AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent"));
             return true;
          }
-         OseeEmail emailMessage = new OseeEmail(Arrays.asList(wizardPage.getToAddresses()),
+         OseeEmail emailMessage = new OseeEmailIde(Arrays.asList(wizardPage.getToAddresses()),
             UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());

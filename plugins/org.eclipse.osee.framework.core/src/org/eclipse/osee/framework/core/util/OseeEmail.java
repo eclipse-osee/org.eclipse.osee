@@ -1,21 +1,10 @@
-/*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- **********************************************************************/
-
-package org.eclipse.osee.ats.rest.internal.notify;
+package org.eclipse.osee.framework.core.util;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -31,19 +20,16 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Michael A. Winston
  * @author Donald G. Dunne
  */
-public class OseeEmail extends MimeMessage {
+public abstract class OseeEmail extends MimeMessage {
    protected static final String emailType = "mail.smtp.host";
    protected static final String HTMLHead = "<html><body>\n";
    protected static final String HTMLEnd = "</body></html>\n";
@@ -54,15 +40,13 @@ public class OseeEmail extends MimeMessage {
    private String body = null;
    private String bodyType = null;
    private final Multipart mainMessage;
-   private final AtsApi atsApi;
    public static enum BodyType {
       Html,
       Text
    };
 
-   public OseeEmail(AtsApi atsApi) {
-      super(getSession(atsApi));
-      this.atsApi = atsApi;
+   public OseeEmail() {
+      super(getSession());
       mainMessage = new MimeMultipart();
    }
 
@@ -75,8 +59,8 @@ public class OseeEmail extends MimeMessage {
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
     */
-   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, AtsApi atsApi) {
-      this(atsApi);
+   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+      this();
       try {
          setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
          setFrom(fromAddress);
@@ -92,21 +76,13 @@ public class OseeEmail extends MimeMessage {
          }
 
       } catch (MessagingException ex) {
-         System.err.println(Lib.exceptionToString(ex));
+         OseeLog.log(OseeEmail.class, Level.SEVERE, ex);
       }
    }
 
-   /**
-    * Constructs an AEmail with the given arguments
-    *
-    * @param subject - the subject of the message
-    * @param body - the text/html of the body
-    * @param bodyType - Html or Text
-    */
-   //   public OseeEmail(String toAddress, String subject, String body, BodyType bodyType) {
-   //      this(Arrays.asList(toAddress), UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, body,
-   //         bodyType);
-   //   }
+   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
+      this(Arrays.asList(toAddress), fromEmail, fromEmail, subject, body, bodyType);
+   }
 
    /**
     * Adds a single address to the recipient list
@@ -279,7 +255,7 @@ public class OseeEmail extends MimeMessage {
       public void run() {
          XResultData results = email.sendLocalThread();
          if (results.isFailed()) {
-            System.err.println(results.toString());
+            OseeLog.log(OseeEmail.class, Level.SEVERE, results.toString());
          }
       }
    }
@@ -299,7 +275,7 @@ public class OseeEmail extends MimeMessage {
          CommandMap.setDefaultCommandMap(mc);
 
          // Set class loader so can find the mail handlers
-         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+         setClassLoader();
          if (bodyType == null) {
             bodyType = plainText;
             body = "";
@@ -317,7 +293,7 @@ public class OseeEmail extends MimeMessage {
           */
          if (!results.toString().contains("User unknown")) {
             results.logf("Contents are [%s]", body);
-            System.err.println(results.toString());
+            OseeLog.log(OseeEmail.class, Level.SEVERE, results.toString());
          }
       } finally {
          Thread.currentThread().setContextClassLoader(original);
@@ -325,19 +301,17 @@ public class OseeEmail extends MimeMessage {
       return results;
    }
 
+   abstract public void setClassLoader();
+
    /**
     * Gets the current session
     *
     * @return the Current SMTP Session
     */
-   private static Session getSession(AtsApi atsApi) {
-      ArtifactToken artifact = atsApi.getQueryService().getArtifact(CoreArtifactTokens.GlobalPreferences);
-      System.err.println(String.format("getSession art %s", artifact.toStringWithId()));
+   private static Session getSession() {
       Properties props = System.getProperties();
-      String mailServer =
-         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, CoreAttributeTypes.DefaultMailServer, "");
-      System.err.println(String.format("getSession mailServer %s", mailServer));
-      props.put(emailType, mailServer);
+      props.put(emailType, "relay.boeing.com");
+      // TBD OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
       return Session.getDefaultInstance(props, null);
    }
 
@@ -358,11 +332,5 @@ public class OseeEmail extends MimeMessage {
    public void addAttachment(String contents, String attachmentName) throws MessagingException {
       addAttachment(new StringDataSource(contents, attachmentName), attachmentName);
    }
-
-   //   public static void emailHtml(Collection<String> emails, String subject, String htmlBody) {
-   //      OseeEmail emailMessage = new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(),
-   //         subject, htmlBody, BodyType.Html);
-   //      emailMessage.send();
-   //   }
 
 }

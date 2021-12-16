@@ -76,7 +76,8 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.orcs.utility,
  org.eclipse.osee.template.engine,
  org.osgi.framework,
- org.osgi.service.event
+ org.osgi.service.event,
+ org.osgi.service.packageadmin;version="1.2.0"
 Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.framework.core.server,
  javax.activation,

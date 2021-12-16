@@ -100,8 +100,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
       super.start();
 
-      notificationService = new AtsNotificationServiceImpl(this);
-
       artifactResolver = new ArtifactResolverImpl(this);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
@@ -119,6 +117,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
+
+      notificationService = new AtsNotificationServiceImpl(this);
 
       loadAtsConfigCache();
 

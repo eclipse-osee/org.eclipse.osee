@@ -27,6 +27,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -39,8 +41,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -127,7 +128,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          return;
       }
-      final OseeEmail emailMessage = new OseeEmail(Arrays.asList(emailAddress), data.getFromAddress(),
+      final OseeEmail emailMessage = new OseeEmailIde(Arrays.asList(emailAddress), data.getFromAddress(),
          data.getReplyToAddress(), data.getSubject(), "", BodyType.Html);
       emailMessage.addHTMLBody(data.getHtmlResult(user));
       String description = String.format("[%s] for [%s]", emailAddress, user);

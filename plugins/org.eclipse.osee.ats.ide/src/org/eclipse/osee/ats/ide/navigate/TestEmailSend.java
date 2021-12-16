@@ -17,6 +17,8 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,8 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -48,7 +49,7 @@ public class TestEmailSend extends XNavigateItemAction {
          XResultData rd = new XResultData();
          rd.log("Send Test Email - Client");
          try {
-            OseeEmail emailMessage = new OseeEmail(Arrays.asList("donald.g.dunne@boeing.com"),
+            OseeEmail emailMessage = new OseeEmailIde(Arrays.asList("donald.g.dunne@boeing.com"),
                "donald.g.dunne@boeing.com", "donald.g.dunne@boeing.com", "Test Email - Client",
                AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
             emailMessage.send();
