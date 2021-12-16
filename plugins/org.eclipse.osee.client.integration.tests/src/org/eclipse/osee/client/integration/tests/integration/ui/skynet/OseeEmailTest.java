@@ -51,7 +51,7 @@ public class OseeEmailTest {
    @org.junit.Test
    public void testTextEmail() throws Exception {
       final String TEST_NAME = "Email Test 1/3 - Text Body";
-      OseeEmail emailMessage = new OseeEmailIde("from@boeing.com", emailAddress, TEST_NAME,
+      OseeEmail emailMessage = OseeEmailIde.create("from@boeing.com", emailAddress, TEST_NAME,
          "Hello World - this is text only" + infoStr, BodyType.Text);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
@@ -60,7 +60,7 @@ public class OseeEmailTest {
    @org.junit.Test
    public void testHtmlEmail() throws Exception {
       final String TEST_NAME = "Email Test 2/3 - Html Body";
-      OseeEmail emailMessage = new OseeEmailIde("from@boeing.com", emailAddress, TEST_NAME,
+      OseeEmail emailMessage = OseeEmailIde.create("from@boeing.com", emailAddress, TEST_NAME,
          AHTML.simplePage(AHTML.bold("Hello World - this should be bold" + infoStr)), BodyType.Html);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
@@ -70,7 +70,7 @@ public class OseeEmailTest {
    public void testAttachementEmail() throws Exception {
       final String TEST_NAME = "Email Test 3/3 - with Outlook Attachment";
       OseeEmail emailMessage =
-         new OseeEmailIde("from@boeing.com", emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
+         OseeEmailIde.create("from@boeing.com", emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
          //
             "1) Double-click open attachment opens calendar event dialog\n" +
             //

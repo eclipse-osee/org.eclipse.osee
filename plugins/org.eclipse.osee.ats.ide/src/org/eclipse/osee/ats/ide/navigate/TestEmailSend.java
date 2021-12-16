@@ -21,9 +21,12 @@ import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -47,19 +50,35 @@ public class TestEmailSend extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       try {
          XResultData rd = new XResultData();
-         rd.log("Send Test Email - Client");
-         try {
-            OseeEmail emailMessage = new OseeEmailIde(Arrays.asList("donald.g.dunne@boeing.com"),
-               "donald.g.dunne@boeing.com", "donald.g.dunne@boeing.com", "Test Email - Client",
-               AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
-            emailMessage.send();
-         } catch (Exception ex) {
-            rd.error(Lib.exceptionToString(ex));
-         }
-         XResultDataUI.report(rd, "Send Test Email - Client");
+         rd.log("Send Test Email");
+         User user = UserManager.getUser();
+         if (user.isInvalid()) {
+            rd.errorf("User [%s] is invalid", user);
+         } else {
+            String email = user.getEmail();
+            if (!EmailUtil.isEmailValid(email)) {
+               rd.errorf("User email [%s] is invalid", user);
+               XResultDataUI.report(rd, "Test Email");
+               return;
+            } else {
+               rd = new XResultData();
+               rd.log("Send Test Email - Client");
+               try {
+                  OseeEmail emailMessage =
+                     OseeEmailIde.create(Arrays.asList(email), email, email, "Test Email - Client",
+                        AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
+                  emailMessage.send();
+                  rd.log("Completed");
+               } catch (Exception ex) {
+                  rd.error(Lib.exceptionToString(ex));
+               }
+               XResultDataUI.report(rd, "Send Test Email - Client");
 
-         rd = atsApi.getServerEndpoints().getNotifyEndpoint().sendEmail();
-         XResultDataUI.report(rd, "Send Test Email - Server");
+               rd = atsApi.getServerEndpoints().getNotifyEndpoint().sendEmail(email);
+               rd.log("Completed");
+               XResultDataUI.report(rd, "Send Test Email - Server");
+            }
+         }
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

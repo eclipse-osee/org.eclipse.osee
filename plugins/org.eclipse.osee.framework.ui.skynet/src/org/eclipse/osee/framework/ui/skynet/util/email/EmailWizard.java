@@ -65,7 +65,7 @@ public class EmailWizard extends Wizard {
             AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent"));
             return true;
          }
-         OseeEmail emailMessage = new OseeEmailIde(Arrays.asList(wizardPage.getToAddresses()),
+         OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()),
             UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());

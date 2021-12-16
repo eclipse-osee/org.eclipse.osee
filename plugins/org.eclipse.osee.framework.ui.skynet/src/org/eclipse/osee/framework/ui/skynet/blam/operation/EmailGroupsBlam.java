@@ -128,7 +128,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          return;
       }
-      final OseeEmail emailMessage = new OseeEmailIde(Arrays.asList(emailAddress), data.getFromAddress(),
+      final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
          data.getReplyToAddress(), data.getSubject(), "", BodyType.Html);
       emailMessage.addHTMLBody(data.getHtmlResult(user));
       String description = String.format("[%s] for [%s]", emailAddress, user);
