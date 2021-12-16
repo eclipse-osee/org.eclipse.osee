@@ -24,10 +24,4 @@ export class MessagingHelpComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  navigateTo(location: string) {
-    this.router.navigate([location], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-    });
-  }
 }

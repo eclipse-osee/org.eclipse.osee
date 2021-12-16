@@ -24,10 +24,6 @@ const routes: Routes = [
     component: PleComponent,
   },
   { path: 'messaging', loadChildren: () => import('./messaging/messaging.module').then(m => m.MessagingModule) },
-  {
-    path: '**',//todo remove when pl app page is made
-    redirectTo:'plconfig',
-  }
 ];
 
 @NgModule({

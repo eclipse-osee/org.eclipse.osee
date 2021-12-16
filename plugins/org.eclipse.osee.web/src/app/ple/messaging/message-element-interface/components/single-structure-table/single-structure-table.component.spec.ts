@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestScheduler } from 'rxjs/testing';
@@ -30,7 +29,7 @@ describe('SingleStructureTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule,MatProgressBarModule],
+      imports: [RouterTestingModule],
       providers:[{provide:CurrentStateService,useValue:CurrentStateServiceMock}],
       declarations: [ SingleStructureTableComponent,StructureTableComponentMock ]
     })

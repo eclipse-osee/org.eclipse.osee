@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -28,7 +27,7 @@ import { view, viewWithChanges } from '../../../types/pl-config-applicui-branch-
 export class ConfigMenuComponent implements OnInit {
   _editable = this.uiStateService.editable;
   @Input() config:view|viewWithChanges={name:'',hasFeatureApplicabilities:false,id:''}
-  constructor(private dialogService: DialogService,private router: Router, private route: ActivatedRoute,private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService) { }
+  constructor(private dialogService: DialogService,private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService) { }
 
   ngOnInit(): void {
   }
@@ -46,11 +45,6 @@ export class ConfigMenuComponent implements OnInit {
       current = ''
     }
     this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
   hasViewChanges(value: view | viewWithChanges): value is viewWithChanges{
     return (value as viewWithChanges).changes !== undefined;

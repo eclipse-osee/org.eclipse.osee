@@ -538,8 +538,6 @@ export class PlConfigCurrentBranchService {
     return this.uiStateService.branchId.pipe(
       filter(val => val !== ''),
       switchMap(branchId => this.branchService.getCfgGroupDetail(branchId, cfgGroup).pipe(
-        tap(ev => this.setLoadingIndicator()),
-        finalize(() => this.turnOffLoadingIndicator()),
         repeatWhen(_ => this.uiStateService.updateReq),
         share(),
       ))
@@ -779,16 +777,6 @@ export class PlConfigCurrentBranchService {
         })
       ))
     )
-  }
-  public setLoadingIndicator() {
-    if (!(this.uiStateService.loading.getValue()==='true')) {
-      this.uiStateService.loadingValue = true;
-    }
-  }
-  public turnOffLoadingIndicator() {
-    if ((this.uiStateService.loading.getValue()==='true')) {
-      this.uiStateService.loadingValue = false;
-    }
   }
   public addConfigurationGroup(cfgGroup:ConfigurationGroupDefinition) {
     return this.uiStateService.branchId.pipe(

@@ -10,8 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-menu-item (click)="navigateToMessages(data?.id||'')"> Go to {{data.name}}</button>
-<button mat-menu-item (click)="navigateToMessagesInNewTab(data.id||'')"> Go to {{data.name}} in new tab</button>
+<ng-container *ngIf="data.id!==undefined">
+    <ng-container *ngIf="(_messageRoute|async) as messageRoute">
+        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end"> Go to {{data.name}}</a>
+        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end" target="_blank"> Go to {{data.name}} in new tab</a>
+    </ng-container>
+</ng-container>
 <ng-container *ngIf="hasChanges(data)">
     <button mat-menu-item [matMenuTriggerFor]="linkDiffMenu" [matMenuTriggerData]="{data:data}">View Diff for</button>
 </ng-container>

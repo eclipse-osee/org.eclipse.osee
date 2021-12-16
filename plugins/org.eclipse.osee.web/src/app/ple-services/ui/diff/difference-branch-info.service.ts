@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { BranchInfoService } from '../../http/branch-info.service';
 import { DifferenceReportService } from '../../http/difference-report.service';
 
@@ -24,11 +24,14 @@ export class DifferenceBranchInfoService {
   constructor (private diffService: DifferenceReportService, private branchInfoService: BranchInfoService) { }
   
   differences(branchId: string | number) {
+    return this.parentBranch(branchId).pipe(
+      switchMap((parentBranch)=>this.diffService.getDifferences(parentBranch,branchId))
+    )
+  }
+  parentBranch(branchId: string | number) {
     return this.branchInfoService.getBranches(branchId as string).pipe(
       take(1),
-      switchMap((info) => of(info.parentBranch.id).pipe(
-        switchMap((parentBranch)=>this.diffService.getDifferences(parentBranch,branchId))
-      ))
+      map((branches)=>branches.parentBranch.id)
     )
   }
 }

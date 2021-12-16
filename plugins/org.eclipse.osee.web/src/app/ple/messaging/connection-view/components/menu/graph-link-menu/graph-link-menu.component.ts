@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { from, of } from 'rxjs';
+import { combineLatest, from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { connection, connectionWithChanges, transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { node, nodeData, nodeDataWithChanges, OseeNode } from 'src/app/ple/messaging/shared/types/node';
@@ -42,17 +42,11 @@ export class GraphLinkMenuComponent implements OnInit {
   source!: OseeNode<node | nodeData | nodeDataWithChanges>;
   @Input()
   target!: OseeNode<node | nodeData | nodeDataWithChanges>;
+  _messageRoute = this.graphService.messageRoute
 
-  constructor(private graphService: CurrentGraphService, private router: ConnectionViewRouterService,public dialog:MatDialog, private routerNg: Router, private route: ActivatedRoute) { }
+  constructor(private graphService: CurrentGraphService, private router: ConnectionViewRouterService,public dialog:MatDialog,) { }
 
   ngOnInit(): void {
-  }
-  navigateToMessages(value: string) {
-    this.router.connection = value;
-  }
-
-  navigateToMessagesInNewTab(location: string) {
-    this.router.connectionInNewTab = location;
   }
 
   openConnectionEditDialog(value: connection) {
@@ -111,14 +105,10 @@ export class GraphLinkMenuComponent implements OnInit {
       current=''
     }
     this.graphService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-    this.routerNg.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
 
   hasChanges(value: connection | connectionWithChanges): value is connectionWithChanges {
     return (value as connectionWithChanges).changes!==undefined
   }
+
 }

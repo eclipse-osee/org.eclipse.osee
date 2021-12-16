@@ -403,7 +403,7 @@ export class CurrentMessagesService {
         } else if (!newMessagesId.includes(change.artIdB)) {
           newMessagesId.push(change.artIdB)
         }
-      } else if (typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESUBMESSAGECONTENT) {
+      } else if (typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACEMESSAGECONTENT) {
         if (!newSubmessagesId.includes(change.artId)) {
           newSubmessagesId.push(change.artId)
         }
@@ -593,7 +593,7 @@ export class CurrentMessagesService {
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
       //do nothing currently
-      if ((change.itemTypeId as itemTypeIdRelation).id = RelationTypeId.INTERFACESUBMESSAGECONTENT) {
+      if ((change.itemTypeId as itemTypeIdRelation).id = RelationTypeId.INTERFACEMESSAGECONTENT) {
         message.hasSubMessageChanges = true;
         let submessageIndex = message.subMessages.findIndex((val) => val.id === change.artIdB);
         if (submessageIndex !== -1) {
@@ -667,5 +667,14 @@ export class CurrentMessagesService {
     }
     return tempMessage
   }
-  isSubMessageWithChanges(submessage: subMessage | subMessageWithChanges): submessage is subMessageWithChanges { return (submessage as subMessageWithChanges)?.changes !== undefined;}
+  isSubMessageWithChanges(submessage: subMessage | subMessageWithChanges): submessage is subMessageWithChanges { return (submessage as subMessageWithChanges)?.changes !== undefined; }
+  
+  get initialRoute() {
+    return combineLatest([this.ui.type, this.BranchId, this.connectionId]).pipe(
+      switchMap(([type,id,connection])=>of('/ple/messaging/'+type+'/'+id+'/'+connection+'/messages/'))
+    )
+  }
+  get endOfRoute() {
+    return iif(()=>this.isInDiff.getValue(),of("/diff"),of(""))
+  }
 }

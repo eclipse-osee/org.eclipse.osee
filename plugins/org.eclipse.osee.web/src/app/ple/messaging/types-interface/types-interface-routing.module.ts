@@ -12,10 +12,12 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { UsermenuComponent } from './components/menus/usermenu/usermenu.component';
 import { TypesInterfaceComponent } from './types-interface.component';
 
 const routes: Routes = [
   { path: '', component: TypesInterfaceComponent },
+  { path: '', component: UsermenuComponent, outlet: 'userMenu' }
 ];
 
 @NgModule({

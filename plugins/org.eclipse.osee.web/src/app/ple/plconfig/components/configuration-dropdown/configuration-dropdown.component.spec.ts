@@ -13,7 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -51,7 +53,7 @@ describe('ConfigurationDropdownComponent', () => {
     var copyConfigurationSpy = branchService.copyConfiguration.and.returnValue(of(testResponse));
     var delteConfigurationSpy = branchService.deleteConfiguration.and.returnValue(of(testResponse));
     await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatButtonModule],
+      imports:[MatMenuModule,MatButtonModule,MatFormFieldModule,NoopAnimationsModule],
       declarations: [ConfigurationDropdownComponent],
       providers: [
         { provide: MatDialog, useValue: {} },

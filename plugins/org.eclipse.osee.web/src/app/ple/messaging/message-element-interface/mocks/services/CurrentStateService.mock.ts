@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of, Subject } from "rxjs";
+import { BehaviorSubject, of, ReplaySubject, Subject } from "rxjs";
 import { MimPreferencesMock } from "../../../shared/mocks/MimPreferences.mock";
 import { applic } from "../../../../../types/applicability/applic";
 import { settingsDialogData } from "../../../shared/types/settingsdialog";
@@ -19,8 +19,9 @@ import { structure } from "../../types/structure";
 import { platformTypesMock } from "../ReturnObjects/PlatformTypes.mock";
 import { elementResponseMock } from "../ReturnObjects/response.mock";
 import { structuresMock } from "../ReturnObjects/Structures.mock";
+import { transactionToken } from "src/app/transactions/transaction";
 
-let sideNavContentPlaceholder = new Subject<{ opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }>();
+let sideNavContentPlaceholder = new ReplaySubject<{  opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined; }>();
 sideNavContentPlaceholder.next({opened:false,field:'',currentValue:''})
 export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     createStructure(body: Partial<structure>) {
@@ -70,5 +71,6 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     sideNavContent: sideNavContentPlaceholder,
     set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) {
         
-    }
+    },
+    isInDiff: new BehaviorSubject<boolean>(false)
 }

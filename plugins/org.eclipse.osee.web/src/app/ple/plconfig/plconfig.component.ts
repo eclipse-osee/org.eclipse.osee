@@ -24,7 +24,6 @@ import { PlConfigUIStateService } from './services/pl-config-uistate.service';
 export class PlconfigComponent implements OnInit {
   _updateRequired: Observable<boolean>= this.uiStateService.updateReq;
   _branchType: string = '';
-  _loading: Observable<string>=this.uiStateService.loading
   isAllowedToDiff = combineLatest([this.uiStateService.viewBranchType, this.uiStateService.branchId, this.uiStateService.isInDiff]).pipe(
     //invalid conditions equals false
     switchMap(([branchType,branchId,inDiff])=>iif(()=>inDiff===false && branchId.length!==0&&branchId!=='-1'&&branchId!==undefined,of(true),of(false)))

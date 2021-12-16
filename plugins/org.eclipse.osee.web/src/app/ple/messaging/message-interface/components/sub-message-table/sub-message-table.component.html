@@ -26,7 +26,7 @@
                         {{value[header]}}
                     </div>
                 </ng-container>
-                <ng-container *ngIf="header===' '"><button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                <ng-container *ngIf="header===' '"><a mat-raised-button [routerLink]="element.id+'/'+value['id']+'/'+element.name+' > '+value['name']+'/'+'elements'">Go To Message Details</a>
                 </ng-container>
                 <ng-container *ngIf="header==='applicability'">
                     <ng-container *ngIf="value[header].name!=='Base'">
@@ -40,8 +40,8 @@
                 <ng-container *ngIf="header!==' '">
                     <osee-messaging-edit-sub-message-field [messageId]="element.id" [subMessageId]="value['id']" [header]="header" [value]="value[header]"></osee-messaging-edit-sub-message-field>
                 </ng-container>
-                <ng-container *ngIf="header===' '">
-                    <button mat-raised-button (click)="navigateToElementsTable(element.id,value['id'],element.name+' > '+value['name'])">Go To Message Details</button>
+                <ng-container *ngIf="header===' ' && (_messageRoute|async) as mRoute">
+                    <a mat-raised-button [routerLink]="mRoute.beginning+element.id+'/'+value['id']+'/'+element.name+' > '+value['name']+'/'+'elements'+mRoute.end">Go To Message Details</a>
                 </ng-container>
             </ng-template>
          </td>
@@ -62,10 +62,14 @@
 </div>
 <mat-menu #contextMenu="matMenu">
     <ng-template matMenuContent let-message="message" let-submessage="submessage" let-location="location" let-field="field" let-header="header">
-        <button mat-menu-item (click)="navigateToElementsTable(message.id,submessage.id,location)"> Open submessage details</button>
-        <button mat-menu-item (click)="navigateToElementsTableInNewTab(message.id,submessage.id,location)"> Open submessage details in new tab</button>
+        <ng-container *ngIf="(_messageRoute|async) as mRoute">
+            <a mat-menu-item [routerLink]="mRoute.beginning+message.id+'/'+submessage.id+'/'+location+'/'+'elements'+mRoute.end"> Open submessage details</a>
+            <a mat-menu-item target="_blank" [routerLink]="mRoute.beginning+message.id+'/'+submessage.id+'/'+location+'/'+'elements'+mRoute.end"> Open submessage details in new tab</a>
+        </ng-container>
         <button mat-menu-item (click)="openDescriptionDialog(submessage.description,submessage.id,message.id)">Open Description</button>
-        <button mat-menu-item (click)="viewDiff(true,submessage.changes[header],header)">View Diff</button>
+        <ng-container *ngIf="submessage.changes[header]!==undefined">
+            <button mat-menu-item (click)="viewDiff(true,submessage.changes[header],header)">View Diff</button>
+        </ng-container>
         <ng-container *ngIf="editMode==true;">
             <button mat-menu-item (click)="removeSubMessage(submessage,message)">Remove submessage from message</button>
             <button mat-menu-item (click)="deleteSubMessage(submessage)">Delete submessage globally</button>

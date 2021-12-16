@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -26,7 +25,7 @@ import { extendedFeature, extendedFeatureWithChanges } from '../../../types/feat
 })
 export class FeatureMenuComponent implements OnInit {
   @Input() feature: (extendedFeature | extendedFeatureWithChanges) = { id: '', type: undefined, name: '', description: '', valueType: '', valueStr: '', defaultValue: '', values: [], productApplicabilities: [], multiValued: false,configurations:[], setValueStr() { }, setProductAppStr() { },}
-  constructor(private dialogService: DialogService, private currentBranchService:PlConfigCurrentBranchService, private router:Router, private route:ActivatedRoute) { }
+  constructor(private dialogService: DialogService, private currentBranchService:PlConfigCurrentBranchService) { }
 
   ngOnInit(): void {
   }
@@ -46,10 +45,5 @@ export class FeatureMenuComponent implements OnInit {
       current = ''
     }
     this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
 }

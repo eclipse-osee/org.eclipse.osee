@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { shareReplay, switchMap, take } from 'rxjs/operators';
+import { share, shareReplay, switchMap, take } from 'rxjs/operators';
 import { BranchUIService } from '../branch/branch-ui.service';
 import { DifferenceBranchInfoService } from './difference-branch-info.service';
 
@@ -26,6 +26,15 @@ export class DiffReportBranchService {
     return this.branchService.id.pipe(
       take(1),
       switchMap((id) => this.differenceService.differences(id).pipe(
+        shareReplay({bufferSize:5,refCount:true})
+      ))
+    )
+  }
+
+  get parentBranch() {
+    return this.branchService.id.pipe(
+      take(1),
+      switchMap((id) => this.differenceService.parentBranch(id).pipe(
         shareReplay({bufferSize:5,refCount:true})
       ))
     )

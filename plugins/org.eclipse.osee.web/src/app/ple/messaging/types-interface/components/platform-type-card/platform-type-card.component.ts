@@ -56,7 +56,8 @@ export class PlatformTypeCardComponent implements OnInit {
     })
     dialogRef.afterClosed()
       .pipe(
-       switchMap( ({mode, type})=>iif(()=>mode===copy,this.typesService.copyType(type),this.getEditObservable(copy,{mode,type}))
+        filter((val)=>val!==undefined),
+        switchMap( ({mode, type})=>iif(()=>mode===copy,this.typesService.copyType(type),this.getEditObservable(copy,{mode,type}))
       )
     ).subscribe()
   }

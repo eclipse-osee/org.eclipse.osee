@@ -114,11 +114,6 @@ export class GraphNodeMenuComponent implements OnInit {
       current = ''
     }
     this.graphService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
 
   hasChanges(value: nodeData|nodeDataWithChanges): value is nodeDataWithChanges {

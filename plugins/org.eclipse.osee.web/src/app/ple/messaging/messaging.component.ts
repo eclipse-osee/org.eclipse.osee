@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-messaging',
@@ -20,15 +19,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class MessagingComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor() { }
 
   ngOnInit(): void {
   }
 
-  navigateTo(location: string) {
-    this.router.navigate([location], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-    });
-  }
 }

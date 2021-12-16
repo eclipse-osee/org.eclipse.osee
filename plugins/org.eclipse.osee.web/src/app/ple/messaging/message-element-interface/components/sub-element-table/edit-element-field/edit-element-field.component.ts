@@ -10,10 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
 import { BehaviorSubject, from, Subject } from 'rxjs';
 import { share, debounceTime, distinctUntilChanged, map, tap, switchMap, filter, scan } from 'rxjs/operators';
 import { CurrentStateService } from '../../../services/current-state.service';
@@ -33,11 +32,15 @@ export class EditElementFieldComponent implements OnInit {
   @Input() value: any = '';
   @Input() elementStart: number =0;
   @Input() elementEnd: number = 0;
+  @Input() editingDisabled: boolean = false;
   @Output() contextMenu = new EventEmitter<MouseEvent>();
   private _value: Subject<string> = new Subject();
   _element: Partial<element> = {
     id:this.elementId
   };
+  _location = combineLatest([this.structureService.branchType, this.structureService.BranchId]).pipe(
+    switchMap(([type, id]) => of({ type: type, id: id }))
+  )
   private _typeValue: BehaviorSubject<any> = new BehaviorSubject(this.value);
   private _sendValue = this._value.pipe(
     share(),
@@ -68,7 +71,7 @@ export class EditElementFieldComponent implements OnInit {
     x: '0',
     y:'0'
   }
-  constructor (private structureService: CurrentStateService,private router: Router,private route: ActivatedRoute) {
+  constructor (private structureService: CurrentStateService,private route: ActivatedRoute) {
     this._sendValue.subscribe();
     this._sendType.subscribe();
    }
@@ -92,12 +95,6 @@ export class EditElementFieldComponent implements OnInit {
     return o1.id===o2.id && o1.name===o2.name
   }
 
-  navigateTo(location: string) {
-    this.router.navigate([this.structureService.branchType.getValue(),this.structureService.BranchId.getValue(),"types",location], {
-      relativeTo: this.route.parent?.parent,
-      queryParamsHandling: 'merge',
-    });
-  }
   openMenu(event: MouseEvent,location: string) {
     event.preventDefault();
     // this.menuPosition.x = event.clientX + 'px';

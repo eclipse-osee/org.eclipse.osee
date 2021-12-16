@@ -11,18 +11,20 @@
  *     Boeing - initial API and implementation
  -->
 <div class="light-theme">
-    <mat-toolbar>
-        <div style="display:flex; align-items:center;justify-content:space-between;width:100%">
-            <img src="favicon.ico" width=48 height=47/>
-            <osee-display-user>
-        		</osee-display-user>
-        </div>
-    </mat-toolbar>
-    <mat-sidenav-container>
+    <mat-sidenav-container fullscreen>
         <mat-sidenav-content>
+            <mat-toolbar>
+                <div style="display:flex; align-items:center;justify-content:space-between;width:100%">
+                    <img src="favicon.ico" width=48 height=47/>
+                    <osee-display-user></osee-display-user>
+                </div>
+            </mat-toolbar>
+            <ng-container *ngIf="(isLoading|async)==='true'">
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </ng-container>
             <router-outlet></router-outlet>
         </mat-sidenav-content>
-        <mat-sidenav position="end" mode="side" [opened]="(opened|async)" class="mat-elevation-z9" [fixedInViewport]=true>
+        <mat-sidenav position="end" mode="side" [opened]="(opened|async)" class="mat-elevation-z9" [fixedInViewport]=true [fixedTopGap]=64 [fixedBottomGap]=0>
             <router-outlet name="rightSideNav"></router-outlet>
         </mat-sidenav>
     </mat-sidenav-container>

@@ -17,7 +17,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, from, iif, of, OperatorFunction, throwError } from 'rxjs';
 import { distinct, filter, map, mergeMap, reduce, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DialogService } from '../../services/dialog.service';
@@ -33,7 +32,7 @@ import { configGroup, configGroupWithChanges } from '../../types/pl-config-confi
   styleUrls: ['./applicability-table.component.sass']
 })
 export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnChanges {
-  branchApplicability = this.currentBranchService.branchApplicability.pipe(share());
+  branchApplicability = this.currentBranchService.branchApplicability.pipe(share(), shareReplay({refCount:true,bufferSize:1}));
   dataSource = this.branchApplicability.pipe(
     tap((value) => {
       this.uiStateService.editableValue = value.editable;
@@ -64,7 +63,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
   configGroupTrigger!: MatMenuTrigger;
   @ViewChild('valueMenuTrigger', { static: true })
   valueTrigger!: MatMenuTrigger;
-  constructor(private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog, private router: Router, private route: ActivatedRoute, private dialogService: DialogService) {
+  constructor(private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService, public dialog: MatDialog, private dialogService: DialogService) {
     this.sort = new MatSort();
    }
   ngOnChanges(changes: SimpleChanges): void {
@@ -116,7 +115,8 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
         filter((feature) => feature !== undefined) as OperatorFunction<extendedFeature | undefined, extendedFeature>,
         map(featureValue => featureValue.values)
       )),
-    ), this.branchApplicability.pipe(
+    ), 
+    this.branchApplicability.pipe(
       take(1),
       switchMap((app) => of(app.views).pipe(
         map((views) => views.find((value) => value.name.toLowerCase() === configuration.toLowerCase())),

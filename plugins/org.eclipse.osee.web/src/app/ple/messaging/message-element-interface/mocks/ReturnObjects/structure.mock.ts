@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { structure } from "../../types/structure";
+import { elementsMock } from "./element.mock";
 
-export const structuresMock: structure[] = [
+export const structuresMock: Required<structure>[] = [
     {
         id: "1",
         name: 'hello',
@@ -20,6 +21,12 @@ export const structuresMock: structure[] = [
         interfaceMaxSimultaneity: "1",
         interfaceMinSimultaneity: "0",
         interfaceStructureCategory: "Miscellaneous",
-        interfaceTaskFileType:0
+        interfaceTaskFileType: 0,
+        elements: elementsMock,
+        numElements: 0,
+        sizeInBytes: 0,
+        bytesPerSecondMaximum: 0,
+        bytesPerSecondMinimum: 0,
+        applicability:{id:'1',name:'Base'}
     }
 ]

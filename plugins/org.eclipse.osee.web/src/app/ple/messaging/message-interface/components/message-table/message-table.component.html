@@ -11,10 +11,9 @@
  *     Boeing - initial API and implementation
  -->
  <div class="message-interface message-element-interface-button-header">
-    <ng-container *ngIf="(inDiffMode|async)===false">
-        <button mat-raised-button (click)="navigateToDiff()">Load Diff</button>
+    <ng-container *ngIf="(inDiffMode|async) as _diff">
+        <a mat-raised-button [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:'../'">{{_diff==='false'?"Load Diff":"Unload Diff"}}</a>
     </ng-container>
-    <button mat-raised-button (click)="openSettingsDialog()">Settings</button>
 </div>
 <button *ngIf="(inEditMode | async)===true" mat-fab (click)="openNewMessageDialog()" class="new-message-button" color="primary">+</button>
 <div class="message-interface message-element-interface-top-level-table">

@@ -136,24 +136,4 @@ export class TypeGridComponent implements OnInit, OnChanges {
     return this.gutterSize+'px'
   }
 
-  openSettingsDialog() {
-    combineLatest([this.typesService.inEditMode, this.uiService.BranchId]).pipe(
-      take(1),
-      switchMap(([edit, id]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-        data: {
-          branchId: id,
-          allHeaders2: [],
-          allowedHeaders2: [],
-          allHeaders1: [],
-          allowedHeaders1: [],
-          editable: edit,
-          headers1Label: '',
-          headers2Label: '',
-          headersTableActive: false,
-        }
-      }).afterClosed().pipe(
-        take(1),
-        switchMap((result) => this.typesService.updatePreferences(result))))
-    ).subscribe();
-  }
 }

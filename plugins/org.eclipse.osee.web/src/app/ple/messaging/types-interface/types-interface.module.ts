@@ -33,11 +33,12 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { UsermenuComponent } from './components/menus/usermenu/usermenu.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
-  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent],
+  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent, UsermenuComponent],
   imports: [
     CommonModule,
     MatCardModule,
@@ -48,10 +49,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatDialogModule,
     MatSelectModule,
     MatStepperModule,
-    MatProgressBarModule,
     FormsModule,
     MatSlideToggleModule,
     MatTableModule,
+    MatMenuModule,
     PleSharedMaterialModule,
     SharedMessagingModule,
     TypesInterfaceRoutingModule

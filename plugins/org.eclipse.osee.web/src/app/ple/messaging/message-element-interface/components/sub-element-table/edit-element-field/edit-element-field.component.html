@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <mat-form-field>
-    <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2' && header!=='applicability'">
+    <input matInput [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" *ngIf="header!=='platformTypeName2' && header!=='applicability'" [disabled]="editingDisabled || ((header==='interfaceElementIndexStart' || header==='interfaceElementIndexEnd') && elementEnd===0 && elementStart===0)">
     <ng-container *ngIf="header==='name'">
         <ng-container *ngIf="elementEnd-elementStart>0">
             <p matSuffix>
@@ -21,7 +21,7 @@
     </ng-container>
     <ng-container *ngIf="header==='platformTypeName2' || header === 'applicability'">
         <ng-container *ngIf="header ==='applicability'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" [compareWith]="compareApplics">
+            <mat-select [(ngModel)]="value" (ngModelChange)="updateElement(header,value)" [compareWith]="compareApplics" [disabled]="editingDisabled">
                 <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
                     {{option.name}}
                 </mat-option>
@@ -29,8 +29,10 @@
         </ng-container>
         <ng-container *ngIf="header==='platformTypeName2'">
             <div style="display:flex;flex-direction:row;">
-                <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)">
-                <button mat-button mat-icon-button matSuffix (click)="navigateTo(value)" (contextmenu)="openMenu($event,value)">-></button>
+                <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)" [disabled]="editingDisabled">
+                <ng-container *ngIf="_location|async as location">
+                    <a mat-button mat-icon-button matSuffix [routerLink]="'/ple/messaging/'+location.type+'/'+location.id+'/types/'+value" (contextmenu)="openMenu($event,value)">-></a>
+                </ng-container>
             </div>
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
             <mat-option *ngFor="let option of filteredTypes | async" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''">

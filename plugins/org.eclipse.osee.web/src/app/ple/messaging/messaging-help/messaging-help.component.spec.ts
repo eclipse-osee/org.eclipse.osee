@@ -45,10 +45,4 @@ describe('MessagingHelpComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to the column descriptions page', async() => {
-    let spy = spyOn(component, 'navigateTo').and.callThrough();
-    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Column Descriptions' }));
-    await button.click();
-    expect(spy).toHaveBeenCalledWith('columnDescriptions')
-  })
 });

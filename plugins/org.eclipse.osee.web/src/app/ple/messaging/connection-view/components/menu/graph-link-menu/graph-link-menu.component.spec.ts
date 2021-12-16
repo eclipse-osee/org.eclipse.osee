@@ -41,18 +41,12 @@ describe('GraphLinkMenuComponent', () => {
   let component: GraphLinkMenuComponent;
   let fixture: ComponentFixture<GraphLinkMenuComponent>;
   let loader: HarnessLoader;
-  let router: any;
-  let route: any;
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], { 'url': new String() });
-    route = jasmine.createSpyObj('ActivatedRoute',[],{parent:''})
     await TestBed.configureTestingModule({
       imports:[MatButtonModule,MatDialogModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
       providers:
         [
-          { provide: Router, useValue: router },
-          {provide: ActivatedRoute,useValue:route},
           { provide: CurrentGraphService, useValue: graphServiceMock },
           {provide: EnumsService,useValue:enumsServiceMock}
       ],
@@ -84,22 +78,6 @@ describe('GraphLinkMenuComponent', () => {
     it('Should have the correct amount of items(4)', async () => {
       const buttons = await loader.getAllHarnesses(MatMenuItemHarness)
       expect(buttons.length).toEqual(4);
-    })
-
-    it('should be able to navigate to a url', async () => {
-      let spy = spyOn(component, 'navigateToMessages').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
-    })
-
-    it('should be able to navigate to a url in a new tab', async () => {
-      let spy = spyOn(component, 'navigateToMessagesInNewTab').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3 in new tab" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
     })
 
     it('should open the connection edit dialog', async () => {
@@ -220,22 +198,6 @@ describe('GraphLinkMenuComponent', () => {
     it('Should have the correct amount of items(5)', async () => {
       const buttons = await loader.getAllHarnesses(MatMenuItemHarness)
       expect(buttons.length).toEqual(5);
-    })
-
-    it('should be able to navigate to a url', async () => {
-      let spy = spyOn(component, 'navigateToMessages').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
-    })
-
-    it('should be able to navigate to a url in a new tab', async () => {
-      let spy = spyOn(component, 'navigateToMessagesInNewTab').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3 in new tab" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
     })
 
     it('should open the connection edit dialog', async () => {
@@ -362,22 +324,6 @@ describe('GraphLinkMenuComponent', () => {
       expect(buttons.length).toEqual(2);
     })
 
-    it('should be able to navigate to a url', async () => {
-      let spy = spyOn(component, 'navigateToMessages').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
-    })
-
-    it('should be able to navigate to a url in a new tab', async () => {
-      let spy = spyOn(component, 'navigateToMessagesInNewTab').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3 in new tab" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
-    })
-
   })
 
   describe('With Editing Disabled & changes', () => {
@@ -428,22 +374,6 @@ describe('GraphLinkMenuComponent', () => {
     it('Should have the correct amount of items(3)', async () => {
       const buttons = await loader.getAllHarnesses(MatMenuItemHarness)
       expect(buttons.length).toEqual(3);
-    })
-
-    it('should be able to navigate to a url', async () => {
-      let spy = spyOn(component, 'navigateToMessages').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
-    })
-
-    it('should be able to navigate to a url in a new tab', async () => {
-      let spy = spyOn(component, 'navigateToMessagesInNewTab').and.callThrough();
-      const urlItem = await loader.getHarness(MatMenuItemHarness.with({ text: "Go to 3 in new tab" }));
-      expect(urlItem).toBeDefined();
-      await urlItem.click()
-      expect(spy).toHaveBeenCalledWith('3')
     })
 
     describe('opening the diff sidenav', () => {

@@ -51,29 +51,39 @@
           </ng-template>
   
           <ng-template #linkTemplate let-link>
-            <svg:g class="edge" (click)="navigateToMessages(link.id.split('a')[1])" (contextmenu)="openLinkDialog($event,link,graphData.nodes)">
-              <ng-container *ngIf="link.data.dashed">
-                <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" stroke-dasharray="4" marker-start="url(#ethBeg)">
-              </svg:path>
-              </ng-container>
-              <ng-container *ngIf="!link.data.dashed">
-                <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" marker-start="url(#ethBeg)">
+            <svg:g class="edge" (contextmenu)="openLinkDialog($event,link,graphData.nodes)">
+              <ng-template #linkView>
+                <ng-container *ngIf="link.data.dashed">
+                  <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" stroke-dasharray="4" marker-start="url(#ethBeg)">
                 </svg:path>
-              </ng-container>
-              <svg:text class="edge-label" text-anchor="middle">
-                <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
-                  {{link.label}}
-                  <ng-container *ngIf="link.data.changes!==undefined && link.data.changes!=={}">*</ng-container>
-                </textPath>
-              </svg:text>
-              <!--
-                  Labels to denote what transport type is in use
-                -->
-                <svg:text class="edge-label" text-anchor="middle">
-                  <textPath class="text-path" [attr.href]="'#' + link.id" dominant-baseline="hanging" startOffset="50%" side="left">
-                    {{link.data.transportType}}
+                </ng-container>
+                <ng-container *ngIf="!link.data.dashed">
+                  <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" marker-start="url(#ethBeg)">
+                  </svg:path>
+                </ng-container>
+                <svg:text text-anchor="middle" [ngClass]="link.data.deleted?'link-text-path-deleted':link.data.added?'link-text-path-added':'edge-label'">
+                  <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+                    {{link.label}}
+                    <ng-container *ngIf="link.data.changes!==undefined && link.data.changes!=={}">*</ng-container>
                   </textPath>
                 </svg:text>
+                <!--
+                    Labels to denote what transport type is in use
+                  -->
+                  <svg:text class="edge-label" text-anchor="middle">
+                    <textPath class="text-path" [attr.href]="'#' + link.id" dominant-baseline="hanging" startOffset="50%" side="left">
+                      {{link.data.transportType}}
+                    </textPath>
+                  </svg:text>
+              </ng-template>
+              <ng-container *ngIf="(_messageRoute|async) as messageRoute">
+                <svg:g [routerLink]="messageRoute.beginning+link.id.split('a')[1]+'/messages'+messageRoute.end" *ngIf="!link.data.deleted">
+                  <ng-container *ngTemplateOutlet="linkView"></ng-container>
+                </svg:g>
+                <ng-container *ngIf="link.data.deleted">
+                  <ng-container *ngTemplateOutlet="linkView"></ng-container>
+                </ng-container>
+              </ng-container>
             </svg:g>
           </ng-template>
         </ngx-graph>

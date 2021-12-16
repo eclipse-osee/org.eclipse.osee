@@ -15,22 +15,20 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, from, iif, Observable, of } from 'rxjs';
+import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import { take, switchMap, filter, first, map, mergeMap, reduce, share, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
-import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
-import { HttpLoadingService } from '../../../shared/services/ui/http-loading.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
-import { structure } from '../../types/structure';
+import { structure, structureWithChanges } from '../../types/structure';
 import { AddStructureDialogComponent } from '../add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../delete-structure-dialog/delete-structure-dialog.component';
 import { RemoveStructureDialogComponent } from '../remove-structure-dialog/remove-structure-dialog.component';
-import { LocationStrategy } from '@angular/common';
+import { difference } from 'src/app/types/change-report/change-report';
+import { applic } from 'src/app/types/applicability/applic';
 
 @Component({
   selector: 'app-structure-table',
@@ -54,8 +52,9 @@ import { LocationStrategy } from '@angular/common';
   ],
 })
 export class StructureTableComponent implements OnInit {
-  isLoading = this.loadingService.isLoading;
-  @Input() messageData: Observable<MatTableDataSource<structure>> = of(new MatTableDataSource<structure>())
+  @Input() previousLink = "../../../../"
+  @Input() structureId = "";
+  @Input() messageData: Observable<MatTableDataSource<structure>> = of(new MatTableDataSource<structure|structureWithChanges>())
   @Input() hasFilter: boolean = false;
   truncatedSections: string[] = [];
   editableStructureHeaders: string[] = [
@@ -115,24 +114,6 @@ export class StructureTableComponent implements OnInit {
     shareReplay(1)
   )
 
-  settingsDialog = combineLatest([this.structureService.BranchId, this.isEditing, this.currentElementHeaders, this.currentStructureHeaders,this.headerService.AllElementHeaders,this.headerService.AllStructureHeaders]).pipe(
-    take(1),
-    switchMap(([branch, edit, elements, structures,allElementHeaders,allStructureHeaders]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-      data: {
-        branchId: branch,
-        allHeaders2: allElementHeaders,
-        allowedHeaders2: elements,
-        allHeaders1: allStructureHeaders,
-        allowedHeaders1: structures,
-        editable: edit,
-        headers1Label: 'Structure Headers',
-        headers2Label: 'Element Headers',
-        headersTableActive: true,
-      }
-    }).afterClosed().pipe(
-      take(1),
-      switchMap((result) => this.structureService.updatePreferences(result))))
-  )
 
   structureDialog = this.structureService.SubMessageId.pipe(
     take(1),
@@ -152,11 +133,11 @@ export class StructureTableComponent implements OnInit {
         }
       }
     }).afterClosed().pipe(
-      filter((val) => val !== undefined),
       take(1),
+      filter((val) => val !== undefined),
       switchMap((value: AddStructureDialog) => iif(() => value.structure.id !== '-1' && value.structure.id.length > 0, this.structureService.relateStructure(value.structure.id), this.structureService.createStructure(value.structure))),
-      first()
-    ))
+    )),
+    first()
   )
   layout = this.layoutNotifier.layout;
   menuPosition = {
@@ -169,14 +150,14 @@ export class StructureTableComponent implements OnInit {
   sideNavOpened = this.sideNav.pipe(
     map((value)=>value.opened)
   )
+  inDiffMode = this.structureService.isInDiff.pipe(
+    switchMap((val) => iif(() => val, of('true'), of('false'))),
+  );
   constructor(
     public dialog: MatDialog,
     private structureService: CurrentStateService,
     private layoutNotifier: LayoutNotifierService,
-    private loadingService: HttpLoadingService,
-    private headerService: HeaderService,
-    private route: ActivatedRoute, private router: Router,
-  private angLocation:LocationStrategy) { }
+    private headerService: HeaderService,) { }
 
   ngOnInit(): void {
   }
@@ -217,9 +198,6 @@ export class StructureTableComponent implements OnInit {
     return false;
   }
 
-  openSettingsDialog() {
-    this.settingsDialog.subscribe();
-  }
   openAddStructureDialog() {
     this.structureDialog.subscribe();
   }
@@ -233,7 +211,8 @@ export class StructureTableComponent implements OnInit {
       name: name,
       description: description,
       structure: structure,
-      header:header
+      header: header,
+      diffMode:this.structureService.isInDiff.getValue()
     }
     this.matMenuTrigger.openMenu();
   }
@@ -289,21 +268,8 @@ export class StructureTableComponent implements OnInit {
   getHeaderByName(value: string) {
     return this.headerService.getHeaderByName(value,'structure');
   }
-  navigateToInNewTab(location: string) {
-    let currentUrl = this.router.url.split("/");
-    currentUrl.shift()
-    combineLatest([this.structureService.branchType, this.structureService.BranchId, this.structureService.connectionId, this.structureService.MessageId, this.structureService.SubMessageId]).pipe(
-      take(1),
-      switchMap(([type, id, connection, messageId, submessageId]) => of(this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref(),...currentUrl,location],{
-        relativeTo: this.route.parent?.parent,
-        queryParamsHandling: 'merge',
-      }))).pipe(
-        switchMap((url) => of(window.open(url, "_blank")))
-      ))
-    ).subscribe();
-  }
 
-  viewDiff(open:boolean,value:string|number, header:string) {
-    this.structureService.sideNav = { opened: open,field:header, currentValue: value };
+  viewDiff(open:boolean,value:difference, header:string) {
+    this.structureService.sideNav = { opened: open, field: header, currentValue: value.currentValue as string | number | applic, previousValue: value.previousValue as string | number | applic | undefined,transaction:value.transactionToken };
   }
 }

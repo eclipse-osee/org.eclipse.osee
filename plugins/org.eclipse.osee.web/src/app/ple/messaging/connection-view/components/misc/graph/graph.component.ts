@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { from, iif, of } from 'rxjs';
+import { combineLatest, from, iif, of } from 'rxjs';
 import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
 import { Edge, Node } from '@swimlane/ngx-graph';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -54,14 +54,12 @@ export class GraphComponent implements OnInit {
   @ViewChild('linkMenuTrigger') linkMenuTrigger!: MatMenuTrigger;
   @ViewChild('nodeMenuTrigger') nodeMenuTrigger!: MatMenuTrigger;
   @ViewChild('graphMenuTrigger') graphMenuTrigger!: MatMenuTrigger;
+
+  _messageRoute = this.graphService.messageRoute
   constructor (private graphService: CurrentGraphService, private router: ConnectionViewRouterService, public dialog:MatDialog) {}
 
   ngOnInit(): void {
     this.graphService.update = true;
-  }
-
-  navigateToMessages(value: string) {
-    this.router.connection = value;
   }
 
   openLinkDialog(event:MouseEvent,value: OseeEdge<connection|connectionWithChanges>, nodes:OseeNode<node|nodeData|nodeDataWithChanges>[]) {

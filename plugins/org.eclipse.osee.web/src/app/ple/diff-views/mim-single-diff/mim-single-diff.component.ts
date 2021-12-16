@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input, OnInit } from '@angular/core';
+ import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Component, Input, OnInit } from '@angular/core';
  import { iif, Observable, of, Subject } from 'rxjs';
  import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
@@ -23,7 +24,15 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
  @Component({
    selector: 'app-mim-single-diff',
    templateUrl: './mim-single-diff.component.html',
-   styleUrls: ['./mim-single-diff.component.sass']
+   styleUrls: ['./mim-single-diff.component.sass'],
+   animations: [
+    trigger('expandButton', [
+      state('closed', style({ transform: 'rotate(90deg)' })),
+      state('open', style({ transform: 'rotate(-90deg)' })),
+      transition('open => closed', animate('500ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('closed => open', animate('500ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
  })
  export class MimSingleDiffComponent implements OnInit {
  
@@ -43,7 +52,7 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
    }
  
    isApplic(value:string | number | boolean | applic|undefined): value is applic{
-     return typeof value==='object'
+     return typeof value === 'object' && value?.name !== undefined;
    }
 
    viewDiff(open:boolean,value:string|number|applic|transportType, header:string) {

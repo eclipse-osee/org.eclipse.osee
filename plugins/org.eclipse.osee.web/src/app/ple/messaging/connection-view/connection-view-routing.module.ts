@@ -14,6 +14,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
 import { MimSingleDiffComponent } from '../../diff-views/mim-single-diff/mim-single-diff.component';
+import { UsermenuComponent } from './components/menu/usermenu/usermenu.component';
 import { ConnectionViewComponent } from './connection-view.component';
 
 const routes: Routes = [
@@ -26,8 +27,9 @@ const routes: Routes = [
     }
   },
   {
-    path: 'diffOpen', component: MimSingleDiffComponent, outlet:'rightSideNav'
-  }
+    path: '', component: MimSingleDiffComponent, outlet:'rightSideNav'
+  },
+  { path: '', component: UsermenuComponent, outlet: 'userMenu' }
 ];
 
 @NgModule({

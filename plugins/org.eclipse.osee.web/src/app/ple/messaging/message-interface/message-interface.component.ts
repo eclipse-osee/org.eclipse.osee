@@ -13,7 +13,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, iif, of } from 'rxjs';
-import { HttpLoadingService } from '../shared/services/ui/http-loading.service';
 import { CurrentMessagesService } from './services/current-messages.service';
 
 @Component({
@@ -23,8 +22,7 @@ import { CurrentMessagesService } from './services/current-messages.service';
 })
 export class MessageInterfaceComponent implements OnInit,OnDestroy {
 
-  isLoading = this.loadingService.isLoading;
-  constructor (private router:Router,private route: ActivatedRoute, private messageService: CurrentMessagesService, private loadingService: HttpLoadingService) { }
+  constructor (private router:Router,private route: ActivatedRoute, private messageService: CurrentMessagesService) { }
   ngOnDestroy(): void {
     this.messageService.toggleDone=true;
   }

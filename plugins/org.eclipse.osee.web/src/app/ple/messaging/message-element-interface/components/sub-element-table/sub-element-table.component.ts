@@ -33,6 +33,7 @@ import { HeaderService } from '../../../shared/services/ui/header.service';
 import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';
 import { applic } from '../../../../../types/applicability/applic';
 import { LocationStrategy } from '@angular/common';
+import { difference } from 'src/app/types/change-report/change-report';
 
 @Component({
   selector: 'ple-messaging-message-element-interface-sub-element-table',
@@ -55,8 +56,8 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   };
   @Output() expandRow = new EventEmitter();
   @Input() subMessageHeaders: string[] = [];
-  private _branchId: string = "";
-  private _branchType: string = "";
+  _branchId: string = "";
+  _branchType: string = "";
   @Input() editMode: boolean = false;
   layout = this.layoutNotifier.layout;
   menuPosition = {
@@ -99,21 +100,6 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
   valueTracker(index: any, item: any) {
     return index;
-  }
-
-  navigateTo(location: string) {
-    this.router.navigate([this._branchType,this._branchId,"types",location], {
-      relativeTo: this.route.parent?.parent,
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  navigateToInNewTab(location: string) {
-    const url = this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref()+"ple/messaging/"+this._branchType+"/"+this._branchId+"/"+"types/", location], {
-      relativeTo: this.route.parent?.parent,
-      queryParamsHandling: 'merge',
-    }))
-    window.open(url, "_blank");
   }
 
   openAddElementDialog() {
@@ -249,7 +235,8 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     return this.headerService.getHeaderByName(value,'element');
   }
 
-  viewDiff(value: string | number | applic, header: string) {
-    this.structureService.sideNav = { opened: true,field:header, currentValue: value,previousValue:undefined };
+  viewDiff(value: difference, header: string) {
+    this.structureService.sideNav = { opened: true, field: header, currentValue: value.currentValue as string | number | applic, previousValue: value.previousValue as string | number | applic | undefined,transaction:value.transactionToken };
   }
+
 }

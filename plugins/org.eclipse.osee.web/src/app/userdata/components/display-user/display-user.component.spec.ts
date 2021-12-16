@@ -12,6 +12,10 @@
  **********************************************************************/
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DisplayUserComponent } from './display-user.component';
 
@@ -22,7 +26,7 @@ describe('DisplayUserComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule],
+      imports:[HttpClientTestingModule,MatMenuModule,MatButtonModule,RouterTestingModule,NoopAnimationsModule],
       declarations: [ DisplayUserComponent ]
     })
       .compileComponents();

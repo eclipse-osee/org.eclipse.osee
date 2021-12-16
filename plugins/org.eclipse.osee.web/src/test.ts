@@ -33,5 +33,11 @@ getTestBed().initTestEnvironment(
 );
 // Then we find all the tests.
 const context = require.context('./', true, /\.spec\.ts$/);
+beforeEach(function () {
+  let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+    return null;
+  })
+});
+// console.warn = (message) => { throw new Error(message) };
 // And load the modules.
 context.keys().map(context);

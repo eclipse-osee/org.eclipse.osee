@@ -51,10 +51,10 @@
     background-color: mat-color($accent,100);
   }
   .message-table-row-even-deleted{
-    background-color:mat-color($warn,50)
+    background-color:mat-color($warn,100)
   }
   .message-table-row-odd-deleted{
-    background-color:mat-color($warn,100)
+    background-color:mat-color($warn,200)
   }
 
   tr.message-detail-row:not(.message-expanded-detail-row):hover {
@@ -66,11 +66,11 @@
   }
 
   .message-table-sub-message-row-even{
-    background-color:mat-color($primary,50)
+    background-color:mat-color($primary,100)
   }
 
   .message-table-sub-message-row-odd{
-    background-color:mat-color($primary,100)
+    background-color:mat-color($primary,200)
   }
 
   .message-table-sub-message-row-even-added{

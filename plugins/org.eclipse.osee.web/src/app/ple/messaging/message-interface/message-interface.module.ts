@@ -36,7 +36,6 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { EditMessageFieldComponent } from './components/message-table/edit-message-field/edit-message-field.component';
 import { AddMessageDialogComponent } from './components/message-table/add-message-dialog/add-message-dialog.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RemoveSubmessageDialogComponent } from './components/dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { DeleteSubmessageDialogComponent } from './components/dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
@@ -44,10 +43,11 @@ import { RemoveMessageDialogComponent } from './components/dialogs/remove-messag
 import { DeleteMessageDialogComponent } from './components/dialogs/delete-message-dialog/delete-message-dialog.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
+import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
 
 
 @NgModule({
-  declarations: [MessageInterfaceComponent, MessageTableComponent, SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent, EditMessageFieldComponent, AddMessageDialogComponent, RemoveSubmessageDialogComponent, DeleteSubmessageDialogComponent, RemoveMessageDialogComponent, DeleteMessageDialogComponent],
+  declarations: [MessageInterfaceComponent, MessageTableComponent, SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent, EditMessageFieldComponent, AddMessageDialogComponent, RemoveSubmessageDialogComponent, DeleteSubmessageDialogComponent, RemoveMessageDialogComponent, DeleteMessageDialogComponent, UsermenuComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -60,7 +60,6 @@ import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
     MatSlideToggleModule,
     MatTooltipModule,
     MatDialogModule,
-    MatProgressBarModule,
     MatSidenavModule,
     PleSharedMaterialModule,
     OseeStringUtilsPipesModule,

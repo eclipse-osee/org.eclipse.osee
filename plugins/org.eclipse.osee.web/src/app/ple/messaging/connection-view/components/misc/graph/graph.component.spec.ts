@@ -49,19 +49,16 @@ describe('GraphComponent', () => {
   let component: GraphComponent;
   let fixture: ComponentFixture<GraphComponent>;
   let loader: HarnessLoader;
-  let router: any;
   let routerService: ConnectionViewRouterService;
   let menuLinkHarness: MatMenuHarness;
   let menuNodeHarness: MatMenuHarness;
   let menuGraphHarness: MatMenuHarness;
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],{'url':new String()});
     await TestBed.configureTestingModule({
       imports:[MatDialogModule,NgxGraphModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
       providers:
         [
-          { provide: Router, useValue: router },
           { provide: CurrentGraphService, useValue: graphServiceMock },
           {provide: EnumsService,useValue:enumsServiceMock}
       ],
@@ -77,11 +74,11 @@ describe('GraphComponent', () => {
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
-  beforeEach(function () {
-    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-      return null;
-    })
-  });
+  // beforeEach(function () {
+  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+  //     return null;
+  //   })
+  // });
   beforeEach(() => {
     component.linkMenuTrigger.closeMenu();
     component.nodeMenuTrigger.closeMenu();
@@ -99,12 +96,6 @@ describe('GraphComponent', () => {
         fixture.detectChanges();
       })
 
-      it('should navigate to messages page', () => {
-        routerService.branchType = 'product line';
-        routerService.branchId = '8';
-        component.navigateToMessages("hello");
-        expect(router.navigate).toHaveBeenCalledWith(['', 'product line', '8', 'hello', 'messages'])
-      });
     })
       describe('Editing Menus', () => {
         beforeEach(() => {

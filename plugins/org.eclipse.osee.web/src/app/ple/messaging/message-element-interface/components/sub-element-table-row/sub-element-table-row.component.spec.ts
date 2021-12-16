@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
+import { of } from 'rxjs';
 import { SubElementTableNoEditFieldDynamicWidthComponent } from '../sub-element-table-no-edit-field-dynamic-width/sub-element-table-no-edit-field-dynamic-width.component';
 import { SubElementTableNoEditFieldFilteredComponent } from '../sub-element-table-no-edit-field-filtered/sub-element-table-no-edit-field-filtered.component';
 import { SubElementTableNoEditFieldNameComponent } from '../sub-element-table-no-edit-field-name/sub-element-table-no-edit-field-name.component';
@@ -21,10 +23,16 @@ import { SubElementTableRowComponent } from './sub-element-table-row.component';
 describe('SubElementTableRowComponent', () => {
   let component: SubElementTableRowComponent;
   let fixture: ComponentFixture<SubElementTableRowComponent>;
+  let router: any;
 
   beforeEach(async () => {
+    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
     await TestBed.configureTestingModule({
-      declarations: [ SubElementTableRowComponent,SubElementTableNoEditFieldComponent,SubElementTableNoEditFieldDynamicWidthComponent,SubElementTableNoEditFieldFilteredComponent,SubElementTableNoEditFieldNameComponent  ]
+      declarations: [SubElementTableRowComponent, SubElementTableNoEditFieldComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldNameComponent],
+      providers: [{ provide: Router, useValue: router }, {
+        provide: ActivatedRoute, useValue: {
+          paramMap: of(convertToParamMap({ branchId: "10",branchType:"working" }))
+      }}]
     })
     .compileComponents();
   });

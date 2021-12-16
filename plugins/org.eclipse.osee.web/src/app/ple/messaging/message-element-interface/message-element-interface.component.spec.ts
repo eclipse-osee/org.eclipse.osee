@@ -13,8 +13,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatFormFieldHarness } from '@angular/material/form-field/testing';
-import { MatInputHarness } from '@angular/material/input/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
+import { Router, ActivatedRoute, convertToParamMap, NavigationEnd } from '@angular/router';
 import { of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
@@ -35,15 +33,13 @@ import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { EditElementFieldComponent } from './components/sub-element-table/edit-element-field/edit-element-field.component';
 import { EditStructureFieldComponentMock } from './mocks/components/EditStructureField.mock';
 import { CurrentStateServiceMock } from './mocks/services/CurrentStateService.mock';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import { SubElementTableComponentMock } from './mocks/components/sub-element-table.mock';
 import { EditAuthService } from '../shared/services/edit-auth-service.service';
 import { editAuthServiceMock } from '../connection-view/mocks/EditAuthService.mock';
 import { MatMenuModule } from '@angular/material/menu';
-import { structuresMock } from './mocks/ReturnObjects/Structures.mock';
-import { MatMenuHarness } from '@angular/material/menu/testing';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { StructureTableComponentMock } from './mocks/components/StructureTable.mock';
+import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
+import { RouterTestingModule } from '@angular/router/testing';
 
 let loader: HarnessLoader;
 
@@ -59,13 +55,13 @@ describe('MessageElementInterfaceComponent', () => {
         MatInputModule,
         MatSelectModule,
         MatMenuModule,
-        MatProgressBarModule,
         FormsModule,
         NoopAnimationsModule,
         MatTableModule,
         MatTooltipModule,
         OseeStringUtilsPipesModule,
         OseeStringUtilsDirectivesModule,
+        RouterTestingModule,
         SharedMessagingModule
       ],
       declarations: [
@@ -77,11 +73,18 @@ describe('MessageElementInterfaceComponent', () => {
         StructureTableComponentMock
       ],
       providers: [
-        { provide: Router, useValue: { navigate: () => { } } },
+        {
+          provide: Router, useValue: {
+            navigate: () => { }, url: '', events: of<NavigationEnd>({
+              id: 1,
+              url: '',
+              urlAfterRedirects:''
+        }) } },
         { provide: EditAuthService,useValue:editAuthServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {
+            data:of({diff:changeReportMock}),
             paramMap: of(
               convertToParamMap({
                 name: 'Name > Name',

@@ -10,12 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from "./element";
+import { applic } from "src/app/types/applicability/applic";
+import { difference } from "src/app/types/change-report/change-report";
+import { element, elementWithChanges } from "./element";
 
 export interface structure {
     id: string,
     name: string,
-    elements?: element[],
+    elements?: (element|elementWithChanges)[],
     description: string,
     interfaceMaxSimultaneity: string,
     interfaceMinSimultaneity: string,
@@ -25,4 +27,20 @@ export interface structure {
     sizeInBytes?: number,
     bytesPerSecondMinimum?: number,
     bytesPerSecondMaximum?: number,
+    applicability?:applic,
+}
+export interface structureWithChanges extends Required<structure>{
+    added: boolean,
+    deleted: boolean,
+    hasElementChanges:boolean,
+    changes: {
+        name?: difference,
+        description?: difference,
+        interfaceMaxSimultaneity?: difference,
+        interfaceMinSimultaneity?: difference,
+        interfaceTaskFileType?: difference,
+        interfaceStructureCategory?: difference,
+        applicability?: difference,
+        numElements?:boolean
+    }
 }

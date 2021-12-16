@@ -17,22 +17,28 @@ body
     display: inline-block
     height: 100%
     width: 100%
-.messaging-buttons-section
-    width: 100%
-    height: 100%
-    padding-top: 10%
-    display: flex
-    align-items: center
-    justify-content: space-evenly
-    flex-direction: column 
-.messaging-button-selection-section
-    width: 60%
-    height: 20%
-    display: flex
-    justify-content: space-around
-.messaging-app-container
-    display: flex
-    height: 100%
-    align-items: flex-end
-.mat-raised-button
-    height: 100%
+.messaging-grid
+    display : grid
+    grid-template-rows : 3fr 3fr 2fr 2fr
+    grid-template-columns : 1fr 1fr 1fr 1fr 1fr
+    gap : 5%
+    justify-items: stretch
+    align-items: stretch
+.messaging-header
+    grid-row-start : 2
+    grid-row-end : 2
+    grid-column-start : 2
+    grid-column-end : 5
+    justify-self: center
+.messaging-bottom
+    grid-row-start : 4
+    grid-row-end : 4
+    grid-column-start : 1
+    grid-column-end : 5
+$buttons: 1,2,3
+@each $buttonNumber in $buttons
+    .message-button-#{$buttonNumber}
+        grid-row-start : 3
+        grid-row-end : 3
+        grid-column-start : $buttonNumber+1
+        grid-column-end : $buttonNumber+1
