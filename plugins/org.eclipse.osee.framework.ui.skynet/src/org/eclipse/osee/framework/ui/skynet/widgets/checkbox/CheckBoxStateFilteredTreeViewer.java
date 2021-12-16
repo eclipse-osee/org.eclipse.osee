@@ -181,4 +181,8 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
          item.setExpanded(true);
       }
    }
+
+   public void clearChecked() {
+      this.checked.clear();
+   }
 }

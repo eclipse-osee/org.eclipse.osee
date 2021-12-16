@@ -338,6 +338,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          otherTree.getViewer().setInput(emptyList);
       }
       newTree.getViewer().setInput(emptyList);
+      newTree.clearChecked();
    }
 
    private void refreshResultsArea(TeamWorkFlowArtifact teamWf) {
@@ -372,6 +373,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
          Collection<IAtsActionableItem> checked = newTree.getChecked();
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(checked);
+         newAIs.remove(null);
          AtsUser modifiedBy = AtsApiService.get().getUserService().getCurrentUser();
 
          ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs,

@@ -78,6 +78,9 @@ public class ModifyActionableItems {
    }
 
    private void processAisAddedForNewWorkflows() {
+      if (newAIs.isEmpty()) {
+         return;
+      }
       Set<IAtsActionableItem> allAIsForNewWorkflow = new HashSet<>();
       Set<IAtsActionableItem> duplicatedAIs = new HashSet<>();
       // determine AIs that already have a team workflow associated
