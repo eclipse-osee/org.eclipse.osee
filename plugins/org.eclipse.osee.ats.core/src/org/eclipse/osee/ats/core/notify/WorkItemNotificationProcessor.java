@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.rest.internal.notify;
+package org.eclipse.osee.ats.core.notify;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,11 +58,11 @@ public class WorkItemNotificationProcessor {
    private final IAttributeResolver attrResolver;
    private final AtsApi atsApi;
 
-   public WorkItemNotificationProcessor(Log logger, AtsApi atsApi, IAtsUserService userService, IAttributeResolver attrResolver) {
-      this.logger = logger;
+   public WorkItemNotificationProcessor(AtsApi atsApi) {
+      this.logger = atsApi.getLogger();
       this.atsApi = atsApi;
-      this.userService = userService;
-      this.attrResolver = attrResolver;
+      this.userService = atsApi.getUserService();
+      this.attrResolver = atsApi.getAttributeResolver();
    }
 
    /**

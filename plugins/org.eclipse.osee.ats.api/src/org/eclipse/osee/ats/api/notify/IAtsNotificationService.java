@@ -34,4 +34,6 @@ public interface IAtsNotificationService {
 
    void setJournalSubscribedUsers(IAtsWorkItem workItem, Collection<AtsUser> users);
 
+   void sendNotifications(String fromEmail, String toEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents);
+
 }

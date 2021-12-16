@@ -14,8 +14,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public final class SendEmailCall implements Callable<String> {

@@ -16,18 +16,19 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 import static org.junit.Assert.assertFalse;
 import java.util.Date;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.junit.Before;
 import org.junit.Ignore;
 
 /**
  * Test ignored cause it sends email to current user. Un-ignore to debug email issues.
- * 
+ *
  * @author Donald G. Dunne
  */
 @Ignore
@@ -50,8 +51,8 @@ public class OseeEmailTest {
    @org.junit.Test
    public void testTextEmail() throws Exception {
       final String TEST_NAME = "Email Test 1/3 - Text Body";
-      OseeEmail emailMessage =
-         new OseeEmail(emailAddress, TEST_NAME, "Hello World - this is text only" + infoStr, BodyType.Text);
+      OseeEmail emailMessage = new OseeEmailIde("from@boeing.com", emailAddress, TEST_NAME,
+         "Hello World - this is text only" + infoStr, BodyType.Text);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }
@@ -59,7 +60,7 @@ public class OseeEmailTest {
    @org.junit.Test
    public void testHtmlEmail() throws Exception {
       final String TEST_NAME = "Email Test 2/3 - Html Body";
-      OseeEmail emailMessage = new OseeEmail(emailAddress, TEST_NAME,
+      OseeEmail emailMessage = new OseeEmailIde("from@boeing.com", emailAddress, TEST_NAME,
          AHTML.simplePage(AHTML.bold("Hello World - this should be bold" + infoStr)), BodyType.Html);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
@@ -68,17 +69,18 @@ public class OseeEmailTest {
    @org.junit.Test
    public void testAttachementEmail() throws Exception {
       final String TEST_NAME = "Email Test 3/3 - with Outlook Attachment";
-      OseeEmail emailMessage = new OseeEmail(emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
-      //
-         "1) Double-click open attachment opens calendar event dialog\n" +
+      OseeEmail emailMessage =
+         new OseeEmailIde("from@boeing.com", emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
          //
-         "2) Verify Time 8am - 1pm\n" +
-         //
-         "3) Verify date (today)\n" +
-         //
-         "4) Verify location: Conference Room\n" +
-         //
-         "5) Verify subject is name of this test" + infoStr, BodyType.Text);
+            "1) Double-click open attachment opens calendar event dialog\n" +
+            //
+            "2) Verify Time 8am - 1pm\n" +
+            //
+            "3) Verify date (today)\n" +
+            //
+            "4) Verify location: Conference Room\n" +
+            //
+            "5) Verify subject is name of this test" + infoStr, BodyType.Text);
       Date start = new Date();
       Date end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
       String context = new OutlookCalendarEvent("Conference Room", TEST_NAME, start, end).getEvent();
