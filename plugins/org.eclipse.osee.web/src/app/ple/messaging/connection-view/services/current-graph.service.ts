@@ -29,7 +29,7 @@ import { applic } from '../../../../types/applicability/applic';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
 import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
-import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
+import { changeInstance, changeTypeEnum, ignoreType, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
 
@@ -224,7 +224,7 @@ export class CurrentGraphService {
           combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', false), this.connectionService.createNodeRelation(nodeArray[1].id||'', true)]).pipe(
             take(1),
             map(latest => [latest[0], latest[1]]),
-            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, relations).pipe(
+            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
               take(1),
               switchMap((newConnection) => this.connectionService.performMutation(this.routeStateService.id.getValue(), newConnection).pipe(
                 tap(() => {
@@ -236,7 +236,7 @@ export class CurrentGraphService {
           combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', true), this.connectionService.createNodeRelation(nodeArray[1].id||'', false)]).pipe(
             take(1),
             map(latest => [latest[0], latest[1]]),
-            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, relations).pipe(
+            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
               take(1),
               switchMap((newConnection) => this.connectionService.performMutation(this.routeStateService.id.getValue(), newConnection).pipe(
                 tap(() => {
@@ -623,13 +623,18 @@ export class CurrentGraphService {
       }
       if (change.itemTypeId === ATTRIBUTETYPEID.NAME) {
         edge.data.changes.name = changes;
+        edge.data.name = change.currentVersion.value as string;
+        edge.label = change.currentVersion.value as string;
       } else if (change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION) {
         edge.data.changes.description = changes;
+        edge.data.description = change.currentVersion.value as string;
       } else if (change.itemTypeId === ATTRIBUTETYPEID.INTERFACETRANSPORTTYPE) {
         edge.data.changes.transportType = changes;
+        edge.data.transportType = change.currentVersion.value as transportType;
       }
     } else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
-      if (change.currentVersion.transactionToken.id!=='-1') {
+      if (change.currentVersion.transactionToken.id !== '-1') {
+        edge.data.applicability = change.currentVersion.applicabilityToken as applic|undefined;
         edge.data.changes.applicability = {
           previousValue: change.baselineVersion.applicabilityToken,
           currentValue: change.currentVersion.applicabilityToken,
@@ -638,6 +643,12 @@ export class CurrentGraphService {
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
       //do nothing currently
+      if (edge.source === '' && (change.itemTypeId as itemTypeIdRelation).id===RelationTypeId.INTERFACECONNECTIONPRIMARYNODE) {
+        edge.source = change.artIdB; 
+      }
+      if (edge.target === '' && (change.itemTypeId as itemTypeIdRelation).id===RelationTypeId.INTERFACECONNECTIONSECONDARYNODE) {
+        edge.target = change.artIdB; 
+      }
     }
     return edge;
   }
@@ -670,5 +681,11 @@ export class CurrentGraphService {
       orderArray.push(JSON.parse(value));
     })
     return orderArray;
+  }
+
+  get messageRoute() {
+    return combineLatest([this.routeStateService.id, this.routeStateService.type,iif(() => this.InDiff.getValue(), of("/diff"), of(""))]).pipe(
+      switchMap(([id, type, diff]) => of({ beginning:'/ple/messaging/'+type + '/' + id + '/',end:diff }))
+    )
   }
 }

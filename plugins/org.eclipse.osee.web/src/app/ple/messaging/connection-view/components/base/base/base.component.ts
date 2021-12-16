@@ -12,15 +12,11 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { RouteStateService } from '../../../services/route-state-service.service';
-import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { map, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
+import { map, share, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
-import { ActivatedRoute, Router } from '@angular/router';
+import { iif, of } from 'rxjs';
 
 @Component({
   selector: 'osee-connectionview-base',
@@ -35,44 +31,20 @@ export class BaseComponent implements OnInit {
     share(),
     shareReplay(1)
   )
-  inDiffMode=this.graphService.InDiff;
+  inDiffMode = this.graphService.InDiff.pipe(
+    switchMap((val) => iif(() => val, of('true'), of('false'))),
+  );
   sideNav = this.graphService.sideNavContent;
   sideNavOpened = this.sideNav.pipe(
     map((value) => value.opened),
   )
-  constructor (private routeState: RouteStateService, public dialog: MatDialog, private graphService: CurrentGraphService, private router:Router, private route: ActivatedRoute) {
+  constructor (public dialog: MatDialog, private graphService: CurrentGraphService) {
    }
   
   ngOnInit(): void {}
 
-  openSettingsDialog() {
-    combineLatest([this.inEditMode, this.routeState.id]).pipe(
-      take(1),
-      switchMap(([edit, id]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-        data: {
-          branchId: id,
-          allHeaders2: [],
-          allowedHeaders2: [],
-          allHeaders1: [],
-          allowedHeaders1: [],
-          editable: edit,
-          headers1Label: '',
-          headers2Label: '',
-          headersTableActive: false,
-        }
-      }).afterClosed().pipe(
-        take(1),
-        switchMap((result) => this.graphService.updatePreferences(result))))
-    ).subscribe();
-  }
   viewDiff(open:boolean,value:string|number|applic|transportType, header:string) {
     this.graphService.sideNav = { opened: open,field:header, currentValue: value };
   }
 
-  navigateToDiff() {
-    this.router.navigate(['diff'], {
-      relativeTo: this.route,
-      queryParamsHandling: 'merge',
-    });
-  }
 }

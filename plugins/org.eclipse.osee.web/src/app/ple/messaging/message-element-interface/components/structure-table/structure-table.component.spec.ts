@@ -22,13 +22,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router, UrlTree } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -42,7 +41,7 @@ import { EditAuthService } from '../../../shared/services/edit-auth-service.serv
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { EditStructureFieldComponentMock } from '../../mocks/components/EditStructureField.mock';
 import { SubElementTableComponentMock } from '../../mocks/components/sub-element-table.mock';
-import { structuresMock } from '../../mocks/ReturnObjects/Structures.mock';
+import { structuresMock, structuresMockWithChanges } from '../../mocks/ReturnObjects/Structures.mock';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
 import { CurrentStateService } from '../../services/current-state.service';
 import { structure } from '../../types/structure';
@@ -62,7 +61,6 @@ describe('StructureTableComponent', () => {
         MatInputModule,
         MatSelectModule,
         MatMenuModule,
-        MatProgressBarModule,
         MatSidenavModule,
         FormsModule,
         NoopAnimationsModule,
@@ -70,7 +68,7 @@ describe('StructureTableComponent', () => {
         MatTooltipModule,
         OseeStringUtilsPipesModule,
         OseeStringUtilsDirectivesModule,
-        RouterTestingModule,
+        RouterTestingModule.withRoutes([{path:'diffOpen',outlet:'rightSideNav',component:StructureTableComponent},{path:'diff',component:StructureTableComponent}]),
         SharedMessagingModule
       ],
       declarations: [ StructureTableComponent,SubElementTableComponentMock,
@@ -78,6 +76,15 @@ describe('StructureTableComponent', () => {
         EditElementFieldComponent,
         EditStructureFieldComponentMock, MimSingleDiffDummy, HighlightFilteredTextDirective],
       providers: [
+        {
+          provide: Router, useValue: {
+            navigate: () => { },
+            events: of(),
+            serializeUrl: () => { return '' },
+            createUrlTree: () => { return new UrlTree() },
+            url:'ple/messaging/working/2780650236653788489/201282/messages/201297/201301/Test%20Message%203%20>%20test%20submessage%205/elements/diff' //random test url for elements page
+          }
+        },
         { provide: EditAuthService,useValue:editAuthServiceMock },
         {
           provide: ActivatedRoute,
@@ -107,11 +114,11 @@ describe('StructureTableComponent', () => {
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
-  beforeEach(function () {
-    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-      return null;
-    })
-  });
+  // beforeEach(function () {
+  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+  //     return null;
+  //   })
+  // });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -172,14 +179,6 @@ describe('StructureTableComponent', () => {
     expect(component.expandedElement).toEqual([]);
   });
 
-  it('should open settings dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
-    const spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Settings' }));
-    await button.click();
-    expect(spy).toHaveBeenCalled();
-  })
 
   it('should open add structure dialog', async () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:'10',name:'New Structure',structure:{id:'10216532',name:'New Structure',elements:[],description:'',interfaceMaxSimultaneity:'',interfaceMinSimultaneity:'',interfaceTaskFileType:0,interfaceStructureCategory:'',numElements:'10',sizeInBytes:'10',bytesPerSecondMinimum:10,bytesPerSecondMaximum:10}}), close: null });
@@ -195,14 +194,14 @@ describe('StructureTableComponent', () => {
     beforeEach(() => {
       mEvent = document.createEvent("MouseEvent");
     })
-    it('should open the menu and navigate to a new tab', async() => {
-      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
-      await menu.clickItem({ text: "Open structure table in new tab" });
-      expect(spy).toHaveBeenCalled();
-    })
+    // it('should open the menu and navigate to a new tab', async() => {
+    //   component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
+    //   await fixture.whenStable();
+    //   let menu = await loader.getHarness(MatMenuHarness);
+    //   let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
+    //   await menu.clickItem({ text: "Open structure table in new tab" });
+    //   expect(spy).toHaveBeenCalled();
+    // })
     it('should open the menu and dismiss a description', async () => {
       component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
       await fixture.whenStable();
@@ -252,6 +251,15 @@ describe('StructureTableComponent', () => {
       await menu.clickItem({ text: "Delete structure globally" });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
+    })
+
+    it('should open a diff', async () => {
+      component.openMenu(mEvent, structuresMockWithChanges.id, structuresMockWithChanges.name, structuresMockWithChanges.description, structuresMockWithChanges, structuresMockWithChanges.name);
+      await fixture.whenStable();
+      let menu = await loader.getHarness(MatMenuHarness);
+      let spy = spyOn(component, 'viewDiff').and.callThrough();
+      await menu.clickItem({text:'View Diff'})
+      expect(spy).toHaveBeenCalled();
     })
     afterEach(() => {
       component.matMenuTrigger.closeMenu();

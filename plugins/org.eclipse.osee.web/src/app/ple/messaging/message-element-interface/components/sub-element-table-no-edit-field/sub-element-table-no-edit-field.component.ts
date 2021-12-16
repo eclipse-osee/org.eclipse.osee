@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { applic } from '../../../../../types/applicability/applic';
 import { element } from '../../types/element';
 
@@ -37,15 +38,17 @@ export class SubElementTableNoEditFieldComponent implements OnInit {
   };
   @Input() header: string = "";
   @Input() width: string = "";
+  _branchId: string = "";
+  _branchType: string = "";
 
-  @Output() platformNavigation = new EventEmitter<string>();
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-  }
-  navigateTo(location: string) {
-    this.platformNavigation.emit(location);
+    this.route.paramMap.subscribe((values) => {
+      this._branchId = values.get("branchId") || '';
+      this._branchType = values.get("branchType") || '';
+    })
   }
 
 }

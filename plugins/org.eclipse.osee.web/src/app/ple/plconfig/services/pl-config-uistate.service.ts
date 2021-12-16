@@ -21,7 +21,6 @@ import { changeInstance } from 'src/app/types/change-report/change-report';
 })
 export class PlConfigUIStateService {
   private _differences = new ReplaySubject<changeInstance[]|undefined>(undefined);
-  private _loading = new BehaviorSubject<string>("false");
   private _editable = new BehaviorSubject<string>("false");
   private _errors = new BehaviorSubject<string>("");
   private _groups = new BehaviorSubject<string[]>([]);
@@ -56,10 +55,10 @@ export class PlConfigUIStateService {
     //return this._updateRequired;
   }
   public get loading() {
-    return this._loading;
+    return this.ui.isLoading;
   }
   public set loadingValue(loading: boolean|string) {
-    this._loading.next(loading.toString());
+    this.ui.loading = loading as boolean;
   }
   public get editable() {
     return this._editable;
@@ -88,5 +87,9 @@ export class PlConfigUIStateService {
 
   get isInDiff() {
     return this.ui.isInDiff.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  }
+
+  set diffMode(value: boolean) {
+    this.ui.diffMode = value;
   }
 }

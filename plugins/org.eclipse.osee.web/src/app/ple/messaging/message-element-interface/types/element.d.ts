@@ -1,3 +1,4 @@
+import { difference } from "src/app/types/change-report/change-report";
 import { applic } from "../../../../types/applicability/applic";
 
 /*********************************************************************
@@ -13,7 +14,7 @@ import { applic } from "../../../../types/applicability/applic";
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface element {
-    [index:string]:string|number|boolean|applic|undefined,
+    [index:string]:any,
     id: string,
     name: string,
     description: string,
@@ -29,4 +30,19 @@ export interface element {
     endByte?: number,
     logicalType?: string,
     applicability?:applic,
+}
+
+export interface elementWithChanges extends element{
+    added: boolean,
+    deleted: boolean,
+    changes: {
+        name?: difference,
+        description?: difference,
+        notes?: difference,
+        platformTypeName2?:difference,
+        interfaceElementIndexEnd?: difference,
+        interfaceElementIndexStart?: difference,
+        interfaceElementAlterable?: difference,
+        applicability?:difference
+    }
 }

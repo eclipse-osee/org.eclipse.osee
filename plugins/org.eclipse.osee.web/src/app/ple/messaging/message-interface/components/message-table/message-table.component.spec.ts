@@ -143,13 +143,6 @@ describe('MessageTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to the diff page', async() => {
-    let spy = spyOn(component, 'navigateToDiff').and.callThrough();
-    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Load Diff' }));
-    await button.click();
-    expect(spy).toHaveBeenCalled();
-  })
-
   it('should expand a row and hide a row on click', async () => {
     expect(component).toBeTruthy();
     const expandRow = spyOn(component, 'expandRow').and.callThrough();
@@ -176,15 +169,6 @@ describe('MessageTableComponent', () => {
     let input = await form.getControl(MatInputHarness);
     await input?.focus();
     await input?.setValue('Hello');
-    expect(spy).toHaveBeenCalled();
-  })
-
-  it('should open a settings dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-    let button = await loader.getHarness(MatButtonHarness.with({ text: 'Settings' }));
-    await button.click();
     expect(spy).toHaveBeenCalled();
   })
 

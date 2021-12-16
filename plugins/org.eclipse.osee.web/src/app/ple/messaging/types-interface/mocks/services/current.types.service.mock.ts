@@ -75,5 +75,8 @@ export const currentTypesServiceMock: Partial<CurrentTypesService> = {
     },
     changeEnumSet(changes: enumerationSet) {
         return of(response)
+    },
+    updatePreferences(preferences) {
+        return of(response)
     }
 }

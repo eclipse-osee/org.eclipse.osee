@@ -37,10 +37,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
 import { GraphLinkMenuComponent } from './components/menu/graph-link-menu/graph-link-menu.component';
 import { GraphNodeMenuComponent } from './components/menu/graph-node-menu/graph-node-menu.component';
+import { UsermenuComponent } from './components/menu/usermenu/usermenu.component';
 
 
 @NgModule({
-  declarations: [ConnectionViewComponent, BranchTypeSelectorComponent, BranchSelectorComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, GraphLinkMenuComponent, GraphNodeMenuComponent],
+  declarations: [ConnectionViewComponent, BranchTypeSelectorComponent, BranchSelectorComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, GraphLinkMenuComponent, GraphNodeMenuComponent, UsermenuComponent],
   imports: [
     CommonModule,
     ConnectionViewRoutingModule,

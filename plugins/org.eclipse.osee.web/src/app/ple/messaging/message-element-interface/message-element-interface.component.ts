@@ -13,12 +13,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { CurrentStateService } from './services/current-state.service';
 import { structure } from './types/structure';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { HttpLoadingService } from '../shared/services/ui/http-loading.service';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, iif, of } from 'rxjs';
 
 
 @Component({
@@ -27,7 +26,6 @@ import { HttpLoadingService } from '../shared/services/ui/http-loading.service';
   styleUrls: ['./message-element-interface.component.sass'],
 })
 export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
-  isLoading = this.loadingService.isLoading;
   messageData = this.structureService.structures.pipe(
     switchMap((data)=>of(new MatTableDataSource<structure>(data))),
     takeUntil(this.structureService.done)
@@ -35,22 +33,51 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
   breadCrumb: string = '';
   constructor (
     private route: ActivatedRoute,
+    private router:Router,
     public dialog: MatDialog,
     private structureService: CurrentStateService,
-    private loadingService: HttpLoadingService,
-  ) {}
+  ) {
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.route),
+      switchMap(route => {
+        while (route.firstChild && route.firstChild.snapshot.paramMap.keys.length!==0) {
+          route = route.firstChild
+        }
+        return of(route);
+      }),
+      filter((activatedRoute) => activatedRoute.outlet === 'primary'),
+      switchMap((route) => combineLatest([route.paramMap, route.firstChild?.data || route.url]).pipe(
+        map(([paramMap, data]) => {
+          this.structureService.BranchType = paramMap.get('branchType') || '';
+          this.structureService.branchId = paramMap.get('branchId') || '';
+          this.structureService.messageId = paramMap.get('messageId') || '';
+          this.structureService.subMessageId = paramMap.get('subMessageId') || '';
+          this.structureService.connection = paramMap.get('connection') || '';
+          this.breadCrumb = paramMap.get('name') || '';
+          return data;
+        }),
+        switchMap((data) => iif(() => data?.diff !== undefined, of(data).pipe(
+          map(data => {
+            this.structureService.difference = data?.diff;
+            return data?.diff;
+          })
+        ), of(data).pipe(
+          map(data => {
+            this.structureService.DiffMode = false;
+            this.structureService.difference = [];
+            return data;
+          })
+        )))
+      ))
+    ).subscribe((val) => {
+    });
+
+  }
   ngOnDestroy(): void {
     this.structureService.toggleDone = true;
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((values) => {
-      this.breadCrumb = values.get('name') || '';
-      this.structureService.BranchType = values.get('branchType') || '';
-      this.structureService.branchId = values.get('branchId') || '';
-      this.structureService.messageId = values.get('messageId') || '';
-      this.structureService.subMessageId = values.get('subMessageId') || '';
-      this.structureService.connection = values.get('connection') || '';
-    });
   }
 }

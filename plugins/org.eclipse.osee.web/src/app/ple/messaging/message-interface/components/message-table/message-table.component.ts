@@ -14,13 +14,12 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { message, messageChanges, messageWithChanges } from '../../types/messages';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { filter, first, map, share, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
-import { combineLatest, iif, of } from 'rxjs';
+import { iif, of } from 'rxjs';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RemoveMessageDialogComponent } from '../dialogs/remove-message-dialog/remove-message-dialog.component';
 import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/delete-message-dialog.component';
@@ -29,7 +28,6 @@ import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDi
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { applic } from '../../../../../types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'ple-messaging-message-table',
@@ -76,8 +74,10 @@ export class MessageTableComponent implements OnInit {
   sideNavOpened = this.sideNav.pipe(
     map((value)=>value.opened)
   )
-  inDiffMode = this.messageService.isInDiff;
-  constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService, private router:Router, private route: ActivatedRoute) {}
+  inDiffMode = this.messageService.isInDiff.pipe(
+    switchMap((val) => iif(() => val, of('true'), of('false'))),
+  );
+  constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService) {}
 
   ngOnInit(): void {}
   expandRow(value: string) {
@@ -110,26 +110,6 @@ export class MessageTableComponent implements OnInit {
     return index;
   }
   
-  openSettingsDialog() {
-    combineLatest([this.inEditMode, this.messageService.BranchId]).pipe(
-      take(1),
-      switchMap(([edit, branch]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-        data: {
-          branchId: branch,
-          allHeaders2: [],
-          allowedHeaders2: [],
-          allHeaders1: [],
-          allowedHeaders1: [],
-          editable: edit,
-          headers1Label: 'Structure Headers',
-          headers2Label: 'Element Headers',
-          headersTableActive: false,
-        }
-      }).afterClosed().pipe(
-        take(1),
-        switchMap((result) => this.messageService.updatePreferences(result))))
-    ).subscribe();
-  }
   openNewMessageDialog() {
     let dialogData: Partial<AddMessageDialog> = {
       name: '',
@@ -144,9 +124,9 @@ export class MessageTableComponent implements OnInit {
       data: dialogData
     });
     dialogRef.afterClosed().pipe(
+      first(),
       filter((val) => val !== undefined),
       switchMap((val) => this.messageService.createMessage(val)),
-      first()
     ).subscribe();
   }
 
@@ -212,11 +192,6 @@ export class MessageTableComponent implements OnInit {
 
   viewDiff(open: boolean, value: difference, header: string) {
     this.messageService.sideNav = { opened: open, field: header, currentValue: value.currentValue as string | number | applic, previousValue: value.previousValue as string | number | applic | undefined,transaction:value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
 
   hasChanges(value: message | messageWithChanges): value is messageWithChanges {
@@ -226,10 +201,4 @@ export class MessageTableComponent implements OnInit {
     return (value as messageWithChanges).changes[header] !== undefined;
   }
 
-  navigateToDiff() {
-    this.router.navigate(['diff'], {
-      relativeTo: this.route,
-      queryParamsHandling: 'merge',
-    });
-  }
 }

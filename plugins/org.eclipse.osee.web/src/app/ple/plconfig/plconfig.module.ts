@@ -30,7 +30,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
@@ -83,7 +82,6 @@ import { ValueMenuComponent } from './components/menus/value-menu/value-menu.com
     MatSlideToggleModule,
     MatTooltipModule,
     MatIconModule,
-    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatListModule,
     DiffViewsModule,

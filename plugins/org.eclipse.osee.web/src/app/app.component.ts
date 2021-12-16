@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
+import { HttpLoadingService } from './services/http-loading.service';
 import { SideNavService } from './shared-services/ui/side-nav.service';
 
 @Component({
@@ -20,7 +21,8 @@ import { SideNavService } from './shared-services/ui/side-nav.service';
 })
 export class AppComponent {
   opened = this.sideNavService.opened;
-  constructor (private sideNavService: SideNavService) {
+  isLoading = this.loadingService.isLoading;
+  constructor (private sideNavService: SideNavService, private loadingService: HttpLoadingService) {
     
   }
   title = 'OSEE';

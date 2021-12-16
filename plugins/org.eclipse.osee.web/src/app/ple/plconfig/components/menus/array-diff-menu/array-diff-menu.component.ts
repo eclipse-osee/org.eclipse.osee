@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -24,7 +23,7 @@ import { PlConfigCurrentBranchService } from '../../../services/pl-config-curren
 })
 export class ArrayDiffMenuComponent implements OnInit {
   @Input() array: difference[] = [];
-  constructor(private currentBranchService:PlConfigCurrentBranchService, private router:Router, private route:ActivatedRoute) { }
+  constructor(private currentBranchService:PlConfigCurrentBranchService) { }
 
   ngOnInit(): void {
   }
@@ -38,10 +37,5 @@ export class ArrayDiffMenuComponent implements OnInit {
       current = ''
     }
     this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
 }

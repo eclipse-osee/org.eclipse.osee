@@ -13,13 +13,13 @@
 <table mat-table [dataSource]="dataSource" class="message-element-interface-table-view-element mat-elevation-z9 message-element-interface-table-view-width-100">
     <ng-container [matColumnDef]="header" *ngFor="let header of subMessageHeaders;let j=index;trackBy:valueTracker">
      <th mat-header-cell *matHeaderCellDef class="message-element-interface-table-view-sub-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''">{{(getHeaderByName(header)|async)?.humanReadable||''}}</th>
-     <td mat-cell *matCellDef="let element" class="message-element-interface-table-center" [ngStyle]="header==='description'||header==='EnumLiteralsDesc'||header==='notes'?{
+     <td mat-cell *matCellDef="let element" class="message-element-interface-table-center" [ngClass]="!element.added && !element.deleted &&element.changes!==undefined && element.changes[header]!==undefined?'message-element-table-element-attribute-changed':''" [ngStyle]="header==='description'||header==='EnumLiteralsDesc'||header==='notes'?{
         'width':(layout|async)?.tableRecommendations?.width,
         'white-space': 'nowrap',
         'overflow': 'hidden',
         'text-overflow': 'ellipsis'
     }:{}" (contextmenu)="openGeneralMenu($event, element,header,element[header])">
-        <app-sub-element-table-row [header]="header" [editMode]="editMode" [element]="element" [structure]="structure" (navigate)="navigateTo($event)" (menu)="openGeneralMenu($event.event,element,header,element[header])"></app-sub-element-table-row>
+        <app-sub-element-table-row [header]="header" [editMode]="editMode" [element]="element" [structure]="structure" (menu)="openGeneralMenu($event.event,element,header,element[header])"></app-sub-element-table-row>
      </td>
     </ng-container>
     <ng-container matColumnDef="footer">
@@ -31,20 +31,25 @@
     </ng-container>
  <tr mat-header-row *matHeaderRowDef="subMessageHeaders; sticky:true"></tr>    
  <tr mat-row *matRowDef= "let row2; columns: subMessageHeaders; let k=index;"
- [ngClass]="k%2===0? 'message-table-sub-element-row-even':'message-table-sub-element-row-odd'"></tr><!--(contextmenu)="openGeneralMenu($event,row2)"-->
+ [ngClass]="k%2===0?row2.added?'message-table-sub-element-row-even-added':row2.deleted?'message-table-sub-element-row-even-deleted': 'message-table-sub-element-row-even':row2.added?'message-table-sub-element-row-odd-added': row2.deleted?'message-table-sub-element-row-odd-deleted':'message-table-sub-element-row-odd'"></tr><!--(contextmenu)="openGeneralMenu($event,row2)"-->
  <tr mat-footer-row *matFooterRowDef="['footer']"></tr>
 </table>
 <mat-menu #generalMenu="matMenu">
     <ng-template matMenuContent let-element="element" let-structure="structure" let-field="field" let-header="header">
-        <button mat-menu-item (click)="navigateTo(element.platformTypeName2)">Open Platform Type</button>
-        <button mat-menu-item (click)="navigateToInNewTab(element.platformTypeName2)">Open Platform Type in new tab</button>
+        <ng-container *ngIf="_branchType !== undefined && _branchId!==undefined">
+            <a mat-menu-item [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2">Open Platform Type</a>
+            <a mat-menu-item target="_blank" [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2">Open Platform Type in new tab</a>
+        </ng-container>
         <ng-container *ngIf="element.logicalType==='enumeration'">
             <button mat-menu-item (click)="openEnumDialog(element.platformTypeId)">Open Enumeration Details(view only)</button>
         </ng-container>
         <button mat-menu-item (click)="openDescriptionDialog(element.description,element.id,structure.id)">Open Description</button>
         <button mat-menu-item (click)="openNotesDialog(element.notes,element.id,structure.id)">Open Notes</button>
         <ng-container *ngIf="(getHeaderByName(header)|async)?.humanReadable||'' as headername">
-            <button mat-menu-item (click)="viewDiff(field,headername)">View Diff</button>
+            <ng-container *ngIf="element.changes!==undefined && element.changes[header]!==undefined && element.changes[header]!==true && element.changes[header]!==false">
+                <button mat-menu-item (click)="viewDiff(element.changes[header],headername)">View Diff</button>
+            </ng-container>
+            <!-- <button mat-menu-item (click)="viewDiff(field,headername)">View Diff</button> -->
         </ng-container>
         <ng-container *ngIf='editMode===true'>
             <button mat-menu-item (click)="removeElement(element,structure)">Remove element from structure</button>

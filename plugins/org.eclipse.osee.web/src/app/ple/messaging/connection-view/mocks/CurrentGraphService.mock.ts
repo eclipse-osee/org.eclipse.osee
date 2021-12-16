@@ -58,5 +58,6 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
   InDiff: new BehaviorSubject<boolean>(true),
   differences:new BehaviorSubject<changeInstance[]|undefined>(changeReportMock),
   sideNavContent: sideNavContentPlaceholder,
-  set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) {}
+  set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) { },
+  get messageRoute(){return of({ beginning:'/ple/messaging/'+'working' + '/' + '8' + '/',end:'/diff' })}
   }

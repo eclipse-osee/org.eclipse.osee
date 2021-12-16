@@ -24,6 +24,9 @@ import { httpInterceptorProviders } from './interceptors/http/interceptor-provid
 //Sub-component imports
 import { DisplayUserComponent } from './userdata/components/display-user/display-user.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     HttpClientModule,
     MatSidenavModule,
     MatToolbarModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatProgressBarModule,
     BrowserAnimationsModule
   ],
   providers: [httpInterceptorProviders],

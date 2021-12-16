@@ -70,6 +70,7 @@ describe('PlConfigCurrentBranchService', () => {
   beforeEach(() => {
     ui.branchIdNum = '10';
     ui.updateReqConfig = true;
+    ui.diffMode = false;
     ui.difference = [];
     //baseUi.diffMode = false;
   })
@@ -428,7 +429,7 @@ describe('PlConfigCurrentBranchService', () => {
     })
 
     afterEach(() => {
-      //baseUi.diffMode = false;
+      ui.diffMode = false;
       //ui.difference = [];
     })
   })

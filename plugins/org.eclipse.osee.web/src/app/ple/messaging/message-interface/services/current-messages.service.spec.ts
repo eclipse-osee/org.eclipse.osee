@@ -48,7 +48,8 @@ describe('CurrentMessagesService', () => {
         { provide: SubMessagesService, useValue: subMessageServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },  
-        { provide: BranchInfoService, useValue: BranchInfoServiceMock }],
+        { provide: BranchInfoService, useValue: BranchInfoServiceMock },
+        {provide: MessageUiService }],
       imports:[HttpClientTestingModule]
     });
     service = TestBed.inject(CurrentMessagesService);

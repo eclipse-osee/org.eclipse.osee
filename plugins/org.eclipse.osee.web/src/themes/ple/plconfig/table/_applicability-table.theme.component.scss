@@ -62,7 +62,7 @@
   }
 
   .applic-table-row-even-deleted{
-    background-color:mat-color($warn,50);
+    background-color:mat-color($warn,100);
   }
   .applic-table-row-odd-deleted{
     background-color:mat-color($warn,100);
@@ -86,7 +86,7 @@
     background-color:mat-color($success,300);
   }
   .applic-table-column-deleted{
-    background-color:mat-color($warn,50);
+    background-color:mat-color($warn,100);
   }
   .applic-table-column-added{
     background-color:mat-color($success,300);

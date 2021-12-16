@@ -41,7 +41,6 @@ import { RemoveStructureDialogComponent } from './components/remove-structure-di
 import { RemoveElementDialogComponent } from './components/remove-element-dialog/remove-element-dialog.component';
 import { DeleteElementDialogComponent } from './components/delete-element-dialog/delete-element-dialog.component';
 import { DeleteStructureDialogComponent } from './components/delete-structure-dialog/delete-structure-dialog.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { StructureTableComponent } from './components/structure-table/structure-table.component';
 import { SingleStructureTableComponent } from './components/single-structure-table/single-structure-table.component';
@@ -51,10 +50,11 @@ import { SubElementTableNoEditFieldDynamicWidthComponent } from './components/su
 import { SubElementTableNoEditFieldFilteredComponent } from './components/sub-element-table-no-edit-field-filtered/sub-element-table-no-edit-field-filtered.component';
 import { SubElementTableNoEditFieldComponent } from './components/sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
+import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
 
 
 @NgModule({
-  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent, StructureTableComponent, SingleStructureTableComponent, SubElementTableRowComponent, SubElementTableNoEditFieldNameComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldComponent],
+  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent, StructureTableComponent, SingleStructureTableComponent, SubElementTableRowComponent, SubElementTableNoEditFieldNameComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldComponent, UsermenuComponent],
   imports: [
     CommonModule,
     MatTableModule,
@@ -67,7 +67,6 @@ import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
     MatMenuModule,
     MatListModule,
     MatSlideToggleModule,
-    MatProgressBarModule,
     MatSidenavModule,
     FormsModule,
     DiffViewsModule,

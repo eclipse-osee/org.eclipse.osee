@@ -62,7 +62,6 @@ export class SubElementTableRowComponent implements OnInit {
   layout = this.layoutNotifier.layout;
 
   @Output() menu = new EventEmitter<{ event: MouseEvent, element: element, field?: string | number | boolean | applic }>();
-  @Output() navigate = new EventEmitter<string>();
   constructor(private layoutNotifier: LayoutNotifierService) { }
 
   ngOnInit(): void {
@@ -70,8 +69,5 @@ export class SubElementTableRowComponent implements OnInit {
 
   openGeneralMenu(event: MouseEvent, element: element, field?: string | number | boolean | applic) {
     this.menu.emit({ event, element, field })
-  }
-  navigateTo(location: string) {
-    this.navigate.emit(location);
   }
 }

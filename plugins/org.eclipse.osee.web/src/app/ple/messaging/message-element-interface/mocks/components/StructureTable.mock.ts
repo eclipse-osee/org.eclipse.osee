@@ -20,7 +20,9 @@ import { structure } from "../../types/structure";
      template:'<p>Dummy</p>'
  })
  export class StructureTableComponentMock{
-    @Input() messageData: Observable<MatTableDataSource<structure>> = of(new MatTableDataSource<structure>())
-     @Input() hasFilter: boolean = false;
-     @Input() breadCrumb: string = '';
+  @Input() previousLink = "../../../../"
+  @Input() structureId = "";
+  @Input() messageData: Observable<MatTableDataSource<structure>> = of(new MatTableDataSource<structure>())
+  @Input() hasFilter: boolean = false;
+  @Input() breadCrumb: string = '';
    }

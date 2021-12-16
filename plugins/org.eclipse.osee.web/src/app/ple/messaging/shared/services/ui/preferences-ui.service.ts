@@ -28,7 +28,7 @@ export class PreferencesUIService {
     switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
       repeatWhen(_ => this.ui.update),
       share(),
-      shareReplay(1)
+      shareReplay({ bufferSize: 1, refCount: true })
     )),
     shareReplay({ bufferSize: 1, refCount: true })
   );

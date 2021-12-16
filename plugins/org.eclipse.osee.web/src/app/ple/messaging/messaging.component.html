@@ -10,17 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div style="height:100%">
-    <div class ="messaging-app-container">
-        <div class="messaging-buttons-section">
-            <div class ="mat-display-4">
-                OSEE Messaging
-            </div>
-            <div class="messaging-button-selection-section">
-                <button mat-raised-button color="primary" (click)="navigateTo('typeSearch')">Find elements by type</button>
-                <button mat-raised-button color="primary" (click)="navigateTo('connections')">Go to Connection View</button>
-                <button mat-raised-button color="primary" (click)="navigateTo('help')">Go To Help Pages</button>
-            </div>
-        </div>
+<div style="height:100%" class="messaging-grid">
+    <div class ="mat-display-4 messaging-header">
+        OSEE Messaging
+    </div>
+    <button mat-raised-button color="primary" routerLink="typeSearch" class="message-button-1">Find elements by type</button>
+    <button mat-raised-button color="primary" routerLink="connections" class="message-button-2">Go to Connection View</button>
+    <button mat-raised-button color="primary" routerLink="help" class="message-button-3">Go To Help Pages</button>
+    <div class="messaging-bottom">
+            
     </div>
 </div>

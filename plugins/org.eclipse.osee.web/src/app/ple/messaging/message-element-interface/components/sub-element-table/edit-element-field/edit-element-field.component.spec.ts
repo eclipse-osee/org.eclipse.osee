@@ -36,25 +36,22 @@ describe('EditElementFieldComponent', () => {
   let component: EditElementFieldComponent;
   let fixture: ComponentFixture<EditElementFieldComponent>;
   let loader: HarnessLoader;
-  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigate','serializeUrl','createUrlTree']);
     await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
       providers: [{ provide: CurrentStateService, useValue: CurrentStateServiceMock },
-        { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: {} }],
       declarations: [ EditElementFieldComponent ]
     })
     .compileComponents();
   });
 
-  beforeEach(function () {
-    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-      return null;
-    })
-  });
+  // beforeEach(function () {
+  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+  //     return null;
+  //   })
+  // });
   beforeEach(() => {
     fixture = TestBed.createComponent(EditElementFieldComponent);
     component = fixture.componentInstance;
@@ -105,14 +102,6 @@ describe('EditElementFieldComponent', () => {
       tick(500);
       expect(await select.getValue()).toBe('First2')
     }))
-
-    it('should navigate to types page', async () => {
-      let spy = spyOn(component, 'navigateTo').and.callThrough();
-      let button = await loader.getHarness(MatButtonHarness.with({ text: '->' }))
-      await button.click();
-      expect(spy).toHaveBeenCalled();
-      expect(routerSpy.navigate).toHaveBeenCalled();
-    })
 
     it('should emit an event to parent component', () => {
       let mEvent = document.createEvent("MouseEvent");

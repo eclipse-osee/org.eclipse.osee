@@ -64,12 +64,4 @@ describe('BaseComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should open settings dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-    (await (await loader.getHarness(MatButtonHarness.with({text:'Settings'}))).click());
-    expect(spy).toHaveBeenCalled();
-  })
 });

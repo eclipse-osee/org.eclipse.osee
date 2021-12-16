@@ -43,27 +43,4 @@ describe('MessagingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('testing navigation', ()=>{
-
-    it('should navigate to the type search page', async () => {
-      const spy = spyOn(component, 'navigateTo').and.callThrough();
-      const button = await loader.getHarness(MatButtonHarness.with({ text: 'Find elements by type' }));
-      await button.click();
-      expect(spy).toHaveBeenCalledWith('typeSearch')
-    })
-
-    it('should navigate to the main mim tool', async () => {
-      const spy = spyOn(component, 'navigateTo').and.callThrough();
-      const button = await loader.getHarness(MatButtonHarness.with({ text: 'Go to Connection View' }));
-      await button.click();
-      expect(spy).toHaveBeenCalledWith('connections')
-    })
-
-    it('should navigate to the mim help pages', async () => {
-      const spy = spyOn(component, 'navigateTo').and.callThrough();
-      const button = await loader.getHarness(MatButtonHarness.with({ text: 'Go To Help Pages' }));
-      await button.click();
-      expect(spy).toHaveBeenCalledWith('help')
-    })
-  })
 });

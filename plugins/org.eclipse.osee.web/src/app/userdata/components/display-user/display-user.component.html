@@ -10,4 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="headline">User : {{(userInfo | async)?.name}}</div>
+<div class="headline">User : {{(userInfo | async)?.name}}
+    <button mat-icon-button [matMenuTriggerFor]="userTrigger" (menuOpened)="opened=true" (menuClosed)="opened=false" [@expandButton]="opened ?  'open' : 'closed'">V</button>
+</div>
+<mat-menu #userTrigger="matMenu">
+    <router-outlet name="userMenu"></router-outlet>
+</mat-menu>

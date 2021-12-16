@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { HttpLoadingService } from 'src/app/services/http-loading.service';
 import { BranchUIService } from './branch/branch-ui.service';
 import { DiffModeService } from './diff/diff-mode.service';
 import { UpdateService } from './update/update.service';
@@ -20,7 +21,7 @@ import { UpdateService } from './update/update.service';
 })
 export class UiService {
 
-  constructor (private branchService: BranchUIService, private updateService: UpdateService, private diffModeService:DiffModeService) { }
+  constructor (private branchService: BranchUIService, private updateService: UpdateService, private diffModeService:DiffModeService, private loadingService: HttpLoadingService) { }
   
   get id() {
     return this.branchService.id;
@@ -52,5 +53,13 @@ export class UiService {
 
   set diffMode(value: boolean) {
     this.diffModeService.DiffMode = value;
+  }
+
+  get isLoading() {
+    return this.loadingService.isLoading;
+  }
+
+  set loading(value: boolean) {
+    this.loadingService.loading = value;
   }
 }

@@ -11,8 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { changeInstance } from 'src/app/types/change-report/change-report';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,8 @@ export class ElementUiService {
   private _messageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _subMessageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
+  private _differences = new BehaviorSubject<changeInstance[] | undefined>(undefined);
+  private _done = new Subject();
   constructor(private ui: UiService) { }
 
   get filter() {
@@ -82,5 +86,27 @@ export class ElementUiService {
 
   set BranchType(value:string) {
     this.ui.typeValue = value;
+  }
+
+  set DiffMode(value:boolean) {
+    this.ui.diffMode = value;
+  }
+
+  get isInDiff() {
+    return this.ui.isInDiff;
+  }
+  get differences() {
+    return this._differences.pipe(shareReplay({refCount:true,bufferSize:1}));
+  }
+  set difference(value: changeInstance[]) {
+    this._differences.next(value);
+  }
+  set toggleDone(value: any) {
+    this._done.next();
+    this._done.complete();
+  }
+
+  get done() {
+    return this._done;
   }
 }

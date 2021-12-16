@@ -12,14 +12,14 @@
  -->
 <ng-container *ngIf="editMode===true; else no_edit">
     <ng-container *ngIf="header==='platformTypeName2'">
-        <osee-messaging-edit-element-field [header]="header.toString()" [structureId]="structure.id" [elementId]="element['id']" [elementStart]="element['interfaceElementIndexStart']" [elementEnd]="element['interfaceElementIndexEnd']" [value]="element['platformTypeName2']!.toString()" (contextMenu)="openGeneralMenu($event,element,element[header])"></osee-messaging-edit-element-field>
+        <osee-messaging-edit-element-field [header]="header.toString()" [structureId]="structure.id" [elementId]="element['id']" [elementStart]="element['interfaceElementIndexStart']" [elementEnd]="element['interfaceElementIndexEnd']" [value]="element['platformTypeName2']!.toString()" [editingDisabled]="element.deleted" (contextMenu)="openGeneralMenu($event,element,element[header])"></osee-messaging-edit-element-field>
     </ng-container>
     <ng-container *ngIf="header!=='platformTypeName2'">
         <ng-container *ngIf="editableElementHeaders.includes(header.toString());else no_edit">
-            <osee-messaging-edit-element-field [header]="header.toString()" [structureId]="structure.id" [elementId]="element['id']" [elementStart]="element['interfaceElementIndexStart']" [elementEnd]="element['interfaceElementIndexEnd']" [value]="element[header]"></osee-messaging-edit-element-field>
+            <osee-messaging-edit-element-field [header]="header.toString()" [structureId]="structure.id" [elementId]="element['id']" [elementStart]="element['interfaceElementIndexStart']" [elementEnd]="element['interfaceElementIndexEnd']" [value]="element[header]" [editingDisabled]="element.deleted"></osee-messaging-edit-element-field>
         </ng-container>
     </ng-container>
 </ng-container>
 <ng-template #no_edit>
-    <app-sub-element-table-no-edit-field [filter]="filter" [header]="header" [element]="element" [width]="(layout|async)?.tableRecommendations?.width ||''" (platformNavigation)="navigateTo($event)"></app-sub-element-table-no-edit-field>
+    <app-sub-element-table-no-edit-field [filter]="filter" [header]="header" [element]="element" [width]="(layout|async)?.tableRecommendations?.width ||''"></app-sub-element-table-no-edit-field>
 </ng-template>

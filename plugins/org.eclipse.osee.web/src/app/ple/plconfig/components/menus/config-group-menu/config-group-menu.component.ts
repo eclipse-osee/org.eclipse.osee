@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -27,7 +26,7 @@ import { configGroup, configGroupWithChanges } from '../../../types/pl-config-co
 })
 export class ConfigGroupMenuComponent implements OnInit {
 
-  constructor(private dialogService: DialogService,private router: Router, private route: ActivatedRoute,private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService) { }
+  constructor(private dialogService: DialogService,private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService) { }
   _editable = this.uiStateService.editable;
   @Input() group:configGroup|configGroupWithChanges={name:'',id:'',configurations:[]}
   ngOnInit(): void {
@@ -45,11 +44,6 @@ export class ConfigGroupMenuComponent implements OnInit {
       current = ''
     }
     this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
   hasGroupChanges(value: configGroup | configGroupWithChanges): value is configGroupWithChanges{
     return (value as configGroupWithChanges).changes !== undefined;

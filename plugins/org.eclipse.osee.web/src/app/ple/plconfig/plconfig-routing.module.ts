@@ -46,7 +46,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'diffOpen', component: MimSingleDiffComponent, outlet:'rightSideNav'
+    path: '', component: MimSingleDiffComponent, outlet:'rightSideNav'
   }
 ];
 

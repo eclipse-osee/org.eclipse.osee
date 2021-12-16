@@ -10,7 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(isLoading|async)==='true'">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-</ng-container>
-<app-structure-table [messageData]="messageData" [breadCrumb]="breadCrumb" [hasFilter]="'true'==='true'"></app-structure-table>
+<app-structure-table [messageData]="messageData" [breadCrumb]="breadCrumb" [hasFilter]="'true'==='true'" previousLink="../../../../"></app-structure-table>

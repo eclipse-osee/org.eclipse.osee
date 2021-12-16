@@ -29,14 +29,18 @@ export class DiffReportResolver implements Resolve<changeInstance[] | undefined>
   requested = false;
   constructor (private diffService:DiffUIService) { }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<changeInstance[] | undefined> {
-    if (this.diffService.id !== route.paramMap.get('branchId')) {
-      this.requested = false;
-      this.diffService.branchId = route.paramMap.get('branchId') || '';
+    let currentRoute = route;
+    while (!currentRoute.paramMap.has('branchId') && !currentRoute.paramMap.has('branchType') && currentRoute.parent !== null) {
+      currentRoute = currentRoute.parent;
     }
-    if (this.diffService.type !== route.paramMap.get('branchType')) {
+    if (this.diffService.id !== currentRoute.paramMap.get('branchId')) {
       this.requested = false;
-      this.diffService.branchType = route.paramMap.get('branchType') || '';
+      this.diffService.branchId = currentRoute.paramMap.get('branchId') || '';
     }
+    if (this.diffService.type !== currentRoute.paramMap.get('branchType')) {
+      this.requested = false;
+      this.diffService.branchType = currentRoute.paramMap.get('branchType') || '';
+    } 
     this.diffService.DiffMode = route.url.some(e => e.path === 'diff');
 
     if (!this.requested) {

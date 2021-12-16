@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { iif, of } from 'rxjs';
+import { combineLatest, iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
@@ -23,8 +23,8 @@ import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDi
 import { applic } from '../../../../../types/applicability/applic';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import { message } from '../../types/messages';
-import { subMessage } from '../../types/sub-messages';
+import { message, messageWithChanges } from '../../types/messages';
+import { subMessage, subMessageWithChanges } from '../../types/sub-messages';
 import { DeleteSubmessageDialogComponent } from '../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveSubmessageDialogComponent } from '../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
@@ -47,6 +47,9 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   headers = this.headerService.AllSubMessageHeaders.pipe(
     switchMap(([name,description,number,applicability])=>of([name,description,number," ",applicability]))
   );
+  _messageRoute = combineLatest([this.messageService.initialRoute, this.messageService.endOfRoute]).pipe(
+    switchMap(([initial,end])=>of({beginning:initial,end:end}))
+  )
   menuPosition = {
     x: '0',
     y:'0'
@@ -71,20 +74,6 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     return index;
   }
 
-  navigateToElementsTable(id: string | undefined, submessage: string, location: string) {
-    if (this.route.toString().includes('diff')) {
-      this.router.navigate([id,submessage,location, 'elements'], {
-        relativeTo: this.route.parent,
-        queryParamsHandling: 'merge',
-      })
-    } else {
-      this.router.navigate([id,submessage,location, 'elements'], {
-        relativeTo: this.route,
-        queryParamsHandling: 'merge',
-      }) 
-    }
-  }
-
   openMenu(event: MouseEvent, message: message, submessage: subMessage, location: string,field:string|applic,header:string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
@@ -97,18 +86,6 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
       header:header
     }
     this.matMenuTrigger.openMenu();
-  }
-  navigateToElementsTableInNewTab(id: string | undefined, submessage: string, location: string) {
-    let currentUrl = this.router.url.split("/");
-    currentUrl.shift()
-    if (currentUrl.indexOf('diff') !== -1) {
-      currentUrl.splice(currentUrl.indexOf('diff'),1) 
-    }
-    const url = this.router.serializeUrl(this.router.createUrlTree([this.angLocation.getBaseHref(),...currentUrl,id,submessage,location, 'elements'], {
-      relativeTo: this.route,
-      queryParamsHandling: 'merge',
-    }))
-    window.open(url, "_blank");
   }
 
   createNewSubMessage() {
@@ -177,10 +154,5 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
 
   viewDiff(open: boolean, value: difference, header: string) {
     this.messageService.sideNav = { opened: open, field: header, currentValue: value?.currentValue || '', previousValue: value?.previousValue || '', transaction: value.transactionToken };
-    this.router.navigate([{ outlets: { rightSideNav: ['diffOpen'] } }], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-      skipLocationChange:true
-    });
   }
 }

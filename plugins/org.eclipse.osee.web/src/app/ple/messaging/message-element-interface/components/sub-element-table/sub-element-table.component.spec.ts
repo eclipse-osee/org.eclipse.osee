@@ -82,14 +82,12 @@ describe('SubElementTableComponent', () => {
       isArray: false,
     }
   ];
-  let router: any;
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
     await TestBed.configureTestingModule({
       imports:[CommonModule,MatDialogModule,MatTableModule,MatTooltipModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
       declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent,SubElementTableRowComponentMock],
-      providers: [{ provide: Router, useValue: router }, {
+      providers: [{
         provide: ActivatedRoute, useValue: {
           paramMap: of(convertToParamMap({ branchId: "10",branchType:"working" }))
       }}]
@@ -109,11 +107,11 @@ describe('SubElementTableComponent', () => {
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
-  beforeEach(function () {
-    let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-      return null;
-    })
-  });
+  // beforeEach(function () {
+  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
+  //     return null;
+  //   })
+  // });
 
   it('should create',async () => {
     fixture.detectChanges();
@@ -134,11 +132,6 @@ describe('SubElementTableComponent', () => {
     await fixture.whenStable();
     expect(component.dataSource.filter === 'name2').toBeTruthy();
     expect(component).toBeTruthy();
-  });
-
-  it('should navigate to //types/10', () => {
-    component.navigateTo("10");
-    expect(router.navigate).toHaveBeenCalledWith(['working','10','types','10'],{relativeTo: undefined, queryParamsHandling:'merge'});
   });
 
   it('should open create element dialog', async () => {
@@ -257,14 +250,6 @@ describe('SubElementTableComponent', () => {
       expect(serviceSpy).toHaveBeenCalled();
     })
 
-    it('should navigate to in new tab', async() => {
-      component.openGeneralMenu(mEvent, elementsMock[0],'');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
-      await menu.clickItem({ text: "Open Platform Type in new tab" });
-      expect(spy).toHaveBeenCalled();
-    })
     afterEach(() => {
       component.generalMenuTrigger.closeMenu();
     })
