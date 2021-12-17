@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
-import org.eclipse.osee.mail.api.MailEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -199,11 +198,6 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public DefineBranchEndpointApi getDefineBranchEndpoint() {
       return getDefineEndpoint(DefineBranchEndpointApi.class);
-   }
-
-   @Override
-   public MailEndpoint getMailEndpoint() {
-      return getOrcsEndpoint(MailEndpoint.class);
    }
 
    private <T> T getOrcsBranchEndpoint(Class<T> clazz, BranchId branch) {

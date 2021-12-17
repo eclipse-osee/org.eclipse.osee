@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
-import org.eclipse.osee.mail.api.MailEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -78,8 +77,6 @@ public interface OseeClient extends OseeApi {
    ApplicabilityUiEndpoint getApplicabilityUiEndpoint();
 
    DefineBranchEndpointApi getDefineBranchEndpoint();
-
-   MailEndpoint getMailEndpoint();
 
    SessionEndpoint getSessionEndpoint();
 
