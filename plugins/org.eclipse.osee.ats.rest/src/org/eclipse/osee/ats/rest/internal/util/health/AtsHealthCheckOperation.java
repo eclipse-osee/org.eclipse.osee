@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestDuplicateAttributesWithPersist;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestTaskParent;
@@ -42,7 +43,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.util.MailStatus;
+import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -55,8 +57,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.mail.api.MailMessage;
-import org.eclipse.osee.mail.api.MailService;
 
 /**
  * @author Donald G. Dunne
@@ -65,14 +65,12 @@ public class AtsHealthCheckOperation {
 
    private final AtsApi atsApi;
    private final JdbcService jdbcService;
-   private final MailService mailService;
    boolean inTest = false;
    boolean persist = false;
 
-   public AtsHealthCheckOperation(AtsApi atsApi, JdbcService jdbcService, MailService mailService) {
+   public AtsHealthCheckOperation(AtsApi atsApi, JdbcService jdbcService) {
       this.atsApi = atsApi;
       this.jdbcService = jdbcService;
-      this.mailService = mailService;
    }
 
    public XResultData run() {
@@ -91,22 +89,16 @@ public class AtsHealthCheckOperation {
    }
 
    private void emailResults(XResultData rd) {
-      if (mailService != null) {
-         String dbName = "";
-         String configDbName = atsApi.getConfigValue("DatabaseName");
-         if (Strings.isValid(configDbName)) {
-            dbName = " " + configDbName;
-         }
-         MailMessage msg = MailMessage.newBuilder() //
-            .from("noop@osee.com") //
-            .recipients(Arrays.asList("donald.g.dunne@boeing.com")) //
-            .subject(dbName + " ATS Health Check") //
-            .addHtml(AHTML.simplePage(rd.toString().replaceAll("\n", "</br>")))//
-            .build();
-
-         List<MailStatus> sendMessages = mailService.sendMessages(msg);
-         System.out.println(sendMessages);
+      String dbName = "";
+      String configDbName = atsApi.getConfigValue("DatabaseName");
+      if (Strings.isValid(configDbName)) {
+         dbName = " " + configDbName;
       }
+
+      OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList("noop@osee.com"), "donald.g.dunne@boeing.com",
+         "donald.g.dunne@boeing.com", dbName + " - ATS Health Check",
+         AHTML.simplePage(rd.toString().replaceAll("\n", "</br>")), BodyType.Html);
+      emailMessage.send();
    }
 
    public void runIt(XResultData rd) {
