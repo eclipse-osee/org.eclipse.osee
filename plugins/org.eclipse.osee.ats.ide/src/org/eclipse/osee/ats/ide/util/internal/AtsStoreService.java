@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.ide.util.internal;
 
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,11 +46,16 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.util.HttpProcessor;
+import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
@@ -308,6 +315,40 @@ public class AtsStoreService implements IAtsStoreService {
          artifact = (Artifact) atsApi.getQueryService().getArtifact(art);
       }
       return artifact.isOfType(artType);
+   }
+
+   @Override
+   public XResultData clearAtsCachesAllServers() {
+      XResultData rd = new XResultData();
+      rd.log("Update Ats Caches All Servers");
+      // Retrieve servers from OseeInfo
+      String serversStr = OseeInfo.getValue(OseeProperties.OSEE_HEALTH_SERVERS_KEY);
+      List<String> servers = new ArrayList<>();
+
+      serversStr = serversStr.replaceAll(" ", "");
+      for (String server : serversStr.split(",")) {
+         servers.add(server);
+      }
+      if (servers.isEmpty()) {
+         rd.logf("No %s configured.  ATS cache is not updated.  ", OseeProperties.OSEE_HEALTH_SERVERS_KEY);
+      } else {
+         rd.log("\n");
+         for (String server : servers) {
+            try {
+               ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+               URL url = new URL(String.format("http://%s%s", server, "/ats/config/clearcache"));
+               AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
+               if (result.wasSuccessful()) {
+                  rd.logf("ATS server %s cache update was successful.\n", server);
+               } else {
+                  rd.logf("ERROR: ATS server %s cache update was not successful.\n", server);
+               }
+            } catch (Exception ex) {
+               rd.logf("ERROR: ATS server %s cache update exception %s.\n", server, ex.getLocalizedMessage());
+            }
+         }
+      }
+      return rd;
    }
 
 }

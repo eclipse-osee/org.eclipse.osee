@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -263,6 +264,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isChangedInDb(ArtifactId workItem) {
       return false;
+   }
+
+   @Override
+   public XResultData clearAtsCachesAllServers() {
+      throw new UnsupportedOperationException("unsupported on server");
    }
 
 }
