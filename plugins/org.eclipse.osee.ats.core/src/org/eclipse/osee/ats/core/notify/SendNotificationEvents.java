@@ -188,7 +188,7 @@ public class SendNotificationEvents {
 
          try {
             oseeEmail.setFrom(useFromEmail);
-            oseeEmail.setBody(getNotificationEmailSubject(notificationEvents));
+            oseeEmail.setSubject(getNotificationEmailSubject(notificationEvents));
             oseeEmail.setHTMLBody(html);
             oseeEmail.setRecipients(useEmail);
             oseeEmail.send();

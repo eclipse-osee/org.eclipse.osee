@@ -113,7 +113,8 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
                         public void run() {
                            super.run();
 
-                           String testingUserEmail = ""; // change to email address for testing purposes; all emails will go there
+                           // change to email address for testing purposes; all emails will go there
+                           String testingUserEmail = "";
                            String fromUserEmail = getFromUserEmail(notifications);
 
                            sendNotifications(fromUserEmail, testingUserEmail, notifications.getSubject(),
