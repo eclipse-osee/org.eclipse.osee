@@ -281,7 +281,7 @@ public class ArtifactFormPage extends FormPage {
       String description;
       try {
          Artifact artifact = getEditor().getEditorInput().getArtifact();
-         description = String.format("<form><p>%s%s<b>Branch:</b> %s <b>Type:</b> %s <b>UUID:</b> %d</p></form>",
+         description = String.format("<form><p>%s%s<b>Branch:</b> %s <b>Type:</b> %s <b>ID:</b> %s</p></form>",
             getLockedString(artifact), !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
             ReservedCharacters.encodeXmlEntities(artifact.getBranchToken().getShortName()),
             artifact.getArtifactTypeName(), artifact.getIdString());
@@ -323,7 +323,8 @@ public class ArtifactFormPage extends FormPage {
          infoText.setText(getArtifactShortInfo(), true, false);
          infoText.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
       } else {
-         infoText.setText(getArtifactShortInfo(), true, false);
+         String shortInfo = getArtifactShortInfo();
+         infoText.setText(shortInfo, true, false);
       }
    }
 
