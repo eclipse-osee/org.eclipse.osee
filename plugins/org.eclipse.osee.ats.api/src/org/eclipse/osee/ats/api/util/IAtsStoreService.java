@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
@@ -123,5 +124,7 @@ public interface IAtsStoreService {
    boolean isOfType(ArtifactId artifact, ArtifactTypeToken artType);
 
    boolean isChangedInDb(ArtifactId artifact);
+
+   XResultData clearAtsCachesAllServers();
 
 }

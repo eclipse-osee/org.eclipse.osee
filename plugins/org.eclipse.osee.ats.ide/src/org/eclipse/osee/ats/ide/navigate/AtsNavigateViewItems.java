@@ -282,6 +282,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
       // Admin
       items.add(new ClearAtsConfigCache());
+      items.add(new ClearAtsConfigCacheAllServers());
       items.add(new UpdateWorkDefValidStateNameConfig());
       items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(
