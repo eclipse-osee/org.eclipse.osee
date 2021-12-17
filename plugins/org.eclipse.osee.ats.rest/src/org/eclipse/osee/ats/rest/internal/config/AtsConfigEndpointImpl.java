@@ -266,7 +266,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public XResultData validate() {
-      AtsHealthCheckOperation op = new AtsHealthCheckOperation(atsApi, atsApi.getJdbcService(), null);
+      AtsHealthCheckOperation op = new AtsHealthCheckOperation(atsApi, atsApi.getJdbcService());
       return op.run();
    }
 

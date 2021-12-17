@@ -71,3 +71,4 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.core.util.result
 Service-Component: OSGI-INF/*.xml
+Require-Bundle: javax.activation

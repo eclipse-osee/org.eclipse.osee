@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.mail.api.MailService;
 
 /**
  * @author Donald G. Dunne
@@ -31,11 +30,6 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
 
    private AtsApi atsApi;
    private JdbcService jdbcService;
-   private static MailService mailService;
-
-   public void setMailService(MailService mailService) {
-      AtsHealthEndpointImpl.mailService = mailService;
-   }
 
    public AtsHealthEndpointImpl() {
       // for osgi instantiation; this optionally sets the mail service if available
@@ -54,7 +48,7 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
    @Produces(MediaType.TEXT_HTML)
    public String get() {
       Thread.currentThread().setName("ATS Health Check Operation");
-      AtsHealthCheckOperation validate = new AtsHealthCheckOperation(atsApi, jdbcService, mailService);
+      AtsHealthCheckOperation validate = new AtsHealthCheckOperation(atsApi, jdbcService);
       XResultData rd = validate.run();
       return rd.toString().replaceAll("\n", "</br>");
    }
