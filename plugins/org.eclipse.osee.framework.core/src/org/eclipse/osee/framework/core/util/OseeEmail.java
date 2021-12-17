@@ -238,6 +238,15 @@ public abstract class OseeEmail extends MimeMessage {
 
    }
 
+   @Override
+   public void setSubject(String subject) {
+      try {
+         super.setSubject(subject);
+      } catch (MessagingException ex) {
+         // do nothing
+      }
+   }
+
    /**
     * Sends the message.
     */
@@ -314,8 +323,7 @@ public abstract class OseeEmail extends MimeMessage {
     */
    private static Session getSession() {
       Properties props = System.getProperties();
-      props.put(emailType, "relay.boeing.com");
-      // TBD OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
+      props.put(emailType, defaultMailServer);
       return Session.getDefaultInstance(props, null);
    }
 

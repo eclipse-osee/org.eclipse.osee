@@ -76,8 +76,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
@@ -120,6 +120,7 @@ public final class FrameworkXWidgetProvider {
 
    private static final FrameworkXWidgetProvider reference = new FrameworkXWidgetProvider();
    private static Map<String, Class<? extends XWidget>> nameToClass = null;
+   private static List<IXWidgetProvider> providers;
 
    private static Map<String, Class<? extends XWidget>> getNameToClass() {
       register(XHyperlinkLabelDate.class);
@@ -222,7 +223,8 @@ public final class FrameworkXWidgetProvider {
    public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name, Artifact artifact) {
       XWidget xWidget = null;
       // Look for widget provider to create widget
-      for (IXWidgetProvider widgetProvider : getXWidgetProviders()) {
+      Collection<IXWidgetProvider> providers = getXWidgetProviders();
+      for (IXWidgetProvider widgetProvider : providers) {
          xWidget = widgetProvider.createXWidget(xWidgetName, name, xWidgetLayoutData);
          if (xWidget != null) {
             break;
@@ -590,8 +592,11 @@ public final class FrameworkXWidgetProvider {
    }
 
    private static Collection<IXWidgetProvider> getXWidgetProviders() {
-      ExtensionDefinedObjects<IXWidgetProvider> contributions =
-         new ExtensionDefinedObjects<>(Activator.PLUGIN_ID + ".XWidgetProvider", "XWidgetProvider", "classname", true);
-      return contributions.getObjects();
+      if (providers == null) {
+         ExtensionDefinedObjects<IXWidgetProvider> contributions = new ExtensionDefinedObjects<>(
+            Activator.PLUGIN_ID + ".XWidgetProvider", "XWidgetProvider", "classname", true);
+         providers = contributions.getObjects();
+      }
+      return providers;
    }
 }
