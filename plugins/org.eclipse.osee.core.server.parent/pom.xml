@@ -50,10 +50,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.logging</module>
 		<module>../../plugins/org.eclipse.osee.framework.logging.test</module>
 
-		<module>../../plugins/org.eclipse.osee.mail.api</module>
-		<module>../../plugins/org.eclipse.osee.mail</module>
-		<module>../../plugins/org.eclipse.osee.mail.test</module>
-
 		<module>../../plugins/org.eclipse.osee.template.engine</module>
 		<module>../../plugins/org.eclipse.osee.template.engine.test</module>
 
