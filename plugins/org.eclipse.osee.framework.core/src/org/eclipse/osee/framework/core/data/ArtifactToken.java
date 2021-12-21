@@ -128,11 +128,6 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
       }
 
       @Override
-      public Long getUuid() {
-         return getId();
-      }
-
-      @Override
       public boolean equals(Object obj) {
          boolean equal = super.equals(obj);
          if (equal && obj instanceof HasBranch) {

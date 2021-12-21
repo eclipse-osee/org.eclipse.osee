@@ -29,10 +29,6 @@ public interface ArtifactId extends Id {
 
    public static final ArtifactId SENTINEL = valueOf(Id.SENTINEL);
 
-   default Long getUuid() {
-      return getId();
-   }
-
    public static ArtifactId valueOf(String id) {
       Conditions.assertTrue(Strings.isNumeric(id), "id is not numeric [%s]", id);
       return Id.valueOf(id, ArtifactId::valueOf);
