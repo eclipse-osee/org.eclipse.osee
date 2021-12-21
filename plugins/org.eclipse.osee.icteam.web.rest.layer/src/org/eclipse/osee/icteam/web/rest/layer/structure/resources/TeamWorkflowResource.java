@@ -1805,7 +1805,6 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          artifact.putAttributes(AtsAttributeTypes.CreatedDate.getIdString() + ";Date", listTemp1);
          childArtifact =
             createNewTask(tx, artifact, orcsApi, estimatedDate, notify, createdUserId, assignees, productBacklog);
-         childArtifact.getUuid();
          tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.CurrentStateType, "Working");
          tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.Information, "");
          tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.Condition, "");

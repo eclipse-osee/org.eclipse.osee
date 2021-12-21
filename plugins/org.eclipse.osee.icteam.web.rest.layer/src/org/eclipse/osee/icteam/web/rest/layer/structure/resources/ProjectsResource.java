@@ -333,7 +333,7 @@ public class ProjectsResource extends AbstractConfigResource {
             ResultSet<ArtifactReadable> userList =
                orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andGuid(
                   uuid).getResults();
-            ArtifactReadable LoggedInUser = userList.getExactlyOne();
+            ArtifactReadable loggedInUser = userList.getExactlyOne();
             ResultSet<ArtifactReadable> projects =
                orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
                   AtsArtifactTypes.Project).getResults();
@@ -345,7 +345,7 @@ public class ProjectsResource extends AbstractConfigResource {
                   boolean addProject = false;
 
                   for (ArtifactReadable createdUser : createdUsers) {
-                     if (createdUser.getUuid().equals(LoggedInUser.getUuid())) {
+                     if (createdUser.equals(loggedInUser)) {
                         addProject = true;
                      }
                   }
@@ -353,7 +353,7 @@ public class ProjectsResource extends AbstractConfigResource {
                   ResultSet<ArtifactReadable> related = project.getRelated(AtsRelationTypes.ProjectToUser_User);
 
                   for (ArtifactReadable projectUser : related) {
-                     if (projectUser.getUuid().equals(LoggedInUser.getUuid())) {
+                     if (projectUser.equals(loggedInUser)) {
                         addProject = true;
                      }
                   }
