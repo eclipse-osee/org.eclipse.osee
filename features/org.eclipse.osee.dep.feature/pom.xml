@@ -226,6 +226,7 @@
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source" />
 								<feature id="org.eclipse.papyrus.sdk.feature" />
+								<plugin id="net.jini" />
 							</excludes>
 						</configuration>
 					</execution>
