@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class XGitFetchButton extends XButton implements ArtifactWidget {
 
-   public static String WIDGET_ID = XGitFetchButton.class.getSimpleName();
    private TeamWorkFlowArtifact teamArt;
 
    private final XModifiedListener listener = new XModifiedListener() {

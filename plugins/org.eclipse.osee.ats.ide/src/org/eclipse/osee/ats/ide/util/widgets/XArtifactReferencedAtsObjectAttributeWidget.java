@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactReferencedAttribute
  */
 public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactReferencedAttributeWidget {
 
-   public static final String WIDGET_ID = XArtifactReferencedAtsObjectAttributeWidget.class.getSimpleName();
    public static final String SENTINEL = "-1";
 
    public XArtifactReferencedAtsObjectAttributeWidget(String displayLabel) {

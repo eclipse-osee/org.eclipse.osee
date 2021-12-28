@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class VersionMultiChoiceSelect extends XSelectFromDialog<IAtsVersion> {
 
-   public static final String WIDGET_ID = VersionMultiChoiceSelect.class.getSimpleName();
    private LabelProvider labelProvider = null;
 
    public VersionMultiChoiceSelect() {

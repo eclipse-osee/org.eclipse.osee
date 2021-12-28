@@ -36,8 +36,6 @@ import org.eclipse.swt.widgets.Composite;
 public class OperationalImpactXWidget extends XComboWithText implements ArtifactWidget {
 
    TeamWorkFlowArtifact teamArt;
-   public static String ID = "ats.OperationalImpact";
-   public static String ID_REQUIRED = "ats.OperationalImpact.required";
 
    public OperationalImpactXWidget() {
       super("Operational Impact", "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);

@@ -24,8 +24,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonWordChangeReport extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = XWorkingBranchButtonWordChangeReport.class.getSimpleName();
-
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Generate Full Word Change Report");

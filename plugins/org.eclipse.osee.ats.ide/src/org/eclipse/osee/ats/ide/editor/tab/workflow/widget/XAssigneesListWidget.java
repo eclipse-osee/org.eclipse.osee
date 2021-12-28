@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class XAssigneesListWidget extends AbstractXAssigneesListWidget {
 
-   public static final String WIDGET_ID = XAssigneesListWidget.class.getSimpleName();
    List<AtsUser> assignees = new LinkedList<>();
    IAtsTeamDefinition teamDef = null;
 

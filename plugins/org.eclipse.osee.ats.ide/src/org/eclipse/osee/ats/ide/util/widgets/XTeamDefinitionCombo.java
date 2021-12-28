@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class XTeamDefinitionCombo extends XComboViewer {
-   public static final String WIDGET_ID = XTeamDefinitionCombo.class.getSimpleName();
    private Artifact selectedTeamDef = null;
 
    public XTeamDefinitionCombo() {

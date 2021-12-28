@@ -25,8 +25,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonContextChangeReport extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = XWorkingBranchButtonContextChangeReport.class.getSimpleName();
-
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Generate Context Change Report");

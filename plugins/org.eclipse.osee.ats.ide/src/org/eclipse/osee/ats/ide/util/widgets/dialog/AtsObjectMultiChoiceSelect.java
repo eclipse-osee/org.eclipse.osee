@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
  */
 public class AtsObjectMultiChoiceSelect extends XSelectFromDialog<IAtsObject> {
 
-   public static final String WIDGET_ID = AtsObjectMultiChoiceSelect.class.getSimpleName();
-
    public AtsObjectMultiChoiceSelect() {
       super("Select Artifact (s)");
       setSelectableItems(Collections.<IAtsObject> emptyList());

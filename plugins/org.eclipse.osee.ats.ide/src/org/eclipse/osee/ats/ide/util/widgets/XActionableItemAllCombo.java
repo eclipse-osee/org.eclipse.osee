@@ -18,11 +18,10 @@ import org.eclipse.osee.framework.core.enums.Active;
 
 /**
  * Actionable Item Combo showing all (active and inactive) AIs
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XActionableItemAllCombo extends XActionableItemCombo {
-   public static final String WIDGET_ID = XActionableItemAllCombo.class.getSimpleName();
 
    public XActionableItemAllCombo() {
       super(Active.Both);

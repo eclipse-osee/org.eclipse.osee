@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XStateSearchCombo extends XComboViewer {
    protected static List<String> validStates = new ArrayList<>();
-   public static final String WIDGET_ID = XStateSearchCombo.class.getSimpleName();
    private String selectedState = null;
 
    public XStateSearchCombo() {

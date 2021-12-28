@@ -20,8 +20,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
  */
 public class XCpaOpenDuplicatedPcrWidget extends XCpaOpenPcrWidget {
 
-   public static final String WIDGET_ID = XCpaOpenDuplicatedPcrWidget.class.getSimpleName();
-
    public XCpaOpenDuplicatedPcrWidget() {
       super(AtsAttributeTypes.DuplicatedPcrId);
    }

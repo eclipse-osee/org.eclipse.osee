@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class XActionableItemCombo extends XComboViewer {
-   public static final String WIDGET_ID = XActionableItemCombo.class.getSimpleName();
    private IAtsActionableItem selectedAi = null;
    private final Active active;
 

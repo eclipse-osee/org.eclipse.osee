@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class XDateWithValidateDam extends XDateDam {
 
-   public static final String WIDGET_ID = XDateWithValidateDam.class.getSimpleName();
-
    public XDateWithValidateDam(String displayLabel) {
       super(displayLabel);
    }

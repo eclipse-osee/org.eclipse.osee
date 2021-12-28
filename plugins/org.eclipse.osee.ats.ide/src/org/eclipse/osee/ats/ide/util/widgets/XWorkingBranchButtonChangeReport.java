@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonChangeReport extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = "XWorkingBranchButtonChangeReport";
-
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Show Change Report");

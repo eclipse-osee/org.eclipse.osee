@@ -17,12 +17,10 @@ import java.util.Collections;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 
-
 /**
  * @author Donald G. Dunne
  */
 public class XReviewStateSearchCombo extends XStateSearchCombo {
-   public static final String WIDGET_ID = XReviewStateSearchCombo.class.getSimpleName();
 
    @Override
    protected synchronized void ensurePopulated() {

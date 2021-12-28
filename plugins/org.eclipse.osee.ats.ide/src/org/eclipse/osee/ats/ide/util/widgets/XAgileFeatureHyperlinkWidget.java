@@ -37,7 +37,6 @@ public class XAgileFeatureHyperlinkWidget extends XHyperlinkLabelCmdValueSelecti
 
    Collection<IAgileFeatureGroup> features = new HashSet<>();
    IAtsTeamWorkflow teamWf;
-   public static final String WIDGET_ID = XAgileFeatureHyperlinkWidget.class.getSimpleName();
    AtsApi atsApi;
    IAtsTeamDefinition teamDef;
 

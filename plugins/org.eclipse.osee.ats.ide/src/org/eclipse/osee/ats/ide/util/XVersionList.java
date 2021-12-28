@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
  */
 public class XVersionList extends XListViewer {
 
-   public static final String WIDGET_ID = "XVersionList";
-
    public XVersionList() {
       this("Versions");
    }

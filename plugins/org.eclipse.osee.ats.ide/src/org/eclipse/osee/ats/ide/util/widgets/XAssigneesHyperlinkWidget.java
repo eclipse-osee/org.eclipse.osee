@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
  */
 public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
-   public static final Object WIDGET_ID = XAssigneesHyperlinkWidget.class.getSimpleName();
    Collection<AtsUser> assignees = new HashSet<>();
    private final IAtsTeamDefinition teamDef;
 

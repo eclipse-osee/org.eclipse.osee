@@ -30,9 +30,9 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XAtsProgramComboWidget extends XComboViewer {
 
-   private final Collection<? extends IAtsProgram> atsPrograms;
+   protected Collection<IAtsProgram> atsPrograms = new ArrayList<>();
 
-   public XAtsProgramComboWidget(String displayLabel, Collection<? extends IAtsProgram> atsPrograms) {
+   public XAtsProgramComboWidget(String displayLabel, Collection<IAtsProgram> atsPrograms) {
       super(displayLabel, SWT.READ_ONLY);
       this.atsPrograms = atsPrograms;
       setLabelProvider(new AtsProgramLabelProvider());
@@ -40,7 +40,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
       setComparator(new StringNameComparator());
    }
 
-   public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms) {
+   public XAtsProgramComboWidget(Collection<IAtsProgram> atsPrograms) {
       this("ATS Program", atsPrograms);
    }
 
@@ -48,7 +48,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
       this("ATS Program", getAllPrograms());
    }
 
-   private static Collection<? extends IAtsProgram> getAllPrograms() {
+   private static Collection<IAtsProgram> getAllPrograms() {
       List<IAtsProgram> programs = new ArrayList<>();
       for (IAtsProgramManager manager : ProgramManagers.getAtsProgramManagers()) {
          programs.addAll(manager.getPrograms());

@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.ToolBar;
  */
 public class XTaskEstSiblingWorldDemoWidget extends XTaskEstSiblingWorldWidget {
 
-   public static final String WIDGET_ID = XTaskEstSiblingWorldDemoWidget.class.getSimpleName();
-
    @Override
    public WorldXViewer createWorldXViewer(Composite tableComp, IXViewerFactory xViewerFactory) {
       return new XTaskEstSiblingWorldXViewer(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory,

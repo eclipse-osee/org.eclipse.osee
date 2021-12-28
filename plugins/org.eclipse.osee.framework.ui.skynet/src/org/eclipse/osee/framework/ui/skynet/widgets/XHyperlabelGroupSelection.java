@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
  */
 public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection {
 
-   public static final String WIDGET_ID = XHyperlabelGroupSelection.class.getSimpleName();
    Set<Artifact> selectedGroups = new HashSet<>();
 
    public XHyperlabelGroupSelection(String label) {
