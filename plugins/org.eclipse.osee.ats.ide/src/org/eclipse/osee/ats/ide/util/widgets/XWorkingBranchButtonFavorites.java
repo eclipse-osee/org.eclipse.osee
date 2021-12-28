@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = "XWorkingBranchButtonFavorites";
-
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Toggle Working Branch as Favorite");

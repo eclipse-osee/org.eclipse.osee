@@ -55,7 +55,6 @@ public class XOpenStoredSprintReportsButton extends XButton implements ArtifactW
 
    protected IAgileSprint sprint;
    private final boolean editable = false;
-   public static final String WIDGET_ID = XOpenStoredSprintReportsButton.class.getSimpleName();
 
    public XOpenStoredSprintReportsButton() {
       super("Open Snapshots of Stored Sprint Charts");

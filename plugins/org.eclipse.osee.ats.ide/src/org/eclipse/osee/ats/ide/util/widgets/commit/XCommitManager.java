@@ -73,7 +73,6 @@ public class XCommitManager extends GenericXWidget implements ArtifactWidget, IB
    private TeamWorkFlowArtifact teamArt;
    private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
-   public static final String WIDGET_NAME = "XCommitManager";
    public static final String NAME = "Commit Manager";
    public static final String DESCRIPTION = "Commit branches to parent and parallel branches.";
    private int lastDefectListSize = 0;

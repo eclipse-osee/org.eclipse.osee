@@ -32,10 +32,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
  */
 public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueSelection {
 
-   public static final String WIDGET_ID = XHyperlabelActionableItemSelection.class.getSimpleName();
    Collection<IAtsActionableItem> selectedAis = new HashSet<>();
    Collection<IAtsActionableItem> teamDefs;
    ActionableItemTreeWithChildrenDialog dialog = null;
+
+   public XHyperlabelActionableItemSelection() {
+      this("Actionable Item(s)");
+   }
 
    public XHyperlabelActionableItemSelection(String label) {
       super(label, true, WorldEditor.TITLE_MAX_LENGTH);

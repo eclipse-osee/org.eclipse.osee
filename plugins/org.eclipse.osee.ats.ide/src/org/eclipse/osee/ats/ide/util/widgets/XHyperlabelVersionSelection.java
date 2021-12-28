@@ -35,11 +35,14 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
  */
 public class XHyperlabelVersionSelection extends XHyperlinkLabelValueSelection {
 
-   public static final String WIDGET_ID = XHyperlabelVersionSelection.class.getSimpleName();
    Version selectedVersion = null;
    Collection<IAtsVersion> selectableVersions;
    VersionListDialog dialog = null;
    protected AtsApi atsApi;
+
+   public XHyperlabelVersionSelection() {
+      this("Version");
+   }
 
    public XHyperlabelVersionSelection(String label) {
       super(label);

@@ -28,7 +28,6 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
 
    IAtsVersion version;
    Collection<IAtsVersion> selectable = new HashSet<>();
-   public static final String WIDGET_ID = XTargetedVersionHyperlinkWidget.class.getSimpleName();
    IAtsTeamDefinition teamDef;
    AtsApi atsApi;
 

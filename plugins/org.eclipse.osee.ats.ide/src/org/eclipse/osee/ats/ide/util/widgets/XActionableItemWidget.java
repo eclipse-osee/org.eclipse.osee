@@ -59,7 +59,6 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XActionableItemWidget extends GenericXWidget implements IsEnabled {
 
-   public static final String WIDGET_ID = XActionableItemWidget.class.getSimpleName();
    protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> treeViewer;
    public static String NAME = "Actionable Item(s)";
    protected final AtsApi atsApi;

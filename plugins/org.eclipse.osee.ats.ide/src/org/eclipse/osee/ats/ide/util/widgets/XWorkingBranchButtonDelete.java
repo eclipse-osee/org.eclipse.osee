@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonDelete extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = "XWorkingBranchButtonDelete";
-
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Delete Working Branch");
@@ -61,7 +59,7 @@ public class XWorkingBranchButtonDelete extends XWorkingBranchButtonAbstract {
 
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
-      return isWidgetInState(WIDGET_NAME);
+      return isWidgetInState(XWorkingBranchButtonDelete.class.getSimpleName());
    }
 
 }

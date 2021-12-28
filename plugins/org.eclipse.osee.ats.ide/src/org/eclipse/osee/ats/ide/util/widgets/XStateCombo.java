@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
  * @author Donald G. Dunne
  */
 public class XStateCombo extends XComboDam {
-   public static final String WIDGET_ID = XStateCombo.class.getSimpleName();
 
    public XStateCombo() {
       super("");

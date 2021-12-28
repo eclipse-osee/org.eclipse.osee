@@ -84,7 +84,7 @@ public class WidgetPageUtil {
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
-         if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
+         if (layoutData.getXWidgetName().equals(XCommitManager.class.getSimpleName())) {
             description = XCommitManager.DESCRIPTION;
          }
          AttributeTypeToken type = null;

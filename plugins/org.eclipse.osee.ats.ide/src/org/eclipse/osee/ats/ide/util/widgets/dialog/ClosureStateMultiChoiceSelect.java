@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ClosureStateMultiChoiceSelect extends XSelectFromDialog<String> {
 
-   public static final String WIDGET_ID = ClosureStateMultiChoiceSelect.class.getSimpleName();
-
    public ClosureStateMultiChoiceSelect() {
       super("Select Version(s)");
       setSelectableItems(AtsAttributeTypes.ClosureState.getEnumStrValues());

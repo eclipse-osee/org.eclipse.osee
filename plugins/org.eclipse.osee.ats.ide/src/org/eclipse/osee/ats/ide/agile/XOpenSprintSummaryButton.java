@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class XOpenSprintSummaryButton extends AbstractXOpenSprintBurnupButton {
 
-   public static final String WIDGET_ID = XOpenSprintSummaryButton.class.getSimpleName();
-
    public XOpenSprintSummaryButton() {
       super("Open Sprint Summary", "open.sprint.summary");
       setImage(ImageManager.getImage(AtsImage.REPORT));

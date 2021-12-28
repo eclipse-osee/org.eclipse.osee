@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSav
  */
 public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
 
-   public static final String WIDGET_ID = XProgramSelectionWidget.class.getSimpleName();
    private final List<ArtifactId> programArts = new ArrayList<>();
 
    public XProgramSelectionWidget() {
@@ -47,8 +46,7 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
    }
 
    public void setupPrograms() {
-      Collection<IAtsProgram> programs =
-         AtsApiService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
+      Collection<IAtsProgram> programs = AtsApiService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
       for (IAtsProgram program : programs) {
          if (program.isActive()) {
             programArts.add(AtsApiService.get().getQueryService().getArtifactById(program.getIdString()));
@@ -59,8 +57,8 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
    @Override
    public Collection<Artifact> getSelectableArtifacts() {
       Collection<ArtifactToken> programArts =
-         AtsApiService.get().getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
-            AtsAttributeTypes.Active, "true").getArtifacts();
+         AtsApiService.get().getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(AtsAttributeTypes.Active,
+            "true").getArtifacts();
       return Collections.castAll(programArts);
    }
 }

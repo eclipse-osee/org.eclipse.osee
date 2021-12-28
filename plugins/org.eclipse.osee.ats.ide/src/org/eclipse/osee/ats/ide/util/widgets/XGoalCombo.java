@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class XGoalCombo extends XComboViewer {
-   public static final String WIDGET_ID = XGoalCombo.class.getSimpleName();
    private Artifact selectedGoal = null;
 
    public XGoalCombo() {

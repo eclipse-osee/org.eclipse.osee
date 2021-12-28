@@ -10,23 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.cr;
-
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+package org.eclipse.osee.ats.ide.util.widgets;
 
 /**
  * @author Donald G. Dunne
  */
-public class XCreateEscapeDemoWfXButton extends XCreateEscapeWfXButton {
+public class XHyperlabelFoundInVersionSelection extends XHyperlabelVersionSelection {
 
-   public XCreateEscapeDemoWfXButton() {
-      super("Create Demo Escape Analysis Workflow");
-   }
-
-   @Override
-   public IAtsActionableItem getAi() {
-      return atsApi.getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_PL_CR_AI);
+   public XHyperlabelFoundInVersionSelection() {
+      super("Found-in Version");
    }
 
 }

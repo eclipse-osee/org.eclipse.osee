@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Donald G. Dunne
  */
 public class XWorkPackageWidget extends GenericXWidget implements ArtifactWidget {
-   public static final String WIDGET_ID = XWorkPackageWidget.class.getSimpleName();
    protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
 
    private Composite composite;

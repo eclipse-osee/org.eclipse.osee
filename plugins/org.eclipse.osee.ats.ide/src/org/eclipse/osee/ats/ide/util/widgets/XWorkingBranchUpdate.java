@@ -54,8 +54,6 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
 
-   public final static String WIDGET_NAME = "XWorkingBranchUpdate";
-
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Update Working Branch From Targeted Version or Team Configured Branch");
@@ -158,6 +156,6 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
 
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
-      return isWidgetInState(WIDGET_NAME);
+      return isWidgetInState(XWorkingBranchUpdate.class.getSimpleName());
    }
 }

@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.core.data.OseeClient;
  */
 public class XOpenSprintBurndownButton extends AbstractXOpenSprintBurnupButton {
 
-   public static final String WIDGET_ID = XOpenSprintBurndownButton.class.getSimpleName();
-
    public XOpenSprintBurndownButton() {
       super("Open Sprint Burn-Down", "open.burndown");
    }

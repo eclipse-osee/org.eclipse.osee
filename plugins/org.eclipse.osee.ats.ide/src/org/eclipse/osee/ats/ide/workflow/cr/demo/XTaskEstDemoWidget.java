@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XTaskEstDemoWidget extends XTaskEstWidget {
 
-   public static final String WIDGET_ID = XTaskEstDemoWidget.class.getSimpleName();
    private XTaskEstDemoXViewer xTaskEstDemoViewer;
 
    @Override

@@ -21,8 +21,6 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
  */
 public class XCheckBoxesWithTaskGenExample extends XCheckBoxesWithTaskGen {
 
-   public static final Object WIDGET_ID = XCheckBoxesWithTaskGenExample.class.getSimpleName();
-
    public XCheckBoxesWithTaskGenExample() {
       super("Create Estimating Task(s)", DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating, 6);
    }

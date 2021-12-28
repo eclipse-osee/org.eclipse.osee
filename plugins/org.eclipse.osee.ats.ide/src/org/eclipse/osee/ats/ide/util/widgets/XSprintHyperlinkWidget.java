@@ -32,7 +32,6 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
    IAgileSprint sprint;
    IAtsTeamWorkflow teamWf;
    IAtsTeamDefinition teamDef;
-   public static final String WIDGET_ID = XSprintHyperlinkWidget.class.getSimpleName();
    AtsApi atsApi;
 
    public XSprintHyperlinkWidget() {

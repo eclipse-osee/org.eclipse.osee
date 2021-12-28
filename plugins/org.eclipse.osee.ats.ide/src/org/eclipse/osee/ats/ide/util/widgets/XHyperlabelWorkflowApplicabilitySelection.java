@@ -46,7 +46,6 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
  */
 public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCmdValueSelection implements ArtifactWidget {
 
-   public static final String WIDGET_ID = XHyperlabelWorkflowApplicabilitySelection.class.getSimpleName();
    public List<ApplicabilityToken> selectedAppls;
    private IAtsWorkItem workItem;
 

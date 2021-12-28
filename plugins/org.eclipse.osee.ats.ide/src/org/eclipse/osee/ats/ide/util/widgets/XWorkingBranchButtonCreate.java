@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = "XWorkingBranchButtonCreate";
-
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Create Working Branch");
@@ -131,6 +129,6 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
 
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
-      return isWidgetInState(WIDGET_NAME);
+      return isWidgetInState(XWorkingBranchButtonCreate.class.getSimpleName());
    }
 }

@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranchButtonArtifactExplorer extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = "XWorkingBranchButtonArtifactExplorer";
-
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Show Artifact Explorer");
@@ -56,7 +54,7 @@ public class XWorkingBranchButtonArtifactExplorer extends XWorkingBranchButtonAb
 
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
-      return isWidgetInState(WIDGET_NAME);
+      return isWidgetInState(XWorkingBranchButtonArtifactExplorer.class.getSimpleName());
    }
 
 }

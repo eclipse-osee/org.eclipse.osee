@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
  */
 public class XIntroducedInVersionWithPersistWidget extends XHyperlabelVersionSelectionWithPersist {
 
-   public static final String WIDGET_ID = XIntroducedInVersionWithPersistWidget.class.getSimpleName();
    public static RelationTypeSide INTRODUCED_VERSION_RELATION =
       AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version;
 

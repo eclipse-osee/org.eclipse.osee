@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XWorkingBranchLabel extends XWorkingBranchWidgetAbstract {
 
-   public static String WIDGET_NAME = "XWorkingBranchLabel";
    public static String NAME = "Working Branch";
 
    public XWorkingBranchLabel() {

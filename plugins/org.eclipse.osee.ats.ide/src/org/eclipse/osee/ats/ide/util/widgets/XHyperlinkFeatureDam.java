@@ -57,12 +57,15 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class XHyperlinkFeatureDam extends XHyperlinkLabelValueSelection implements AttributeWidget {
 
-   public static final String WIDGET_ID = XHyperlinkFeatureDam.class.getSimpleName();
    private IAtsTeamWorkflow teamWf;
    private AttributeTypeToken attributeTypeToken;
    private final AtsApi atsApi;
    private String value = "Not Set";
    private Collection<Object> values;
+
+   public XHyperlinkFeatureDam() {
+      this("Feature");
+   }
 
    public XHyperlinkFeatureDam(String label) {
       super(label);

@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class XOpenSprintDataTableButton extends AbstractXOpenSprintBurnupButton {
 
-   public static final String WIDGET_ID = XOpenSprintDataTableButton.class.getSimpleName();
-
    public XOpenSprintDataTableButton() {
       super("Open Sprint Data Table", "open.sprint.data");
       setImage(ImageManager.getImage(AtsImage.REPORT));

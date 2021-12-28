@@ -660,8 +660,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
-      sb.append(
-         "<XWidget xwidgetType=\"XAtsProgramActiveComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
+      sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
       sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
       sb.append(
          "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");

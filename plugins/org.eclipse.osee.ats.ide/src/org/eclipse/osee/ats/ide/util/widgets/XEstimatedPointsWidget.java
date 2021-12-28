@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelDa
  */
 public class XEstimatedPointsWidget extends XHyperlinkLabelCmdValueSelDam implements ArtifactWidget {
 
-   public static final Object WIDGET_ID = XEstimatedPointsWidget.class.getSimpleName();
    public float points = 0;
    private final AtsApi atsApi;
    private IAtsWorkItem workItem;

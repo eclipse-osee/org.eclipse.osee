@@ -52,8 +52,6 @@ import org.osgi.service.event.EventHandler;
  */
 public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract implements EventHandler {
 
-   public static String WIDGET_NAME = "XWorkingBranchButtonLock";
-
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Toggle Working Branch Access Control");
@@ -162,7 +160,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
-      return isWidgetInState(WIDGET_NAME);
+      return isWidgetInState(XWorkingBranchButtonLock.class.getSimpleName());
    }
 
 }
