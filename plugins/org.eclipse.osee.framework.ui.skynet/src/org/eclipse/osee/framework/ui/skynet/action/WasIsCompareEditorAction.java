@@ -137,7 +137,7 @@ public class WasIsCompareEditorAction extends Action {
    }
 
    protected String loadAttributeValue(AttributeId attrId, TransactionId transactionId, Artifact artifact) {
-      return ServiceUtil.getOseeClient().loadAttributeValue(attrId.getIdIntValue(), transactionId, artifact);
+      return ServiceUtil.getOseeClient().loadAttributeValue(attrId, transactionId, artifact);
    }
 
    protected static ISelectionProvider getSelectionProvider() {

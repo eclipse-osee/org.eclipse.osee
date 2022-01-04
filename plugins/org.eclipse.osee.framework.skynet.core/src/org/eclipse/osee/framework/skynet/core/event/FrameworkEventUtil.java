@@ -18,8 +18,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -90,7 +92,7 @@ public final class FrameworkEventUtil {
       for (TransactionChange change : transEvent.getTransactionChanges()) {
          RemoteTransactionChange1 remChange = new RemoteTransactionChange1();
          remChange.setBranchGuid(change.getBranch().getId());
-         remChange.setTransactionId(change.getTransactionId());
+         remChange.setTransactionId(change.getTransactionId().getIdIntValue());
          List<RemoteBasicGuidArtifact1> remChangeArts = remChange.getArtifacts();
          for (DefaultBasicGuidArtifact guidArt : change.getArtifacts()) {
             remChangeArts.add(getRemoteBasicGuidArtifact(guidArt));
@@ -107,7 +109,7 @@ public final class FrameworkEventUtil {
       for (RemoteTransactionChange1 remChange : remEvent.getTransactions()) {
          TransactionChange change = new TransactionChange();
          change.setBranch(BranchId.valueOf(remChange.getBranchGuid()));
-         change.setTransactionId(remChange.getTransactionId());
+         change.setTransactionId(TransactionId.valueOf(remChange.getTransactionId()));
          Collection<DefaultBasicGuidArtifact> eventArts = change.getArtifacts();
          for (RemoteBasicGuidArtifact1 remGuidArt : remChange.getArtifacts()) {
             eventArts.add(getBasicGuidArtifact(remGuidArt, tokenService));
@@ -274,7 +276,7 @@ public final class FrameworkEventUtil {
 
    public static AttributeChange getAttributeChange(RemoteAttributeChange1 remAttrChg) {
       AttributeChange attrChg = new AttributeChange();
-      attrChg.setAttributeId(remAttrChg.getAttributeId());
+      attrChg.setAttributeId(AttributeId.valueOf(remAttrChg.getAttributeId()));
       attrChg.setGammaId(GammaId.valueOf(remAttrChg.getGammaId()));
       attrChg.setAttrTypeGuid(remAttrChg.getAttrTypeGuid());
       attrChg.setModTypeGuid(remAttrChg.getModTypeGuid());
@@ -286,7 +288,7 @@ public final class FrameworkEventUtil {
 
    public static RemoteAttributeChange1 getRemoteAttributeChange(AttributeChange attrChg) {
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
-      remAttrChg.setAttributeId(attrChg.getAttributeId());
+      remAttrChg.setAttributeId(attrChg.getAttributeId().getIdIntValue());
       remAttrChg.setGammaId(attrChg.getGammaId().getIdIntValue());
       remAttrChg.setAttrTypeGuid(attrChg.getAttrTypeGuid());
       remAttrChg.setModTypeGuid(attrChg.getModTypeGuid());

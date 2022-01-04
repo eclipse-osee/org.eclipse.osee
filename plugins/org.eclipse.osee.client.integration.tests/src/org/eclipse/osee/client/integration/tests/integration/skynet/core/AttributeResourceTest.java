@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -64,7 +65,7 @@ public class AttributeResourceTest {
          "<w:p wsp:rsidR=\"006A3C0C\" wsp:rsidRDefault=\"006A3C0C\" wsp:rsidP=\"00E54E52\"><w:r><w:t>%s</w:t></w:r></w:p>",
          testString));
       TransactionId txId = newArtifact.persist(getClass().getSimpleName());
-      List<Integer> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.WordTemplateContent);
+      List<AttributeId> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.WordTemplateContent);
       String output = ServiceUtil.getOseeClient().loadAttributeValue(attrIds.get(0), txId, newArtifact);
       Assert.assertTrue(output.trim().equals(testString));
    }

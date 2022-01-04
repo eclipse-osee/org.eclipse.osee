@@ -155,18 +155,17 @@ public class RelationCache {
       return size != 0 ? relations.iterator().next() : null;
    }
 
-   public RelationLink getLoadedRelation(RelationTypeToken relationType, int aArtifactId, int bArtifactId, BranchId branch) {
-      ArtifactId artifactA = ArtifactId.valueOf(aArtifactId);
-      ArtifactId artifactB = ArtifactId.valueOf(bArtifactId);
-
+   public RelationLink getLoadedRelation(RelationTypeToken relationType, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchId branch) {
       RelationMatcher bArtIdMatcher =
-         RelationFilterUtil.createFindFirstRelatedArtIdMatcher(artifactB, RelationSide.SIDE_B);
+         RelationFilterUtil.createFindFirstRelatedArtIdMatcher(bArtifactId, RelationSide.SIDE_B);
       List<RelationLink> links = new ArrayList<>();
-      findRelations(links, ArtifactToken.valueOf(aArtifactId, branch), relationType, bArtIdMatcher);
+      findRelations(links, ArtifactToken.valueOf(aArtifactId, BranchToken.valueOf(branch)), relationType,
+         bArtIdMatcher);
       if (links.isEmpty()) {
          RelationMatcher aArtIdMatcher =
-            RelationFilterUtil.createFindFirstRelatedArtIdMatcher(artifactA, RelationSide.SIDE_A);
-         findRelations(links, ArtifactToken.valueOf(bArtifactId, branch), relationType, aArtIdMatcher);
+            RelationFilterUtil.createFindFirstRelatedArtIdMatcher(aArtifactId, RelationSide.SIDE_A);
+         findRelations(links, ArtifactToken.valueOf(bArtifactId, BranchToken.valueOf(branch)), relationType,
+            aArtIdMatcher);
       }
       return links.isEmpty() ? null : links.iterator().next();
    }

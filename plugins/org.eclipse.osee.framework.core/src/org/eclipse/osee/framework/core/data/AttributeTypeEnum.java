@@ -95,6 +95,7 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    }
 
    protected void addEnum(T enumeration) {
+      //Considered for switch to Long but don't believe this enum stores an Id, instead stores a enum value into a Array
       int ordinal = enumeration.getIdIntValue();
 
       while (enumTokens.size() <= ordinal) {

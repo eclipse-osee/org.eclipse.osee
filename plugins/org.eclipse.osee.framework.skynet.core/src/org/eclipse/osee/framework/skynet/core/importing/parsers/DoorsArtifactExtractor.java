@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -168,12 +169,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
              * need to modify the HTML so the image references the data stored in the artifact.
              **************************************/
             try {
-               List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
+               List<AttributeId> attributeIds = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
                List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HtmlContent);
                theArtifact.deleteAttributes(CoreAttributeTypes.HtmlContent);
                for (String htmlVal : HTML) {
                   int iCount = 0;
-                  for (Integer imageNumber : Ids) {
+                  for (AttributeId imageNumber : attributeIds) {
                      htmlVal = htmlVal.replaceAll(IMAGE_BASE_NAME + Integer.toString(iCount), imageNumber.toString());
                      iCount++;
                      toReturn = true;

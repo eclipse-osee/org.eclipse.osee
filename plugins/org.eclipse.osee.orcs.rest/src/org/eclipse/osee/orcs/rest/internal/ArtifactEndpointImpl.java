@@ -86,8 +86,8 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
       builder.includeDeletedArtifacts(params.isIncludeDeleted());
 
-      if (params.getFromTx() > 0) {
-         builder.fromTransaction(TransactionId.valueOf(params.getFromTx()));
+      if (params.getFromTx().isGreaterThan(TransactionId.valueOf(0))) {
+         builder.fromTransaction(params.getFromTx());
       }
 
       SearchResponse result = new SearchResponse();

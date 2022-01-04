@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.client.QueryBuilder;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -99,9 +100,9 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options) {
       Conditions.checkNotNull(requestType, "RequestType");
-      int fromTx = 0;
+      TransactionId fromTx = TransactionId.valueOf(0);
       if (options.isHistorical()) {
-         fromTx = options.getFromTransaction().getIdIntValue();
+         fromTx = options.getFromTransaction();
       }
 
       boolean includeDeleted = false;
@@ -223,9 +224,9 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
-   public String loadAttributeValue(Integer attrId, TransactionId transactionId, ArtifactToken artifact) {
+   public String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact) {
       String url = String.format("orcs/branch/%s/artifact/%s/attribute/%s/version/%s/text",
-         artifact.getBranchIdString(), artifact.getIdString(), attrId, transactionId.getIdString());
+         artifact.getBranchIdString(), artifact.getIdString(), attrId.getIdString(), transactionId.getIdString());
       WebTarget target = jaxRsApi().newTarget(url);
       return target.request(MediaType.TEXT_PLAIN).get(String.class);
    }

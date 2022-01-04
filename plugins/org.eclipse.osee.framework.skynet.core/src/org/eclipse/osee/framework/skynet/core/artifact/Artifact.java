@@ -333,11 +333,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return null;
    }
 
-   public final List<Integer> getAttributeIds(AttributeTypeId attributeType) {
-      List<Integer> items = new ArrayList<>();
+   public final List<AttributeId> getAttributeIds(AttributeTypeId attributeType) {
+      List<AttributeId> items = new ArrayList<>();
       List<Attribute<Object>> data = getAttributes(attributeType);
       for (Attribute<Object> attribute : data) {
-         items.add(attribute.getIdIntValue());
+         items.add(attribute);
       }
       return items;
    }

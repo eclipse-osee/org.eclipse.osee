@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,7 +60,7 @@ public class AttributeChange implements FrameworkEvent {
    protected Long attrTypeGuid;
    @XmlElement(required = true)
    protected String modTypeGuid;
-   protected int attributeId;
+   protected AttributeId attributeId;
    protected GammaId gammaId;
    @XmlElement(required = true)
    protected List<Object> data;
@@ -82,12 +83,16 @@ public class AttributeChange implements FrameworkEvent {
       this.modTypeGuid = value;
    }
 
-   public int getAttributeId() {
+   public AttributeId getAttributeId() {
       return attributeId;
    }
 
-   public void setAttributeId(int value) {
+   public void setAttributeId(AttributeId value) {
       this.attributeId = value;
+   }
+
+   public void setAttributeId(int value) {
+      this.attributeId = AttributeId.valueOf(value);
    }
 
    public GammaId getGammaId() {

@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
  * @author John R. Misinco
@@ -29,7 +30,7 @@ public class SearchRequest implements SearchParameters {
 
    private BranchId branch;
    private RequestType type;
-   private int fromTx;
+   private TransactionId fromTx;
    private boolean includeDeleted;
 
    @XmlTransient
@@ -39,7 +40,7 @@ public class SearchRequest implements SearchParameters {
       super();
    }
 
-   public SearchRequest(BranchId branch, List<Predicate> predicates, RequestType type, int fromTx, boolean includeDeleted) {
+   public SearchRequest(BranchId branch, List<Predicate> predicates, RequestType type, TransactionId fromTx, boolean includeDeleted) {
       this.branch = branch;
       this.predicates = predicates;
       this.type = type;
@@ -82,11 +83,11 @@ public class SearchRequest implements SearchParameters {
    }
 
    @Override
-   public int getFromTx() {
+   public TransactionId getFromTx() {
       return fromTx;
    }
 
-   public void setFromTx(int fromTx) {
+   public void setFromTx(TransactionId fromTx) {
       this.fromTx = fromTx;
    }
 

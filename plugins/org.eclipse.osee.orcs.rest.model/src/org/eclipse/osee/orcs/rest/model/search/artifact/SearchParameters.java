@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
  * @author John R. Misinco
@@ -30,6 +31,6 @@ public interface SearchParameters {
 
    boolean isIncludeDeleted();
 
-   int getFromTx();
+   TransactionId getFromTx();
 
 }

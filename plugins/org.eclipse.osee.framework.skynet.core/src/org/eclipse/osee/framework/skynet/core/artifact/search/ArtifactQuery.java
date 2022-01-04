@@ -636,8 +636,8 @@ public class ArtifactQuery {
          BranchId branch = searchParameters.getBranch();
 
          TransactionId tx = TransactionId.SENTINEL;
-         if (searchParameters.getFromTx() > 0) {
-            tx = TransactionId.valueOf(searchParameters.getFromTx());
+         if (searchParameters.getFromTx().isGreaterThan(TransactionId.valueOf(0))) {
+            tx = searchParameters.getFromTx();
          }
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
@@ -663,8 +663,8 @@ public class ArtifactQuery {
          BranchId branch = searchParameters.getBranch();
 
          TransactionId tx = TransactionId.SENTINEL;
-         if (searchParameters.getFromTx() > 0) {
-            tx = TransactionId.valueOf(searchParameters.getFromTx());
+         if (searchParameters.getFromTx().isGreaterThan(TransactionId.valueOf(0))) {
+            tx = searchParameters.getFromTx();
          }
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
