@@ -150,7 +150,7 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
                   OseeEmail msg = createOseeEmail();
                   msg.setFrom(fromUserEmail);
                   msg.setRecipients(toUserEmails.toArray(new String[toUserEmails.size()]));
-                  msg.setBody(subject);
+                  msg.setSubject(subject);
                   msg.setHTMLBody(htmlBody);
                   msg.send();
                } catch (Exception ex) {
