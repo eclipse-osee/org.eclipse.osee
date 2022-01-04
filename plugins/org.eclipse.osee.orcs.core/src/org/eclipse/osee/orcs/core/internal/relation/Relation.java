@@ -160,8 +160,8 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    @Override
    public String toString() {
       return String.format("Relation id=%s, a=%s, type=%s, typeId=%s, b=%s, dirty=%s", getOrcsData().getId(),
-         getOrcsData().getArtIdA(), getOrcsData().getType().getName(), getOrcsData().getType().getId(),
-         getOrcsData().getArtIdB(), getOrcsData().isDirty());
+         getOrcsData().getArtifactIdA().getIdString(), getOrcsData().getType().getName(),
+         getOrcsData().getType().getId(), getOrcsData().getArtifactIdB().getIdString(), getOrcsData().isDirty());
    }
 
    @Override
@@ -175,17 +175,17 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    }
 
    @Override
-   public ArtifactId getArtIdA() {
-      return getOrcsData().getArtIdA();
-   }
-
-   @Override
-   public ArtifactId getArtIdB() {
-      return getOrcsData().getArtIdB();
-   }
-
-   @Override
    public boolean isDeleted() {
       return getModificationType().isDeleted();
+   }
+
+   @Override
+   public ArtifactId getArtifactIdA() {
+      return getOrcsData().getArtifactIdA();
+   }
+
+   @Override
+   public ArtifactId getArtifactIdB() {
+      return getOrcsData().getArtifactIdB();
    }
 }

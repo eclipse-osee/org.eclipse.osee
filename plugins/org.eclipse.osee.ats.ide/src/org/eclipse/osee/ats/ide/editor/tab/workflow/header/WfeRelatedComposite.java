@@ -260,7 +260,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
       Map<IRelationLink, Artifact> supporting = new HashMap<>();
       for (IRelationLink iLink : supportingLink) {
          RelationLink link = (RelationLink) iLink;
-         if (workItem.getArtifactId().equals(link.getArtIdA())) {
+         if (workItem.getArtifactId().equals(link.getArtifactIdA())) {
             Artifact otherArt = (Artifact) atsApi.getQueryService().getArtifact(link.getArtifactB());
             supporting.put(link, otherArt);
          } else {

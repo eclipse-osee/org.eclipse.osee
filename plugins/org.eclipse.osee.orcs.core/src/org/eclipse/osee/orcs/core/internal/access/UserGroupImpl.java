@@ -71,7 +71,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    public boolean isMember(Long id) {
       checkGroupExists();
       for (IRelationLink rel : getArtifact().getRelations(CoreRelationTypes.Users_User)) {
-         if (rel.getArtIdB().equals(ArtifactId.valueOf(id))) {
+         if (rel.getArtifactIdB().equals(ArtifactId.valueOf(id))) {
             return true;
          }
       }

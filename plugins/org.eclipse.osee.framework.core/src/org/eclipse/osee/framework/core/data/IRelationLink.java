@@ -31,9 +31,9 @@ public interface IRelationLink extends RelationId {
    @Override
    String toString();
 
-   ArtifactId getArtIdA();
+   ArtifactId getArtifactIdA();
 
-   ArtifactId getArtIdB();
+   ArtifactId getArtifactIdB();
 
    boolean isDeleted();
 

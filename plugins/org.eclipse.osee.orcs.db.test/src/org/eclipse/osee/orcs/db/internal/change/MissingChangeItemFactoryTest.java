@@ -338,8 +338,8 @@ public class MissingChangeItemFactoryTest {
 
    private static ChangeItem createExpected(RelationData data) {
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getId()), RelationTypeToken.SENTINEL,
-         data.getVersion().getGammaId(), determineModType(data), ArtifactId.valueOf(data.getArtIdA()),
-         ArtifactId.valueOf(data.getArtIdB()), "", ApplicabilityToken.BASE,
+         data.getVersion().getGammaId(), determineModType(data), data.getArtifactIdA(), data.getArtifactIdB(), "",
+         ApplicabilityToken.BASE,
          TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
    }
 

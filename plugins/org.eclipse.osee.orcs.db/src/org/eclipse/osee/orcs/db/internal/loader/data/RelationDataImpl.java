@@ -55,16 +55,6 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl<RelationTypeToken>
    }
 
    @Override
-   public ArtifactId getArtIdA() {
-      return artIdA;
-   }
-
-   @Override
-   public ArtifactId getArtIdB() {
-      return artIdB;
-   }
-
-   @Override
    public String getRationale() {
       return rationale;
    }

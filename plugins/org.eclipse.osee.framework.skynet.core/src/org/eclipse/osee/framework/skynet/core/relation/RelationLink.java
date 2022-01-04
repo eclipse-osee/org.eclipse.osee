@@ -219,10 +219,12 @@ public class RelationLink implements HasBranchId, IRelationLink {
       return getArtifact(artifactB);
    }
 
+   @Override
    public ArtifactToken getArtifactIdA() {
       return artifactA;
    }
 
+   @Override
    public ArtifactToken getArtifactIdB() {
       return artifactB;
    }
@@ -398,15 +400,5 @@ public class RelationLink implements HasBranchId, IRelationLink {
 
    public RelationId getRelationId() {
       return RelationId.valueOf(getId());
-   }
-
-   @Override
-   public ArtifactId getArtIdA() {
-      return artifactA;
-   }
-
-   @Override
-   public ArtifactId getArtIdB() {
-      return artifactB;
    }
 }
