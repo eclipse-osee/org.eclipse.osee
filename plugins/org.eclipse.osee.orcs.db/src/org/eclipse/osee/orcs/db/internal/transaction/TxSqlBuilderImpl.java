@@ -265,7 +265,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                RelationId id = idManager.getNextRelationId();
                data.setLocalId(id);
             }
-            addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtIdA(), data.getArtIdB(),
+            addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtifactIdA(), data.getArtifactIdB(),
                data.getVersion().getGammaId(), data.getId(), data.getRationale());
          }
          addTxs(SqlOrderEnum.RELATIONS, data);

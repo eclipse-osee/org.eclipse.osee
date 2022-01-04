@@ -416,10 +416,10 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       for (Relation relation : getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)) {
          if (relation.getRelationType().equals(relationTypeSide.getRelationType())) {
             boolean aSide = relationTypeSide.getSide().isSideA();
-            if (aSide && relation.getArtIdB().equals(this)) {
-               relatedIds.add(relation.getArtIdA());
-            } else if (!aSide && relation.getArtIdA().equals(this)) {
-               relatedIds.add(relation.getArtIdB());
+            if (aSide && relation.getArtifactIdB().equals(this)) {
+               relatedIds.add(relation.getArtifactIdA());
+            } else if (!aSide && relation.getArtifactIdA().equals(this)) {
+               relatedIds.add(relation.getArtifactIdB());
             }
          }
       }
