@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -60,7 +61,7 @@ public class IntegerAttributeTest {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, workingBranch);
       newArtifact.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, "50");
       TransactionId txId = newArtifact.persist(getClass().getSimpleName());
-      List<Integer> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.CircuitBreakerId);
+      List<AttributeId> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.CircuitBreakerId);
       String output = ServiceUtil.getOseeClient().loadAttributeValue(attrIds.get(0), txId, newArtifact);
       Assert.assertTrue(output.equals("50"));
    }
@@ -70,7 +71,7 @@ public class IntegerAttributeTest {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, workingBranch);
       newArtifact.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, 50);
       TransactionId txId = newArtifact.persist(getClass().getSimpleName());
-      List<Integer> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.CircuitBreakerId);
+      List<AttributeId> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.CircuitBreakerId);
       String output = ServiceUtil.getOseeClient().loadAttributeValue(attrIds.get(0), txId, newArtifact);
       Assert.assertTrue(output.equals("50"));
    }

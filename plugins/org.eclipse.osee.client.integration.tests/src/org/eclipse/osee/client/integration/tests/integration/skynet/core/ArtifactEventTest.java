@@ -752,7 +752,7 @@ public class ArtifactEventTest {
 
       // Validate attribute change in event message
       AttributeChange attrChg = guidArt.getAttributeChanges().iterator().next();
-      Assert.assertEquals(nameAttrId, attrChg.getAttributeId());
+      Assert.assertEquals(nameAttrId, attrChg.getAttributeId().getIdIntValue());
       Assert.assertEquals(AttributeEventModificationType.Modified,
          AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
       Assert.assertEquals(CoreAttributeTypes.Name, attrChg.getAttrTypeGuid());
@@ -803,7 +803,7 @@ public class ArtifactEventTest {
 
       // Validate attribute change in event message
       AttributeChange attrChg = guidArt.getAttributeChanges().iterator().next();
-      Assert.assertEquals(2343, attrChg.getAttributeId());
+      Assert.assertEquals(2343, attrChg.getAttributeId().getIdIntValue());
       Assert.assertEquals(AttributeEventModificationType.New,
          AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
       Assert.assertEquals(CoreAttributeTypes.GeneralStringData, attrChg.getAttrTypeGuid());
@@ -854,7 +854,7 @@ public class ArtifactEventTest {
 
       // Validate attribute change in event message
       AttributeChange attrChg = guidArt.getAttributeChanges().iterator().next();
-      Assert.assertEquals(genStrAttrId, attrChg.getAttributeId());
+      Assert.assertEquals(genStrAttrId, attrChg.getAttributeId().getIdIntValue());
       Assert.assertEquals(AttributeEventModificationType.Deleted,
          AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
       Assert.assertEquals(CoreAttributeTypes.GeneralStringData, attrChg.getAttrTypeGuid());

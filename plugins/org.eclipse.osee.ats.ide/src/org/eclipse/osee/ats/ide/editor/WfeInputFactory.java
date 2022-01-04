@@ -69,8 +69,6 @@ public class WfeInputFactory implements IElementFactory {
       }
       if (artifactId.isValid() && branch.isValid() && Strings.isValid(title)) {
          memento.putString(BRANCH_KEY, branch.getIdString());
-         // Keep Storing the id as an Int so that the release can still read the workspace
-         memento.putInteger(ART_KEY, artifactId.getIdIntValue());
          memento.putString(ART_KEY_AS_LONG, artifactId.getIdString());
          memento.putString(TITLE, title);
       }

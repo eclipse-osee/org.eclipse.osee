@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -115,7 +116,8 @@ public class ArtifactEndpointTest {
       List<String> emptyStringList = Collections.emptyList();
       List<String> artifactTypeList = Arrays.asList(root.getArtifactType().getIdString());
       Predicate predicate = new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, artifactTypeList);
-      SearchRequest params = new SearchRequest(COMMON, Arrays.asList(predicate), RequestType.IDS, 0, false);
+      SearchRequest params =
+         new SearchRequest(COMMON, Arrays.asList(predicate), RequestType.IDS, TransactionId.valueOf(0), false);
       SearchResponse response = artifactEndpoint.getSearchWithMatrixParams(params);
       List<ArtifactId> ids = response.getIds();
 

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -92,10 +93,10 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
                IWorkbenchPage activePage = AWorkbench.getActivePage();
 
                for (Artifact artifact : artifacts) {
-                  Integer attributeId = artifact.getAttributeIds(GraphitiDiagram).get(0);
+                  AttributeId attributeId = artifact.getAttributeIds(GraphitiDiagram).get(0);
 
-                  URI diagramUri = URI.createURI(String.format("osee://branch/%s/artifact/%s/attribute/%d",
-                     artifact.getBranch().getIdString(), artifact.getIdString(), attributeId));
+                  URI diagramUri = URI.createURI(String.format("osee://branch/%s/artifact/%s/attribute/%s",
+                     artifact.getBranch().getIdString(), artifact.getIdString(), attributeId.getIdString()));
 
                   DiagramEditorInput editorInput = new DiagramEditorInput(diagramUri, null);
                   activePage.openEditor(editorInput, GraphitiDiagramArtifactEditor.EDITOR_ID, true);

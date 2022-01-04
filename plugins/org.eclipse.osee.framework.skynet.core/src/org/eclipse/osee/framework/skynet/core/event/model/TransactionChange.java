@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 public class TransactionChange implements FrameworkEvent {
 
    private BranchId branch;
-   private int transactionId;
+   private TransactionId transactionId;
    private final Set<DefaultBasicGuidArtifact> artifacts = new HashSet<>();
 
    public BranchId getBranch() {
@@ -40,14 +41,14 @@ public class TransactionChange implements FrameworkEvent {
    /**
     * Gets the value of the transactionId property.
     */
-   public int getTransactionId() {
+   public TransactionId getTransactionId() {
       return transactionId;
    }
 
    /**
     * Sets the value of the transactionId property.
     */
-   public void setTransactionId(int value) {
+   public void setTransactionId(TransactionId value) {
       this.transactionId = value;
    }
 

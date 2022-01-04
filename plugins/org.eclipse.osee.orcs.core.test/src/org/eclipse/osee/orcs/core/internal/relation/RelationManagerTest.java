@@ -103,7 +103,7 @@ public class RelationManagerTest {
    // @formatter:on
 
    private RelationManager manager;
-   private Map<Integer, Artifact> mockDb;
+   private Map<ArtifactId, Artifact> mockDb;
    private Artifact node1;
    private Artifact node2;
    private Artifact node3;
@@ -133,19 +133,19 @@ public class RelationManagerTest {
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 
-      mockDb = new HashMap<>();
-      mockDb.put(11, node1);
-      mockDb.put(22, node2);
-      mockDb.put(33, node3);
-      mockDb.put(44, node4);
-      mockDb.put(55, node5);
-      mockDb.put(66, node6);
+      ArtifactId artifactId11 = ArtifactId.valueOf(11L);
+      ArtifactId artifactId22 = ArtifactId.valueOf(22L);
+      ArtifactId artifactId33 = ArtifactId.valueOf(33L);
+      ArtifactId artifactId44 = ArtifactId.valueOf(44L);
+      ArtifactId artifactId55 = ArtifactId.valueOf(55L);
 
-      ArtifactId artifactId11 = ArtifactId.valueOf(11);
-      ArtifactId artifactId22 = ArtifactId.valueOf(22);
-      ArtifactId artifactId33 = ArtifactId.valueOf(33);
-      ArtifactId artifactId44 = ArtifactId.valueOf(44);
-      ArtifactId artifactId55 = ArtifactId.valueOf(55);
+      mockDb = new HashMap<>();
+      mockDb.put(artifactId11, node1);
+      mockDb.put(artifactId22, node2);
+      mockDb.put(artifactId33, node3);
+      mockDb.put(artifactId44, node4);
+      mockDb.put(artifactId55, node5);
+      mockDb.put(ArtifactId.valueOf(66L), node6);
 
       when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
       when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId22);
@@ -206,9 +206,9 @@ public class RelationManagerTest {
       Collection<ArtifactId> toLoad = captor.getValue();
       assertEquals(3, toLoad.size());
       Iterator<ArtifactId> iterator = toLoad.iterator();
-      assertEquals(22, iterator.next().getIdIntValue());
-      assertEquals(33, iterator.next().getIdIntValue());
-      assertEquals(55, iterator.next().getIdIntValue());
+      assertEquals(ArtifactId.valueOf(22), iterator.next());
+      assertEquals(ArtifactId.valueOf(33), iterator.next());
+      assertEquals(ArtifactId.valueOf(55), iterator.next());
 
       assertEquals(3, nodes.size());
       Iterator<Artifact> iterator2 = nodes.iterator();
@@ -226,7 +226,7 @@ public class RelationManagerTest {
       Collection<ArtifactId> toLoad = captor.getValue();
       assertEquals(1, toLoad.size());
       Iterator<ArtifactId> iterator = toLoad.iterator();
-      assertEquals(44, iterator.next().getIdIntValue());
+      assertEquals(ArtifactId.valueOf(44), iterator.next());
 
       assertEquals(1, readables.size());
       Iterator<Artifact> iterator2 = readables.iterator();
@@ -316,7 +316,7 @@ public class RelationManagerTest {
          Collection<ArtifactId> toLoad = (Collection<ArtifactId>) invocation.getArguments()[2];
          artLoaded.clear();
          for (ArtifactId item : toLoad) {
-            Artifact node = mockDb.get(item.getIdIntValue());
+            Artifact node = mockDb.get(item);
             if (node != null) {
                artLoaded.add(node);
             }

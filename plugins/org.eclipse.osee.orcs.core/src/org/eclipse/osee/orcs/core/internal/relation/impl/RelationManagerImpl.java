@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -501,8 +502,7 @@ public class RelationManagerImpl implements RelationManager {
       if (sourceAdjacencies != null) {
          for (Relation sourceRel : sourceAdjacencies.getAll()) {
             if (validRelationTypes.contains(sourceRel.getRelationType())) {
-               Relation destinationRel =
-                  findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData().getIdIntValue());
+               Relation destinationRel = findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData());
                Relation introduceRelation = relationFactory.introduce(branch, sourceRel.getOrcsData());
                if (destinationRel != null) {
                   destinationRel.setOrcsData(introduceRelation.getOrcsData());
@@ -525,9 +525,9 @@ public class RelationManagerImpl implements RelationManager {
       relation.setApplicabilityId(applicId);
    }
 
-   private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, Integer id) {
+   private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, RelationData id) {
       for (Relation rel : adjacencies.getAll()) {
-         if (id.equals(rel.getOrcsData().getIdIntValue())) {
+         if (id.equals(rel.getOrcsData())) {
             return rel;
          }
       }

@@ -61,6 +61,7 @@ public final class ComputedSoftwareCriticalityIndex extends ComputedCharacterist
 
    @Override
    public EnumToken calculate(List<EnumToken> computingValues) {
+      //Considered for switch to Long but don't believe this enum stores an Id, instead stores a enum value into a Array
       int softwareControlCategory;
       int safetySeverity;
       if (computingValues.get(0) instanceof SoftwareControlCategoryEnum && computingValues.get(

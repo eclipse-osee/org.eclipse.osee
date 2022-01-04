@@ -21,6 +21,7 @@ import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
@@ -85,5 +86,5 @@ public interface OseeClient extends OseeApi {
    GitEndpoint getGitEndpoint();
 
    @Deprecated
-   String loadAttributeValue(Integer attrId, TransactionId transactionId, ArtifactToken artifact);
+   String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact);
 }
