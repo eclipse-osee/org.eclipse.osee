@@ -48,7 +48,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       this.resourceManager = resourceManager;
    }
 
-   private int loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService) {
+   private int loadData(OrcsDataHandler<IndexedResource> handler, Long tagQueueQueryId, OrcsTokenService tokenService) {
       Collection<AttributeData> attrData = new HashSet<>();
       Consumer<JdbcStatement> consumer = stmt -> {
          AttributeId itemId = AttributeId.valueOf(stmt.getLong("attr_id"));
@@ -73,7 +73,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
    }
 
    @Override
-   public void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService) {
+   public void loadSource(OrcsDataHandler<IndexedResource> handler, Long tagQueueQueryId, OrcsTokenService tokenService) {
       int count = loadData(handler, tagQueueQueryId, tokenService);
       // Re-try in case query id hasn't been committed to the database
       int retry = 0;

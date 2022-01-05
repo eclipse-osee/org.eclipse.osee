@@ -27,12 +27,12 @@ public class IndexerStatisticsCollectorImpl extends IndexerCollectorAdapter {
    }
 
    @Override
-   public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
+   public void onIndexTaskComplete(Long indexerId, long waitTime, long processingTime) {
       statistics.addIndexerTask(indexerId, waitTime, processingTime);
    }
 
    @Override
-   public void onIndexItemComplete(int indexerId, long itemId, int totalTags, long processingTime) {
+   public void onIndexItemComplete(Long indexerId, long itemId, int totalTags, long processingTime) {
       statistics.addIndexerItem(indexerId, itemId, totalTags, processingTime);
    }
 }

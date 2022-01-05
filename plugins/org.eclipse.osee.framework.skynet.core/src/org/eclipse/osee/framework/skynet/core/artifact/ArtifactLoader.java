@@ -177,7 +177,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, BranchToken branch, boolean isArchived) {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, Long queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, BranchToken branch, boolean isArchived) {
       OseeSql sqlKey;
       boolean historical = transactionId.isValid();
 
@@ -337,7 +337,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) {
+   private static void loadArtifactsData(Long queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) {
       if (reload == LoadType.RELOAD_CACHE) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();

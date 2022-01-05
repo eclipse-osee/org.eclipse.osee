@@ -18,17 +18,17 @@ package org.eclipse.osee.orcs.search;
  */
 public interface IndexerCollector {
 
-   void onIndexTaskError(int indexerId, Throwable throwable);
+   void onIndexTaskError(Long indexerId, Throwable throwable);
 
    void onIndexTaskTotalToProcess(int totalIndexTasks);
 
-   void onIndexTaskSubmit(int indexerId);
+   void onIndexTaskSubmit(Long indexerId);
 
-   void onIndexTaskComplete(int indexerId, long waitTime, long processingTime);
+   void onIndexTaskComplete(Long indexerId, long waitTime, long processingTime);
 
-   void onIndexItemAdded(int indexerId, long itemId, String word, long codedTag);
+   void onIndexItemAdded(Long indexerId, long itemId, String word, long codedTag);
 
-   void onIndexItemComplete(int indexerId, long itemId, int totalTags, long processingTime);
+   void onIndexItemComplete(Long indexerId, long itemId, int totalTags, long processingTime);
 
    void onIndexTotalTaskItems(long totalItems);
 }

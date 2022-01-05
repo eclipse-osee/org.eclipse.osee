@@ -31,7 +31,7 @@ public class CriteriaOrcsLoad extends Criteria {
       this.relationCriteria = relationCriteria;
    }
 
-   public void setQueryId(int id) {
+   public void setQueryId(Long id) {
       artifactCriteria.setQueryId(id);
       attributeCriteria.setQueryId(id);
       relationCriteria.setQueryId(id);

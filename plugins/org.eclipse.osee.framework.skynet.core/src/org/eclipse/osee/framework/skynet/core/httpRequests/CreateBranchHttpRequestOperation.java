@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -39,17 +40,17 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final String branchName;
    private final ArtifactId associatedArtifact;
    private final String creationComment;
-   private final int mergeAddressingQueryId;
+   private final Long mergeAddressingQueryId;
    private final BranchId destinationBranch;
    private BranchToken newBranch;
    private boolean txCopyBranchType;
    private final BranchId branch;
 
    public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, BranchToken branch, ArtifactId associatedArtifact, String creationComment) {
-      this(branchType, parentTransaction, branch, associatedArtifact, creationComment, -1, BranchId.SENTINEL);
+      this(branchType, parentTransaction, branch, associatedArtifact, creationComment, Id.SENTINEL, BranchId.SENTINEL);
    }
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, BranchToken branch, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, BranchToken branch, ArtifactId associatedArtifact, String creationComment, Long mergeAddressingQueryId, BranchId destinationBranch) {
       super("Create branch " + branch.getName(), Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;

@@ -34,7 +34,7 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
    private static final Random random = new Random();
 
    private final JoinItem joinItem;
-   private final int queryId;
+   private final Long queryId;
    private final JdbcClient jdbcClient;
    private final JdbcConnection connection;
    private final OseePreparedStatement addressing;
@@ -42,7 +42,7 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
 
    protected AbstractJoinQuery(JoinItem joinItem, JdbcClient jdbcClient, JdbcConnection connection) {
       this.joinItem = joinItem;
-      this.queryId = random.nextInt();
+      this.queryId = random.nextLong();
       this.jdbcClient = jdbcClient;
       this.connection = connection;
       this.addressing = jdbcClient.getBatchStatement(connection, joinItem.getInsertSql());
@@ -56,7 +56,7 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
       return addressing.size();
    }
 
-   public int getQueryId() {
+   public Long getQueryId() {
       return queryId;
    }
 
@@ -89,10 +89,10 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
       }
    }
 
-   public Collection<Integer> getAllQueryIds() {
-      Collection<Integer> queryIds = new ArrayList<>();
+   public Collection<Long> getAllQueryIds() {
+      Collection<Long> queryIds = new ArrayList<>();
       String query = String.format(SELECT_QUERY_IDS, joinItem.getJoinTableName());
-      jdbcClient.runQuery(connection, stmt -> queryIds.add(stmt.getInt("query_id")), query);
+      jdbcClient.runQuery(connection, stmt -> queryIds.add(stmt.getLong("query_id")), query);
       return queryIds;
    }
 

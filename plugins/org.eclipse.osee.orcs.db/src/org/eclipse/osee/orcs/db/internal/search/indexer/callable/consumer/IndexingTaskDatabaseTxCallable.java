@@ -51,7 +51,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private final IndexedResourceLoader loader;
    private final TaggingEngine taggingEngine;
    private final IndexerCollector collector;
-   private final int tagQueueQueryId;
+   private final Long tagQueueQueryId;
    private final boolean isCacheAll;
    private final int cacheLimit;
    private final OrcsTokenService tokenService;
@@ -60,7 +60,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private long startTime;
    private long waitTime;
 
-   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, OrcsTokenService tokenService) {
+   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, Long tagQueueQueryId, boolean isCacheAll, int cacheLimit, OrcsTokenService tokenService) {
       super(logger, session, jdbcClient);
       waitStartTime = System.currentTimeMillis();
 
@@ -73,7 +73,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       this.tokenService = tokenService;
    }
 
-   public int getTagQueueQueryId() {
+   public Long getTagQueueQueryId() {
       return tagQueueQueryId;
    }
 

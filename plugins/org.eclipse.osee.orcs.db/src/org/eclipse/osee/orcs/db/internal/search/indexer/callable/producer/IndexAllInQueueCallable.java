@@ -33,7 +33,7 @@ public final class IndexAllInQueueCallable extends AbstractDatastoreCallable<Int
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
    private final OrcsTokenService tokenService;
-   private Collection<Integer> queryIds;
+   private Collection<Long> queryIds;
 
    public IndexAllInQueueCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, OrcsTokenService tokenService, IndexingTaskConsumer consumer, IndexerCollector collector) {
       super(logger, session, service);
@@ -49,7 +49,7 @@ public final class IndexAllInQueueCallable extends AbstractDatastoreCallable<Int
       queryIds = joinQuery.getAllQueryIds();
 
       getLogger().info("Submitting - [%d] index tasks from queue", queryIds.size());
-      for (Integer queryId : queryIds) {
+      for (Long queryId : queryIds) {
          consumer.submitTaskId(getSession(), tokenService, collector, queryId);
       }
       return queryIds.size();

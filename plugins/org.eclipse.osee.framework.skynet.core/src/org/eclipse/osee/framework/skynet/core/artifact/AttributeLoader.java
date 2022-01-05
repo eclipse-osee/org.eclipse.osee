@@ -45,7 +45,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived, OrcsTokenService tokenservice) {
+   static void loadAttributeData(Long queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived, OrcsTokenService tokenservice) {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }

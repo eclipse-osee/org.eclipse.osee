@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -135,7 +136,7 @@ public class BranchDataFactoryTest {
       assertEquals(comment, actual.getCreationComment());
       assertEquals(fromTx, actual.getFromTransaction());
 
-      assertEquals(-1, actual.getMergeAddressingQueryId());
+      assertEquals(Id.SENTINEL, actual.getMergeAddressingQueryId());
       assertEquals(BranchId.SENTINEL, actual.getMergeDestinationBranchId());
 
       assertEquals(associatedArtifact, actual.getAssociatedArtifact());

@@ -36,7 +36,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 class RelationLoader {
 
-   public static void loadRelationData(int joinQueryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel, OrcsTokenService tokenservice) {
+   public static void loadRelationData(Long joinQueryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel, OrcsTokenService tokenservice) {
       if (loadLevel == ARTIFACT_DATA || loadLevel == ARTIFACT_AND_ATTRIBUTE_DATA) {
          return;
       }

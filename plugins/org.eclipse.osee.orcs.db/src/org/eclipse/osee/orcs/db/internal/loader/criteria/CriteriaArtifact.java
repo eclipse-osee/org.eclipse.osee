@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.loader.criteria;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 
 /**
@@ -20,18 +21,18 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  */
 public class CriteriaArtifact extends Criteria {
 
-   private int id;
+   private Long id;
 
    public CriteriaArtifact() {
       super();
-      this.id = -1;
+      this.id = Id.SENTINEL;
    }
 
-   public int getQueryId() {
+   public Long getQueryId() {
       return id;
    }
 
-   protected void setQueryId(int id) {
+   protected void setQueryId(Long id) {
       this.id = id;
    }
 

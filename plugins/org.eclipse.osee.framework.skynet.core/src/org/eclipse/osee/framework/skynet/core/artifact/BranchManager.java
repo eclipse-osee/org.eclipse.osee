@@ -562,7 +562,7 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
-   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, Artifact associatedArtifact, String creationComment, Long mergeAddressingQueryId, BranchId destinationBranch) {
       CreateBranchHttpRequestOperation operation =
          new CreateBranchHttpRequestOperation(branchType, parentTransaction, BranchToken.create(branchName),
             associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranch);

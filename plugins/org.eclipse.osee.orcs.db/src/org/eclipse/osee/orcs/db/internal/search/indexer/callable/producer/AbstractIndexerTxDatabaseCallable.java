@@ -39,7 +39,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    private final IndexerCollector collector;
    private final int cacheLimit;
    private final boolean isCacheAll;
-   private final List<Integer> queryIds;
+   private final List<Long> queryIds;
    private final IndexingTaskConsumer consumer;
    private TagQueueJoinQuery currentJoinQuery;
    private boolean isOkToDispatch;
@@ -82,9 +82,9 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       isOkToDispatch = false;
       if (collector != null) {
          if (queryIds.isEmpty()) {
-            collector.onIndexTaskError(-2, ex);
+            collector.onIndexTaskError(-2L, ex);
          } else {
-            for (Integer queryId : queryIds) {
+            for (Long queryId : queryIds) {
                collector.onIndexTaskError(queryId, ex);
             }
          }
@@ -95,7 +95,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    protected void handleTxFinally() {
       super.handleTxFinally();
       if (isOkToDispatch && !queryIds.isEmpty()) {
-         for (int queryId : queryIds) {
+         for (Long queryId : queryIds) {
             try {
                Future<?> future = consumer.submitTaskId(getSession(), tokenService, collector, queryId);
                futures.add(future);
