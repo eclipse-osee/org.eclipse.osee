@@ -56,8 +56,8 @@ import org.mockito.stubbing.Answer;
  */
 public class TransactionWriterTest {
 
-   private static final int QUERY_ID_1 = 88;
-   private static final int QUERY_ID_2 = 89;
+   private static final Long QUERY_ID_1 = 88L;
+   private static final Long QUERY_ID_2 = 89L;
 
    private static final long TX_1 = 51;
    private static final long TX_2 = 52;
@@ -99,8 +99,8 @@ public class TransactionWriterTest {
       joins.put(SqlOrderEnum.ARTIFACTS, join1);
       joins.put(SqlOrderEnum.ATTRIBUTES, join2);
 
-      when(join1.getQueryId()).thenReturn(QUERY_ID_1);
-      when(join2.getQueryId()).thenReturn(QUERY_ID_2);
+      when(join1.getQueryId()).thenReturn(Long.valueOf(QUERY_ID_1));
+      when(join2.getQueryId()).thenReturn(Long.valueOf(QUERY_ID_2));
 
       when(tx.getBranch()).thenReturn(COMMON);
       when(builder.getBinaryStores()).thenReturn(stores);

@@ -19,7 +19,7 @@ package org.eclipse.osee.orcs.search;
 public class IndexerCollectorAdapter implements IndexerCollector {
 
    @Override
-   public void onIndexTaskError(int indexerId, Throwable throwable) {
+   public void onIndexTaskError(Long indexerId, Throwable throwable) {
       // Empty
    }
 
@@ -29,22 +29,22 @@ public class IndexerCollectorAdapter implements IndexerCollector {
    }
 
    @Override
-   public void onIndexTaskSubmit(int indexerId) {
+   public void onIndexTaskSubmit(Long indexerId) {
       // Empty
    }
 
    @Override
-   public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
+   public void onIndexTaskComplete(Long indexerId, long waitTime, long processingTime) {
       // Empty
    }
 
    @Override
-   public void onIndexItemAdded(int indexerId, long itemId, String word, long codedTag) {
+   public void onIndexItemAdded(Long indexerId, long itemId, String word, long codedTag) {
       // Empty
    }
 
    @Override
-   public void onIndexItemComplete(int indexerId, long itemId, int totalTags, long processingTime) {
+   public void onIndexItemComplete(Long indexerId, long itemId, int totalTags, long processingTime) {
       // Empty
    }
 

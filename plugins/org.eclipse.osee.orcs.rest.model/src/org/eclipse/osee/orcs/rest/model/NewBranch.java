@@ -28,7 +28,7 @@ public class NewBranch {
    private BranchType branchType;
    private TransactionToken sourceTransaction;
    private String creationComment;
-   private int mergeAddressingQueryId;
+   private Long mergeAddressingQueryId;
    private BranchId mergeDestinationBranchId;
    private boolean txCopyBranchType;
 
@@ -56,7 +56,7 @@ public class NewBranch {
       return creationComment;
    }
 
-   public int getMergeAddressingQueryId() {
+   public Long getMergeAddressingQueryId() {
       return mergeAddressingQueryId;
    }
 
@@ -92,7 +92,7 @@ public class NewBranch {
       this.creationComment = creationComment;
    }
 
-   public void setMergeAddressingQueryId(int mergeAddressingQueryId) {
+   public void setMergeAddressingQueryId(Long mergeAddressingQueryId) {
       this.mergeAddressingQueryId = mergeAddressingQueryId;
    }
 

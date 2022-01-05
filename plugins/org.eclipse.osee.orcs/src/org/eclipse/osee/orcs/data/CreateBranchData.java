@@ -19,13 +19,14 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CreateBranchData {
    private final BranchId MERGE_DESTINATION_BRANCH_ID = BranchId.SENTINEL; // only used on merge branches
-   private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
+   private final Long MERGE_ADDRESSING_QUERY_ID = Id.SENTINEL; // only used on merge branches
 
    private String branchName;
    private final BranchId branch;
@@ -36,7 +37,7 @@ public class CreateBranchData {
    private ArtifactId associatedArtifact;
 
    // Merge Branch Legacy Support
-   private int mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
+   private Long mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
    private BranchId mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
 
    private boolean txCopyBranchType = false;
@@ -104,11 +105,11 @@ public class CreateBranchData {
       this.associatedArtifact = associatedArtifact;
    }
 
-   public int getMergeAddressingQueryId() {
+   public Long getMergeAddressingQueryId() {
       return mergeAddressingQueryId;
    }
 
-   public void setMergeAddressingQueryId(int mergeAddressingQueryId) {
+   public void setMergeAddressingQueryId(Long mergeAddressingQueryId) {
       this.mergeAddressingQueryId = mergeAddressingQueryId;
    }
 

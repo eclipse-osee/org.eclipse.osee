@@ -87,7 +87,7 @@ public class BranchEndpointTest {
       data.setBranchName("TestBranch");
       data.setBranchType(BranchType.WORKING);
       data.setCreationComment("For Test");
-      data.setMergeAddressingQueryId(0);
+      data.setMergeAddressingQueryId(0L);
       data.setMergeDestinationBranchId(null);
       data.setParentBranchId(branchToken);
       data.setSourceTransactionId(TransactionManager.getHeadTransaction(branchToken));

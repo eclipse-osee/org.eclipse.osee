@@ -26,19 +26,19 @@ import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
  */
 public class TagCollectorImpl extends IndexerCollectorAdapter {
 
-   private volatile Map<Integer, Throwable> tagErrors;
-   private volatile Set<Integer> queryIds;
+   private volatile Map<Long, Throwable> tagErrors;
+   private volatile Set<Long> queryIds;
    private volatile boolean wasProcessed;
    private volatile int expectedTotal;
    private final AtomicInteger queryCount = new AtomicInteger();
    private final AtomicInteger attributeCount = new AtomicInteger();
 
    public TagCollectorImpl() {
-      this.queryIds = Collections.synchronizedSet(new HashSet<Integer>());
+      this.queryIds = Collections.synchronizedSet(new HashSet<Long>());
       this.wasProcessed = false;
       this.queryCount.set(0);
       this.attributeCount.set(0);
-      this.tagErrors = Collections.synchronizedMap(new HashMap<Integer, Throwable>());
+      this.tagErrors = Collections.synchronizedMap(new HashMap<Long, Throwable>());
    }
 
    public boolean wasProcessed() {
@@ -57,7 +57,7 @@ public class TagCollectorImpl extends IndexerCollectorAdapter {
       return queryCount.get();
    }
 
-   public Map<Integer, Throwable> getTagErrors() {
+   public Map<Long, Throwable> getTagErrors() {
       return tagErrors;
    }
 
@@ -67,27 +67,27 @@ public class TagCollectorImpl extends IndexerCollectorAdapter {
    }
 
    @Override
-   synchronized public void onIndexTaskError(int queryId, Throwable throwable) {
+   synchronized public void onIndexTaskError(Long queryId, Throwable throwable) {
       tagErrors.put(queryId, throwable);
       this.wasProcessed = true;
       this.notify();
    }
 
    @Override
-   synchronized public void onIndexTaskSubmit(int queryId) {
+   synchronized public void onIndexTaskSubmit(Long queryId) {
       queryCount.incrementAndGet();
       queryIds.add(queryId);
    }
 
    @Override
-   public void onIndexItemComplete(int queryId, long gammaId, int totalTags, long processingTime) {
+   public void onIndexItemComplete(Long queryId, long gammaId, int totalTags, long processingTime) {
       if (this.queryIds.contains(queryId)) {
          attributeCount.incrementAndGet();
       }
    }
 
    @Override
-   synchronized public void onIndexTaskComplete(int queryId, long waitTime, long processingTime) {
+   synchronized public void onIndexTaskComplete(Long queryId, long waitTime, long processingTime) {
       if (this.queryIds.contains(queryId)) {
          this.queryIds.remove(queryId);
          if (this.queryIds.isEmpty() && queryCount.get() == expectedTotal) {

@@ -22,6 +22,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
  */
 public interface IndexedResourceLoader {
 
-   void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService);
+   void loadSource(OrcsDataHandler<IndexedResource> handler, Long tagQueueQueryId, OrcsTokenService tokenService);
 
 }

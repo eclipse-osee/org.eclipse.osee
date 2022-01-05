@@ -48,7 +48,7 @@ public class IndexerCollectorNotifier implements IndexerCollector {
    }
 
    @Override
-   public void onIndexTaskError(int indexerId, Throwable throwable) {
+   public void onIndexTaskError(Long indexerId, Throwable throwable) {
       for (IndexerCollector collector : listeners) {
          try {
             collector.onIndexTaskError(indexerId, throwable);
@@ -70,7 +70,7 @@ public class IndexerCollectorNotifier implements IndexerCollector {
    }
 
    @Override
-   public void onIndexTaskSubmit(int indexerId) {
+   public void onIndexTaskSubmit(Long indexerId) {
       for (IndexerCollector collector : listeners) {
          try {
             collector.onIndexTaskSubmit(indexerId);
@@ -81,7 +81,7 @@ public class IndexerCollectorNotifier implements IndexerCollector {
    }
 
    @Override
-   public void onIndexTaskComplete(int indexerId, long waitTime, long processingTime) {
+   public void onIndexTaskComplete(Long indexerId, long waitTime, long processingTime) {
       for (IndexerCollector collector : listeners) {
          try {
             collector.onIndexTaskComplete(indexerId, waitTime, processingTime);
@@ -92,7 +92,7 @@ public class IndexerCollectorNotifier implements IndexerCollector {
    }
 
    @Override
-   public void onIndexItemAdded(int indexerId, long itemId, String word, long codedTag) {
+   public void onIndexItemAdded(Long indexerId, long itemId, String word, long codedTag) {
       for (IndexerCollector collector : listeners) {
          try {
             collector.onIndexItemAdded(indexerId, itemId, word, codedTag);
@@ -103,7 +103,7 @@ public class IndexerCollectorNotifier implements IndexerCollector {
    }
 
    @Override
-   public void onIndexItemComplete(int indexerId, long itemId, int totalTags, long processingTime) {
+   public void onIndexItemComplete(Long indexerId, long itemId, int totalTags, long processingTime) {
       for (IndexerCollector collector : listeners) {
          try {
             collector.onIndexItemComplete(indexerId, itemId, totalTags, processingTime);

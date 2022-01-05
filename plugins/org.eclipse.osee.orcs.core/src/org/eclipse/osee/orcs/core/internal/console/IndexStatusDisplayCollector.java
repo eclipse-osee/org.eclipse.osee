@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
 public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    private final int DEFAULT_STATS_PRINT_FREQUENCY = 1000;
 
-   private final List<Integer> taskIds = new CopyOnWriteArrayList<>();
+   private final List<Long> taskIds = new CopyOnWriteArrayList<>();
    private int attributesProcessed;
    private int queriesProcessed;
    private final long startTime;
@@ -63,7 +63,7 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    }
 
    @Override
-   public void onIndexTaskSubmit(int indexerId) {
+   public void onIndexTaskSubmit(Long indexerId) {
       taskIds.add(indexerId);
    }
 
@@ -83,7 +83,7 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    }
 
    @Override
-   public void onIndexItemComplete(int queryId, long gammaId, int totalTags, long processingTime) {
+   public void onIndexItemComplete(Long queryId, long gammaId, int totalTags, long processingTime) {
       if (taskIds.contains(queryId)) {
          attributesProcessed++;
          if (attributesProcessed % statsPrintFrequency == 0) {
@@ -93,8 +93,8 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    }
 
    @Override
-   synchronized public void onIndexTaskComplete(int queryId, long waitTime, long processingTime) {
-      taskIds.remove((Integer) queryId);
+   synchronized public void onIndexTaskComplete(Long queryId, long waitTime, long processingTime) {
+      taskIds.remove(queryId);
       queriesProcessed++;
       if (taskIds.isEmpty()) {
          console.writeln("QueryIds: [ %d of %d] Attributes: [%d of %d] - Elapsed Time = %s.", queriesProcessed,
@@ -106,7 +106,7 @@ public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    }
 
    @Override
-   public void onIndexItemAdded(int indexerId, long itemId, String word, long codedTag) {
+   public void onIndexItemAdded(Long indexerId, long itemId, String word, long codedTag) {
       if (printTags) {
          console.writeln("indexerId:[%s] itemId:[%s] word:[%s] tag:[%s]", indexerId, itemId, word, codedTag);
       }

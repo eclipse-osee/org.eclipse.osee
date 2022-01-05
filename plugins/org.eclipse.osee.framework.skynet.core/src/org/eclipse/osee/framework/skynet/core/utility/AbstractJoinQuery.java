@@ -43,7 +43,7 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
 
    protected AbstractJoinQuery(JoinItem joinItem, JdbcClient jdbcClient, JdbcConnection connection) {
       this.joinItem = joinItem;
-      this.queryId = Long.valueOf(random.nextInt());
+      this.queryId = random.nextLong();
       this.addressing = jdbcClient.getBatchStatement(connection, joinItem.getInsertSql());
       this.jdbcClient = jdbcClient;
       this.connection = connection;
@@ -57,8 +57,8 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
       return addressing.size();
    }
 
-   public int getQueryId() {
-      return queryId.intValue();
+   public Long getQueryId() {
+      return queryId.longValue();
    }
 
    public void store() {

@@ -167,7 +167,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       }
    }
 
-   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, int queryId, BranchId sourceBranch, BranchId mergeBranch) {
+   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, Long queryId, BranchId sourceBranch, BranchId mergeBranch) {
       getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxCurrent.CURRENT, mergeBranch, sourceBranch, queryId);
    }
 

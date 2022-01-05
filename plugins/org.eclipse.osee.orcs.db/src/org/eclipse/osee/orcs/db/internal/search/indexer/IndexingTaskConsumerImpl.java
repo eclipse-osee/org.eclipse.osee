@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
-   private final Map<Integer, Future<?>> futureTasks = new ConcurrentHashMap<>();
+   private final Map<Long, Future<?>> futureTasks = new ConcurrentHashMap<>();
 
    private final IndexerCallableFactory factory;
    private final ExecutorAdmin executorAdmin;
@@ -40,9 +40,9 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
    }
 
    @Override
-   public int cancelTaskId(Collection<Integer> taskIds) {
-      int toReturn = 0;
-      for (int item : taskIds) {
+   public Long cancelTaskId(Collection<Long> taskIds) {
+      Long toReturn = 0L;
+      for (Long item : taskIds) {
          Future<?> task = futureTasks.get(item);
          if (task != null && !task.isDone() && !task.isCancelled()) {
             if (task.cancel(true)) {
@@ -60,7 +60,7 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final int queryId) throws Exception {
+   public Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final Long queryId) throws Exception {
       Callable<?> callable = factory.createIndexerTaskCallable(session, tokenService, collector, queryId);
       if (collector != null) {
          collector.onIndexTaskSubmit(queryId);

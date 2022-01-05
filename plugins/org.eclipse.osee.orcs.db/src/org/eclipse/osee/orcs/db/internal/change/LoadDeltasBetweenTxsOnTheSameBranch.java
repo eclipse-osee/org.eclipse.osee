@@ -190,7 +190,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       return list;
    }
 
-   private void loadCurrentVersionData(int queryId, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionToken transactionLimit) {
+   private void loadCurrentVersionData(Long queryId, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionToken transactionLimit) {
 
       Consumer<JdbcStatement> consumer = stmt -> {
          Long itemId = stmt.getLong("item_id");

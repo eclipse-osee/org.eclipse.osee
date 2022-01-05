@@ -149,7 +149,7 @@ public class GraphLoader {
       target.setSourceTx(source);
    }
 
-   private static List<TxData> getTxData(int queryId) {
+   private static List<TxData> getTxData(Long queryId) {
       List<TxData> txDatas = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {

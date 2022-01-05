@@ -153,7 +153,7 @@ public class IndexerStatisticsImpl implements Cloneable, IndexerStatistics {
       this.indexerData = indexerData;
    }
 
-   public void addIndexerItem(int queryId, long gammaId, int totalTags, long processingTime) {
+   public void addIndexerItem(Long queryId, long gammaId, int totalTags, long processingTime) {
       this.totalTags += totalTags;
       this.totalAttributesProcessed++;
       this.totalAttributeProcessingTime += processingTime;
@@ -168,7 +168,7 @@ public class IndexerStatisticsImpl implements Cloneable, IndexerStatistics {
       }
    }
 
-   public void addIndexerTask(int queryId, long waitTime, long processingTime) {
+   public void addIndexerTask(Long queryId, long waitTime, long processingTime) {
       this.totalQueryIdsProcessed++;
       this.totalQueryIdWaitTime += waitTime;
       this.totalQueryIdProcessingTime += processingTime;

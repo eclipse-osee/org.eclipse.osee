@@ -24,10 +24,10 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public interface IndexingTaskConsumer {
 
-   int cancelTaskId(Collection<Integer> taskIds);
+   Long cancelTaskId(Collection<Long> taskIds);
 
    int getWorkersInQueue();
 
-   Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final int queryId) throws Exception;
+   Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final Long queryId) throws Exception;
 
 }
