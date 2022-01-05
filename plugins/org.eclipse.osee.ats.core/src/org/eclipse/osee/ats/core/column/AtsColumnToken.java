@@ -84,6 +84,7 @@ public class AtsColumnToken {
    public static AtsAttrVaCol PriorityColumn = new AtsAttrVaCol(AtsAttributeTypes.Priority, AtsColumnId.Priority.getId(), AtsAttributeTypes.Priority.getUnqualifiedName(), 20, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
    public static AtsAttrVaCol TitleColumn = new AtsAttrVaCol(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
    public static AtsAttrVaCol UnPlannedWorkColumn = new AtsAttrVaCol(AtsAttributeTypes.UnplannedWork, AtsColumnId.UnPlannedWork.getId(), AtsAttributeTypes.UnplannedWork.getUnqualifiedName(), 20, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrVaCol CrashOrBlankDisplay = new AtsAttrVaCol(AtsAttributeTypes.CrashOrBlankDisplay, AtsColumnId.CrashOrBlankDisplay.getId(), AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
 
    // @formatter:on
 }

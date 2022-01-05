@@ -23,6 +23,10 @@ public class DisplayHint extends NamedIdBase {
    public static DisplayHint MultiLine = new DisplayHint(2L, "Multiline");
    public static DisplayHint NoGeneralEdit = new DisplayHint(3L, "No General Edit");
    public static DisplayHint NoGeneralRender = new DisplayHint(4L, "No General Render");
+   // Stores true/false for boolean but shows Yes/No in display and edit; Not valid for anything but boolean
+   public static DisplayHint YesNoBoolean = new DisplayHint(5L, "Show Yes/No for Boolean Value");
+   // Allows for true/false/clear and yes/no/clear in display and edit; Not valid for anything but boolean
+   public static DisplayHint TriStateBoolean = new DisplayHint(6L, "Allow for Clear in Boolean");
 
    private DisplayHint(Long id, String name) {
       super(id, name);

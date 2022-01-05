@@ -93,7 +93,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was created.");
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", MediaType.TEXT_PLAIN, "Current state of workflow state machine.");
    AttributeTypeString CurrentStateType = ats.createString(1152921504606847147L, "ats.Current State Type", MediaType.TEXT_PLAIN, "Type of Current State: InWork, Completed or Cancelled.");
-   AttributeTypeBoolean CrashOrBlankDisplay = ats.createBoolean(1601107563L, "ats.Crash or Blank Display", MediaType.TEXT_PLAIN, "F/A-18 E/F, G crash OR cockpit displays are blank");
+   AttributeTypeBoolean CrashOrBlankDisplay = ats.createBoolean(1601107563L, "ats.Crash or Blank Display", MediaType.TEXT_PLAIN, "Crash OR cockpit displays are blank", DisplayHint.YesNoBoolean);
    AttributeTypeString Decision = ats.createString(1152921504606847221L, "ats.Decision", MediaType.TEXT_PLAIN, "Option selected during decision review.");
    AttributeTypeString DecisionReviewOptions = ats.createString(1152921504606847220L, "ats.Decision Review Options", MediaType.TEXT_PLAIN, "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>\")");
    AttributeTypeBoolean Default = ats.createBoolean(1152921875139002538L, "ats.Default", MediaType.TEXT_PLAIN, "Default");

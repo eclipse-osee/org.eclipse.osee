@@ -98,10 +98,34 @@ public class AtsColumnService implements IAtsColumnService {
 
       // Add from coded columns; this will only happen once per column as they're cached after this check
       if (column == null) {
-         if (id.equals(AtsColumnId.ActionableItem.getId())) {
-            column = new ActionableItemsColumn(atsApi);
-         } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
+
+         /**
+          * If possible, this is the preferred method of providing column handling if just showing attr value(s). This
+          * method uses the token values to perform all the ways of displaying, rollup and edit funcionality.
+          */
+         if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, atsApi);
+         } else if (id.equals(AtsColumnId.ChangeType.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, atsApi);
+         } else if (id.equals(AtsColumnId.Notes.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, atsApi);
+         } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, atsApi);
+         } else if (id.equals(AtsColumnId.Priority.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, atsApi);
+         } else if (id.equals(AtsColumnId.UnPlannedWork.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, atsApi);
+         } else if (id.equals(AtsColumnId.CrashOrBlankDisplay.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.CrashOrBlankDisplay, atsApi);
+         }
+
+         /**
+          * Only create a new column class when you can't use the default AtsAttributeValueColumnHandler above. A good
+          * example is Assignees where portions of attr values need to be extracted and then the user resolved to
+          * display.
+          */
+         else if (id.equals(AtsColumnId.ActionableItem.getId())) {
+            column = new ActionableItemsColumn(atsApi);
          } else if (id.equals(AtsColumnId.Team.getId())) {
             column = new TeamColumn(atsApi);
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
@@ -114,8 +138,6 @@ public class AtsColumnService implements IAtsColumnService {
             column = new WorkPackageColumn(atsApi.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.Implementers.getId())) {
             column = new ImplementerColumn(atsApi);
-         } else if (id.equals(AtsColumnId.ChangeType.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, atsApi);
          } else if (id.equals(AtsColumnId.CreatedDate.getId())) {
             column = new CreatedDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedDate.getId())) {
@@ -136,22 +158,16 @@ public class AtsColumnService implements IAtsColumnService {
             column = new CompletedCancelledByColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedCancelledDate.getId())) {
             column = new CompletedCancelledDateColumn(atsApi);
-         } else if (id.equals(AtsColumnId.Notes.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, atsApi);
          } else if (id.equals(AtsColumnId.State.getId())) {
             column = new StateColumn(atsApi);
          } else if (id.equals(AtsColumnId.Name.getId()) || id.equals(AtsColumnId.Title.getId())) {
             column = new TitleColumn(atsApi);
          } else if (id.equals(AtsColumnId.Type.getId())) {
             column = new TypeColumn(atsApi);
-         } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, atsApi);
          } else if (id.equals(AtsColumnId.PercentCompleteTasks.getId())) {
             column = new PercentCompleteTasksColumn(atsApi);
          } else if (id.equals(AtsColumnId.Id.getId())) {
             column = new IdColumn(atsApi);
-         } else if (id.equals(AtsColumnId.Priority.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, atsApi);
          } else if (id.equals(AtsColumnId.WorkDefinition.getId())) {
             column = new WorkDefinitionColumn(atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
@@ -172,8 +188,6 @@ public class AtsColumnService implements IAtsColumnService {
             column = new TargetedVersionColumn(atsApi);
          } else if (id.equals(AtsColumnId.FoundInVersion.getId())) {
             column = new FoundInVersionColumn(atsApi);
-         } else if (id.equals(AtsColumnId.UnPlannedWork.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnId.SprintOrder.getId())) {
             column = new SprintOrderColumn(atsApi);
          } else if (id.equals(AtsColumnId.AgileTeamPoints.getId())) {

@@ -65,6 +65,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public static final XViewerColumn[] getWorldViewColumns() {
       return new XViewerColumn[] {
+
+         /**
+          * Default show columns in default order; don't change this order
+          */
          getColumnServiceColumn(AtsColumnToken.TypeColumn),
          getColumnServiceColumn(AtsColumnToken.StateColumn),
          PriorityColumnUI.getInstance(),
@@ -79,10 +83,35 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          FoundInVersionColumnUI.getInstance(),
          getColumnServiceColumn(AtsColumnToken.TeamColumn),
          getAttributeConfigColumn(AtsColumnToken.NotesColumn),
+
+         /**
+          * The rest are non-show columns by default; Order doesn't matter
+          */
+
+         /**
+          * These are default attribute columns; USE THIS METHOD IF POSSIBLEi; Normally this is if data can just be
+          * shown straight from attr
+          */
+         getAttributeConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
+         getAttributeConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
+         getAttributeConfigColumn(AtsColumnToken.CrashOrBlankDisplay),
+
+         /**
+          * These are computed columns where data is in multiple places and must be retrieved/loaded to be displayed
+          */
+         getColumnServiceColumn(AtsColumnToken.AtsIdColumn),
+         getColumnServiceColumn(AtsColumnToken.SiblingAtsIdsColumn),
+         getColumnServiceColumn(AtsColumnToken.InsertionColumn),
+         getColumnServiceColumn(AtsColumnToken.InsertionActivityColumn),
+         getColumnServiceColumn(AtsColumnToken.ParentTitleColumn),
+
+         /**
+          * This is the legacy way of providing columns. DO NOT USE THIS METHOD. These should eventually be converted to
+          * one of the above
+          */
          DeadlineColumn.getInstance(),
          AnnualCostAvoidanceColumn.getInstance(),
          DescriptionColumn.getInstance(),
-         getAttributeConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
          DecisionColumn.getInstance(),
          ResolutionColumn.getInstance(),
          GroupsColumn.getInstance(),
@@ -116,7 +145,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteStateTasksColumn.getInstance(),
          PercentCompleteStateReviewColumn.getInstance(),
          PercentCompleteTotalColumn.getInstance(),
-         getAttributeConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
          HoursSpentSMAStateColumn.getInstance(),
          HoursSpentStateTasksColumn.getInstance(),
          HoursSpentStateReviewColumn.getInstance(),
@@ -176,8 +204,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PagesReviewedColumn.getInstance(),
          ParentTopTeamColumnUI.getInstance(),
          ActionableItemOwner.getInstance(),
-         getColumnServiceColumn(AtsColumnToken.AtsIdColumn),
-         getColumnServiceColumn(AtsColumnToken.SiblingAtsIdsColumn),
          AgileFeatureGroupColumn.getInstance(),
          SprintOrderColumn.getInstance(),
          RemainingPointsNumericWorkflowColumn.getInstance(),
@@ -189,13 +215,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteTasksReviewsColumn.getInstance(),
          CountryColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
-         getColumnServiceColumn(AtsColumnToken.InsertionColumn),
-         getColumnServiceColumn(AtsColumnToken.InsertionActivityColumn),
          RelatedArtifactChangedColumn.getInstance(),
          RelatedArtifactLastModifiedByColumn.getInstance(),
          RelatedArtifactLastModifiedDateColumn.getInstance(),
          TaskRelatedArtifactTypeColumnUI.getInstance(),
-         getColumnServiceColumn(AtsColumnToken.ParentTitleColumn),
          new IdColumn(false),};
    }
 

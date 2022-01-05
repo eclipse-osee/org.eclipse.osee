@@ -13,28 +13,31 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
  */
 public class BooleanHandlePromptChange implements IHandlePromptChange {
-   private final MessageDialogWithToggle dialog;
+   private final MessageDialog dialog;
    private final Collection<? extends Artifact> artifacts;
    private final AttributeTypeId attributeType;
    private final boolean persist;
+   private boolean yesNoBoolean = false;
+   private boolean triStateBoolean = false;
+   private int response;
+   private int cancelButtonNum;
 
    public BooleanHandlePromptChange(Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, String displayName, boolean persist, String toggleMessage) {
       super();
@@ -42,40 +45,60 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
       this.attributeType = attributeType;
       this.persist = persist;
 
-      boolean set = false;
-      if (artifacts.size() == 1) {
-         try {
-            set = artifacts.iterator().next().getSoleAttributeValue(attributeType, false);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+      List<String> buttonLabels = new ArrayList<String>();
+      AttributeTypeGeneric<?> attrType = AttributeTypeManager.getAttributeType(attributeType.getId());
+      yesNoBoolean = attrType.getDisplayHints().contains(DisplayHint.YesNoBoolean);
+      triStateBoolean = attrType.getDisplayHints().contains(DisplayHint.YesNoBoolean);
+      cancelButtonNum = 0;
+      if (yesNoBoolean) {
+         buttonLabels.add("Yes");
+         buttonLabels.add("No");
+      } else {
+         buttonLabels.add("True");
+         buttonLabels.add("False");
       }
+      if (triStateBoolean) {
+         buttonLabels.add("Clear");
+         cancelButtonNum = 4;
+      } else {
+         cancelButtonNum = 3;
+      }
+      buttonLabels.add("Cancel");
 
-      this.dialog =
-         new MessageDialogWithToggle(Displays.getActiveShell(), displayName, null, displayName, MessageDialog.QUESTION,
-            new String[] {"Ok", "Cancel"}, Window.OK, toggleMessage != null ? toggleMessage : displayName, set);
+      dialog = new MessageDialog(Displays.getActiveShell(), displayName, null, toggleMessage, MessageDialog.QUESTION,
+         cancelButtonNum, buttonLabels.toArray(new String[buttonLabels.size()]));
    }
 
    @Override
    public boolean promptOk() {
-      int response = dialog.open();
-      return response == 256;
+      response = dialog.open();
+      return true;
    }
 
    @Override
    public boolean store() {
+      if (response == cancelButtonNum) {
+         return false;
+      }
+      SkynetTransaction transaction = null;
       if (persist) {
-         SkynetTransaction transaction =
+         transaction =
             TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");
-         for (Artifact artifact : artifacts) {
-            artifact.setSoleAttributeValue(attributeType, dialog.getToggleState());
+      }
+      for (Artifact artifact : artifacts) {
+         if (response == 0) {
+            artifact.setSoleAttributeValue(attributeType, true);
+         } else if (response == 1) {
+            artifact.setSoleAttributeValue(attributeType, false);
+         } else if (triStateBoolean) {
+            artifact.deleteAttributes(attributeType);
+         }
+         if (persist) {
             artifact.persist(transaction);
          }
+      }
+      if (persist) {
          transaction.execute();
-      } else {
-         for (Artifact artifact : artifacts) {
-            artifact.setSoleAttributeValue(attributeType, dialog.getToggleState());
-         }
       }
       return true;
    }

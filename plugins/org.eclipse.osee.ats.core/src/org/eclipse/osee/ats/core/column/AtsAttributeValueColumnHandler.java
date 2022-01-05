@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -58,7 +59,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       return actionRollup == null ? false : actionRollup;
    }
 
-   public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, boolean isInheritParent, AtsApi atsApi) {
+   public String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, boolean isInheritParent, AtsApi atsApi) {
       try {
          if (atsApi.getStoreService().isDeleted(atsObject)) {
             return "<deleted>";
@@ -67,6 +68,20 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
 
             AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(attrTypeId);
+
+            if (attributeType.getDisplayHints().contains(DisplayHint.YesNoBoolean)) {
+               if (atsApi.getAttributeResolver().isAttributeTypeValid((IAtsWorkItem) atsObject, attributeType)) {
+                  Boolean set = atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, attributeType, null);
+                  if (set == null) {
+                     return "";
+                  } else if (set) {
+                     return "Yes";
+                  } else {
+                     return "No";
+                  }
+               }
+            }
+
             String result = atsApi.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
             if (Strings.isValid(result)) {
                return result;
@@ -96,7 +111,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       return "";
    }
 
-   public static String getColumnText(IAtsObject atsObject, AttributeTypeToken attributeType, boolean isActionRollup, boolean inheritParent, AtsApi atsApi) {
+   public String getColumnText(IAtsObject atsObject, AttributeTypeToken attributeType, boolean isActionRollup, boolean inheritParent, AtsApi atsApi) {
       return getColumnText(atsObject, attributeType.getId(), isActionRollup, inheritParent, atsApi);
    }
 

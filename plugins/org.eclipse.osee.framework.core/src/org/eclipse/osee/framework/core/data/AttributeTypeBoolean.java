@@ -21,6 +21,10 @@ public final class AttributeTypeBoolean extends AttributeTypeGeneric<Boolean> {
       super(id, namespace, name, mediaType, description, taggerType, "", Boolean.FALSE);
    }
 
+   public AttributeTypeBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+      super(id, namespace, name, mediaType, description, taggerType, "", Boolean.FALSE, displayHints);
+   }
+
    @Override
    public boolean isBoolean() {
       return true;

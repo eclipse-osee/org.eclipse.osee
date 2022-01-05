@@ -39,7 +39,6 @@ public class AtsAttributeValueColumnFactory {
       col.setBooleanNotSetShow(inCol.getBooleanNotSetShow());
       col.setVisible(inCol.isShow());
       col.setWidth(inCol.getWidth());
-
       return col;
    }
 
