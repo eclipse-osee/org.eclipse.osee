@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -110,8 +112,24 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          if (element instanceof Artifact && AtsApiService.get().getQueryServiceIde().getArtifact(element).isDeleted()) {
             return "<deleted>";
          }
+
          if (isBooleanShow() && column.getSortDataType() == SortDataType.Boolean) {
             if (element instanceof AbstractWorkflowArtifact) {
+
+               if (attributeType.getDisplayHints().contains(DisplayHint.YesNoBoolean)) {
+                  if (AtsApiService.get().getAttributeResolver().isAttributeTypeValid((IAtsWorkItem) element,
+                     attributeType)) {
+                     Boolean set = AtsApiService.get().getAttributeResolver().getSoleAttributeValue((Artifact) element,
+                        attributeType, null);
+                     if (set == null) {
+                        return "";
+                     } else if (set) {
+                        return "Yes";
+                     } else {
+                        return "No";
+                     }
+                  }
+               }
                Boolean value = ((AbstractWorkflowArtifact) element).getSoleAttributeValue(getAttributeType(), null);
                if (value == null && booleanNotSetShow != null) {
                   return booleanNotSetShow;
@@ -169,7 +187,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    }
 
    private boolean isBooleanShow() {
-      return booleanOnFalseShow != null || booleanOnTrueShow != null || booleanNotSetShow != null;
+      return booleanOnFalseShow != null || booleanOnTrueShow != null || booleanNotSetShow != null || attributeType.getDisplayHints().contains(
+         DisplayHint.YesNoBoolean);
    }
 
    @Override

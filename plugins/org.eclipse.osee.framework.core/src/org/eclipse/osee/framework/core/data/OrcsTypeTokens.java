@@ -127,17 +127,17 @@ public class OrcsTypeTokens {
    /**
     * Methods for creating Boolean AttributeType
     */
-   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
       return attributeTypes.addAndReturn(
-         new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType));
+         new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType, displayHints));
    }
 
-   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description) {
-      return createBoolean(id, name, mediaType, description, determineTaggerType(mediaType));
+   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+      return createBoolean(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeBoolean createBooleanNoTag(Long id, String name, String mediaType, String description) {
-      return createBoolean(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   public @NonNull AttributeTypeBoolean createBooleanNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+      return createBoolean(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**

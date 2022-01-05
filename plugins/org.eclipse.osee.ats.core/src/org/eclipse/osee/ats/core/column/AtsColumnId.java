@@ -51,6 +51,7 @@ public enum AtsColumnId implements IAtsColumnId {
    CancelledReason("ats.column.cancelledReason"),
    CancelledReasonDetails("ats.column.cancelledReasonDetails"),
    CancelReason("ats.column.cancelReason"),
+   CrashOrBlankDisplay("ats.column.crash.or.blank.display"),
    AgileFeatureGroup("ats.column.agileFeatureGroup"),
    Insertion("ats.column.insertion"),
    InsertionActivity("ats.column.insertionActivity"),

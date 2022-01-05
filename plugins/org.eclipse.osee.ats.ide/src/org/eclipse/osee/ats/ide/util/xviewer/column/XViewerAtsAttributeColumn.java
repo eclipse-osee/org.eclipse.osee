@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttri
  */
 public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttributeColumn {
 
-   private AttributeTypeToken attributeType;
+   protected AttributeTypeToken attributeType;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
