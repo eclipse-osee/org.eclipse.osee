@@ -149,8 +149,13 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    @Override
    default String toStringWithId() {
-      return String.format("[%s]-[%s]-[%s]", getName(), getAtsId(), getIdString());
-
+      String atsId = "";
+      try {
+         atsId = getAtsId();
+      } catch (Exception ex) {
+         atsId = "Exception: " + ex.getLocalizedMessage();
+      }
+      return String.format("[%s]-[%s]-[%s]", getName(), atsId, getIdString());
    }
 
    @Override
