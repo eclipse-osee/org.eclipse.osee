@@ -421,17 +421,18 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       XResultData results = new XResultData();
       ArtifactToken featureArt = ArtifactToken.SENTINEL;
       TransactionBuilder tx = txFactory.createTransaction(branch, "Create Feature");
+      boolean changes = false;
       try {
          featureArt = createFeatureDefinition(feature, tx, results);
+
          if (featureArt.isValid()) {
-            tx.commit();
+            changes = true;
          }
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
       if (results.getNumErrors() == 0) {
          try {
-            boolean changes = false;
 
             /**
              * Adding tuples for ApplicabilityValueData (E1: ArtifactId - E2: ApplicabilityId)<br/>
@@ -455,12 +456,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                }
 
             }
-            if (changes) {
-               tx.commit();
-            }
+
          } catch (Exception ex) {
             results.error(Lib.exceptionToString(ex));
          }
+      }
+      if (changes) {
+         tx.commit();
       }
       return results;
    }
