@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -84,10 +84,10 @@ public class WorldXViewerUtil {
    }
 
    public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
-      List<AtsAttrVaCol> columns =
+      List<AtsAttrValCol> columns =
          AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns();
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
-      for (AtsAttrVaCol column : columns) {
+      for (AtsAttrValCol column : columns) {
          try {
             AttributeTypeToken attrType = null;
             try {

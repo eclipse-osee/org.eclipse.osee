@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.util.ColorColumns;
@@ -80,10 +80,10 @@ public class UpdateAtsConfiguration {
          for (String viewsJson : getViewsJsonStrings()) {
             AtsViews atsViews = jaxRsApi.readValue(viewsJson, AtsViews.class);
             // merge any new default view items to current database view items
-            List<AtsAttrVaCol> toAdd = new LinkedList<>();
-            for (AtsAttrVaCol defaultView : atsViews.getAttrColumns()) {
+            List<AtsAttrValCol> toAdd = new LinkedList<>();
+            for (AtsAttrValCol defaultView : atsViews.getAttrColumns()) {
                boolean found = false;
-               for (AtsAttrVaCol dbView : databaseViews.getAttrColumns()) {
+               for (AtsAttrValCol dbView : databaseViews.getAttrColumns()) {
                   boolean defaultViewNameValid =
                      Strings.isValid(dbView.getName()) && Strings.isValid(defaultView.getName());
                   if (defaultViewNameValid && dbView.getName().equals(defaultView.getName())) {

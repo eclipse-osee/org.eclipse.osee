@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 
@@ -32,7 +32,7 @@ public interface IAtsDatabaseTypeProvider {
 
    public Collection<ChangeType> getChangeTypeValues();
 
-   AtsAttrVaCol getPrioirtyColumnToken();
+   AtsAttrValCol getPrioirtyColumnToken();
 
    default public String[] getChangeTypeArray() {
       List<String> values = new ArrayList<>();

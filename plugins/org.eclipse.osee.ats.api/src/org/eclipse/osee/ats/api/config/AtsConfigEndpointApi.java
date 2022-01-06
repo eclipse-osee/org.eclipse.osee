@@ -92,7 +92,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("genAttrTypeViews")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<AtsAttrVaCol> generateAttrTypeViews() throws Exception;
+   public List<AtsAttrValCol> generateAttrTypeViews() throws Exception;
 
    @GET
    @Path("alive")

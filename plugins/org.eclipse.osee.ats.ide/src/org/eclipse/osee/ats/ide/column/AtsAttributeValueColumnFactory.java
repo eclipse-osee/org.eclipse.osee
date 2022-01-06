@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColu
  */
 public class AtsAttributeValueColumnFactory {
 
-   public static AtsAttrVaCol get(String namespace, XViewerAtsAttributeValueColumn inCol) {
-      AtsAttrVaCol col = new AtsAttrVaCol();
+   public static AtsAttrValCol get(String namespace, XViewerAtsAttributeValueColumn inCol) {
+      AtsAttrValCol col = new AtsAttrValCol();
       col.setName(inCol.getName());
       col.setNamespace(namespace);
       col.setAttrTypeId(inCol.getAttributeType().getId());
