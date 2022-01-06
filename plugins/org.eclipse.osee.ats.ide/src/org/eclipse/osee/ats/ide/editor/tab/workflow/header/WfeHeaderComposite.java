@@ -86,7 +86,7 @@ public class WfeHeaderComposite extends Composite {
    private WfeHoldWorkflowHeader holdWfHeader;
    private WfeAttachmentsComposite attachmentsComposite;
 
-   public WfeTransitionHeader getWfeTransitionComposite() {
+   public WfeTransitionHeader getWfeTransitionHeader() {
       return transitionHeader;
    }
 

@@ -75,7 +75,10 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
       if (isApplicable(workItem)) {
          WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
          if (editor != null) {
-            if (editor.getWorkFlowTab().getHeader().getWfeTransitionComposite().isSelected()) {
+            if (editor.getWorkFlowTab().getHeader().getWfeTransitionHeader() == null) {
+               return null;
+            }
+            if (editor.getWorkFlowTab().getHeader().getWfeTransitionHeader().isSelected()) {
                return null;
             }
             XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
