@@ -15,8 +15,11 @@ package org.eclipse.osee.ats.api.util.health;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -30,5 +33,10 @@ public interface AtsHealthEndpointApi {
 
    @GET
    public boolean alive();
+
+   @GET
+   @Path("dupart/{id}/{newArtId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData dupArtReport(@PathParam("id") ArtifactId id, @PathParam("newArtId") String newArtId);
 
 }

@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Donald G. Dunne
@@ -84,6 +85,29 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          }
       }
       return workItems;
+   }
+
+   @Override
+   public List<Map<String, String>> query(String query, Object... data) {
+      List<Map<String, String>> rows = new ArrayList<>(10);
+
+      JdbcStatement stmt = jdbcClient.getStatement();
+      try {
+         stmt.runPreparedQuery(query, data);
+
+         while (stmt.next()) {
+            Map<String, String> rowMap = new HashMap<String, String>();
+            for (int x = 1; x <= stmt.getColumnCount(); x++) {
+               String colName = stmt.getColumnName(x);
+               String val = stmt.getString(colName);
+               rowMap.put(colName, val);
+            }
+            rows.add(rowMap);
+         }
+      } finally {
+         stmt.close();
+      }
+      return rows;
    }
 
    @Override
