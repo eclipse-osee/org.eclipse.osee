@@ -289,6 +289,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          new XNavigateItemAction(new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(
          new XNavigateItemAction(new RevertDuplicateAtsTransitionsAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
+      items.add(new DuplicateArtifactReport());
 
       addVersionsItems();
       addWorkDefinitionsItems();

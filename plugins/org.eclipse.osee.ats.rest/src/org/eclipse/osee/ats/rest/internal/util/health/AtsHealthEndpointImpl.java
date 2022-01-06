@@ -13,19 +13,18 @@
 
 package org.eclipse.osee.ats.rest.internal.util.health;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
+import org.eclipse.osee.ats.rest.internal.util.health.operations.HealthOperations;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Donald G. Dunne
  */
-@Path("health")
 public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
 
    private AtsApi atsApi;
@@ -44,7 +43,6 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
     * @return html representation of ATS Health Checks
     */
    @Override
-   @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() {
       Thread.currentThread().setName("ATS Health Check Operation");
@@ -54,9 +52,14 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
    }
 
    @Override
-   @GET
    public boolean alive() {
       return true;
+   }
+
+   @Override
+   public XResultData dupArtReport(ArtifactId id, String newArtId) {
+      HealthOperations ops = new HealthOperations(atsApi);
+      return ops.getDuplicateArtifactReport(id, newArtId);
    }
 
 }
