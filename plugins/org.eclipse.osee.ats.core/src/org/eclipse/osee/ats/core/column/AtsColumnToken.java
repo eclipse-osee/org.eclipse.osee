@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.ActionRollup;
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.InheritParent;
 import org.eclipse.osee.ats.api.config.MultiEdit;
@@ -77,14 +77,14 @@ public class AtsColumnToken {
     */
    // @formatter:off
 
-   public static AtsAttrVaCol ChangeTypeColumn = new AtsAttrVaCol(AtsAttributeTypes.ChangeType, AtsColumnId.ChangeType.getId(), AtsAttributeTypes.ChangeType.getUnqualifiedName(), 22, ColumnType.String, ColumnAlign.Center, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.Yes, "");
-   public static AtsAttrVaCol LegacyPcrIdColumn = new AtsAttrVaCol(AtsAttributeTypes.LegacyPcrId, AtsColumnId.LegacyPcrId.getId(), AtsAttributeTypes.LegacyPcrId.getUnqualifiedName(), 40, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "");
-   public static AtsAttrVaCol NotesColumn = new AtsAttrVaCol(AtsAttributeTypes.WorkflowNotes, AtsColumnId.Notes.getId(), "Notes", 80, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
-   public static AtsAttrVaCol PercentCompleteWorkflowColumn = new AtsAttrVaCol(AtsAttributeTypes.PercentComplete, AtsColumnId.PercentCompleteWorkflow.getId(), "Workflow Percent Complete", 40, ColumnType.Percent, ColumnAlign.Center, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Percent Complete for full workflow (if work definition configured for single percent).\n\nAmount entered from user.");
-   public static AtsAttrVaCol PriorityColumn = new AtsAttrVaCol(AtsAttributeTypes.Priority, AtsColumnId.Priority.getId(), AtsAttributeTypes.Priority.getUnqualifiedName(), 20, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
-   public static AtsAttrVaCol TitleColumn = new AtsAttrVaCol(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
-   public static AtsAttrVaCol UnPlannedWorkColumn = new AtsAttrVaCol(AtsAttributeTypes.UnplannedWork, AtsColumnId.UnPlannedWork.getId(), AtsAttributeTypes.UnplannedWork.getUnqualifiedName(), 20, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
-   public static AtsAttrVaCol CrashOrBlankDisplay = new AtsAttrVaCol(AtsAttributeTypes.CrashOrBlankDisplay, AtsColumnId.CrashOrBlankDisplay.getId(), AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol ChangeTypeColumn = new AtsAttrValCol(AtsAttributeTypes.ChangeType, AtsColumnId.ChangeType.getId(), AtsAttributeTypes.ChangeType.getUnqualifiedName(), 22, ColumnType.String, ColumnAlign.Center, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.Yes, "");
+   public static AtsAttrValCol LegacyPcrIdColumn = new AtsAttrValCol(AtsAttributeTypes.LegacyPcrId, AtsColumnId.LegacyPcrId.getId(), AtsAttributeTypes.LegacyPcrId.getUnqualifiedName(), 40, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "");
+   public static AtsAttrValCol NotesColumn = new AtsAttrValCol(AtsAttributeTypes.WorkflowNotes, AtsColumnId.Notes.getId(), "Notes", 80, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol PercentCompleteWorkflowColumn = new AtsAttrValCol(AtsAttributeTypes.PercentComplete, AtsColumnId.PercentCompleteWorkflow.getId(), "Workflow Percent Complete", 40, ColumnType.Percent, ColumnAlign.Center, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Percent Complete for full workflow (if work definition configured for single percent).\n\nAmount entered from user.");
+   public static AtsAttrValCol PriorityColumn = new AtsAttrValCol(AtsAttributeTypes.Priority, AtsColumnId.Priority.getId(), AtsAttributeTypes.Priority.getUnqualifiedName(), 20, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
+   public static AtsAttrValCol TitleColumn = new AtsAttrValCol(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
+   public static AtsAttrValCol UnPlannedWorkColumn = new AtsAttrValCol(AtsAttributeTypes.UnplannedWork, AtsColumnId.UnPlannedWork.getId(), AtsAttributeTypes.UnplannedWork.getUnqualifiedName(), 20, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol CrashOrBlankDisplay = new AtsAttrValCol(AtsAttributeTypes.CrashOrBlankDisplay, AtsColumnId.CrashOrBlankDisplay.getId(), AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
 
    // @formatter:on
 }

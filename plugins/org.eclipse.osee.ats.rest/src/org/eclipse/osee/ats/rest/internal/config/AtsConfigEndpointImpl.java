@@ -28,7 +28,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
@@ -136,7 +136,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public List<AtsAttrVaCol> generateAttrTypeViews() throws Exception {
+   public List<AtsAttrValCol> generateAttrTypeViews() throws Exception {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
       for (AttributeTypeToken attrType : orcsApi.tokenService().getAttributeTypes()) {
          idToToken.put(attrType.getName(), attrType);
@@ -146,7 +146,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       sortedIds.addAll(idToToken.keySet());
       Collections.sort(sortedIds);
 
-      List<AtsAttrVaCol> columns = new LinkedList<>();
+      List<AtsAttrValCol> columns = new LinkedList<>();
       for (String id : sortedIds) {
          AttributeTypeToken attrType = idToToken.get(id);
          ColumnAlign columnAlign = ColumnAlign.Left;
@@ -170,7 +170,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
             sortDataType = SortDataType.Date;
          }
 
-         AtsAttrVaCol valueColumn = new AtsAttrVaCol();
+         AtsAttrValCol valueColumn = new AtsAttrValCol();
          valueColumn.setAttrTypeId(attrType.getId());
          valueColumn.setAttrTypeName(attrType.getName());
          valueColumn.setWidth(width);

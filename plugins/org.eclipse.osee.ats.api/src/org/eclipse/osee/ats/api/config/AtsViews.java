@@ -20,9 +20,9 @@ import java.util.List;
  * @author Donald G. Dunne
  */
 public class AtsViews {
-   private final List<AtsAttrVaCol> attrColumns = new ArrayList<>();
+   private final List<AtsAttrValCol> attrColumns = new ArrayList<>();
 
-   public List<AtsAttrVaCol> getAttrColumns() {
+   public List<AtsAttrValCol> getAttrColumns() {
       return attrColumns;
    }
 

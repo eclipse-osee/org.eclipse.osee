@@ -25,7 +25,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.config.AtsAttrVaCol;
+import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -69,7 +69,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       super(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
-   public XViewerAtsAttributeValueColumn(AtsAttrVaCol column) {
+   public XViewerAtsAttributeValueColumn(AtsAttrValCol column) {
       super(AttributeTypeManager.getAttributeType(column.getAttrTypeId()), column.getId(), column.getName(),
          column.getWidth(), AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
          column.isColumnMultiEdit(), column.getDescription());
@@ -77,7 +77,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       setActionRollup(column.isActionRollup());
    }
 
-   private static SortDataType getSortDataType(AtsAttrVaCol column) {
+   private static SortDataType getSortDataType(AtsAttrValCol column) {
       SortDataType result = SortDataType.String;
       try {
          result = SortDataType.valueOf(column.getSortDataType());
