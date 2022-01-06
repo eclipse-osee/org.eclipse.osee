@@ -116,7 +116,7 @@ public class AtsColumnService implements IAtsColumnService {
          } else if (id.equals(AtsColumnId.UnPlannedWork.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnId.CrashOrBlankDisplay.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.CrashOrBlankDisplay, atsApi);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.CrashOrBlankDisplayColumn, atsApi);
          }
 
          /**

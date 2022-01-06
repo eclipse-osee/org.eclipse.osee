@@ -84,7 +84,8 @@ public class AtsColumnToken {
    public static AtsAttrValCol PriorityColumn = new AtsAttrValCol(AtsAttributeTypes.Priority, AtsColumnId.Priority.getId(), AtsAttributeTypes.Priority.getUnqualifiedName(), 20, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
    public static AtsAttrValCol TitleColumn = new AtsAttrValCol(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
    public static AtsAttrValCol UnPlannedWorkColumn = new AtsAttrValCol(AtsAttributeTypes.UnplannedWork, AtsColumnId.UnPlannedWork.getId(), AtsAttributeTypes.UnplannedWork.getUnqualifiedName(), 20, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
-   public static AtsAttrValCol CrashOrBlankDisplay = new AtsAttrValCol(AtsAttributeTypes.CrashOrBlankDisplay, AtsColumnId.CrashOrBlankDisplay.getId(), AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol CrashOrBlankDisplayColumn = new AtsAttrValCol(AtsAttributeTypes.CrashOrBlankDisplay, AtsColumnId.CrashOrBlankDisplay.getId(), AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol ExternalReferenceColumn = new AtsAttrValCol(AtsAttributeTypes.ExternalReference, AtsColumnId.ExternalReference.getId(), AtsAttributeTypes.ExternalReference.getUnqualifiedName(), 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
 
    // @formatter:on
 }
