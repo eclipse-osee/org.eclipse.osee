@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -428,8 +427,16 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public String getAtsId() {
       String toReturn = getGuid();
       try {
-         toReturn = getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, toReturn);
-      } catch (OseeCoreException ex) {
+         // Handle case where duplicate ats ids found for same art, else get stack overflow on errors
+         List<String> atsIds = getAttributesToStringList(AtsAttributeTypes.AtsId);
+         if (atsIds.size() > 1) {
+            String error = String.format(
+               "Multiple ATS IDs found for artifact [%s]; Possible duplicate artifacts for same id.", getId());
+            OseeLog.log(Activator.class, Level.SEVERE, error);
+         }
+         // Don't get sole attr or get stack overflow on anything using getAtsId()
+         toReturn = getAttributesToString(AtsAttributeTypes.AtsId);
+      } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.WARNING, ex);
       }
       return toReturn;
