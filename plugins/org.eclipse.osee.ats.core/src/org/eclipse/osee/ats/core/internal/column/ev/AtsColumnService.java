@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.ats.core.internal.column.ev;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IAtsColumnId;
+import org.eclipse.osee.ats.api.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -42,9 +44,9 @@ import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.column.FoundInVersionColumn;
-import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
+import org.eclipse.osee.ats.core.column.IncorporatedInColumn;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
 import org.eclipse.osee.ats.core.column.ParentTitleColumn;
@@ -200,6 +202,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new TaskRelatedArtifactTypeColumn(atsApi);
          } else if (id.equals(AtsColumnId.ParentTitle.getId())) {
             column = new ParentTitleColumn(atsApi);
+         } else if (id.equals(AtsColumnId.IncorporatedIn.getId())) {
+            column = new IncorporatedInColumn(atsApi);
          }
       }
       // Add columns provided through OSGI services
@@ -276,6 +280,11 @@ public class AtsColumnService implements IAtsColumnService {
    @Override
    public IAtsColumn getColumn(IAtsColumnId columnId) {
       return getColumn(columnId.getId());
+   }
+
+   @Override
+   public Collection<IAtsColumnProvider> getColumProviders() {
+      return AtsColumnProviderCollector.getColumnProviders();
    }
 
 }

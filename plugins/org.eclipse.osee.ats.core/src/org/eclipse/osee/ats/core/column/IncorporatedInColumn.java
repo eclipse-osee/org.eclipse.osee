@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2016 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColumn extends RelationColumn {
+public class IncorporatedInColumn extends RelationColumn {
 
-   public AgileFeatureGroupColumn(AtsApi atsApi) {
-      super(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup, atsApi);
+   public IncorporatedInColumn(AtsApi atsApi) {
+      super(AtsRelationTypes.TeamWorkflowToRelease_Release, atsApi);
    }
 
 }

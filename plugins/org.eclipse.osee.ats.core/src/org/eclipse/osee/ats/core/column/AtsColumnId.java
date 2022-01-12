@@ -54,6 +54,8 @@ public enum AtsColumnId implements IAtsColumnId {
    CreatedDate("ats.column.createdDate"),
    ExternalReference("ats.column.external.reference"),
    FoundInVersion("ats.column.foundInVersion"),
+   GitChangeId("ats.column.git.change.id"),
+   IncorporatedIn("ats.column.incorporated.in"),
    Id("framework.id"),
    Implementers("ats.column.implementer"),
    Insertion("ats.column.insertion"),

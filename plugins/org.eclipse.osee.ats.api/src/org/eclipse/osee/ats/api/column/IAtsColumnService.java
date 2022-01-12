@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.column;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 
@@ -34,5 +35,7 @@ public interface IAtsColumnService {
    String getColumnText(AtsConfigurations configurations, IAtsColumnId column, IAtsObject atsObject);
 
    String getColumnText(AtsConfigurations configurations, String id, IAtsObject atsObject);
+
+   Collection<IAtsColumnProvider> getColumProviders();
 
 }
