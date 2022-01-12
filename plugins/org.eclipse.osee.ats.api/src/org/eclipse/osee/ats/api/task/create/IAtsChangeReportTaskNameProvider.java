@@ -157,7 +157,9 @@ public interface IAtsChangeReportTaskNameProvider {
       Set<ArtifactId> modArts = new HashSet<>();
       Set<ArtifactId> delArts = new HashSet<>();
 
-      ChangeItemData data = getChangeItemData(changeItems, crtd.getWorkOrParentBranch(), atsApi);
+      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranch());
+
+      ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
       Collection<ChangeReportRollup> rollups = data.getRollups().values();
       for (ChangeReportRollup rollup : rollups) {
          ArtifactIncluded result = isIncluded(crtd, crttwd, rollup, rollup.getArtType(), atsApi);
@@ -274,9 +276,9 @@ public interface IAtsChangeReportTaskNameProvider {
 
       Collection<RelationTypeToken> incRelTypes = crtd.getSetDef().getChgRptOptions().getRelationTypes();
       Collection<RelationTypeToken> exclRelTypes = crtd.getSetDef().getChgRptOptions().getNotRelationTypes();
-      BranchToken workingOrParentBranch = crtd.getWorkOrParentBranch();
+      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranch());
       Set<ArtifactId> arts = new HashSet<>();
-      ChangeItemData data = getChangeItemData(crtd.getChangeItems(), crtd.getWorkOrParentBranch(), atsApi);
+      ChangeItemData data = getChangeItemData(crtd.getChangeItems(), branch, atsApi);
 
       for (ChangeReportRollup rollup : data.getRollups().values()) {
 
@@ -295,10 +297,8 @@ public interface IAtsChangeReportTaskNameProvider {
                continue;
             }
 
-            ArtifactTypeToken artAType =
-               atsApi.getStoreService().getArtifactType(item.getArtId(), workingOrParentBranch);
-            ArtifactTypeToken artBType =
-               atsApi.getStoreService().getArtifactType(item.getArtIdB(), workingOrParentBranch);
+            ArtifactTypeToken artAType = atsApi.getStoreService().getArtifactType(item.getArtId(), branch);
+            ArtifactTypeToken artBType = atsApi.getStoreService().getArtifactType(item.getArtIdB(), branch);
 
             ArtifactIncluded artAInc = isIncluded(crtd, crttwd, rollup, artAType, atsApi);
             ArtifactIncluded artBInc = isIncluded(crtd, crttwd, rollup, artBType, atsApi);

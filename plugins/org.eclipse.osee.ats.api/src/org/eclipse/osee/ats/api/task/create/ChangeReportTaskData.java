@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -55,7 +56,7 @@ public class ChangeReportTaskData {
    ArtifactToken chgRptTeamWf = ArtifactToken.SENTINEL;
    // Token of the StaticTaskDefinition to run against change report
    AtsTaskDefToken taskDefToken;
-   private BranchToken workOrParentBranch;
+   private BranchId workOrParentBranch; // DON'T CHANGE TO BranchToken till deserialization is fixed
    // ChangeItems from executed change report
    private List<ChangeItem> changeItems;
    // Definition loaded from the taskDefToken that defines how tasks are created
@@ -154,7 +155,7 @@ public class ChangeReportTaskData {
       return this.changeItems == null || this.changeItems.isEmpty();
    }
 
-   public BranchToken getWorkOrParentBranch() {
+   public BranchId getWorkOrParentBranch() {
       return workOrParentBranch;
    }
 
