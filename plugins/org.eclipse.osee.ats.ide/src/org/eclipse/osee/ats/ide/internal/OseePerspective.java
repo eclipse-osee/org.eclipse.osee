@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.ide.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.search.ui.NewSearchUI;
@@ -69,7 +70,11 @@ public class OseePerspective implements IPerspectiveFactory {
       leftBottom.addView(QuickSearchView.VIEW_ID);
       right.addView(ArtifactExplorer.VIEW_ID);
 
-      bottomLeft.addView(BranchView.VIEW_ID);
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
+         bottomLeft.addView(BranchSearchView.VIEW_ID);
+      } else {
+         bottomLeft.addView(BranchView.VIEW_ID);
+      }
       bottomLeft.addView(NewSearchUI.SEARCH_VIEW_ID);
       bottomLeft.addPlaceholder(MergeView.VIEW_ID);
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
