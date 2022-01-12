@@ -88,7 +88,9 @@ public class NewTaskData {
    public static NewTaskData create(NewTaskSet newTaskSet, IAtsTeamWorkflow teamWf) {
       NewTaskData ntd = new NewTaskData();
       newTaskSet.add(ntd);
-      ntd.setTeamWfId(teamWf.getId());
+      if (teamWf != null) {
+         ntd.setTeamWfId(teamWf.getId());
+      }
       return ntd;
    }
 

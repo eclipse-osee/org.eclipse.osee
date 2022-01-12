@@ -337,7 +337,9 @@ public class CreateChangeReportTasksOperation {
             if (!reportOnly && !crttwd.getNewTaskSet().getNewTaskDatas().iterator().next().getTasks().isEmpty()) {
                crttwd.getNewTaskSet().setAsUserId(crtd.getAsUser().getUserId());
                crttwd.getNewTaskSet().setCommitComment("Create Change Report Tasks");
-               newTaskData.setTeamWfId(destTeamWf.getId());
+               if (destTeamWf != null) {
+                  newTaskData.setTeamWfId(destTeamWf.getId());
+               }
 
                /**
                 * Until all transition is done on server, need to call to directly generate tasks so it can be part of
