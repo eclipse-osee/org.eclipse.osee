@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -35,6 +36,10 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
    Collection<TeamDefinition> selectedTeamDefs = new HashSet<>();
    Collection<TeamDefinition> teamDefs;
    TeamDefinitionTreeWithChildrenDialog dialog = null;
+
+   public XHyperlabelTeamDefinitionSelection() {
+      this(TeamDefinitionSearchWidget.TEAM_DEFINITIONS);
+   }
 
    public XHyperlabelTeamDefinitionSelection(String label) {
       super(label, true, WorldEditor.TITLE_MAX_LENGTH);
