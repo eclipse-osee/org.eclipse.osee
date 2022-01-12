@@ -33,6 +33,10 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
    Collection<AtsUser> assignees = new HashSet<>();
    private final IAtsTeamDefinition teamDef;
 
+   public XAssigneesHyperlinkWidget() {
+      this(null);
+   }
+
    public XAssigneesHyperlinkWidget(IAtsTeamDefinition teamDef) {
       super("Assignees", true, 50);
       this.teamDef = teamDef;
