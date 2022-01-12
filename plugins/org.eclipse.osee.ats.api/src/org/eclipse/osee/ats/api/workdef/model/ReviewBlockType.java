@@ -19,5 +19,9 @@ package org.eclipse.osee.ats.api.workdef.model;
 public enum ReviewBlockType {
    None,
    Transition,
-   Commit
+   Commit;
+
+   public boolean isCommit() {
+      return this.name().equals(Commit.name());
+   }
 };
