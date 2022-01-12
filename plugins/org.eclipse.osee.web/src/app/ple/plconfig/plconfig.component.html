@@ -11,10 +11,16 @@
  *     Boeing - initial API and implementation
  -->
 <div class="pl-config">
-    <ng-container *ngIf="(isAllowedToDiff|async)">
-        <div>
-            <button mat-raised-button style="float:right" (click)="navigateToDiff()">Load Diff</button>
-        </div>
+    <ng-container *ngIf="(isAllowedToDiff|async) as _diff">
+        <ng-container *ngIf="(branchType|async) as _type">
+            <ng-container *ngIf="(branchId|async) as _id">
+                <ng-container>
+                    <div>
+                        <button mat-raised-button style="float:right" [routerLink]="_diff==='true'?[{outlets:{primary:_type+'/'+_id+'/'+'diff', 'rightSideNav':null}}]:[{outlets:{primary:_type+'/'+_id, 'rightSideNav':null}}]"><mat-icon *ngIf="_diff==='false'">visibility_off</mat-icon><mat-icon *ngIf="_diff==='true'">change_history</mat-icon><span>{{_diff==='true'?'Show Deltas':'Hide Deltas'}}</span></button>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
     </ng-container>
     <plconfig-branch-type-selector (selectedType)="branchTypeSelected($event)">
     </plconfig-branch-type-selector>

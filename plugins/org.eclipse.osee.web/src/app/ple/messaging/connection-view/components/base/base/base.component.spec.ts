@@ -33,6 +33,7 @@ import { of } from 'rxjs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('BaseComponent', () => {
   let component: BaseComponent;
@@ -42,7 +43,7 @@ describe('BaseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatButtonModule,MatSidenavModule,RouterTestingModule, NoopAnimationsModule],
+      imports: [MatDialogModule,MatIconModule, MatButtonModule,MatSidenavModule,RouterTestingModule, NoopAnimationsModule],
       providers: [
         { provide: EditAuthService, useValue: editAuthServiceMock },
         { provide: CurrentGraphService, useValue: graphServiceMock }

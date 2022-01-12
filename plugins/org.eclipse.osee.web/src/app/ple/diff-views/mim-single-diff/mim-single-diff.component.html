@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-icon-button mat-stroked-button (click)="viewDiff(false,'','')" [@expandButton]="(opened|async) ?  'open' : 'closed'" >V</button>
+<button mat-icon-button mat-stroked-button (click)="viewDiff(false,'','')" [@expandButton]="(opened|async) ?  'open' : 'closed'" ><mat-icon>arrow_forward</mat-icon></button>
 <ng-container *ngIf="(contents|async)!==undefined && (contents|async) as content">
     <h1 matLine>Diff Report for {{content.navInfo.field}}</h1>
 <div>

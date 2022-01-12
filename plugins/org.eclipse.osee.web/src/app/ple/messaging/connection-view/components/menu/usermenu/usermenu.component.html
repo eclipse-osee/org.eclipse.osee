@@ -12,7 +12,7 @@
  -->
 <ng-container *ngIf="settingsCapable|async as capable">
     <ng-container *ngIf="capable==='true'">
-        <button mat-menu-item (click)="openSettingsDialog()">Settings</button>
+        <button mat-menu-item (click)="openSettingsDialog()"><mat-icon>settings</mat-icon><span>Settings</span></button>
     </ng-container>
     <ng-container *ngIf="capable==='false'">
         <button mat-menu-item [disabled]=true>No branch selected</button>

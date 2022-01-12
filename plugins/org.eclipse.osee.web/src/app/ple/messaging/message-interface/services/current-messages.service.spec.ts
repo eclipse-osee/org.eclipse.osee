@@ -189,7 +189,7 @@ describe('CurrentMessagesService', () => {
       service.branch='10'
       let expectedObservable = { a: response };
       let expectedMarble = '(a|)';
-      scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['hello','hello3'],allowedHeaders2:['hello2','hello3'],allHeaders1:['hello'],allHeaders2:['hello2'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
+      scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description','applicability'],allowedHeaders2:['name','description','applicability'],allHeaders1:['name','description',],allHeaders2:['name','description',],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
     })
   })
 

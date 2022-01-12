@@ -1,3 +1,8 @@
+import { element, elementWithChanges } from "../../message-element-interface/types/element";
+import { structure, structureWithChanges } from "../../message-element-interface/types/structure";
+import { message, messageWithChanges } from "../../message-interface/types/messages";
+import { subMessage, subMessageWithChanges } from "../../message-interface/types/sub-messages";
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -10,8 +15,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface headerDetail{
-    header: string,
+export interface headerDetail<T>{
+    header: keyof T,
     description: string,
     humanReadable:string
+}
+
+export interface messageHeaderDetail extends headerDetail<message>{
+}
+export interface subMessageHeaderDetail extends headerDetail<subMessage>{
+}
+export interface structureHeaderDetail extends headerDetail<structure>{
+}
+
+export interface elementHeaderDetail extends headerDetail<element>{
 }

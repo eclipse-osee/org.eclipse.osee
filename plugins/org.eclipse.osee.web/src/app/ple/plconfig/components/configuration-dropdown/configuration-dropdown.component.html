@@ -12,10 +12,10 @@
  -->
 <button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-configuration-dropdown-dd-button">Change Configurations</button>
 <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item (click)="addConfiguration()">Add Configuration</button>
-    <button mat-menu-item *ngIf="(editable|async)===true" (click)="copyConfiguration()">Copy Configuration</button>
-    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(editable|async)===true">Edit Configuration</button>
-    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(editable|async)===true">Delete Configuration</button>
+    <button mat-menu-item (click)="addConfiguration()"><mat-icon color="success">create</mat-icon>Add Configuration</button>
+    <button mat-menu-item *ngIf="(editable|async)===true" (click)="copyConfiguration()"><mat-icon color="success">add</mat-icon>Copy Configuration</button>
+    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(editable|async)===true"><mat-icon color="primary">edit</mat-icon>Edit Configuration</button>
+    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(editable|async)===true"><mat-icon color="warn">delete_forever</mat-icon>Delete Configuration</button>
 </mat-menu>
 <mat-menu #deleteConfigMenu="matMenu">
     <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="deleteConfig(configuration)">{{configuration.name}}</button>

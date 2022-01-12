@@ -13,6 +13,7 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,7 +32,7 @@ describe('ValueMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatMenuModule,NoopAnimationsModule,RouterTestingModule.withRoutes([{
+      imports:[MatMenuModule,MatIconModule,NoopAnimationsModule,RouterTestingModule.withRoutes([{
         path: '',
         component: ValueMenuComponent,
         children: [
@@ -76,7 +77,7 @@ describe('ValueMenuComponent', () => {
   });
   it('should open a diff sidenav', async () => {
     const spy = spyOn(component, 'viewDiff').and.callThrough();
-    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for abcd' }));
+    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') }));
     expect(menu).toBeDefined();
     await menu.focus();
     await menu.click();

@@ -51,6 +51,7 @@ import { SubElementTableNoEditFieldFilteredComponent } from './components/sub-el
 import { SubElementTableNoEditFieldComponent } from './components/sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.compo
     MatListModule,
     MatSlideToggleModule,
     MatSidenavModule,
+    MatIconModule,
     FormsModule,
     DiffViewsModule,
     MatAutocompleteModule,

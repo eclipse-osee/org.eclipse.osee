@@ -13,6 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -29,7 +30,7 @@ describe('ConfigurationGroupDropdownComponent', () => {
     const currentBranchService = jasmine.createSpyObj('PlConfigCurrentBranchService', [], ['cfgGroups', 'branchApplicability']);
     const uiService = jasmine.createSpyObj('PlConfigUIStateService', [], ['updateReqConfig']);
     await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatButtonModule],
+      imports:[MatMenuModule,MatButtonModule,MatIconModule],
       declarations: [ConfigurationGroupDropdownComponent],
       providers: [
         { provide: MatDialog, useValue: {} },

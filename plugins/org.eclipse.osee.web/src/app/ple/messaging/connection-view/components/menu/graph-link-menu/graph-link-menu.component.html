@@ -12,16 +12,16 @@
  -->
 <ng-container *ngIf="data.id!==undefined">
     <ng-container *ngIf="(_messageRoute|async) as messageRoute">
-        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end"> Go to {{data.name}}</a>
-        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end" target="_blank"> Go to {{data.name}} in new tab</a>
+        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end"><mat-icon>subdirectory_arrow_right</mat-icon>Go to {{data.name}}</a>
+        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end" target="_blank"><mat-icon color="primary">open_in_new</mat-icon>Go to {{data.name}} in new tab</a>
     </ng-container>
 </ng-container>
 <ng-container *ngIf="hasChanges(data)">
-    <button mat-menu-item [matMenuTriggerFor]="linkDiffMenu" [matMenuTriggerData]="{data:data}">View Diff for</button>
+    <button mat-menu-item [matMenuTriggerFor]="linkDiffMenu" [matMenuTriggerData]="{data:data}"><mat-icon color="accent">pageview</mat-icon><span>View Diff for</span></button>
 </ng-container>
 <ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
-    <button mat-menu-item (click)="openConnectionEditDialog(data)"> Edit {{data.name}}</button>
-    <button mat-menu-item (click)="openRemoveConnectionDialog(data,source,target)"> Remove connection {{data.name}}</button>
+    <button mat-menu-item (click)="openConnectionEditDialog(data)"><mat-icon color="primary">edit</mat-icon>Edit {{data.name}}</button>
+    <button mat-menu-item (click)="openRemoveConnectionDialog(data,source,target)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove connection {{data.name}}</button>
 </ng-container>
 <mat-menu #linkDiffMenu="matMenu">
     <ng-template matMenuContent let-data="data">

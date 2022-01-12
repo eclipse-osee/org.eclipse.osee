@@ -26,6 +26,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { EditViewFreeTextFieldDialogComponent } from './components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent],
@@ -40,6 +41,7 @@ import { EditViewFreeTextFieldDialogComponent } from './components/dialogs/edit-
     MatInputModule,
     FormsModule,
     MatButtonModule,
+    MatIconModule
   ],
   exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent]
 })

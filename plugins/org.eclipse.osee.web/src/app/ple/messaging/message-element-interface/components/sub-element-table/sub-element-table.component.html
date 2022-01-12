@@ -25,7 +25,7 @@
     <ng-container matColumnDef="footer">
         <td mat-footer-cell *matFooterCellDef [attr.colspan]="subMessageHeaders.length" style="text-align:right">
             <ng-container *ngIf="editMode===true;">
-                <button mat-mini-fab color="primary" (click)="openAddElementDialog()">+</button>
+                <button mat-mini-fab color="primary" (click)="openAddElementDialog()"><mat-icon>add</mat-icon></button>
             </ng-container>
          </td>
     </ng-container>
@@ -37,23 +37,23 @@
 <mat-menu #generalMenu="matMenu">
     <ng-template matMenuContent let-element="element" let-structure="structure" let-field="field" let-header="header">
         <ng-container *ngIf="_branchType !== undefined && _branchId!==undefined">
-            <a mat-menu-item [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2">Open Platform Type</a>
-            <a mat-menu-item target="_blank" [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2">Open Platform Type in new tab</a>
+            <a mat-menu-item [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2"><mat-icon>subdirectory_arrow_right</mat-icon>Open Platform Type</a>
+            <a mat-menu-item target="_blank" [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2"><mat-icon color="primary">open_in_new</mat-icon>Open Platform Type in new tab</a>
         </ng-container>
         <ng-container *ngIf="element.logicalType==='enumeration'">
             <button mat-menu-item (click)="openEnumDialog(element.platformTypeId)">Open Enumeration Details(view only)</button>
         </ng-container>
-        <button mat-menu-item (click)="openDescriptionDialog(element.description,element.id,structure.id)">Open Description</button>
-        <button mat-menu-item (click)="openNotesDialog(element.notes,element.id,structure.id)">Open Notes</button>
+        <button mat-menu-item (click)="openDescriptionDialog(element.description,element.id,structure.id)"><mat-icon color="primary">description</mat-icon>Open Description</button>
+        <button mat-menu-item (click)="openNotesDialog(element.notes,element.id,structure.id)"><mat-icon color="primary">notes</mat-icon>Open Notes</button>
         <ng-container *ngIf="(getHeaderByName(header)|async)?.humanReadable||'' as headername">
             <ng-container *ngIf="element.changes!==undefined && element.changes[header]!==undefined && element.changes[header]!==true && element.changes[header]!==false">
-                <button mat-menu-item (click)="viewDiff(element.changes[header],headername)">View Diff</button>
+                <button mat-menu-item (click)="viewDiff(element.changes[header],headername)"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
             </ng-container>
             <!-- <button mat-menu-item (click)="viewDiff(field,headername)">View Diff</button> -->
         </ng-container>
-        <ng-container *ngIf='editMode===true'>
-            <button mat-menu-item (click)="removeElement(element,structure)">Remove element from structure</button>
-            <button mat-menu-item (click)="deleteElement(element)">Delete element globally</button>
+        <ng-container *ngIf='editMode===true &&!element.deleted'>
+            <button mat-menu-item (click)="removeElement(element,structure)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove element from structure</button>
+            <button mat-menu-item (click)="deleteElement(element)"><mat-icon color="warn">delete_forever</mat-icon>Delete element globally</button>
         </ng-container>
     </ng-template>
 </mat-menu>

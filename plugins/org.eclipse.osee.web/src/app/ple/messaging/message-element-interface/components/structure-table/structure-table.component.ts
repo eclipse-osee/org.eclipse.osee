@@ -29,6 +29,7 @@ import { DeleteStructureDialogComponent } from '../delete-structure-dialog/delet
 import { RemoveStructureDialogComponent } from '../remove-structure-dialog/remove-structure-dialog.component';
 import { difference } from 'src/app/types/change-report/change-report';
 import { applic } from 'src/app/types/applicability/applic';
+import { element } from '../../types/element';
 
 @Component({
   selector: 'app-structure-table',
@@ -80,9 +81,9 @@ export class StructureTableComponent implements OnInit {
   currentElementHeaders = combineLatest([this.headerService.AllElementHeaders,this.preferences]).pipe(
     switchMap(([allHeaders, response]) => of(response.columnPreferences).pipe(
       mergeMap((r) => from(r).pipe(
-        filter((column) => allHeaders.includes(column.name) && column.enabled),
-        map((header) => header.name),
-        reduce((acc, curr) => [...acc, curr], [] as string[])
+        filter((column) => allHeaders.includes(column.name as (keyof element)) && column.enabled),
+        map((header) => header.name as (keyof element)),
+        reduce((acc, curr) => [...acc, curr], [] as (keyof element)[])
       ))
     )),
     mergeMap((headers) => iif(() => headers.length !== 0, of(headers).pipe(
@@ -98,9 +99,9 @@ export class StructureTableComponent implements OnInit {
   currentStructureHeaders = combineLatest([this.headerService.AllStructureHeaders,this.preferences]).pipe(
     switchMap(([structureHeaders,response]) => of(response.columnPreferences).pipe(
       mergeMap((r) => from(r).pipe(
-        filter((column) => structureHeaders.includes(column.name) && column.enabled),
-        map((header) => header.name),
-        reduce((acc, curr) => [...acc, curr], [] as string[])
+        filter((column) => structureHeaders.includes(column.name as keyof structure) && column.enabled),
+        map((header) => header.name as (keyof structure)),
+        reduce((acc, curr) => [...acc, curr], [] as (keyof structure)[])
       ))
     )),
     mergeMap((headers) => iif(() => headers.length !== 0, of(headers), of(['name',

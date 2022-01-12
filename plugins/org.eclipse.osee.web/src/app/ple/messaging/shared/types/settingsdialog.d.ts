@@ -1,3 +1,6 @@
+import { element } from "../../message-element-interface/types/element";
+import { structure } from "../../message-element-interface/types/structure";
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -12,10 +15,10 @@
  **********************************************************************/
 export interface settingsDialogData{
     branchId:string,
-    allowedHeaders1: string[],
-    allHeaders1: string[],
-    allHeaders2: string[],
-    allowedHeaders2: string[],
+    allowedHeaders1: (keyof element)[],
+    allHeaders1: (keyof element)[],
+    allHeaders2: (keyof structure)[],
+    allowedHeaders2: (keyof structure)[],
     editable: boolean,
     headers1Label: string,
     headers2Label: string,

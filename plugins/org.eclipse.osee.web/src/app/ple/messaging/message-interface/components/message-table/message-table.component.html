@@ -12,14 +12,15 @@
  -->
  <div class="message-interface message-element-interface-button-header">
     <ng-container *ngIf="(inDiffMode|async) as _diff">
-        <a mat-raised-button [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:'../'">{{_diff==='false'?"Load Diff":"Unload Diff"}}</a>
+        <a mat-raised-button [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:'../'"><mat-icon *ngIf="_diff==='false'">change_history</mat-icon><mat-icon *ngIf="_diff==='true'">visibility_off</mat-icon><span>{{_diff==='false'?"Show Deltas":"Hide Deltas"}}</span></a>
     </ng-container>
 </div>
-<button *ngIf="(inEditMode | async)===true" mat-fab (click)="openNewMessageDialog()" class="new-message-button" color="primary">+</button>
+<button *ngIf="(inEditMode | async)===true" mat-fab id="addMessage" (click)="openNewMessageDialog()" class="new-message-button" color="primary"><mat-icon>add</mat-icon></button>
 <div class="message-interface message-element-interface-top-level-table">
     <mat-form-field class="message-interface-table-view-width-100 message-interface-table-filter-padding">
         <mat-label>Filter Message Information</mat-label>
         <input matInput type="text" (keyup)="applyFilter($event)" #input>
+        <mat-icon matPrefix>filter_list</mat-icon>
         <mat-hint>Enter text to filter Message Table.
             Only full text matches will display results.
         </mat-hint>
@@ -76,15 +77,15 @@
         </tr>
     </table>
 </div>
-<mat-menu #contextMenu="matMenu">
+<mat-menu #contextMenu="matMenu" class=wide-mat-menu>
     <ng-template matMenuContent let-message="message" let-field="field" let-header="header">
-        <button mat-menu-item (click)="openDescriptionDialog(message.description,message.id)">Open Description</button>
+        <button mat-menu-item (click)="openDescriptionDialog(message.description,message.id)"><mat-icon color="primary">description</mat-icon>Open Description</button>
         <ng-container *ngIf="hasChanges(message) && changeExists(message,header) && (getHeaderByName(header)|async)?.humanReadable as headerName">
-            <button mat-menu-item (click)="viewDiff(true,message.changes[header]||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},headerName)">View Diff</button>
+            <button mat-menu-item (click)="viewDiff(true,message.changes[header]||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},headerName)"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
         </ng-container>
         <ng-container *ngIf="(inEditMode | async)===true && !message.deleted">
-            <button mat-menu-item (click)="removeMessage(message)">Remove message from connection</button>
-            <button mat-menu-item (click)="deleteMessage(message)">Delete message globally</button>
+            <button mat-menu-item (click)="removeMessage(message)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove message from connection</button>
+            <button mat-menu-item (click)="deleteMessage(message)"><mat-icon color="warn">delete_forever</mat-icon>Delete message globally</button>
         </ng-container>
 
     </ng-template>

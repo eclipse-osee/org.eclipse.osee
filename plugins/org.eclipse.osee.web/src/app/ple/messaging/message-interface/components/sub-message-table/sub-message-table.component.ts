@@ -45,7 +45,7 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   @Input() editMode: boolean = false;
   @Output() expandRow = new EventEmitter();
   headers = this.headerService.AllSubMessageHeaders.pipe(
-    switchMap(([name,description,number,applicability])=>of([name,description,number," ",applicability]))
+    switchMap(([name,description,number,applicability])=>of<((keyof subMessage)|" ")[]>([name,description,number," ",applicability]))
   );
   _messageRoute = combineLatest([this.messageService.initialRoute, this.messageService.endOfRoute]).pipe(
     switchMap(([initial,end])=>of({beginning:initial,end:end}))
@@ -74,7 +74,7 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     return index;
   }
 
-  openMenu(event: MouseEvent, message: message, submessage: subMessage, location: string,field:string|applic,header:string) {
+  openMenu(event: MouseEvent, message: message| messageWithChanges, submessage: subMessage| subMessageWithChanges, location: string,field:string|applic,header:(keyof subMessage)|" ") {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
@@ -83,8 +83,10 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
       submessage: submessage,
       location: location,
       field: field,
-      header:header
+      header: header,
+      change: (submessage as subMessageWithChanges).changes!==undefined&&header!==' '&&(submessage as subMessageWithChanges).changes[header]!==undefined?(submessage as subMessageWithChanges).changes[header]:undefined
     }
+    this.matMenuTrigger.menuData = this.matMenuTrigger.menuData as { message: message | messageWithChanges, submessage: subMessage | subMessageWithChanges, location: string, field: string | applic, header: 'name' | 'description' | 'interfaceSubMessageNumber' | 'applicability' | ' ',change:difference|undefined };
     this.matMenuTrigger.openMenu();
   }
 
@@ -154,5 +156,11 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
 
   viewDiff(open: boolean, value: difference, header: string) {
     this.messageService.sideNav = { opened: open, field: header, currentValue: value?.currentValue || '', previousValue: value?.previousValue || '', transaction: value.transactionToken };
+  }
+  hasChanges(value: subMessage | subMessageWithChanges, header:'name'|'description'|'interfaceSubMessageNumber'|'applicability'|' '): value is subMessageWithChanges {
+    return (value as subMessageWithChanges).changes !== undefined && header!==' '&&  (value as subMessageWithChanges).changes[header] !== undefined;
+  }
+  isDifference(value: difference | undefined): value is difference {
+    return (value as difference)!==undefined
   }
 }

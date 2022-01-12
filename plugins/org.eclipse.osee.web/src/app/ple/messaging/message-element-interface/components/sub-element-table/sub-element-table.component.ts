@@ -55,7 +55,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     interfaceStructureCategory: ''
   };
   @Output() expandRow = new EventEmitter();
-  @Input() subMessageHeaders: string[] = [];
+  @Input() subMessageHeaders:any;
   _branchId: string = "";
   _branchType: string = "";
   @Input() editMode: boolean = false;

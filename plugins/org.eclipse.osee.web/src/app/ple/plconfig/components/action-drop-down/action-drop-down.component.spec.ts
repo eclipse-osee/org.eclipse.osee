@@ -15,6 +15,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
@@ -33,7 +34,7 @@ describe('ActionDropDownComponent', () => {
   let loader: HarnessLoader;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatButtonModule],
+      imports:[MatButtonModule,MatIconModule],
       declarations: [ActionDropDownComponent],
       providers: [
         { provide: MatDialog, useValue: {} },

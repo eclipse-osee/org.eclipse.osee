@@ -44,6 +44,7 @@ import { DeleteMessageDialogComponent } from './components/dialogs/delete-messag
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.compo
     MatTooltipModule,
     MatDialogModule,
     MatSidenavModule,
+    MatIconModule,
     PleSharedMaterialModule,
     OseeStringUtilsPipesModule,
     OseeStringUtilsDirectivesModule,

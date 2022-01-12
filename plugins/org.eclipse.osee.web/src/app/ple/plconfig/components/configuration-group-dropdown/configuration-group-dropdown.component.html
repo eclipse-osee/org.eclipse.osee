@@ -12,11 +12,11 @@
  -->
 <button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-configuration-group-dropdown-dd-button">Change Configuration Groups</button>
 <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item (click)="addConfigurationGroup()">Add Configuration Group</button>
+    <button mat-menu-item (click)="addConfigurationGroup()"><mat-icon color="success">create</mat-icon>Add Configuration Group</button>
     <div *ngIf="(cfgGroups|async) as groups">
-        <button mat-menu-item (click)="synchronizeGroups(groups)">Synchronize Groups</button>
+        <button mat-menu-item (click)="synchronizeGroups(groups)"><mat-icon color="primary">sync</mat-icon>Synchronize Groups</button>
     </div>
-    <button mat-menu-item [matMenuTriggerFor]="deleteConfigGroupMenu" *ngIf="(editable|async)===true">Delete Configuration Group</button>
+    <button mat-menu-item [matMenuTriggerFor]="deleteConfigGroupMenu" *ngIf="(editable|async)===true"><mat-icon color="warn">delete_forever</mat-icon>Delete Configuration Group</button>
 </mat-menu>
 <mat-menu #deleteConfigGroupMenu="matMenu">
     <button *ngFor="let group of (cfgGroups | async)" mat-menu-item (click)="deleteGroup(group.id)">{{group.name}}</button>

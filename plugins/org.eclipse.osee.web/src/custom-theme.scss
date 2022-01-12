@@ -41,6 +41,9 @@
     @include ple.messages-messaging-message-interface-types-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-interface-graph-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-typeSearch-theme($modern-ple-light-theme);
+    .mat-success{
+        color:mat-color(map-get(mat-get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
+    }
 
 .dark-theme{
     @include angular-material-color($modern-ple-dark-theme);
@@ -56,3 +59,4 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }//padding: 30px
+

@@ -13,11 +13,11 @@
         <ng-container>
             <div class="message-element-interface message-element-interface-button-header">
                 <ng-container *ngIf="(inDiffMode|async) as _diff">
-                    <a mat-raised-button [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:structureId!==''?'../'+structureId:'../elements'" style="float:right">{{_diff==='false'?"Load Diff":"Unload Diff"}}</a>
+                    <a mat-raised-button [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:structureId!==''?'../'+structureId:'../elements'" style="float:right"><mat-icon *ngIf="_diff==='false'">change_history</mat-icon><mat-icon *ngIf="_diff==='true'">visibility_off</mat-icon><span>{{_diff==='false'?"Show Deltas":"Hide Deltas"}}</span></a>
                 </ng-container>
             </div>
             <ng-container *ngIf="((isEditing|async)||false)===true;">
-                <button mat-fab color="primary" (click)="openAddStructureDialog()"class="new-structure-button">+</button>
+                <button mat-fab color="primary" id="addStructure" (click)="openAddStructureDialog()"class="new-structure-button"><mat-icon>add</mat-icon></button>
             </ng-container>
         </ng-container>
         <div class="message-element-interface message-element-interface-top-level-table">
@@ -26,6 +26,7 @@
                     <mat-form-field class="message-element-interface-table-view-width-100 message-element-interface-table-filter-padding">
                         <mat-label>Filter Message Information</mat-label>
                         <input matInput type="text" (keyup)="applyFilter($event)" #input>
+                        <mat-icon matPrefix>filter_list</mat-icon>
                         <mat-hint>Enter text to filter Structure Table.
                             Only full text matches will show results.
                         </mat-hint>
@@ -47,7 +48,7 @@
                             <div class="flex-row">
                                 <ng-container *ngIf="(!!(isEditing|async))===true; else no_edit">
                                     <ng-container *ngIf="header===' '">
-                                        <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'">V</button>
+                                        <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
                                     </ng-container>
                                     <ng-container *ngIf="editableStructureHeaders.includes(header); else no_edit">
                                         <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]"></osee-messaging-edit-structure-field>
@@ -55,7 +56,7 @@
                                 </ng-container>
                                 <ng-template #no_edit>
                                     <ng-container *ngIf="header===' ' && (!!(isEditing|async))===false"> <!--Don't know why 1 element in a template has decided to render in a non-rendered template-->
-                                        <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'">V</button>
+                                        <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
                                     </ng-container>
                                     <ng-container *ngIf="header==='applicability'">
                                         <ng-container *ngIf="element[header].name!=='Base'">
@@ -105,17 +106,17 @@
 <mat-menu #contextMenu="matMenu">
     <ng-template matMenuContent let-id="id" let-name="name" let-description="description" let-structure="structure" let-header="header" let-diffMode="diffMode">
         <ng-container *ngIf="(inDiffMode|async) as _diff">
-            <a mat-menu-item target="_blank" *ngIf='hasFilter' [routerLink]="_diff==='false'?[{outlets:{primary:id, 'rightSideNav':null}}]:[{outlets:{primary:id+'/diff', 'rightSideNav':null}}]">Open structure table in new tab</a>
+            <a mat-menu-item target="_blank" *ngIf='hasFilter' [routerLink]="_diff==='false'?[{outlets:{primary:id, 'rightSideNav':null}}]:[{outlets:{primary:id+'/diff', 'rightSideNav':null}}]"><mat-icon color="primary">open_in_new</mat-icon>Open structure table in new tab</a>
         </ng-container>
-        <button mat-menu-item (click)="openDescriptionDialog(description,id)">Open Description</button>
+        <button mat-menu-item (click)="openDescriptionDialog(description,id)"><mat-icon color="primary">description</mat-icon>Open Description</button>
         <ng-container *ngIf="(getHeaderByName(header)|async)?.humanReadable||'' as headername">
             <ng-container *ngIf="structure.changes!==undefined && structure.changes[header]!==undefined && structure.changes[header]!==true && structure.changes[header]!==false">
-                <button mat-menu-item (click)="viewDiff(true,structure.changes[header],headername)">View Diff</button>
+                <button mat-menu-item (click)="viewDiff(true,structure.changes[header],headername)"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf="(isEditing|async)===true">
-            <button mat-menu-item (click)="removeStructureDialog(id,name)">Remove structure from submessage</button>
-            <button mat-menu-item (click)="deleteStructureDialog(id,name)">Delete structure globally</button>
+        <ng-container *ngIf="(isEditing|async)===true && !structure.deleted">
+            <button mat-menu-item (click)="removeStructureDialog(id,name)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove structure from submessage</button>
+            <button mat-menu-item (click)="deleteStructureDialog(id,name)"><mat-icon color="warn">delete_forever</mat-icon>Delete structure globally</button>
         </ng-container>
     </ng-template>
 </mat-menu>

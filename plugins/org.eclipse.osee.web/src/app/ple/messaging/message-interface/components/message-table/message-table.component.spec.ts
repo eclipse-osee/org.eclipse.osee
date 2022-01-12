@@ -53,6 +53,7 @@ import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
+import { MatIconModule } from '@angular/material/icon';
 
 let loader: HarnessLoader;
 
@@ -92,6 +93,7 @@ describe('MessageTableComponent', () => {
         FormsModule,
         MatFormFieldModule,
         MatInputModule,
+        MatIconModule,
         MatSelectModule,
         MatTableModule,
         MatSlideToggleModule,
@@ -182,7 +184,7 @@ describe('MessageTableComponent', () => {
     interfaceMessageWriteAccess: ''}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
     let spy = spyOn(component, 'openNewMessageDialog').and.callThrough();
-    let button = await loader.getHarness(MatButtonHarness.with({ text: '+' }));
+    let button = await loader.getHarness(MatButtonHarness.with({ selector:"#addMessage" }));
     await button.click();
     expect(spy).toHaveBeenCalled();
   })
@@ -208,7 +210,7 @@ describe('MessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.stub();
-      await menu.clickItem({ text: "Open Description" });
+      await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -221,7 +223,7 @@ describe('MessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.stub();
-      await menu.clickItem({ text: "Open Description" });
+      await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -232,7 +234,7 @@ describe('MessageTableComponent', () => {
       let menu = await loader.getHarness(MatMenuHarness);
       expect(menu).toBeDefined();
       let spy = spyOn(component, 'viewDiff').and.callThrough();
-      await menu.clickItem({ text: "View Diff" });
+      await menu.clickItem({ text: new RegExp("View Diff") });
       expect(spy).toHaveBeenCalled();
     })
 
@@ -244,7 +246,7 @@ describe('MessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeMessage').and.stub();
-      await menu.clickItem({ text: "Remove message from connection" });
+      await menu.clickItem({ text: new RegExp("Remove message from connection") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -257,7 +259,7 @@ describe('MessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteMessage').and.stub();
-      await menu.clickItem({ text: "Delete message globally" });
+      await menu.clickItem({ text: new RegExp("Delete message globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })

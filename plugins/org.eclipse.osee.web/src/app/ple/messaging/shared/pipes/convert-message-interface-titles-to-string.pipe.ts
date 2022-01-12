@@ -11,6 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Pipe, PipeTransform } from '@angular/core';
+import { element } from '../../message-element-interface/types/element';
+import { structure } from '../../message-element-interface/types/structure';
+import { message } from '../../message-interface/types/messages';
+import { subMessage } from '../../message-interface/types/sub-messages';
 
 const transformMatrix:any = {
   name: "Name",
@@ -54,7 +58,7 @@ const transformMatrix:any = {
 })
 export class ConvertMessageInterfaceTitlesToStringPipe implements PipeTransform {
 
-  transform(value: string, ...args: unknown[]): string {
+  transform(value: any, ...args: unknown[]): string { //honestly give up on type inference here
     if (transformMatrix[value] != null && transformMatrix[value] != undefined) {
       return transformMatrix[value]
     }

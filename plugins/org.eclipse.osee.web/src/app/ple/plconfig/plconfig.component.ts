@@ -24,9 +24,11 @@ import { PlConfigUIStateService } from './services/pl-config-uistate.service';
 export class PlconfigComponent implements OnInit {
   _updateRequired: Observable<boolean>= this.uiStateService.updateReq;
   _branchType: string = '';
+  branchType = this.uiStateService.viewBranchType;
+  branchId = this.uiStateService.branchId;
   isAllowedToDiff = combineLatest([this.uiStateService.viewBranchType, this.uiStateService.branchId, this.uiStateService.isInDiff]).pipe(
     //invalid conditions equals false
-    switchMap(([branchType,branchId,inDiff])=>iif(()=>inDiff===false && branchId.length!==0&&branchId!=='-1'&&branchId!==undefined,of(true),of(false)))
+    switchMap(([branchType,branchId,inDiff])=>iif(()=>inDiff===false && branchId.length!==0&&branchId!=='-1'&&branchId!==undefined,of('true'),of('false')))
   );
   diff = "./diff"
   currentRoute = this.route;
@@ -59,6 +61,7 @@ export class PlconfigComponent implements OnInit {
           })
         ), of(data).pipe(
           map(data => {
+            this.uiStateService.diffMode = false;
             this.uiStateService.difference = [];
             return data;
           })
@@ -83,11 +86,5 @@ export class PlconfigComponent implements OnInit {
       relativeTo: this.route.parent,
       queryParamsHandling: 'merge',
     })
-  }
-  navigateToDiff() {
-    this.router.navigate(['diff'], {
-      relativeTo: this.route.firstChild?.firstChild,
-      queryParamsHandling: 'merge',
-    });
   }
 }
