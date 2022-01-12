@@ -43,10 +43,11 @@ public class BranchOperationsUtil {
           * Confirm that all blocking reviews are completed. Loop through this state's blocking reviews to confirm
           * complete
           */
-         for (IAtsAbstractReview review : atsApi.getReviewService().getReviewsFromCurrentState(teamWf)) {
-            ReviewBlockType blockType = atsApi.getAttributeResolver().getSoleAttributeValue(review.getArtifactId(),
-               AtsAttributeTypes.ReviewBlocks, null);
-            if (blockType == ReviewBlockType.Commit && !review.isCompletedOrCancelled()) {
+         for (IAtsAbstractReview review : atsApi.getReviewService().getReviews(teamWf)) {
+            ReviewBlockType blockType =
+               ReviewBlockType.valueOf(atsApi.getAttributeResolver().getSoleAttributeValue(review.getArtifactId(),
+                  AtsAttributeTypes.ReviewBlocks, null));
+            if (blockType.isCommit() && !review.isCompletedOrCancelled()) {
                rd.error(
                   "All blocking reviews must be completed before committing the working branch.  Please complete all blocking reviews in order to continue.");
                return rd;
