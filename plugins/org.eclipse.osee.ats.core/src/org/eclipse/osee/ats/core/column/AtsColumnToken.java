@@ -86,6 +86,7 @@ public class AtsColumnToken {
    public static AtsAttrValCol UnPlannedWorkColumn = new AtsAttrValCol(AtsAttributeTypes.UnplannedWork, AtsColumnId.UnPlannedWork.getId(), AtsAttributeTypes.UnplannedWork.getUnqualifiedName(), 20, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsAttrValCol CrashOrBlankDisplayColumn = new AtsAttrValCol(AtsAttributeTypes.CrashOrBlankDisplay, AtsColumnId.CrashOrBlankDisplay.getId(), AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsAttrValCol ExternalReferenceColumn = new AtsAttrValCol(AtsAttributeTypes.ExternalReference, AtsColumnId.ExternalReference.getId(), AtsAttributeTypes.ExternalReference.getUnqualifiedName(), 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol GitChangeId = new AtsAttrValCol(CoreAttributeTypes.GitChangeId, AtsColumnId.GitChangeId.getId(), CoreAttributeTypes.GitChangeId.getUnqualifiedName(), 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
 
    // @formatter:on
 }

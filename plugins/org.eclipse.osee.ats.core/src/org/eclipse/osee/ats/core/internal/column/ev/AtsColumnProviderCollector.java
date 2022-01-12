@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.core.internal.column.ev;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
+import org.eclipse.osee.ats.api.column.IAtsColumnProvider;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +25,7 @@ public class AtsColumnProviderCollector {
    private static List<IAtsColumnProvider> columnProviders;
 
    public AtsColumnProviderCollector() {
+      // for jax-rs
    }
 
    public void addColumnProvider(IAtsColumnProvider columnProvider) {
