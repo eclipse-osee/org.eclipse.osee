@@ -18,6 +18,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatMenuModule } from '@angular/material/menu';
@@ -60,6 +61,7 @@ describe('StructureTableComponent', () => {
         MatDialogModule,
         MatInputModule,
         MatSelectModule,
+        MatIconModule,
         MatMenuModule,
         MatSidenavModule,
         FormsModule,
@@ -184,7 +186,7 @@ describe('StructureTableComponent', () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:'10',name:'New Structure',structure:{id:'10216532',name:'New Structure',elements:[],description:'',interfaceMaxSimultaneity:'',interfaceMinSimultaneity:'',interfaceTaskFileType:0,interfaceStructureCategory:'',numElements:'10',sizeInBytes:'10',bytesPerSecondMinimum:10,bytesPerSecondMaximum:10}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
     const spy = spyOn(component, 'openAddStructureDialog').and.callThrough();
-    const button = await loader.getHarness(MatButtonHarness.with({ text: '+' }));
+    const button = await loader.getHarness(MatButtonHarness.with({ selector:'#addStructure' }));
     await button.click();
     expect(spy).toHaveBeenCalled();
   })
@@ -210,7 +212,7 @@ describe('StructureTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateStructure').and.stub();
-      await menu.clickItem({ text: "Open Description" });
+      await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -223,7 +225,7 @@ describe('StructureTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateStructure').and.stub();
-      await menu.clickItem({ text: "Open Description" });
+      await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -236,7 +238,7 @@ describe('StructureTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'removeStructureFromSubmessage').and.stub();
-      await menu.clickItem({ text: "Remove structure from submessage" });
+      await menu.clickItem({ text: new RegExp("Remove structure from submessage") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -248,7 +250,7 @@ describe('StructureTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'deleteStructure').and.stub();
-      await menu.clickItem({ text: "Delete structure globally" });
+      await menu.clickItem({ text: new RegExp("Delete structure globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -258,7 +260,7 @@ describe('StructureTableComponent', () => {
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'viewDiff').and.callThrough();
-      await menu.clickItem({text:'View Diff'})
+      await menu.clickItem({text:new RegExp('View Diff')})
       expect(spy).toHaveBeenCalled();
     })
     afterEach(() => {

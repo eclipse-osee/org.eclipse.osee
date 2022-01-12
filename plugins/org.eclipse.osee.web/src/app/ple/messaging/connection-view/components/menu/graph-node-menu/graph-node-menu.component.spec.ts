@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
@@ -47,7 +48,7 @@ describe('GraphNodeMenuComponent', () => {
     router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], { 'url': new String() });
     route = jasmine.createSpyObj('ActivatedRoute',[],{parent:''})
     await TestBed.configureTestingModule({
-      imports:[MatButtonModule,MatDialogModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
+      imports:[MatButtonModule,MatIconModule,MatDialogModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
       providers:
         [
           { provide: Router, useValue: router },
@@ -100,7 +101,7 @@ describe('GraphNodeMenuComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(component.data), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: 'Edit ' + component.data.name }))).click();
+      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Edit ' + component.data.name) }))).click();
       expect(spy).toHaveBeenCalledWith(component.data);
     })
 
@@ -108,7 +109,7 @@ describe('GraphNodeMenuComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:component.data.id,name:component.data.name,extraNames:[component.sources[0].label,component.targets[0].label],type:'node'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'removeNodeAndConnection').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: 'Remove ' + component.data.name + " & Connection" }))).click();
+      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Remove ' + component.data.name + " & Connection") }))).click();
       expect(spy).toHaveBeenCalledWith(component.data,[component.sources[0]],[component.targets[0]]);
     })
 
@@ -116,7 +117,7 @@ describe('GraphNodeMenuComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({data:component.data}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'createConnectionToNode').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: 'Create Connection To ' + component.data.name }))).click();
+      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Create Connection To ' + component.data.name) }))).click();
       expect(spy).toHaveBeenCalledWith(component.data);
     })
   })
@@ -198,7 +199,7 @@ describe('GraphNodeMenuComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(component.data), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: 'Edit ' + component.data.name }))).click();
+      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Edit ' + component.data.name) }))).click();
       expect(spy).toHaveBeenCalledWith(component.data);
     })
 
@@ -206,7 +207,7 @@ describe('GraphNodeMenuComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:component.data.id,name:component.data.name,extraNames:[component.sources[0].label,component.targets[0].label],type:'node'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'removeNodeAndConnection').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: 'Remove ' + component.data.name + " & Connection" }))).click();
+      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Remove ' + component.data.name + " & Connection") }))).click();
       expect(spy).toHaveBeenCalledWith(component.data,[component.sources[0]],[component.targets[0]]);
     })
 
@@ -214,7 +215,7 @@ describe('GraphNodeMenuComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({data:component.data}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'createConnectionToNode').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: 'Create Connection To ' + component.data.name }))).click();
+      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Create Connection To ' + component.data.name) }))).click();
       expect(spy).toHaveBeenCalledWith(component.data);
     })
 
@@ -225,7 +226,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the name sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Name'})
@@ -234,7 +235,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the description sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Description'})
@@ -243,7 +244,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the address/port sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Address/Port'})
@@ -252,7 +253,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the background color sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Background Color'})
@@ -261,7 +262,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the applicability sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Applicability'})
@@ -381,7 +382,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the name sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Name'})
@@ -390,7 +391,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the description sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Description'})
@@ -399,7 +400,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the address/port sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Address/Port'})
@@ -408,7 +409,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the background color sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Background Color'})
@@ -417,7 +418,7 @@ describe('GraphNodeMenuComponent', () => {
       })
 
       it('should open the applicability sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for' })))
+        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
         if (await topItem.hasSubmenu()) {
           const subMenu = await topItem.getSubmenu();
           await subMenu?.clickItem({text:'Applicability'})

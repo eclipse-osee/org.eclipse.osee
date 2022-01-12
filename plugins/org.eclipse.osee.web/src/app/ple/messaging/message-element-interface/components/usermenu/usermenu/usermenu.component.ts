@@ -14,9 +14,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, from, iif, of } from 'rxjs';
 import { take, switchMap, filter, map, mergeMap, reduce, share, shareReplay } from 'rxjs/operators';
+import { message } from 'src/app/ple/messaging/message-interface/types/messages';
+import { subMessage } from 'src/app/ple/messaging/message-interface/types/sub-messages';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { HeaderService } from 'src/app/ple/messaging/shared/services/ui/header.service';
 import { CurrentStateService } from '../../../services/current-state.service';
+import { element } from '../../../types/element';
+import { structure } from '../../../types/structure';
 
 @Component({
   selector: 'app-usermenu',
@@ -35,7 +39,7 @@ export class UsermenuComponent implements OnInit {
       mergeMap((r) => from(r).pipe(
         filter((column) => allHeaders.includes(column.name) && column.enabled),
         map((header) => header.name),
-        reduce((acc, curr) => [...acc, curr], [] as string[])
+        reduce((acc, curr) => [...acc, curr], [] as (keyof element)[])
       ))
     )),
     mergeMap((headers) => iif(() => headers.length !== 0, of(headers).pipe(
@@ -51,9 +55,9 @@ export class UsermenuComponent implements OnInit {
   currentStructureHeaders = combineLatest([this.headerService.AllStructureHeaders,this.preferences]).pipe(
     switchMap(([structureHeaders,response]) => of(response.columnPreferences).pipe(
       mergeMap((r) => from(r).pipe(
-        filter((column) => structureHeaders.includes(column.name) && column.enabled),
-        map((header) => header.name),
-        reduce((acc, curr) => [...acc, curr], [] as string[])
+        filter((column) => structureHeaders.includes(column.name as keyof structure) && column.enabled),
+        map((header) => header.name as keyof structure),
+        reduce((acc, curr) => [...acc, curr], [] as (keyof structure)[])
       ))
     )),
     mergeMap((headers) => iif(() => headers.length !== 0, of(headers), of(['name',

@@ -27,8 +27,8 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
    styleUrls: ['./mim-single-diff.component.sass'],
    animations: [
     trigger('expandButton', [
-      state('closed', style({ transform: 'rotate(90deg)' })),
-      state('open', style({ transform: 'rotate(-90deg)' })),
+      state('closed', style({ transform: 'rotate(180deg)' })),
+      state('open', style({ transform: 'rotate(0deg)' })),
       transition('open => closed', animate('500ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
       transition('closed => open', animate('500ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
     ])

@@ -31,6 +31,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatMenuHarness, MatMenuItemHarness } from '@angular/material/menu/testing';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('EditElementFieldComponent', () => {
   let component: EditElementFieldComponent;
@@ -39,7 +40,7 @@ describe('EditElementFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
+      imports: [NoopAnimationsModule,MatIconModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
       providers: [{ provide: CurrentStateService, useValue: CurrentStateServiceMock },
         { provide: ActivatedRoute, useValue: {} }],
       declarations: [ EditElementFieldComponent ]

@@ -14,6 +14,7 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -32,7 +33,7 @@ describe('FeatureMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatMenuModule,NoopAnimationsModule,RouterTestingModule.withRoutes([{
+      imports:[MatMenuModule,MatIconModule,NoopAnimationsModule,RouterTestingModule.withRoutes([{
         path: '',
         component: FeatureMenuComponent,
         children: [
@@ -78,7 +79,7 @@ describe('FeatureMenuComponent', () => {
 
   it('should open a diff sidenav', async () => {
     const spy = spyOn(component, 'viewDiff').and.callThrough();
-    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: 'View Diff for abcd' }));
+    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') }));
     expect(menu).toBeDefined();
     await menu.focus();
     expect(await menu.getSubmenu()).toBeDefined();
@@ -87,7 +88,7 @@ describe('FeatureMenuComponent', () => {
   })
   it('should open the config group dialog', async() => {
     const spy = spyOn(component, 'displayFeatureMenu').and.callThrough();
-    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: 'Open Feature Menu' }));
+    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Open Feature Menu') }));
     await menu.click();
     expect(spy).toHaveBeenCalled();
   })

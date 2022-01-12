@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-menu-item (click)="displayFeatureMenu(feature)">Open Feature Menu</button>
+<button mat-menu-item (click)="displayFeatureMenu(feature)"><mat-icon color="primary">edit</mat-icon>Open Feature Menu</button>
 <ng-container *ngIf="hasFeatureChanges(feature)">
-    <button mat-menu-item [matMenuTriggerFor]="featureDiffMenu" [matMenuTriggerData]="{feature:feature}">View Diff for {{feature.name}}</button> <!--TODO IMPLEMENT DIFF VIEWER-->
+    <button mat-menu-item [matMenuTriggerFor]="featureDiffMenu" [matMenuTriggerData]="{feature:feature}"><mat-icon color="accent">pageview</mat-icon>View Diff for {{feature.name}}</button> <!--TODO IMPLEMENT DIFF VIEWER-->
 </ng-container>
 <mat-menu #featureDiffMenu="matMenu">
     <ng-template matMenuContent let-feature="feature">

@@ -25,6 +25,7 @@ export interface subMessageWithChanges extends subMessage{
     added: boolean,
     deleted: boolean,
     changes: {
+        [index:string]:difference|undefined,
         name?: difference,
         description?: difference,
         interfaceSubMessageNumber?: difference,

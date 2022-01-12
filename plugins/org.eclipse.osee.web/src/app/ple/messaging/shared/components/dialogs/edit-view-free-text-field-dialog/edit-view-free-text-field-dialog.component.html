@@ -31,7 +31,7 @@
     </button>
     <ng-container *ngIf="(editMode|async)===true; else noEditSubmit">
         <button mat-raised-button color="primary" [mat-dialog-close]="data">
-            Ok
+            <mat-icon>save</mat-icon><span>Save Changes</span>
         </button>
     </ng-container>
     <ng-template #noEditSubmit>

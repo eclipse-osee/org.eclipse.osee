@@ -14,6 +14,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { user } from 'src/app/userdata/types/user-data-user';
 import { apiURL } from 'src/environments/environment';
+import { element } from '../../../message-element-interface/types/element';
+import { structure } from '../../../message-element-interface/types/structure';
+import { message } from '../../../message-interface/types/messages';
+import { subMessage } from '../../../message-interface/types/sub-messages';
 import { MimPreferences } from '../../types/mim.preferences';
 
 @Injectable({
@@ -24,7 +28,7 @@ export class MimPreferencesService {
   constructor (private http: HttpClient) { }
   
   getUserPrefs(branchId: string, user: user) {
-    return this.http.get<MimPreferences>(apiURL + '/mim/user/' + branchId, {
+    return this.http.get<MimPreferences<structure&message&subMessage&element>>(apiURL + '/mim/user/' + branchId, {
       headers: new HttpHeaders({ 'osee.account.id': user.id })
     })
   }

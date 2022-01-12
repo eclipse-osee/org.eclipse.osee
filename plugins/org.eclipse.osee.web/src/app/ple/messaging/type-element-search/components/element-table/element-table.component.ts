@@ -12,6 +12,8 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { map } from 'rxjs/operators';
+import { HeaderService } from '../../../shared/services/ui/header.service';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { element } from '../../types/element';
 
@@ -22,13 +24,13 @@ import { element } from '../../types/element';
 })
 export class ElementTableComponent implements OnInit {
   dataSource = new MatTableDataSource<element>();
-  headers = [
+  headers:(keyof element)[] = [
     'name',
     'platformTypeName2',
     'interfaceElementAlterable',
     'description',
     'notes'];
-  constructor (private elementService: CurrentElementSearchService) {
+  constructor (private elementService: CurrentElementSearchService, private headerService: HeaderService) {
     this.elementService.elements.subscribe((val) => {
       this.dataSource.data = val;
     })
@@ -39,5 +41,11 @@ export class ElementTableComponent implements OnInit {
 
   valueTracker(index: any, item: any) {
     return index;
+  }
+
+  getHumanReadable(value:string) {
+    return this.headerService.getHeaderByName(value, 'element').pipe(
+      map((v)=>v.humanReadable)
+    )
   }
 }

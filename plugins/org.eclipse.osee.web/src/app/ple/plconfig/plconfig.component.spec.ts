@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -47,6 +48,7 @@ describe('PlconfigComponent', () => {
         HttpClientModule,
         MatDialogModule,
         MatMenuModule,
+        MatIconModule,
         RouterTestingModule,
         MatTableModule,
         MatFormFieldModule,

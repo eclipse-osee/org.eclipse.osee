@@ -13,13 +13,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, iif, Observable, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
-import { headerDetail } from '../../types/headerDetail';
+import { element, elementWithChanges } from '../../../message-element-interface/types/element';
+import { structure, structureWithChanges } from '../../../message-element-interface/types/structure';
+import { message, messageWithChanges } from '../../../message-interface/types/messages';
+import { subMessage, subMessageWithChanges } from '../../../message-interface/types/sub-messages';
+import { elementHeaderDetail, headerDetail, messageHeaderDetail, structureHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HeaderService {
-  private _allElements = new BehaviorSubject<headerDetail[]>([
+  private _allElements = new BehaviorSubject<elementHeaderDetail[]>([
     { header: 'name', description: 'Name of element', humanReadable: 'Name' },
     { header: 'platformTypeName2', description: 'Platform Type of Element', humanReadable: 'Type' },
     { header: 'interfaceElementIndexStart', description: 'Starting Index of Element Array', humanReadable: 'Start Index' },
@@ -40,7 +44,7 @@ export class HeaderService {
     shareReplay({bufferSize:1,refCount:true})
   )
 
-  private _allStructures = new BehaviorSubject<headerDetail[]>([
+  private _allStructures = new BehaviorSubject<structureHeaderDetail[]>([
     { header: 'name', description: 'Name of structure', humanReadable: 'Name' },
     { header: 'description', description: 'Description of a given structure', humanReadable: 'Description' },
     { header: 'interfaceMinSimultaneity', description: 'Minimum occurences of a given structure', humanReadable: 'Min Simult.' },
@@ -51,13 +55,13 @@ export class HeaderService {
     { header: 'sizeInBytes', description: '(Computed) Size of structure, given in bytes', humanReadable: 'Size(B)' },
     { header: 'bytesPerSecondMinimum', description: '(Computed) Minimum rate of a given structure calculated as Minimum Simultaneity x Size In Bytes', humanReadable: 'Min BPS' },
     { header: 'bytesPerSecondMaximum', description: '(Computed) Maximum rate of a given structure calculated as Maximum Simultaneity x Size In Bytes', humanReadable: 'Max BPS' },
-    { header: 'GenerationIndicator', description: 'TBD?(need to figure out)', humanReadable: 'Indicator' },
+    // { header: 'GenerationIndicator', description: 'TBD?(need to figure out)', humanReadable: 'Indicator' },
     { header: 'applicability', description: 'Applicability of a given structure', humanReadable: 'Applicability' },
   ]).pipe(
     shareReplay({bufferSize:1,refCount:true})
   )
 
-  private _allMessages = new BehaviorSubject<headerDetail[]>([
+  private _allMessages = new BehaviorSubject<messageHeaderDetail[]>([
     { header: 'name', description: 'Name of message', humanReadable: 'Name' },
     { header: 'description', description: 'Description of a given message', humanReadable: 'Description' },
     { header: 'interfaceMessageNumber', description: 'Order of message', humanReadable: 'Message Number' },
@@ -68,7 +72,7 @@ export class HeaderService {
     { header: 'applicability', description: 'Applicability of a given message', humanReadable: 'Applicability' },
   ])
 
-  private _allSubMessages = new BehaviorSubject<headerDetail[]>([
+  private _allSubMessages = new BehaviorSubject<subMessageHeaderDetail[]>([
     { header: 'name', description: 'Name of submessage', humanReadable: 'SubMessage Name' },
     { header: 'description', description: 'Description of submessage', humanReadable: 'SubMessage Description' },
     { header: 'interfaceSubMessageNumber', description: 'Order of submessage', humanReadable: 'SubMessage Number' },
@@ -77,7 +81,7 @@ export class HeaderService {
   private _allElementsHeaders = this._allElements.pipe(
     mergeMap((elements) => from(elements).pipe(
       map((element) => element.header),
-      reduce((acc, curr) => [...acc, curr], [] as string[])
+      reduce((acc, curr) => [...acc, curr], [] as (keyof element)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -85,7 +89,7 @@ export class HeaderService {
   private _allStructureHeaders =this._allStructures.pipe(
     mergeMap((structures) => from(structures).pipe(
       map((structure) => structure.header),
-      reduce((acc, curr) => [...acc, curr], [] as string[])
+      reduce((acc, curr) => [...acc, curr], [] as (keyof structure)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -93,7 +97,7 @@ export class HeaderService {
   private _allMessageHeaders =this._allMessages.pipe(
     mergeMap((messages) => from(messages).pipe(
       map((message) => message.header),
-      reduce((acc, curr) => [...acc, curr], [] as string[])
+      reduce((acc, curr) => [...acc, curr], [] as (keyof message)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -101,7 +105,7 @@ export class HeaderService {
   private _allSubMessageHeaders =this._allSubMessages.pipe(
     mergeMap((submessages) => from(submessages).pipe(
       map((submessage) => submessage.header),
-      reduce((acc, curr) => [...acc, curr], [] as string[])
+      reduce((acc, curr) => [...acc, curr], [] as (keyof subMessage)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )

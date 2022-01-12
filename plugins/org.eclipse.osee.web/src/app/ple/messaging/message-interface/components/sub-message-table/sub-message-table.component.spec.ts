@@ -18,6 +18,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -66,7 +67,7 @@ describe('SubMessageTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatTableModule, MatTooltipModule, MatButtonModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule.withRoutes([{path:'',component:SubMessageTableComponent},{ path: 'diffOpen', component: MimSingleDiffDummy,outlet:'rightSideNav' }]), MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
+      imports: [MatTableModule,MatIconModule, MatTooltipModule, MatButtonModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule.withRoutes([{path:'',component:SubMessageTableComponent},{ path: 'diffOpen', component: MimSingleDiffDummy,outlet:'rightSideNav' }]), MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
       declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent,HighlightFilteredTextDirective],
       providers: [{provide: CurrentMessagesService, useValue:CurrentMessageServiceMock},
         // { provide: Router, useValue: router },
@@ -132,9 +133,9 @@ describe('SubMessageTableComponent', () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{id:'5',name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
     let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'relateSubMessage').and.stub();
-    let button = (await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({ text: '+' })));
+    let button = (await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({ selector:'.add-button' })));
     expect(button).toBeDefined();
-    await(await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({text:'+'}))).click();
+    await(await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({selector:'.add-button'}))).click();
     expect(spy).toHaveBeenCalled();
     expect(serviceSpy).toHaveBeenCalled();
   })
@@ -144,9 +145,9 @@ describe('SubMessageTableComponent', () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
     let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'relateSubMessage').and.stub();
-    let button = (await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({ text: '+' })));
+    let button = (await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({ selector:'.add-button' })));
     expect(button).toBeDefined();
-    await(await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({text:'+'}))).click();
+    await(await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({selector:'.add-button'}))).click();
     expect(spy).toHaveBeenCalled();
     expect(serviceSpy).toHaveBeenCalled();
   })
@@ -179,84 +180,84 @@ describe('SubMessageTableComponent', () => {
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'viewDiff').and.callThrough();
-      await menu.clickItem({ text: "View Diff" });
+      await menu.clickItem({ text: new RegExp("View Diff") });
       expect(spy).toHaveBeenCalled();
     })
 
     it('should open the menu and dismiss a description', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.stub();
-      await menu.clickItem({ text: "Open Description" });
+      await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
 
     it('should open the menu and edit a description', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.stub();
-      await menu.clickItem({ text: "Open Description" });
+      await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
 
     it('should open the menu and remove a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.stub();
-      await menu.clickItem({ text: "Remove submessage from message" });
+      await menu.clickItem({ text: new RegExp("Remove submessage from message") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
 
     it('should open the menu and not remove a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.stub();
-      await menu.clickItem({ text: "Remove submessage from message" });
+      await menu.clickItem({ text: new RegExp("Remove submessage from message") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).not.toHaveBeenCalled();
     })
 
     it('should open the menu and delete a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.stub();
-      await menu.clickItem({ text: "Delete submessage globally" });
+      await menu.clickItem({ text: new RegExp("Delete submessage globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
 
     it('should open the menu and not delete a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
+      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.stub();
-      await menu.clickItem({ text: "Delete submessage globally" });
+      await menu.clickItem({ text: new RegExp("Delete submessage globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).not.toHaveBeenCalled();
     })

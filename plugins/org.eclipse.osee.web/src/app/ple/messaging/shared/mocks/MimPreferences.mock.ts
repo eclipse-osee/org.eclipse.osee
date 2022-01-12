@@ -10,9 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { element } from "../../message-element-interface/types/element";
+import { structure } from "../../message-element-interface/types/structure";
+import { message } from "../../message-interface/types/messages";
+import { subMessage } from "../../message-interface/types/sub-messages";
 import { MimPreferences } from "../types/mim.preferences";
 
-export const MimPreferencesMock: MimPreferences = {
+export const MimPreferencesMock: MimPreferences<structure&message&subMessage&element> = {
     id: "61106791",
     name: "Joe Smith",
     columnPreferences: [

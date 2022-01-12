@@ -480,6 +480,41 @@ export class CurrentStateService {
                                         if ((el as elementWithChanges).changes === undefined) {
                                           (el as elementWithChanges).changes = {};
                                         }
+                                        (el as elementWithChanges).changes.name = {
+                                          previousValue: '',
+                                          currentValue:el.name,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.description = {
+                                          previousValue: '',
+                                          currentValue:el.description,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.interfaceElementAlterable = {
+                                          previousValue: '',
+                                          currentValue:el.interfaceElementAlterable,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.interfaceElementIndexEnd = {
+                                          previousValue: '',
+                                          currentValue:el.interfaceElementIndexEnd,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.interfaceElementIndexStart = {
+                                          previousValue: '',
+                                          currentValue:el.interfaceElementIndexStart,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.notes = {
+                                          previousValue: '',
+                                          currentValue:el.notes,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.platformTypeName2 = {
+                                          previousValue: '',
+                                          currentValue:el.platformTypeName2,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
                                         (el as elementWithChanges).changes.applicability = {
                                           previousValue: change.baselineVersion.applicabilityToken,
                                           currentValue: change.currentVersion.applicabilityToken,

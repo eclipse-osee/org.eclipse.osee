@@ -35,6 +35,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { UsermenuComponent } from './components/menus/usermenu/usermenu.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { MatMenuModule } from '@angular/material/menu';
     LayoutModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
     MatDialogModule,
     MatSelectModule,
     MatStepperModule,

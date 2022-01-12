@@ -102,7 +102,7 @@
 <mat-menu #graphMenu="matMenu">
   <ng-template matMenuContent>
     <ng-container *ngIf="editMode">
-      <button mat-menu-item (click)="createNewNode()">Create New Node</button>
+      <button mat-menu-item (click)="createNewNode()"><mat-icon color="success">add_circle_outline</mat-icon>Create New Node</button>
     </ng-container>
     <ng-container *ngIf="!editMode">
       <mat-label>

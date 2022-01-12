@@ -49,7 +49,7 @@
         <ng-container matColumnDef="footer">
             <td mat-footer-cell *matFooterCellDef [attr.colspan]="(headers|async)?.length||0" style="text-align:right">
                 <ng-container *ngIf="editMode===true;">
-                    <button mat-mini-fab color="primary" (click)="createNewSubMessage()">+</button>
+                    <button mat-mini-fab color="primary" class="add-button" (click)="createNewSubMessage()"><mat-icon>add</mat-icon></button>
                 </ng-container>
              </td>
         </ng-container>
@@ -61,18 +61,18 @@
     </table>
 </div>
 <mat-menu #contextMenu="matMenu">
-    <ng-template matMenuContent let-message="message" let-submessage="submessage" let-location="location" let-field="field" let-header="header">
+    <ng-template matMenuContent let-message="message" let-submessage="submessage" let-location="location" let-field="field" let-header="header" let-change="change">
         <ng-container *ngIf="(_messageRoute|async) as mRoute">
-            <a mat-menu-item [routerLink]="mRoute.beginning+message.id+'/'+submessage.id+'/'+location+'/'+'elements'+mRoute.end"> Open submessage details</a>
-            <a mat-menu-item target="_blank" [routerLink]="mRoute.beginning+message.id+'/'+submessage.id+'/'+location+'/'+'elements'+mRoute.end"> Open submessage details in new tab</a>
+            <a mat-menu-item [routerLink]="mRoute.beginning+message.id+'/'+submessage.id+'/'+location+'/'+'elements'+mRoute.end"><mat-icon>subdirectory_arrow_right</mat-icon>Open submessage details</a>
+            <a mat-menu-item target="_blank" [routerLink]="mRoute.beginning+message.id+'/'+submessage.id+'/'+location+'/'+'elements'+mRoute.end"><mat-icon color="primary">open_in_new</mat-icon>Open submessage details in new tab</a>
         </ng-container>
-        <button mat-menu-item (click)="openDescriptionDialog(submessage.description,submessage.id,message.id)">Open Description</button>
-        <ng-container *ngIf="submessage.changes[header]!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,submessage.changes[header],header)">View Diff</button>
+        <button mat-menu-item (click)="openDescriptionDialog(submessage.description,submessage.id,message.id)"><mat-icon color="primary">description</mat-icon>Open Description</button>
+        <ng-container *ngIf="isDifference(change)">
+            <button mat-menu-item (click)="viewDiff(true,change,header)"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
         </ng-container>
         <ng-container *ngIf="editMode==true;">
-            <button mat-menu-item (click)="removeSubMessage(submessage,message)">Remove submessage from message</button>
-            <button mat-menu-item (click)="deleteSubMessage(submessage)">Delete submessage globally</button>
+            <button mat-menu-item (click)="removeSubMessage(submessage,message)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove submessage from message</button>
+            <button mat-menu-item (click)="deleteSubMessage(submessage)"><mat-icon color="warn">delete_forever</mat-icon>Delete submessage globally</button>
         </ng-container>
     </ng-template>
 </mat-menu>

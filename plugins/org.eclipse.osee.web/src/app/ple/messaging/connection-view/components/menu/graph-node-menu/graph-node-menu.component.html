@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="hasChanges(data)">
-    <button mat-menu-item [matMenuTriggerFor]="nodeDiffMenu" [matMenuTriggerData]="{data:data}">View Diff for</button>
+    <button mat-menu-item [matMenuTriggerFor]="nodeDiffMenu" [matMenuTriggerData]="{data:data}"><mat-icon color="accent">pageview</mat-icon>View Diff for</button>
 </ng-container>
 <ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
-    <button mat-menu-item (click)="openEditNodeDialog(data)">Edit {{data.name}}</button>
-    <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)">Remove {{data.name}} & Connection</button>
-    <button mat-menu-item (click)="createConnectionToNode(data)">Create Connection To {{data.name}}</button>
+    <button mat-menu-item (click)="openEditNodeDialog(data)"><mat-icon color="primary">edit</mat-icon>Edit {{data.name}}</button>
+    <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove {{data.name}} & Connection</button>
+    <button mat-menu-item (click)="createConnectionToNode(data)"><mat-icon color="success">show_chart</mat-icon><span>Create Connection To {{data.name}}</span></button>
 </ng-container>
 <ng-container *ngIf="!(hasChanges(data) || editMode)">
     <mat-label mat-menu-item [disabled]=true>No options available.</mat-label>

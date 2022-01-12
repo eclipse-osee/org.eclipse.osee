@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  -->
  <ng-container *ngIf="{editable:(_editable | async)} as edit">
-    <button mat-menu-item (click)="openConfigMenu(config.name,edit.editable||'false')">Open Config Menu</button>
+    <button mat-menu-item (click)="openConfigMenu(config.name,edit.editable||'false')"><mat-icon color="primary">edit</mat-icon>Open Config Menu</button>
 </ng-container>
 <ng-container *ngIf="hasViewChanges(config)">
-    <button mat-menu-item [matMenuTriggerFor]="configDiffMenu" [matMenuTriggerData]="{config:config}">View Diff for {{config.name}}</button>
+    <button mat-menu-item [matMenuTriggerFor]="configDiffMenu" [matMenuTriggerData]="{config:config}"><mat-icon color="accent">pageview</mat-icon>View Diff for {{config.name}}</button>
 </ng-container>
 <mat-menu #configDiffMenu="matMenu">
     <ng-template matMenuContent let-config="config">

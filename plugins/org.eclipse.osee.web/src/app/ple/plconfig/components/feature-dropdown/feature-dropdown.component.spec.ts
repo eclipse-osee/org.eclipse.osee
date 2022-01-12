@@ -13,6 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
@@ -51,7 +52,7 @@ describe('FeatureDropdownComponent', () => {
     const deleteFeatureSpy = branchService.deleteFeature.and.returnValue(of(testResponse));
     const modifyFeatureSpy = branchService.modifyFeature.and.returnValue(of(testResponse));
     await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatButtonModule],
+      imports:[MatMenuModule,MatIconModule,MatButtonModule],
       declarations: [FeatureDropdownComponent],
       providers: [
         {

@@ -32,10 +32,10 @@ describe('ColumnPreferencesDialogComponent', () => {
   let component: ColumnPreferencesDialogComponent;
   let fixture: ComponentFixture<ColumnPreferencesDialogComponent>;
   let dialogData:settingsDialogData= {
-    allowedHeaders1: ['s1','s2'],
-    allHeaders1: ['s1','s2','s3'],
-    allowedHeaders2: ['e1','e2'],
-    allHeaders2: ['e1', 'e2', 'e3'],
+    allowedHeaders1: ['name','description'],
+    allHeaders1: ['name','description','applicability'],
+    allowedHeaders2: ['name','description'],
+    allHeaders2: ['name','description','applicability'],
     branchId: '10',
     editable: false,
     headers1Label: "Headers1 Label",

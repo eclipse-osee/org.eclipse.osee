@@ -12,7 +12,7 @@
  -->
 <ng-container *ngIf="hasChanges(value)">
     <ng-container *ngIf="value.changes.value!==undefined">
-        <button mat-menu-item (click)="viewDiff(true,value.changes.value,'Value')">View Diff for {{value.name}}</button>
+        <button mat-menu-item (click)="viewDiff(true,value.changes.value,'Value')"><mat-icon color="accent">pageview</mat-icon>View Diff for {{value.name}}</button>
     </ng-container>
 </ng-container>
 <ng-container *ngIf="!hasChanges(value)">

@@ -13,6 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { TransactionService } from 'src/app/transactions/transaction.service';
@@ -26,7 +27,7 @@ describe('MimSingleDiffComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatFormFieldModule, FormsModule, NoopAnimationsModule],
+      imports: [MatFormFieldModule, FormsModule,MatIconModule, NoopAnimationsModule],
       providers: [
         {provide: SideNavService},
         { provide: TransactionService, useValue: transactionServiceMock }],

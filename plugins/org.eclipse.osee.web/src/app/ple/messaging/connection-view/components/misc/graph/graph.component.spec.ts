@@ -44,6 +44,7 @@ import { connection, connectionWithChanges, OseeEdge, transportType } from 'src/
 import { node } from 'src/app/ple/messaging/shared/types/node';
 import { GraphLinkMenuDummy } from '../../../testing/MockComponents/graph-link-menu.mock';
 import { GraphNodeMenuDummy } from '../../../testing/MockComponents/graph-node-menu.mock';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
@@ -56,7 +57,7 @@ describe('GraphComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatDialogModule,NgxGraphModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
+      imports:[MatDialogModule,MatIconModule,NgxGraphModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
       providers:
         [
           { provide: CurrentGraphService, useValue: graphServiceMock },
@@ -301,7 +302,7 @@ describe('GraphComponent', () => {
               let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(response), close: null });
               let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
               let spy = spyOn(component, 'createNewNode').and.callThrough();
-              await menuGraphHarness.clickItem({ text: 'Create New Node' });
+              await menuGraphHarness.clickItem({ text: new RegExp('Create New Node') });
               expect(spy).toHaveBeenCalled();
             })
           })

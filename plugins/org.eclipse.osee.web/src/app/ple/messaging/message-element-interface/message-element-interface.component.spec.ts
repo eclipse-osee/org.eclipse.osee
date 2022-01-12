@@ -40,6 +40,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { StructureTableComponentMock } from './mocks/components/StructureTable.mock';
 import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatIconModule } from '@angular/material/icon';
 
 let loader: HarnessLoader;
 
@@ -53,6 +54,7 @@ describe('MessageElementInterfaceComponent', () => {
         MatFormFieldModule,
         MatDialogModule,
         MatInputModule,
+        MatIconModule,
         MatSelectModule,
         MatMenuModule,
         FormsModule,

@@ -14,10 +14,11 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
-import { EditAuthService } from 'src/app/ple/messaging/shared/services/edit-auth-service.service';
+import { EditAuthService } from '../../../../shared/services/edit-auth-service.service';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { editAuthServiceMock } from '../../../mocks/EditAuthService.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
@@ -33,7 +34,7 @@ describe('UsermenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatMenuModule, MatDialogModule],
+      imports: [MatMenuModule,MatIconModule, MatDialogModule],
       providers: [
         { provide: EditAuthService, useValue: editAuthServiceMock },
         { provide: CurrentGraphService, useValue: graphServiceMock }],
@@ -59,7 +60,7 @@ describe('UsermenuComponent', () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
     let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-    (await (await loader.getHarness(MatMenuItemHarness.with({text:'Settings'}))).click());
+    (await (await loader.getHarness(MatMenuItemHarness.with({text: new RegExp('Settings')}))).click());
     expect(spy).toHaveBeenCalled();
   })
 });
