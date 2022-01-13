@@ -29,6 +29,7 @@ public class StateToken extends NamedIdBase {
    public static StateToken ANY = StateToken.valueOf(438395388L, "ANY");
 
    public static StateToken Analyze = StateToken.valueOf(593820493L, "Analyze");
+   public static StateToken Analyzed = StateToken.valueOf(3234232L, "Analyzed");
    public static StateToken Authorize = StateToken.valueOf(91727489234L, "Authorize");
    public static StateToken Awaiting_Code = StateToken.valueOf(1271780231L, "Awaiting_Code");
    public static StateToken Awaiting_Review = StateToken.valueOf(928685590L, "Awaiting_Review");
