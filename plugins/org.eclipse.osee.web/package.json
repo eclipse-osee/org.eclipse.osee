@@ -41,6 +41,15 @@
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"
   },
+  "overrides":{
+    "@swimlane/ngx-graph":{
+      "@angular/animations":"$@angular/animations",
+      "@angular/common":"$@angular/common",
+      "@angular/core":"$@angular/core",
+      "@angular/cdk":"$@angular/cdk",
+      "rxjs":"$rxjs"
+    }
+  },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1101.4",
     "@angular/cli": "~11.1.4",
