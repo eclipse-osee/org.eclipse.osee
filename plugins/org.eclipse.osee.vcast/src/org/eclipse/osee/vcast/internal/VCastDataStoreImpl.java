@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.vcast.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -133,7 +134,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    }
 
    @Override
-   public Collection<VCastInstrumentedFile> getAllInstrumentedFiles(Map<String, String> idToFileName) {
+   public Collection<VCastInstrumentedFile> getAllInstrumentedFiles(Map<String, File> idToFileName) {
       Collection<VCastInstrumentedFile> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
@@ -145,7 +146,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer project_id = stmt.getInt("project_id");
             Integer unit_index = stmt.getInt("unit_index");
             Integer coverage_type = stmt.getInt("coverage_type");
-            String LIS_file = idToFileName.get(source_file_id.toString());
+            String LIS_file = idToFileName.get(source_file_id.toString()).getName();
             Integer checksum = stmt.getInt("checksum");
             toReturn.add(new VCastInstrumentedFile(id, source_file_id, project_id, unit_index,
                VCastCoverageType.valueOf(coverage_type), LIS_file, checksum));
