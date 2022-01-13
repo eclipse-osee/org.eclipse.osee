@@ -160,12 +160,9 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - addAtsSectionChildren", debug);
       try {
 
-         // TOP
          addTopSearchItems();
 
          addAdvancedSearchesItems();
-
-         // Agile
 
          addEmailItems();
 

@@ -105,7 +105,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    private Composite comp;
 
    public CreateNewActionBlam() {
-      super("Create New Action (Beta)", BLAM_DESCRIPTION, null);
+      super("Create New Action", BLAM_DESCRIPTION, null);
       this.atsApi = AtsApiService.get();
    }
 
@@ -400,17 +400,17 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavItemCat.TOP, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavItemCat.TOP);
    }
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
+      return ImageManager.getImage(AtsImage.NEW_ACTION);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.CHANGE_REQUEST);
+      return ImageManager.getImageDescriptor(AtsImage.NEW_ACTION);
    }
 
    public ActionResult getActionResult() {
