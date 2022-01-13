@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -234,7 +235,7 @@ public class ExportSet {
             row[index++] = String.valueOf(item.getCreationDate());
             row[index++] = String.valueOf(item.getLastUpdate());
             row[index++] = String.valueOf(item.getVersion());
-            row[index++] = String.valueOf(prettifyAnnotations(item.getAnnotationsList()));
+            row[index++] = String.valueOf(prettifyAnnotations(sortAnnotations(item.getAnnotationsList())));
 
             sheetWriter.writeRow((Object[]) row);
          }
@@ -295,7 +296,7 @@ public class ExportSet {
 
          for (DispoItem item : items) {
             Map<String, MCDCCoverageData> mcdcToCoverageData = new HashMap<>();
-            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            List<DispoAnnotationData> annotations = sortAnnotations(item.getAnnotationsList());
             for (DispoAnnotationData annotation : annotations) {
                writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
                   levelToResolutionTypesToCount, leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
@@ -337,7 +338,8 @@ public class ExportSet {
             row[index] =
                getPercent(levelToCoveredTotalCount.get(lvl).getValue(), levelToTotalCount.get(lvl).getValue(), false);
             uncoveredRow[index++] =
-               getPercent((levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue()), levelToTotalCount.get(lvl).getValue(), false);
+               getPercent((levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue()),
+                  levelToTotalCount.get(lvl).getValue(), false);
          }
          sheetWriter.writeRow(row);
 
@@ -451,7 +453,7 @@ public class ExportSet {
          sheetWriter.startSheet("Test Script Sheet", testScriptSheetHeaders.length);
          sheetWriter.writeRow(testScriptSheetHeaders);
          for (DispoItem item : items) {
-            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            List<DispoAnnotationData> annotations = sortAnnotations(item.getAnnotationsList());
             for (DispoAnnotationData annotation : annotations) {
                if (annotation.getResolutionType().equals(DispoStrings.Test_Unit_Resolution)) {
                   HashMap<String, String> testNameToPath =
@@ -470,6 +472,29 @@ public class ExportSet {
          throw new OseeCoreException(ex);
       }
 
+   }
+
+   private List<DispoAnnotationData> sortAnnotations(List<DispoAnnotationData> annotationData) {
+      TreeMap<Double, DispoAnnotationData> annotationMap = new TreeMap<>();
+      for (DispoAnnotationData annotation : annotationData) {
+         String codeLineStr = annotation.getName();
+         double codeLine = 0;
+         try {
+            if (codeLineStr.contains(".")) {
+               String[] parts = codeLineStr.split("\\.");
+               codeLine = Double.valueOf(parts[0]);
+               if (parts[2].contains("F")) {
+                  codeLine += 0.5;
+               }
+            } else {
+               codeLine = Double.valueOf(codeLineStr);
+            }
+         } catch (Exception ex) {
+            //Do Nothing
+         }
+         annotationMap.put(codeLine, annotation);
+      }
+      return new ArrayList<DispoAnnotationData>(annotationMap.values());
    }
 
    private List<Integer> getDiscrepanciesAsInts(List<String> discrepancyLocations) {
