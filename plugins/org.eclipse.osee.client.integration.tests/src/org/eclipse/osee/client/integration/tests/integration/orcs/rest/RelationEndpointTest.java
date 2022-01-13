@@ -94,4 +94,11 @@ public class RelationEndpointTest {
 
       Assert.assertTrue(relationCreatedSideA && relationCreatedSideB);
    }
+
+   @Test
+   public void testGetArtifactsByRelationType() {
+      ArtifactToken parentArtifact = DefaultHierarchyRoot;
+      List<ArtifactToken> arts = relationEndpoint.getRelatedHierarchy(parentArtifact);
+      Assert.assertFalse(arts.isEmpty());
+   }
 }

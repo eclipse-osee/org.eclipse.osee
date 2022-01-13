@@ -13,10 +13,15 @@
 
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -43,5 +48,16 @@ public class RelationEndpointImpl implements RelationEndpoint {
       tx.commit();
 
       return Response.ok().build();
+   }
+
+   @Override
+   public List<ArtifactToken> getRelatedHierarchy(ArtifactId artifact) {
+      List<ArtifactToken> ids = getRelated(artifact, CoreRelationTypes.DefaultHierarchical, RelationSide.SIDE_A);
+      return ids;
+   }
+
+   private List<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeToken relationType, RelationSide side) {
+      RelationTypeSide rts = new RelationTypeSide(relationType, side);
+      return orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(rts, artifact).asArtifactTokens();
    }
 }
