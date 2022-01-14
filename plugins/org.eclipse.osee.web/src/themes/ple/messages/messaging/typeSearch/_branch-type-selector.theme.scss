@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use 'sass:map';
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
