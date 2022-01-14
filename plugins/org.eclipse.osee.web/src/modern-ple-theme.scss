@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '~@angular/material' as mat;
-//@import '~@angular/material/theming';
+@use '@angular/material' as mat;
+//@import '@angular/material/theming';
 @import './theme-system.scss';
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker

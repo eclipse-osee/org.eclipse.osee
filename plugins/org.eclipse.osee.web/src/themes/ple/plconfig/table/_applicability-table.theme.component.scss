@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use 'sass:map';
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @import '../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
