@@ -10,13 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use 'sass:map';
 @use '~@angular/material' as mat;
 @import '../../../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
   // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat-get-color-config($config-or-theme);
+  $config: mat.get-color-config($config-or-theme);
   // Extract the palettes you need from the theme definition.
   $primary: map-get($config, primary);
   $accent: map-get($config, accent);
@@ -86,7 +87,7 @@
   }
   .message-interface-table-sub-message-computed{
     color: mat.get-color-from-palette($foreground,secondary-text) //need to user test this
-    //color:mat-color($warn,900)
+    //color:mat.color($warn,900)
   }
 
   .ple-message-interface-table-highlighted-text{
@@ -97,12 +98,12 @@
     
 }
 @mixin typography-themed($config-or-theme){
-  $config: mat-get-typography-config($config-or-theme);
+  $config: mat.get-typography-config($config-or-theme);
 }
 
 @mixin theme($theme, $typography){
-    $color: mat-get-color-config($theme);
-    $typography: mat-get-typography-config($typography);
+    $color: mat.get-color-config($theme);
+    $typography: mat.get-typography-config($typography);
     @include typography($theme);
     
     @if $color != null {  

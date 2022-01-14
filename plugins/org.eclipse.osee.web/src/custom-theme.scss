@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use '~@angular/material' as mat;
+@use 'sass:map';
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 
@@ -43,7 +44,7 @@
     @include ple.messages-messaging-message-interface-graph-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-typeSearch-theme($modern-ple-light-theme);
     .mat-success{
-        color:mat.get-color-from-palette(map-get(mat-get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
+        color:mat.get-color-from-palette(map-get(mat.get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
     }
 
 .dark-theme{

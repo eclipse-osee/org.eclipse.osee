@@ -10,12 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use 'sass:map';
 @use '~@angular/material' as mat;
+@import '../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
   // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat-get-color-config($config-or-theme);
+  $config: mat.get-color-config($config-or-theme);
   // Extract the palettes you need from the theme definition.
   $primary: map-get($config, primary);
   $accent: map-get($config, accent);
@@ -37,13 +39,13 @@
 
 }
 @mixin typography-themed($config-or-theme){
-  $config: mat-get-typography-config($config-or-theme);
+  $config: mat.get-typography-config($config-or-theme);
 
 }
 
 @mixin theme($theme){
-    $color: mat-get-color-config($theme);
-    $typography: mat-get-typography-config($theme);
+    $color: mat.get-color-config($theme);
+    $typography: mat.get-typography-config($theme);
     @include typography($theme);
     
     @if $color != null {  
