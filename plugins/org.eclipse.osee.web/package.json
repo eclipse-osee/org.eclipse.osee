@@ -35,20 +35,12 @@
     "@angular/platform-browser": "~13.1.2",
     "@angular/platform-browser-dynamic": "~13.1.2",
     "@angular/router": "~13.1.2",
-    "@swimlane/ngx-graph": "^7.2.0",
+    "@swimlane/ngx-graph": "^8.0.0",
+    "d3-scale": "^4.0.2",
     "material-design-icons": "^3.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
-  },
-  "overrides": {
-    "@swimlane/ngx-graph": {
-      "@angular/animations": "$@angular/animations",
-      "@angular/common": "$@angular/common",
-      "@angular/core": "$@angular/core",
-      "@angular/cdk": "$@angular/cdk",
-      "rxjs": "$rxjs"
-    }
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.1.3",
