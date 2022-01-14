@@ -26,7 +26,7 @@ public abstract class AbstractUserGroupImpl extends BaseId implements IUserGroup
    protected ArtifactToken groupArtifact;
 
    public AbstractUserGroupImpl(ArtifactToken userGroupArt) {
-      super(userGroupArt.getId());
+      super(userGroupArt);
       this.groupArtifact = userGroupArt;
    }
 

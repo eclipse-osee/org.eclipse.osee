@@ -39,10 +39,6 @@ public interface Id {
       return valueOf(id, BaseId::new);
    }
 
-   public static Id valueOf(int id) {
-      return new BaseId(Long.valueOf(id));
-   }
-
    public static @NonNull Id valueOf(Long id) {
       return new BaseId(id);
    }
