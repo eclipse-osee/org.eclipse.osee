@@ -28,7 +28,7 @@ public class UserTokenAccount extends BaseId implements Account, AccountPreferen
    private final UserToken user;
 
    public UserTokenAccount(UserToken user) {
-      super(user.getId());
+      super(user);
       this.user = user;
    }
 

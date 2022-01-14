@@ -38,7 +38,7 @@ public class AccountPreferencesArtifact extends BaseId implements AccountPrefere
    private final AtomicBoolean wasLoaded = new AtomicBoolean(false);
 
    public AccountPreferencesArtifact(String uuid, ArtifactReadable artifact) {
-      super(artifact.getId());
+      super(artifact);
       this.artifact = artifact;
    }
 

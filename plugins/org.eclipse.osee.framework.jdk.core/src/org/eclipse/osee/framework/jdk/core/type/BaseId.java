@@ -29,6 +29,10 @@ public class BaseId implements Id, Cloneable {
       this.id = id == null ? Id.SENTINEL : id;
    }
 
+   public BaseId(Id id) {
+      this(id.getId());
+   }
+
    @Override
    public int hashCode() {
       return id.hashCode();

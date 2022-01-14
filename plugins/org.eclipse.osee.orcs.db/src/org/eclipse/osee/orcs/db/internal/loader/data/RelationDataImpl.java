@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -34,10 +33,6 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl<RelationTypeToken>
 
    public RelationDataImpl(VersionData version) {
       super(version);
-   }
-
-   public void setRelationId(int relationId) {
-      setLocalId(Id.valueOf(relationId));
    }
 
    @Override

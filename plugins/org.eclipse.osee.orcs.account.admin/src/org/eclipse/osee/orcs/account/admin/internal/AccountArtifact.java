@@ -33,7 +33,7 @@ public class AccountArtifact extends BaseId implements Account, ArtifactId {
    private final AccountWebPreferences webPreferences;
 
    public AccountArtifact(ArtifactReadable artifact, AccountPreferences preferences, AccountWebPreferences webPreferences) {
-      super(artifact.getId());
+      super(artifact);
       this.artifact = artifact;
       this.preferences = preferences;
       this.webPreferences = webPreferences;

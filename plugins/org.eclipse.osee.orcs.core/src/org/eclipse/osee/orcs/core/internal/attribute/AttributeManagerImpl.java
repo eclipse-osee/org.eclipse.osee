@@ -64,7 +64,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    private final AttributeFactory attributeFactory;
 
    protected AttributeManagerImpl(ArtifactData artifactData, AttributeFactory attributeFactory) {
-      super(artifactData.getId());
+      super(artifactData);
       this.artifactData = artifactData;
       this.attributeFactory = attributeFactory;
       this.attributes = new HashCollection<>(true);
