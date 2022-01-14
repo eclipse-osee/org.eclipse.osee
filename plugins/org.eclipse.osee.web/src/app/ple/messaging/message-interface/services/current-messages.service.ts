@@ -160,6 +160,10 @@ export class CurrentMessagesService {
     this._differences.next(value);
   }
 
+  set branchType(value: string) {
+    this.ui.typeValue = value;
+  }
+
   private mergeMessages(message: messageWithChanges, parentMessage: message) {
     message.name = parentMessage.name;
     message.description = parentMessage.description;
