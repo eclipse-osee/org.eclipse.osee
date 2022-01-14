@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '~@angular/material' as mat;
 @import '../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
@@ -26,73 +27,73 @@
   
   // Define any styles affected by the theme.
   .config-group-header {
-    color: mat-color($primary, darker);
+    color: mat.get-color-from-palette($primary, darker);
   }
   .config-header {
-    color: mat-color($primary)
+    color: mat.get-color-from-palette($primary)
   }
   .applic-table-header{
-    color:mat-color($primary,600)
+    color:mat.get-color-from-palette($primary,600)
   }
   .applic-table-row-even{
-    background-color:mat-color($background, card)
+    background-color:mat.get-color-from-palette($background, card)
   }
   .applic-table-row-odd{
-    background-color:mat-color($background, background)
+    background-color:mat.get-color-from-palette($background, background)
   }
   .table-container::-webkit-scrollbar{
-    background-color:mat-color($background,app-bar);
+    background-color:mat.get-color-from-palette($background,app-bar);
   }
   .table-container::-webkit-scrollbar-track{
-    background-color:mat-color($background,app-bar);
+    background-color:mat.get-color-from-palette($background,app-bar);
     border-radius: 10px;
   }
   .table-container::-webkit-scrollbar-thumb{
-    background-color:mat-color($primary);
+    background-color:mat.get-color-from-palette($primary);
   }
   .table-container::-webkit-scrollbar-corner{
-    background-color:mat-color($background,app-bar);
+    background-color:mat.get-color-from-palette($background,app-bar);
   }
 
   .applic-table-row-even-added{
-    background-color:mat-color($success,100);
+    background-color:mat.get-color-from-palette($success,100);
   }
   .applic-table-row-odd-added{
-    background-color:mat-color($success,300);
+    background-color:mat.get-color-from-palette($success,300);
   }
 
   .applic-table-row-even-deleted{
-    background-color:mat-color($warn,100);
+    background-color:mat.get-color-from-palette($warn,100);
   }
   .applic-table-row-odd-deleted{
-    background-color:mat-color($warn,100);
+    background-color:mat.get-color-from-palette($warn,100);
   }
 
   .applic-table-row-even-changed{
-    background-color:mat-color($accent,100);
+    background-color:mat.get-color-from-palette($accent,100);
   }
   .applic-table-row-odd-changed{
-    background-color:mat-color($accent,100);
+    background-color:mat.get-color-from-palette($accent,100);
   }
   .applic-table-column-changed{
-    background-color:mat-color($accent,100);
+    background-color:mat.get-color-from-palette($accent,100);
   }
 
   .applic-table-column-added-row-even{
-    background-color:mat-color($success,100);
+    background-color:mat.get-color-from-palette($success,100);
   }
 
   .applic-table-column-added-row-odd{
-    background-color:mat-color($success,300);
+    background-color:mat.get-color-from-palette($success,300);
   }
   .applic-table-column-deleted{
-    background-color:mat-color($warn,100);
+    background-color:mat.get-color-from-palette($warn,100);
   }
   .applic-table-column-added{
-    background-color:mat-color($success,300);
+    background-color:mat.get-color-from-palette($success,300);
   }
   .applicabilityChanged{
-    background-color:mat-color($accent,100);
+    background-color:mat.get-color-from-palette($accent,100);
   }
 }
 @mixin typography($config-or-theme){

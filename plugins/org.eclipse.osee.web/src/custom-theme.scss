@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '~@angular/material' as mat;
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 
@@ -22,14 +23,14 @@
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core($modern-ple-typography);
+@include mat.core($modern-ple-typography);
 
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 
-    @include angular-material-theme($modern-ple-light-theme);
+    @include mat.all-component-themes($modern-ple-light-theme);
     @include ple.plconfig-table-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.plconfig-main-theme($modern-ple-light-theme);
     @include ple.plconfig-dropdown-configuration-theme($modern-ple-light-theme);
@@ -42,11 +43,11 @@
     @include ple.messages-messaging-message-interface-graph-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-typeSearch-theme($modern-ple-light-theme);
     .mat-success{
-        color:mat-color(map-get(mat-get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
+        color:mat.get-color-from-palette(map-get(mat-get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
     }
 
 .dark-theme{
-    @include angular-material-color($modern-ple-dark-theme);
+    @include mat.all-component-colors($modern-ple-dark-theme);
     @include ple.plconfig-table-color($modern-ple-dark-theme);
     @include ple.plconfig-main-color($modern-ple-dark-theme);
     @include ple.plconfig-dropdown-configuration-color($modern-ple-dark-theme);

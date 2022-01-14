@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 /**
 * Functions used to extend theming system to allow for a fourth color.
 */
 
-@function light-theme($primary, $accent, $warn: mat-palette($mat-red), $success: mat-palette($mat-green)){
-    @return map-merge(mat-light-theme($primary, $accent, $warn), (success: $success));
+@function light-theme($primary, $accent, $warn: mat.define-palette(mat.$red-palette), $success: mat.define-palette(mat.$green-palette)){
+    @return map-merge(mat.define-light-theme($primary, $accent, $warn), (success: $success));
 }
-@function dark-theme($primary, $accent, $warn: mat-palette($mat-red), $success: mat-palette($mat-green)) {
-    @return map-merge(mat-dark-theme($primary, $accent, $warn), (success: $success));
+@function dark-theme($primary, $accent, $warn: mat.define-palette(mat.$red-palette), $success: mat.define-palette(mat.$green-palette)) {
+    @return map-merge(mat.define-dark-theme($primary, $accent, $warn), (success: $success));
 }
