@@ -49,6 +49,10 @@ export class MessageUiService {
     return this.ui.type;
   }
 
+  set typeValue(value: string) {
+    this.ui.typeValue = value;
+  }
+
   set BranchIdString(value: string) {
     this.ui.idValue = value;
   }

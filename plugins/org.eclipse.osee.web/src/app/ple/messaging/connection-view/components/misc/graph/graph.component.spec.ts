@@ -63,7 +63,8 @@ describe('GraphComponent', () => {
           { provide: CurrentGraphService, useValue: graphServiceMock },
           {provide: EnumsService,useValue:enumsServiceMock}
       ],
-      declarations: [ GraphComponent,ConfirmRemovalDialogComponent,CreateConnectionDialogComponent,CreateNewNodeDialogComponent,EditConnectionDialogComponent,EditNodeDialogComponent,GraphLinkMenuDummy,GraphNodeMenuDummy ]
+      declarations: [GraphComponent, ConfirmRemovalDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, EditConnectionDialogComponent, EditNodeDialogComponent, GraphLinkMenuDummy, GraphNodeMenuDummy],
+      teardown:{destroyAfterEach:false}
     })
       .compileComponents();
     routerService=TestBed.inject(ConnectionViewRouterService)
@@ -297,7 +298,7 @@ describe('GraphComponent', () => {
             it('should have the correct amount of items(1)', () => {
               expect(items.length).toEqual(1)
             })
-            it('should open create new node dialog',async () => {
+            it('should open create new node dialog', async () => {
               let response:node={name:'abcdef',description:'jkl',applicability:{id:'1',name:'Base'}}
               let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(response), close: null });
               let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
