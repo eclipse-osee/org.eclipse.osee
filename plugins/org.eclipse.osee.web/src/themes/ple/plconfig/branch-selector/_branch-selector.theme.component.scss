@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
@@ -25,12 +25,12 @@
   
   // Define any styles affected by the theme.
   .pl-config-radio-option{
-    color:mat-color($foreground,base);
+    color:mat.get-color-from-palette($foreground,base);
   }
   .pl-config-radio-option-selected{
     @extend .pl-config-radio-option;
-    color:mat-color($primary,900);
-    text-shadow:mat-color($foreground,base)
+    color:mat.get-color-from-palette($primary,900);
+    text-shadow:mat.get-color-from-palette($foreground,base)
   }
 }
 @mixin typography($config-or-theme){

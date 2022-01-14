@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '~@angular/material' as mat;
  @import '../../../../../../theme-system.scss';
 
  @mixin color($config-or-theme) {
@@ -26,14 +27,14 @@
    // Define any styles affected by the theme.
     .link-text-path-deleted{
       display: block;
-      fill: mat-color($warn,400);
+      fill: mat.get-color-from-palette($warn,400);
       font-size: 12px;
       stroke:none;
     }
 
     .link-text-path-added{
       display: block;
-      fill: mat-color($success,400);
+      fill: mat.get-color-from-palette($success,400);
       font-size: 12px;
       stroke:none;
     }

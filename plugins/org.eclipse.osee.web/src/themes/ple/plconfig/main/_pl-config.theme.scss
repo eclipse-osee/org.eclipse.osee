@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 @mixin color($config-or-theme) {
   // Extract the color configuration in case a theme has been passed.
@@ -25,21 +25,21 @@
   
   // Define any styles affected by the theme.
   .pl-config{
-    background-color:mat-color($background,card);
+    background-color:mat.get-color-from-palette($background,card);
   }
   ::-webkit-scrollbar{
-    background-color:mat-color($background,app-bar);
+    background-color:mat.get-color-from-palette($background,app-bar);
   }
   ::-webkit-scrollbar-track{
-    background-color:mat-color($background,app-bar);
+    background-color:mat.get-color-from-palette($background,app-bar);
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb{
-    background-color:mat-color($foreground,divider);
-    border-color: mat-color($foreground,divider)
+    background-color:mat.get-color-from-palette($foreground,divider);
+    border-color: mat.get-color-from-palette($foreground,divider)
   }
   ::-webkit-scrollbar-corner{
-    background-color:mat-color($background,status-bar);
+    background-color:mat.get-color-from-palette($background,status-bar);
   }
 }
 @mixin typography($config-or-theme){

@@ -10,19 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '~@angular/material' as mat;
 //@import '~@angular/material/theming';
 @import './theme-system.scss';
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$modern-ple-light-primary: mat-palette($mat-blue, A400,400,900);
-$modern-ple-dark-primary: mat-palette($mat-light-blue, 300,200,400);
-$modern-ple-light-accent: mat-palette($mat-amber, A100, 50, A200);
-$modern-ple-dark-accent: mat-palette($mat-yellow, 600, 50, A200);
+$modern-ple-light-primary: mat.define-palette(mat.$blue-palette, A400,400,900);
+$modern-ple-dark-primary: mat.define-palette(mat.$light-blue-palette, 300,200,400);
+$modern-ple-light-accent: mat.define-palette(mat.$amber-palette, A100, 50, A200);
+$modern-ple-dark-accent: mat.define-palette(mat.$yellow-palette, 600, 50, A200);
 
 // The warn palette is optional (defaults to red).
-$modern-ple-light-warn: mat-palette($mat-red);
-$modern-ple-dark-warn: mat-palette($mat-red);
+$modern-ple-light-warn: mat.define-palette(mat.$red-palette);
+$modern-ple-dark-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
@@ -43,6 +44,6 @@ $modern-ple-dark-theme: dark-theme($modern-ple-dark-primary,$modern-ple-dark-acc
 //     warn:$modern-ple-dark-warn,
 //   )
 // ));
-$modern-ple-typography: mat-typography-config(
+$modern-ple-typography: mat.define-typography-config(
   $font-family:'Roboto,"Helvetica Neue", sans-serif'
 );

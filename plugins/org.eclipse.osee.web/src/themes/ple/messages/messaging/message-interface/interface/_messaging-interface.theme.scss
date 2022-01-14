@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '~@angular/material' as mat;
 @import '../../../../../../theme-system.scss';
 
 @mixin color($config-or-theme) {
@@ -26,70 +27,70 @@
   
   // Define any styles affected by the theme.
   .message-interface-table-view-sub-message-header{
-    color: mat-color($primary)
+    color: mat.get-color-from-palette($primary)
   }
 
   .message-interface-table-view-message-header{
-    color:mat-color($primary,600)
+    color:mat.get-color-from-palette($primary,600)
   }
 
   .message-table-row-even{
-    background-color:mat-color($background, background)
+    background-color:mat.get-color-from-palette($background, background)
   }
 
   .message-table-row-odd{
-    background-color:mat-color($background, selected-button)
+    background-color:mat.get-color-from-palette($background, selected-button)
   }
 
   .message-table-row-even-added{
-    background-color:mat-color($success,100)
+    background-color:mat.get-color-from-palette($success,100)
   }
   .message-table-row-odd-added{
-    background-color:mat-color($success,300)
+    background-color:mat.get-color-from-palette($success,300)
   }
   .message-table-attribute-changed{
-    background-color: mat-color($accent,100);
+    background-color: mat.get-color-from-palette($accent,100);
   }
   .message-table-row-even-deleted{
-    background-color:mat-color($warn,100)
+    background-color:mat.get-color-from-palette($warn,100)
   }
   .message-table-row-odd-deleted{
-    background-color:mat-color($warn,200)
+    background-color:mat.get-color-from-palette($warn,200)
   }
 
   tr.message-detail-row:not(.message-expanded-detail-row):hover {
-    background: mat-color($background,app-bar)
+    background: mat.get-color-from-palette($background,app-bar)
   }
 
   tr.message-detail-row:not(.message-expanded-detail-row):active {
-    background: mat-color($background,unselected-chip)
+    background: mat.get-color-from-palette($background,unselected-chip)
   }
 
   .message-table-sub-message-row-even{
-    background-color:mat-color($primary,100)
+    background-color:mat.get-color-from-palette($primary,100)
   }
 
   .message-table-sub-message-row-odd{
-    background-color:mat-color($primary,200)
+    background-color:mat.get-color-from-palette($primary,200)
   }
 
   .message-table-sub-message-row-even-added{
-    background-color:mat-color($success,100)
+    background-color:mat.get-color-from-palette($success,100)
   }
   .message-table-sub-message-row-odd-added{
-    background-color:mat-color($success,300)
+    background-color:mat.get-color-from-palette($success,300)
   }
 
   .message-interface-table-view-element{
-    border-bottom: 0.5em solid mat-color($background,disabled-button-toggle)
+    border-bottom: 0.5em solid mat.get-color-from-palette($background,disabled-button-toggle)
   }
   .message-interface-table-sub-message-computed{
-    color: mat-color($foreground,secondary-text) //need to user test this
+    color: mat.get-color-from-palette($foreground,secondary-text) //need to user test this
     //color:mat-color($warn,900)
   }
 
   .ple-message-interface-table-highlighted-text{
-    color:mat-color($accent,900)
+    color:mat.get-color-from-palette($accent,900)
   }
 }
 @mixin typography($config-or-theme){
