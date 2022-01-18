@@ -26,7 +26,9 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.jaxrs,
- org.eclipse.osee.jdbc
+ org.eclipse.osee.jdbc,
+ javax.xml.bind,
+ javax.xml.bind.annotation
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,

@@ -9,6 +9,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.account.rest.model
 Import-Package: com.fasterxml.jackson.databind,
  com.fasterxml.jackson.core,
+ javax.xml.bind,
+ javax.xml.bind.annotation,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util
