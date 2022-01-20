@@ -75,7 +75,7 @@ public class ChangeReportTasksUtil {
          changeItems = atsApi.getBranchService().getChangeData(tx);
          crtd.getResults().logf("Using Commit Branch %s\n", workOrParentBranch.toStringWithId());
       }
-      crtd.setWorkOrParentBranch(workOrParentBranch);
+      crtd.setWorkOrParentBranch(workOrParentBranch.getIdString());
       if (changeItems == null) {
          crtd.getResults().warning("No Change Items (Change Report or Commit) Found");
          return;
