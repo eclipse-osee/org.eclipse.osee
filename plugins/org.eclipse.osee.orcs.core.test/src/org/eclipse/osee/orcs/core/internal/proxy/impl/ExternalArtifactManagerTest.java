@@ -75,9 +75,9 @@ public class ExternalArtifactManagerTest {
 
       proxyManager = new ExternalArtifactManagerImpl(relationManager, tokenService);
 
-      when(artifact1.getLocalId()).thenReturn(1);
-      when(artifact2.getLocalId()).thenReturn(2);
-      when(artifact3.getLocalId()).thenReturn(3);
+      when(artifact1.getId()).thenReturn(1L);
+      when(artifact2.getId()).thenReturn(2L);
+      when(artifact3.getId()).thenReturn(3L);
 
       readable1 =
          new ArtifactReadOnlyImpl(proxyManager, relationManager, session, artifact1, CoreArtifactTypes.Artifact);
