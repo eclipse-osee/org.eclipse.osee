@@ -61,9 +61,9 @@ public class RevisionChangeTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private final ArtifactToken chassisDeleted = ArtifactToken.valueOf(200016L, "Chassis", Component);
-   private final ArtifactToken controlsToModifyAttrs = ArtifactToken.valueOf(200021L, "Controls", Component);
-   private final ArtifactToken navigationToModifyApplic = ArtifactToken.valueOf(200023L, "Navigation", Component);
+   private ArtifactToken chassisDeleted;
+   private ArtifactToken controlsToModifyAttrs;
+   private ArtifactToken navigationToModifyApplic;
 
    private BranchToken workingBranch;
    private Artifact sawProductDecomp;
@@ -71,6 +71,10 @@ public class RevisionChangeTest {
 
    @Before
    public void setUp() {
+      chassisDeleted = ArtifactQuery.getArtifactFromTypeAndName(Component, "Chassis", SAW_PL);
+      controlsToModifyAttrs = ArtifactQuery.getArtifactFromTypeAndName(Component, "Controls", SAW_PL);
+      navigationToModifyApplic = ArtifactQuery.getArtifactFromTypeAndName(Component, "Navigation", SAW_PL);
+
       workingBranch = BranchManager.createWorkingBranch(SAW_PL, "Test Working Branch");
       sawProductDecomp =
          ArtifactQuery.getArtifactFromTypeAndName(Component, CoreArtifactTokens.SAW_PRODUCT_DECOMP, workingBranch);

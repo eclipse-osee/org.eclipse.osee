@@ -73,11 +73,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public Integer getLocalId() {
-      return getIdIntValue();
-   }
-
-   @Override
    public TransactionId getLastModifiedTransaction() {
       TransactionId maxTransactionId = getOrcsData().getVersion().getTransactionId();
       for (Attribute<?> attribute : getAttributes(DeletionFlag.INCLUDE_DELETED)) {
@@ -207,7 +202,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String toString() {
       try {
-         return String.format("artifact [type=[%s] artifact id=[%s] branch=[%s]]", getArtifactType(), getId(),
+         return String.format("artifact [type=[%s] artifact id=[%s] branch=[%s]]", getArtifactType(), getIdString(),
             getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
