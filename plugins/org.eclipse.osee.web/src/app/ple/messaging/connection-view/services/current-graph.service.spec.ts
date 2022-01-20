@@ -35,7 +35,6 @@ import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service
 import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
 import { DifferenceReportService } from 'src/app/ple-services/http/difference-report.service';
 import { DifferenceReportServiceMock } from 'src/app/ple-services/http/difference-report.service.mock';
-import { tap } from 'rxjs/operators';
 import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
 
 describe('CurrentGraphService', () => {
@@ -43,7 +42,21 @@ describe('CurrentGraphService', () => {
   let scheduler: TestScheduler;
   let graphService: Partial<GraphService> = {
     getNodes(id:string) {
-      return of({nodes:[{id:'1',name:'1',data:{id:'1',name:'1',interfaceNodeAddress:'',interfaceNodeBgColor:''}},{id:'2',name:'2',data:{id:'2',name:'2',interfaceNodeAddress:'',interfaceNodeBgColor:''}},{id:'201279',label:'',data:{id:'201279',name:'',interfaceNodeAddress:'',interfaceNodeBgColor:'',applicability:{id:'1',name:'Base'}}}],edges:[{id:'1234',source:'1',target:'2',data:{name:'abcd',transportType:transportType.Ethernet}}]})
+      return of(
+        {
+          nodes:
+            [
+              { id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } },
+              { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } },
+              { id: '201279', label: '', data: { id: '201279', name: '', interfaceNodeAddress: '', interfaceNodeBgColor: '', applicability: { id: '1', name: 'Base' } } },
+              {id:'201379',label:'',data:{id: '201379', name: '', interfaceNodeAddress: '', interfaceNodeBgColor: '', applicability: { id: '1', name: 'Base' } }}
+            ],
+          edges:
+            [
+              { id: '1234', source: '1', target: '2', data: { name: 'abcd', transportType: transportType.Ethernet } },
+              {id:"201376",source:'201279',target:'1',data:{id:"201376",name:'foundEdge',transportType:transportType.Ethernet,}}
+            ]
+        })
     },
   }
   let nodeService: Partial<NodeService> = {
@@ -101,7 +114,8 @@ describe('CurrentGraphService', () => {
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
         { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
         { provide: BranchInfoService, useValue: BranchInfoServiceMock },
-        { provide: DifferenceReportService,useValue:DifferenceReportServiceMock}
+        { provide: DifferenceReportService, useValue: DifferenceReportServiceMock },
+        CurrentGraphService
       ]
     });
     service = TestBed.inject(CurrentGraphService);
@@ -128,7 +142,7 @@ describe('CurrentGraphService', () => {
   it('should return a response when unrelating connection(source)', () => {
     scheduler.run(() => {
       const expectedfilterValues = { a: response };
-      const expectedMarble = '(a|)'
+      const expectedMarble = '(aa|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.unrelateConnection('1','1')).toBe(expectedMarble, expectedfilterValues);
     })
@@ -192,7 +206,20 @@ describe('CurrentGraphService', () => {
 
   it('should fetch empty array of nodes and edges', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: { nodes: [{ id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }, { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } },{id:'201279',label:'',data:{id:'201279',name:'',interfaceNodeAddress:'',interfaceNodeBgColor:'',applicability:{id:'1',name:'Base'}}}], edges: [{ id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' }}]} };
+      const expectedfilterValues = { a: {
+        nodes:
+          [
+            { id: '1', name: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } },
+            { id: '2', name: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: '' } },
+            { id: '201279', label: '', data: { id: '201279', name: '', interfaceNodeAddress: '', interfaceNodeBgColor: '', applicability: { id: '1', name: 'Base' } } },
+            {id:'201379',label:'',data:{id: '201379', name: '', interfaceNodeAddress: '', interfaceNodeBgColor: '', applicability: { id: '1', name: 'Base' } }}
+          ],
+        edges:
+          [
+            { id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: transportType.Ethernet } },
+            {id:"a201376",source:'201279',target:'1',data:{id:"201376",name:'foundEdge',transportType:transportType.Ethernet,}}
+          ]
+      } };
       const expectedMarble = 'a'
       routeState.branchId='10'
       scheduler.expectObservable(service.nodes).toBe(expectedMarble, expectedfilterValues);
@@ -238,12 +265,9 @@ describe('CurrentGraphService', () => {
     it('should set and get differences', () => {
         scheduler.run(({ expectObservable, cold }) => {
           routeState.branchId = '10';
-          const coldValues = { a: [], b: changeReportMock};
           const values = { a: [], b: changeReportMock,c:undefined };
-          const coldMarbles='---a---b--------------a--------------b'
-          const coldObs = cold(coldMarbles, coldValues).pipe(tap((t) => service.difference = t));
-          expectObservable(coldObs).toBe(coldMarbles, coldValues);
-          expectObservable(service.differences).toBe('c--a---b--------------a--------------b', values);
+          service.difference = changeReportMock;
+          expectObservable(service.differences).toBe('b', values);
         })
       })
       it('should get differences in graph', () => {
@@ -298,9 +322,52 @@ describe('CurrentGraphService', () => {
                     }
                   },
                 },
+                {
+                  id: '201379',
+                  label: '',
+                  data: {
+                    id: '201379',
+                    name: '',
+                    interfaceNodeAddress: '',
+                    interfaceNodeBgColor: '',
+                    applicability: { id: '1', name: 'Base' },
+                    changes: {
+                      applicability: Object({ previousValue: null, currentValue: Object({ id: '1', name: 'Base' }), transactionToken: Object({ id: '1239', branchId: '2780650236653788489' }) }),
+                      name: Object({ previousValue: null, currentValue: 'testNodeForGettingConnectionEndpoint', transactionToken: Object({ id: '1239', branchId: '2780650236653788489' }) }),
+                      interfaceNodeAddress: Object({ previousValue: null, currentValue: '', transactionToken: Object({ id: '1239', branchId: '2780650236653788489' }) }),
+                      interfaceNodeBgColor: Object({ previousValue: null, currentValue: '', transactionToken: Object({ id: '1239', branchId: '2780650236653788489' }) })
+                    }
+                  }
+                },
+                {
+                  data: {
+                    deleted: true,
+                    id: '-1',
+                    name: '',
+                    changes: {
+                      name: { previousValue: null, currentValue: null, transactionToken: { id: '1239', branchId: '2780650236653788489' } },
+                      description: { previousValue: null, currentValue: null, transactionToken: { id: '1239', branchId: '2780650236653788489' } },
+                      interfaceNodeAddress: { previousValue: null, currentValue: null, transactionToken: { id: '1239', branchId: '2780650236653788489' } },
+                      interfaceNodeBgColor: { previousValue: null, currentValue: null, transactionToken: { id: '1239', branchId: '2780650236653788489' } },
+                      applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1239', branchId: '2780650236653788489' } }
+                    },
+                    interfaceNodeAddress: '',
+                    interfaceNodeBgColor: '',
+                    description: '',
+                    applicability: {
+                      id: '1',
+                      name: 'Base'
+                    }
+                  },
+                  id: '201375',
+                  label: 'testNodeForGettingConnectionEndpoint'
+                }
               ],
               edges: [
-                { id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' } }
+                { id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' } },
+                { id: 'a201376', source: '201279', target: '1', data: {  id: '201376',name: 'foundEdge', transportType: 'ETHERNET', changes: { applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1234', branchId: '2780650236653788489' } },transportType: { previousValue: null, currentValue: 'ETHERNET', transactionToken: { id: '1234', branchId: '2780650236653788489' } }, name: { previousValue: null, currentValue: 'T8_TC', transactionToken: { id: '1234', branchId: '2780650236653788489' } } } } },
+                { id: 'a201282', source: '', target: '', data: { description: 'a description', deleted: true, dashed: false, changes: { description: { previousValue: null, currentValue: 'a description', transactionToken: { id: '1246', branchId: '2780650236653788489' }}, }, name: '', transportType: 'ETHERNET' }, },
+                { id: 'a201377', source: '201375', target: '201312', data: { deleted: true, dashed: false, changes: { applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1235', branchId: '2780650236653788489' } }, transportType: { previousValue: null, currentValue: 'ETHERNET', transactionToken: { id: '1235', branchId: '2780650236653788489' } }, name: { previousValue: null, currentValue: 'T7_TC', transactionToken: { id: '1235', branchId: '2780650236653788489' } } }, name: 'T7_TC', transportType: 'ETHERNET', applicability: { id: '1', name: 'Base' } }, label: 'T7_TC' }
               ]
             }
           };

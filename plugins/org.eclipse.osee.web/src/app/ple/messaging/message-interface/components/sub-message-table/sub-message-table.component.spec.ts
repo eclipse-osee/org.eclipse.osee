@@ -70,10 +70,6 @@ describe('SubMessageTableComponent', () => {
       imports: [MatTableModule,MatIconModule, MatTooltipModule, MatButtonModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule.withRoutes([{path:'',component:SubMessageTableComponent},{ path: 'diffOpen', component: MimSingleDiffDummy,outlet:'rightSideNav' }]), MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
       declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent,HighlightFilteredTextDirective],
       providers: [{provide: CurrentMessagesService, useValue:CurrentMessageServiceMock},
-        // { provide: Router, useValue: router },
-        // {
-        //   provide: ActivatedRoute, useValue: route  
-        // },
     ]
     })
     .compileComponents();
@@ -94,20 +90,11 @@ describe('SubMessageTableComponent', () => {
     expect(actual).toEqual(expected);
   }));
 
-  // beforeEach(function () {
-  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-  //     return null;
-  //   })
-  // });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('should navigate to Hello/10/10/elements', () => {
-  //   component.navigateToElementsTable("10","10",'Hello');
-  //   expect(router.navigate).toHaveBeenCalledWith(['10','10','Hello','elements'],{relativeTo: Object({parent:'' }), queryParamsHandling:'merge'});
-  // });
 
   it('should update the datasource filter', () => {
     scheduler.run(({ expectObservable }) => {
@@ -120,12 +107,6 @@ describe('SubMessageTableComponent', () => {
       const expectedObservable=''
       expectObservable(component.expandRow).toBe(expectedObservable, expectedMarble);
     })
-    // component.filter = "sub message: Name2";
-    // component.ngOnChanges({
-    //   data: new SimpleChange(component.data, component.data, false),
-    //   filter: new SimpleChange('', component.filter, false)
-    // })
-    // expect(component.dataSource.filter).toEqual(component.filter.replace('sub message: ', ''));
   });
 
   it('should relate a new submessage', async () => {
@@ -157,23 +138,6 @@ describe('SubMessageTableComponent', () => {
     beforeEach(() => {
       mEvent = document.createEvent("MouseEvent");
     })
-    // it('should open the menu and open sub message details', async () => {
-    //   component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
-    //   await fixture.whenStable();
-    //   let menu = await loader.getHarness(MatMenuHarness);
-    //   let spy = spyOn(component, 'navigateToElementsTable').and.callThrough();
-    //   await menu.clickItem({ text: "Open submessage details" });
-    //   expect(spy).toHaveBeenCalled();
-    // })
-
-    // it('should open the menu and open sub message details in new tab', async () => {
-    //   component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','','');
-    //   await fixture.whenStable();
-    //   let menu = await loader.getHarness(MatMenuHarness);
-    //   let spy = spyOn(component, 'navigateToElementsTableInNewTab').and.callThrough();
-    //   await menu.clickItem({ text: "Open submessage details in new tab" });
-    //   expect(spy).toHaveBeenCalled();
-    // })
 
     it('should open the menu and open the view diff sidenav', async () => {
       component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','field','name');

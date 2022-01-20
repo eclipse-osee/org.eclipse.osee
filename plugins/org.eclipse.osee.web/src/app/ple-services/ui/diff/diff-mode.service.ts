@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class DiffModeService {
   private _isInDiff: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor () { }
   
-  get isInDiff() {
+  get isInDiff():Observable<boolean> {
     return this._isInDiff;
   }
 

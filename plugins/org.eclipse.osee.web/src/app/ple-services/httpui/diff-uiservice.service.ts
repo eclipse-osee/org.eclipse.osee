@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { iif, of } from 'rxjs';
-import { finalize, switchMap, take, tap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { DiffReportBranchService } from '../ui/diff/diff-report-branch.service';
 import { UiService } from '../ui/ui.service';
 
@@ -32,9 +32,6 @@ export class DiffUIService {
 
   get diff() {
     return this._diff;
-  }
-  get mode() {
-    return this.uiService.isInDiff.getValue()
   }
 
   get id() {

@@ -48,11 +48,6 @@ describe('EditElementFieldComponent', () => {
     .compileComponents();
   });
 
-  // beforeEach(function () {
-  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-  //     return null;
-  //   })
-  // });
   beforeEach(() => {
     fixture = TestBed.createComponent(EditElementFieldComponent);
     component = fixture.componentInstance;

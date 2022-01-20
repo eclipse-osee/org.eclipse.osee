@@ -16,7 +16,7 @@ import { PlConfigBranchListingBranch } from "../types/pl-config-branch"
 
 export const testApplicabilityTag: NameValuePair = {
   id: '1234',
-  name:'Test'
+  name:'BROKENFEATURE = INCLUDED'
 }
 export const testCfgGroups = [
   {
@@ -220,6 +220,40 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         setProductAppStr(): void{
         
         }
+      },
+      {
+        id : "201342",
+        name : "BROKENFEATURE",
+        values:
+          [
+            "Included",
+            "Excluded"
+          ],
+        defaultValue : "Included",
+        description : "yiuyoiyoi",
+        multiValued : false,
+        valueType : "String",
+        type : null,
+        productApplicabilities:
+          [
+            "Unspecified"
+          ],
+        idIntValue : 201342,
+        idString: "201342",
+        configurations: [
+          {
+            id: "12345",
+            name: "group1",
+            value:'',
+            values:[]
+          }
+        ],
+        setValueStr(): void {
+        
+        },
+        setProductAppStr(): void{
+        
+        }
       }
     ],
   groups:
@@ -234,6 +268,16 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         ],
         //productApplicabilities:[]
       },
+      {
+        id: "201322",
+        name: 'deleted group',
+        configurations:[]
+      },
+      {
+        id: "201321",
+        name: "test",
+        configurations:[]
+      }
     ],
   parentBranch:
   {
@@ -263,7 +307,24 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping =
         id : "200048",
         name: "Product D",
         hasFeatureApplicabilities: true,
-      }
+      },
+      {
+        id : "201325",
+        name: "added view",
+        hasFeatureApplicabilities: true,
+      },
+      {
+        id : "201334",
+        name: "modified product app",
+        hasFeatureApplicabilities: true,
+        productApplicabilities:["hello world"]
+      },
+      {
+        id : "201343",
+        name: "newconfig",
+        hasFeatureApplicabilities: true,
+        productApplicabilities:["Unspecified"]
+      },
     ], 
 }
 export const testBranchListing: PlConfigBranchListingBranch[] = [

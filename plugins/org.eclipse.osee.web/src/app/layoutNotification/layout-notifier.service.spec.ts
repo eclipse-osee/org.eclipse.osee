@@ -26,14 +26,6 @@ describe('LayoutNotifierService', () => {
       let state1:BreakpointState={matches:true,breakpoints:{'(min-width: 1920px)':true}}
       
       return iif(()=>value==='(min-width: 1920px)',of(state1),of({matches:false,breakpoints:{value:false}}))
-      // return of<BreakpointState>({
-      //   matches: true, breakpoints: {
-      //     '(max-width: 599.98px)': false,
-      //     '(min-width: 600px) and (max-width: 959.98px)': false,
-      //     '(min-width: 960px) and (max-width: 1279.98px)': false,
-      //     '(min-width: 1280px) and (max-width: 1919.98px)': false,
-      //     '(min-width: 1920px)':true
-      // }})
     }
   }
 

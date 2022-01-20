@@ -45,19 +45,6 @@ describe('PlatformTypeCardComponent', () => {
       declarations: [PlatformTypeCardComponent, EditTypeDialogComponent],
       providers: [{
         provide: CurrentTypesService, useValue: currentTypesServiceMock}
-        // {
-        //   provide: MatDialog, useValue: {
-        //     open() {
-        //     },
-        //     afterClosed(): Observable<object> {
-        //       return of({
-        //         data: {
-        //           mode: Math.random()<0.5? 'copy':'edit' 
-        //         }
-        //       })
-        //     }
-        //   }
-        // },
       ],
     })
     .compileComponents();
@@ -135,11 +122,5 @@ describe('PlatformTypeCardComponent', () => {
     await button.click();
     expect(openEnumDialog).toHaveBeenCalled();
   })
-  //Don't know how to do this test yet
-  // it('should open a dialog subscription',async () => {
-  //   fixture.detectChanges();
-  //   component.openDialog('edit');
-  //   component.dialog.
-  // });
 
 });
