@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -83,7 +85,7 @@ public class BatStagingCreator {
       Set<String> excludedFiles = new HashSet<>();
       excludedFiles.addAll(filesToExclude); // A new set is created to ensure thread safety
       String inFileName = inFile.getName();
-      if (!excludedFiles.contains(inFileName)) {
+      if (!isExcluded(inFileName, excludedFiles)) {
          boolean isDirectory = inFile.isDirectory();
          if (!(isDirectory && inFileName.startsWith("."))) {
             File stageFile = new File(stageFileParent, inFileName);
@@ -296,6 +298,29 @@ public class BatStagingCreator {
       children.remove(configFile);
 
       return filesToExclude;
+   }
+   
+   /**
+    * This method checks if the file is excluded, first checking to see if there are any direct matches and then
+    * checking if there are any matches where the .applicabilityFile input included a wildcard.
+    */
+   private boolean isExcluded(String inFileName, Set<String> excludedFiles) {
+	  if (excludedFiles.contains(inFileName)) {
+         return true;
+	  } else {
+	     Iterator<String> excludedIterator = excludedFiles.iterator();
+	     while(excludedIterator.hasNext()) {
+	        String excludedName = excludedIterator.next();
+	        if (excludedName.contains("*")) {
+	           excludedName = excludedName.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+	           Pattern excludePattern = Pattern.compile("^(" + excludedName + ")$");
+	           if (excludePattern.matcher(inFileName).matches()) {
+	              return true;
+	           }
+            }
+         }
+      }
+      return false;
    }
 
 }
