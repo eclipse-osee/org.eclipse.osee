@@ -30,3 +30,21 @@ export const structuresMock: Required<structure>[] = [
         applicability:{id:'1',name:'Base'}
     }
 ]
+
+export const structuresMock2: Required<structure>[] = [
+    {
+        id: "2",
+        name: 'hello',
+        description: '',
+        interfaceMaxSimultaneity: "1",
+        interfaceMinSimultaneity: "0",
+        interfaceStructureCategory: "Miscellaneous",
+        interfaceTaskFileType: 0,
+        elements: elementsMock,
+        numElements: 0,
+        sizeInBytes: 0,
+        bytesPerSecondMaximum: 0,
+        bytesPerSecondMinimum: 0,
+        applicability:{id:'1',name:'Base'}
+    }
+]

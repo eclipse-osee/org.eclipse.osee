@@ -31,7 +31,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router, UrlTree } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
@@ -116,11 +116,6 @@ describe('StructureTableComponent', () => {
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
-  // beforeEach(function () {
-  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-  //     return null;
-  //   })
-  // });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -196,16 +191,9 @@ describe('StructureTableComponent', () => {
     beforeEach(() => {
       mEvent = document.createEvent("MouseEvent");
     })
-    // it('should open the menu and navigate to a new tab', async() => {
-    //   component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
-    //   await fixture.whenStable();
-    //   let menu = await loader.getHarness(MatMenuHarness);
-    //   let spy = spyOn(component, 'navigateToInNewTab').and.callThrough();
-    //   await menu.clickItem({ text: "Open structure table in new tab" });
-    //   expect(spy).toHaveBeenCalled();
-    // })
+    
     it('should open the menu and dismiss a description', async () => {
-      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
+      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"","true");
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -218,7 +206,7 @@ describe('StructureTableComponent', () => {
     })
 
     it('should open the menu and edit a description', async () => {
-      component.openMenu(mEvent, structuresMock[0].id, structuresMock[0].name, structuresMock[0].description, structuresMock[0],"");
+      component.openMenu(mEvent, structuresMock[0].id, structuresMock[0].name, structuresMock[0].description, structuresMock[0],"","true");
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
@@ -231,7 +219,7 @@ describe('StructureTableComponent', () => {
     })
 
     it('should open the remove structure dialog', async() => {
-      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
+      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"","true");
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeStructureDialog').and.callThrough();
@@ -243,7 +231,7 @@ describe('StructureTableComponent', () => {
       expect(serviceSpy).toHaveBeenCalled();
     })
     it('should open the delete structure dialog', async() => {
-      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"");
+      component.openMenu(mEvent, structuresMock[0].id,structuresMock[0].name,structuresMock[0].description,structuresMock[0],"","true");
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteStructureDialog').and.callThrough();
@@ -256,7 +244,7 @@ describe('StructureTableComponent', () => {
     })
 
     it('should open a diff', async () => {
-      component.openMenu(mEvent, structuresMockWithChanges.id, structuresMockWithChanges.name, structuresMockWithChanges.description, structuresMockWithChanges, structuresMockWithChanges.name);
+      component.openMenu(mEvent, structuresMockWithChanges.id, structuresMockWithChanges.name, structuresMockWithChanges.description, structuresMockWithChanges, structuresMockWithChanges.name,"true");
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'viewDiff').and.callThrough();

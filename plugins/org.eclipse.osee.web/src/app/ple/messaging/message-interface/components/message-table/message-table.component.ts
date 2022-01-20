@@ -52,7 +52,6 @@ export class MessageTableComponent implements OnInit {
   messageData = this.messageService.messages.pipe(
     switchMap((data)=>of(new MatTableDataSource<message|messageWithChanges>(data))),
     takeUntil(this.messageService.done));
-  // dataSource: MatTableDataSource<message> = new MatTableDataSource<message>();
   headers = this.headerService.AllMessageHeaders;
   expandedElement: string[] = [];
   filter: string = "";

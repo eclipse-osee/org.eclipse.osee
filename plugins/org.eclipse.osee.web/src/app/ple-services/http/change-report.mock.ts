@@ -11,11 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-  changeInstance,
-  ignoreType,
-  changeTypeNumber,
-  changeTypeEnum,
-  ModificationType,
+  changeInstance, changeTypeEnum, changeTypeNumber, ignoreType, ModificationType
 } from 'src/app/types/change-report/change-report';
 import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
 
@@ -3011,7 +3007,7 @@ export const changeReportMock: changeInstance[] = [
       idString: "111",
       idIntValue: 111
     },
-    artId: "201323",
+    artId: "736857919",
     itemId: "201323",
     itemTypeId: "6",
     baselineVersion: {
@@ -3129,7 +3125,7 @@ export const changeReportMock: changeInstance[] = [
         branchId: "3361000790344842462"
       },
       gammaId: "20779",
-      modType: ModificationType.NEW,
+      modType: ModificationType.DELETED,
       value: null,
       uri: "",
       valid: true,
@@ -3167,7 +3163,7 @@ export const changeReportMock: changeInstance[] = [
     },
     synthetic: false,
     artIdB: "-1",
-    deleted: false,
+    deleted: true,
     applicabilityCopy: false
   },
   {
@@ -3252,7 +3248,7 @@ export const changeReportMock: changeInstance[] = [
     },
     synthetic: false,
     artIdB: "-1",
-    deleted: false,
+    deleted: true,
     applicabilityCopy: false
   },
   {
@@ -3299,7 +3295,7 @@ export const changeReportMock: changeInstance[] = [
         branchId: "3361000790344842462"
       },
       gammaId: "20795",
-      modType: ModificationType.NEW,
+      modType: ModificationType.DELETED,
       value: null,
       uri: "",
       valid: true,
@@ -3337,7 +3333,7 @@ export const changeReportMock: changeInstance[] = [
     },
     synthetic: false,
     artIdB: "-1",
-    deleted: false,
+    deleted: true,
     applicabilityCopy: false
   },
   {
@@ -3469,8 +3465,8 @@ export const changeReportMock: changeInstance[] = [
         branchId: "3361000790344842462"
       },
       gammaId: "20834",
-      modType: ModificationType.NEW,
-      value: null,
+      modType: ModificationType.MODIFIED,
+      value: 'hello world',
       uri: "",
       valid: true,
       applicabilityToken: {
@@ -3554,7 +3550,7 @@ export const changeReportMock: changeInstance[] = [
         branchId: "3361000790344842462"
       },
       gammaId: "20864",
-      modType: ModificationType.NEW,
+      modType: ModificationType.DELETED,
       value: null,
       uri: "",
       valid: true,
@@ -3592,7 +3588,7 @@ export const changeReportMock: changeInstance[] = [
     },
     synthetic: false,
     artIdB: "-1",
-    deleted: false,
+    deleted: true,
     applicabilityCopy: false
   },
   {
@@ -3606,7 +3602,7 @@ export const changeReportMock: changeInstance[] = [
       idString: "111",
       idIntValue: 111
     },
-    artId: "201337",
+    artId: "1939294030",
     itemId: "201337",
     itemTypeId: "87",
     baselineVersion: {
@@ -3691,7 +3687,7 @@ export const changeReportMock: changeInstance[] = [
       idString: "111",
       idIntValue: 111
     },
-    artId: "201336",
+    artId: "758071644",
     itemId: "201336",
     itemTypeId: "87",
     baselineVersion: {
@@ -3724,7 +3720,7 @@ export const changeReportMock: changeInstance[] = [
         branchId: "3361000790344842462"
       },
       gammaId: "20844",
-      modType: ModificationType.NEW,
+      modType: ModificationType.DELETED,
       value: null,
       uri: "",
       valid: true,
@@ -3762,7 +3758,7 @@ export const changeReportMock: changeInstance[] = [
     },
     synthetic: false,
     artIdB: "-1",
-    deleted: false,
+    deleted: true,
     applicabilityCopy: false
   },
   {
@@ -18136,5 +18132,7142 @@ export const changeReportMock: changeInstance[] = [
     artIdB: "-1",
     deleted: false,
     applicabilityCopy: false
+  },
+  {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201351",
+    itemId : "201351",
+    itemTypeId : "2455059983007225765",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21030",
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1228",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21030",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "19262790478673727",
+        name : "Config = Product D"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21030",
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21030",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "19262790478673727",
+        name : "Config = Product D"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201362",
+    itemId : "201362",
+    itemTypeId : "2455059983007225765",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21092",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21092",
+      modType : ModificationType.DELETED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21092",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21092",
+      modType : ModificationType.DELETED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201375",
+    itemId : "10774",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21334",
+      modType : ModificationType.NEW,
+      value : "testNodeForGettingConnectionEndpoint",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21334",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "testNodeForGettingConnectionEndpoint",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21334",
+      modType : ModificationType.NEW,
+      value : "testNodeForGettingConnectionEndpoint",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201379",
+    itemId : "10774",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21334",
+      modType : ModificationType.NEW,
+      value : "testNodeForGettingConnectionEndpoint",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21334",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "testNodeForGettingConnectionEndpoint",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21334",
+      modType : ModificationType.NEW,
+      value : "testNodeForGettingConnectionEndpoint",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  },{
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201365",
+    itemId : "201365",
+    itemTypeId : "2455059983007225776",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21119",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21119",
+      modType : ModificationType.DELETED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21119",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21119",
+      modType : ModificationType.DELETED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201375",
+    itemId : "10775",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21335",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21335",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21335",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201364",
+    itemId : "201364",
+    itemTypeId : "2455059983007225776",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21109",
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1215",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21109",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "2119518475782991281",
+        name : "ROBOT_SPEAKER = SPKR_B"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21109",
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21109",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "2119518475782991281",
+        name : "ROBOT_SPEAKER = SPKR_B"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201360",
+    itemId : "10648",
+    itemTypeId : "2455059983007225802",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21082",
+      modType : ModificationType.NEW,
+      value : "7",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1229",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21217",
+      modType : ModificationType.MODIFIED,
+      value : "9",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21082",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21217",
+      modType : ModificationType.MODIFIED,
+      value : "9",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201375",
+    itemId : "10776",
+    itemTypeId : "5726596359647826656",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21333",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21333",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21333",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201379",
+    itemId : "10776",
+    itemTypeId : "5726596359647826656",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21333",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21333",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21333",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  },{
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201371",
+    itemId : "201371",
+    itemTypeId : "2455059983007225765",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21207",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21207",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201375",
+    itemId : "10777",
+    itemTypeId : "5221290120300474048",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21332",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21332",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21332",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  },{
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201379",
+    itemId : "10777",
+    itemTypeId : "5221290120300474048",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21332",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21332",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21332",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201370",
+    itemId : "201370",
+    itemTypeId : "2455059983007225776",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21193",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21193",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201376",
+    itemId : "10778",
+    itemTypeId : "4522496963078776538",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1234",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21337",
+      modType : ModificationType.NEW,
+      value : "ETHERNET",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21337",
+      modType : ModificationType.NEW,
+      value : "ETHERNET",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201360",
+    itemId : "10651",
+    itemTypeId : "1152921504606847085",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21075",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1265",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21450",
+      modType : ModificationType.MODIFIED,
+      value : "testing notes",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21075",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21450",
+      modType : ModificationType.MODIFIED,
+      value : "testing notes",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201376",
+    itemId : "10779",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1234",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21338",
+      modType : ModificationType.NEW,
+      value : "T8_TC",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21338",
+      modType : ModificationType.NEW,
+      value : "T8_TC",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201377",
+    itemId : "10780",
+    itemTypeId : "4522496963078776538",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1235",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21342",
+      modType : ModificationType.NEW,
+      value : "ETHERNET",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21342",
+      modType : ModificationType.NEW,
+      value : "ETHERNET",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201375",
+    itemId : "201375",
+    itemTypeId : "6039606571486514295",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21331",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21331",
+      modType : ModificationType.DELETED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21331",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201379",
+    itemId : "201375",
+    itemTypeId : "6039606571486514295",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21331",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21331",
+      modType : ModificationType.DELETED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21331",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  },{
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201377",
+    itemId : "10781",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1235",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21343",
+      modType : ModificationType.NEW,
+      value : "T7_TC",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21343",
+      modType : ModificationType.NEW,
+      value : "T7_TC",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201362",
+    itemId : "10656",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21096",
+      modType : ModificationType.NEW,
+      value : "testelement6",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21096",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "testelement6",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21096",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21096",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "testelement6",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201362",
+    itemId : "10657",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21097",
+      modType : ModificationType.NEW,
+      value : "dfasdf",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21097",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "dfasdf",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21097",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21097",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "dfasdf",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201301",
+    itemId : "10402",
+    itemTypeId : "1152921504606847089",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21126",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface SubMessage Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"ABz8WtZLJEIfcIQJSIwA,AAs_3p9OrBHJIUvPlKQA,AAzHHvxikHJitWV8PtgA,AAzNd2D8JGXiapSD9CAA,AAzWa1DJxDvCEUt02wQA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21194",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface SubMessage Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"ABz8WtZLJEIfcIQJSIwA,AAs_3p9OrBHJIUvPlKQA,AAzNd2D8JGXiapSD9CAA,AA7qJTzroCAwAZQVNAAA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1230",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21218",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface SubMessage Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"ABz8WtZLJEIfcIQJSIwA,AAzNd2D8JGXiapSD9CAA,AA7qJTzroCAwAZQVNAAA,AAzfDo8WsCtnXIi2IUAA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21126",
+      modType : ModificationType.MODIFIED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21218",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface SubMessage Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"ABz8WtZLJEIfcIQJSIwA,AAzNd2D8JGXiapSD9CAA,AA7qJTzroCAwAZQVNAAA,AAzfDo8WsCtnXIi2IUAA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201362",
+    itemId : "10658",
+    itemTypeId : "1152921504606847085",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21094",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21094",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21094",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21094",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201377",
+    itemId : "201377",
+    itemTypeId : "126164394421696910",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1235",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21341",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21341",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201362",
+    itemId : "10659",
+    itemTypeId : "2455059983007225788",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21095",
+      modType : ModificationType.NEW,
+      value : "true",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21095",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "true",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21095",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21095",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "true",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201376",
+    itemId : "201376",
+    itemTypeId : "126164394421696910",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1234",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21336",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21336",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201364",
+    itemId : "10666",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21113",
+      modType : ModificationType.NEW,
+      value : "teststructuremodify",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1219",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21192",
+      modType : ModificationType.MODIFIED,
+      value : "teststructuremodify2",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21113",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21192",
+      modType : ModificationType.MODIFIED,
+      value : "teststructuremodify2",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201364",
+    itemId : "10667",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21114",
+      modType : ModificationType.NEW,
+      value : "adsfas",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1214",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21188",
+      modType : ModificationType.MODIFIED,
+      value : "changed description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21114",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21188",
+      modType : ModificationType.MODIFIED,
+      value : "changed description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201364",
+    itemId : "10668",
+    itemTypeId : "2455059983007225756",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21112",
+      modType : ModificationType.NEW,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1218",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21191",
+      modType : ModificationType.MODIFIED,
+      value : "44",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21112",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21191",
+      modType : ModificationType.MODIFIED,
+      value : "44",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201364",
+    itemId : "10670",
+    itemTypeId : "2455059983007225764",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21116",
+      modType : ModificationType.NEW,
+      value : "N/A",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1216",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21189",
+      modType : ModificationType.MODIFIED,
+      value : "Tactical Status",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21116",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21189",
+      modType : ModificationType.MODIFIED,
+      value : "Tactical Status",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201364",
+    itemId : "10671",
+    itemTypeId : "2455059983007225760",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21115",
+      modType : ModificationType.NEW,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1217",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21190",
+      modType : ModificationType.MODIFIED,
+      value : "5",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21115",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21190",
+      modType : ModificationType.MODIFIED,
+      value : "5",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201365",
+    itemId : "10672",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21122",
+      modType : ModificationType.NEW,
+      value : "teststructuredelete",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21122",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "teststructuredelete",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21122",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21122",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "teststructuredelete",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201365",
+    itemId : "10673",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21123",
+      modType : ModificationType.NEW,
+      value : "dafda",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21123",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "dafda",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21123",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21123",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "dafda",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201365",
+    itemId : "10674",
+    itemTypeId : "2455059983007225756",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21121",
+      modType : ModificationType.NEW,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21121",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21121",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21121",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201365",
+    itemId : "10675",
+    itemTypeId : "2455059983007225755",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21120",
+      modType : ModificationType.NEW,
+      value : "6",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21120",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "6",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21120",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21120",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "6",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201365",
+    itemId : "10676",
+    itemTypeId : "2455059983007225764",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21125",
+      modType : ModificationType.NEW,
+      value : "N/A",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21125",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "N/A",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21125",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21125",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "N/A",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201365",
+    itemId : "10677",
+    itemTypeId : "2455059983007225760",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21124",
+      modType : ModificationType.NEW,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21124",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21124",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21124",
+      modType : ModificationType.ARTIFACT_DELETED,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201315",
+    itemId : "10552",
+    itemTypeId : "1152921504606847089",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21093",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AAxEqTsbFAT7CP4dh3gA,AAxIGOfO8Alcj1uAsUgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21206",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AAxIGOfO8Alcj1uAsUgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21208",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AA8Pf7tZqyyiIZv5flgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21093",
+      modType : ModificationType.MODIFIED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21208",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AA8Pf7tZqyyiIZv5flgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201282",
+    itemId : "10820",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1246",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21394",
+      modType : ModificationType.NEW,
+      value : "a description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21394",
+      modType : ModificationType.NEW,
+      value : "a description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201351",
+    itemId : "5196",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+      name : "Interface Element Platform Type",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : -450940211,
+      idString : "3899709087455064781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21037",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1226",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21037",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21037",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21037",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201346",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201298",
+    itemId : "201298",
+    itemTypeId : "126164394421696908",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20569",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "3298521940448053542",
+        name : "Config = Product C"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1247",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "20569",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "7027131310114069519",
+        name : "Config = Product A"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1177",
+        branchId : "8"
+      },
+      gammaId : "20569",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "3298521940448053542",
+        name : "Config = Product C"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20569",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "7027131310114069519",
+        name : "Config = Product A"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201297",
+    itemId : "10323",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20564",
+      modType : ModificationType.NEW,
+      value : "description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1248",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21395",
+      modType : ModificationType.MODIFIED,
+      value : "description updated",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "990",
+        branchId : "8"
+      },
+      gammaId : "20564",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21395",
+      modType : ModificationType.MODIFIED,
+      value : "description updated",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201301",
+    itemId : "5204",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESUBMESSAGECONTENT,
+      name : "Interface SubMessage Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 684636562,
+      idString : "126164394421696914"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21066",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1230",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21066",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21066",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21066",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201359",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201364",
+    itemId : "5207",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESTRUCTURECONTENT,
+      name : "Interface Structure Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 225187765,
+      idString : "2455059983007225781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21090",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1223",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21090",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21090",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21090",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201361",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201315",
+    itemId : "5209",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESTRUCTURECONTENT,
+      name : "Interface Structure Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 225187765,
+      idString : "2455059983007225781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21098",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21098",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21098",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21098",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201362",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201362",
+    itemId : "5210",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+      name : "Interface Element Platform Type",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : -450940211,
+      idString : "3899709087455064781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21099",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1224",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21099",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21099",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21099",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201346",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201301",
+    itemId : "5213",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESUBMESSAGECONTENT,
+      name : "Interface SubMessage Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 684636562,
+      idString : "126164394421696914"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21127",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1213",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21127",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21127",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21127",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201365",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201301",
+    itemId : "10337",
+    itemTypeId : "2455059983007225769",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20600",
+      modType : ModificationType.NEW,
+      value : "487",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1266",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21459",
+      modType : ModificationType.MODIFIED,
+      value : "413",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1001",
+        branchId : "8"
+      },
+      gammaId : "20600",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21459",
+      modType : ModificationType.MODIFIED,
+      value : "413",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201370",
+    itemId : "10725",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21197",
+      modType : ModificationType.NEW,
+      value : "testaddingstruct",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21197",
+      modType : ModificationType.NEW,
+      value : "testaddingstruct",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201301",
+    itemId : "5221",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESUBMESSAGECONTENT,
+      name : "Interface SubMessage Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 684636562,
+      idString : "126164394421696914"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21201",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21201",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201370",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201370",
+    itemId : "10726",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21198",
+      modType : ModificationType.NEW,
+      value : "dfaad",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21198",
+      modType : ModificationType.NEW,
+      value : "dfaad",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201301",
+    itemId : "5222",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESUBMESSAGECONTENT,
+      name : "Interface SubMessage Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 684636562,
+      idString : "126164394421696914"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1221",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21203",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21203",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201364",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201370",
+    itemId : "10727",
+    itemTypeId : "2455059983007225756",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21196",
+      modType : ModificationType.NEW,
+      value : "5",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21196",
+      modType : ModificationType.NEW,
+      value : "5",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201364",
+    itemId : "5223",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESTRUCTURECONTENT,
+      name : "Interface Structure Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 225187765,
+      idString : "2455059983007225781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1222",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21205",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21205",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201351",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201351",
+    itemId : "10600",
+    itemTypeId : "2455059983007225788",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21033",
+      modType : ModificationType.NEW,
+      value : "true",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1227",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21216",
+      modType : ModificationType.MODIFIED,
+      value : "false",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1209",
+        branchId : "8"
+      },
+      gammaId : "21033",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21216",
+      modType : ModificationType.MODIFIED,
+      value : "false",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201370",
+    itemId : "10728",
+    itemTypeId : "2455059983007225755",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21195",
+      modType : ModificationType.NEW,
+      value : "98",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21195",
+      modType : ModificationType.NEW,
+      value : "98",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201315",
+    itemId : "5224",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACESTRUCTURECONTENT,
+      name : "Interface Structure Content",
+      order : "USER_DEFINED",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : 225187765,
+      idString : "2455059983007225781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21213",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21213",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201371",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201370",
+    itemId : "10729",
+    itemTypeId : "2455059983007225764",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21200",
+      modType : ModificationType.NEW,
+      value : "N/A",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21200",
+      modType : ModificationType.NEW,
+      value : "N/A",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201371",
+    itemId : "5225",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+      name : "Interface Element Platform Type",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : -450940211,
+      idString : "3899709087455064781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21214",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21214",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201346",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201370",
+    itemId : "10730",
+    itemTypeId : "2455059983007225760",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1220",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21199",
+      modType : ModificationType.NEW,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21199",
+      modType : ModificationType.NEW,
+      value : "0",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201351",
+    itemId : "5226",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+      name : "Interface Element Platform Type",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_MANY",
+      idIntValue : -450940211,
+      idString : "3899709087455064781"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1226",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21215",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21215",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201345",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201364",
+    itemId : "10731",
+    itemTypeId : "1152921504606847089",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1222",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21204",
+      modType : ModificationType.NEW,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAzsq_BlAFunU3MrLuAA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21204",
+      modType : ModificationType.NEW,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAzsq_BlAFunU3MrLuAA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201371",
+    itemId : "10732",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21211",
+      modType : ModificationType.NEW,
+      value : "testaddingelement",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21211",
+      modType : ModificationType.NEW,
+      value : "testaddingelement",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201371",
+    itemId : "10733",
+    itemTypeId : "1152921504606847090",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21212",
+      modType : ModificationType.NEW,
+      value : "dsfads",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21212",
+      modType : ModificationType.NEW,
+      value : "dsfads",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201371",
+    itemId : "10734",
+    itemTypeId : "1152921504606847085",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21209",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21209",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : false,
+      notRelationChange : true,
+      idIntValue : 222,
+      idString : "222"
+    },
+    artId : "201371",
+    itemId : "10735",
+    itemTypeId : "2455059983007225788",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1225",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21210",
+      modType : ModificationType.NEW,
+      value : "true",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21210",
+      modType : ModificationType.NEW,
+      value : "true",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "8255184",
+    itemId : "5236",
+    itemTypeId : {
+      id : RelationTypeId.DEFAULT_HIERARCHICAL,
+      name : "Default Hierarchical",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "ONE_TO_MANY",
+      idIntValue : 340,
+      idString : "2305843009213694292"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1231",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21328",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21328",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201282",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "8255184",
+    itemId : "5237",
+    itemTypeId : {
+      id : RelationTypeId.DEFAULT_HIERARCHICAL,
+      name : "Default Hierarchical",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "ONE_TO_MANY",
+      idIntValue : 340,
+      idString : "2305843009213694292"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1232",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21329",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21329",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201314",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201376",
+    itemId : "5239",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACECONNECTIONPRIMARYNODE,
+      name : "Interface Connection Primary Node",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_ONE",
+      idIntValue : 1955695736,
+      idString : "6039606571486514296"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1234",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21339",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21339",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201313",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201376",
+    itemId : "5240",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACECONNECTIONSECONDARYNODE,
+      name : "Interface Connection Secondary Node",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_ONE",
+      idIntValue : 1955695737,
+      idString : "6039606571486514297"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21340",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1239",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21340",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21340",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201375",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201377",
+    itemId : "5241",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACECONNECTIONSECONDARYNODE,
+      name : "Interface Connection Secondary Node",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_ONE",
+      idIntValue : 1955695737,
+      idString : "6039606571486514297"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21344",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1238",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21344",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21344",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201312",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType : ignoreType.DELETED_AND_DNE_ON_DESTINATION,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "201377",
+    itemId : "5242",
+    itemTypeId : {
+      id : RelationTypeId.INTERFACECONNECTIONPRIMARYNODE,
+      name : "Interface Connection Primary Node",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "MANY_TO_ONE",
+      idIntValue : 1955695736,
+      idString : "6039606571486514296"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21345",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1237",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21345",
+      modType : ModificationType.DELETED,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21345",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201375",
+    applicabilityCopy : false,
+    deleted : true
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.RELATION_CHANGE,
+      name : changeTypeEnum.RELATION_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : false,
+      idIntValue : 333,
+      idString : "333"
+    },
+    artId : "8255184",
+    itemId : "5243",
+    itemTypeId : {
+      id : RelationTypeId.DEFAULT_HIERARCHICAL,
+      name : "Default Hierarchical",
+      order : "LEXICOGRAPHICAL_ASC",
+      ordered : true,
+      multiplicity : "ONE_TO_MANY",
+      idIntValue : 340,
+      idString : "2305843009213694292"
+    },
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1235",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21346",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21346",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "201377",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201315",
+    itemId : "201315",
+    itemTypeId : "2455059983007225776",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21093",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AAxEqTsbFAT7CP4dh3gA,AAxIGOfO8Alcj1uAsUgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21208",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AA8Pf7tZqyyiIZv5flgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21093",
+      modType : ModificationType.MODIFIED,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21208",
+      modType : ModificationType.MODIFIED,
+      value : "<OrderList><Order relType=\"Interface Structure Content\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAadYCnVhAA0+DQ1pDQA,ABE4IPZzGAlOFklhRsgA,AAFA+nyE4B91QD9HrKwA,AA8Pf7tZqyyiIZv5flgA\"/></OrderList>",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : true,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201282",
+    itemId : "201282",
+    itemTypeId : "126164394421696910",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21394",
+      modType : ModificationType.NEW,
+      value : "a description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21394",
+      modType : ModificationType.MODIFIED,
+      value : "a description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : true,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201297",
+    itemId : "201297",
+    itemTypeId : "2455059983007225775",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20564",
+      modType : ModificationType.NEW,
+      value : "description",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21395",
+      modType : ModificationType.MODIFIED,
+      value : "description updated",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20564",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21395",
+      modType : ModificationType.MODIFIED,
+      value : "description updated",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : true,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201360",
+    itemId : "201360",
+    itemTypeId : "6360154518785980502",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21075",
+      modType : ModificationType.NEW,
+      value : "",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21450",
+      modType : ModificationType.MODIFIED,
+      value : "testing notes",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21075",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21450",
+      modType : ModificationType.MODIFIED,
+      value : "testing notes",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : true,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
+  }, {
+    ignoreType  : ignoreType.NONE,
+    changeType : {
+      id: changeTypeNumber.ARTIFACT_CHANGE,
+      name : changeTypeEnum.ARTIFACT_CHANGE,
+      typeId : 2834799904,
+      notAttributeChange : true,
+      notRelationChange : true,
+      idIntValue : 111,
+      idString : "111"
+    },
+    artId : "201301",
+    itemId : "201301",
+    itemTypeId : "126164394421696908",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20600",
+      modType : ModificationType.NEW,
+      value : "487",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21459",
+      modType : ModificationType.MODIFIED,
+      value : "413",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20600",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21459",
+      modType : ModificationType.MODIFIED,
+      value : "413",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : true,
+    artIdB : "-1",
+    applicabilityCopy : false,
+    deleted : false
   }
 ];

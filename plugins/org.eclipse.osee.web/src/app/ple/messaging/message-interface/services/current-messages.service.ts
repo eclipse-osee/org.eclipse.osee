@@ -388,7 +388,8 @@ export class CurrentMessagesService {
     return this._done;
   }
 
-  parseIntoMessagesAndSubmessages(changes: changeInstance[], messageList: (message|messageWithChanges)[]) {
+  parseIntoMessagesAndSubmessages(changes: changeInstance[], _oldMessageList: (message | messageWithChanges)[]) {
+    let messageList = JSON.parse(JSON.stringify(_oldMessageList)) as (message | messageWithChanges)[];
     let newMessages: changeInstance[] = [];
     let newMessagesId: string[] = [];
     let newSubmessages: changeInstance[] = [];
@@ -413,12 +414,12 @@ export class CurrentMessagesService {
         }
       }
     })
-    changes.forEach((change) => {
+    changes.sort((a, b) => ["111", "333", "222", "444"].indexOf(a.changeType.id) - ["111", "333", "222", "444"].indexOf(b.changeType.id)).forEach((change) => {
       if (messageList.find((val) => val.id === change.artId)) {
         //logic for message update
-        let messageIndex = messageList.indexOf(messageList.find((val) => val.id === change.artId) as message);
+        const messageIndex = messageList.indexOf(messageList.find((val) => val.id === change.artId) as message);
         messageList[messageIndex] = this.messageChange(change, messageList[messageIndex]);
-        let messageChanges = (messageList[messageIndex] as messageWithChanges).changes;
+        const messageChanges = (messageList[messageIndex] as messageWithChanges).changes;
         if (messageChanges.applicability!==undefined && messageChanges.name!==undefined && messageChanges.description!==undefined && messageChanges.interfaceMessageNumber !==undefined && messageChanges.interfaceMessagePeriodicity !== undefined && messageChanges.interfaceMessageRate !== undefined && messageChanges.interfaceMessageType!==undefined && messageChanges.interfaceMessageWriteAccess !== undefined && (messageList[messageIndex] as messageWithChanges).deleted !== true) {
           (messageList[messageIndex] as messageWithChanges).added = true;
         } else {
@@ -467,8 +468,10 @@ export class CurrentMessagesService {
     submessages.forEach((value) => {
       //create deleted submessages
     })
-
-    return messageList
+    messageList.forEach((m) => {
+      m.subMessages=m.subMessages.sort((a,b)=>Number(a.id)-Number(b.id))
+    })
+    return messageList.sort((a,b)=>Number(a.id)-Number(b.id))
   }
 
   private splitByArtId(changes: changeInstance[]): changeInstance[][]{
@@ -679,6 +682,8 @@ export class CurrentMessagesService {
     )
   }
   get endOfRoute() {
-    return iif(()=>this.isInDiff.getValue(),of("/diff"),of(""))
+    return this.isInDiff.pipe(
+      switchMap((val)=>iif(()=>val,of("/diff"),of("")))
+    )
   }
 }

@@ -76,11 +76,6 @@ describe('GraphComponent', () => {
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
-  // beforeEach(function () {
-  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-  //     return null;
-  //   })
-  // });
   beforeEach(() => {
     component.linkMenuTrigger.closeMenu();
     component.nodeMenuTrigger.closeMenu();

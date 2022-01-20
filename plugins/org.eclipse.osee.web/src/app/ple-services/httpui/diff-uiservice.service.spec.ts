@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 import { BranchInfoService } from '../http/branch-info.service';
 import { BranchInfoServiceMock } from '../http/branch-info.service.mock';
@@ -48,21 +47,12 @@ describe('DiffUIService', () => {
   });
   it('should not return a diff', () => {
     scheduler.run(({ expectObservable, cold }) => {
-      const values = { a: true, b: false };
-      const seq = '---a---b---a---b';
-      const emissions = cold(seq, values).pipe(
-        tap((t) => (service.DiffMode = t))
-      );
-      expectObservable(emissions).toBe(seq, values);
+      service.DiffMode = false;
       const expectedValues = { a: changeReportMock, b: undefined };
       expectObservable(service.diff).toBe('(b|)', expectedValues);
     });
   });
 
-  it('should return the mode', () => {
-    service.DiffMode = true;
-    expect(service.mode).toBeTruthy();
-  });
 
   it('should return the branch id', () => {
     service.branchId = '10';

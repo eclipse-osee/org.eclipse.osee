@@ -97,12 +97,6 @@ export class EditElementFieldComponent implements OnInit {
 
   openMenu(event: MouseEvent,location: string) {
     event.preventDefault();
-    // this.menuPosition.x = event.clientX + 'px';
-    // this.menuPosition.y = event.clientY + 'px';
-    // this.matMenuTrigger.menuData = {
-    //   location:location
-    // }
-    // this.matMenuTrigger.openMenu();
     this.contextMenu.emit(event);
   }
 }

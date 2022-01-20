@@ -134,9 +134,6 @@ export class LayoutNotifierService {
     ),
     share(),
     shareReplay({refCount:true,bufferSize:1})
-    // tap((value) => {
-    //   console.log(value)
-    // })
   )
   constructor (private observer: BreakpointObserver) { }
   

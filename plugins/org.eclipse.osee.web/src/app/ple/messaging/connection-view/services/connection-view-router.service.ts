@@ -51,24 +51,4 @@ export class ConnectionViewRouterService {
     this.router.navigate([baseUrl,this.routerState.type.getValue(),value])
   }
 
-  set connection(value: string) {
-    let baseUrl = this.router.url.split("connections")[0];
-    this.router.navigate([baseUrl,this.routerState.type.getValue(),this.routerState.id.getValue(),value,"messages"])
-  }
-
-  set connectionInNewTab(value: string) {
-    let currentUrl = this.router.url.split("/");
-    currentUrl.shift();
-    const branchId = currentUrl.pop();
-    const branchType = currentUrl.pop();
-    currentUrl.splice(currentUrl.indexOf('connections'), 1);
-    if (currentUrl.indexOf('diff') !== -1) {
-      currentUrl.splice(currentUrl.indexOf('diff'), 1); 
-    }
-    let url = this.router.serializeUrl(this.router.createUrlTree([this.angLocationStrategy.getBaseHref(), ...currentUrl,branchType,branchId, value, "messages"]))
-    window.open(url, '_blank');
-  }
-  get inDiffMode() {
-    return this.routerState.isInDiff;
-  }
 }

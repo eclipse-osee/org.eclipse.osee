@@ -108,11 +108,6 @@ describe('SubElementTableComponent', () => {
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
-  // beforeEach(function () {
-  //   let window1 = spyOn(window, 'open').and.callFake((url,target,replace) => {
-  //     return null;
-  //   })
-  // });
 
   it('should create',async () => {
     fixture.detectChanges();
@@ -157,21 +152,10 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openEnumDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      //let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
       await menu.clickItem({ text: "Open Enumeration Details(view only)" });
       expect(spy).toHaveBeenCalled();
-      //expect(serviceSpy).toHaveBeenCalled();
     })
 
-    // it('should open the menu and open diff sidenav', async () => {
-    //   component.openGeneralMenu(mEvent, elementsMock[0],'field','header');
-    //   await fixture.whenStable();
-    //   let menu = await loader.getHarness(MatMenuHarness);
-    //   let spy = spyOn(component, 'viewDiff').and.callThrough();
-    //   await menu.clickItem({ text: "View Diff" });
-    //   expect(spy).toHaveBeenCalled();
-    //   //expect(serviceSpy).toHaveBeenCalled();
-    // })
 
     it('should open the menu and dismiss a description', async () => {
       component.openGeneralMenu(mEvent, elementsMock[0],'');

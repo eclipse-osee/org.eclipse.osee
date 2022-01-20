@@ -28,31 +28,25 @@ export class PlConfigUIStateService {
 
 
   public set viewBranchTypeString(branchType: string) {
-    //this._viewBranchType.next(branchType?.toLowerCase());
     this.ui.typeValue = branchType?.toLowerCase();
     this.updateReqConfig = true;
   }
 
   public get viewBranchType() {
-    //return this._viewBranchType;
     return this.ui.type;
   }
 
   public set branchIdNum(branchId: string) {
-    //this._branchId.next(branchId);
     this.ui.idValue = branchId;
   }
   public get branchId() {
     return this.ui.id.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-    // return this._branchId.pipe(share());
   }
   public set updateReqConfig(updateReq: boolean) {
     this.ui.updated = updateReq;
-    //this._updateRequired.next(updateReq);
   }
   public get updateReq() {
     return this.ui.update;
-    //return this._updateRequired;
   }
   public get loading() {
     return this.ui.isLoading;

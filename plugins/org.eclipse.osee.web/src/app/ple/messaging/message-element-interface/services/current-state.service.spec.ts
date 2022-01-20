@@ -14,13 +14,8 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed} from '@angular/core/testing';
 import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
-import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
-import { DifferenceReportService } from 'src/app/ple-services/http/difference-report.service';
-import { DifferenceReportServiceMock } from 'src/app/ple-services/http/difference-report.service.mock';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-report-branch.service.mock';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { response } from '../../connection-view/mocks/Response.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
@@ -28,11 +23,11 @@ import { ApplicabilityListService } from '../../shared/services/http/applicabili
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { elementsMock } from '../mocks/ReturnObjects/element.mock';
 import { platformTypesMock } from '../mocks/ReturnObjects/PlatformTypes.mock';
-import { structuresMock } from '../mocks/ReturnObjects/structure.mock';
+import { structuresMock, structuresMock2 } from '../mocks/ReturnObjects/structure.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
 import { platformTypeServiceMock } from '../mocks/services/platform-type.service.mock';
-import { structureServiceMock } from '../mocks/services/structure.service.mock';
+import { structureServiceRandomMock } from '../mocks/services/structure.service.mock';
 
 import { CurrentStateService } from './current-state.service';
 import { ElementService } from './element.service';
@@ -51,13 +46,14 @@ describe('CurrentStateService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: ElementService, useValue: elementServiceMock },
-        { provide: StructuresService, useValue: structureServiceMock },
+        { provide: StructuresService, useValue: structureServiceRandomMock },
         { provide: MessagesService, useValue: messageServiceMock },
         { provide: PlatformTypeService, useValue: platformTypeServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: ElementUiService },
-        { provide: DiffReportBranchService ,useValue: diffReportBranchServiceMock }
+        { provide: DiffReportBranchService, useValue: diffReportBranchServiceMock },
+        CurrentStateService,
       ],
       imports:[HttpClientTestingModule]
     });
@@ -215,20 +211,16 @@ describe('CurrentStateService', () => {
   })
   it('should get available structures', () => {
     scheduler.run(() => {
-      ui.DiffMode = false;
-      ui.difference = [];
-      let expectedObservable = { a: structuresMock,b:[structuresMock[0],structuresMock[0]], c:[structuresMock[0],structuresMock[0],structuresMock[0]],d:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]],e:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]], };
-      let expectedMarble = '(a)';
+      let expectedObservable = { a: structuresMock,b:[structuresMock[0],structuresMock2[0]], c:[structuresMock[0],structuresMock[0],structuresMock[0]],d:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]],e:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]], };
+      let expectedMarble = '(b|)';
       scheduler.expectObservable(service.availableStructures).toBe(expectedMarble, expectedObservable);
     })
   })
 
   it('should get available elements', () => {
     scheduler.run(() => {
-      ui.DiffMode = false;
-      ui.difference = [];
       let expectedObservable = { a: elementsMock };
-      let expectedMarble = 'a';
+      let expectedMarble = '(a|)';
       scheduler.expectObservable(service.availableElements).toBe(expectedMarble, expectedObservable);
     })
   })
@@ -270,29 +262,6 @@ describe('CurrentStateService', () => {
       let delayMarble = '- 100ms a ';
       cold(delayMarble).subscribe(() => service.update = true);
       expectObservable(service.getStructureRepeating('abcdef')).toBe(expectedMarble,expectedObservable)
-    })
-  })
-  it('should set and get differences', () => {
-    scheduler.run(({ expectObservable, cold }) => {
-      service.branchId = '10';
-      const coldValues = { a: [], b: changeReportMock};
-      const values = { a: [], b: changeReportMock,c:undefined };
-      const coldMarbles='---a---b--------------a--------------b'
-      const coldObs = cold(coldMarbles, coldValues).pipe(tap((t) => service.difference = t));
-      expectObservable(coldObs).toBe(coldMarbles, coldValues);
-      expectObservable(service.differences).toBe('a--a---b--------------a--------------b', values);
-    })
-  })
-
-  it('should set and get diff state', () => {
-    scheduler.run(({ expectObservable, cold }) => {
-      service.branchId = '10';
-      const coldValues = { a: false, b: true};
-      const values = { a: false, b: true,c:undefined };
-      const coldMarbles='---a---b--------------a--------------b'
-      const coldObs = cold(coldMarbles, coldValues).pipe(tap((t) => ui.DiffMode = t));
-      expectObservable(coldObs).toBe(coldMarbles, coldValues);
-      expectObservable(service.isInDiff).toBe('a--a---b--------------a--------------b', values);
     })
   })
 });

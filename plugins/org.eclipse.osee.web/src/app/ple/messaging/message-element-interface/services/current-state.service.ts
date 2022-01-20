@@ -11,13 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, concat, from, iif, Observable, of, OperatorFunction, Subject } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, switchMap, repeatWhen, mergeMap, scan, distinct, tap, shareReplay, first, filter, take, map, reduce, delay, concatMap, count } from 'rxjs/operators';
-import { relation, transaction, transactionToken } from 'src/app/transactions/transaction';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { combineLatest, from, iif, of, OperatorFunction } from 'rxjs';
+import { concatMap, count, debounceTime, distinct, distinctUntilChanged, filter, map, mergeMap, reduce, repeatWhen, scan, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
+import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
+import { transaction, transactionToken } from 'src/app/transactions/transaction';
+import { changeInstance, changeTypeNumber, ignoreType, ModificationType } from '../../../..//types/change-report/change-report.d';
+import { applic } from '../../../../types/applicability/applic';
+import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
+import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
-import { applic } from '../../../../types/applicability/applic';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { element, elementWithChanges } from '../types/element';
 import { structure, structureWithChanges } from '../types/structure';
@@ -26,11 +30,6 @@ import { MessagesService } from './messages.service';
 import { PlatformTypeService } from './platform-type.service';
 import { StructuresService } from './structures.service';
 import { ElementUiService } from './ui.service';
-import { changeInstance, changeTypeNumber, ignoreType, ModificationType } from '../../../..//types/change-report/change-report.d';
-import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
-import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum'
-import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
-import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,631 +49,7 @@ export class CurrentStateService {
 
   private _structures = combineLatest(this.ui.isInDiff, this.differences, this._structuresNoDiff, combineLatest(this.BranchId, this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId)).pipe(
     switchMap(([isInDiff, differences, structures, [branchId, parentBranch, messageId, subMessageId, connectionId]]) => iif(() => isInDiff && differences !== undefined && differences.length > 0,
-      of(differences).pipe(
-        filter((val) => val !== undefined) as OperatorFunction<changeInstance[] | undefined, changeInstance[]>,
-        switchMap((differenceArray) => of(differenceArray).pipe(
-          map((differenceArray) => differenceArray.sort((a, b) => {
-            if (a.changeType.id === changeTypeNumber.RELATION_CHANGE && typeof a.itemTypeId === "object" && "id" in a.itemTypeId && b.changeType.id === changeTypeNumber.RELATION_CHANGE && typeof b.itemTypeId === "object" && "id" in b.itemTypeId) {
-              const relFactor = [RelationTypeId.INTERFACESTRUCTURECONTENT, RelationTypeId.INTERFACESUBMESSAGECONTENT, RelationTypeId.INTERFACEELEMENTPLATFORMTYPE].indexOf(a.itemTypeId.id) - [RelationTypeId.INTERFACESTRUCTURECONTENT, RelationTypeId.INTERFACESUBMESSAGECONTENT, RelationTypeId.INTERFACEELEMENTPLATFORMTYPE].indexOf(b.itemTypeId.id)
-                -((a.itemTypeId.id===RelationTypeId.INTERFACESTRUCTURECONTENT && (b.itemTypeId.id===RelationTypeId.INTERFACESTRUCTURECONTENT)|| (a.itemTypeId.id===RelationTypeId.INTERFACESUBMESSAGECONTENT && b.itemTypeId.id===RelationTypeId.INTERFACESUBMESSAGECONTENT)?[ModificationType.NEW,ModificationType.DELETED].indexOf(a.currentVersion.modType)-[ModificationType.NEW,ModificationType.DELETED].indexOf(b.currentVersion.modType):0));
-              return ["111", "222", "333", "444"].indexOf(a.changeType.id) - ["111", "222", "333", "444"].indexOf(b.changeType.id) - relFactor;
-            }
-            return ["111", "222", "333", "444"].indexOf(a.changeType.id) - ["111", "222", "333", "444"].indexOf(b.changeType.id)
-          })),
-          concatMap((differences) => from(differences).pipe(
-            filter((val) => val.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION),
-            filter((val)=>val.changeType.id!==changeTypeNumber.TUPLE_CHANGE),
-            filter((val) => structures.map((a) => a.id).includes(val.artId) || structures.map((a) => a.id).includes(val.artIdB) || structures.map((a) => a.elements.map((b) => b.id)).flat().includes(val.artId) || structures.map((a) => a.elements.map((b) => b.id)).flat().includes(val.artIdB) || val.artId === subMessageId),
-            concatMap((change) => iif(() => change.changeType.id === changeTypeNumber.ARTIFACT_CHANGE,
-              iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && change.destinationVersion.modType === ModificationType.NONE && !change.deleted,
-                iif(() => structures.map((a) => a.id).includes(change.artId),
-                  of(structures).pipe(
-                    take(1),
-                    concatMap((structures) => from(structures).pipe(
-                      switchMap((structure) => iif(() => change.artId === structure.id,
-                        of(structure).pipe(
-                          map((val) => {
-                            if ((structure as structureWithChanges).changes === undefined) {
-                              (structure as structureWithChanges).changes = {}
-                            }
-                            structure.applicability = change.currentVersion.applicabilityToken as applic;
-                            (structure as structureWithChanges).changes.applicability = {
-                              previousValue: change.baselineVersion.applicabilityToken,
-                              currentValue: change.currentVersion.applicabilityToken,
-                              transactionToken: change.currentVersion.transactionToken
-                            };
-                            (structure as structureWithChanges).added = true;
-                            return structure as structureWithChanges
-                          })
-                        ),
-                        of(structure)
-                      ))
-                    )),
-                    reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                  ),
-                  iif(() => structures.map((a) => a.elements.map((b) => b.id)).flat().includes(change.artId),
-                    of(structures).pipe(
-                      take(1),
-                      concatMap((structures) => from(structures).pipe(
-                        switchMap((structure) => iif(() => structure.elements.map((a) => a.id).includes(change.artId),
-                          of(structure).pipe(
-                            map((val) => {
-                              const index = structure.elements?.findIndex((el) => el.id === change.artId);
-                              if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                ((structure.elements)[index] as elementWithChanges).changes = {}
-                              }
-                              ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                                previousValue: change.baselineVersion.applicabilityToken,
-                                currentValue: change.currentVersion.applicabilityToken,
-                                transactionToken: change.currentVersion.transactionToken
-                              };
-                              ((structure.elements)[index] as elementWithChanges).added = true;
-                              (structure as structureWithChanges).hasElementChanges = true;
-                              return structure as structureWithChanges
-                            })
-                          ),
-                          of(structure)
-                        ))
-                      )),
-                      reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                    ),
-                    of(change)
-                  )
-                ),
-                iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NEW,
-                  iif(() => !change.deleted,
-                    iif(() => structures.map((a) => a.elements.map((b) => b.id)).flat().includes(change.artId),
-                      of(structures).pipe(
-                        take(1),
-                        concatMap((structures) => from(structures).pipe(
-                          switchMap((structure) => iif(() => structure.elements.map((a) => a.id).includes(change.artId),
-                            of(structure).pipe(
-                              map((val) => {
-                                const index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                  ((structure.elements)[index] as elementWithChanges).changes = {}
-                                }
-                                ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                                  previousValue: change.baselineVersion.applicabilityToken,
-                                  currentValue: change.currentVersion.applicabilityToken,
-                                  transactionToken: change.currentVersion.transactionToken
-                                };
-                                (structure as structureWithChanges).hasElementChanges = true;
-                                return structure as structureWithChanges;
-                              })
-                            ),
-                            of(structure)
-                          ))
-                        )),
-                        reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                      ),
-                      iif(() => structures.map((a) => a.id).includes(change.artId),
-                      of(structures).pipe(
-                        take(1),
-                        concatMap((structures) => from(structures).pipe(
-                          switchMap((structure) => iif(() => change.artId === structure.id,
-                            of(structure).pipe(
-                              map((val) => {
-                                if ((structure as structureWithChanges).changes === undefined) {
-                                  (structure as structureWithChanges).changes = {}
-                                }
-                                (structure as structureWithChanges).changes.applicability = {
-                                  previousValue: change.baselineVersion.applicabilityToken,
-                                  currentValue: change.currentVersion.applicabilityToken,
-                                  transactionToken: change.currentVersion.transactionToken
-                                };
-                                return structure as structureWithChanges;
-                              })
-                            ),
-                            of(structure)
-                          ))
-                        )),
-                        reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                      ),
-                      of(change)
-                    )
-                    ),
-                    iif(() => structures.map((a) => a.id).includes(change.artId),
-                      of(structures).pipe(
-                        take(1),
-                        concatMap((structures) => from(structures).pipe(
-                          switchMap((structure) => iif(() => change.artId === structure.id,
-                            of(structure).pipe(
-                              map((val) => {
-                                if ((structure as structureWithChanges).changes === undefined) {
-                                  (structure as structureWithChanges).changes = {}
-                                }
-                                (structure as structureWithChanges).changes.applicability = {
-                                  previousValue: change.baselineVersion.applicabilityToken,
-                                  currentValue: change.currentVersion.applicabilityToken,
-                                  transactionToken: change.currentVersion.transactionToken
-                                };
-                                return structure as structureWithChanges;
-                              })
-                            ),
-                            of(structure)
-                          ))
-                        )),
-                        reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                      ),
-                      of(change)
-                    )
-                  ),
-                  of(change)
-                )
-              ),
-              iif(() => change.changeType.id === changeTypeNumber.ATTRIBUTE_CHANGE,
-                iif(() => structures.map((a) => a.id).includes(change.artId),
-                  of(structures).pipe(
-                    take(1),
-                    concatMap((structures) => from(structures).pipe(
-                      switchMap((structure) => iif(() => change.artId === structure.id,
-                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
-                          of(structure).pipe(
-                            map((structure) => {
-                              if ((structure as structureWithChanges).changes === undefined) {
-                                (structure as structureWithChanges).changes = {}
-                              }
-                              (structure as structureWithChanges).changes.description = {
-                                previousValue: change.baselineVersion.value,
-                                currentValue: change.currentVersion.value,
-                                transactionToken: change.currentVersion.transactionToken
-                              }
-                              return structure as structureWithChanges;
-                            })
-                          ),
-                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
-                            of(structure).pipe(
-                              map((structure) => {
-                                if ((structure as structureWithChanges).changes === undefined) {
-                                  (structure as structureWithChanges).changes = {}
-                                }
-                                (structure as structureWithChanges).changes.name = {
-                                  previousValue: change.baselineVersion.value,
-                                  currentValue: change.currentVersion.value,
-                                  transactionToken: change.currentVersion.transactionToken
-                                }
-                                return structure as structureWithChanges;
-                              })
-                            ),
-                            iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMAXSIMULTANEITY,
-                              of(structure).pipe(
-                                map((structure) => {
-                                  if ((structure as structureWithChanges).changes === undefined) {
-                                    (structure as structureWithChanges).changes = {}
-                                  }
-                                  (structure as structureWithChanges).changes.interfaceMaxSimultaneity = {
-                                    previousValue: change.baselineVersion.value,
-                                    currentValue: change.currentVersion.value,
-                                    transactionToken: change.currentVersion.transactionToken
-                                  }
-                                  return structure as structureWithChanges;
-                                })
-                              ),
-                              iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMINSIMULTANEITY,
-                                of(structure).pipe(
-                                  map((structure) => {
-                                    if ((structure as structureWithChanges).changes === undefined) {
-                                      (structure as structureWithChanges).changes = {}
-                                    }
-                                    (structure as structureWithChanges).changes.interfaceMinSimultaneity = {
-                                      previousValue: change.baselineVersion.value,
-                                      currentValue: change.currentVersion.value,
-                                      transactionToken: change.currentVersion.transactionToken
-                                    }
-                                    return structure as structureWithChanges;
-                                  })
-                                ),
-                                iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACESTRUCTURECATEGORY,
-                                  of(structure).pipe(
-                                    map((structure) => {
-                                      if ((structure as structureWithChanges).changes === undefined) {
-                                        (structure as structureWithChanges).changes = {}
-                                      }
-                                      (structure as structureWithChanges).changes.interfaceStructureCategory = {
-                                        previousValue: change.baselineVersion.value,
-                                        currentValue: change.currentVersion.value,
-                                        transactionToken: change.currentVersion.transactionToken
-                                      }
-                                      return structure as structureWithChanges;
-                                    })
-                                  ),
-                                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACETASKFILETYPE,
-                                    of(structure).pipe(
-                                      map((structure) => {
-                                        if ((structure as structureWithChanges).changes === undefined) {
-                                          (structure as structureWithChanges).changes = {}
-                                        }
-                                        (structure as structureWithChanges).changes.interfaceTaskFileType = {
-                                          previousValue: change.baselineVersion.value,
-                                          currentValue: change.currentVersion.value,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        }
-                                        return structure as structureWithChanges;
-                                      })
-                                    ),
-                                    of()
-                                  )
-                                )
-                              )
-                            )
-                          )
-                        ),
-                        of(structure) //default case
-                      ))
-                    )),
-                    reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                  ), //structures
-                  iif(() => structures.map((a) => a.elements.map((b) => b.id)).flat().includes(change.artId),
-                    of(structures).pipe(
-                      take(1),
-                      concatMap((structures) => from(structures).pipe(
-                        switchMap((structure) => iif(() => structure.elements.map((a) => a.id).includes(change.artId),
-                          of(structure).pipe(
-                            concatMap((structure) => from(structure.elements).pipe(
-                              switchMap((element) => iif(() => change.artId === element.id,
-                                iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
-                                  of(element).pipe(
-                                    map((el) => {
-                                      if (el.changes === undefined) {
-                                        el.changes = {};
-                                      }
-                                      el.changes.description = {
-                                        previousValue: change.baselineVersion.value,
-                                        currentValue: change.currentVersion.value,
-                                        transactionToken: change.currentVersion.transactionToken
-                                      }
-                                      return el as elementWithChanges;
-                                    })
-                                  ),
-                                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
-                                    of(element).pipe(
-                                      map((el) => {
-                                        if (el.changes === undefined) {
-                                          el.changes = {};
-                                        }
-                                        el.changes.name = {
-                                          previousValue: change.baselineVersion.value,
-                                          currentValue: change.currentVersion.value,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        }
-                                        return el as elementWithChanges;
-                                      })
-                                    ),
-                                    iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTALTERABLE,
-                                      of(element).pipe(
-                                        map((el) => {
-                                          if (el.changes === undefined) {
-                                            el.changes = {};
-                                          }
-                                          el.changes.interfaceElementAlterable = {
-                                            previousValue: change.baselineVersion.value,
-                                            currentValue: change.currentVersion.value,
-                                            transactionToken: change.currentVersion.transactionToken
-                                          }
-                                          return el as elementWithChanges;
-                                        })
-                                      ),
-                                      iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTSTART,
-                                        of(element).pipe(
-                                          map((el) => {
-                                            if (el.changes === undefined) {
-                                              el.changes = {};
-                                            }
-                                            el.changes.interfaceElementIndexStart = {
-                                              previousValue: change.baselineVersion.value,
-                                              currentValue: change.currentVersion.value,
-                                              transactionToken: change.currentVersion.transactionToken
-                                            }
-                                            return el as elementWithChanges;
-                                          })
-                                        ),
-                                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTEND,
-                                          of(element).pipe(
-                                            map((el) => {
-                                              if (el.changes === undefined) {
-                                                el.changes = {};
-                                              }
-                                              el.changes.interfaceElementIndexEnd = {
-                                                previousValue: change.baselineVersion.value,
-                                                currentValue: change.currentVersion.value,
-                                                transactionToken: change.currentVersion.transactionToken
-                                              }
-                                              return el as elementWithChanges;
-                                            })
-                                          ),
-                                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.NOTES,
-                                            of(element).pipe(
-                                              map((el) => {
-                                                if (el.changes === undefined) {
-                                                  el.changes = {};
-                                                }
-                                                el.changes.notes = {
-                                                  previousValue: change.baselineVersion.value,
-                                                  currentValue: change.currentVersion.value,
-                                                  transactionToken: change.currentVersion.transactionToken
-                                                }
-                                                return el as elementWithChanges;
-                                              })
-                                            ),
-                                            of(element)
-                                          )
-                                        )
-                                      )
-                                    )
-                                  )
-                                ),
-                                of(element) //default case
-                              ))
-                            )),
-                            reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
-                            map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
-                          ),
-                          of(structure)
-                        ))
-                      )),
-                      reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
-                    ), //elements
-                    of(change)
-                  )
-                ),
-                iif(() => change.changeType.id === changeTypeNumber.RELATION_CHANGE,
-                  iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESUBMESSAGECONTENT && change.artId === subMessageId,
-                    iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && structures.map((a) => a.id).includes(change.artIdB),
-                      of(structures).pipe(
-                        take(1),
-                        concatMap((structures) => from(structures).pipe(
-                          switchMap((structure) => iif(() => change.artIdB === structure.id,
-                            of(structure).pipe(
-                              map((struct) => {
-                                if ((struct as structureWithChanges).changes === undefined) {
-                                  (struct as structureWithChanges).changes = {};
-                                };
-                                (struct as structureWithChanges).added = true;
-                                return struct as structureWithChanges
-                              })
-                            ),
-                            of(structure)
-                          ))
-                        )),
-                        reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
-                      ),
-                      iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE && change.baselineVersion.modType !== ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.DELETED_ON_DESTINATION,
-                        this.structure.getStructure(parentBranch, messageId, subMessageId, change.artIdB, connectionId).pipe(
-                          map((initialStruct) => {
-                            return {
-                              ...initialStruct,
-                              deleted: true,
-                              added:false,
-                              changes: {
-                                name: { previousValue: initialStruct.name, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                description: { previousValue: initialStruct.description, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                interfaceMaxSimultaneity: { previousValue: initialStruct.interfaceMaxSimultaneity, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                interfaceMinSimultaneity: { previousValue: initialStruct.interfaceMinSimultaneity, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                interfaceTaskFileType: { previousValue: initialStruct.interfaceTaskFileType, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                interfaceStructureCategory: { previousValue: initialStruct.interfaceStructureCategory, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                applicability: { previousValue: initialStruct.applicability, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                numElements:true,
-                              }
-                            }
-                          }),
-                          map((struct) => {
-                            structures=[...structures,struct as structureWithChanges]
-                            return structures as (Required<structure>|structureWithChanges)[];
-                          })
-                        ),
-                        of(structures)
-                      )
-                    ),
-                    iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESTRUCTURECONTENT && structures.map((a) => a.id).includes(change.artId),
-                      iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && structures.map((a) => a.elements.map((b) => b.id)).flat().includes(change.artIdB),
-                        of(structures).pipe(
-                          take(1),
-                          concatMap((structures) => from(structures).pipe(
-                            switchMap((structure) => iif(() => structure.elements.map((a) => a.id).includes(change.artIdB),
-                              of(structure).pipe(
-                                concatMap((structure) => from(structure.elements).pipe(
-                                  switchMap((element) => iif(() => change.artIdB === element.id,
-                                    of(element).pipe(
-                                      map((el) => {
-                                        if ((el as elementWithChanges).changes === undefined) {
-                                          (el as elementWithChanges).changes = {};
-                                        }
-                                        (el as elementWithChanges).changes.name = {
-                                          previousValue: '',
-                                          currentValue:el.name,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.description = {
-                                          previousValue: '',
-                                          currentValue:el.description,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.interfaceElementAlterable = {
-                                          previousValue: '',
-                                          currentValue:el.interfaceElementAlterable,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.interfaceElementIndexEnd = {
-                                          previousValue: '',
-                                          currentValue:el.interfaceElementIndexEnd,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.interfaceElementIndexStart = {
-                                          previousValue: '',
-                                          currentValue:el.interfaceElementIndexStart,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.notes = {
-                                          previousValue: '',
-                                          currentValue:el.notes,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.platformTypeName2 = {
-                                          previousValue: '',
-                                          currentValue:el.platformTypeName2,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).changes.applicability = {
-                                          previousValue: change.baselineVersion.applicabilityToken,
-                                          currentValue: change.currentVersion.applicabilityToken,
-                                          transactionToken: change.currentVersion.transactionToken
-                                        };
-                                        (el as elementWithChanges).added = true;
-                                        return el as elementWithChanges
-                                      })
-                                    ),
-                                    of(element)
-                                  ))
-                                )),
-                                reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
-                                map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
-                              ),
-                              of(structure)
-                            ))
-                          )),
-                          reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
-                        ),
-                        iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE && change.baselineVersion.modType !== ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.DELETED_ON_DESTINATION,
-                          of(structures).pipe(
-                            take(1),
-                            concatMap((structures) => from(structures).pipe(
-                              concatMap((structure) => iif(() => change.artId === structure.id,
-                                of(structure).pipe(
-                                  concatMap((structure) => this.elements.getElement(parentBranch, messageId, subMessageId, structure.id, change.artIdB, connectionId).pipe(
-                                    map((initialEl) => {
-                                      return {
-                                        ...initialEl,
-                                        changes: {
-                                          name: { previousValue: initialEl.name, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          description: { previousValue: initialEl.description, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          notes: { previousValue: initialEl.notes, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          platformTypeName2: { previousValue: initialEl.platformTypeName2, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          interfaceElementIndexEnd: { previousValue: initialEl.interfaceElementIndexEnd, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          interfaceElementIndexStart: { previousValue: initialEl.interfaceElementIndexStart, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          interfaceElementAlterable: { previousValue: initialEl.interfaceElementAlterable, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                          applicability:{previousValue:initialEl.applicability,currentValue:'',transactionToken:change.currentVersion.transactionToken},
-                                        },
-                                        deleted: true
-                                    }}),
-                                  )),
-                                  map((val) => {
-                                    structure.elements=[...structure.elements,val]
-                                    structure.numElements = structure.elements.length;
-                                    if ((structure as structureWithChanges).changes === undefined) {
-                                      (structure as structureWithChanges).changes = {}
-                                    };
-                                    (structure as structureWithChanges).changes.numElements = true;
-                                    structure.elements.sort((a, b) => Number(a.id) - Number(b.id));
-                                    return structure;
-                                  })
-                                ),
-                                of(structure)
-                              ))
-                            )),
-                            reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                          ),
-                          of(change)
-                        )
-                      ),
-                      iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACEELEMENTPLATFORMTYPE && structures.map((a) => a.elements.map((b) => b.id)).flat().includes(change.artId),
-                        iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE,
-                          of(structures).pipe(
-                            take(1),
-                            concatMap((structures) => from(structures).pipe(
-                              concatMap((structure) => iif(() => structure.elements.map((a) => a.id).includes(change.artId),
-                                of(structure).pipe(
-                                  concatMap((structure) => from(structure.elements).pipe(
-                                    concatMap((element) => iif(() => change.artId === element.id,
-                                      of(element).pipe(
-                                        concatMap((val) => this.typeService.getType(branchId, change.artIdB).pipe(
-                                          map((type) => {
-                                            if ((element as elementWithChanges).changes === undefined) {
-                                              (element as elementWithChanges).changes = {};
-                                            }
-                                            if ((element as elementWithChanges).changes.platformTypeName2 === undefined) {
-                                              (element as elementWithChanges).changes.platformTypeName2 = {
-                                                previousValue: '',
-                                                currentValue: type.name,
-                                                transactionToken: change.currentVersion.transactionToken
-                                              }
-                                            } else if ((element as elementWithChanges).changes.platformTypeName2 !== undefined && (element as elementWithChanges).changes.platformTypeName2?.currentValue !== element.platformTypeName2) {
-                                              (element as elementWithChanges).changes.platformTypeName2!.currentValue = type.name;
-                                              (element as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken;
-                                            }
-                                            return element as elementWithChanges;
-                                          })
-                                        ))
-                                      ),
-                                      of(element)
-                                    ))
-                                  )),
-                                  reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
-                                  map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
-                                ),
-                                of(structure)
-                              )),
-                            )),
-                            reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                          ),
-                          iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE,
-                          of(structures).pipe(
-                            take(1),
-                            concatMap((structures) => from(structures).pipe(
-                              concatMap((structure) => iif(() => structure.elements.map((a) => a.id).includes(change.artId),
-                                of(structure).pipe(
-                                  concatMap((structure) => from(structure.elements).pipe(
-                                    concatMap((element) => iif(() => change.artId === element.id,
-                                      of(element).pipe(
-                                        concatMap((val) => this.typeService.getType(branchId, change.artIdB).pipe(
-                                          map((type) => {
-                                            if ((element as elementWithChanges).changes === undefined) {
-                                              (element as elementWithChanges).changes = {};
-                                            }
-                                            if ((element as elementWithChanges).changes.platformTypeName2 === undefined) {
-                                              (element as elementWithChanges).changes.platformTypeName2 = {
-                                                previousValue: type.name,
-                                                currentValue: '',
-                                                transactionToken: change.currentVersion.transactionToken
-                                              }
-                                            } else if ((element as elementWithChanges).changes.platformTypeName2 !== undefined && (element as elementWithChanges).changes.platformTypeName2?.currentValue !== element.platformTypeName2) {
-                                              (element as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
-                                              (element as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken;
-                                            } else {
-                                              (element as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
-                                            }
-                                            return element as elementWithChanges;
-                                          })
-                                        ))
-                                      ),
-                                      of(element)
-                                    ))
-                                  )),
-                                  reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
-                                  map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
-                                ),
-                                of(structure)
-                              )),
-                            )),
-                            reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
-                            ),
-                            of(structures)
-                          )
-                        ),
-                        of(change)
-                      ))
-                  ),
-                  of()
-                )
-              )
-            )),
-            // tap((valueToDebug) => {
-            //   console.log(valueToDebug)
-            // })
-          )),
-          switchMap((val) => of(structures as (structure|structureWithChanges)[]))
-        ))
-      ),
+      this._parseDifferencesMulti(differences,structures,parentBranch,branchId,messageId,subMessageId,connectionId),
       of(structures)
     )),
     // tap((val) => {
@@ -778,36 +153,41 @@ export class CurrentStateService {
 
   private get structureObservable(){
     return combineLatest([this.BranchId, this.connectionId]).pipe(
+      take(1),
       switchMap(([branchId, connectionId]) => this.messages.getMessages(branchId, connectionId).pipe(
         switchMap((messages) => of(messages).pipe(
-          map((messages) => messages.map((a) => a.subMessages).flat().filter((value, index, self) => self.indexOf(value) === index) ),
+          map((messages) => messages.map((a) => a.subMessages).flat().filter((value, index, self) => self.indexOf(value) === index)),
           concatMap((submessages) => from(submessages).pipe(
             distinct((x) => x.id),
             concatMap((submessage) => this.structure.getFilteredStructures("", branchId, messages.find((m) => m.subMessages.includes(submessage))?.id || '', submessage.id || '', connectionId).pipe(
+              debounceTime(0),
+              shareReplay({ bufferSize: 1, refCount: true }),
               concatMap((structures) => from(structures).pipe(
               )),
             ))
           ))
         ))
       )),
-      distinct((structure)=>{return structure.id})
+      distinct((structure) => { return structure.id }),
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
   get availableStructures() {
     return this.structureObservable.pipe(
-      scan((acc, curr) => [...acc, curr], [] as Required<structure>[]),
+      reduce((acc, curr) => [...acc, curr], [] as Required<structure>[]),
+      map((structures)=>structures.sort((a,b)=>Number(a.id)-Number(b.id))),
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
-  get availableElements(){
-    return this.availableStructures.pipe(
-      map((structures) => structures.map((a) => a.elements).flat().filter((val, index, self) => self.indexOf(val) === index)),
-      switchMap((elements) => iif(()=> typeof elements!=='undefined',from(elements).pipe(
-        distinct((v) => { return v.id }),
-        scan((acc, curr) => [...acc, curr], [] as element[]),
-      ),
-        of([])
-      )),
+  get availableElements() {
+    return this.structureObservable.pipe(
+      filter((structure) => structure.elements !== undefined),
+      map((structure) => structure.elements),
+      concatMap(elements => from(elements)),
+      distinct((v) => v.id),
+      scan((acc, curr) => [...acc, curr], [] as element[]),
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -1024,388 +404,11 @@ export class CurrentStateService {
       switchMap(([branch,parentBranch, message, submessage, connection]) => combineLatest([this.structure.getStructure(branch, message, submessage, structureId, connection),this.ui.isInDiff,this.differences]).pipe(
         repeatWhen(_ => this.ui.UpdateRequired),
         switchMap(([structure, isInDiff, differences]) => iif(() => isInDiff && differences!==undefined && differences.length>0,
-          of(differences).pipe(
-            filter((val) => val !== undefined) as OperatorFunction<changeInstance[] | undefined, changeInstance[]>,
-            switchMap((differenceArray) => of(differenceArray).pipe(
-              map((differenceArray) => differenceArray.sort((a, b) => ["111", "222", "333", "444"].indexOf(a.changeType.id) - ["111", "222", "333", "444"].indexOf(b.changeType.id))),
-              mergeMap((differences) => from(differences).pipe(
-                filter((val) => val.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION),
-                filter((val)=>val.artId===structure.id || val.artIdB===structure.id||val.itemId===structure.id||(structure.elements?.map((a)=>a.id).some((el)=>el===val.artId||el===val.artIdB||el===val.itemId)||false) ||(typeof val.itemTypeId === "object" && "id" in val.itemTypeId && val.itemTypeId.id === RelationTypeId.INTERFACESTRUCTURECONTENT)),
-                mergeMap((change) => iif(() => change.changeType.id === changeTypeNumber.ARTIFACT_CHANGE,
-                  iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && change.destinationVersion.modType === ModificationType.NONE && !change.deleted,
-                    iif(() => change.artId === structure.id,
-                      of(structure).pipe(
-                        map((val) => {
-                          if ((structure as structureWithChanges).changes === undefined) {
-                            (structure as structureWithChanges).changes={}
-                          }
-                          structure.applicability = change.currentVersion.applicabilityToken as applic;
-                          (structure as structureWithChanges).changes.applicability = {
-                            previousValue: change.baselineVersion.applicabilityToken,
-                            currentValue: change.currentVersion.applicabilityToken,
-                            transactionToken: change.currentVersion.transactionToken
-                          };
-                          (structure as structureWithChanges).added = true;
-                          return structure as structureWithChanges
-                        })
-                      ),
-                      iif(() => structure.elements?.map(a => a.id).includes(change.artId) || false,
-                        of(structure).pipe(
-                          map((val) => {
-                            let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                            if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                              ((structure.elements)[index] as elementWithChanges).changes = {}
-                            }
-                            ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                              previousValue: change.baselineVersion.applicabilityToken,
-                              currentValue: change.currentVersion.applicabilityToken,
-                              transactionToken: change.currentVersion.transactionToken
-                            };
-                            ((structure.elements)[index] as elementWithChanges).added = true;
-                            (structure as structureWithChanges).hasElementChanges = true;
-                            return structure as structureWithChanges
-                          })
-                        ),
-                        of()
-                      ) //check if in element array, and mark as added, else check type of object (structure/element) and mark as deleted
-                    ),
-                    iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NEW,
-                      iif(() => !change.deleted && structure.elements?.map(a => a.id).includes(change.artId),
-                        of(structure).pipe(
-                          map((val) => {
-                            let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                            if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                              ((structure.elements)[index] as elementWithChanges).changes = {}
-                            }
-                            ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                              previousValue: change.baselineVersion.applicabilityToken,
-                              currentValue: change.currentVersion.applicabilityToken,
-                              transactionToken: change.currentVersion.transactionToken
-                            };
-                            (structure as structureWithChanges).hasElementChanges = true;
-                            return structure as structureWithChanges;
-                          })
-                        ),
-                        of()
-                      ),
-                      of()
-                    ) //deleted/changed
-                  ),
-                  iif(() => change.changeType.id === changeTypeNumber.ATTRIBUTE_CHANGE,
-                    iif(() => change.artId === structure.id,
-                      iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
-                        of(structure).pipe(
-                          map((structure) => {
-                            if ((structure as structureWithChanges).changes === undefined) {
-                              (structure as structureWithChanges).changes={}
-                            }
-                            (structure as structureWithChanges).changes.description = {
-                              previousValue: change.baselineVersion.value,
-                              currentValue: change.currentVersion.value,
-                              transactionToken: change.currentVersion.transactionToken
-                            }
-                            return structure as structureWithChanges;
-                          })
-                        ),
-                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
-                        of(structure).pipe(
-                          map((structure) => {
-                            if ((structure as structureWithChanges).changes === undefined) {
-                              (structure as structureWithChanges).changes={}
-                            }
-                            (structure as structureWithChanges).changes.name = {
-                              previousValue: change.baselineVersion.value,
-                              currentValue: change.currentVersion.value,
-                              transactionToken: change.currentVersion.transactionToken
-                            }
-                            return structure as structureWithChanges;
-                          })
-                        ),
-                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMAXSIMULTANEITY,
-                          of(structure).pipe(
-                            map((structure) => {
-                              if ((structure as structureWithChanges).changes === undefined) {
-                                (structure as structureWithChanges).changes={}
-                              }
-                              (structure as structureWithChanges).changes.interfaceMaxSimultaneity = {
-                                previousValue: change.baselineVersion.value,
-                                currentValue: change.currentVersion.value,
-                                transactionToken: change.currentVersion.transactionToken
-                              }
-                              return structure as structureWithChanges;
-                            })
-                          ),
-                            iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMINSIMULTANEITY,
-                            of(structure).pipe(
-                              map((structure) => {
-                                if ((structure as structureWithChanges).changes === undefined) {
-                                  (structure as structureWithChanges).changes={}
-                                }
-                                (structure as structureWithChanges).changes.interfaceMinSimultaneity = {
-                                  previousValue: change.baselineVersion.value,
-                                  currentValue: change.currentVersion.value,
-                                  transactionToken: change.currentVersion.transactionToken
-                                }
-                                return structure as structureWithChanges;
-                              })
-                            ),
-                              iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACESTRUCTURECATEGORY,
-                              of(structure).pipe(
-                                map((structure) => {
-                                  if ((structure as structureWithChanges).changes === undefined) {
-                                    (structure as structureWithChanges).changes={}
-                                  }
-                                  (structure as structureWithChanges).changes.interfaceStructureCategory = {
-                                    previousValue: change.baselineVersion.value,
-                                    currentValue: change.currentVersion.value,
-                                    transactionToken: change.currentVersion.transactionToken
-                                  }
-                                  return structure as structureWithChanges;
-                                })
-                              ),
-                                iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACETASKFILETYPE,
-                                of(structure).pipe(
-                                  map((structure) => {
-                                    if ((structure as structureWithChanges).changes === undefined) {
-                                      (structure as structureWithChanges).changes={}
-                                    }
-                                    (structure as structureWithChanges).changes.interfaceTaskFileType = {
-                                      previousValue: change.baselineVersion.value,
-                                      currentValue: change.currentVersion.value,
-                                      transactionToken: change.currentVersion.transactionToken
-                                    }
-                                    return structure as structureWithChanges;
-                                  })
-                                ),
-                                  of()
-                                )
-                              )
-                            )
-                          )
-                        )
-                      ),
-                      iif(() => structure.elements?.map(a => a.id).includes(change.artId),
-                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
-                          of(structure).pipe(
-                            map((structure) => {
-                              let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                              if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                ((structure.elements)[index] as elementWithChanges).changes = {}
-                              }
-                              ((structure.elements)[index] as elementWithChanges).changes.description = {
-                                previousValue: change.baselineVersion.value,
-                                currentValue: change.currentVersion.value,
-                                transactionToken: change.currentVersion.transactionToken
-                              };
-                              (structure as structureWithChanges).hasElementChanges = true;
-                              return structure as structureWithChanges
-                            })
-                          ),
-                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
-                            of(structure).pipe(
-                              map((structure) => {
-                                let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                  ((structure.elements)[index] as elementWithChanges).changes = {}
-                                }
-                                ((structure.elements)[index] as elementWithChanges).changes.name = {
-                                  previousValue: change.baselineVersion.value,
-                                  currentValue: change.currentVersion.value,
-                                  transactionToken: change.currentVersion.transactionToken
-                                };
-                                (structure as structureWithChanges).hasElementChanges = true;
-                                return structure as structureWithChanges
-                              })
-                            ),
-                            iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTALTERABLE,
-                              of(structure).pipe(
-                                map((structure) => {
-                                  let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                  if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                    ((structure.elements)[index] as elementWithChanges).changes = {}
-                                  }
-                                  ((structure.elements)[index] as elementWithChanges).changes.interfaceElementAlterable = {
-                                    previousValue: change.baselineVersion.value,
-                                    currentValue: change.currentVersion.value,
-                                    transactionToken: change.currentVersion.transactionToken
-                                  };
-                                  (structure as structureWithChanges).hasElementChanges = true;
-                                  return structure as structureWithChanges
-                                })
-                              ),
-                              iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTEND,
-                                of(structure).pipe(
-                                  map((structure) => {
-                                    let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                    if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                      ((structure.elements)[index] as elementWithChanges).changes = {}
-                                    }
-                                    ((structure.elements)[index] as elementWithChanges).changes.interfaceElementIndexEnd = {
-                                      previousValue: change.baselineVersion.value,
-                                      currentValue: change.currentVersion.value,
-                                      transactionToken: change.currentVersion.transactionToken
-                                    };
-                                    (structure as structureWithChanges).hasElementChanges = true;
-                                    return structure as structureWithChanges
-                                  })
-                                ),
-                                iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTSTART,
-                                  of(structure).pipe(
-                                    map((structure) => {
-                                      let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                      if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                        ((structure.elements)[index] as elementWithChanges).changes = {}
-                                      }
-                                      ((structure.elements)[index] as elementWithChanges).changes.interfaceElementIndexStart = {
-                                        previousValue: change.baselineVersion.value,
-                                        currentValue: change.currentVersion.value,
-                                        transactionToken: change.currentVersion.transactionToken
-                                      };
-                                      (structure as structureWithChanges).hasElementChanges = true;
-                                      return structure as structureWithChanges
-                                    })
-                                  ),
-                                  of()
-                                )
-                              )
-                            )
-                          )
-                        ),
-                        of()
-                      ) //element has changed attributes
-                    ),
-                    iif(() => change.changeType.id === changeTypeNumber.RELATION_CHANGE,
-                      iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESUBMESSAGECONTENT && change.artIdB === structure.id,
-                        of(change), //mark structure as added/deleted
-                        iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESTRUCTURECONTENT && change.artId === structure.id,
-                          iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && structure.elements.map(a => a.id).includes(change.artIdB),
-                            of(change).pipe(
-                              map(() => {
-                                let index = structure.elements?.findIndex((el) => el.id === change.artIdB);
-                                if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                  ((structure.elements)[index] as elementWithChanges).changes = {}
-                                }
-                                ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                                  previousValue: change.baselineVersion.applicabilityToken,
-                                  currentValue: change.currentVersion.applicabilityToken,
-                                  transactionToken: change.currentVersion.transactionToken
-                                };
-                                (structure as structureWithChanges).hasElementChanges = true;
-                                ((structure.elements)[index] as elementWithChanges).added=true;
-                                return structure as structureWithChanges
-                              })
-                            ),
-                            iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE && change.baselineVersion.modType !== ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.DELETED_ON_DESTINATION,
-                              this.elements.getElement(parentBranch, message, submessage, structure.id, change.artIdB, connection).pipe(
-                                map((initialEl) => {
-                                  return {
-                                    ...initialEl,
-                                    changes: {
-                                      name: { previousValue: initialEl.name, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      description: { previousValue: initialEl.description, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      notes: { previousValue: initialEl.notes, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      platformTypeName2: { previousValue: initialEl.platformTypeName2, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      interfaceElementIndexEnd: { previousValue: initialEl.interfaceElementIndexEnd, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      interfaceElementIndexStart: { previousValue: initialEl.interfaceElementIndexStart, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      interfaceElementAlterable: { previousValue: initialEl.interfaceElementAlterable, currentValue: '', transactionToken: change.currentVersion.transactionToken },
-                                      applicability:{previousValue:initialEl.applicability,currentValue:'',transactionToken:change.currentVersion.transactionToken},
-                                    }
-                                }}),
-                                map((element) => {
-                                  structure.elements.push({
-                                    ...element,
-                                    deleted: true
-                                  });
-                                  structure.numElements++;
-                                  if ((structure as structureWithChanges).changes === undefined) {
-                                    (structure as structureWithChanges).changes={}
-                                  }
-                                  (structure as structureWithChanges).changes.numElements = true;
-                                  structure.elements.sort((a, b) => Number(a.id) - Number(b.id));
-                                  return structure as structureWithChanges;
-                                })
-                              ),
-                              of(change)    
-                            )
-                          ),//check if an element relation changed on specific structure id
-                          iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACEELEMENTPLATFORMTYPE && structure.elements.map((a) => a.id).includes(change.artId),
-                            iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE,
-                              this.typeService.getType(branch, change.artIdB).pipe(
-                                map((type) => {
-                                  let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                  if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                    ((structure.elements)[index] as elementWithChanges).changes = {}
-                                  }
-                                  if (((structure.elements)[index] as elementWithChanges).changes.platformTypeName2===undefined) {
-                                    ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2 = {
-                                      previousValue: '',
-                                      currentValue: type.name,
-                                      transactionToken: change.currentVersion.transactionToken
-                                    };
-                                  } else if(((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!==undefined && ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2?.currentValue!==((structure.elements)[index] as elementWithChanges).platformTypeName2) {
-                                    ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.currentValue = type.name;
-                                    ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken
-                                  }
-                                  (structure as structureWithChanges).hasElementChanges = true;
-                                  return structure as structureWithChanges
-                                })
-                              ),
-                              iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE,
-                                this.typeService.getType(branch, change.artIdB).pipe(
-                                  map((type) => {
-                                    let index = structure.elements?.findIndex((el) => el.id === change.artId);
-                                    if (((structure.elements)[index] as elementWithChanges).changes === undefined) {
-                                      ((structure.elements)[index] as elementWithChanges).changes = {}
-                                    }
-                                    if (((structure.elements)[index] as elementWithChanges).changes.platformTypeName2===undefined) {
-                                      ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2 = {
-                                        previousValue: type.name,
-                                        currentValue: '',
-                                        transactionToken: change.currentVersion.transactionToken
-                                      };
-                                    } else if(((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!==undefined && ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2?.currentValue!==((structure.elements)[index] as elementWithChanges).platformTypeName2) {
-                                      ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
-                                      ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken
-                                    } else {
-                                      ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
-                                    }
-                                    (structure as structureWithChanges).hasElementChanges = true;
-                                    return structure as structureWithChanges
-                                  })
-                                ),
-                                of()
-                              )
-                            ),
-                            of()
-                          )
-                        ) 
-                      ),
-                      iif(() => change.changeType.id === changeTypeNumber.TUPLE_CHANGE,
-                        //these should be ignored
-                        of(),
-                        of()
-                      )
-                    )
-                  )
-                )),
-                // tap((val) => {
-                //   console.log(val)
-                //   console.log(structure)
-                // }),
-                count()
-              )),
-            )),
-
-
-            switchMap((val) => of(structure as structure|structureWithChanges))
-          ),
+          this._parseDifferences(differences,structure,parentBranch,branch,message,submessage,connection),
           //no differences
           of(structure)
         ))
       )),
-      // tap((val) => {
-      //   console.log(val)
-      // })
     )
   }
 
@@ -1511,5 +514,948 @@ export class CurrentStateService {
         }
       )))
     );
+  }
+  private _parseDifferences(differences: changeInstance[] | undefined, _oldStructure: Required<structure>,parentBranch:string,branch:string,message:string,submessage:string,connection:string) {
+    let structure = JSON.parse(JSON.stringify(_oldStructure)) as Required<structure>;
+    return of(differences).pipe(
+      filter((val) => val !== undefined) as OperatorFunction<changeInstance[] | undefined, changeInstance[]>,
+      switchMap((differenceArray) => of(differenceArray).pipe(
+        map((differenceArray) => differenceArray.sort((a, b) => ["111", "222", "333", "444"].indexOf(a.changeType.id) - ["111", "222", "333", "444"].indexOf(b.changeType.id))),
+        mergeMap((differences) => from(differences).pipe(
+          filter((val) => val.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION),
+          filter((val)=>val.artId===structure.id || val.artIdB===structure.id||val.itemId===structure.id||(structure.elements?.map((a)=>a.id).some((el)=>el===val.artId||el===val.artIdB||el===val.itemId)||false) ||(typeof val.itemTypeId === "object" && "id" in val.itemTypeId && val.itemTypeId.id === RelationTypeId.INTERFACESTRUCTURECONTENT)),
+          mergeMap((change) => iif(() => change.changeType.id === changeTypeNumber.ARTIFACT_CHANGE,
+            iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && change.destinationVersion.modType === ModificationType.NONE && !change.deleted,
+              iif(() => change.artId === structure.id,
+                of(structure).pipe(
+                  map((val) => {
+                    structure = this._structureChangeSetup(structure);
+                    structure.applicability = change.currentVersion.applicabilityToken as applic;
+                    (structure as structureWithChanges).changes.applicability = {
+                      previousValue: change.baselineVersion.applicabilityToken,
+                      currentValue: change.currentVersion.applicabilityToken,
+                      transactionToken: change.currentVersion.transactionToken
+                    };
+                    (structure as structureWithChanges).added = true;
+                    return structure as structureWithChanges
+                  })
+                ),
+                iif(() => structure.elements?.map(a => a.id).includes(change.artId) || false,
+                  of(structure).pipe(
+                    map((val) => {
+                      let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                      structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                      ((structure.elements)[index] as elementWithChanges).changes.applicability = {
+                        previousValue: change.baselineVersion.applicabilityToken,
+                        currentValue: change.currentVersion.applicabilityToken,
+                        transactionToken: change.currentVersion.transactionToken
+                      };
+                      ((structure.elements)[index] as elementWithChanges).added = true;
+                      (structure as structureWithChanges).hasElementChanges = true;
+                      return structure as structureWithChanges
+                    })
+                  ),
+                  of()
+                ) //check if in element array, and mark as added, else check type of object (structure/element) and mark as deleted
+              ),
+              iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NEW,
+                iif(() => !change.deleted && structure.elements?.map(a => a.id).includes(change.artId),
+                  of(structure).pipe(
+                    map((val) => {
+                      let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                      structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                      ((structure.elements)[index] as elementWithChanges).changes.applicability = {
+                        previousValue: change.baselineVersion.applicabilityToken,
+                        currentValue: change.currentVersion.applicabilityToken,
+                        transactionToken: change.currentVersion.transactionToken
+                      };
+                      (structure as structureWithChanges).hasElementChanges = true;
+                      return structure as structureWithChanges;
+                    })
+                  ),
+                  of()
+                ),
+                of()
+              ) //deleted/changed
+            ),
+            iif(() => change.changeType.id === changeTypeNumber.ATTRIBUTE_CHANGE,
+              iif(() => change.artId === structure.id,
+                iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
+                  of(structure).pipe(
+                    map((structure) => {
+                      structure = this._structureChangeSetup(structure);
+                      (structure as structureWithChanges).changes.description = {
+                        previousValue: change.baselineVersion.value,
+                        currentValue: change.currentVersion.value,
+                        transactionToken: change.currentVersion.transactionToken
+                      }
+                      return structure as structureWithChanges;
+                    })
+                  ),
+                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
+                  of(structure).pipe(
+                    map((structure) => {
+                      structure = this._structureChangeSetup(structure);
+                      (structure as structureWithChanges).changes.name = {
+                        previousValue: change.baselineVersion.value,
+                        currentValue: change.currentVersion.value,
+                        transactionToken: change.currentVersion.transactionToken
+                      }
+                      return structure as structureWithChanges;
+                    })
+                  ),
+                    iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMAXSIMULTANEITY,
+                    of(structure).pipe(
+                      map((structure) => {
+                        structure = this._structureChangeSetup(structure);
+                        (structure as structureWithChanges).changes.interfaceMaxSimultaneity = {
+                          previousValue: change.baselineVersion.value,
+                          currentValue: change.currentVersion.value,
+                          transactionToken: change.currentVersion.transactionToken
+                        }
+                        return structure as structureWithChanges;
+                      })
+                    ),
+                      iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMINSIMULTANEITY,
+                      of(structure).pipe(
+                        map((structure) => {
+                          structure = this._structureChangeSetup(structure);
+                          (structure as structureWithChanges).changes.interfaceMinSimultaneity = {
+                            previousValue: change.baselineVersion.value,
+                            currentValue: change.currentVersion.value,
+                            transactionToken: change.currentVersion.transactionToken
+                          }
+                          return structure as structureWithChanges;
+                        })
+                      ),
+                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACESTRUCTURECATEGORY,
+                        of(structure).pipe(
+                          map((structure) => {
+                            structure = this._structureChangeSetup(structure);
+                            (structure as structureWithChanges).changes.interfaceStructureCategory = {
+                              previousValue: change.baselineVersion.value,
+                              currentValue: change.currentVersion.value,
+                              transactionToken: change.currentVersion.transactionToken
+                            }
+                            return structure as structureWithChanges;
+                          })
+                        ),
+                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACETASKFILETYPE,
+                          of(structure).pipe(
+                            map((structure) => {
+                              structure = this._structureChangeSetup(structure);
+                              (structure as structureWithChanges).changes.interfaceTaskFileType = {
+                                previousValue: change.baselineVersion.value,
+                                currentValue: change.currentVersion.value,
+                                transactionToken: change.currentVersion.transactionToken
+                              }
+                              return structure as structureWithChanges;
+                            })
+                          ),
+                            of()
+                          )
+                        )
+                      )
+                    )
+                  )
+                ),
+                iif(() => structure.elements?.map(a => a.id).includes(change.artId),
+                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
+                    of(structure).pipe(
+                      map((structure) => {
+                        let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                        structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                        ((structure.elements)[index] as elementWithChanges).changes.description = {
+                          previousValue: change.baselineVersion.value,
+                          currentValue: change.currentVersion.value,
+                          transactionToken: change.currentVersion.transactionToken
+                        };
+                        (structure as structureWithChanges).hasElementChanges = true;
+                        return structure as structureWithChanges
+                      })
+                    ),
+                    iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
+                      of(structure).pipe(
+                        map((structure) => {
+                          let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                          structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                          ((structure.elements)[index] as elementWithChanges).changes.name = {
+                            previousValue: change.baselineVersion.value,
+                            currentValue: change.currentVersion.value,
+                            transactionToken: change.currentVersion.transactionToken
+                          };
+                          (structure as structureWithChanges).hasElementChanges = true;
+                          return structure as structureWithChanges
+                        })
+                      ),
+                      iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTALTERABLE,
+                        of(structure).pipe(
+                          map((structure) => {
+                            let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                            structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                            ((structure.elements)[index] as elementWithChanges).changes.interfaceElementAlterable = {
+                              previousValue: change.baselineVersion.value,
+                              currentValue: change.currentVersion.value,
+                              transactionToken: change.currentVersion.transactionToken
+                            };
+                            (structure as structureWithChanges).hasElementChanges = true;
+                            return structure as structureWithChanges
+                          })
+                        ),
+                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTEND,
+                          of(structure).pipe(
+                            map((structure) => {
+                              let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                              structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                              ((structure.elements)[index] as elementWithChanges).changes.interfaceElementIndexEnd = {
+                                previousValue: change.baselineVersion.value,
+                                currentValue: change.currentVersion.value,
+                                transactionToken: change.currentVersion.transactionToken
+                              };
+                              (structure as structureWithChanges).hasElementChanges = true;
+                              return structure as structureWithChanges
+                            })
+                          ),
+                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTSTART,
+                            of(structure).pipe(
+                              map((structure) => {
+                                let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                                structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                                ((structure.elements)[index] as elementWithChanges).changes.interfaceElementIndexStart = {
+                                  previousValue: change.baselineVersion.value,
+                                  currentValue: change.currentVersion.value,
+                                  transactionToken: change.currentVersion.transactionToken
+                                };
+                                (structure as structureWithChanges).hasElementChanges = true;
+                                return structure as structureWithChanges
+                              })
+                            ),
+                            of()
+                          )
+                        )
+                      )
+                    )
+                  ),
+                  of()
+                ) //element has changed attributes
+              ),
+              iif(() => change.changeType.id === changeTypeNumber.RELATION_CHANGE,
+                iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESUBMESSAGECONTENT && change.artIdB === structure.id,
+                  of(change), //mark structure as added/deleted
+                  iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESTRUCTURECONTENT && change.artId === structure.id,
+                    iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && structure.elements?.map(a => a.id).includes(change.artIdB),
+                      of(change).pipe(
+                        map(() => {
+                          let index = structure.elements?.findIndex((el) => el.id === change.artIdB);
+                          structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                          ((structure.elements)[index] as elementWithChanges).changes.applicability = {
+                            previousValue: change.baselineVersion.applicabilityToken,
+                            currentValue: change.currentVersion.applicabilityToken,
+                            transactionToken: change.currentVersion.transactionToken
+                          };
+                          (structure as structureWithChanges).hasElementChanges = true;
+                          ((structure.elements)[index] as elementWithChanges).added=true;
+                          return structure as structureWithChanges
+                        })
+                      ),
+                      iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE && change.baselineVersion.modType !== ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.DELETED_ON_DESTINATION,
+                        this.elements.getElement(parentBranch, message, submessage, structure.id, change.artIdB, connection).pipe(
+                          map((initialEl) => {
+                            return {
+                              ...initialEl,
+                              changes: {
+                                name: { previousValue: initialEl.name, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                description: { previousValue: initialEl.description, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                notes: { previousValue: initialEl.notes, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                platformTypeName2: { previousValue: initialEl.platformTypeName2, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceElementIndexEnd: { previousValue: initialEl.interfaceElementIndexEnd, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceElementIndexStart: { previousValue: initialEl.interfaceElementIndexStart, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceElementAlterable: { previousValue: initialEl.interfaceElementAlterable, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                applicability:{previousValue:initialEl.applicability,currentValue:'',transactionToken:change.currentVersion.transactionToken},
+                              }
+                          }}),
+                          map((element) => {
+                            structure.elements.push({
+                              ...element,
+                              deleted: true
+                            });
+                            structure.numElements++;
+                            structure = this._structureChangeSetup(structure);
+                            (structure as structureWithChanges).changes.numElements = true;
+                            structure.elements.sort((a, b) => Number(a.id) - Number(b.id));
+                            return structure as structureWithChanges;
+                          })
+                        ),
+                        of(change)    
+                      )
+                    ),//check if an element relation changed on specific structure id
+                    iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACEELEMENTPLATFORMTYPE && structure.elements?.map((a) => a.id).includes(change.artId),
+                      iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE,
+                        this.typeService.getType(branch, change.artIdB).pipe(
+                          map((type) => {
+                            let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                            structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                            if (((structure.elements)[index] as elementWithChanges).changes.platformTypeName2===undefined) {
+                              ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2 = {
+                                previousValue: '',
+                                currentValue: type.name,
+                                transactionToken: change.currentVersion.transactionToken
+                              };
+                            } else if(((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!==undefined && ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2?.currentValue!==((structure.elements)[index] as elementWithChanges).platformTypeName2) {
+                              ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.currentValue = type.name;
+                              ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken
+                            }
+                            (structure as structureWithChanges).hasElementChanges = true;
+                            return structure as structureWithChanges
+                          })
+                        ),
+                        iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE,
+                          this.typeService.getType(branch, change.artIdB).pipe(
+                            map((type) => {
+                              let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                              structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                              if (((structure.elements)[index] as elementWithChanges).changes.platformTypeName2===undefined) {
+                                ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2 = {
+                                  previousValue: type.name,
+                                  currentValue: '',
+                                  transactionToken: change.currentVersion.transactionToken
+                                };
+                              } else if(((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!==undefined && ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2?.currentValue!==((structure.elements)[index] as elementWithChanges).platformTypeName2) {
+                                ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
+                                ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken
+                              } else {
+                                ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
+                              }
+                              (structure as structureWithChanges).hasElementChanges = true;
+                              return structure as structureWithChanges
+                            })
+                          ),
+                          of()
+                        )
+                      ),
+                      of()
+                    )
+                  ) 
+                ),
+                iif(() => change.changeType.id === changeTypeNumber.TUPLE_CHANGE,
+                  //these should be ignored
+                  of(),
+                  of()
+                )
+              )
+            )
+          )),
+          // tap((val) => {
+          //   console.log(val)
+          //   console.log(structure)
+          // }),
+          count()
+        )),
+      )),
+
+
+      switchMap((val) => of(structure as structure|structureWithChanges))
+    )
+  }
+  private _parseDifferencesMulti(differences:changeInstance[]|undefined,_oldStructures:(Required<structure>)[],parentBranch:string,branchId:string,messageId:string,subMessageId:string,connectionId:string) {
+    let structures = JSON.parse(JSON.stringify(_oldStructures)) as (Required<structure>)[];
+    if (differences !==undefined && structures!==undefined) {
+      return of(differences).pipe(
+        filter((val) => val !== undefined) as OperatorFunction<changeInstance[] | undefined, changeInstance[]>,
+        switchMap((differenceArray) => of(differenceArray).pipe(
+          map((differenceArray) => differenceArray.sort((a, b) => {
+            if (a.changeType.id === changeTypeNumber.RELATION_CHANGE && typeof a.itemTypeId === "object" && "id" in a.itemTypeId && b.changeType.id === changeTypeNumber.RELATION_CHANGE && typeof b.itemTypeId === "object" && "id" in b.itemTypeId) {
+              const relFactor = [RelationTypeId.INTERFACESTRUCTURECONTENT, RelationTypeId.INTERFACESUBMESSAGECONTENT, RelationTypeId.INTERFACEELEMENTPLATFORMTYPE].indexOf(a.itemTypeId.id) - [RelationTypeId.INTERFACESTRUCTURECONTENT, RelationTypeId.INTERFACESUBMESSAGECONTENT, RelationTypeId.INTERFACEELEMENTPLATFORMTYPE].indexOf(b.itemTypeId.id)
+                -((a.itemTypeId.id===RelationTypeId.INTERFACESTRUCTURECONTENT && (b.itemTypeId.id===RelationTypeId.INTERFACESTRUCTURECONTENT)|| (a.itemTypeId.id===RelationTypeId.INTERFACESUBMESSAGECONTENT && b.itemTypeId.id===RelationTypeId.INTERFACESUBMESSAGECONTENT)?[ModificationType.NEW,ModificationType.DELETED].indexOf(a.currentVersion.modType)-[ModificationType.NEW,ModificationType.DELETED].indexOf(b.currentVersion.modType):0))-(Number(a.artIdB)-Number(b.artIdB));
+              return ["111", "222", "333", "444"].indexOf(a.changeType.id) - ["111", "222", "333", "444"].indexOf(b.changeType.id) - relFactor;
+            }
+            return ["111", "222", "333", "444"].indexOf(a.changeType.id) - ["111", "222", "333", "444"].indexOf(b.changeType.id)
+          })),
+          concatMap((differences) => from(differences).pipe(
+            filter((val) => val.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION),
+            filter((val)=>val.changeType.id!==changeTypeNumber.TUPLE_CHANGE),
+            filter((val) => structures.map((a) => a.id).includes(val.artId) || structures.map((a) => a.id).includes(val.artIdB) ||!((structures.map((a)=>a.elements).flat() as (element|elementWithChanges|undefined)[]).includes(undefined) && (structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(val.artId) || structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(val.artIdB)))  || val.artId === subMessageId),
+            concatMap((change) => iif(() => change.changeType.id === changeTypeNumber.ARTIFACT_CHANGE,
+              iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && change.destinationVersion.modType === ModificationType.NONE && !change.deleted,
+                iif(() => structures.map((a) => a.id).includes(change.artId),
+                  of(structures).pipe(
+                    take(1),
+                    concatMap((structures) => from(structures).pipe(
+                      switchMap((structure) => iif(() => change.artId === structure.id,
+                        of(structure).pipe(
+                          map((val) => {
+                            structure = this._structureChangeSetup(structure);
+                            structure.applicability = change.currentVersion.applicabilityToken as applic;
+                            (structure as structureWithChanges).changes.applicability = {
+                              previousValue: change.baselineVersion.applicabilityToken,
+                              currentValue: change.currentVersion.applicabilityToken,
+                              transactionToken: change.currentVersion.transactionToken
+                            };
+                            (structure as structureWithChanges).added = true;
+                            return structure as structureWithChanges
+                          })
+                        ),
+                        of(structure)
+                      ))
+                    )),
+                    reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                  ),
+                  iif(() => structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(change.artId),
+                    of(structures).pipe(
+                      take(1),
+                      concatMap((structures) => from(structures).pipe(
+                        switchMap((structure) => iif(() => structure.elements?.map((a) => a.id).includes(change.artId),
+                          of(structure).pipe(
+                            map((val) => {
+                              const index = structure.elements?.findIndex((el) => el.id === change.artId);
+                              structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                              ((structure.elements)[index] as elementWithChanges).changes.applicability = {
+                                previousValue: change.baselineVersion.applicabilityToken,
+                                currentValue: change.currentVersion.applicabilityToken,
+                                transactionToken: change.currentVersion.transactionToken
+                              };
+                              ((structure.elements)[index] as elementWithChanges).added = true;
+                              (structure as structureWithChanges).hasElementChanges = true;
+                              return structure as structureWithChanges
+                            })
+                          ),
+                          of(structure)
+                        ))
+                      )),
+                      reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                    ),
+                    of(change)
+                  )
+                ),
+                iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NEW,
+                  iif(() => !change.deleted,
+                    iif(() => structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(change.artId),
+                      of(structures).pipe(
+                        take(1),
+                        concatMap((structures) => from(structures).pipe(
+                          switchMap((structure) => iif(() => structure.elements?.map((a) => a.id).includes(change.artId),
+                            of(structure).pipe(
+                              map((val) => {
+                                const index = structure.elements?.findIndex((el) => el.id === change.artId);
+                                structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                                ((structure.elements)[index] as elementWithChanges).changes.applicability = {
+                                  previousValue: change.baselineVersion.applicabilityToken,
+                                  currentValue: change.currentVersion.applicabilityToken,
+                                  transactionToken: change.currentVersion.transactionToken
+                                };
+                                (structure as structureWithChanges).hasElementChanges = true;
+                                return structure as structureWithChanges;
+                              })
+                            ),
+                            of(structure)
+                          ))
+                        )),
+                        reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                      ),
+                      iif(() => structures.map((a) => a.id).includes(change.artId),
+                      of(structures).pipe(
+                        take(1),
+                        concatMap((structures) => from(structures).pipe(
+                          switchMap((structure) => iif(() => change.artId === structure.id,
+                            of(structure).pipe(
+                              map((val) => {
+                                structure = this._structureChangeSetup(structure);
+                                (structure as structureWithChanges).changes.applicability = {
+                                  previousValue: change.baselineVersion.applicabilityToken,
+                                  currentValue: change.currentVersion.applicabilityToken,
+                                  transactionToken: change.currentVersion.transactionToken
+                                };
+                                return structure as structureWithChanges;
+                              })
+                            ),
+                            of(structure)
+                          ))
+                        )),
+                        reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                      ),
+                      of(change)
+                    )
+                    ),
+                    iif(() => structures.map((a) => a.id).includes(change.artId),
+                      of(structures).pipe(
+                        take(1),
+                        concatMap((structures) => from(structures).pipe(
+                          switchMap((structure) => iif(() => change.artId === structure.id,
+                            of(structure).pipe(
+                              map((val) => {
+                                structure = this._structureChangeSetup(structure);
+                                (structure as structureWithChanges).changes.applicability = {
+                                  previousValue: change.baselineVersion.applicabilityToken,
+                                  currentValue: change.currentVersion.applicabilityToken,
+                                  transactionToken: change.currentVersion.transactionToken
+                                };
+                                return structure as structureWithChanges;
+                              })
+                            ),
+                            of(structure)
+                          ))
+                        )),
+                        reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                      ),
+                      of(change)
+                    )
+                  ),
+                  of(change)
+                )
+              ),
+              iif(() => change.changeType.id === changeTypeNumber.ATTRIBUTE_CHANGE,
+                iif(() => structures.map((a) => a.id).includes(change.artId),
+                  of(structures).pipe(
+                    take(1),
+                    concatMap((structures) => from(structures).pipe(
+                      switchMap((structure) => iif(() => change.artId === structure.id,
+                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
+                          of(structure).pipe(
+                            map((structure) => {
+                              structure = this._structureChangeSetup(structure);
+                              (structure as structureWithChanges).changes.description = {
+                                previousValue: change.baselineVersion.value,
+                                currentValue: change.currentVersion.value,
+                                transactionToken: change.currentVersion.transactionToken
+                              }
+                              return structure as structureWithChanges;
+                            })
+                          ),
+                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
+                            of(structure).pipe(
+                              map((structure) => {
+                                structure = this._structureChangeSetup(structure);
+                                (structure as structureWithChanges).changes.name = {
+                                  previousValue: change.baselineVersion.value,
+                                  currentValue: change.currentVersion.value,
+                                  transactionToken: change.currentVersion.transactionToken
+                                }
+                                return structure as structureWithChanges;
+                              })
+                            ),
+                            iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMAXSIMULTANEITY,
+                              of(structure).pipe(
+                                map((structure) => {
+                                  structure = this._structureChangeSetup(structure);
+                                  (structure as structureWithChanges).changes.interfaceMaxSimultaneity = {
+                                    previousValue: change.baselineVersion.value,
+                                    currentValue: change.currentVersion.value,
+                                    transactionToken: change.currentVersion.transactionToken
+                                  }
+                                  return structure as structureWithChanges;
+                                })
+                              ),
+                              iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEMINSIMULTANEITY,
+                                of(structure).pipe(
+                                  map((structure) => {
+                                    structure = this._structureChangeSetup(structure);
+                                    (structure as structureWithChanges).changes.interfaceMinSimultaneity = {
+                                      previousValue: change.baselineVersion.value,
+                                      currentValue: change.currentVersion.value,
+                                      transactionToken: change.currentVersion.transactionToken
+                                    }
+                                    return structure as structureWithChanges;
+                                  })
+                                ),
+                                iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACESTRUCTURECATEGORY,
+                                  of(structure).pipe(
+                                    map((structure) => {
+                                      structure = this._structureChangeSetup(structure);
+                                      (structure as structureWithChanges).changes.interfaceStructureCategory = {
+                                        previousValue: change.baselineVersion.value,
+                                        currentValue: change.currentVersion.value,
+                                        transactionToken: change.currentVersion.transactionToken
+                                      }
+                                      return structure as structureWithChanges;
+                                    })
+                                  ),
+                                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACETASKFILETYPE,
+                                    of(structure).pipe(
+                                      map((structure) => {
+                                        structure = this._structureChangeSetup(structure);
+                                        (structure as structureWithChanges).changes.interfaceTaskFileType = {
+                                          previousValue: change.baselineVersion.value,
+                                          currentValue: change.currentVersion.value,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        }
+                                        return structure as structureWithChanges;
+                                      })
+                                    ),
+                                    of()
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        ),
+                        of(structure) //default case
+                      ))
+                    )),
+                    reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                  ), //structures
+                  iif(() => structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(change.artId),
+                    of(structures).pipe(
+                      take(1),
+                      concatMap((structures) => from(structures).pipe(
+                        switchMap((structure) => iif(() => structure.elements?.map((a) => a.id).includes(change.artId),
+                          of(structure).pipe(
+                            concatMap((structure) => from(structure.elements).pipe(
+                              switchMap((element) => iif(() => change.artId === element.id,
+                                iif(() => change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION,
+                                  of(element).pipe(
+                                    map((el) => {
+                                      el = this._elementChangeSetup(el);
+                                      el.changes.description = {
+                                        previousValue: change.baselineVersion.value,
+                                        currentValue: change.currentVersion.value,
+                                        transactionToken: change.currentVersion.transactionToken
+                                      }
+                                      return el as elementWithChanges;
+                                    })
+                                  ),
+                                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
+                                    of(element).pipe(
+                                      map((el) => {
+                                        el = this._elementChangeSetup(el);
+                                        el.changes.name = {
+                                          previousValue: change.baselineVersion.value,
+                                          currentValue: change.currentVersion.value,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        }
+                                        return el as elementWithChanges;
+                                      })
+                                    ),
+                                    iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTALTERABLE,
+                                      of(element).pipe(
+                                        map((el) => {
+                                          el = this._elementChangeSetup(el);
+                                          el.changes.interfaceElementAlterable = {
+                                            previousValue: change.baselineVersion.value,
+                                            currentValue: change.currentVersion.value,
+                                            transactionToken: change.currentVersion.transactionToken
+                                          }
+                                          return el as elementWithChanges;
+                                        })
+                                      ),
+                                      iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTSTART,
+                                        of(element).pipe(
+                                          map((el) => {
+                                            el = this._elementChangeSetup(el);
+                                            el.changes.interfaceElementIndexStart = {
+                                              previousValue: change.baselineVersion.value,
+                                              currentValue: change.currentVersion.value,
+                                              transactionToken: change.currentVersion.transactionToken
+                                            }
+                                            return el as elementWithChanges;
+                                          })
+                                        ),
+                                        iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTEND,
+                                          of(element).pipe(
+                                            map((el) => {
+                                              el = this._elementChangeSetup(el);
+                                              el.changes.interfaceElementIndexEnd = {
+                                                previousValue: change.baselineVersion.value,
+                                                currentValue: change.currentVersion.value,
+                                                transactionToken: change.currentVersion.transactionToken
+                                              }
+                                              return el as elementWithChanges;
+                                            })
+                                          ),
+                                          iif(() => change.itemTypeId === ATTRIBUTETYPEID.NOTES,
+                                            of(element).pipe(
+                                              map((el) => {
+                                                el = this._elementChangeSetup(el);
+                                                el.changes.notes = {
+                                                  previousValue: change.baselineVersion.value,
+                                                  currentValue: change.currentVersion.value,
+                                                  transactionToken: change.currentVersion.transactionToken
+                                                }
+                                                return el as elementWithChanges;
+                                              })
+                                            ),
+                                            of(element)
+                                          )
+                                        )
+                                      )
+                                    )
+                                  )
+                                ),
+                                of(element) //default case
+                              ))
+                            )),
+                            reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
+                            map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
+                          ),
+                          of(structure)
+                        ))
+                      )),
+                      reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
+                    ), //elements
+                    of(change)
+                  )
+                ),
+                iif(() => change.changeType.id === changeTypeNumber.RELATION_CHANGE,
+                  iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESUBMESSAGECONTENT && change.artId === subMessageId,
+                    iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && structures.map((a) => a.id).includes(change.artIdB),
+                      of(structures).pipe(
+                        take(1),
+                        concatMap((structures) => from(structures).pipe(
+                          switchMap((structure) => iif(() => change.artIdB === structure.id,
+                            of(structure).pipe(
+                              map((struct) => {
+                                struct = this._structureChangeSetup(struct);
+                                (struct as structureWithChanges).added = true;
+                                return struct as structureWithChanges
+                              })
+                            ),
+                            of(structure)
+                          ))
+                        )),
+                        reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
+                      ),
+                      iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE && change.baselineVersion.modType !== ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.DELETED_ON_DESTINATION,
+                        this.structure.getStructure(parentBranch, messageId, subMessageId, change.artIdB, connectionId).pipe(
+                          map((initialStruct) => {
+                            return {
+                              ...initialStruct,
+                              deleted: true,
+                              added:false,
+                              changes: {
+                                name: { previousValue: initialStruct.name, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                description: { previousValue: initialStruct.description, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceMaxSimultaneity: { previousValue: initialStruct.interfaceMaxSimultaneity, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceMinSimultaneity: { previousValue: initialStruct.interfaceMinSimultaneity, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceTaskFileType: { previousValue: initialStruct.interfaceTaskFileType, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                interfaceStructureCategory: { previousValue: initialStruct.interfaceStructureCategory, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                applicability: { previousValue: initialStruct.applicability, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                numElements:true,
+                              }
+                            }
+                          }),
+                          map((struct) => {
+                            structures=[...structures,struct as structureWithChanges]
+                            return structures as (Required<structure>|structureWithChanges)[];
+                          })
+                        ),
+                        of(structures)
+                      )
+                    ),
+                    iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACESTRUCTURECONTENT && structures.map((a) => a.id).includes(change.artId),
+                      iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE && structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(change.artIdB),
+                        of(structures).pipe(
+                          take(1),
+                          concatMap((structures) => from(structures).pipe(
+                            switchMap((structure) => iif(() => structure.elements?.map((a) => a.id).includes(change.artIdB),
+                              of(structure).pipe(
+                                concatMap((structure) => from(structure.elements).pipe(
+                                  switchMap((element) => iif(() => change.artIdB === element.id,
+                                    of(element).pipe(
+                                      map((el) => {
+                                        el = this._elementChangeSetup(el);
+                                        (el as elementWithChanges).changes.name = {
+                                          previousValue: '',
+                                          currentValue:el.name,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.description = {
+                                          previousValue: '',
+                                          currentValue:el.description,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.interfaceElementAlterable = {
+                                          previousValue: '',
+                                          currentValue:el.interfaceElementAlterable,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.interfaceElementIndexEnd = {
+                                          previousValue: '',
+                                          currentValue:el.interfaceElementIndexEnd,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.interfaceElementIndexStart = {
+                                          previousValue: '',
+                                          currentValue:el.interfaceElementIndexStart,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.notes = {
+                                          previousValue: '',
+                                          currentValue:el.notes,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.platformTypeName2 = {
+                                          previousValue: '',
+                                          currentValue:el.platformTypeName2,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).changes.applicability = {
+                                          previousValue: change.baselineVersion.applicabilityToken,
+                                          currentValue: change.currentVersion.applicabilityToken,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
+                                        (el as elementWithChanges).added = true;
+                                        return el as elementWithChanges
+                                      })
+                                    ),
+                                    of(element)
+                                  ))
+                                )),
+                                reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
+                                map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
+                              ),
+                              of(structure)
+                            ))
+                          )),
+                          reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
+                        ),
+                        iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE && change.baselineVersion.modType !== ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.DELETED_ON_DESTINATION,
+                          of(structures).pipe(
+                            take(1),
+                            concatMap((structures) => from(structures).pipe(
+                              concatMap((structure) => iif(() => change.artId === structure.id,
+                                of(structure).pipe(
+                                  concatMap((structure) => this.elements.getElement(parentBranch, messageId, subMessageId, structure.id, change.artIdB, connectionId).pipe(
+                                    map((initialEl) => {
+                                      return {
+                                        ...initialEl,
+                                        changes: {
+                                          name: { previousValue: initialEl.name, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          description: { previousValue: initialEl.description, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          notes: { previousValue: initialEl.notes, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          platformTypeName2: { previousValue: initialEl.platformTypeName2, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          interfaceElementIndexEnd: { previousValue: initialEl.interfaceElementIndexEnd, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          interfaceElementIndexStart: { previousValue: initialEl.interfaceElementIndexStart, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          interfaceElementAlterable: { previousValue: initialEl.interfaceElementAlterable, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          applicability:{previousValue:initialEl.applicability,currentValue:'',transactionToken:change.currentVersion.transactionToken},
+                                        },
+                                        deleted: true
+                                    }}),
+                                  )),
+                                  map((val) => {
+                                    structure.elements=[...structure.elements,val]
+                                    structure.numElements = structure.elements.length;
+                                    structure = this._structureChangeSetup(structure);
+                                    (structure as structureWithChanges).changes.numElements = true;
+                                    structure.elements.sort((a, b) => Number(a.id) - Number(b.id));
+                                    return structure;
+                                  })
+                                ),
+                                of(structure)
+                              ))
+                            )),
+                            reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                          ),
+                          of(change)
+                        )
+                      ),
+                      iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACEELEMENTPLATFORMTYPE && structures.map((a) => a.elements?.map((b) => b.id)).flat().includes(change.artId),
+                        iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE,
+                          of(structures).pipe(
+                            take(1),
+                            concatMap((structures) => from(structures).pipe(
+                              concatMap((structure) => iif(() => structure.elements?.map((a) => a.id).includes(change.artId),
+                                of(structure).pipe(
+                                  concatMap((structure) => from(structure.elements).pipe(
+                                    concatMap((element) => iif(() => change.artId === element.id,
+                                      of(element).pipe(
+                                        concatMap((val) => this.typeService.getType(branchId, change.artIdB).pipe(
+                                          map((type) => {
+                                            element=this._elementChangeSetup(element)
+                                            if ((element as elementWithChanges).changes.platformTypeName2 === undefined) {
+                                              (element as elementWithChanges).changes.platformTypeName2 = {
+                                                previousValue: '',
+                                                currentValue: type.name,
+                                                transactionToken: change.currentVersion.transactionToken
+                                              }
+                                            } else if ((element as elementWithChanges).changes.platformTypeName2 !== undefined && (element as elementWithChanges).changes.platformTypeName2?.currentValue !== element.platformTypeName2) {
+                                              (element as elementWithChanges).changes.platformTypeName2!.currentValue = type.name;
+                                              (element as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken;
+                                            }
+                                            return element as elementWithChanges;
+                                          })
+                                        ))
+                                      ),
+                                      of(element)
+                                    ))
+                                  )),
+                                  reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
+                                  map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
+                                ),
+                                of(structure)
+                              )),
+                            )),
+                            reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                          ),
+                          iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE,
+                          of(structures).pipe(
+                            take(1),
+                            concatMap((structures) => from(structures).pipe(
+                              concatMap((structure) => iif(() => structure.elements?.map((a) => a.id).includes(change.artId),
+                                of(structure).pipe(
+                                  concatMap((structure) => from(structure.elements).pipe(
+                                    concatMap((element) => iif(() => change.artId === element.id,
+                                      of(element).pipe(
+                                        concatMap((val) => this.typeService.getType(branchId, change.artIdB).pipe(
+                                          map((type) => {
+                                            element = this._elementChangeSetup(element);
+                                            if ((element as elementWithChanges).changes.platformTypeName2 === undefined) {
+                                              (element as elementWithChanges).changes.platformTypeName2 = {
+                                                previousValue: type.name,
+                                                currentValue: '',
+                                                transactionToken: change.currentVersion.transactionToken
+                                              }
+                                            } else if ((element as elementWithChanges).changes.platformTypeName2 !== undefined && (element as elementWithChanges).changes.platformTypeName2?.currentValue !== element.platformTypeName2) {
+                                              (element as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
+                                              (element as elementWithChanges).changes.platformTypeName2!.transactionToken = change.currentVersion.transactionToken;
+                                            } else {
+                                              (element as elementWithChanges).changes.platformTypeName2!.previousValue = type.name;
+                                            }
+                                            return element as elementWithChanges;
+                                          })
+                                        ))
+                                      ),
+                                      of(element)
+                                    ))
+                                  )),
+                                  reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
+                                  map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
+                                ),
+                                of(structure)
+                              )),
+                            )),
+                            reduce((acc, curr) => [...acc, curr], [] as (structure | structureWithChanges)[])
+                            ),
+                            of(structures)
+                          )
+                        ),
+                        of(change)
+                      ))
+                  ),
+                  of()
+                )
+              )
+            )),
+            // tap((valueToDebug) => {
+            //   console.log(valueToDebug)
+            // })
+          )),
+          switchMap((val) => of(structures as (structure|structureWithChanges)[]))
+        ))
+      )
+    } else {
+      return of(_oldStructures);
+    }
+    
+  }
+  private _elementChangeSetup(element: element | elementWithChanges): elementWithChanges{
+    if ((element as elementWithChanges).changes === undefined) {
+      (element as elementWithChanges).changes = {};
+    }
+    return element as elementWithChanges;
+  }
+  private _structureChangeSetup(structure: structure | structureWithChanges): structureWithChanges{
+    if ((structure as structureWithChanges).changes === undefined) {
+      (structure as structureWithChanges).changes = {};
+    }
+    return structure as structureWithChanges;
   }
 }

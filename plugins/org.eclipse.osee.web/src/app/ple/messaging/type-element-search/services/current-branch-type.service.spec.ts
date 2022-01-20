@@ -47,10 +47,4 @@ describe('CurrentBranchTypeService', () => {
     expect(branchSpy.getBranches).toHaveBeenCalledWith('baseline');
   });
 
-  // it('should not call get branches', () => {
-  //   service.branches.subscribe();
-  //   expect(() => { typeService.type = 'asdf' }).toThrow(new Error('Type is not a valid value. Invalid Value:' + 'asdf' + ' Valid values: product line,working'));
-  //   console.log(typeService.type);
-  //   expect(branchSpy.getBranches).not.toHaveBeenCalled()
-  // });
 });

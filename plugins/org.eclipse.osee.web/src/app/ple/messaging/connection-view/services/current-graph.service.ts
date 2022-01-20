@@ -11,15 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { Node,Edge } from '@swimlane/ngx-graph';
-import { BehaviorSubject, combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
+import { filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionService } from './connection.service';
 import { GraphService } from './graph.service';
 import { NodeService } from './node.service';
 import { RouteStateService } from './route-state-service.service';
 import { connection, connectionWithChanges, OseeEdge, transportType } from '../../shared/types/connection'
-import { node, nodeChanges, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node'
+import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node'
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
@@ -29,7 +28,7 @@ import { applic } from '../../../../types/applicability/applic';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
 import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
-import { changeInstance, changeTypeEnum, ignoreType, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
+import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
 
@@ -428,7 +427,6 @@ export class CurrentGraphService {
   private initializeNode(node: OseeNode<nodeData | nodeDataWithChanges>): OseeNode<nodeDataWithChanges>{
     let tempNode: OseeNode<nodeDataWithChanges>;
     if (!this.isNodeDataWithChanges(node)) {
-      //node.data = Object.assign < nodeData, changes: { nodeChanges >}>(node.data, { changes: {}})
       tempNode = node as OseeNode<nodeDataWithChanges>;
       tempNode.data.changes = {}
       return tempNode;
@@ -474,7 +472,6 @@ export class CurrentGraphService {
   private initializeEdge(edge: OseeEdge<connection|connectionWithChanges>): OseeEdge<connectionWithChanges>{
     let tempEdge: OseeEdge<connectionWithChanges>;
     if (!this.isEdgeDataWithChanges(edge)) {
-      //node.data = Object.assign < nodeData, changes: { nodeChanges >}>(node.data, { changes: {}})
       tempEdge = edge as OseeEdge<connectionWithChanges>;
       tempEdge.data.changes = {}
       return tempEdge;
@@ -662,30 +659,10 @@ export class CurrentGraphService {
     return node;
   }
 
-  private parseConnectionOrderXML(xml: string) {
-    let list = xml.split("<OrderList>")[1].split("</OrderList>")[0];
-    let orders = list.split("/><");
-    let orderArray: { list: string, orderType: string, relType: string, side: string }[] = [];
-    orders[0] = orders[0].replace("<", "");
-    orders[0] = '"' + orders[0];
-    orders[orders.length - 1] = orders[orders.length - 1].replace("/>", "");
-    orders.forEach((value, index) => {
-      if (value.match("\"Order ")) {
-        value = value.replace("Order ", '');
-      } else {
-        value = value.replace("Order ", '\"'); 
-      }
-      value = value.replace(new RegExp('(\"( +))', 'g'), '\", \"');
-      value = value.replace(new RegExp('=', 'g'), "\":");
-      value = "{" + value + "}"
-      orderArray.push(JSON.parse(value));
-    })
-    return orderArray;
-  }
 
   get messageRoute() {
-    return combineLatest([this.routeStateService.id, this.routeStateService.type,iif(() => this.InDiff.getValue(), of("/diff"), of(""))]).pipe(
-      switchMap(([id, type, diff]) => of({ beginning:'/ple/messaging/'+type + '/' + id + '/',end:diff }))
+    return combineLatest([this.routeStateService.id, this.routeStateService.type, this.InDiff]).pipe(
+      switchMap(([id,type,diff])=>of({beginning:'/ple/messaging/'+type + '/' + id + '/',end:diff?"/diff":""}))
     )
   }
 }

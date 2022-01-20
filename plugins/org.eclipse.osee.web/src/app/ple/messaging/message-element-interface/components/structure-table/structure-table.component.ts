@@ -203,7 +203,7 @@ export class StructureTableComponent implements OnInit {
     this.structureDialog.subscribe();
   }
 
-  openMenu(event: MouseEvent, id: string, name: string,description:string,structure:structure,header:string) {
+  openMenu(event: MouseEvent, id: string, name: string,description:string,structure:structure,header:string,diff:string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
@@ -213,7 +213,7 @@ export class StructureTableComponent implements OnInit {
       description: description,
       structure: structure,
       header: header,
-      diffMode:this.structureService.isInDiff.getValue()
+      diffMode:diff==='true'
     }
     this.matMenuTrigger.openMenu();
   }
