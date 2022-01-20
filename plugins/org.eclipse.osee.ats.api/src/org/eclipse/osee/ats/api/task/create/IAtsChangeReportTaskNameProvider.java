@@ -105,7 +105,7 @@ public interface IAtsChangeReportTaskNameProvider {
     */
    default ChangeReportTaskMatch logAndAddTaskName(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, ArtifactToken chgRptArt, Map<ArtifactId, ArtifactToken> idToArtifact, String chgType, boolean addTaskMatch) {
       ArtifactToken art =
-         atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
+         atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranchId(), DeletionFlag.INCLUDE_DELETED);
       idToArtifact.put(art, art);
       if (addTaskMatch) {
          String safeName = getTaskName(atsApi, chgType, art);
@@ -157,7 +157,7 @@ public interface IAtsChangeReportTaskNameProvider {
       Set<ArtifactId> modArts = new HashSet<>();
       Set<ArtifactId> delArts = new HashSet<>();
 
-      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranch());
+      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
 
       ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
       Collection<ChangeReportRollup> rollups = data.getRollups().values();
@@ -276,7 +276,7 @@ public interface IAtsChangeReportTaskNameProvider {
 
       Collection<RelationTypeToken> incRelTypes = crtd.getSetDef().getChgRptOptions().getRelationTypes();
       Collection<RelationTypeToken> exclRelTypes = crtd.getSetDef().getChgRptOptions().getNotRelationTypes();
-      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranch());
+      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
       Set<ArtifactId> arts = new HashSet<>();
       ChangeItemData data = getChangeItemData(crtd.getChangeItems(), branch, atsApi);
 
