@@ -80,7 +80,9 @@ public final class CxfJaxRsClientConfigurator {
       providers.add(JsonMappingExceptionMapper.class);
       providers.addAll(OAuth2Util.getOAuthProviders());
       providers.add(new OrcsParamConverterProvider(tokenService));
-      providers.add(new OseeAccountClientRequestFilter(userService));
+      if (userService != null) {
+         providers.add(new OseeAccountClientRequestFilter(userService));
+      }
 
       features.add(new GZIPFeature());
    }
