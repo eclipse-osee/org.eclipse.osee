@@ -264,7 +264,10 @@ public final class JaxRsApiImpl implements JaxRsApi {
    private static final long MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS = 24L * 60L * 60L * 1000L; // one day
 
    /**
-    * Must only be called once on the client during startup and never on the server.
+    * Must only be called once on the client during startup. May be called by the server with a null
+    * UserService.
+    * 
+    * @param userService May be null if running on server
     */
    @Override
    public void createClientFactory(UserService userService) {
