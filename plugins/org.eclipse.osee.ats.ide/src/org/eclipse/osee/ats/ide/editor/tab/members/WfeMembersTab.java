@@ -34,13 +34,16 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.ide.actions.SprintReportAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.CloneActionToGoalAction;
@@ -384,6 +387,11 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
    public IToolBarManager createToolbar(IManagedForm managedForm) {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
+      if (workItem.isBacklog()) {
+         IAgileBacklog backlog = AtsApiService.get().getAgileService().getAgileBacklog(workItem.getStoreObject());
+         toolBarMgr.add(new SprintReportAction(backlog));
+      }
+      toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       toolBarMgr.add(getWorldXViewer().getCustomizeAction());
       toolBarMgr.add(new Separator());
