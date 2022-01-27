@@ -10,26 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
-import { take, switchMap, filter, first, map, mergeMap, reduce, share, shareReplay, takeUntil, tap } from 'rxjs/operators';
+import { filter, first, map, mergeMap, reduce, share, shareReplay, switchMap, take } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
+import { applic } from 'src/app/types/applicability/applic';
+import { difference } from 'src/app/types/change-report/change-report';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
+import { element } from '../../types/element';
 import { structure, structureWithChanges } from '../../types/structure';
 import { AddStructureDialogComponent } from '../add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../delete-structure-dialog/delete-structure-dialog.component';
 import { RemoveStructureDialogComponent } from '../remove-structure-dialog/remove-structure-dialog.component';
-import { difference } from 'src/app/types/change-report/change-report';
-import { applic } from 'src/app/types/applicability/applic';
-import { element } from '../../types/element';
 
 @Component({
   selector: 'app-structure-table',
@@ -37,18 +37,17 @@ import { element } from '../../types/element';
   styleUrls: ['./structure-table.component.sass'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '60vh', overflowY: 'auto' })),
+      state('collapsed', style({ maxHeight: '0vh', overflowY: 'hidden' })),
+      state('expanded', style({ maxHeight: '60vh', overflowY: 'auto' })),
       transition(
         'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+        animate('225ms cubic-bezier(0.42, 0.0, 0.58, 1)')
       ),
     ]),
     trigger('expandButton', [
       state('closed', style({ transform: 'rotate(0)' })),
       state('open', style({ transform: 'rotate(-180deg)' })),
-      transition('open => closed', animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-      transition('closed => open', animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+      transition('open <=> closed', animate('225ms cubic-bezier(0.42, 0.0, 0.58, 1)')),
     ])
   ],
 })
@@ -58,7 +57,7 @@ export class StructureTableComponent implements OnInit {
   @Input() messageData: Observable<MatTableDataSource<structure>> = of(new MatTableDataSource<structure|structureWithChanges>())
   @Input() hasFilter: boolean = false;
   truncatedSections: string[] = [];
-  editableStructureHeaders: string[] = [
+  editableStructureHeaders: (keyof structure)[] = [
     'name',
     'description',
     'interfaceMaxSimultaneity',
@@ -99,9 +98,9 @@ export class StructureTableComponent implements OnInit {
   currentStructureHeaders = combineLatest([this.headerService.AllStructureHeaders,this.preferences]).pipe(
     switchMap(([structureHeaders,response]) => of(response.columnPreferences).pipe(
       mergeMap((r) => from(r).pipe(
-        filter((column) => structureHeaders.includes(column.name as keyof structure) && column.enabled),
-        map((header) => header.name as (keyof structure)),
-        reduce((acc, curr) => [...acc, curr], [] as (keyof structure)[])
+        filter((column) => structureHeaders.includes(column.name as Extract<keyof structure,string>) && column.enabled),
+        map((header) => header.name as (Extract<keyof structure,string>)),
+        reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof structure,string>)[])
       ))
     )),
     mergeMap((headers) => iif(() => headers.length !== 0, of(headers), of(['name',
@@ -110,7 +109,7 @@ export class StructureTableComponent implements OnInit {
       'interfaceMaxSimultaneity',
       'interfaceTaskFileType',
       'interfaceStructureCategory',]))),
-    switchMap((finalHeaders) => of([' ', ...finalHeaders])),
+    switchMap((finalHeaders) => of<(keyof structure & string)[]>([' ', ...finalHeaders])),
     share(),
     shareReplay(1)
   )
@@ -203,7 +202,7 @@ export class StructureTableComponent implements OnInit {
     this.structureDialog.subscribe();
   }
 
-  openMenu(event: MouseEvent, id: string, name: string,description:string,structure:structure,header:string,diff:string) {
+  openMenu(event: MouseEvent, id: string, name: string,description:string,structure:structure,header:keyof structure,diff:string) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';
     this.menuPosition.y = event.clientY + 'px';
@@ -266,7 +265,7 @@ export class StructureTableComponent implements OnInit {
     ).subscribe();
   }
 
-  getHeaderByName(value: string) {
+  getHeaderByName(value: keyof structure) {
     return this.headerService.getHeaderByName(value,'structure');
   }
 

@@ -20,5 +20,5 @@ export interface MimPreferences<T={name:''}> {
 
 export interface MimColumnPreference<T={name:''}>{
     enabled: boolean,
-    name:keyof T
+    name:Extract<keyof T,string>
 }

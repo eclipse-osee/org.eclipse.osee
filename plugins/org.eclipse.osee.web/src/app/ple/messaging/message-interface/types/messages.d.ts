@@ -15,6 +15,7 @@ import { applic } from "../../../../types/applicability/applic";
 import { subMessage, subMessageWithChanges } from "./sub-messages";
 
 export interface message {
+    [index:string]:string|subMessage|subMessageWithChanges|boolean|applic|Array<subMessage|subMessageWithChanges>|undefined|messageChanges,
     id: string,
     name: string,
     description: string ,

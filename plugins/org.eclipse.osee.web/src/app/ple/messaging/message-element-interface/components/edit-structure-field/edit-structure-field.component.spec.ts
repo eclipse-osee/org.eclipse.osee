@@ -13,10 +13,11 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,8 +27,8 @@ import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
 import { CurrentStateService } from '../../services/current-state.service';
 import { ElementUiService } from '../../services/ui.service';
-
 import { EditStructureFieldComponent } from './edit-structure-field.component';
+
 
 describe('EditStructureFieldComponent', () => {
   let component: EditStructureFieldComponent;
@@ -66,7 +67,8 @@ describe('EditStructureFieldComponent', () => {
     uiService.messageIdString = '10';
     uiService.subMessageIdString = '20';
     uiService.connectionIdString = '10';
-    let spy = spyOn(component, 'updateStructure').and.callThrough();
+    component.focusChanged(null);
+    let spy = spyOn(component, 'updateImmediately').and.callThrough();
       let select = await loader.getHarness(MatSelectHarness);
       await select.open();
       if (await select.isOpen()) {
@@ -75,5 +77,20 @@ describe('EditStructureFieldComponent', () => {
       } else {
         expect(spy).not.toHaveBeenCalled()
       }
+  }));
+  it('should update description', fakeAsync(async() => {
+    uiService.BranchIdString = '8';
+    uiService.messageIdString = '10';
+    uiService.subMessageIdString = '20';
+    uiService.connectionIdString = '10';
+    component.header = 'description';
+    component.value = 'asdf'
+    fixture.detectChanges();
+    component.focusChanged(null);
+    let spy = spyOn(component, 'updateStructure').and.callThrough();
+    let input = await loader.getHarness(MatInputHarness);
+    await input.setValue('asdfghij');
+    tick(500);
+    expect(spy).toHaveBeenCalled();
   }));
 });

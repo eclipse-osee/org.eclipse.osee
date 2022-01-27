@@ -1105,7 +1105,7 @@ export class CurrentStateService {
                                   of(element).pipe(
                                     map((el) => {
                                       el = this._elementChangeSetup(el);
-                                      el.changes.description = {
+                                      (el as elementWithChanges).changes.description = {
                                         previousValue: change.baselineVersion.value,
                                         currentValue: change.currentVersion.value,
                                         transactionToken: change.currentVersion.transactionToken
@@ -1117,7 +1117,7 @@ export class CurrentStateService {
                                     of(element).pipe(
                                       map((el) => {
                                         el = this._elementChangeSetup(el);
-                                        el.changes.name = {
+                                        (el as elementWithChanges).changes.name = {
                                           previousValue: change.baselineVersion.value,
                                           currentValue: change.currentVersion.value,
                                           transactionToken: change.currentVersion.transactionToken
@@ -1129,7 +1129,7 @@ export class CurrentStateService {
                                       of(element).pipe(
                                         map((el) => {
                                           el = this._elementChangeSetup(el);
-                                          el.changes.interfaceElementAlterable = {
+                                          (el as elementWithChanges).changes.interfaceElementAlterable = {
                                             previousValue: change.baselineVersion.value,
                                             currentValue: change.currentVersion.value,
                                             transactionToken: change.currentVersion.transactionToken
@@ -1141,7 +1141,7 @@ export class CurrentStateService {
                                         of(element).pipe(
                                           map((el) => {
                                             el = this._elementChangeSetup(el);
-                                            el.changes.interfaceElementIndexStart = {
+                                            (el as elementWithChanges).changes.interfaceElementIndexStart = {
                                               previousValue: change.baselineVersion.value,
                                               currentValue: change.currentVersion.value,
                                               transactionToken: change.currentVersion.transactionToken
@@ -1153,7 +1153,7 @@ export class CurrentStateService {
                                           of(element).pipe(
                                             map((el) => {
                                               el = this._elementChangeSetup(el);
-                                              el.changes.interfaceElementIndexEnd = {
+                                              (el as elementWithChanges).changes.interfaceElementIndexEnd = {
                                                 previousValue: change.baselineVersion.value,
                                                 currentValue: change.currentVersion.value,
                                                 transactionToken: change.currentVersion.transactionToken
@@ -1165,7 +1165,7 @@ export class CurrentStateService {
                                             of(element).pipe(
                                               map((el) => {
                                                 el = this._elementChangeSetup(el);
-                                                el.changes.notes = {
+                                                (el as elementWithChanges).changes.notes = {
                                                   previousValue: change.baselineVersion.value,
                                                   currentValue: change.currentVersion.value,
                                                   transactionToken: change.currentVersion.transactionToken
@@ -1438,7 +1438,7 @@ export class CurrentStateService {
             //   console.log(valueToDebug)
             // })
           )),
-          switchMap((val) => of(structures as (structure|structureWithChanges)[]))
+          switchMap((val) => of(structures as (structure | structureWithChanges)[]))
         ))
       )
     } else {

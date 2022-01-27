@@ -14,24 +14,22 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
-import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { SharedMessagingModule } from 'src/app/ple/messaging/shared/shared-messaging.module';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
 import { CurrentStateService } from '../../../services/current-state.service';
-
 import { EditElementFieldComponent } from './edit-element-field.component';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatMenuModule } from '@angular/material/menu';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatMenuHarness, MatMenuItemHarness } from '@angular/material/menu/testing';
-import { MatIconModule } from '@angular/material/icon';
+
 
 describe('EditElementFieldComponent', () => {
   let component: EditElementFieldComponent;
@@ -70,17 +68,28 @@ describe('EditElementFieldComponent', () => {
     })
 
     it('should update the applicability', fakeAsync(async() => {
-      let spy = spyOn(component, 'updateElement').and.callThrough();
+      let spy = spyOn(component, 'updateImmediately').and.callThrough();
       let select = await loader.getHarness(MatSelectHarness);
       await select.open();
       if (await select.isOpen()) {
         await select.clickOptions({ text: 'Second' });
+        component.focusChanged(null);
         expect(spy).toHaveBeenCalled()
       } else {
         expect(spy).not.toHaveBeenCalled()
       }
 
     }))
+
+    it('should update value', fakeAsync(() => {
+      let spy = spyOn(component, 'updateElement').and.callThrough();
+      component.focusChanged('mouse');
+      component.focusChanged('mouse');
+      component.focusChanged(null)
+      component.updateElement('description', 'v2');
+      tick(500);
+      expect(spy).toHaveBeenCalled();
+    }));
 
   })
 
@@ -90,7 +99,10 @@ describe('EditElementFieldComponent', () => {
       component.value = 'First'
     })
 
-    it('should update the platform type', fakeAsync(async() => {
+    it('should update the platform type', fakeAsync(async () => {
+      component.focusChanged('mouse');
+      component.focusChanged('mouse');
+      component.focusChanged(null);
       let select = await loader.getHarness(MatAutocompleteHarness);
       await select.focus();
       await select.isOpen() 
