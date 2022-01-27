@@ -11,13 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, iif, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, iif } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
-import { element, elementWithChanges } from '../../../message-element-interface/types/element';
-import { structure, structureWithChanges } from '../../../message-element-interface/types/structure';
-import { message, messageWithChanges } from '../../../message-interface/types/messages';
-import { subMessage, subMessageWithChanges } from '../../../message-interface/types/sub-messages';
-import { elementHeaderDetail, headerDetail, messageHeaderDetail, structureHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
+import { element } from '../../../message-element-interface/types/element';
+import { structure } from '../../../message-element-interface/types/structure';
+import { message } from '../../../message-interface/types/messages';
+import { subMessage } from '../../../message-interface/types/sub-messages';
+import { elementHeaderDetail, messageHeaderDetail, structureHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +89,7 @@ export class HeaderService {
   private _allStructureHeaders =this._allStructures.pipe(
     mergeMap((structures) => from(structures).pipe(
       map((structure) => structure.header),
-      reduce((acc, curr) => [...acc, curr], [] as (keyof structure)[])
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof structure,string>)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -97,7 +97,7 @@ export class HeaderService {
   private _allMessageHeaders =this._allMessages.pipe(
     mergeMap((messages) => from(messages).pipe(
       map((message) => message.header),
-      reduce((acc, curr) => [...acc, curr], [] as (keyof message)[])
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof message,string>)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -105,7 +105,7 @@ export class HeaderService {
   private _allSubMessageHeaders =this._allSubMessages.pipe(
     mergeMap((submessages) => from(submessages).pipe(
       map((submessage) => submessage.header),
-      reduce((acc, curr) => [...acc, curr], [] as (keyof subMessage)[])
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof subMessage,string>)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -143,7 +143,7 @@ export class HeaderService {
     return this._allSubMessageHeaders;
   }
 
-  getHeaderByName(value: string,type:string) {
+  getHeaderByName(value: keyof structure|keyof element|keyof message|keyof subMessage|string,type:string) {
     return iif(() => type === 'message',
       this.AllMessages.pipe(
         mergeMap((messages) => from(messages).pipe(

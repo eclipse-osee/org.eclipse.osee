@@ -11,9 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { share, debounceTime, distinctUntilChanged, map, switchMap, tap, takeUntil } from 'rxjs/operators';
-import { applic } from 'src/app/types/applicability/applic';
+import { combineLatest, iif, of, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, scan, share, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 import { subMessage } from '../../../types/sub-messages';
 
@@ -22,13 +21,13 @@ import { subMessage } from '../../../types/sub-messages';
   templateUrl: './edit-sub-message-field.component.html',
   styleUrls: ['./edit-sub-message-field.component.sass']
 })
-export class EditSubMessageFieldComponent implements OnInit {
+export class EditSubMessageFieldComponent<R extends keyof subMessage=any,T extends Pick<subMessage, keyof subMessage>=any> implements OnInit {
 
   @Input() messageId!: string;
   @Input() subMessageId!: string ;
-  @Input() header: string = '';
-  @Input() value: string|applic = '';
-  private _value: Subject<string|applic> = new Subject();
+  @Input() header: R={} as R;
+  @Input() value: T = {} as T;
+  private _value: Subject<T> = new Subject();
   _subMessage: Partial<subMessage> = {
     id:this.subMessageId
   };
@@ -40,21 +39,30 @@ export class EditSubMessageFieldComponent implements OnInit {
     tap(() => {
       this._subMessage.id = this.subMessageId;
     }),
-    switchMap(val=>this.messageService.partialUpdateSubMessage(this._subMessage,this.messageId))
   )
 
   applics = this.messageService.applic.pipe(takeUntil(this.messageService.done));
+  private _focus = new Subject<string | null>();
+  private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
+    scan((acc, curr) => { if (acc.type === curr[1]) { acc.count++ } else { acc.count = 0; acc.type = curr[1] } acc.value = curr[0];return acc; }, { count: 0, type: '',value:undefined } as { count: number, type: string | null,value:T|undefined }),
+    switchMap((update) => iif(() => update.type === null, of(true).pipe(
+      switchMap(val=>this.messageService.partialUpdateSubMessage(this._subMessage,this.messageId))
+    ), of(false))),
+  )
   constructor (private messageService: CurrentMessagesService) {
-    this._sendValue.subscribe();
+    this._updateValue.subscribe();
   }
 
   ngOnInit(): void {
   }
 
-  updateSubMessage(header: string, value: string|applic) {
+  updateSubMessage(value: T) {
     this._value.next(value);
   }
   compareApplics(o1:any,o2:any) {
     return o1.id === o2.id && o1.name === o2.name;
+  }
+  focusChanged(event: string | null) {
+    this._focus.next(event);
   }
 }

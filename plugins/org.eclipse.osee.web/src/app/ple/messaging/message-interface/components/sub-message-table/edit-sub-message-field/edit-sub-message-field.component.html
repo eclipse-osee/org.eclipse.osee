@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field>
+<mat-form-field cdkMonitorSubtreeFocus (cdkFocusChange)="focusChanged($event)">
     <ng-container *ngIf="header === 'applicability';else generalEdit">
         <ng-container *ngIf="header ==='applicability'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateSubMessage(header,value)" [compareWith]="compareApplics" required>
+            <mat-select [(ngModel)]="value" (ngModelChange)="updateSubMessage(value)" [compareWith]="compareApplics" required>
                 <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
                     {{option.name}}
                 </mat-option>
@@ -21,6 +21,6 @@
         </ng-container>
     </ng-container>
     <ng-template #generalEdit>
-        <input matInput [(ngModel)]="value" (ngModelChange)="updateSubMessage(header,value)">
+        <input matInput [(ngModel)]="value" (ngModelChange)="updateSubMessage(value)">
     </ng-template>
 </mat-form-field>

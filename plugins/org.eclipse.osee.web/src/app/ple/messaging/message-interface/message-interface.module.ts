@@ -10,41 +10,42 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgModule } from '@angular/core';
+import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-
-import { MessageInterfaceRoutingModule } from './message-interface-routing.module';
-import { MessageInterfaceComponent } from './message-interface.component';
-import { MessageTableComponent } from './components/message-table/message-table.component';
-import { SubMessageTableComponent } from './components/sub-message-table/sub-message-table.component';
-import { PleSharedMaterialModule } from '../../ple-shared-material/ple-shared-material.module';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { ConvertMessageTableTitlesToStringPipe } from './pipes/convert-message-table-titles-to-string.pipe';
-import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message-titles-to-string.pipe';
-import { MatMenuModule } from '@angular/material/menu';
+import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
+import { PleSharedMaterialModule } from '../../ple-shared-material/ple-shared-material.module';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
-import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
-import { EditSubMessageFieldComponent } from './components/sub-message-table/edit-sub-message-field/edit-sub-message-field.component';
-import { AddSubMessageDialogComponent } from './components/sub-message-table/add-sub-message-dialog/add-sub-message-dialog.component';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatSelectModule } from '@angular/material/select';
-import { EditMessageFieldComponent } from './components/message-table/edit-message-field/edit-message-field.component';
-import { AddMessageDialogComponent } from './components/message-table/add-message-dialog/add-message-dialog.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { RemoveSubmessageDialogComponent } from './components/dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
+import { DeleteMessageDialogComponent } from './components/dialogs/delete-message-dialog/delete-message-dialog.component';
 import { DeleteSubmessageDialogComponent } from './components/dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveMessageDialogComponent } from './components/dialogs/remove-message-dialog/remove-message-dialog.component';
-import { DeleteMessageDialogComponent } from './components/dialogs/delete-message-dialog/delete-message-dialog.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
+import { RemoveSubmessageDialogComponent } from './components/dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
+import { AddMessageDialogComponent } from './components/message-table/add-message-dialog/add-message-dialog.component';
+import { EditMessageFieldComponent } from './components/message-table/edit-message-field/edit-message-field.component';
+import { MessageTableComponent } from './components/message-table/message-table.component';
+import { AddSubMessageDialogComponent } from './components/sub-message-table/add-sub-message-dialog/add-sub-message-dialog.component';
+import { EditSubMessageFieldComponent } from './components/sub-message-table/edit-sub-message-field/edit-sub-message-field.component';
+import { SubMessageTableComponent } from './components/sub-message-table/sub-message-table.component';
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
-import { MatIconModule } from '@angular/material/icon';
+import { MessageInterfaceRoutingModule } from './message-interface-routing.module';
+import { MessageInterfaceComponent } from './message-interface.component';
+import { ConvertMessageTableTitlesToStringPipe } from './pipes/convert-message-table-titles-to-string.pipe';
+import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message-titles-to-string.pipe';
+
 
 
 @NgModule({
@@ -63,6 +64,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogModule,
     MatSidenavModule,
     MatIconModule,
+    A11yModule,
     PleSharedMaterialModule,
     OseeStringUtilsPipesModule,
     OseeStringUtilsDirectivesModule,

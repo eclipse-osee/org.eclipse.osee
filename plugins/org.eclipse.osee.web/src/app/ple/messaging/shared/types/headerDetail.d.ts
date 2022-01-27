@@ -1,7 +1,7 @@
-import { element, elementWithChanges } from "../../message-element-interface/types/element";
-import { structure, structureWithChanges } from "../../message-element-interface/types/structure";
-import { message, messageWithChanges } from "../../message-interface/types/messages";
-import { subMessage, subMessageWithChanges } from "../../message-interface/types/sub-messages";
+import { element } from "../../message-element-interface/types/element";
+import { structure } from "../../message-element-interface/types/structure";
+import { message } from "../../message-interface/types/messages";
+import { subMessage } from "../../message-interface/types/sub-messages";
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -16,7 +16,7 @@ import { subMessage, subMessageWithChanges } from "../../message-interface/types
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface headerDetail<T>{
-    header: keyof T,
+    header: Extract<keyof T,string>,
     description: string,
     humanReadable:string
 }

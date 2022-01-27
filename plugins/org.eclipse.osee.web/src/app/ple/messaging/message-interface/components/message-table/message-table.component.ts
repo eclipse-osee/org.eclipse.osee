@@ -10,24 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { CurrentMessagesService } from '../../services/current-messages.service';
-import { message, messageChanges, messageWithChanges } from '../../types/messages';
-import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
-import { AddMessageDialog } from '../../types/AddMessageDialog';
-import { filter, first, map, share, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
-import { iif, of } from 'rxjs';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { RemoveMessageDialogComponent } from '../dialogs/remove-message-dialog/remove-message-dialog.component';
-import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/delete-message-dialog.component';
-import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
-import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
-import { HeaderService } from '../../../shared/services/ui/header.service';
-import { applic } from '../../../../../types/applicability/applic';
+import { MatTableDataSource } from '@angular/material/table';
+import { iif, of } from 'rxjs';
+import { filter, first, map, share, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 import { difference } from 'src/app/types/change-report/change-report';
+import { applic } from '../../../../../types/applicability/applic';
+import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
+import { HeaderService } from '../../../shared/services/ui/header.service';
+import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
+import { CurrentMessagesService } from '../../services/current-messages.service';
+import { AddMessageDialog } from '../../types/AddMessageDialog';
+import { message, messageChanges, messageWithChanges } from '../../types/messages';
+import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/delete-message-dialog.component';
+import { RemoveMessageDialogComponent } from '../dialogs/remove-message-dialog/remove-message-dialog.component';
+import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 
 @Component({
   selector: 'ple-messaging-message-table',
@@ -35,10 +35,9 @@ import { difference } from 'src/app/types/change-report/change-report';
   styleUrls: ['./message-table.component.sass'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-      transition('collapsed <=> expanded', animate('225ms cubic-bezier(0.2, 1, 0.4, 0.0)'))
+      state('collapsed', style({maxHeight: '0vh', overflowY: 'hidden' })),
+      state('expanded', style({maxHeight: '60vh', overflowY: 'auto'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.42, 0.0, 0.58, 1)')),
     ]),
     trigger('expandButton', [
       state('closed', style({ transform: 'rotate(0)' })),

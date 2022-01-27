@@ -22,8 +22,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CurrentMessageServiceMock } from '../../../mocks/services/CurrentMessageService.mock';
 import { ConvertSubMessageTitlesToStringPipe } from '../../../pipes/convert-sub-message-titles-to-string.pipe';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
-
 import { EditSubMessageFieldComponent } from './edit-sub-message-field.component';
+
 
 describe('EditSubMessageFieldComponent', () => {
   let component: EditSubMessageFieldComponent;
@@ -55,6 +55,7 @@ describe('EditSubMessageFieldComponent', () => {
   it('should update the applicabilities', async () => {
     let spy = spyOn(component, 'updateSubMessage').and.callThrough();
     let select = await loader.getHarness(MatSelectHarness);
+    component.focusChanged(null);
     await select.open();
     if (await select.isOpen()) {
       await select.clickOptions({ text: 'Second' });

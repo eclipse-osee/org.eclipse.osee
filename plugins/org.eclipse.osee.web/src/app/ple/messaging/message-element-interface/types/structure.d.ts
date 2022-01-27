@@ -15,6 +15,7 @@ import { difference } from "src/app/types/change-report/change-report";
 import { element, elementWithChanges } from "./element";
 
 export interface structure {
+    [index:string]:string|(element|elementWithChanges)[]|number|applic|boolean|undefined|structureChanges,
     id: string,
     name: string,
     elements?: (element|elementWithChanges)[],
@@ -29,18 +30,19 @@ export interface structure {
     bytesPerSecondMaximum?: number,
     applicability?:applic,
 }
+export interface structureChanges{
+    name?: difference,
+    description?: difference,
+    interfaceMaxSimultaneity?: difference,
+    interfaceMinSimultaneity?: difference,
+    interfaceTaskFileType?: difference,
+    interfaceStructureCategory?: difference,
+    applicability?: difference,
+    numElements?:boolean
+}
 export interface structureWithChanges extends Required<structure>{
     added: boolean,
     deleted: boolean,
     hasElementChanges:boolean,
-    changes: {
-        name?: difference,
-        description?: difference,
-        interfaceMaxSimultaneity?: difference,
-        interfaceMinSimultaneity?: difference,
-        interfaceTaskFileType?: difference,
-        interfaceStructureCategory?: difference,
-        applicability?: difference,
-        numElements?:boolean
-    }
+    changes: structureChanges
 }
