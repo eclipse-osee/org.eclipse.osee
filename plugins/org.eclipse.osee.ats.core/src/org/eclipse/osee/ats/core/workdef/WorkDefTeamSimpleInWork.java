@@ -14,12 +14,10 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -40,31 +38,26 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.andState(1, "Analyze", StateType.Working).isStartState() //
+      bld.andState(1, "Analyze", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
-            ));
+            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
 
-      bld.andState(2, "Completed", StateType.Completed) //
-         .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
+      bld.andState(2, "InWork", StateType.Working).isStartState() //
+         .andToStates(StateToken.Completed, StateToken.Cancelled) //
+
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
-            ));
+            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
 
-      bld.andState(3, "Cancelled", StateType.Cancelled) //
-         .andColor(StateColor.BLACK);
+      bld.andState(3, "Completed", StateType.Completed) //
+         .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
+         .andColor(StateColor.DARK_GREEN);
+
+      bld.andState(4, "Cancelled", StateType.Cancelled) //
+         .andColor(StateColor.DARK_RED);
 
       return bld.getWorkDefinition();
    }
