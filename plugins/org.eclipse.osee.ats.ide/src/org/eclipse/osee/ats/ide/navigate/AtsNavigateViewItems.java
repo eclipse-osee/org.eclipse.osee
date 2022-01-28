@@ -525,7 +525,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateUrlItem("Message Interface Modeling (MIM)", applicationServer + "/osee/ple/messaging",
             true, FrameworkImage.PLE, PLE));
          items.add(new XNavigateUrlItem("PLE - Getting Started",
-            "https://git.eclipse.org/c/gerrit/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx",
+            "https://git.eclipse.org/c/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx?h=dev",
             true, FrameworkImage.PPTX, PLE));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create PLE section");
