@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -43,10 +43,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -141,23 +139,7 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
             }
          }
       } else {
-         Collection<EnumToken> enumValues = pointsAttrType.toEnum().getEnumValues();
-         Object[] values = enumValues.toArray(new Object[enumValues.size()]);
-         ListSelectionDialog dialog = new ListSelectionDialog(values, Displays.getActiveShell(), "Enter Points", null,
-            "Enter Points", 3, new String[] {"OK", "Cancel"}, 0);
-         if (dialog.open() == Window.OK) {
-            EnumToken entry = (EnumToken) values[dialog.getSelection()];
-            try {
-               IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
-               for (IAtsWorkItem workItem : workItems) {
-                  changes.setSoleAttributeValue(workItem, pointsAttrType, entry.getName());
-               }
-               changes.executeIfNeeded();
-               return true;
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
+         PromptChangeUtil.promptChangeAttribute(Collections.castAll(workItems), pointsAttrType, true);
       }
       return false;
    }
