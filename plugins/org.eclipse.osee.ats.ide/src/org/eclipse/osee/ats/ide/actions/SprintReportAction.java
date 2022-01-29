@@ -105,14 +105,16 @@ public class SprintReportAction extends AbstractAtsAction {
                sprintPoints += itemPts;
             }
 
-            if (sprintPoints > 0) {
+            if (itemPts > 0) {
 
                List<AtsUser> assignees = sprintItem.getStateMgr().getAssignees();
-               Integer pointsByAssignee = itemPts / assignees.size();
+               if (assignees.size() > 0) {
+                  Integer pointsByAssignee = itemPts / assignees.size();
 
-               for (AtsUser user : assignees) {
-                  userNameToPoints.put(user.getName(), pointsByAssignee);
-                  names.add(user.getName());
+                  for (AtsUser user : assignees) {
+                     userNameToPoints.put(user.getName(), pointsByAssignee);
+                     names.add(user.getName());
+                  }
                }
             }
          }
