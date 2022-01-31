@@ -31,6 +31,10 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    private Artifact artifact;
    private AttributeTypeToken attributeType;
 
+   public XArtifactSelectWidgetWithSave() {
+      this("");
+   }
+
    public XArtifactSelectWidgetWithSave(String label) {
       super(label);
       addXModifiedListener(new DirtyListener());
