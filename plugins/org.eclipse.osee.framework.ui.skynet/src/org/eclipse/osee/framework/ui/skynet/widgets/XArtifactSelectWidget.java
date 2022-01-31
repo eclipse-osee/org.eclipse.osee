@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Listener;
 
 /**
  * Widget providing attribute label, select button with filterable list and readonly name of selected artifact
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XArtifactSelectWidget extends GenericXWidget implements Listener, ArtifactProvider {
@@ -46,6 +46,10 @@ public class XArtifactSelectWidget extends GenericXWidget implements Listener, A
    private Composite composite;
    private Artifact defaultArtifact;
    private final List<Listener> listeners = new ArrayList<>();
+
+   public XArtifactSelectWidget() {
+      this("");
+   }
 
    public XArtifactSelectWidget(String label) {
       super(label);

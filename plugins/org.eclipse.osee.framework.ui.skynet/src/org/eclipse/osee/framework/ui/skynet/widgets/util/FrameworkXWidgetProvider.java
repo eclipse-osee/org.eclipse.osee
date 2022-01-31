@@ -45,6 +45,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeComboViewer;
@@ -131,6 +133,8 @@ public final class FrameworkXWidgetProvider {
       register(XHyperlinkTriStateBooleanDam.class);
       register(XHyperlinkLabelValueStringSel.class);
       register(XHyperlinkLabelValueSelectionDam.class);
+      register(XArtifactSelectWidget.class);
+      register(XArtifactSelectWidgetWithSave.class);
       return nameToClass;
    }
 
