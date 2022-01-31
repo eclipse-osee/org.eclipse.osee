@@ -177,7 +177,12 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
     */
    private boolean isTeamDefWorkItemTypesSelected() {
       List<WorkItemType> teamDefWorkItemTypes = getTeamDefWorkItemTypes();
-      boolean sel = !Collections.setIntersection(teamDefWorkItemTypes, workItemType.get()).isEmpty();
+      boolean sel = false;
+      if (workItemType != null) {
+         sel = !Collections.setIntersection(teamDefWorkItemTypes, workItemType.get()).isEmpty();
+      } else {
+         sel = !Collections.setIntersection(teamDefWorkItemTypes, getWorkItemType().get()).isEmpty();
+      }
       return sel;
    }
 
