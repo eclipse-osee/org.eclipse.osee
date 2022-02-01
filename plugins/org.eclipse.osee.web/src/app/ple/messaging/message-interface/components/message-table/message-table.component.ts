@@ -75,6 +75,8 @@ export class MessageTableComponent implements OnInit {
   inDiffMode = this.messageService.isInDiff.pipe(
     switchMap((val) => iif(() => val, of('true'), of('false'))),
   );
+  _connectionsRoute = this.messageService.connectionsRoute
+
   constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService) {}
 
   ngOnInit(): void {}

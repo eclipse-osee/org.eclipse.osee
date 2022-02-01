@@ -17,6 +17,9 @@
 </div>
 <button *ngIf="(inEditMode | async)===true" mat-fab id="addMessage" (click)="openNewMessageDialog()" class="new-message-button" color="primary"><mat-icon>add</mat-icon></button>
 <div class="message-interface message-element-interface-top-level-table">
+    <ng-container *ngIf="(_connectionsRoute | async) as connectionRoute">
+        <a mat-raised-button class="connections-button" color="primary" [routerLink]="connectionRoute">Connections</a>
+    </ng-container>
     <mat-form-field class="message-interface-table-view-width-100 message-interface-table-filter-padding">
         <mat-label>Filter Message Information</mat-label>
         <input matInput type="text" (keyup)="applyFilter($event)" #input>

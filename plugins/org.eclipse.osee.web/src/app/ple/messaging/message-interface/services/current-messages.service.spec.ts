@@ -207,6 +207,14 @@ describe('CurrentMessagesService', () => {
     })
   })
 
+  it('should get a connection path', () => {
+    scheduler.run(({expectObservable}) => {
+      service.branchId = "10"
+      service.branchType = "abc"
+      expectObservable(service.connectionsRoute).toBe("a", {a: "/ple/messaging/connections/abc/10"})
+    })
+  })
+
   describe('diffs', () => {
     beforeEach(() => {
     })

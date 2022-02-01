@@ -100,7 +100,7 @@ export class GraphComponent implements OnInit {
     event.preventDefault();
     //hacky way of keeping the event to white space only instead of activating on right mouse click of other elements
     let target = event.target as HTMLElement
-    if (target.attributes.getNamedItem('class')?.value == 'panning-rect') {
+    if (target.attributes.getNamedItem('class')?.value.includes('panning-rect')) {
       this.graphMenuPosition.x = event.clientX + 'px';
       this.graphMenuPosition.y = event.clientY + 'px';
       this.linkMenuTrigger.closeMenu();

@@ -113,7 +113,7 @@ export class StructureTableComponent implements OnInit {
     share(),
     shareReplay(1)
   )
-
+  _connectionsRoute = this.structureService.connectionsRoute;
 
   structureDialog = this.structureService.SubMessageId.pipe(
     take(1),

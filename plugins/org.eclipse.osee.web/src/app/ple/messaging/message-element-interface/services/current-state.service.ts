@@ -214,6 +214,12 @@ export class CurrentStateService {
     this.ui.DiffMode = value;
   }
 
+  get connectionsRoute() {
+    return combineLatest([this.branchType, this.BranchId]).pipe(
+      switchMap(([branchType, BranchId])=>of("/ple/messaging/connections/" + branchType + "/" + BranchId))
+    )
+  }
+
   createStructure(body: Partial<structure>) {
     delete body.elements;
     return this.structure.createSubMessageRelation(this.SubMessageId.getValue()).pipe(

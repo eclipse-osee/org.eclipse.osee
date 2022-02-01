@@ -235,6 +235,14 @@ describe('CurrentStateService', () => {
     })
   })
 
+  it('should get a connection path', () => {
+    scheduler.run(({expectObservable}) => {
+      service.branchId = "10"
+      service.BranchType = "abc"
+      expectObservable(service.connectionsRoute).toBe("a", {a: "/ple/messaging/connections/abc/10"})
+    })
+  })
+
   it('done should complete', () => {
     scheduler.run(({ expectObservable,cold }) => {
       const expectedFilterValues = { a: true, b: undefined, c: false };
