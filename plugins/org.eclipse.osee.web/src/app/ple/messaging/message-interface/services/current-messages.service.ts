@@ -119,6 +119,10 @@ export class CurrentMessagesService {
     return this.ui.BranchId;
   }
 
+  set branchId(value: string) {
+    this.ui.BranchIdString = value;
+  }
+
   set connection(id: string) {
     this.ui.connectionIdString = id;
   }
@@ -681,9 +685,16 @@ export class CurrentMessagesService {
       switchMap(([type,id,connection])=>of('/ple/messaging/'+type+'/'+id+'/'+connection+'/messages/'))
     )
   }
+
   get endOfRoute() {
     return this.isInDiff.pipe(
       switchMap((val)=>iif(()=>val,of("/diff"),of("")))
+    )
+  }
+
+  get connectionsRoute() {
+    return combineLatest([this.ui.type, this.BranchId]).pipe(
+      switchMap(([type, BranchId])=>of("/ple/messaging/connections/" + type + "/" + BranchId))
     )
   }
 }

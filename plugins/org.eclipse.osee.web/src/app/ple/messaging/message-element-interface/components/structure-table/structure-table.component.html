@@ -22,6 +22,9 @@
         </ng-container>
         <ng-container *ngIf="(inDiffMode|async) as _diff">
             <div class="message-element-interface message-element-interface-top-level-table">
+                <ng-container *ngIf="(_connectionsRoute | async) as connectionRoute">
+                    <a mat-raised-button class="connections-button" color="primary" [routerLink]="connectionRoute">Connections</a>
+                </ng-container>
                 <ng-container *ngIf="(currentStructureHeaders|async) as currentHeaders">
                     <ng-container *ngIf="hasFilter">
                         <mat-form-field class="message-element-interface-table-view-width-100 message-element-interface-table-filter-padding">
