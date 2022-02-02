@@ -130,15 +130,6 @@ describe('SubElementTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open create element dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddElementDialog>({id:'2',name:'abcdef',type:{id:'123',name:'abcd'},element:{id:'3',name:'abcdef',description:'qwerty',notes:'uiop',interfaceElementIndexEnd:0,interfaceElementIndexStart:0,interfaceElementAlterable:true}}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let cells = (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells());
-    let button = await (cells[cells.length - 1].getHarness(MatButtonHarness));
-    expect(button).toBeDefined();
-    await button.click();
-
-  })
   describe("Menu Testing", () => {
     let mEvent:MouseEvent
     beforeEach(() => {

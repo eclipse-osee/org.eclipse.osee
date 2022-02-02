@@ -17,7 +17,7 @@
                 </ng-container>
             </div>
             <ng-container *ngIf="((isEditing|async)||false)===true;">
-                <button mat-fab color="primary" id="addStructure" (click)="openAddStructureDialog()"class="new-structure-button"><mat-icon>add</mat-icon></button>
+                <two-layer-add-button class="new-structure-button" [firstOptionDisabled]="structureId!==''" [nestedLevel]="expandedElement" baseLevel="Add structure" nestedLevelPrefix="Add element to " (normalClick)="openAddStructureDialog()" (nestedClick)="openAddElementDialog($event)" nestedIcon="description" baseIcon="assignment"></two-layer-add-button>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="(inDiffMode|async) as _diff">
@@ -36,7 +36,7 @@
                             </mat-hint>
                         </mat-form-field>
                     </ng-container>
-                    <table mat-table  [dataSource]="(messageData|async)||[]" multiTemplateDataRows class="mat-elevation-z8">
+                    <table mat-table  [dataSource]="(messageData|async)||[]" multiTemplateDataRows class="mat-elevation-z7">
                         <ng-container matColumnDef="Breadcrumbs">
                             <th mat-header-cell *matHeaderCellDef [attr.colspan]=" currentHeaders.length" class="message-element-interface-table-view-message-header message-element-interface-breadcrumbs" [routerLink]="previousLink">
                                 {{breadCrumb}}
@@ -52,7 +52,7 @@
                                 <div class="flex-row">
                                     <ng-container *ngIf="(!!(isEditing|async))===true; else no_edit">
                                         <ng-container *ngIf="header===' '">
-                                            <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
+                                            <button mat-icon-button [@expandButton]="!rowIsExpanded(element.id) ?  'closed' : 'open'" (click)="rowChange(element,!rowIsExpanded(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
                                         </ng-container>
                                         <ng-container *ngIf="editableStructureHeaders.includes(header); else no_edit">
                                             <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]"></osee-messaging-edit-structure-field>
@@ -60,7 +60,7 @@
                                     </ng-container>
                                     <ng-template #no_edit>
                                         <ng-container *ngIf="header===' ' && (!!(isEditing|async))===false"> <!--Don't know why 1 element in a template has decided to render in a non-rendered template-->
-                                            <button mat-icon-button [@expandButton]="!expandedElement.includes(element.id) ?  'closed' : 'open'" (click)="rowChange(element.id,!expandedElement.includes(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
+                                            <button mat-icon-button [@expandButton]="!rowIsExpanded(element.id) ?  'closed' : 'open'" (click)="rowChange(element,!rowIsExpanded(element.id))" [ngClass]="element.hasElementChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
                                         </ng-container>
                                         <ng-container *ngIf="header==='applicability'">
                                             <ng-container *ngIf="element[header].name!=='Base'">
@@ -85,8 +85,8 @@
                         <ng-container matColumnDef="expandedMessage">
                             <td mat-cell *matCellDef="let structure" [attr.colspan]=" currentHeaders.length" class="no-pad">    
                                 <div class="sub-message-detail message-element-interface-table-view-width-100"
-                                   [@detailExpand]="expandedElement.includes(structure.id) ? 'expanded' : 'collapsed'">
-                                   <ng-container *ngIf="expandedElement.includes(structure.id)">
+                                   [@detailExpand]="rowIsExpanded(structure.id) ? 'expanded' : 'collapsed'">
+                                   <ng-container *ngIf="rowIsExpanded(structure.id)">
                                     <ple-messaging-message-element-interface-sub-element-table [data]="structure.elements" [filter]="filter" [structure]="structure" (expandRow)="expandRow($event)" [subMessageHeaders]="(currentElementHeaders|async)||[]" [editMode]="(isEditing|async)||false"></ple-messaging-message-element-interface-sub-element-table>
                                    </ng-container>
                                 </div>    
@@ -97,7 +97,7 @@
                         </tr>
                         <tr mat-row *matRowDef= "let row; columns:  currentHeaders;"    
                             class="message-detail-row"
-                            [class.message-expanded-detail-row]="expandedElement.includes(row.id)"
+                            [class.message-expanded-detail-row]="rowIsExpanded(row.id)"
                             [class.message-element-structure-added]="row.added"
                             [class.message-element-structure-deleted]="row.deleted">
                         </tr>

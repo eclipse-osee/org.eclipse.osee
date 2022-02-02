@@ -90,23 +90,6 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     this.matMenuTrigger.openMenu();
   }
 
-  createNewSubMessage() {
-    this.dialog.open(AddSubMessageDialogComponent, {
-      data: {
-        name:this.element.name,
-        id: this.element.id,
-        subMessage: {
-          name: '',
-          description: '',
-          interfaceSubMessageNumber:''
-        }
-      }
-    }).afterClosed().pipe(
-      take(1),
-      filter((val)=>val!==undefined),
-      switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id!=='-1', this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1'), this.messageService.createSubMessage(z.subMessage, z.id)))
-    ).subscribe();
-  }
 
   removeSubMessage(submessage:subMessage,message:message) {
     this.dialog.open(RemoveSubmessageDialogComponent, {

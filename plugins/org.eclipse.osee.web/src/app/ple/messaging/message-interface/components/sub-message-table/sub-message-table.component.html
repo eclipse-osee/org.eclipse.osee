@@ -47,11 +47,7 @@
          </td>
         </ng-container>
         <ng-container matColumnDef="footer">
-            <td mat-footer-cell *matFooterCellDef [attr.colspan]="(headers|async)?.length||0" style="text-align:right">
-                <ng-container *ngIf="editMode===true;">
-                    <button mat-mini-fab color="primary" class="add-button" (click)="createNewSubMessage()"><mat-icon>add</mat-icon></button>
-                </ng-container>
-             </td>
+            <td mat-footer-cell *matFooterCellDef [attr.colspan]="(headers|async)?.length||0" style="text-align:right"></td>
         </ng-container>
      <tr mat-header-row *matHeaderRowDef="(headers|async)||[];"></tr>    
      <tr mat-row *matRowDef= "let row2; columns: (headers|async)||[]; let k=index;"

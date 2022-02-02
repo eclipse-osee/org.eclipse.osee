@@ -102,35 +102,6 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     return index;
   }
 
-  openAddElementDialog() {
-    let dialogData: AddElementDialog = {
-      id: this.structure?.id||'',
-      name: this.structure?.name||'',
-      element: {
-        id: '-1',
-        name: '',
-        description: '',
-        notes: '',
-        interfaceElementAlterable: true,
-        interfaceElementIndexEnd: 0,
-        interfaceElementIndexStart: 0,
-      },
-      type:{id:'',name:''}
-    }
-    let dialogRef = this.dialog.open(AddElementDialogComponent, {
-      data:dialogData
-    });
-    let createElement = dialogRef.afterClosed().pipe(
-      filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
-      switchMap((value:AddElementDialog) =>
-        iif(() => value.element.id !== '-1' && value.element.id.length > 0,
-          this.structureService.relateElement(this.structure.id, value.element.id),
-          this.structureService.createNewElement(value.element, this.structure.id,value.type.id))
-      ),
-      take(1)
-    );
-    createElement.subscribe();
-  }
   openGeneralMenu(event: MouseEvent, element: element,header:string, field?: string | number | boolean | applic) {
     event.preventDefault();
     this.menuPosition.x = event.clientX + 'px';

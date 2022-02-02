@@ -51,6 +51,7 @@ import { SubElementTableComponent } from './components/sub-element-table/sub-ele
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
 import { MessageElementInterfaceRoutingModule } from './message-element-interface-routing.module';
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
+import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module'
 
 
 
@@ -78,6 +79,7 @@ import { MessageElementInterfaceComponent } from './message-element-interface.co
     PleSharedMaterialModule,
     OseeStringUtilsPipesModule,
     OseeStringUtilsDirectivesModule,
+    GenericButtonsModule,
     MessageElementInterfaceRoutingModule,
     SharedMessagingModule
   ]

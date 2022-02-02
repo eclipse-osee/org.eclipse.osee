@@ -54,6 +54,9 @@ import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 import { MatIconModule } from '@angular/material/icon';
+import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
+import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-add-button/two-layer-add-button.harness';
+import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 
 let loader: HarnessLoader;
 
@@ -105,6 +108,7 @@ describe('MessageTableComponent', () => {
         MatTooltipModule,
         MatMenuModule,
         MatDialogModule,
+        GenericButtonsModule,
         RouterTestingModule.withRoutes([{ path: 'diff', component: MessageTableComponent, },{path:'diffOpen',component:MimSingleDiffDummy,outlet:'rightSideNav'}])
       ],
       declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective],
@@ -161,8 +165,8 @@ describe('MessageTableComponent', () => {
   });
 
   it('should fail to hide random element', () => {
-    component.hideRow('blah');
-    expect(component.expandedElement.indexOf('blah')).toEqual(-1);
+    component.hideRow({id:'1'} as message);
+    expect(component.expandedElement.indexOf({id:'1'} as message)).toEqual(-1);
   })
 
   it('should filter the top level table', async () => {
@@ -184,11 +188,36 @@ describe('MessageTableComponent', () => {
     interfaceMessageWriteAccess: ''}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
     let spy = spyOn(component, 'openNewMessageDialog').and.callThrough();
-    let button = await loader.getHarness(MatButtonHarness.with({ selector:"#addMessage" }));
-    await button.click();
+    let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+    await addmenu.toggleOpen();
+    expect(await addmenu.isOpen()).toBeTruthy();
+    await addmenu.clickFirstOption();
     expect(spy).toHaveBeenCalled();
   })
 
+  it('should open the create new sub message dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{id:'5',name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+    let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
+    component.rowChange({ id: "1", name: 'dummy element' } as message, true);
+    let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+    await addmenu.toggleOpen();
+    expect(await addmenu.isOpen()).toBeTruthy();
+    await addmenu.clickItem({ text: "Add submessage to dummy element description" });
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('should open the create new sub message dialog and relate', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
+    let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
+    component.rowChange({ id: "1", name: 'dummy element' } as message, true);
+    let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+    await addmenu.toggleOpen();
+    expect(await addmenu.isOpen()).toBeTruthy();
+    await addmenu.clickItem({ text: "Add submessage to dummy element description" });
+    expect(spy).toHaveBeenCalled();
+  })
   // it('should filter the sub level table', async () => {
   // don't know how to test yet
   //   let form = await loader.getHarness(MatFormFieldHarness);

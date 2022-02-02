@@ -18,6 +18,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
+import { TwoLayerAddButtonHarness, TwoLayerAddButtonNestedButtonHarness } from '../../../../generic-buttons/two-layer-add-button/two-layer-add-button.harness'
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
@@ -36,6 +37,7 @@ import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-u
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
+import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
 import { editAuthServiceMock } from '../../../connection-view/mocks/EditAuthService.mock';
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { EditAuthService } from '../../../shared/services/edit-auth-service.service';
@@ -49,6 +51,11 @@ import { structure } from '../../types/structure';
 import { EditElementFieldComponent } from '../sub-element-table/edit-element-field/edit-element-field.component';
 
 import { StructureTableComponent } from './structure-table.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { CommonModule } from '@angular/common';
+import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButtonModule } from '@angular/material/button';
 
 describe('StructureTableComponent', () => {
   let component: StructureTableComponent;
@@ -57,7 +64,9 @@ describe('StructureTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatFormFieldModule,
+      imports: [
+        CommonModule,
+        MatFormFieldModule,
         MatDialogModule,
         MatInputModule,
         MatSelectModule,
@@ -68,15 +77,21 @@ describe('StructureTableComponent', () => {
         NoopAnimationsModule,
         MatTableModule,
         MatTooltipModule,
+        MatStepperModule,
+        MatDialogModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSlideToggleModule,
         OseeStringUtilsPipesModule,
         OseeStringUtilsDirectivesModule,
+        GenericButtonsModule,
         RouterTestingModule.withRoutes([{path:'diffOpen',outlet:'rightSideNav',component:StructureTableComponent},{path:'diff',component:StructureTableComponent}]),
         SharedMessagingModule
       ],
       declarations: [ StructureTableComponent,SubElementTableComponentMock,
         ConvertMessageInterfaceTitlesToStringPipe,
         EditElementFieldComponent,
-        EditStructureFieldComponentMock, MimSingleDiffDummy, HighlightFilteredTextDirective],
+        EditStructureFieldComponentMock, MimSingleDiffDummy,AddElementDialogComponent, HighlightFilteredTextDirective],
       providers: [
         {
           provide: Router, useValue: {
@@ -101,7 +116,7 @@ describe('StructureTableComponent', () => {
         {
           provide: CurrentStateService, useValue: CurrentStateServiceMock
         },
-      ]
+      ],
     })
     .compileComponents();
   });
@@ -121,15 +136,15 @@ describe('StructureTableComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should remove element from expandedElement', () => {
-    component.expandedElement = ["1", "2", "3", "4", "5", "7"];
-    component.hideRow("4");
-    expect(!component.expandedElement.includes("4")).toBeTruthy();
+    component.expandedElement = [{ id:"1"} as structure, { id:"2"} as structure, { id:"3"} as structure, { id:"4"} as structure, { id:"5"} as structure, { id:"7"} as structure];
+    component.hideRow({ id:"4"} as structure);
+    expect(!component.rowIsExpanded("4")).toBeTruthy();
   });
 
   it('should add element from expandedElement', () => {
-    component.expandedElement = ["1", "2", "3", "4", "5", "7"];
-    component.expandRow("9");
-    expect(component.expandedElement.includes("9")).toBeTruthy();
+    component.expandedElement = [{ id:"1"} as structure, { id:"2"} as structure, { id:"3"} as structure, { id:"4"} as structure, { id:"5"} as structure, { id:"7"} as structure];
+    component.expandRow({ id:"9"} as structure);
+    expect(component.rowIsExpanded("9")).toBeTruthy();
   });
 
   it('should find a truncatedElement', () => {
@@ -155,8 +170,8 @@ describe('StructureTableComponent', () => {
   });
 
   it('should expand row', () => {
-    component.rowChange('1', true);
-    expect(component.expandedElement).toEqual(['1']);
+    component.rowChange({ id:"1"} as structure, true);
+    expect(component.rowIsExpanded('1')).toBeTruthy()
   });
 
   it('should open and close a sub table', async () => {
@@ -170,10 +185,10 @@ describe('StructureTableComponent', () => {
     // await button.click();
     // expect(await button.getText()).toEqual("V");
     //expect(spy).toHaveBeenCalled();
-    component.rowChange('1', true);
-    expect(component.expandedElement).toEqual(['1'])
-    component.rowChange('1', false);
-    expect(component.expandedElement).toEqual([]);
+    component.rowChange({ id:"1"} as structure, true);
+    expect(component.rowIsExpanded("1")).toBeTruthy();
+    component.rowChange({ id:"1"} as structure, false);
+    expect(component.expandedElement).toEqual([])
   });
 
 
@@ -181,8 +196,25 @@ describe('StructureTableComponent', () => {
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:'10',name:'New Structure',structure:{id:'10216532',name:'New Structure',elements:[],description:'',interfaceMaxSimultaneity:'',interfaceMinSimultaneity:'',interfaceTaskFileType:0,interfaceStructureCategory:'',numElements:'10',sizeInBytes:'10',bytesPerSecondMinimum:10,bytesPerSecondMaximum:10}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
     const spy = spyOn(component, 'openAddStructureDialog').and.callThrough();
-    const button = await loader.getHarness(MatButtonHarness.with({ selector:'#addStructure' }));
-    await button.click();
+    const addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+    await addmenu.toggleOpen();
+    expect(addmenu.isOpen()).toBeTruthy();
+    await addmenu.clickFirstOption();
+    //const button = await loader.getHarness(MatButtonHarness.with({ selector:'#addStructure' }));
+    //await button.click();
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('should open add element dialog', async () => {
+    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:'10',name:'New Structure',structure:{id:'10216532',name:'New Structure',elements:[],description:'',interfaceMaxSimultaneity:'',interfaceMinSimultaneity:'',interfaceTaskFileType:0,interfaceStructureCategory:'',numElements:'10',sizeInBytes:'10',bytesPerSecondMinimum:10,bytesPerSecondMaximum:10}}), close: null });
+    let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
+    const spy = spyOn(component, 'openAddElementDialog').and.callThrough();
+    component.rowChange({ id: "1", name: 'dummy element' } as structure, true);
+    const addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+    await addmenu.toggleOpen();
+    expect(await (await addmenu.getNestedButtons()).length).toEqual(1);
+    expect(addmenu.isOpen()).toBeTruthy();
+    await addmenu.clickItem({ text: "Add element to dummy element description" });
     expect(spy).toHaveBeenCalled();
   })
 

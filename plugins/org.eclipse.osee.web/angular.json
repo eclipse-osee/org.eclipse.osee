@@ -130,7 +130,8 @@
               "src/app/ple/plconfig/types/**",
               "src/app/ple/plconfig/testing/**",
               "src/app/ple/messaging/connection-view/mock/**",
-              "**/*.mock.*"
+              "**/*.mock.*",
+              "**/*.harness.*"
             ],
             "codeCoverage": true,
             "assets": [
