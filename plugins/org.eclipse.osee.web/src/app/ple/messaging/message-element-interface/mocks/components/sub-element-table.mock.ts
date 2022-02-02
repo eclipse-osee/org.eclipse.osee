@@ -13,6 +13,7 @@
 import { EventEmitter, Output } from "@angular/core";
 import { Component, Input } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
+import { structure } from "../../types/structure";
 
 @Component({
     selector: 'ple-messaging-message-element-interface-sub-element-table',
@@ -27,4 +28,13 @@ export class SubElementTableComponentMock{
   @Output() expandRow = new EventEmitter();
   @Input() subMessageHeaders: string[] = [];
   @Input() editMode: boolean = false;
+  @Input() structure: structure = {
+    id: '',
+    name: '',
+    description: '',
+    interfaceMaxSimultaneity: '',
+    interfaceMinSimultaneity: '',
+    interfaceTaskFileType: 0,
+    interfaceStructureCategory: ''
+  };
   }

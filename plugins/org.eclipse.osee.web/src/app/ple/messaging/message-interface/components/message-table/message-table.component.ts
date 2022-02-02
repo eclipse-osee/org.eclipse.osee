@@ -24,9 +24,11 @@ import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
+import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { message, messageChanges, messageWithChanges } from '../../types/messages';
 import { DeleteMessageDialogComponent } from '../dialogs/delete-message-dialog/delete-message-dialog.component';
 import { RemoveMessageDialogComponent } from '../dialogs/remove-message-dialog/remove-message-dialog.component';
+import { AddSubMessageDialogComponent } from '../sub-message-table/add-sub-message-dialog/add-sub-message-dialog.component';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 
 @Component({
@@ -52,7 +54,7 @@ export class MessageTableComponent implements OnInit {
     switchMap((data)=>of(new MatTableDataSource<message|messageWithChanges>(data))),
     takeUntil(this.messageService.done));
   headers = this.headerService.AllMessageHeaders;
-  expandedElement: string[] = [];
+  expandedElement: (message|messageWithChanges)[] = [];
   filter: string = "";
   searchTerms: string = "";
   preferences = this.messageService.preferences.pipe(takeUntil(this.messageService.done));
@@ -79,20 +81,24 @@ export class MessageTableComponent implements OnInit {
 
   constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService) {}
 
-  ngOnInit(): void {}
-  expandRow(value: string) {
-    if (this.expandedElement.indexOf(value)===-1) {
+  ngOnInit(): void { }
+  
+  rowIsExpanded(value: string) {
+    return this.expandedElement.map(a => a.id).includes(value);
+  }
+  expandRow(value: message|messageWithChanges) {
+    if (this.expandedElement.map(a => a.id).indexOf(value.id) === -1) {
       this.expandedElement.push(value);
     }
   }
-  hideRow(value: string) {
-    let index = this.expandedElement.indexOf(value);
+  hideRow(value: message|messageWithChanges) {
+    let index = this.expandedElement.map(a=>a.id).indexOf(value.id);
     if (index > -1) {
       this.expandedElement.splice(index,1)
     }
   }
 
-  rowChange(value: string, type: boolean) {
+  rowChange(value: message | messageWithChanges, type: boolean) {
     if (type) {
       this.expandRow(value);
     } else {
@@ -199,6 +205,24 @@ export class MessageTableComponent implements OnInit {
   }
   changeExists(value:messageWithChanges,header: keyof messageChanges): header is keyof messageChanges{
     return (value as messageWithChanges).changes[header] !== undefined;
+  }
+
+  createNewSubMessage(message:message|messageWithChanges) {
+    this.dialog.open(AddSubMessageDialogComponent, {
+      data: {
+        name:message.name,
+        id: message.id,
+        subMessage: {
+          name: '',
+          description: '',
+          interfaceSubMessageNumber:''
+        }
+      }
+    }).afterClosed().pipe(
+      take(1),
+      filter((val)=>val!==undefined),
+      switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id!=='-1', this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1'), this.messageService.createSubMessage(z.subMessage, z.id)))
+    ).subscribe();
   }
 
 }

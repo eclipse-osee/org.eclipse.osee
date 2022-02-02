@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<table mat-table [dataSource]="dataSource" class="message-element-interface-table-view-element mat-elevation-z9 message-element-interface-table-view-width-100">
+<table mat-table [dataSource]="dataSource" class="message-element-interface-table-view-element mat-elevation-z8 message-element-interface-table-view-width-100">
     <ng-container [matColumnDef]="header" *ngFor="let header of subMessageHeaders;let j=index;trackBy:valueTracker">
      <th mat-header-cell *matHeaderCellDef class="message-element-interface-table-view-sub-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''">{{(getHeaderByName(header)|async)?.humanReadable||''}}</th>
      <td mat-cell *matCellDef="let element" class="message-element-interface-table-center" [ngClass]="!element.added && !element.deleted &&element.changes!==undefined && element.changes[header]!==undefined?'message-element-table-element-attribute-changed':''" [ngStyle]="header==='description'||header==='EnumLiteralsDesc'||header==='notes'?{
@@ -23,11 +23,7 @@
      </td>
     </ng-container>
     <ng-container matColumnDef="footer">
-        <td mat-footer-cell *matFooterCellDef [attr.colspan]="subMessageHeaders.length" style="text-align:right">
-            <ng-container *ngIf="editMode===true;">
-                <button mat-mini-fab color="primary" (click)="openAddElementDialog()"><mat-icon>add</mat-icon></button>
-            </ng-container>
-         </td>
+        <td mat-footer-cell *matFooterCellDef [attr.colspan]="subMessageHeaders.length" style="text-align:right"></td>
     </ng-container>
  <tr mat-header-row *matHeaderRowDef="subMessageHeaders; sticky:true"></tr>    
  <tr mat-row *matRowDef= "let row2; columns: subMessageHeaders; let k=index;"
@@ -49,7 +45,6 @@
             <ng-container *ngIf="element.changes!==undefined && element.changes[header]!==undefined && element.changes[header]!==true && element.changes[header]!==false">
                 <button mat-menu-item (click)="viewDiff(element.changes[header],headername)"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
             </ng-container>
-            <!-- <button mat-menu-item (click)="viewDiff(field,headername)">View Diff</button> -->
         </ng-container>
         <ng-container *ngIf='editMode===true &&!element.deleted'>
             <button mat-menu-item (click)="removeElement(element,structure)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove element from structure</button>

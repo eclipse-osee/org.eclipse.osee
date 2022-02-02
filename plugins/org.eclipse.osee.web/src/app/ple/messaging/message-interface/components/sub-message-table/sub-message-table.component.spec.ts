@@ -109,30 +109,6 @@ describe('SubMessageTableComponent', () => {
     })
   });
 
-  it('should relate a new submessage', async () => {
-    let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{id:'5',name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'relateSubMessage').and.stub();
-    let button = (await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({ selector:'.add-button' })));
-    expect(button).toBeDefined();
-    await(await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({selector:'.add-button'}))).click();
-    expect(spy).toHaveBeenCalled();
-    expect(serviceSpy).toHaveBeenCalled();
-  })
-
-  it('should create a new submessage', async () => {
-    let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'relateSubMessage').and.stub();
-    let button = (await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({ selector:'.add-button' })));
-    expect(button).toBeDefined();
-    await(await (await (await (await loader.getHarness(MatTableHarness)).getFooterRows())[0].getCells())[0].getHarness(MatButtonHarness.with({selector:'.add-button'}))).click();
-    expect(spy).toHaveBeenCalled();
-    expect(serviceSpy).toHaveBeenCalled();
-  })
-
   describe('Menu Tests', () => {
     let mEvent:MouseEvent
     beforeEach(() => {

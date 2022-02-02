@@ -24,9 +24,11 @@ import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { CurrentStateService } from '../../services/current-state.service';
+import { AddElementDialog } from '../../types/AddElementDialog';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
 import { element } from '../../types/element';
 import { structure, structureWithChanges } from '../../types/structure';
+import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
 import { AddStructureDialogComponent } from '../add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../delete-structure-dialog/delete-structure-dialog.component';
 import { RemoveStructureDialogComponent } from '../remove-structure-dialog/remove-structure-dialog.component';
@@ -67,7 +69,7 @@ export class StructureTableComponent implements OnInit {
     'applicability'];
   
 
-  expandedElement: string[] = [];
+  expandedElement: (structure|structureWithChanges)[] = [] as (structure|structureWithChanges)[];
   filter: string = '';
   searchTerms: string = '';
   @Input() breadCrumb: string = '';
@@ -164,20 +166,53 @@ export class StructureTableComponent implements OnInit {
   valueTracker(index: any, item: any) {
     return index;
   }
+  openAddElementDialog(structure: structure | structureWithChanges) {
+    let dialogData: AddElementDialog = {
+      id: structure?.id||'',
+      name: structure?.name||'',
+      element: {
+        id: '-1',
+        name: '',
+        description: '',
+        notes: '',
+        interfaceElementAlterable: true,
+        interfaceElementIndexEnd: 0,
+        interfaceElementIndexStart: 0,
+      },
+      type:{id:'',name:''}
+    }
+    let dialogRef = this.dialog.open(AddElementDialogComponent, {
+      data:dialogData
+    });
+    let createElement = dialogRef.afterClosed().pipe(
+      filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
+      switchMap((value:AddElementDialog) =>
+        iif(() => value.element.id !== '-1' && value.element.id.length > 0,
+          this.structureService.relateElement(structure.id, value.element.id),
+          this.structureService.createNewElement(value.element, structure.id,value.type.id))
+      ),
+      take(1)
+    );
+    createElement.subscribe();
+  }
 
-  expandRow(value: string) {
+  rowIsExpanded(value: string) {
+    return this.expandedElement.map(a => a.id).includes(value);
+  }
+
+  expandRow(value: structure|structureWithChanges) {
     if (this.expandedElement.indexOf(value) === -1) {
       this.expandedElement.push(value);
     }
   }
-  hideRow(value: string) {
-    let index = this.expandedElement.indexOf(value);
+  hideRow(value: structure|structureWithChanges) {
+    let index = this.expandedElement.map(a=>a.id).indexOf(value.id);
     if (index > -1) {
       this.expandedElement.splice(index, 1);
     }
   }
 
-  rowChange(value: string, type: boolean) {
+  rowChange(value: structure|structureWithChanges, type: boolean) {
     if (type) {
       this.expandRow(value);
     } else {
