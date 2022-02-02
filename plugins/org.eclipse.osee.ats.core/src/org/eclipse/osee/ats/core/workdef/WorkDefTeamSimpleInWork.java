@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -43,14 +43,14 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(2, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
