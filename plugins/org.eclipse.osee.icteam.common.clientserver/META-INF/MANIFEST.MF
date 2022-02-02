@@ -9,6 +9,8 @@ Bundle-Vendor: BOSCH
 Export-Package: org.eclipse.osee.icteam.common.clientserver,
  org.eclipse.osee.icteam.common.clientserver.util
 Import-Package: com.google.gson,
+ javax.xml.bind,
+ javax.xml.bind.annotation,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
