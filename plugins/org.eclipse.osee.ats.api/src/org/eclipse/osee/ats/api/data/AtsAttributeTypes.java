@@ -134,7 +134,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean NextVersion = ats.createBoolean(1152921504606847157L, "ats.Next Version", MediaType.TEXT_PLAIN, "True if version artifact is \"Next\" version to be released.");
    AttributeTypeDouble Numeric1 = ats.createDouble(1152921504606847184L, "ats.Numeric1", MediaType.TEXT_PLAIN, "Open field for user to be able to enter numbers for sorting.");
    AttributeTypeDouble Numeric2 = ats.createDouble(1152921504606847185L, "ats.Numeric2", MediaType.TEXT_PLAIN, Numeric1.getDescription());
-   AttributeTypeBoolean NonFunctionalProblem = ats.createBoolean(950275235L, "ats.Non Functional Problem", MediaType.TEXT_PLAIN, "NAWC testers do not need to test this issue");
+   AttributeTypeBoolean NonFunctionalProblem = ats.createBoolean(950275235L, "ats.Non Functional Problem", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OperationalImpact = ats.createString(1152921504606847213L, "ats.Operational Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OperationalImpactDescription = ats.createString(1152921504606847214L, "ats.Operational Impact Description", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OperationalImpactWorkaround = ats.createString(1152921504606847215L, "ats.Operational Impact Workaround", MediaType.TEXT_PLAIN, "");
