@@ -70,6 +70,9 @@ public enum WidgetOption {
    // Align Options
    ALIGN_LEFT,
    ALIGN_RIGHT,
-   ALIGN_CENTER;
+   ALIGN_CENTER,
+
+   // Widget Type
+   WALKTHROUGH;
 
 }

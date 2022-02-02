@@ -39,6 +39,7 @@ public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProv
       atsValidators.add(new AtsXHyperlinkLabelValueSelectionValidator());
       atsValidators.add(new AtsXCheckBoxThreeStateValidator());
       atsValidators.add(new AtsXHyperlinkTriStateBooleanValidator());
+      atsValidators.add(new AtsWalktrhoughAttrValidator());
    }
 
    @Override
