@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -42,11 +41,11 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Review, StateToken.Cancelled) //
-         
+
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
@@ -57,11 +56,11 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
 
       bld.andState(2, "Review", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         
+
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(3, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
@@ -76,7 +75,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(3, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
