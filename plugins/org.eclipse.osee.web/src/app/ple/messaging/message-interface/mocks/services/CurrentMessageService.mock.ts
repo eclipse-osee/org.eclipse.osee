@@ -46,6 +46,10 @@ let expectedData: (message|messageWithChanges)[] = [{
       id: '1',
       name:'Base'
   },
+  initiatingNode: {
+    id: '1',
+    name: 'Node 1'
+  },
   changes: {
     name: {
       previousValue: '',

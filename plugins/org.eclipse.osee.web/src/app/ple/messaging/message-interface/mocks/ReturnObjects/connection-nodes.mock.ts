@@ -10,17 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ConnectionNode } from './connection-nodes'
+import { ConnectionNode } from "../../types/connection-nodes"
 
-export interface AddMessageDialog{
-    id: string,
-    name: string,
-    description: string,
-    interfaceMessageRate: string,
-    interfaceMessagePeriodicity: string,
-    interfaceMessageWriteAccess: string,
-    interfaceMessageType: string,
-    interfaceMessageNumber:string,
-    initiatingNode: ConnectionNode
-
-}
+ export const connectionNodesMock: (ConnectionNode)[] = [
+     {
+         id: '1',
+         name: 'Node 1'
+     },
+     {
+         id: '2',
+         name: 'Node 2'
+     }
+ ]

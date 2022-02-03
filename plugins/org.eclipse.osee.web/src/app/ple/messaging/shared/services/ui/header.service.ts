@@ -70,6 +70,7 @@ export class HeaderService {
     { header: 'interfaceMessageWriteAccess', description: 'TBD', humanReadable: 'Read/Write' },
     { header: 'interfaceMessageType', description: 'Type of Message', humanReadable: 'Type' },
     { header: 'applicability', description: 'Applicability of a given message', humanReadable: 'Applicability' },
+    { header: 'initiatingNode', description: 'Sender of the message', humanReadable: 'Initiating Node'}
   ])
 
   private _allSubMessages = new BehaviorSubject<subMessageHeaderDetail[]>([

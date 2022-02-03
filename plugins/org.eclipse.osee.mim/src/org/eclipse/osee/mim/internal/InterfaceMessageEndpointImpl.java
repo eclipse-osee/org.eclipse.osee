@@ -22,8 +22,10 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
+import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
@@ -36,13 +38,15 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
    private final ArtifactId ConnectionId;
    private final InterfaceMessageApi messageApi;
    private final InterfaceSubMessageApi subMessageApi;
+   private final InterfaceNodeViewApi interfaceNodeApi;
 
-   public InterfaceMessageEndpointImpl(BranchId branch, ArtifactId connectionId, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi) {
+   public InterfaceMessageEndpointImpl(BranchId branch, ArtifactId connectionId, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceNodeViewApi interfaceNodeApi) {
       this.account = account;
       this.branch = branch;
       this.messageApi = interfaceMessageApi;
       this.subMessageApi = interfaceSubMessageApi;
       this.ConnectionId = connectionId;
+      this.interfaceNodeApi = interfaceNodeApi;
    }
 
    @Override
@@ -59,6 +63,10 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
                submessages.add(submessage);
             }
             message.setSubMessages(submessages);
+
+            message.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
+               CoreRelationTypes.InterfaceMessageSendingNode_Message, ArtifactId.valueOf(message.getId()),
+               InterfaceNode.class));
          }
          return messageList;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -80,6 +88,11 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
             submessages.add(submessage);
          }
          message.setSubMessages(submessages);
+
+         message.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
+            CoreRelationTypes.InterfaceMessageSendingNode_Message, ArtifactId.valueOf(message.getId()),
+            InterfaceNode.class));
+
          return message;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

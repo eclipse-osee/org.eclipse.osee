@@ -73,6 +73,10 @@ describe('MessageTableComponent', () => {
     interfaceMessagePeriodicity: '1Hz',
     interfaceMessageWriteAccess: true,
     interfaceMessageType: 'Connection',
+    initiatingNode: {
+      id: '1',
+      name: 'Node 1'
+    },
     subMessages: [{
       id: '5',
       name: 'sub message name',

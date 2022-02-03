@@ -13,6 +13,7 @@
 import { difference } from "src/app/types/change-report/change-report";
 import { applic } from "../../../../types/applicability/applic";
 import { subMessage, subMessageWithChanges } from "./sub-messages";
+import { ConnectionNode } from './connection-nodes'
 
 export interface message {
     [index:string]:string|subMessage|subMessageWithChanges|boolean|applic|Array<subMessage|subMessageWithChanges>|undefined|messageChanges,
@@ -25,7 +26,8 @@ export interface message {
     interfaceMessageWriteAccess: boolean ,
     interfaceMessageType: string ,
     interfaceMessageNumber: string,
-    applicability?:applic
+    applicability?:applic,
+    initiatingNode: ConnectionNode
 }
 
 export interface messageWithChanges extends message{
@@ -43,5 +45,6 @@ export interface messageChanges{
     interfaceMessageWriteAccess?: difference ,
     interfaceMessageType?: difference ,
     interfaceMessageNumber?: difference,
-    applicability?:difference 
+    applicability?:difference,
+    initiatingNode?: difference
 }

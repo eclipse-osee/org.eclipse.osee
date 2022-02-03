@@ -10,17 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ConnectionNode } from './connection-nodes'
+import { nodeData } from '../../shared/types/node'
 
-export interface AddMessageDialog{
-    id: string,
-    name: string,
-    description: string,
-    interfaceMessageRate: string,
-    interfaceMessagePeriodicity: string,
-    interfaceMessageWriteAccess: string,
-    interfaceMessageType: string,
-    interfaceMessageNumber:string,
-    initiatingNode: ConnectionNode
-
-}
+ export interface ConnectionNode extends Pick<nodeData, "id">, Pick<nodeData, "name">{}

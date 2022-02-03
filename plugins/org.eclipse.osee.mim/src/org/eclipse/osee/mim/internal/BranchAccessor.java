@@ -66,14 +66,14 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceMessageEndpoint getMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceMessageEndpointImpl(branch, connectionId, accountId, mimApi.getInterfaceMessageApi(),
-         mimApi.getInterfaceSubMessageApi());
+         mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/filter")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceMessageFilterEndpoint getMessageFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceMessageFilterEndpointImpl(branch, connectionId, accountId, mimApi.getInterfaceMessageApi(),
-         mimApi.getInterfaceSubMessageApi());
+         mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages")

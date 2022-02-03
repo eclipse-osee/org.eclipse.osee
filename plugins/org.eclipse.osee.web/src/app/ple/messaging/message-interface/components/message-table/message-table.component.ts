@@ -54,6 +54,7 @@ export class MessageTableComponent implements OnInit {
     switchMap((data)=>of(new MatTableDataSource<message|messageWithChanges>(data))),
     takeUntil(this.messageService.done));
   headers = this.headerService.AllMessageHeaders;
+  nonEditableHeaders: (keyof message)[] = ['initiatingNode'];
   expandedElement: (message|messageWithChanges)[] = [];
   filter: string = "";
   searchTerms: string = "";
@@ -124,7 +125,11 @@ export class MessageTableComponent implements OnInit {
       interfaceMessagePeriodicity: '',
       interfaceMessageRate: '',
       interfaceMessageType: '',
-      interfaceMessageWriteAccess: ''
+      interfaceMessageWriteAccess: '',
+      initiatingNode: {
+        id: '',
+        name: ''
+      }
     };
     const dialogRef = this.dialog.open(AddMessageDialogComponent, {
       data: dialogData
@@ -132,7 +137,7 @@ export class MessageTableComponent implements OnInit {
     dialogRef.afterClosed().pipe(
       first(),
       filter((val) => val !== undefined),
-      switchMap((val) => this.messageService.createMessage(val)),
+      switchMap(({initiatingNode, ...val}) => this.messageService.createMessage(initiatingNode, val)),
     ).subscribe();
   }
 

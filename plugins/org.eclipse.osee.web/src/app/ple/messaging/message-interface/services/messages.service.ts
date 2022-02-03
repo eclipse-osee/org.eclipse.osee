@@ -17,9 +17,10 @@ import { relation, transaction } from '../../../../transactions/transaction';
 import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
-import { MessageApiResponse } from '../types/ApiResponse';
 import { message } from '../types/messages';
 import { connection } from '../../shared/types/connection';
+import { nodeData } from '../../shared/types/node'
+import { ConnectionNode } from '../types/connection-nodes'
 import { map } from 'rxjs/operators';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 
@@ -50,7 +51,7 @@ export class MessagesService {
   getMessage(branchId: string, messageId: string,connectionId:string):Observable<message> {
     return this.http.get<message>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/"+messageId);
   }
-  private getConnection(branchId: string,connectionId:string) {
+  getConnection(branchId: string,connectionId:string) {
     return this.http.get<connection>(apiURL + "/mim/branch/" + branchId + "/connections/" + connectionId);
   }
   getConnectionName(branchId: string, connectionId: string) {
@@ -58,11 +59,22 @@ export class MessagesService {
       map(x=>x.name)
     )
   }
+  getConnectionNodes(branchId: string, connectionId: string) {
+    return this.http.get<ConnectionNode[]>(apiURL + "/mim/branch/" + branchId + "/nodes/connection/" + connectionId);
+  }
   createConnectionRelation(connectionId:string, messageId?:string) {
     let relation: relation = {
       typeName: 'Interface Connection Content',
       sideA: connectionId,
       sideB:messageId
+    }
+    return of(relation);
+  }
+  createNodeRelation(messageId: string, nodeId?: string) {
+    let relation: relation = {
+      typeName: 'Interface Message Sending Node',
+      sideA: messageId,
+      sideB: nodeId
     }
     return of(relation);
   }
@@ -79,7 +91,7 @@ export class MessagesService {
   deleteRelation(branchId: string, relation: relation) {
     return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Removing message'))
   }
-  performMutation(branchId:string,connectionId:string,body:transaction) {
+  performMutation(body:transaction) {
     return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)
   }
 }

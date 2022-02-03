@@ -24,6 +24,7 @@ import { ApplicabilityListService } from '../../shared/services/http/applicabili
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { messagesMock } from '../mocks/ReturnObjects/messages.mock';
 import { subMessagesMock } from '../mocks/ReturnObjects/submessages.mock';
+import { connectionNodesMock } from '../mocks/ReturnObjects/connection-nodes.mock'
 import { messageServiceMock } from '../mocks/services/MessageService.mock';
 import { subMessageServiceMock } from '../mocks/services/SubMessageService.mock';
 import { message, messageWithChanges } from '../types/messages';
@@ -135,7 +136,7 @@ describe('CurrentMessagesService', () => {
         service.connection = '10';
         let expectedObservable = { a: response }
         let expectedMarble = '(a|)';
-        scheduler.expectObservable(service.createMessage(messagesMock[0])).toBe(expectedMarble,expectedObservable)
+        scheduler.expectObservable(service.createMessage({id: '1', name: 'Node 1'}, messagesMock[0])).toBe(expectedMarble,expectedObservable)
       })
     })
     it('should delete a message', () => {
@@ -143,7 +144,7 @@ describe('CurrentMessagesService', () => {
         service.branch = '10';
         service.connection = '10';
         let expectedObservable = { a: response }
-        let expectedMarble = 'a';
+        let expectedMarble = '(a|)';
         scheduler.expectObservable(service.deleteMessage(messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
     })
@@ -153,7 +154,7 @@ describe('CurrentMessagesService', () => {
         service.branch = '10';
         service.connection = '10';
         let expectedObservable = { a: response }
-        let expectedMarble = 'a';
+        let expectedMarble = '(a|)';
         scheduler.expectObservable(service.removeMessage(messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
     })
@@ -163,7 +164,7 @@ describe('CurrentMessagesService', () => {
         service.branch = '10';
         service.connection = '10';
         let expectedObservable = { a: response }
-        let expectedMarble = 'a';
+        let expectedMarble = '(a|)';
         scheduler.expectObservable(service.deleteSubMessage(subMessagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
     })
@@ -173,8 +174,18 @@ describe('CurrentMessagesService', () => {
         service.branch = '10';
         service.connection = '10';
         let expectedObservable = { a: response }
-        let expectedMarble = 'a';
+        let expectedMarble = '(a|)';
         scheduler.expectObservable(service.removeSubMessage(subMessagesMock[0].id,messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
+      })
+    })
+
+    it('should fetch connection nodes', () => {
+      scheduler.run(() => {
+        const expectedObservable = { a: connectionNodesMock };
+        const expectedMarble = 'a';
+        service.branch = '10';
+        service.connection = '10';
+        scheduler.expectObservable(service.connectionNodes).toBe(expectedMarble, expectedObservable);
       })
     })
   
@@ -261,6 +272,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
               changes: {
                 name: { previousValue: '', currentValue: 'name', transactionToken:{id:'-1',branchId:'-1'}}
               }
@@ -303,6 +318,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
               changes: {
                 name: { previousValue: '', currentValue: 'name', transactionToken:{id:'-1',branchId:'-1'}}
               }
@@ -320,6 +339,10 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
               }
             }
           ],
@@ -360,6 +383,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
               changes: {
                 name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
               }
@@ -377,7 +404,11 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
-              }
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201289',
@@ -398,6 +429,10 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
               },
               changes: {
              }
@@ -440,6 +475,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
               changes: {
                 name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
               }
@@ -457,7 +496,11 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
-              }
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201289',
@@ -480,6 +523,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201300',
@@ -497,6 +544,10 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
               },
             }
           ],
@@ -537,6 +588,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
               changes: {
                 name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
               }
@@ -554,7 +609,11 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
-              }
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201289',
@@ -664,6 +723,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201300',
@@ -717,6 +780,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201303',
@@ -734,6 +801,10 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
+              },
+              initiatingNode: {
+                id: '',
+                name: ''
               },
               changes: {
               }
@@ -776,6 +847,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
               changes: {
                 name: { previousValue: '', currentValue: 'name', transactionToken: { id: '-1', branchId: '-1' } }
               }
@@ -793,7 +868,11 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name: 'Base'
-              }
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201289',
@@ -903,6 +982,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201300',
@@ -956,6 +1039,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
+              },
             },
             {
               id: '201303',
@@ -974,6 +1061,10 @@ describe('CurrentMessagesService', () => {
                 id: '1',
                 name: 'Base'
               },
+              initiatingNode: {
+                id: '',
+                name: ''
+              },
               changes:{}
             },
             {
@@ -989,6 +1080,10 @@ describe('CurrentMessagesService', () => {
               applicability: {
                 id: '1',
                 name:'Base'
+              },
+              initiatingNode: {
+                id: '1',
+                name: 'Node 1'
               },
               added: false,
               hasSubMessageChanges:false,

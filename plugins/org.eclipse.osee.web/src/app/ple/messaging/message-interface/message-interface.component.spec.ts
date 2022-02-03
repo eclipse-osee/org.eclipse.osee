@@ -51,7 +51,11 @@ describe('MessageInterfaceComponent', () => {
         id: '1',
         name:'Base'
       }
-    }]
+    }],
+    initiatingNode: {
+      id: '1',
+      name: 'Node 1'
+    },
   }];
 
   beforeEach(async () => {

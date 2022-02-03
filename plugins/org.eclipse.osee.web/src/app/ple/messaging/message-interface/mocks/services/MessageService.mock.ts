@@ -18,6 +18,7 @@ import { message } from '../../types/messages';
 import { transactionMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
 import { relation, transaction } from "src/app/transactions/transaction";
+import { connectionNodesMock } from "../ReturnObjects/connection-nodes.mock";
 
 export const messageServiceMock: Partial<MessagesService> = {
     getFilteredMessages(filter, branchId, connectionId) {
@@ -28,6 +29,9 @@ export const messageServiceMock: Partial<MessagesService> = {
     },
     getConnectionName(branchId: string, connectionId: string) {
         return of("hello")
+    },
+    getConnectionNodes(branchId: string, connectionId: string) {
+        return of(connectionNodesMock)
     },
     createMessage(branchId: string, message: Partial<message>) {
       return of(transactionMock)  
@@ -41,7 +45,13 @@ export const messageServiceMock: Partial<MessagesService> = {
             sideA:'10'
           })
     },
-    performMutation(branchId: string, connectionId: string, body: transaction) {
+    createNodeRelation(messageId: string, nodeId?: string) {
+        return of({
+            typeName: 'Interface Message Sending Node',
+            sideA: '20'
+        })
+    },
+    performMutation(body: transaction) {
         return of(response);
     },
     deleteMessage(branchId: string, messageId: string, transaction?: transaction) {

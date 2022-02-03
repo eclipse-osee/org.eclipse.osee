@@ -14,9 +14,12 @@ package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
@@ -54,6 +57,22 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
    public InterfaceNode getNode(ArtifactId nodeId) {
       try {
          return interfaceNodeApi.getAccessor().get(branch, nodeId, InterfaceNode.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<InterfaceNode> getNodes(ArtifactId connectionId) {
+      try {
+         List<InterfaceNode> nodes = new LinkedList<>();
+         nodes.addAll(interfaceNodeApi.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceConnectionPrimary_Connection, connectionId, InterfaceNode.class));
+         nodes.addAll(interfaceNodeApi.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceConnectionSecondary_Connection, connectionId, InterfaceNode.class));
+         return nodes;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
