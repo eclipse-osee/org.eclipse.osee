@@ -154,6 +154,7 @@ export class PlConfigCurrentBranchService {
           startWith({ id: '', name: grouping.group.name, hasFeatureApplicabilities: false, productApplicabilities: [] }),
           switchMap((view)=>of(view.name))
         ), from(grouping.views).pipe(
+          filter(val=>val.hasFeatureApplicabilities===true),
           switchMap((view)=>of(view.name))
         )))
       )),
