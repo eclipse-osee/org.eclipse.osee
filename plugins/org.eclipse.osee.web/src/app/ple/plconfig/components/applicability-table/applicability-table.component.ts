@@ -17,7 +17,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { combineLatest, from, iif, of, OperatorFunction, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, iif, of, OperatorFunction, throwError } from 'rxjs';
 import { distinct, filter, map, mergeMap, reduce, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -33,19 +33,34 @@ import { configGroup, configGroupWithChanges } from '../../types/pl-config-confi
 })
 export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnChanges {
   branchApplicability = this.currentBranchService.branchApplicability.pipe(share(), shareReplay({refCount:true,bufferSize:1}));
-  dataSource = this.branchApplicability.pipe(
+  private _filter = new BehaviorSubject<string>("");
+  dataSource = combineLatest([this.branchApplicability, this._filter]).pipe(
     tap((value) => {
-      this.uiStateService.editableValue = value.editable;
-      this.uiStateService.groupsString = value.groups.map(a => a.id);
+      this.uiStateService.editableValue = value[0].editable;
+      this.uiStateService.groupsString = value[0].groups.map(a => a.id);
     }),
-    switchMap((applicability) => of(new MatTableDataSource(applicability.features)).pipe(
-      map(ds => {
-        if (this.paginator) {
-          ds.paginator = this.paginator;
-        }
-        return ds;
-      })
-    ))
+    switchMap(([branchApplicability, filter]) =>
+      iif(() => filter.length ===0,
+        of(new MatTableDataSource(branchApplicability.features)).pipe(
+          map(ds => {
+            if (this.paginator) {
+              ds.paginator = this.paginator;
+            }
+            return ds;
+          })
+        ),
+        of(new MatTableDataSource(branchApplicability.features)).pipe(
+          map((data) => {
+            if (this.paginator) {
+              data.paginator = this.paginator;
+            }
+            data.filter = filter;
+            if (data.paginator) {
+              data.paginator.firstPage();
+            }
+            return data;
+          })
+        )))
   )
 
   topLevelHeaders = this.currentBranchService.topLevelHeaders;
@@ -87,15 +102,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
   }
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.pipe(
-      take(1),
-      map((val) => {
-        val.filter = filterValue.trim().toLowerCase(); if (val.paginator) {
-          val.paginator.firstPage();
-        }
-      })
-    ).subscribe();
+    this._filter.next((event.target as HTMLInputElement).value.trim().toLowerCase());
   }
   log(value: any) {
     console.log(value);
