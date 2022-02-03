@@ -29,15 +29,15 @@ import { enumerationSetMock } from '../mocks/returnObjects/enumerationset.mock';
 import { logicalTypeMock } from '../mocks/returnObjects/logicalType.mock';
 import { logicalTypeFormDetailMock } from '../mocks/returnObjects/logicalTypeFormDetail.mock';
 import { enumerationSetServiceMock } from '../../shared/mocks/enumeration.set.service.mock';
-import { typesServiceMock } from '../mocks/services/types.service.mock';
+import { typesServiceMock } from '../../shared/mocks/types.service.mock';
 import { TypesApiResponse } from '../types/ApiResponse';
-import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
-import { PlatformType } from '../types/platformType.d';
+import { logicalType, logicalTypeFormDetail } from '../../shared/types/logicaltype';
+import { PlatformType } from '../../shared/types/platformType';
 
 import { CurrentTypesService } from './current-types.service';
 import { EnumerationSetService } from '../../shared/services/http/enumeration-set.service';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import { TypesService } from './types.service';
+import { TypesService } from '../../shared/services/http/types.service';
 
 class PlatformTypeInstance implements PlatformType{
   id?: string | undefined ='';

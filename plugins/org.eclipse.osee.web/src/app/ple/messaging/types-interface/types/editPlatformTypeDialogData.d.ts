@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { editPlatformTypeDialogDataMode } from "./EditPlatformTypeDialogDataMode.enum";
-import { PlatformType } from "./platformType";
+import { PlatformType } from "../../shared/types/platformType";
 
 /**
  * Container containing info on whether or not the Edit Dialog should open in create/edit mode and what data to pre populate the fields with.

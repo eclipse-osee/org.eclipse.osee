@@ -14,8 +14,8 @@ import { Injectable } from '@angular/core';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, mergeMap, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import { TypesService } from './types.service';
-import { PlatformType } from '../types/platformType'
+import { TypesService } from '../../shared/services/http/types.service';
+import { PlatformType } from '../../shared/types/platformType'
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { transaction } from 'src/app/transactions/transaction';
@@ -49,7 +49,7 @@ export class CurrentTypesService {
     )),
   )
 
-  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private userService: UserDataAccountService, private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService) { }
+  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService) { }
 
   /**
    * Returns a list of platform types based on current branch and filter conditions(debounced).
@@ -69,6 +69,12 @@ export class CurrentTypesService {
     return this.enumSetService.enumSets;
   }
 
+  getType(id: string) {
+    this.uiService.BranchId.pipe(
+      take(1),
+      switchMap((branch)=>this.typesService.getType(branch,id))
+    )
+  }
   /**
    * Updates the attributes of a platform type using the platform types PATCH API and current branch, id is required
    * @param body @type {Partial<PlatformType>} attributes to update + id of platform type

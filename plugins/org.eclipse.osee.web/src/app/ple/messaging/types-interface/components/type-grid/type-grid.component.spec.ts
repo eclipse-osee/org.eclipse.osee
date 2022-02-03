@@ -26,7 +26,7 @@ import { PlatformTypeCardComponent } from '../platform-type-card/platform-type-c
 
 import { TypeGridComponent } from './type-grid.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { PlatformType } from '../../types/platformType';
+import { PlatformType } from '../../../shared/types/platformType';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';

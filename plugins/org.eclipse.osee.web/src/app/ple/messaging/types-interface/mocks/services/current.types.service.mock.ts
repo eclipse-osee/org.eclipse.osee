@@ -14,8 +14,8 @@ import { of } from "rxjs";
 import { response } from "../../../connection-view/mocks/Response.mock";
 import { CurrentTypesService } from "../../services/current-types.service";
 import { enumerationSet } from "../../../shared/types/enum";
-import { logicalTypeFormDetail } from "../../types/logicaltype";
-import { PlatformType } from "../../types/platformType";
+import { logicalTypeFormDetail } from "../../../shared/types/logicaltype";
+import { PlatformType } from "../../../shared/types/platformType";
 import { enumerationSetMock } from "../returnObjects/enumerationset.mock";
 
 export const currentTypesServiceMock: Partial<CurrentTypesService> = {
