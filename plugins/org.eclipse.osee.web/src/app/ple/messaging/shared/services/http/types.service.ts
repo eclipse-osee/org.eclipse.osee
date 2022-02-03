@@ -13,14 +13,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
-import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
-import { apiURL } from 'src/environments/environment';
-import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
-import { TypesApiResponse } from '../types/ApiResponse';
-import { logicalType, logicalTypeFormDetail } from '../types/logicaltype';
-import { PlatformType } from '../types/platformType';
-import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { relation, transaction } from '../../../../../transactions/transaction';
+import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
+import { apiURL } from '../../../../../../environments/environment';
+import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
+import { logicalType, logicalTypeFormDetail } from '../../types/logicaltype';
+import { PlatformType } from '../../types/platformType';
+import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +36,13 @@ export class TypesService {
    */
   getFilteredTypes(filter: string, branchId: string): Observable<PlatformType[]> {
     return this.http.get<PlatformType[]>(apiURL + "/mim/branch/" + branchId + "/types/filter/" + filter);
+  }
+  getTypes(branchId: string): Observable<PlatformType[]> {
+    return this.http.get<PlatformType[]>(apiURL + "/mim/branch/" + branchId + "/types");
+   }
+
+  getType(branchId: string, platformTypeId: string) {
+    return this.http.get<PlatformType>(apiURL + "/mim/branch/" + branchId + "/types/"+platformTypeId)
   }
 
   createPlatformType(branchId:string,type:PlatformType|Partial<PlatformType>,relations:relation[]) {

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { logicalTypeFormDetail } from "../../types/logicaltype";
+import { logicalTypeFormDetail } from "../../../shared/types/logicaltype";
 
 export const logicalTypeFormDetailMock: logicalTypeFormDetail = {
     fields: [],

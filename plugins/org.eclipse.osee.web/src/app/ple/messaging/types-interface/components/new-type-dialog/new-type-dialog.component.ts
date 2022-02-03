@@ -27,9 +27,9 @@ import {
 import { applic } from '../../../../../types/applicability/applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { enumeration, enumerationSet } from '../../../shared/types/enum';
-import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../types/logicaltype';
+import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../shared/types/logicaltype';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
-import { PlatformType } from '../../types/platformType';
+import { PlatformType } from '../../../shared/types/platformType';
 
 @Component({
   selector: 'app-new-type-dialog',

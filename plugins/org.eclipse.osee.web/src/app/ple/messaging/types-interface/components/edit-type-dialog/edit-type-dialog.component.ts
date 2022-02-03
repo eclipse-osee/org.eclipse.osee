@@ -16,7 +16,7 @@ import { from } from 'rxjs';
 import { map, reduce, switchMap, tap } from 'rxjs/operators';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { logicalType } from '../../types/logicaltype';
+import { logicalType } from '../../../shared/types/logicaltype';
 
 @Component({
   selector: 'app-edit-type-dialog',

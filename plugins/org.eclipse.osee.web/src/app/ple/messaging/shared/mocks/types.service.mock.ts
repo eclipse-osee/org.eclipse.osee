@@ -13,12 +13,12 @@
 import { of } from "rxjs";
 import { transaction } from "src/app/transactions/transaction";
 import { transactionMock } from "src/app/transactions/transaction.mock";
-import { response } from "../../../connection-view/mocks/Response.mock";
-import { platformTypes1 } from "../../../type-element-search/testing/MockResponses/PlatformType";
-import { TypesService } from "../../services/types.service";
-import { PlatformType } from "../../types/platformType";
-import { logicalTypeMock } from "../returnObjects/logicalType.mock";
-import { logicalTypeFormDetailMock } from "../returnObjects/logicalTypeFormDetail.mock";
+import { response } from "../../connection-view/mocks/Response.mock";
+import { platformTypes1 } from "../../type-element-search/testing/MockResponses/PlatformType";
+import { TypesService } from "../services/http/types.service";
+import { PlatformType } from "../types/platformType";
+import { logicalTypeMock } from "../../types-interface/mocks/returnObjects/logicalType.mock";
+import { logicalTypeFormDetailMock } from "../../types-interface/mocks/returnObjects/logicalTypeFormDetail.mock";
 
 export const typesServiceMock: Partial<TypesService> = {
     performMutation(body: transaction, branchId: string) {
@@ -26,6 +26,9 @@ export const typesServiceMock: Partial<TypesService> = {
     },
     getFilteredTypes(filter: string, branchId: string) {
         return of(platformTypes1);
+    },
+    getType(branchId: string, platformTypeId: string) {
+        return of(platformTypes1[0])
     },
     changePlatformType(branchId: string, type: Partial<PlatformType>) {
         return of(transactionMock);

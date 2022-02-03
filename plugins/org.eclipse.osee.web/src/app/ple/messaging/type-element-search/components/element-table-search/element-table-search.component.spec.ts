@@ -34,7 +34,8 @@ describe('ElementTableSearchComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatInputModule,MatFormFieldModule,FormsModule,NoopAnimationsModule],
-      declarations: [ ElementTableSearchComponent ]
+      declarations: [ElementTableSearchComponent],
+      teardown:{destroyAfterEach:false}
     })
     .compileComponents();
   });
@@ -54,9 +55,9 @@ describe('ElementTableSearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update search terms to Hello World', () => {
-    scheduler.run(async () => {
-      (await (await loader.getHarness(MatFormFieldHarness)).getControl(MatInputHarness))?.setValue('Hello World')
+  it('should update search terms to Hello World', async () => {
+    await (await loader.getHarness(MatInputHarness)).setValue('Hello World');
+    scheduler.run(() => {
       let values={a:'hello world'}
       let marble = 'a';
       scheduler.expectObservable(service.searchTerm).toBe(marble, values);

@@ -19,7 +19,7 @@ import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { enumerationSet } from '../../../shared/types/enum';
-import { PlatformType } from '../../types/platformType';
+import { PlatformType } from '../../../shared/types/platformType';
 import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.component';
 import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';

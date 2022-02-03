@@ -13,11 +13,11 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
-import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
-import { transactionMock } from 'src/app/transactions/transaction.mock';
-import { apiURL } from 'src/environments/environment';
-import { platformTypesMock } from '../../message-element-interface/mocks/ReturnObjects/PlatformTypes.mock';
+import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
+import { transactionBuilderMock } from '../../../../..//transactions/transaction-builder.service.mock';
+import { transactionMock } from '../../../../../transactions/transaction.mock';
+import { apiURL } from '../../../../../../environments/environment';
+import { platformTypesMock } from '../../../message-element-interface/mocks/ReturnObjects/PlatformTypes.mock';
 
 import { TypesService } from './types.service';
 

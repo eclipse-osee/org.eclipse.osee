@@ -21,7 +21,7 @@ import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
 import { enumeration } from '../../../shared/types/enum';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
-import { PlatformType } from '../../types/platformType';
+import { PlatformType } from '../../../shared/types/platformType';
 import { NewTypeDialogComponent } from '../new-type-dialog/new-type-dialog.component';
 
 @Component({
