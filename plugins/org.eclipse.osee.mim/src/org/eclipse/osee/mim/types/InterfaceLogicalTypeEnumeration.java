@@ -29,8 +29,8 @@ public class InterfaceLogicalTypeEnumeration extends InterfaceLogicalTypeGeneric
       fields.add(
          new InterfaceLogicalTypeField("2s Complement", "InterfacePlatformType2sComplement", true, false, "true"));
       fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true));
-      fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true));
-      fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true));
+      fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", false, true));
+      fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", false, true));
       fields.add(new InterfaceLogicalTypeField("Enum Literal", "InterfacePlatformTypeEnumLiteral", false, true));
       fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true));
       this.setFields(fields);
