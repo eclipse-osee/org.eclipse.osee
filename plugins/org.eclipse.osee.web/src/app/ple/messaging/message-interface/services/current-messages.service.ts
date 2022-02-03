@@ -29,13 +29,14 @@ import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enu
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
 import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
+import { ConnectionNode } from '../types/connection-nodes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrentMessagesService {
 
-  private _messagesList = combineLatest(this.ui.filter,this.BranchId,this.connectionId).pipe(
+  private _messagesList = combineLatest([this.ui.filter,this.BranchId,this.connectionId]).pipe(
     share(),
     debounceTime(500),
     distinctUntilChanged(),
@@ -87,11 +88,17 @@ export class CurrentMessagesService {
       of(messageList)
     )),
   )
-  private _allMessages = combineLatest(this.BranchId,this.connectionId).pipe(
+  private _allMessages = combineLatest([this.BranchId,this.connectionId]).pipe(
     share(),
     switchMap(x => this.messageService.getFilteredMessages("", x[0],x[1]).pipe(
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
+    ))
+  )
+
+  private _connectionNodes = combineLatest([this.BranchId, this.connectionId]).pipe(
+    switchMap(([branchId, connectionId]) => this.messageService.getConnectionNodes(branchId, connectionId).pipe(
+      shareReplay({ bufferSize: 1, refCount: true })
     ))
   )
 
@@ -130,6 +137,11 @@ export class CurrentMessagesService {
   get connectionId() {
     return this.ui.connectionId;
   }
+
+  get connectionNodes() {
+    return this._connectionNodes;
+  }
+
   get applic() {
     return this.applicabilityService.applic;
   }
@@ -221,7 +233,7 @@ export class CurrentMessagesService {
   partialUpdateMessage(body: Partial<message>) {
     return this.messageService.changeMessage(this.BranchId.getValue(), body).pipe(
       take(1),
-      switchMap((transaction) => this.messageService.performMutation(this.BranchId.getValue(), this.connectionId.getValue(), transaction).pipe(
+      switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
         tap(() => {
           this.ui.updateMessages = true;
         })
@@ -260,17 +272,20 @@ export class CurrentMessagesService {
     )
   }
 
-  createMessage(body: message) {
+  createMessage(initiatingNode: ConnectionNode, body: message) {
     return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
       switchMap(([branch, connectionId]) => this.messageService.createConnectionRelation(connectionId).pipe(
         take(1),
-        switchMap((relation) => this.messageService.createMessage(branch, body, [relation]).pipe(
+        switchMap((connectionRelation) => this.messageService.createNodeRelation(body.id, initiatingNode.id).pipe(
           take(1),
-          switchMap((transaction) => this.messageService.performMutation(branch, connectionId, transaction).pipe(
-            tap(() => {
-              this.ui.updateMessages = true;
-            })
+          switchMap((nodeRelation) => this.messageService.createMessage(branch, body, [connectionRelation, nodeRelation]).pipe(
+            take(1),
+            switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
+              tap(() => {
+                this.ui.updateMessages = true;
+              })
+            ))
           ))
         ))
       ))
@@ -279,8 +294,9 @@ export class CurrentMessagesService {
 
   deleteMessage(messageId: string) {
     return this.BranchId.pipe(
+      take(1),
       switchMap((branchId) => this.messageService.deleteMessage(branchId, messageId).pipe(
-        switchMap((transaction) => this.messageService.performMutation(branchId, '', transaction).pipe(
+        switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -291,9 +307,10 @@ export class CurrentMessagesService {
 
   removeMessage(messageId: string) {
     return combineLatest([this.connectionId, this.BranchId]).pipe(
+      take(1),
       switchMap(([connectionId, branchId]) => this.messageService.createConnectionRelation(connectionId, messageId).pipe(
         switchMap((relation) => this.messageService.deleteRelation(branchId, relation).pipe(
-          switchMap((transaction) => this.messageService.performMutation(branchId, connectionId, transaction).pipe(
+          switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
             tap(() => {
               this.ui.updateMessages = true;
             })
@@ -305,6 +322,7 @@ export class CurrentMessagesService {
 
   removeSubMessage(submessageId: string, messageId:string) {
     return this.BranchId.pipe(
+      take(1),
       switchMap((branchId) => this.subMessageService.createMessageRelation(messageId, submessageId).pipe(
         switchMap((relation) => this.subMessageService.deleteRelation(branchId, relation).pipe(
           switchMap((transaction) => this.subMessageService.performMutation(branchId, '', '', transaction).pipe(
@@ -318,6 +336,7 @@ export class CurrentMessagesService {
   }
   deleteSubMessage(submessageId: string) {
     return this.BranchId.pipe(
+      take(1),
       switchMap((branchId) => this.subMessageService.deleteSubMessage(branchId, submessageId).pipe(
         switchMap((transaction) => this.subMessageService.performMutation(branchId, '', '', transaction).pipe(
           tap(() => {
@@ -331,7 +350,7 @@ export class CurrentMessagesService {
   updatePreferences(preferences: settingsDialogData) {
     return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
       take(1),
-      switchMap((transaction) => this.messageService.performMutation(this.BranchId.getValue(), '', transaction).pipe(
+      switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
         take(1),
         tap(() => {
           this.ui.updateMessages = true
@@ -426,6 +445,7 @@ export class CurrentMessagesService {
         const messageChanges = (messageList[messageIndex] as messageWithChanges).changes;
         if (messageChanges.applicability!==undefined && messageChanges.name!==undefined && messageChanges.description!==undefined && messageChanges.interfaceMessageNumber !==undefined && messageChanges.interfaceMessagePeriodicity !== undefined && messageChanges.interfaceMessageRate !== undefined && messageChanges.interfaceMessageType!==undefined && messageChanges.interfaceMessageWriteAccess !== undefined && (messageList[messageIndex] as messageWithChanges).deleted !== true) {
           (messageList[messageIndex] as messageWithChanges).added = true;
+          (messageList[messageIndex] as messageWithChanges).changes.initiatingNode = {previousValue: "", currentValue: messageList[messageIndex].initiatingNode, transactionToken: (messageList[messageIndex] as messageWithChanges).changes.description!.transactionToken}
         } else {
           (messageList[messageIndex] as messageWithChanges).added = false;
         }
@@ -517,12 +537,20 @@ export class CurrentMessagesService {
       id: '',
       name: '',
       description: '',
+      applicability: {
+        id: '1',
+        name: 'Base',
+      },
       subMessages: [],
       interfaceMessageRate: '',
       interfaceMessagePeriodicity: '',
       interfaceMessageWriteAccess: false,
       interfaceMessageType: '',
-      interfaceMessageNumber: ''
+      interfaceMessageNumber: '',
+      initiatingNode: {
+        id: '',
+        name: ''
+      }
     }
     changes.forEach((value) => {
       tempMessage = this.parseMessageDeletionChange(value, tempMessage);
@@ -562,7 +590,6 @@ export class CurrentMessagesService {
         transactionToken:change.currentVersion.transactionToken
       }
     } else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
-      //do nothing currently
       message.id = change.artIdB
       message.applicability = change.currentVersion.applicabilityToken as applic;
     }
@@ -614,6 +641,10 @@ export class CurrentMessagesService {
             added: false,
             deleted: true,
             changes: {},
+            applicability: {
+              id: '1',
+              name: 'Base',
+            },
             id:change.artIdB,
             name: '',
             description: '',

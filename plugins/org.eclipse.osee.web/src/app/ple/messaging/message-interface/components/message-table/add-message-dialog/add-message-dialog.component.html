@@ -70,6 +70,14 @@
         <input matInput type="text" [(ngModel)]="data.interfaceMessageNumber" #input required>
     </mat-form-field>
     <br>
+    <mat-form-field>
+        <label>Initiating Node</label>
+        <mat-select [(ngModel)]="data.initiatingNode" required>
+            <mat-option *ngFor="let option of (nodes|async)" [value]="option">
+                {{option.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button (click)="onNoClick()">
@@ -81,7 +89,8 @@
     data.interfaceMessagePeriodicity.length===0||
     data.interfaceMessageType.length===0||
     data.interfaceMessageWriteAccess.length===0||
-    data.interfaceMessageRate.length===0">
+    data.interfaceMessageRate.length===0 ||
+    data.initiatingNode.name.length===0">
         Ok
     </button>
 </mat-dialog-actions>

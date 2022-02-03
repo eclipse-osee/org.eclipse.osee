@@ -28,6 +28,10 @@ export const messagesMock: (message|messageWithChanges)[] = [
             id: '1',
             name: 'Base'
         },
+        initiatingNode: {
+            id: '1',
+            name: 'Node 1'
+        },
         changes: {
             name: {
               previousValue: '',
@@ -52,7 +56,11 @@ export const messagesMock: (message|messageWithChanges)[] = [
         applicability: {
             id: '1',
             name: 'Base'
-        }
+        },
+        initiatingNode: {
+            id: '1',
+            name: 'Node 1'
+        },
     },
     {
         id: "201304",
@@ -67,7 +75,11 @@ export const messagesMock: (message|messageWithChanges)[] = [
         applicability: {
             id: '1',
             name: 'Base'
-        }
+        },
+        initiatingNode: {
+            id: '1',
+            name: 'Node 1'
+        },
     },
     {
         id: '201300',
@@ -93,7 +105,11 @@ export const messagesMock: (message|messageWithChanges)[] = [
         applicability: {
             id: '1',
             name: 'Base'
-        }
+        },
+        initiatingNode: {
+            id: '1',
+            name: 'Node 1'
+        },
     },
     {
         id: '201289',
@@ -108,6 +124,10 @@ export const messagesMock: (message|messageWithChanges)[] = [
         applicability: {
             id: '1',
             name: 'Base'
-        }
+        },
+        initiatingNode: {
+            id: '1',
+            name: 'Node 1'
+        },
     }
 ]

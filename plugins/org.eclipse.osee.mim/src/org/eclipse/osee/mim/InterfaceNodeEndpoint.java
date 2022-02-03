@@ -47,4 +47,15 @@ public interface InterfaceNodeEndpoint {
     */
    InterfaceNode getNode(@PathParam("id") ArtifactId nodeId);
 
+   @GET()
+   @Path("connection/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * Gets all nodes related to the specified connection
+    *
+    * @param connectionId
+    * @return nodes related to connection
+    */
+   Collection<InterfaceNode> getNodes(@PathParam("id") ArtifactId connectionId);
+
 }

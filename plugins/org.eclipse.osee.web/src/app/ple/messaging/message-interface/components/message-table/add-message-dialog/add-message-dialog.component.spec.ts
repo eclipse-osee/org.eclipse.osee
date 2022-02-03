@@ -22,6 +22,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
+import { CurrentMessagesService } from '../../../services/current-messages.service';
+import { CurrentMessageServiceMock } from '../../../mocks/services/CurrentMessageService.mock';
 import { AddMessageDialog } from '../../../types/AddMessageDialog';
 
 import { AddMessageDialogComponent } from './add-message-dialog.component';
@@ -38,7 +40,11 @@ describe('AddMessageDialogComponent', () => {
     interfaceMessagePeriodicity: '',
     interfaceMessageRate: '',
     interfaceMessageType: '',
-    interfaceMessageWriteAccess:''
+    interfaceMessageWriteAccess: '',
+    initiatingNode: {
+      id:'',
+      name: ''
+    }
   }
   let enumServiceMock: Partial<EnumsService> = {
     types: of(['type1', 'type2', 'type3']),
@@ -53,7 +59,8 @@ describe('AddMessageDialogComponent', () => {
       providers: [{
         provide: MatDialogRef, useValue: dialogRef
       }, { provide: MAT_DIALOG_DATA, useValue: dialogData },
-      {provide: EnumsService, useValue:enumServiceMock}]
+      {provide: EnumsService, useValue:enumServiceMock},
+    {provide: CurrentMessagesService, useValue: CurrentMessageServiceMock}]
     })
     .compileComponents();
   });

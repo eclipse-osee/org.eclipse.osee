@@ -41,6 +41,7 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    private String Description;
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
    private ApplicabilityToken applicability;
+   private InterfaceNode initiatingNode;
 
    public InterfaceMessageToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -176,4 +177,19 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
    }
+
+   /**
+    * @return the initiating node name and id for this message
+    */
+   public InterfaceNode getInitiatingNode() {
+      return initiatingNode;
+   }
+
+   /**
+    * @param Node that sends this message
+    */
+   public void setInitiatingNode(InterfaceNode initiatingNode) {
+      this.initiatingNode = initiatingNode;
+   }
+
 }

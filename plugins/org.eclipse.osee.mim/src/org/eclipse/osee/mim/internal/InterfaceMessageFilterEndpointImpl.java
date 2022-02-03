@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +25,10 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
+import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
@@ -38,13 +41,15 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
    private final ArtifactId ConnectionId;
    private final InterfaceMessageApi messageApi;
    private final InterfaceSubMessageApi subMessageApi;
+   private final InterfaceNodeViewApi interfaceNodeApi;
 
-   public InterfaceMessageFilterEndpointImpl(BranchId branch, ArtifactId connectionId, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi) {
+   public InterfaceMessageFilterEndpointImpl(BranchId branch, ArtifactId connectionId, UserId account, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceNodeViewApi interfaceNodeApi) {
       this.account = account;
       this.branch = branch;
       this.messageApi = interfaceMessageApi;
       this.subMessageApi = interfaceSubMessageApi;
       this.ConnectionId = connectionId;
+      this.interfaceNodeApi = interfaceNodeApi;
    }
 
    @Override
@@ -61,6 +66,10 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
                submessages.add(submessage);
             }
             message.setSubMessages(submessages);
+
+            message.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
+               CoreRelationTypes.InterfaceMessageSendingNode_Message, ArtifactId.valueOf(message.getId()),
+               InterfaceNode.class));
          }
          return messageList;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -90,19 +99,52 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
       return subMessageAttributes;
    }
 
+   private List<AttributeTypeId> createNodeAttributes() {
+      return Arrays.asList(CoreAttributeTypes.Name);
+   }
+
    @Override
    public Collection<InterfaceMessageToken> getMessages(String filter) {
-      List<AttributeTypeId> messageAttributes = this.createMessageAttributes();
-      List<AttributeTypeId> subMessageAttributes = this.createSubmessageAttributes();
+      List<AttributeTypeId> messageAttributes = createMessageAttributes();
+      List<AttributeTypeId> subMessageAttributes = createSubmessageAttributes();
+      List<AttributeTypeId> nodeAttributes = createNodeAttributes();
       try {
          List<InterfaceMessageToken> messageList =
             (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelationAndFilter(branch,
                CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, filter, messageAttributes,
                InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
-            message.setSubMessages((List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelation(
-               branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
+            message.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
                InterfaceSubMessageToken.class));
+
+            message.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
+               CoreRelationTypes.InterfaceMessageSendingNode_Message, ArtifactId.valueOf(message.getId()),
+               InterfaceNode.class));
+         }
+
+         List<InterfaceNode> nodes = new LinkedList<>();
+         nodes.addAll(interfaceNodeApi.getAccessor().getAllByRelationAndFilter(branch,
+            CoreRelationTypes.InterfaceConnectionPrimary_Connection, ConnectionId, filter, nodeAttributes,
+            InterfaceNode.class));
+         nodes.addAll(interfaceNodeApi.getAccessor().getAllByRelationAndFilter(branch,
+            CoreRelationTypes.InterfaceConnectionSecondary_Connection, ConnectionId, filter, nodeAttributes,
+            InterfaceNode.class));
+         for (InterfaceNode node : nodes) {
+            List<InterfaceMessageToken> alternateMessageList =
+               (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelation(branch,
+                  CoreRelationTypes.InterfaceMessageSendingNode_Node, ArtifactId.valueOf(node.getId()),
+                  InterfaceMessageToken.class);
+            for (InterfaceMessageToken alternateMessage : alternateMessageList) {
+               if (!messageList.contains(alternateMessage)) {
+                  alternateMessage.setSubMessages(
+                     (List<InterfaceSubMessageToken>) subMessageApi.getAccessor().getAllByRelation(branch,
+                        CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+                        ArtifactId.valueOf(alternateMessage.getId()), InterfaceSubMessageToken.class));
+                  alternateMessage.setInitiatingNode(node);
+                  messageList.add(alternateMessage);
+               }
+            }
          }
 
          List<InterfaceSubMessageToken> subMessages =
@@ -114,16 +156,20 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
                   CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
                   ArtifactId.valueOf(subMessage.getId()), InterfaceMessageToken.class);
             for (InterfaceMessageToken alternateMessage : alternateMessageList) {
-               alternateMessage.setSubMessages(
-                  (List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByRelationAndFilter(branch,
-                     CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-                     ArtifactId.valueOf(alternateMessage.getId()), filter, subMessageAttributes,
-                     InterfaceSubMessageToken.class));
                if (!messageList.contains(alternateMessage)) {
+                  alternateMessage.setSubMessages(
+                     (List<InterfaceSubMessageToken>) subMessageApi.getAccessor().getAllByRelationAndFilter(branch,
+                        CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+                        ArtifactId.valueOf(alternateMessage.getId()), filter, subMessageAttributes,
+                        InterfaceSubMessageToken.class));
+                  alternateMessage.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
+                     CoreRelationTypes.InterfaceMessageSendingNode_Message,
+                     ArtifactId.valueOf(alternateMessage.getId()), InterfaceNode.class));
                   messageList.add(alternateMessage);
                }
             }
          }
+
          return messageList;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

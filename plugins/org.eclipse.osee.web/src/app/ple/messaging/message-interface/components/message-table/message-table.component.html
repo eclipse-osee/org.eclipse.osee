@@ -40,7 +40,7 @@
                     <ng-container *ngIf="header==='name'">
                         <button mat-icon-button [@expandButton]="!rowIsExpanded(element.id) ?  'closed' : 'open'" (click)="rowChange(element,!rowIsExpanded(element.id))" [ngClass]="element.hasSubMessageChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
                     </ng-container>
-                    <ng-container *ngIf="(inEditMode | async)===true && !element.deleted;else no_edit">
+                    <ng-container *ngIf="(inEditMode | async)===true && !element.deleted && !nonEditableHeaders.includes(header);else no_edit">
                         <osee-messaging-edit-message-field [messageId]="element.id" [header]="header" [value]="element[header]"></osee-messaging-edit-message-field>
                     </ng-container>
                     <ng-template #no_edit>
@@ -51,8 +51,13 @@
                                 </div>
                             </ng-container>
                         </ng-container>
-                        <ng-container *ngIf="header!=='applicability'">
+                        <ng-container *ngIf="header!=='applicability' && header!=='initiatingNode'">
                             <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-interface-table-highlighted-text">
+                                {{element[header]}}
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="header==='initiatingNode'">
+                            <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header].name" classToApply="ple-message-interface-table-highlighted-text">
                                 {{element[header]}}
                             </div>
                         </ng-container>
