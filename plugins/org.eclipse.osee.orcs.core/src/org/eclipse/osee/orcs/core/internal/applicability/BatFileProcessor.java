@@ -156,15 +156,28 @@ public class BatFileProcessor {
        * potential leftover empty comments.
        */
       if (!replacementText.isEmpty()) {
+         if (!fileTypeApplicabilityData.getCommentPrefixRegex().isEmpty()
+            && !fileTypeApplicabilityData.getCommentSuffixRegex().isEmpty()) {
+            replacementText = replacementText.replaceAll(System.getProperty("line.separator")
+               + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex()
+               + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentSuffixRegex()
+               + BlockApplicabilityOps.INLINE_WHITESPACE + System.getProperty("line.separator"), "");
+         }
          if (!fileTypeApplicabilityData.getCommentPrefixRegex().isEmpty()) {
             replacementText = replacementText.replaceAll(
-               BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
-               "");
+               BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex()
+                  + BlockApplicabilityOps.INLINE_WHITESPACE + System.getProperty("line.separator"),
+               System.getProperty("line.separator"));
+            replacementText = replacementText.replaceAll(BlockApplicabilityOps.INLINE_WHITESPACE
+               + fileTypeApplicabilityData.getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE + '$', "");
          }
          if (!fileTypeApplicabilityData.getCommentSuffixRegex().isEmpty()) {
             replacementText = replacementText.replaceAll(
-               BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
-               "");
+               System.getProperty("line.separator") + BlockApplicabilityOps.INLINE_WHITESPACE
+                  + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
+               System.getProperty("line.separator"));
+            replacementText = replacementText.replaceAll('^' + BlockApplicabilityOps.INLINE_WHITESPACE
+               + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE, "");
          }
       }
 
