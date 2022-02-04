@@ -81,7 +81,7 @@ public class JoinCleanerCallable implements Runnable {
             previousTableName = tableName;
          }
 
-         Integer queryId = stmt.getInt("query_id");
+         Long queryId = stmt.getLong("query_id");
          joinDelete.addToBatch(queryId);
          cleanupDelete.addToBatch(queryId);
       }
