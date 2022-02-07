@@ -38,7 +38,14 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
       this.uiStateService.editableValue = value.editable;
       this.uiStateService.groupsString = value.groups.map(a => a.id);
     }),
-    switchMap((applicability)=>of(new MatTableDataSource(applicability.features)))
+    switchMap((applicability) => of(new MatTableDataSource(applicability.features)).pipe(
+      map(ds => {
+        if (this.paginator) {
+          ds.paginator = this.paginator;
+        }
+        return ds;
+      })
+    ))
   )
 
   topLevelHeaders = this.currentBranchService.topLevelHeaders;
@@ -75,15 +82,10 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
   ngAfterViewInit() {
     this.dataSource.pipe(
       take(1),
-      map((val) => val.sort = this.sort)
+      map((val) => { val.sort = this.sort; val.paginator = this.paginator; })
     ).subscribe();
   }
-  @ViewChild(MatPaginator, {static: false})
-  set paginator(value: MatPaginator) {
-    this.dataSource.pipe(
-      map((val) => { if (val) { val.paginator = value } })
-    ).subscribe();
-  }
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.pipe(
@@ -123,7 +125,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
         filter((feature) => feature !== undefined) as OperatorFunction<view | undefined, view>,
         map((view) => view.id)
       )),
-    ), this.groupList]).pipe(
+      ), this.groupList]).pipe(
       take(1),
       switchMap(([latestFeatures, latestViews, groupList]) => of(latestFeatures, latestViews, groupList).pipe(
         switchMap((latest) => iif(() => feature.multiValued, of(event.value as string[]), of([(event.value as string)])).pipe(

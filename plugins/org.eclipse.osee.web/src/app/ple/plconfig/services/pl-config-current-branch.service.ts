@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { from, iif, zip,Observable, of, combineLatest, OperatorFunction, interval } from 'rxjs';
-import { switchMap, repeatWhen, share, mergeMap,filter, tap, finalize, take, shareReplay, distinct, distinctUntilChanged, groupBy, map, reduce, scan, startWith, distinctUntilKeyChanged, delay, concatMap } from 'rxjs/operators';
+import { from, iif, zip,Observable, of, combineLatest, OperatorFunction, interval, partition } from 'rxjs';
+import { switchMap, repeatWhen, share, mergeMap,filter, tap, finalize, take, shareReplay, distinct, distinctUntilChanged, groupBy, map, reduce, scan, startWith, distinctUntilKeyChanged, delay, concatMap, defaultIfEmpty } from 'rxjs/operators';
 import { changeInstance, changeTypeNumber, difference, ignoreType, ModificationType } from 'src/app/types/change-report/change-report.d';
 import { ARTIFACTTYPEID } from 'src/app/types/constants/ArtifactTypeId.enum';
 import { action, actionImpl, teamWorkflowImpl } from '../types/pl-config-actions';
@@ -115,10 +115,10 @@ export class PlConfigCurrentBranchService {
   private _topLevelHeaders = this._grouping.pipe(
     switchMap((response) => of(response).pipe(
       mergeMap((grouping) => from(grouping).pipe(
-        filter((val)=>val.group.name!=='No Group')
+        switchMap(val => iif(() => val.group.name !== 'No Group', of(val), of({ group: { id: '-1', name: '', configurations: [] } ,views:[]})))
       ))
     )),
-    scan((acc, curr) => [...acc, curr], [] as { group: configGroup, views: view[] }[]),
+    scan((acc, curr) => { if (curr.group.id === '-1') { return acc; }return [...acc, curr] }, [] as { group: configGroup, views: view[] }[]),
     map((grouping) => grouping.length),
     switchMap((length) => iif(
       () => length > 0, of([' ', 'Configurations', 'Groups']),
@@ -143,7 +143,7 @@ export class PlConfigCurrentBranchService {
       mergeMap((grouping) => from(grouping).pipe(
       )),
       distinct(),
-      scan((acc, cur) => { acc.push(cur !== undefined && cur.group !== undefined && cur.group.id !== '-1' ? cur.views.length + 1 : cur.views.length); return acc }, [1] as number[]),
+      scan((acc, cur) => { acc.push(cur !== undefined && cur.group !== undefined && cur.group.id !== '-1' ? cur.views.filter(v=>v.hasFeatureApplicabilities).length + 1 : cur.views.filter(v=>v.hasFeatureApplicabilities).length); return acc }, [1] as number[]),
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -168,7 +168,7 @@ export class PlConfigCurrentBranchService {
     switchMap((response) => of(response).pipe(
       mergeMap((responseGrouping) => from(responseGrouping).pipe(
         filter((grouping) => grouping.group.name === 'No Group'),
-        map((group)=>group.views.length)
+        map((group) => group.views.filter(v=>v.hasFeatureApplicabilities).length),
       ))
     )),
     shareReplay({bufferSize:1,refCount:true})
@@ -178,20 +178,23 @@ export class PlConfigCurrentBranchService {
       mergeMap((grouping) => from(grouping).pipe(
         map((group)=>group.views.length+1)  
       )),
-      scan((acc,curr)=>acc+curr,0),
+      scan((acc, curr) => acc + curr, 0),
     )),
-    shareReplay({bufferSize:1,refCount:true})
+    shareReplay({ bufferSize: 1, refCount: true })
   )
   private _groupList = this._grouping.pipe(
     switchMap((response) => of(response).pipe(
       mergeMap((responseGrouping) => from(responseGrouping).pipe(
-        filter((grouping) => grouping.group.name !== 'No Group'),
-        map((group)=>group.group)
+        switchMap((grouping) => iif(()=>grouping.group.name!=='No Group',of(grouping.group),of({id:'-1',name:'',configurations:[]})).pipe(
+          
+        ))
       )),
     )),
+    
     distinctUntilChanged(),
     scan((acc, curr) => [...acc, curr], [] as configGroup[]),
-    shareReplay({bufferSize:1,refCount:true})
+    map((scanned) => { return scanned.filter(val => val.id !== '-1') }),
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   private _branchApplicEditable = this._branchApplicabilityNoChanges.pipe(
@@ -339,7 +342,7 @@ export class PlConfigCurrentBranchService {
           )
         ),
       ),
-      take(groups.length),
+      take(groups.length>0?groups.length:1),
       reduce((acc, curr) => { if (curr.results.length > 0) { acc.push(curr.results[0]) } return acc; }, [] as string[]),
       switchMap((val) => iif(() => val.length > 0,
         of(val).pipe(
