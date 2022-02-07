@@ -12,24 +12,12 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AboutComponent } from './about.component';
 
-const routes: Routes = [
-  { path: 'ple', loadChildren: () => import('./ple/ple.module').then(m => m.PleModule) },
-  {
-    path: '', //todo remove when main app page is made
-    redirectTo: 'ple',
-    pathMatch:'full'
-  },
-  { path: '404', loadChildren: () => import('./page-not-found/page-not-found.module').then(m => m.PageNotFoundModule) },
-  { path: 'about', loadChildren: () => import('./about/about.module').then(m => m.AboutModule) },
-  {
-    path: '**',
-    redirectTo:'404',
-  }
-];
+const routes: Routes = [{ path: '', component: AboutComponent }];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AboutRoutingModule { }
