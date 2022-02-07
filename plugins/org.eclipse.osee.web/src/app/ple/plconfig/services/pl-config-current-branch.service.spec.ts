@@ -93,22 +93,22 @@ describe('PlConfigCurrentBranchService', () => {
   
     it('should return the group list', () => {
       scheduler.run(({ expectObservable }) => {
-        const expectedValues: { a: configGroup[] } = { a: [testBranchApplicability.groups[0]] }
-        expectObservable(service.groupList).toBe('a',expectedValues)
+        const expectedValues: { a: configGroup[],b:configGroup[],c:configGroup[] } = { a: [testBranchApplicability.groups[0]],b:[testBranchApplicability.groups[0]],c:[testBranchApplicability.groups[0],{ id: '736857919', name: 'abGroup', configurations: ['200045','200046'] }] }
+        expectObservable(service.groupList).toBe('(abc)',expectedValues)
       })
     })
   
     it('should find that abGroup is a cfgGroup', () => {
       scheduler.run(({ expectObservable }) => {
         const expectedValues: { a: boolean, b:boolean } = { a: true, b:false }
-        expectObservable(service.isACfgGroup('abGroup')).toBe('a',expectedValues)
+        expectObservable(service.isACfgGroup('abGroup')).toBe('(aaaa)',expectedValues)
       })
     })
   
     it('should find that Product D is not a cfgGroup', () => {
       scheduler.run(({ expectObservable }) => {
         const expectedValues: { a: boolean, b:boolean } = { a: true, b:false }
-        expectObservable(service.isACfgGroup('Product D')).toBe('b',expectedValues)
+        expectObservable(service.isACfgGroup('Product D')).toBe('(bbbb)',expectedValues)
       })
     })
   
@@ -162,7 +162,7 @@ describe('PlConfigCurrentBranchService', () => {
   
     it('should get the top level headers', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.topLevelHeaders).toBe('(aa)',{a:[' ', 'Configurations', 'Groups'],b:[' ', 'Configurations']})
+        expectObservable(service.topLevelHeaders).toBe('(aaa)',{a:[' ', 'Configurations', 'Groups'],b:[' ', 'Configurations']})
       });
     })
   
@@ -192,7 +192,7 @@ describe('PlConfigCurrentBranchService', () => {
   
     it('should find a group by name', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.findGroup('abGroup')).toBe('(a)', {
+        expectObservable(service.findGroup('abGroup')).toBe('(aaaa)', {
           a: {
             id: '736857919',
             name: 'abGroup',

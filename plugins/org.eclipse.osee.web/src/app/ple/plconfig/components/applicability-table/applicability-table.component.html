@@ -22,10 +22,10 @@
                 <th mat-header-cell *matHeaderCellDef colspan="1" class="applic-table-header"> </th>
             </ng-container>
             <ng-container matColumnDef="Configurations">
-                <th mat-header-cell *matHeaderCellDef [attr.colspan]="viewCount|async" class="applic-table-header">Configurations</th>
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="(viewCount|async)" class="applic-table-header">Configurations</th>
             </ng-container>
             <ng-container matColumnDef="Groups">
-                <th mat-header-cell *matHeaderCellDef [attr.colspan]="groupCount|async" class="applic-table-header">Configuration Groups</th>
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="(groupCount|async)||0" class="applic-table-header">Configuration Groups</th>
             </ng-container>
             <ng-container [matColumnDef]="secondaryHeader" *ngFor="let secondaryHeader of (secondaryHeaders | async); let i = index; trackBy:valueTracker;">
                 <th mat-header-cell *matHeaderCellDef [attr.colspan]="(secondaryHeaderLength|async)![i]" [ngClass]="(isACfgGroup(secondaryHeader.trim())|async)?(isAddedCfgGroup(secondaryHeader.trim())|async)===true?'config-group-header applic-table-column-added': (isDeletedCfgGroup(secondaryHeader.trim())|async)===true?'config-group-header applic-table-column-deleted':(hasChangesCfgGroup(secondaryHeader.trim())|async)===true?'config-group-header applic-table-column-changed':'config-group-header':(isDeletedCfg(secondaryHeader.trim())|async)===true?'applic-table-column-deleted config-header':(isAddedCfg(secondaryHeader.trim())|async)===true?'applic-table-column-added config-header':(hasChangesCfg(secondaryHeader.trim())|async)===true?'config-header applic-table-column-changed':'config-header'">
