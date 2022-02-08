@@ -6,7 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.define.rest
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.hamcrest.core,
  org.mockito;visibility:=reexport
 Import-Package: org.eclipse.osee.framework.jdk.core.type,

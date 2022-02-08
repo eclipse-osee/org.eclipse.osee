@@ -22,4 +22,4 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io,
  org.eclipse.osee.framework.logging
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -4,7 +4,7 @@ Bundle-Name: OSEE Activity Logging API - (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.activity.api;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.activity.api
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,

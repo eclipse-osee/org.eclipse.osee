@@ -6,7 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.messaging.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: javax.jms,
  javax.management,
  javax.management.j2ee,
@@ -19,9 +19,9 @@ Import-Package: javax.jms,
  javax.management.remote,
  javax.management.remote.rmi,
  javax.management.timer,
+ org.apache.activemq,
  javax.xml.bind,
  javax.xml.bind.annotation,
- org.apache.activemq,
  org.apache.activemq.advisory,
  org.apache.activemq.blob,
  org.apache.activemq.broker,

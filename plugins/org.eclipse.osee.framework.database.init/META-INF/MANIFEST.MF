@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.database.init;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.database.init.internal.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.xml.serialize,

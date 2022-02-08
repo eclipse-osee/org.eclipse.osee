@@ -5,7 +5,7 @@ Bundle-SymbolicName: jms.libraries;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Eclipse-BuddyPolicy: global
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: libs/geronimo-j2ee-management_1.0_spec-1.0.jar,
  libs/geronimo-jms_1.1_spec-1.1.1.jar,
  libs/activemq-all-5.14.0.jar

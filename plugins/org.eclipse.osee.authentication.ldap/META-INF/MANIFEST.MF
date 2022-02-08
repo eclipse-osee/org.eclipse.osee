@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.authentication.ldap;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml  
 Import-Package: org.eclipse.osee.authentication.admin,
  org.eclipse.osee.framework.jdk.core.type,

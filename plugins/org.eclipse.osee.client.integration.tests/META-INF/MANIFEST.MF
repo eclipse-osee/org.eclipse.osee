@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.client.integration.tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs.client,
  javax.ws.rs.core,

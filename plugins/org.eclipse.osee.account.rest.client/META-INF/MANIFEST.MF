@@ -4,7 +4,7 @@ Bundle-Name: OSEE Account REST Client (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.account.rest.client;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs,
  javax.ws.rs.client,

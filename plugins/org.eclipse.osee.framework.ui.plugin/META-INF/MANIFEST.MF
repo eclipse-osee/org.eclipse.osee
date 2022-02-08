@@ -39,4 +39,4 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.junit,
  org.junit.rules,
  org.junit.runners.model
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
