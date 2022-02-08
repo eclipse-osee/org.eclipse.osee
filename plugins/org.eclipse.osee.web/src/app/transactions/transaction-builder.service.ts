@@ -42,6 +42,9 @@ export class TransactionBuilderService {
       txComment: txComment || '',
       createArtifacts: [],
     };
+    if (currentTransaction.createArtifacts === undefined) {
+      currentTransaction.createArtifacts = [];
+    }
     let attributes: attributeType[] = [];
     (
       Object.entries(value) as [string, string | number | boolean | string[]][]

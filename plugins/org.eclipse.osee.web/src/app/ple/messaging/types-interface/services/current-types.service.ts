@@ -249,7 +249,7 @@ export class CurrentTypesService {
   getEnumSet(platformTypeId: string) {
     return this.enumSetService.getEnumSet(platformTypeId);
   }
-  changeEnumSet(changes:enumerationSet) {
-    return this.enumSetService.changeEnumSet(changes);
+  changeEnumSet(changes:enumerationSet,enumerations?:enumeration[]) {
+    return this.enumSetService.changeEnumSet(changes,enumerations);
   }
 }

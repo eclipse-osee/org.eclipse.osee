@@ -37,7 +37,7 @@
             <a mat-menu-item target="_blank" [routerLink]="'/ple/messaging/'+_branchType+'/'+_branchId+'/types/'+element.platformTypeName2"><mat-icon color="primary">open_in_new</mat-icon>Open Platform Type in new tab</a>
         </ng-container>
         <ng-container *ngIf="element.logicalType==='enumeration'">
-            <button mat-menu-item (click)="openEnumDialog(element.platformTypeId)">Open Enumeration Details(view only)</button>
+            <button mat-menu-item (click)="openEnumDialog(element.platformTypeId)"><mat-icon color="primary">toc</mat-icon>Open Enumeration Details</button>
         </ng-container>
         <button mat-menu-item (click)="openDescriptionDialog(element.description,element.id,structure.id)"><mat-icon color="primary">description</mat-icon>Open Description</button>
         <button mat-menu-item (click)="openNotesDialog(element.notes,element.id,structure.id)"><mat-icon color="primary">notes</mat-icon>Open Notes</button>

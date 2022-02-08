@@ -12,14 +12,15 @@
  **********************************************************************/
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { map, scan, switchMap, tap } from 'rxjs/operators';
 import { applic } from '../../../../../../types/applicability/applic';
-import { enumerationSet } from '../../../types/enum';
+import { enumerationSet, enumeration } from '../../../types/enum';
 import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
 import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../../services/ui/preferences-ui.service';
 import { enumsetDialogData } from '../../../types/EnumSetDialogData';
+import { TypesUIService } from '../../../services/ui/types-ui.service';
 
 @Component({
   selector: 'app-edit-enum-set-dialog',
@@ -29,27 +30,36 @@ import { enumsetDialogData } from '../../../types/EnumSetDialogData';
 export class EditEnumSetDialogComponent implements OnInit {
 
   applic = this.applicabilityService.applic;
-  enumObs = this.data.pipe(
-    switchMap(({ id, isOnEditablePage }) => this.enumSetService.getEnumSet(id)),
-    tap((value) => {
-      this.enumSet.description=''
-      this.enumSet.id = value.id;
-    })
+  private _addEnum = new BehaviorSubject<enumeration | undefined>(undefined);
+  private _addEnums = this._addEnum.pipe(
+    scan((acc,curr)=>[...acc,curr],[] as (enumeration|undefined)[])
+  )
+  enumObs = combineLatest([this.data, this._addEnums]).pipe(
+    switchMap(([{ id, isOnEditablePage }, AddEnums]) => this.enumSetService.getEnumSet(id).pipe(
+      switchMap((val) => of(val).pipe(
+        map((val) => {
+          const enums = AddEnums.filter((val) => val !== undefined) as enumeration[];
+          val.enumerations = [...(val?.enumerations ? val.enumerations : []), ...enums]
+          this.enumSet.enumerations = [...enums];
+          return val;
+        })
+      ))
+    )),
+    tap((enumSet) => {
+      this.enumSet.id = enumSet.id;
+    }),
   )
 
   isOnEditablePage = this.data.pipe(
     map(({id,isOnEditablePage})=>isOnEditablePage)
   )
   enumSet: Partial<enumerationSet> = {
-    name: '',
-    description: '',
-    applicability: {
-      id: '',
-      name:''
-    }
   };
   inEditMode = this.preferenceService.inEditMode;
-  constructor(public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Observable<enumsetDialogData>, private enumSetService:EnumerationUIService, private applicabilityService:ApplicabilityListUIService, private preferenceService: PreferencesUIService) { }
+  _type = this.data.pipe(
+    switchMap(({ id, isOnEditablePage }) => this.typeService.getType(id)),
+  )
+  constructor (public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Observable<enumsetDialogData>, private enumSetService: EnumerationUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private typeService: TypesUIService) { }
 
   ngOnInit(): void {
   }
@@ -72,5 +82,7 @@ export class EditEnumSetDialogComponent implements OnInit {
   onNoClick(): void {
     this.dialogRef.close();
   }
-
+  addEnum(length: number) {
+    this._addEnum.next({name:'',ordinal:length,applicability:{id:'1',name:'Base'}})
+  }
 }

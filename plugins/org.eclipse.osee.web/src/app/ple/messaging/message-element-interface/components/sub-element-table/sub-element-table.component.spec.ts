@@ -143,7 +143,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openEnumDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      await menu.clickItem({ text: "Open Enumeration Details(view only)" });
+      await menu.clickItem({ text: new RegExp("Open Enumeration Details") });
       expect(spy).toHaveBeenCalled();
     })
 

@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
+import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 
 import { SubElementTableNoEditFieldFilteredComponent } from './sub-element-table-no-edit-field-filtered.component';
 
@@ -21,7 +23,8 @@ describe('SubElementTableNoEditFieldFilteredComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SubElementTableNoEditFieldFilteredComponent,HighlightFilteredTextDirective ]
+      imports:[CommonModule],
+      declarations: [ SubElementTableNoEditFieldFilteredComponent,HighlightFilteredTextDirective]
     })
     .compileComponents();
   });
