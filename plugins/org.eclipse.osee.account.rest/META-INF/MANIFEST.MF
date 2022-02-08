@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.account.rest;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Osee-Template: OSEE-INF/templates/*.html
 Import-Package: javax.annotation.security,

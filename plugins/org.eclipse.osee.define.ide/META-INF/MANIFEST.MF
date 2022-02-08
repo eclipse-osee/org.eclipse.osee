@@ -77,4 +77,4 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.framework.ui.swt,
   org.eclipse.osee.ote.define.artifacts,
  org.eclipse.ui.forms.widgets
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -7,7 +7,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.codec
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.framework.authentication.ldap.core,
  org.eclipse.osee.framework.authentication.ldap.core.internal,
  org.eclipse.osee.framework.authentication.ldap.core.service

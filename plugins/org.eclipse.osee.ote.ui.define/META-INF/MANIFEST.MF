@@ -31,7 +31,7 @@ Export-Package: org.eclipse.osee.ote.ui.define,
  org.eclipse.osee.ote.ui.define.viewers.data,
  org.eclipse.osee.ote.ui.define.views
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.lowagie.text,
  org.apache.commons.lang,
  org.eclipse.jface.action,

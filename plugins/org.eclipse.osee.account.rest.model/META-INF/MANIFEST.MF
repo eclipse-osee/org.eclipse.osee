@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.account.rest.model
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.account.rest.model
 Import-Package: com.fasterxml.jackson.databind,
  com.fasterxml.jackson.core,

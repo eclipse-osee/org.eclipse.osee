@@ -26,7 +26,7 @@ Export-Package: org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.windows,
  org.eclipse.osee.framework.jdk.core.util.xml
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,

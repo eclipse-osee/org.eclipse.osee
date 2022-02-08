@@ -629,6 +629,9 @@
 <plugin id="javax.transaction"/>
 <plugin id="javax.xml.ws"/>
 <plugin id="javax.xml.soap"/>
+<plugin id="jakarta.xml.bind"/>
+<plugin id="com.sun.xml.bind"/>
+<plugin id="javassist"/>
 </includeBundles>
 <environment>
 <os>win32</os>

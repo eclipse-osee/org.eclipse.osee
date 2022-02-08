@@ -4,7 +4,7 @@ Bundle-Name: OSEE JDBC - (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.jdbc;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,

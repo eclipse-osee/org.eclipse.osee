@@ -97,5 +97,5 @@ Import-Package: com.google.common.base,
  org.jsoup.select,
  org.osgi.framework,
  org.osgi.service.event
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml

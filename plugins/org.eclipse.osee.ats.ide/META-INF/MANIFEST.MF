@@ -266,4 +266,4 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.zest.core.widgets,
  org.osgi.service.component.annotations,
  org.osgi.service.event
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

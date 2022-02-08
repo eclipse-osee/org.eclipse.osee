@@ -36,4 +36,4 @@ Import-Package: javax.servlet,
  org.osgi.service.http,
  org.osgi.util.tracker
 Service-Component: OSGI-INF/*.xml
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
