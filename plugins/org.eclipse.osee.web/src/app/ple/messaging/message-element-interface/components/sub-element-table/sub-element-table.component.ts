@@ -34,6 +34,7 @@ import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';
 import { applic } from '../../../../../types/applicability/applic';
 import { LocationStrategy } from '@angular/common';
 import { difference } from 'src/app/types/change-report/change-report';
+import { EnumerationUIService } from '../../../shared/services/ui/enumeration-ui.service';
 
 @Component({
   selector: 'ple-messaging-message-element-interface-sub-element-table',
@@ -67,7 +68,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
   @ViewChild('generalMenuTrigger', { static: true })
   generalMenuTrigger!: MatMenuTrigger;
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService, private angLocation: LocationStrategy) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService, private angLocation: LocationStrategy,private enumSetService: EnumerationUIService) {
     this.subMessageHeaders = ["name", "beginWord", "endWord", "BeginByte", "EndByte",  "interfaceElementAlterable", "description", "notes"];
     this.dataSource.data = this.data;
   }
@@ -154,11 +155,13 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       data: of<enumsetDialogData>(
         {
           id: id,
-          isOnEditablePage: false
+          isOnEditablePage: this.editMode
         }
       )
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
+      take(1),
+      switchMap(({enumerations,...changes})=>this.enumSetService.changeEnumSet(changes,enumerations))
     ).subscribe();
   }
 

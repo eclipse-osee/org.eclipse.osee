@@ -13,7 +13,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { defer, iif, Observable, of, OperatorFunction } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { OSEEWriteApiResponse } from '../../../shared/types/ApiWriteResponse';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
@@ -90,7 +90,8 @@ export class PlatformTypeCardComponent implements OnInit {
         })
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
-      switchMap((changes)=>iif(()=>makeChanges,this.typesService.changeEnumSet(changes)))
+      take(1),
+      switchMap(({ enumerations,...changes })=>iif(()=>makeChanges,this.typesService.changeEnumSet(changes,enumerations)))
     ).subscribe();
   }
   

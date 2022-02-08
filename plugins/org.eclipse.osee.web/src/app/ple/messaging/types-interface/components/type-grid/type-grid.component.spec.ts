@@ -33,6 +33,7 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { response } from '../../../connection-view/mocks/Response.mock';
+import { MatIconModule } from '@angular/material/icon';
 
 let loader: HarnessLoader;
 
@@ -78,7 +79,7 @@ describe('TypeGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatCardModule,MatFormFieldModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule, FormsModule, LayoutModule],
+      imports:[MatCardModule,MatFormFieldModule,MatIconModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule, FormsModule, LayoutModule],
       declarations: [PlatformTypeCardComponent, TypeGridComponent],
       providers: [{
         provide: CurrentTypesService, useValue:

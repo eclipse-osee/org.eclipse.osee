@@ -32,6 +32,7 @@ import { of } from 'rxjs';
 import { enumerationSet } from '../../../shared/types/enum';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { currentTypesServiceMock } from '../../mocks/services/current.types.service.mock';
+import { MatIconModule } from '@angular/material/icon';
 
 let loader: HarnessLoader;
 
@@ -41,7 +42,7 @@ describe('PlatformTypeCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatCardModule, MatDialogModule,MatButtonModule, MatFormFieldModule,MatSlideToggleModule,FormsModule,MatInputModule, NoopAnimationsModule],
+      imports:[MatCardModule, MatIconModule, MatDialogModule,MatButtonModule, MatFormFieldModule,MatSlideToggleModule,FormsModule,MatInputModule, NoopAnimationsModule],
       declarations: [PlatformTypeCardComponent, EditTypeDialogComponent],
       providers: [{
         provide: CurrentTypesService, useValue: currentTypesServiceMock}
@@ -93,14 +94,26 @@ describe('PlatformTypeCardComponent', () => {
   it('should contain text that has minimum value, maximum value, byte size, default value, msb value, resolution, comp rate, analog accuracy, edit and Create New Type From Base',async () => {
     fixture.detectChanges();
     const card = await loader.getHarness(MatCardHarness);
-    expect(await card.getText()).toEqual("Random enumeration  enumeration  Minimum Value: 0  Maximum Value: 1  Bit Size: 8  Default Value: 0  MSB Value: 0  Resolution: 0  Comp Rate: 0  Analog Accuracy: 0  Edit  Create New Type From Base Edit Related Enumeration Set Attributes");
+    expect(await card.getText()).toContain('Random enumeration')
+    expect(await card.getText()).toContain('enumeration')
+    expect(await card.getText()).toContain('Minimum Value: 0')
+    expect(await card.getText()).toContain('Maximum Value: 1')
+    expect(await card.getText()).toContain('Bit Size: 8')
+    expect(await card.getText()).toContain('Comp Rate: 0')
+    expect(await card.getText()).toContain('Default Value: 0')
+    expect(await card.getText()).toContain('MSB Value: 0')
+    expect(await card.getText()).toContain('Resolution: 0')
+    expect(await card.getText()).toContain('Analog Accuracy: 0')
+    expect(await card.getText()).toContain('Edit')
+    expect(await card.getText()).toContain('Create New Type From Base')
+    expect(await card.getText()).toContain('Edit Related Enumeration Set Attributes')
   });
 
   it('should open dialog and create an edit of an existing type', async() => {
     const openDialog = spyOn(component, 'openDialog').and.callThrough();
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<editPlatformTypeDialogData>({mode:editPlatformTypeDialogDataMode.edit,type:{name:'',interfaceLogicalType:'',interfacePlatform2sComplement:false,interfacePlatformTypeAnalogAccuracy:'',interfacePlatformTypeBitSize:'0',interfacePlatformTypeBitsResolution:'',interfacePlatformTypeCompRate:'',interfacePlatformTypeDefaultValue:'0',interfacePlatformTypeEnumLiteral:'',interfacePlatformTypeMaxval:'',interfacePlatformTypeMinval:'',interfacePlatformTypeMsbValue:'',interfacePlatformTypeUnits:'',interfacePlatformTypeValidRangeDescription:''}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy)
-    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: "Edit" }));
+    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Edit") }));
     await button.click();
     expect(openDialog).toHaveBeenCalledWith(editPlatformTypeDialogDataMode.edit);
   })
@@ -109,7 +122,7 @@ describe('PlatformTypeCardComponent', () => {
     const openDialog = spyOn(component, 'openDialog').and.callThrough();
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<editPlatformTypeDialogData>({mode:editPlatformTypeDialogDataMode.copy,type:{name:'',interfaceLogicalType:'',interfacePlatform2sComplement:false,interfacePlatformTypeAnalogAccuracy:'',interfacePlatformTypeBitSize:'0',interfacePlatformTypeBitsResolution:'',interfacePlatformTypeCompRate:'',interfacePlatformTypeDefaultValue:'0',interfacePlatformTypeEnumLiteral:'',interfacePlatformTypeMaxval:'',interfacePlatformTypeMinval:'',interfacePlatformTypeMsbValue:'',interfacePlatformTypeUnits:'',interfacePlatformTypeValidRangeDescription:''}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy)
-    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: "Create New Type From Base" }));
+    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Create New Type From Base") }));
     await button.click();
     expect(openDialog).toHaveBeenCalledWith(editPlatformTypeDialogDataMode.copy);
   })
@@ -118,7 +131,7 @@ describe('PlatformTypeCardComponent', () => {
     const openEnumDialog = spyOn(component, 'openEnumDialog').and.callThrough();
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<enumerationSet>({name:'',description:'',applicability:{id:'1',name:'Base'}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
-    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: "Edit Related Enumeration Set Attributes" }));
+    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Edit Related Enumeration Set Attributes") }));
     await button.click();
     expect(openEnumDialog).toHaveBeenCalled();
   })

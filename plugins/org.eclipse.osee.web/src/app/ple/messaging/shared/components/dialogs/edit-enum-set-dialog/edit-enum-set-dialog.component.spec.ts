@@ -17,10 +17,13 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatIconHarness } from '@angular/material/icon/testing';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatTableModule } from '@angular/material/table';
+import { MatTableHarness } from '@angular/material/table/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
@@ -28,9 +31,11 @@ import { UserDataAccountService } from 'src/app/userdata/services/user-data-acco
 import { applicabilityListServiceMock } from '../../../mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../../../mocks/enumeration.set.service.mock';
 import { MimPreferencesServiceMock } from '../../../mocks/MimPreferencesService.mock';
+import { typesServiceMock } from '../../../mocks/types.service.mock';
 import { ApplicabilityListService } from '../../../services/http/applicability-list.service';
 import { EnumerationSetService } from '../../../services/http/enumeration-set.service';
 import { MimPreferencesService } from '../../../services/http/mim-preferences.service';
+import { TypesService } from '../../../services/http/types.service';
 import { enumsetDialogData } from '../../../types/EnumSetDialogData';
 
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
@@ -43,7 +48,7 @@ describe('EditEnumSetDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [EditEnumSetDialogComponent],
-      imports: [MatDialogModule,MatSelectModule,MatInputModule,MatFormFieldModule,FormsModule,MatTableModule,NoopAnimationsModule],
+      imports: [MatDialogModule,MatIconModule,MatSelectModule,MatInputModule,MatFormFieldModule,FormsModule,MatTableModule,NoopAnimationsModule],
       providers: [{
         provide: MatDialogRef, useValue: {
           close() { return of(); }
@@ -53,7 +58,8 @@ describe('EditEnumSetDialogComponent', () => {
         { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock }
+        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
+        { provide: TypesService, useValue:typesServiceMock }
       ]
     })
     .compileComponents();
@@ -85,5 +91,15 @@ describe('EditEnumSetDialogComponent', () => {
     const button = await loader.getHarness(MatButtonHarness.with({ text: 'Cancel' }));
     await button.click();
     expect(dialogRefClosure).toHaveBeenCalled();
+  })
+
+  it('should add an enum', async () => {
+    const spy = spyOn(component, 'addEnum').and.callThrough();
+    const table = await loader.getHarness(MatTableHarness);
+    expect(table).toBeDefined();
+    const button = await (await (await table.getFooterRows())[0].getCells({columnName:'applicability'}))[0].getHarness(MatButtonHarness);
+    expect(button).toBeDefined();
+    await button.click();
+    expect(spy).toHaveBeenCalled();
   })
 });

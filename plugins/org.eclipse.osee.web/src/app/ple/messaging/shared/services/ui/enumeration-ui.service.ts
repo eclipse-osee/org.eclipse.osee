@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { share, switchMap, shareReplay, take } from 'rxjs/operators';
+import { from, iif, of } from 'rxjs';
+import { share, switchMap, shareReplay, take, mergeMap, tap } from 'rxjs/operators';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { relation, transaction } from 'src/app/transactions/transaction';
 import { enumeration, enumerationSet, enumSet } from '../../types/enum';
@@ -54,11 +55,20 @@ export class EnumerationUIService {
       switchMap((branchId)=>this.enumSetService.getEnumSet(branchId,platformTypeId))
     )
   }
-  changeEnumSet(changes:enumerationSet) {
+  changeEnumSet(changes:enumerationSet,enumerations?:enumeration[]) {
     return this.ui.id.pipe(
       take(1),
       switchMap((branchId) => this.enumSetService.changeEnumSet(branchId, changes).pipe(
-        switchMap((transaction)=>this.enumSetService.performMutation(transaction,branchId))
+        switchMap((transaction) => iif(() => enumerations !== undefined && enumerations?.length > 0, of(enumerations as enumeration[]).pipe(
+          mergeMap(enumerations => from(enumerations).pipe(
+            mergeMap((currentEnum) => this.enumSetService.createEnumToEnumSetRelation(changes.id).pipe(
+              switchMap((currentEnumRelation)=>this.enumSetService.createEnum(branchId,currentEnum,[currentEnumRelation],transaction))
+            ))
+          ))
+        ),
+          of(transaction)
+        )),
+        switchMap((transactionFinal) => this.enumSetService.performMutation(transactionFinal, branchId))
       ))
     )
   }
