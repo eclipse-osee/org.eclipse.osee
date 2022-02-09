@@ -261,8 +261,8 @@ public class AtsDbConfigBase {
 
       ArtifactToken headingArt = atsApi.getQueryService().getOrCreateArtifact(CoreArtifactTokens.OseeConfiguration,
          AtsArtifactToken.AtsTopFolder, changes);
-      for (ArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
-         AtsArtifactToken.WorkDefinitionsFolder)) {
+      for (ArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem,
+         AtsArtifactToken.TopTeamDefinition)) {
          atsApi.getQueryService().getOrCreateArtifact(headingArt, token, changes);
       }
 
