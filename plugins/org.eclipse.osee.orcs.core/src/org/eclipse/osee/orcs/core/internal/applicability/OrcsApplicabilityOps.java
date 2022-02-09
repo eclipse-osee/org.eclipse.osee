@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -59,6 +60,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -583,7 +585,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             applicability)) {
             TransactionBuilder tx = txFactory.createTransaction(branch, "Remove applicability from configuration");
             tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
-
             tx.commit();
          } else {
             results.error(applicability + " does not exist on configuration: " + view.getName());
@@ -673,8 +674,28 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          tx.setName(ArtifactId.valueOf(editView), view.getName());
          tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(editView.getId()),
             "Config = " + editView.getName());
-         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(view.getId()),
-            "Config = " + view.getName());
+         tx.deleteTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(editView.getId()),
+            "Config = " + editView.getName());
+
+         TupleQuery query = orcsApi.getQueryFactory().tupleQuery();
+
+         GammaId gamma = GammaId.SENTINEL;
+         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition,
+            ArtifactId.valueOf(view.getId()), "Config = " + view.getName())).isValid()) {
+            tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(view.getId()),
+               "Config = " + view.getName());
+         } else {
+            tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+         }
+         gamma = GammaId.SENTINEL;
+         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(view.getId()),
+            "Config = " + view.getName())).isValid()) {
+            tx.addTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(view.getId()),
+               "Config = " + view.getName());
+         } else {
+            tx.introduceTuple(CoreTupleTypes.ViewApplicability, gamma);
+         }
+
          tx.commit();
       }
       if (view.getConfigurationGroup().isValid()) {
