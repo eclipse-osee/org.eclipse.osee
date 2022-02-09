@@ -47,12 +47,10 @@ public final class AtsArtifactToken {
    public static IAtsActionableItemArtifactToken TopActionableItem = AtsActionableItemArtifactToken.valueOf(122894L, "Actionable Items");
    public static ArtifactToken CountryFolder = ArtifactToken.valueOf(7968155, "Countries", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken ProgramFolder = ArtifactToken.valueOf(90442279, "Programs", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken WorkDefinitionsFolder = ArtifactToken.valueOf(284655, "Work Definitions", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken WebPrograms = ArtifactToken.valueOf(277592, "Web Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken PeerAttachmentFolder = ArtifactToken.valueOf(8635196, "Peer Review Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
    public static ArtifactToken WalkthroughAttachmentFolder = ArtifactToken.valueOf(8649004, "Walkthrough Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
-   // Default Work Definitions
 
    // Safety Workflow configuration
    public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);
