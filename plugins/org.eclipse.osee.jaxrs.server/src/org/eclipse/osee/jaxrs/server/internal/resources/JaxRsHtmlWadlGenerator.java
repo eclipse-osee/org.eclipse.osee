@@ -16,6 +16,7 @@ package org.eclipse.osee.jaxrs.server.internal.resources;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,17 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
    @Override
    protected void doFilter(ContainerRequestContext context, Message m) {
       m.getExchange().put(WADL_TRANSFORMED_FLAG, Boolean.FALSE);
-      super.doFilter(context, m);
+      if("true".equals(System.getProperty("disable_wadl"))) {
+    	  try {
+                  context.setRequestUri(new URI(context.getUriInfo().getRequestUri().toString().replace("?_wadl", "404")));
+               } catch (Exception ex) {
+            	  // do nothing
+               }  
+          }
+      else {
+    	  super.doFilter(context, m);
+      }
+    
       Boolean wasTransformed = (Boolean) m.getExchange().get(WADL_TRANSFORMED_FLAG);
       if (wasTransformed) {
          Response response = m.getExchange().get(javax.ws.rs.core.Response.class);
@@ -82,7 +93,6 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
    @Override
    public StringBuilder generateWADL(String baseURI, List<ClassResourceInfo> cris, boolean isJson, Message m, UriInfo ui) {
       StringBuilder wadl = super.generateWADL(baseURI, cris, isJson, m, ui);
-
       StringBuilder toReturn = wadl;
       List<MediaType> acceptableMediaTypes = headers.getAcceptableMediaTypes();
       if (JaxRsUtils.isHtmlSupported(acceptableMediaTypes)) {
