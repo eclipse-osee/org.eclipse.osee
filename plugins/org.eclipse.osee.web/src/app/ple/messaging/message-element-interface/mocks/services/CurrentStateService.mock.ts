@@ -20,6 +20,9 @@ import { platformTypesMock } from "../ReturnObjects/PlatformTypes.mock";
 import { elementResponseMock } from "../ReturnObjects/response.mock";
 import { structuresMock } from "../ReturnObjects/Structures.mock";
 import { transactionToken } from "src/app/transactions/transaction";
+import { unitsMock } from "../../../shared/mocks/unit.mock";
+import { response } from "../../../connection-view/mocks/Response.mock";
+import { PlatformType } from "../../../shared/types/platformType";
 
 let sideNavContentPlaceholder = new ReplaySubject<{  opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined; }>();
 sideNavContentPlaceholder.next({opened:false,field:'',currentValue:''})
@@ -61,7 +64,8 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     BranchId: new BehaviorSubject("10"),
     branchType: new BehaviorSubject("working"),
     MessageId: new BehaviorSubject("10"),
-    connectionId:new BehaviorSubject("10"),
+    connectionId: new BehaviorSubject("10"),
+    units: of(unitsMock),
     getStructure(structureId: string) {
         return of(structuresMock[0])
     },
@@ -72,5 +76,8 @@ export const CurrentStateServiceMock: Partial<CurrentStateService> = {
     set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic, previousValue?: string | number | applic, user?: string, date?: string }) {
         
     },
-    isInDiff: new BehaviorSubject<boolean>(false)
+    isInDiff: new BehaviorSubject<boolean>(false),
+    updatePlatformTypeValue(type: Partial<PlatformType>) {
+        return of(response)
+    }
 }

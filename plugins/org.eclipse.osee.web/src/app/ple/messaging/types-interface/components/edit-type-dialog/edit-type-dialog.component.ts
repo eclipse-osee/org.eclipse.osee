@@ -32,6 +32,7 @@ export class EditTypeDialogComponent implements OnInit {
     )),
     reduce((acc, curr) => [...acc, curr], [] as logicalType[]),
   );
+  units = this.typesService.units;
   constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData, private typesService: CurrentTypesService) {
     this.platform_type = this.data.type.name;
    }

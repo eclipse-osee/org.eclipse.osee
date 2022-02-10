@@ -19,8 +19,11 @@ import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-r
 import { response } from '../../connection-view/mocks/Response.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
+import { typesServiceMock } from '../../shared/mocks/types.service.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { TypesService } from '../../shared/services/http/types.service';
+import { platformTypes1 } from '../../type-element-search/testing/MockResponses/PlatformType';
 import { elementsMock } from '../mocks/ReturnObjects/element.mock';
 import { platformTypesMock } from '../mocks/ReturnObjects/PlatformTypes.mock';
 import { structuresMock, structuresMock2 } from '../mocks/ReturnObjects/structure.mock';
@@ -48,7 +51,7 @@ describe('CurrentStateService', () => {
         { provide: ElementService, useValue: elementServiceMock },
         { provide: StructuresService, useValue: structureServiceRandomMock },
         { provide: MessagesService, useValue: messageServiceMock },
-        { provide: PlatformTypeService, useValue: platformTypeServiceMock },
+        { provide: TypesService, useValue: typesServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: ElementUiService },
@@ -204,7 +207,8 @@ describe('CurrentStateService', () => {
 
   it('should get types', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: platformTypesMock };
+      service.branchId = "0";
+      let expectedObservable = { a: platformTypes1 };
       let expectedMarble = 'a';
       scheduler.expectObservable(service.types).toBe(expectedMarble, expectedObservable);
     })

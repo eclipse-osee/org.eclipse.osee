@@ -25269,5 +25269,187 @@ export const changeReportMock: changeInstance[] = [
     artIdB : "-1",
     applicabilityCopy : false,
     deleted : false
+  },
+  {
+    ignoreType : ignoreType.NONE,
+    changeType : {
+      id : changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      notAttributeChange : false,
+      notRelationChange : true,
+      typeId : 2834799904,
+      idString : "222",
+      idIntValue : 222
+    },
+    artId : "9",
+    itemId : "10537",
+    itemTypeId : "4026643196432874344",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20993",
+      modType : ModificationType.NEW,
+      value : "hertz",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1322",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21756",
+      modType : ModificationType.MODIFIED,
+      value : "feet²/second²",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1177",
+        branchId : "8"
+      },
+      gammaId : "20993",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21756",
+      modType : ModificationType.MODIFIED,
+      value : "feet²/second²",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    deleted : false,
+    applicabilityCopy : false
+  },
+  {
+    ignoreType : ignoreType.NONE,
+    changeType : {
+      id : changeTypeNumber.ATTRIBUTE_CHANGE,
+      name : changeTypeEnum.ATTRIBUTE_CHANGE,
+      notAttributeChange : false,
+      notRelationChange : true,
+      typeId : 2834799904,
+      idString : "222",
+      idIntValue : 222
+    },
+    artId : "9",
+    itemId : "10537",
+    itemTypeId : "1152921504606847088",
+    baselineVersion : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "20993",
+      modType : ModificationType.NEW,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    firstNonCurrentChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : null,
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : false,
+      applicabilityToken : null
+    },
+    currentVersion : {
+      transactionToken : {
+        id : "1322",
+        branchId : "2780650236653788489"
+      },
+      gammaId : "21756",
+      modType : ModificationType.NEW,
+      value : "testingUnits",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    destinationVersion : {
+      transactionToken : {
+        id : "1177",
+        branchId : "8"
+      },
+      gammaId : "20993",
+      modType : ModificationType.NONE,
+      value : null,
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    netChange : {
+      transactionToken : {
+        id : "-1",
+        branchId : "-1"
+      },
+      gammaId : "21756",
+      modType : ModificationType.NEW,
+      value : "testingUnits",
+      uri : "",
+      valid : true,
+      applicabilityToken : {
+        id : "1",
+        name : "Base"
+      }
+    },
+    synthetic : false,
+    artIdB : "-1",
+    deleted : false,
+    applicabilityCopy : false
   }
 ];

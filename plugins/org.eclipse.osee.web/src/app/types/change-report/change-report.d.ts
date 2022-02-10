@@ -20,17 +20,17 @@ import { transactionToken } from "./transaction-token";
 /**
  * Contains information on changes that have occurred on a branch, appears in an array on /orcs/branches/branch1/diff/branch2
  */
-export class changeInstance{
+export class changeInstance<T=string | number | boolean | null | undefined,U=string | number | boolean | null | undefined,V=string | number | boolean | null | undefined,W=string | number | boolean | null | undefined,X=string | number | boolean | null | undefined>{
     ignoreType: ignoreType;
     changeType: changeType;
     artId: string;
     itemId: string;
     itemTypeId: ARTIFACTTYPEID|ATTRIBUTETYPEID|RelationTypeId|TupleTypeId|itemTypeIdRelation|string;// update to enum union later, should be artifact type id, attribute type id, relation type id
-    baselineVersion: version; //information available at beginning of branch
-    firstNonCurrentChange: version; // doesn't seem useful for web apps as of yet
-    currentVersion: version; //latest instance of information on branch
-    destinationVersion: version; //information currently available on parent branch
-    netChange: version; //total change
+    baselineVersion: version<T>; //information available at beginning of branch
+    firstNonCurrentChange: version<U>; // doesn't seem useful for web apps as of yet
+    currentVersion: version<V>; //latest instance of information on branch
+    destinationVersion: version<W>; //information currently available on parent branch
+    netChange: version<X>; //total change
     synthetic: boolean; //only needed on client so far
     artIdB: string; //only needed on client so far
     deleted: boolean;
@@ -87,20 +87,20 @@ export const enum changeTypeNumber{
 /**
  * Useful info includes the {@link transactionToken transaction}, value, uri,whether or not the state is valid, and the {@link applic applicability token}
  */
-export class version {
+export class version<T=string | number | boolean | null | undefined> {
     transactionToken: transactionToken;
     gammaId: string|null;
     modType: ModificationType;
-    value: string | number | boolean | null | undefined;
+    value: T;
     uri: string;
     valid: boolean;
     applicabilityToken:applic|null
 }
-export interface difference{
+export interface difference<T=string | number | boolean | applic | null | undefined>{
     user?: string,
     timeOfChange?: string,
-    previousValue: string | number | boolean | applic | null | undefined,
-    currentValue: string | number | boolean | applic | null | undefined,
+    previousValue: T,
+    currentValue: T,
     transactionToken:transactionToken
 }
 export class itemTypeIdRelation{

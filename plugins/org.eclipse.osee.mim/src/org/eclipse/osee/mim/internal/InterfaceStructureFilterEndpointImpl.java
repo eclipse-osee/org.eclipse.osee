@@ -110,6 +110,8 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                   platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
                element.setInterfacePlatformTypeDefaultValue(
                   platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
@@ -205,6 +207,8 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                   platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
                element.setInterfacePlatformTypeDefaultValue(
                   platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
@@ -265,6 +269,8 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                   platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
                element.setInterfacePlatformTypeDefaultValue(
                   platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
@@ -294,6 +300,8 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
                   platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
                element.setInterfacePlatformTypeDefaultValue(
                   platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
                if (totalStructureList.indexOf(alternateStructure) != -1 && totalStructureList.get(
                   totalStructureList.indexOf(alternateStructure)).getElements().indexOf(element) != -1) {
                   InterfaceStructureElementToken tempElement =

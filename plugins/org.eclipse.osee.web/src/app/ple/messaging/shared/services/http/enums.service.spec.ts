@@ -61,6 +61,13 @@ describe('EnumsService', () => {
       req.flush(testData);
     })
   })
+  it('should fetch platform type units', () => {
+    let testData = ['p1', 'p2', 'p3'];
+    service.units.subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/mim/enums/" + 'Units');
+    expect(req.request.method).toEqual('GET');
+    req.flush(testData);
+  })
 
   describe('Message Element Interface', () => {
     it('should fetch structure categories', () => {

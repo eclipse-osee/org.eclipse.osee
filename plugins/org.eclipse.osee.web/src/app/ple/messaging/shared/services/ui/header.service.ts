@@ -40,6 +40,7 @@ export class HeaderService {
     { header: 'description', description: 'Description of a given element', humanReadable: 'Description' },
     { header: 'notes', description: 'Notes corresponding to a given element, for example, specific enum literal descriptions for a given element', humanReadable: 'Notes' },
     { header: 'applicability', description: 'Applicability of a given element', humanReadable: 'Applicability' },
+    { header:'units',description:'Units of the platform type associated with the given element',humanReadable:'Units' }
   ]).pipe(
     shareReplay({bufferSize:1,refCount:true})
   )

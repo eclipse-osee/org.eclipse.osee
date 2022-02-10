@@ -49,4 +49,9 @@ public interface EnumEndpoint {
    @Path("ConnectionTypes")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<ConnectionViewType> getConnectionTypes();
+
+   @GET()
+   @Path("Units")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<String> getPossibleUnits();
 }

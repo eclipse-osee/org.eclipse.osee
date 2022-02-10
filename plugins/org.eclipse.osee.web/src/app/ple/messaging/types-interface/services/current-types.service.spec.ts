@@ -38,22 +38,25 @@ import { CurrentTypesService } from './current-types.service';
 import { EnumerationSetService } from '../../shared/services/http/enumeration-set.service';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 import { TypesService } from '../../shared/services/http/types.service';
+import { EnumsService } from '../../shared/services/http/enums.service';
+import { enumsServiceMock } from '../../shared/mocks/EnumsService.mock';
+import { unitsMock } from '../../shared/mocks/unit.mock';
 
 class PlatformTypeInstance implements PlatformType{
   id?: string | undefined ='';
   interfaceLogicalType: string='';
   interfacePlatform2sComplement: boolean=false;
-  interfacePlatformTypeAnalogAccuracy: string | null='';
-  interfacePlatformTypeBitsResolution: string | null='';
-  interfacePlatformTypeBitSize: string | null='';
-  interfacePlatformTypeCompRate: string | null='';
-  interfacePlatformTypeDefaultValue: string | null='';
-  interfacePlatformTypeEnumLiteral: string | null='';
-  interfacePlatformTypeMaxval: string | null='';
-  interfacePlatformTypeMinval: string | null='';
-  interfacePlatformTypeMsbValue: string | null='';
-  interfacePlatformTypeUnits: string | null='';
-  interfacePlatformTypeValidRangeDescription: string | null='';
+  interfacePlatformTypeAnalogAccuracy: string='';
+  interfacePlatformTypeBitsResolution: string='';
+  interfacePlatformTypeBitSize: string='';
+  interfacePlatformTypeCompRate: string='';
+  interfacePlatformTypeDefaultValue: string='';
+  interfacePlatformTypeEnumLiteral: string='';
+  interfacePlatformTypeMaxval: string='';
+  interfacePlatformTypeMinval: string='';
+  interfacePlatformTypeMsbValue: string='';
+  interfacePlatformTypeUnits: string='';
+  interfacePlatformTypeValidRangeDescription: string='';
   name: string='';
   constructor () {}
   
@@ -73,6 +76,7 @@ describe('CurrentTypesServiceService', () => {
           { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
           { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
           { provide: TypesService, useValue: typesServiceMock },
+          { provide: EnumsService, useValue: enumsServiceMock },
           { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
           { provide: ApplicabilityListService, useValue: applicabilityListServiceMock}
         ],
@@ -268,6 +272,14 @@ describe('CurrentTypesServiceService', () => {
       scheduler.expectObservable(service.enumSets).toBe(expectedMarble, expectedFilterValues);
     })
   });
+  it('should get units', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a:  unitsMock };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.units).toBe(expectedMarble, expectedFilterValues);
+    })
+  });
 
   it('should get applicabilities', () => {
     scheduler.run(() => {
@@ -283,6 +295,14 @@ describe('CurrentTypesServiceService', () => {
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.getEnumSet('0')).toBe(expectedMarble, expectedFilterValues);
+    })
+  })
+  it('should get a specific type', () => {
+    scheduler.run(() => {
+      const expectedFilterValues = { a: platformTypes1[0] };
+      const expectedMarble = '(a|)';
+      uiService.BranchIdString = "10";
+      scheduler.expectObservable(service.getType('10')).toBe(expectedMarble, expectedFilterValues);
     })
   })
 

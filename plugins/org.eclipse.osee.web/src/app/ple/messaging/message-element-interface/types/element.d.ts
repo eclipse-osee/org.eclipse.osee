@@ -13,6 +13,7 @@ import { applic } from "../../../../types/applicability/applic";
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { hasChanges } from '../../../../types/change-report/changes'
 export interface element {
     [index:string]:any,
     id: string,
@@ -22,6 +23,7 @@ export interface element {
     interfaceElementIndexEnd: number,
     interfaceElementIndexStart: number,
     interfaceElementAlterable: boolean,
+    units:string,
     platformTypeName2?: string,
     platformTypeId?: number
     beginWord?: number,
@@ -35,14 +37,5 @@ export interface element {
 export interface elementWithChanges extends element{
     added: boolean,
     deleted: boolean,
-    changes: {
-        name?: difference,
-        description?: difference,
-        notes?: difference,
-        platformTypeName2?:difference,
-        interfaceElementIndexEnd?: difference,
-        interfaceElementIndexStart?: difference,
-        interfaceElementAlterable?: difference,
-        applicability?:difference
-    }
+    changes: hasChanges<element>
 }

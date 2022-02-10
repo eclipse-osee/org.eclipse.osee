@@ -10,18 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from "../../types/element";
-
-export const elementsMock: element[] = [
-    {
-        id: '1',
-        name: 'hello',
-        description: '',
-        notes: '',
-        interfaceElementAlterable: true,
-        interfaceElementIndexEnd: 1,
-        interfaceElementIndexStart: 0,
-        logicalType: 'enumeration',
-        units:''
-    }
+export const unitsMock: string[] = [
+    "Bd", "DI", "Feet^2", "Nm", "dB", "dBm", "days", "degrees", "degrees/second", "direction cosine", "direction cosine/second", "feet", "feet/second", "feet/second²", "feet²/second²", "hertz", "hours", "in HG", "kW", "minutes", "n/a", "nanoseconds", "radians", "radians/sec", "seconds", "unit²", "volts", "years", "°C", "°F", "°R"
 ]

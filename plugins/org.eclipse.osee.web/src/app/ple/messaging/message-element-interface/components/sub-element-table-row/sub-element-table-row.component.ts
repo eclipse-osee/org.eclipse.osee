@@ -36,6 +36,7 @@ export class SubElementTableRowComponent implements OnInit {
       id: '1',
       name:'Base'
     },
+    units:'',
     interfaceElementAlterable: false
   }
 
@@ -55,6 +56,7 @@ export class SubElementTableRowComponent implements OnInit {
     'description',
     'notes',
     'applicability',
+    'units',
     'interfaceElementIndexStart',
     'interfaceElementIndexEnd',
   ];

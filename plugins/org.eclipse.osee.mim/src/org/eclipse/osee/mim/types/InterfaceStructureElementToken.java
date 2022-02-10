@@ -35,6 +35,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
 
    private Integer InterfaceElementIndexEnd;
 
+   private String Units;
+
    private Long PlatformTypeId;
    private String PlatformTypeName;
 
@@ -308,6 +310,20 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    public void setInterfacePlatformTypeDefaultValue(String interfacePlatformTypeDefaultValue) {
       InterfacePlatformTypeDefaultValue = interfacePlatformTypeDefaultValue;
+   }
+
+   /**
+    * @return the units
+    */
+   public String getUnits() {
+      return Units;
+   }
+
+   /**
+    * @param units the units to set
+    */
+   public void setUnits(String units) {
+      Units = units;
    }
 
 }

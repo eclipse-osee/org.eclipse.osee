@@ -20,14 +20,16 @@ import { changeInstance, changeTypeNumber, ignoreType, ModificationType } from '
 import { applic } from '../../../../types/applicability/applic';
 import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
+import { EnumsService } from '../../shared/services/http/enums.service';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
+import { TypesUIService } from '../../shared/services/ui/types-ui.service';
+import { PlatformType } from '../../shared/types/platformType';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { element, elementWithChanges } from '../types/element';
 import { structure, structureWithChanges } from '../types/structure';
 import { ElementService } from './element.service';
 import { MessagesService } from './messages.service';
-import { PlatformTypeService } from './platform-type.service';
 import { StructuresService } from './structures.service';
 import { ElementUiService } from './ui.service';
 
@@ -57,16 +59,9 @@ export class CurrentStateService {
     // })
   )
 
-  private _types = this.ui.BranchId.pipe(
-    share(),
-    switchMap(x => this.typeService.getTypes(x).pipe(
-      repeatWhen(_ => this.ui.UpdateRequired),
-      share(),
-    )),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  )
+  private _types = this.typeService.types;
 
-  constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesService, private elements: ElementService, private typeService: PlatformTypeService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService) { }
+  constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesService, private elements: ElementService, private typeService: TypesUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService, private enumListService:EnumsService) { }
   
   get structures() {
     return this._structures;
@@ -151,6 +146,10 @@ export class CurrentStateService {
     this.ui.updateMessages = value;
   }
 
+  get units() {
+    return this.enumListService.units;
+  }
+
   private get structureObservable(){
     return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
@@ -220,6 +219,12 @@ export class CurrentStateService {
     )
   }
 
+  updatePlatformTypeValue(type: Partial<PlatformType>) {
+    return this.typeService.changeType(type).pipe(
+      switchMap((transaction)=>this.typeService.performMutation(transaction))
+    )
+  }
+
   createStructure(body: Partial<structure>) {
     delete body.elements;
     return this.structure.createSubMessageRelation(this.SubMessageId.getValue()).pipe(
@@ -271,10 +276,11 @@ export class CurrentStateService {
   }
 
   createNewElement(body: Partial<element>, structureId: string, typeId: string) {
+    const { units, ...element } = body;
     return combineLatest([this.elements.createStructureRelation(structureId), this.elements.createPlatformTypeRelation(typeId)]).pipe(
       take(1),
       map(([structureRelation, platformRelation]) => [structureRelation, platformRelation]),
-      switchMap((relations) => this.elements.createElement(body, this.BranchId.getValue(), relations).pipe(
+      switchMap((relations) => this.elements.createElement(element, this.BranchId.getValue(), relations).pipe(
         take(1),
         switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
           tap(() => {
@@ -552,8 +558,8 @@ export class CurrentStateService {
                       let index = structure.elements?.findIndex((el) => el.id === change.artId);
                       structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                       ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                        previousValue: change.baselineVersion.applicabilityToken,
-                        currentValue: change.currentVersion.applicabilityToken,
+                        previousValue: change.baselineVersion.applicabilityToken as applic,
+                        currentValue: change.currentVersion.applicabilityToken as applic,
                         transactionToken: change.currentVersion.transactionToken
                       };
                       ((structure.elements)[index] as elementWithChanges).added = true;
@@ -571,8 +577,8 @@ export class CurrentStateService {
                       let index = structure.elements?.findIndex((el) => el.id === change.artId);
                       structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                       ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                        previousValue: change.baselineVersion.applicabilityToken,
-                        currentValue: change.currentVersion.applicabilityToken,
+                        previousValue: change.baselineVersion.applicabilityToken as applic,
+                        currentValue: change.currentVersion.applicabilityToken as applic,
                         transactionToken: change.currentVersion.transactionToken
                       };
                       (structure as structureWithChanges).hasElementChanges = true;
@@ -672,8 +678,8 @@ export class CurrentStateService {
                         let index = structure.elements?.findIndex((el) => el.id === change.artId);
                         structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                         ((structure.elements)[index] as elementWithChanges).changes.description = {
-                          previousValue: change.baselineVersion.value,
-                          currentValue: change.currentVersion.value,
+                          previousValue: change.baselineVersion.value as string,
+                          currentValue: change.currentVersion.value as string,
                           transactionToken: change.currentVersion.transactionToken
                         };
                         (structure as structureWithChanges).hasElementChanges = true;
@@ -686,8 +692,8 @@ export class CurrentStateService {
                           let index = structure.elements?.findIndex((el) => el.id === change.artId);
                           structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                           ((structure.elements)[index] as elementWithChanges).changes.name = {
-                            previousValue: change.baselineVersion.value,
-                            currentValue: change.currentVersion.value,
+                            previousValue: change.baselineVersion.value as string,
+                            currentValue: change.currentVersion.value as string,
                             transactionToken: change.currentVersion.transactionToken
                           };
                           (structure as structureWithChanges).hasElementChanges = true;
@@ -700,8 +706,8 @@ export class CurrentStateService {
                             let index = structure.elements?.findIndex((el) => el.id === change.artId);
                             structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                             ((structure.elements)[index] as elementWithChanges).changes.interfaceElementAlterable = {
-                              previousValue: change.baselineVersion.value,
-                              currentValue: change.currentVersion.value,
+                              previousValue: change.baselineVersion.value as boolean,
+                              currentValue: change.currentVersion.value as boolean,
                               transactionToken: change.currentVersion.transactionToken
                             };
                             (structure as structureWithChanges).hasElementChanges = true;
@@ -714,8 +720,8 @@ export class CurrentStateService {
                               let index = structure.elements?.findIndex((el) => el.id === change.artId);
                               structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                               ((structure.elements)[index] as elementWithChanges).changes.interfaceElementIndexEnd = {
-                                previousValue: change.baselineVersion.value,
-                                currentValue: change.currentVersion.value,
+                                previousValue: change.baselineVersion.value as number,
+                                currentValue: change.currentVersion.value as number,
                                 transactionToken: change.currentVersion.transactionToken
                               };
                               (structure as structureWithChanges).hasElementChanges = true;
@@ -728,8 +734,8 @@ export class CurrentStateService {
                                 let index = structure.elements?.findIndex((el) => el.id === change.artId);
                                 structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                                 ((structure.elements)[index] as elementWithChanges).changes.interfaceElementIndexStart = {
-                                  previousValue: change.baselineVersion.value,
-                                  currentValue: change.currentVersion.value,
+                                  previousValue: change.baselineVersion.value as number,
+                                  currentValue: change.currentVersion.value as number,
                                   transactionToken: change.currentVersion.transactionToken
                                 };
                                 (structure as structureWithChanges).hasElementChanges = true;
@@ -742,7 +748,39 @@ export class CurrentStateService {
                       )
                     )
                   ),
-                  of()
+                  iif(() => structure.elements?.map(a => a.platformTypeId?.toString()).includes(change.artId),
+                    iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEUNITS,
+                      of(structure).pipe(
+                        map((structure) => {
+                          let index = structure.elements?.findIndex((el) => el.platformTypeId?.toString() === change.artId);
+                          structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                          ((structure.elements)[index] as elementWithChanges).changes.units = {
+                            previousValue: change.baselineVersion.value as string,
+                            currentValue: change.currentVersion.value as string,
+                            transactionToken: change.currentVersion.transactionToken
+                          };
+                          (structure as structureWithChanges).hasElementChanges = true;
+                          return structure as structureWithChanges
+                        })
+                      ),
+                      iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
+                        of(structure).pipe(
+                          map((structure) => {
+                            let index = structure.elements?.findIndex((el) => el.platformTypeId?.toString() === change.artId);
+                            structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                            ((structure.elements)[index] as elementWithChanges).changes.platformTypeName2 = {
+                              previousValue: change.baselineVersion.value as string,
+                              currentValue: change.currentVersion.value as string,
+                              transactionToken: change.currentVersion.transactionToken
+                            };
+                            (structure as structureWithChanges).hasElementChanges = true;
+                            return structure as structureWithChanges
+                          })
+                        ),
+                        of(structure)
+                      )
+                    ),
+                    of(structure))
                 ) //element has changed attributes
               ),
               iif(() => change.changeType.id === changeTypeNumber.RELATION_CHANGE,
@@ -755,8 +793,8 @@ export class CurrentStateService {
                           let index = structure.elements?.findIndex((el) => el.id === change.artIdB);
                           structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                           ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                            previousValue: change.baselineVersion.applicabilityToken,
-                            currentValue: change.currentVersion.applicabilityToken,
+                            previousValue: change.baselineVersion.applicabilityToken as applic,
+                            currentValue: change.currentVersion.applicabilityToken as applic,
                             transactionToken: change.currentVersion.transactionToken
                           };
                           (structure as structureWithChanges).hasElementChanges = true;
@@ -797,7 +835,7 @@ export class CurrentStateService {
                     ),//check if an element relation changed on specific structure id
                     iif(() => typeof change.itemTypeId === "object" && "id" in change.itemTypeId && change.itemTypeId.id === RelationTypeId.INTERFACEELEMENTPLATFORMTYPE && structure.elements?.map((a) => a.id).includes(change.artId),
                       iif(() => change.currentVersion.modType === ModificationType.NEW && change.baselineVersion.modType === ModificationType.NONE,
-                        this.typeService.getType(branch, change.artIdB).pipe(
+                        this.typeService.getTypeFromBranch(branch, change.artIdB).pipe(
                           map((type) => {
                             let index = structure.elements?.findIndex((el) => el.id === change.artId);
                             structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
@@ -816,7 +854,7 @@ export class CurrentStateService {
                           })
                         ),
                         iif(() => change.currentVersion.modType === ModificationType.DELETED && change.baselineVersion.modType !== ModificationType.NONE,
-                          this.typeService.getType(branch, change.artIdB).pipe(
+                          this.typeService.getTypeFromBranch(branch, change.artIdB).pipe(
                             map((type) => {
                               let index = structure.elements?.findIndex((el) => el.id === change.artId);
                               structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
@@ -860,7 +898,7 @@ export class CurrentStateService {
       )),
 
 
-      switchMap((val) => of(structure as structure|structureWithChanges))
+      switchMap((val) => of(structure as structure | structureWithChanges)),
     )
   }
   private _parseDifferencesMulti(differences:changeInstance[]|undefined,_oldStructures:(Required<structure>)[],parentBranch:string,branchId:string,messageId:string,subMessageId:string,connectionId:string) {
@@ -916,8 +954,8 @@ export class CurrentStateService {
                               const index = structure.elements?.findIndex((el) => el.id === change.artId);
                               structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                               ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                                previousValue: change.baselineVersion.applicabilityToken,
-                                currentValue: change.currentVersion.applicabilityToken,
+                                previousValue: change.baselineVersion.applicabilityToken as applic,
+                                currentValue: change.currentVersion.applicabilityToken as applic,
                                 transactionToken: change.currentVersion.transactionToken
                               };
                               ((structure.elements)[index] as elementWithChanges).added = true;
@@ -945,8 +983,8 @@ export class CurrentStateService {
                                 const index = structure.elements?.findIndex((el) => el.id === change.artId);
                                 structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
                                 ((structure.elements)[index] as elementWithChanges).changes.applicability = {
-                                  previousValue: change.baselineVersion.applicabilityToken,
-                                  currentValue: change.currentVersion.applicabilityToken,
+                                  previousValue: change.baselineVersion.applicabilityToken as applic,
+                                  currentValue: change.currentVersion.applicabilityToken as applic,
                                   transactionToken: change.currentVersion.transactionToken
                                 };
                                 (structure as structureWithChanges).hasElementChanges = true;
@@ -1112,8 +1150,8 @@ export class CurrentStateService {
                                     map((el) => {
                                       el = this._elementChangeSetup(el);
                                       (el as elementWithChanges).changes.description = {
-                                        previousValue: change.baselineVersion.value,
-                                        currentValue: change.currentVersion.value,
+                                        previousValue: change.baselineVersion.value as string,
+                                        currentValue: change.currentVersion.value as string,
                                         transactionToken: change.currentVersion.transactionToken
                                       }
                                       return el as elementWithChanges;
@@ -1124,8 +1162,8 @@ export class CurrentStateService {
                                       map((el) => {
                                         el = this._elementChangeSetup(el);
                                         (el as elementWithChanges).changes.name = {
-                                          previousValue: change.baselineVersion.value,
-                                          currentValue: change.currentVersion.value,
+                                          previousValue: change.baselineVersion.value as string,
+                                          currentValue: change.currentVersion.value as string,
                                           transactionToken: change.currentVersion.transactionToken
                                         }
                                         return el as elementWithChanges;
@@ -1136,8 +1174,8 @@ export class CurrentStateService {
                                         map((el) => {
                                           el = this._elementChangeSetup(el);
                                           (el as elementWithChanges).changes.interfaceElementAlterable = {
-                                            previousValue: change.baselineVersion.value,
-                                            currentValue: change.currentVersion.value,
+                                            previousValue: change.baselineVersion.value as boolean,
+                                            currentValue: change.currentVersion.value as boolean,
                                             transactionToken: change.currentVersion.transactionToken
                                           }
                                           return el as elementWithChanges;
@@ -1148,8 +1186,8 @@ export class CurrentStateService {
                                           map((el) => {
                                             el = this._elementChangeSetup(el);
                                             (el as elementWithChanges).changes.interfaceElementIndexStart = {
-                                              previousValue: change.baselineVersion.value,
-                                              currentValue: change.currentVersion.value,
+                                              previousValue: change.baselineVersion.value as number,
+                                              currentValue: change.currentVersion.value as number,
                                               transactionToken: change.currentVersion.transactionToken
                                             }
                                             return el as elementWithChanges;
@@ -1160,8 +1198,8 @@ export class CurrentStateService {
                                             map((el) => {
                                               el = this._elementChangeSetup(el);
                                               (el as elementWithChanges).changes.interfaceElementIndexEnd = {
-                                                previousValue: change.baselineVersion.value,
-                                                currentValue: change.currentVersion.value,
+                                                previousValue: change.baselineVersion.value as number,
+                                                currentValue: change.currentVersion.value as number,
                                                 transactionToken: change.currentVersion.transactionToken
                                               }
                                               return el as elementWithChanges;
@@ -1172,8 +1210,8 @@ export class CurrentStateService {
                                               map((el) => {
                                                 el = this._elementChangeSetup(el);
                                                 (el as elementWithChanges).changes.notes = {
-                                                  previousValue: change.baselineVersion.value,
-                                                  currentValue: change.currentVersion.value,
+                                                  previousValue: change.baselineVersion.value as string,
+                                                  currentValue: change.currentVersion.value as string,
                                                   transactionToken: change.currentVersion.transactionToken
                                                 }
                                                 return el as elementWithChanges;
@@ -1197,7 +1235,50 @@ export class CurrentStateService {
                       )),
                       reduce((acc,curr)=>[...acc,curr],[] as (structure|structureWithChanges)[])
                     ), //elements
-                    of(change)
+                    iif(() => structures.map(a => a.elements.map(b => b.platformTypeId?.toString())).flat().includes(change.artId),
+                      of(structures).pipe(
+                        take(1),
+                        concatMap((structures) => from(structures).pipe(
+                          switchMap((structure) => iif(() => structure.elements.map(a => a.platformTypeId?.toString()).flat().includes(change.artId),
+                            of(structure).pipe(
+                              concatMap((structure) => from(structure.elements).pipe(
+                                switchMap((element) => iif(() => change.artId === element.platformTypeId?.toString(),
+                                  iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEUNITS,
+                                    of(element).pipe(
+                                      map(el => {
+                                        el = this._elementChangeSetup(el);
+                                        (el as elementWithChanges).changes.units = {
+                                          previousValue: change.baselineVersion.value as string,
+                                          currentValue: change.currentVersion.value as string,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        }
+                                        return el as elementWithChanges;
+                                      })
+                                    ),
+                                    iif(() => change.itemTypeId === ATTRIBUTETYPEID.NAME,
+                                      of(element).pipe(
+                                        map(el => {
+                                          el = this._elementChangeSetup(el);
+                                          (el as elementWithChanges).changes.platformTypeName2 = {
+                                            previousValue: change.baselineVersion.value as string,
+                                            currentValue: change.currentVersion.value as string,
+                                            transactionToken: change.currentVersion.transactionToken
+                                          }
+                                          return el as elementWithChanges;
+                                        })
+                                      ),
+                                      of(element))),
+                                  of(element))),
+                              )),
+                              reduce((acc, curr) => [...acc, curr], [] as (element | elementWithChanges)[]),
+                              map((val) => { structure.elements = val;(structure as structureWithChanges).hasElementChanges = true; return structure;})
+                            ),
+                            of(structure)
+                          ))
+                        ))
+                      ),
+                      of()
+                    )
                   )
                 ),
                 iif(() => change.changeType.id === changeTypeNumber.RELATION_CHANGE,
@@ -1269,17 +1350,17 @@ export class CurrentStateService {
                                           transactionToken: change.currentVersion.transactionToken
                                         };
                                         (el as elementWithChanges).changes.interfaceElementAlterable = {
-                                          previousValue: '',
+                                          previousValue: false,
                                           currentValue:el.interfaceElementAlterable,
                                           transactionToken: change.currentVersion.transactionToken
                                         };
                                         (el as elementWithChanges).changes.interfaceElementIndexEnd = {
-                                          previousValue: '',
+                                          previousValue: 0,
                                           currentValue:el.interfaceElementIndexEnd,
                                           transactionToken: change.currentVersion.transactionToken
                                         };
                                         (el as elementWithChanges).changes.interfaceElementIndexStart = {
-                                          previousValue: '',
+                                          previousValue: 0,
                                           currentValue:el.interfaceElementIndexStart,
                                           transactionToken: change.currentVersion.transactionToken
                                         };
@@ -1294,8 +1375,8 @@ export class CurrentStateService {
                                           transactionToken: change.currentVersion.transactionToken
                                         };
                                         (el as elementWithChanges).changes.applicability = {
-                                          previousValue: change.baselineVersion.applicabilityToken,
-                                          currentValue: change.currentVersion.applicabilityToken,
+                                          previousValue: change.baselineVersion.applicabilityToken as applic,
+                                          currentValue: change.currentVersion.applicabilityToken as applic,
                                           transactionToken: change.currentVersion.transactionToken
                                         };
                                         (el as elementWithChanges).added = true;
@@ -1363,7 +1444,7 @@ export class CurrentStateService {
                                   concatMap((structure) => from(structure.elements).pipe(
                                     concatMap((element) => iif(() => change.artId === element.id,
                                       of(element).pipe(
-                                        concatMap((val) => this.typeService.getType(branchId, change.artIdB).pipe(
+                                        concatMap((val) => this.typeService.getTypeFromBranch(branchId, change.artIdB).pipe(
                                           map((type) => {
                                             element=this._elementChangeSetup(element)
                                             if ((element as elementWithChanges).changes.platformTypeName2 === undefined) {
@@ -1400,7 +1481,7 @@ export class CurrentStateService {
                                   concatMap((structure) => from(structure.elements).pipe(
                                     concatMap((element) => iif(() => change.artId === element.id,
                                       of(element).pipe(
-                                        concatMap((val) => this.typeService.getType(branchId, change.artIdB).pipe(
+                                        concatMap((val) => this.typeService.getTypeFromBranch(branchId, change.artIdB).pipe(
                                           map((type) => {
                                             element = this._elementChangeSetup(element);
                                             if ((element as elementWithChanges).changes.platformTypeName2 === undefined) {

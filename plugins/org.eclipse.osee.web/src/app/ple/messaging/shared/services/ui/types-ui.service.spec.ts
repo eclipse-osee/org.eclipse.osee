@@ -11,6 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { TestScheduler } from 'rxjs/testing';
+import { transactionMock } from 'src/app/transactions/transaction.mock';
+import { response } from '../../../connection-view/mocks/Response.mock';
 import { typesServiceMock } from '../../mocks/types.service.mock';
 import { TypesService } from '../http/types.service';
 
@@ -18,6 +21,7 @@ import { TypesUIService } from './types-ui.service';
 
 describe('TypesUIService', () => {
   let service: TypesUIService;
+  let scheduler: TestScheduler;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,8 +29,22 @@ describe('TypesUIService', () => {
     });
     service = TestBed.inject(TypesUIService);
   });
-
+  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+  }));
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should create a transaction', () => {
+    scheduler.run(({ expectObservable }) => {
+      expectObservable(service.changeType({})).toBe('(a|)',{a:transactionMock})
+    })
+  })
+
+  it('should perform a mutation', () => {
+    scheduler.run(({ expectObservable }) => {
+      expectObservable(service.performMutation(transactionMock)).toBe('(a|)',{a:response})
+    })
+  })
 });

@@ -34,6 +34,8 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
 
    private Integer InterfaceElementIndexEnd;
 
+   private String Units;
+
    private Double beginByte = 0.0;
    private Double endByte = 0.0;
    private Double beginWord = 0.0;
@@ -259,6 +261,20 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
     */
    public void setInterfacePlatformTypeDefaultValue(String interfacePlatformTypeDefaultValue) {
       InterfacePlatformTypeDefaultValue = interfacePlatformTypeDefaultValue;
+   }
+
+   /**
+    * @return the units
+    */
+   public String getUnits() {
+      return Units;
+   }
+
+   /**
+    * @param units the units to set
+    */
+   public void setUnits(String units) {
+      Units = units;
    }
 
 }

@@ -89,4 +89,12 @@ describe('TypesService', () => {
     req.flush({});
     httpTestingController.verify();
   })
+
+  it('should get a platform type', () => {
+    service.getType('10', '20').subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 10 + "/types/"+20);
+    expect(req.request.method).toEqual('GET');
+    req.flush({});
+    httpTestingController.verify();
+  })
 });
