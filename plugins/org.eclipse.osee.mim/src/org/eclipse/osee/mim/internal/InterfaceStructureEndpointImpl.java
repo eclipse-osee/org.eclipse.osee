@@ -102,6 +102,8 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
 
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
             }
             structure.setSizeInBytes(sizeInBytes);
             structure.setElements(elements);
@@ -160,6 +162,8 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
 
             element.setPlatformTypeId(platformType.getId());
             element.setPlatformTypeName(platformType.getName());
+            element.setUnits(
+               platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
          }
          returnValue.setSizeInBytes(sizeInBytes);
          returnValue.setElements(elements);

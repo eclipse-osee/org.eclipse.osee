@@ -28,7 +28,8 @@ export class EnumsService {
   private _rates = this.http.get<string[]>(this.baseURL + 'MessageRates').pipe(share());
   private _types = this.http.get<string[]>(this.baseURL + 'MessageTypes').pipe(share());
   private _categories = this.http.get<string[]>(this.baseURL + 'StructureCategories').pipe(share(), shareReplay(1));
-  private _connectionTypes = this.http.get<transportType[]>(this.baseURL + 'ConnectionTypes').pipe(share(),shareReplay(1));
+  private _connectionTypes = this.http.get<transportType[]>(this.baseURL + 'ConnectionTypes').pipe(share(), shareReplay(1));
+  private _units = this.http.get<string[]>(this.baseURL + 'Units').pipe(share(),shareReplay(1));
   
   get baseURL() {
     return this._baseURL;
@@ -51,5 +52,9 @@ export class EnumsService {
   }
   get connectionTypes() {
     return this._connectionTypes;
+  }
+
+  get units() {
+    return this._units;
   }
 }

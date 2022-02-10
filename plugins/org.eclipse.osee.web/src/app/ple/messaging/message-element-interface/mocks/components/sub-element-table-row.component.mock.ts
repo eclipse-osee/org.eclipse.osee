@@ -31,7 +31,8 @@ import { structure } from "../../types/structure";
          notes: "",
          interfaceElementIndexEnd: 0,
          interfaceElementIndexStart: 0,
-         interfaceElementAlterable: false
+         interfaceElementAlterable: false,
+         units:'Hertz'
      }
      @Input() structure: structure = {
          id: "",

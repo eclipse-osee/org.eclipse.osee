@@ -178,6 +178,7 @@ export class StructureTableComponent implements OnInit {
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 0,
         interfaceElementIndexStart: 0,
+        units:''
       },
       type:{id:'',name:''}
     }

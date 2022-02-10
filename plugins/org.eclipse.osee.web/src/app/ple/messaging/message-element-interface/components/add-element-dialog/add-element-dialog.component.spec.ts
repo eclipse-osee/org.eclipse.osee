@@ -39,7 +39,8 @@ describe('AddElementDialogComponent', () => {
       notes: '',
       interfaceElementAlterable: true,
       interfaceElementIndexEnd: 0,
-      interfaceElementIndexStart:0
+      interfaceElementIndexStart: 0,
+      units:''
     }
   }
 

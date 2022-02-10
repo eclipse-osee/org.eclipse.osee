@@ -11,8 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { share, switchMap, repeatWhen, shareReplay, take } from 'rxjs/operators';
+import { share, switchMap, repeatWhen, shareReplay, take, tap } from 'rxjs/operators';
+import { transaction } from 'src/app/transactions/transaction';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { PlatformType } from '../../types/platformType';
 import { TypesService } from '../http/types.service';
 
 @Injectable({
@@ -40,6 +42,22 @@ export class TypesUIService {
         share()
       )),
       shareReplay({ bufferSize: 1, refCount: true })
+    )
+  }
+
+  getTypeFromBranch(branchId: string, typeId: string) {
+    return this._typesService.getType(branchId,typeId)
+  }
+  changeType(type:Partial<PlatformType>) {
+    return this._ui.id.pipe(
+      take(1),
+      switchMap((branchId)=>this._typesService.changePlatformType(branchId,type))
+    )
+  }
+  performMutation(body: transaction) {
+    return this._ui.id.pipe(
+      take(1),
+    switchMap((branchId)=>this._typesService.performMutation(body,branchId))
     )
   }
 }

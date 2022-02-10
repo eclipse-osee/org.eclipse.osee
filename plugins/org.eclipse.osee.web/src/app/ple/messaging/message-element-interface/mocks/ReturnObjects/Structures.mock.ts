@@ -27,6 +27,7 @@ export const structuresMock: Required<structure>[] = [
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
     ],
     numElements: 1,
@@ -57,6 +58,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
       {
         id: '201371',
@@ -68,6 +70,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
       {
         id: '201360',
@@ -79,6 +82,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
     ],
     numElements: 1,
@@ -106,6 +110,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
     ],
     numElements: 1,
@@ -133,6 +138,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
     ],
     numElements: 1,
@@ -166,6 +172,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         logicalType: 'enumeration',
+        units:'',
         changes: {
           name: { previousValue: 'hello', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
           description: { previousValue: '', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
@@ -187,6 +194,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:'',
         added: true,
         changes: {
           applicability: {
@@ -198,7 +206,7 @@ export const structuresMockWithChangesMulti: (
             transactionToken: { id: '1222', branchId: '2780650236653788489' },
           },
           interfaceElementAlterable: {
-            previousValue: '',
+            previousValue: false,
             currentValue: true,
             transactionToken: { id: '1222', branchId: '2780650236653788489' },
           },
@@ -209,9 +217,10 @@ export const structuresMockWithChangesMulti: (
           },
           name: { previousValue: '', currentValue: 'name2', transactionToken: { id: '1222', branchId: '2780650236653788489' } },
           description: { previousValue: '', currentValue: 'description2', transactionToken: { id: '1222', branchId: '2780650236653788489' } },
-          interfaceElementIndexEnd: { previousValue: '', currentValue: 1, transactionToken: { id: '1222', branchId: '2780650236653788489' } },
-          interfaceElementIndexStart: { previousValue: '', currentValue: 0, transactionToken: { id: '1222', branchId: '2780650236653788489' } },
+          interfaceElementIndexEnd: { previousValue: 0, currentValue: 1, transactionToken: { id: '1222', branchId: '2780650236653788489' } },
+          interfaceElementIndexStart: { previousValue: 0, currentValue: 0, transactionToken: { id: '1222', branchId: '2780650236653788489' } },
           notes: { previousValue: '', currentValue: 'notes', transactionToken: { id: '1222', branchId: '2780650236653788489' } },
+          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } }
         },
       },
       {
@@ -224,7 +233,10 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:'',
         changes: {
+          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } },
+          platformTypeName2:{previousValue:null,currentValue:'testingUnits',transactionToken:{ id: '1322', branchId: '2780650236653788489' }},
           interfaceElementIndexEnd: {
             previousValue: '7',
             currentValue: '9',
@@ -247,7 +259,9 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:'',
         changes: {
+          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } },
           applicability: {
             previousValue: null,
             currentValue: { id: '1', name: 'Base' },
@@ -274,8 +288,8 @@ export const structuresMockWithChangesMulti: (
             transactionToken: { id: '1225', branchId: '2780650236653788489' },
           },
           platformTypeName2: {
-            previousValue: '',
-            currentValue: 'First',
+            previousValue: null,
+            currentValue: 'Name',
             transactionToken: { id: '1225', branchId: '2780650236653788489' },
           },
         },
@@ -347,9 +361,15 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units: '',
+        changes: {
+          platformTypeName2:{previousValue:null,currentValue:'testingUnits',transactionToken:{ id: '1322', branchId: '2780650236653788489' }},
+          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } }
+        }
       },
     ],
     numElements: 1,
+    hasElementChanges:true,
     sizeInBytes: 0,
     bytesPerSecondMaximum: 0,
     bytesPerSecondMinimum: 0,
@@ -407,10 +427,16 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units: '',
+        changes: {
+          platformTypeName2:{previousValue:null,currentValue:'testingUnits',transactionToken:{ id: '1322', branchId: '2780650236653788489' }},
+          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } }
+        }
       },
     ],
     numElements: 1,
     sizeInBytes: 0,
+    hasElementChanges:true,
     bytesPerSecondMaximum: 0,
     bytesPerSecondMinimum: 0,
     applicability: { id: '1', name: 'Base' },
@@ -473,7 +499,8 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         logicalType: 'enumeration',
-        deleted:true,
+        deleted: true,
+        units:'',
         changes: {
           name: { previousValue: 'hello', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
             description: { previousValue: '', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
@@ -495,6 +522,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
       {
         id: '201360',
@@ -506,6 +534,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
       {
         id: '201371',
@@ -517,6 +546,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
     ],
     numElements: 4,
@@ -584,6 +614,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
       {
         id: '201371',
@@ -595,6 +626,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
       {
         id: '201360',
@@ -606,6 +638,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
+        units:''
       },
     ],
     numElements: 1,
@@ -670,7 +703,8 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementIndexEnd: 1,
       interfaceElementIndexStart: 0,
       logicalType: 'enumeration',
-      deleted:true,
+      deleted: true,
+      units:'',
       changes: {
         name: { previousValue: 'hello', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
           description: { previousValue: '', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
@@ -692,6 +726,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
       platformTypeId: 9,
+      units:'',
       added: true,
       changes: {
         applicability: {
@@ -705,8 +740,8 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
           transactionToken: { id: '1227', branchId: '2780650236653788489' },
         },
         platformTypeName2: {
-          previousValue: 'First',
-          currentValue: 'First',
+          previousValue: 'Name',
+          currentValue: 'Name',
           transactionToken: { id: '1226', branchId: '2780650236653788489' },
         },
       },
@@ -721,6 +756,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
       platformTypeId: 9,
+      units:'',
       changes: {
         interfaceElementIndexEnd: {
           previousValue: '7',
@@ -739,6 +775,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
       platformTypeId: 9,
+      units:'',
       changes: {
         applicability: {
           previousValue: null,
@@ -762,7 +799,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
         },
         platformTypeName2: {
           previousValue: '',
-          currentValue: 'First',
+          currentValue: 'Name',
           transactionToken: { id: '1225', branchId: '2780650236653788489' },
         },
       },
@@ -831,6 +868,7 @@ export const structuresMockWithChanges: structureWithChanges = {
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
       platformTypeId: 9,
+      units:''
     },
   ],
   numElements: 1,

@@ -70,4 +70,12 @@ public class EnumEndpointImpl implements EnumEndpoint {
       return Arrays.asList(ConnectionViewType.values());
    }
 
+   @Override
+   public Collection<String> getPossibleUnits() {
+      List<String> units = new ArrayList<String>();
+      units.addAll(CoreAttributeTypes.InterfacePlatformTypeUnits.getEnumStrValues());
+      units.sort(Comparator.comparing(String::toString));
+      return units;
+   }
+
 }

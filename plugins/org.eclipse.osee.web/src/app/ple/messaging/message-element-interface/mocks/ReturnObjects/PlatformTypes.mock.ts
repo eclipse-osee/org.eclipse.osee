@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { PlatformType } from "../../types/platformtype";
+import { PlatformType } from "../../../shared/types/platformType";
 
 export const platformTypesMock: PlatformType[] = [
     {
@@ -46,3 +46,56 @@ export const platformTypesMock: PlatformType[] = [
         name:'First2'
     },
 ];
+export const platformTypes1: PlatformType[] = [
+    {
+        interfaceLogicalType: '',
+        interfacePlatform2sComplement: false,
+        interfacePlatformTypeAnalogAccuracy: '',
+        interfacePlatformTypeBitSize: '8',
+        interfacePlatformTypeBitsResolution: '8',
+        interfacePlatformTypeCompRate: '',
+        interfacePlatformTypeDefaultValue: '',
+        interfacePlatformTypeEnumLiteral: '',
+        interfacePlatformTypeMaxval: '1',
+        interfacePlatformTypeMinval: '0',
+        interfacePlatformTypeMsbValue: '0',
+        interfacePlatformTypeUnits: '',
+        interfacePlatformTypeValidRangeDescription: '',
+        id: '0',
+        name:'Name'
+    },
+    {
+        interfaceLogicalType: '',
+        interfacePlatform2sComplement: false,
+        interfacePlatformTypeAnalogAccuracy: '',
+        interfacePlatformTypeBitSize: '8',
+        interfacePlatformTypeBitsResolution: '8',
+        interfacePlatformTypeCompRate: '',
+        interfacePlatformTypeDefaultValue: '',
+        interfacePlatformTypeEnumLiteral: '',
+        interfacePlatformTypeMaxval: '1',
+        interfacePlatformTypeMinval: '0',
+        interfacePlatformTypeMsbValue: '0',
+        interfacePlatformTypeUnits: '',
+        interfacePlatformTypeValidRangeDescription: '',
+        id: '1',
+        name:'Name2'
+    },
+    {
+        interfaceLogicalType: '',
+        interfacePlatform2sComplement: false,
+        interfacePlatformTypeAnalogAccuracy: '',
+        interfacePlatformTypeBitSize: '8',
+        interfacePlatformTypeBitsResolution: '8',
+        interfacePlatformTypeCompRate: '',
+        interfacePlatformTypeDefaultValue: '',
+        interfacePlatformTypeEnumLiteral: '',
+        interfacePlatformTypeMaxval: '1',
+        interfacePlatformTypeMinval: '0',
+        interfacePlatformTypeMsbValue: '0',
+        interfacePlatformTypeUnits: '',
+        interfacePlatformTypeValidRangeDescription: '',
+        id: '2',
+        name:'Name3'
+    },
+]

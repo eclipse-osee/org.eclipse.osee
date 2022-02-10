@@ -95,6 +95,7 @@ export class NewTypeDialogComponent implements OnInit {
       name:"Base"
       }
   }
+  units = this.typesService.units;
   constructor(
     public dialogRef: MatDialogRef<NewTypeDialogComponent>,
     private typesService: CurrentTypesService

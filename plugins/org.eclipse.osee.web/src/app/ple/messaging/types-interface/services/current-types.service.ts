@@ -25,6 +25,7 @@ import { enumeration, enumerationSet } from '../../shared/types/enum';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { EnumerationUIService } from '../../shared/services/ui/enumeration-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
+import { EnumsService } from '../../shared/services/http/enums.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,7 @@ export class CurrentTypesService {
     )),
   )
 
-  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService) { }
+  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService, private constantEnumService: EnumsService) { }
 
   /**
    * Returns a list of platform types based on current branch and filter conditions(debounced).
@@ -69,8 +70,12 @@ export class CurrentTypesService {
     return this.enumSetService.enumSets;
   }
 
+  get units() {
+    return this.constantEnumService.units;
+  }
+
   getType(id: string) {
-    this.uiService.BranchId.pipe(
+    return this.uiService.BranchId.pipe(
       take(1),
       switchMap((branch)=>this.typesService.getType(branch,id))
     )

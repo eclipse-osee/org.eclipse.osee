@@ -32,9 +32,12 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
   @Input() elementStart: number =0;
   @Input() elementEnd: number = 0;
   @Input() editingDisabled: boolean = false;
+
+  @Input() platformTypeId: string = "";
   @Output() contextMenu = new EventEmitter<MouseEvent>();
   private _value: Subject<T> = new Subject();
   private _immediateValue: Subject<T> = new Subject();
+  private _units: Subject<string> = new Subject();
   _element: Partial<element> = {
     id:this.elementId
   };
@@ -50,6 +53,12 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
     tap(() => {
       this._element.id = this.elementId;
     }),
+  )
+  private _updateUnits = this._units.pipe(
+    share(),
+    debounceTime(500),
+    distinctUntilChanged(),
+    switchMap((unit)=>this.structureService.updatePlatformTypeValue({id:this.platformTypeId,interfacePlatformTypeUnits:unit}))
   )
   private _immediateUpdateValue=this._immediateValue.pipe(
     share(),
@@ -83,6 +92,7 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
   )
 
   applics = this.structureService.applic;
+  units = this.structureService.units;
   menuPosition = {
     x: '0',
     y:'0'
@@ -91,6 +101,7 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
     this._updateValue.subscribe();
     this._immediateUpdateValue.subscribe();
     this._sendType.subscribe();
+    this._updateUnits.subscribe();
    }
 
   ngOnInit(): void {
@@ -123,5 +134,8 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
   }
   focusChanged(event: string|null) {
     this._focus.next(event);
+  }
+  updateUnits(event: string) {
+    this._units.next(event);
   }
 }

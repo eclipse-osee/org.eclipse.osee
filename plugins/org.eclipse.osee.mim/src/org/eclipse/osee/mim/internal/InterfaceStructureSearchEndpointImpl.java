@@ -69,6 +69,8 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
                   PlatformTypeToken.class);
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
             }
             structure.setElements(elements);
          }
@@ -109,6 +111,8 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
                   PlatformTypeToken.class);
                element.setPlatformTypeId(platformType.getId());
                element.setPlatformTypeName(platformType.getName());
+               element.setUnits(
+                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
             }
             structure.setElements(elements);
          }

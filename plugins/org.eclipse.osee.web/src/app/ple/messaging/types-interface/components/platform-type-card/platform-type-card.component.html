@@ -44,6 +44,9 @@
         <div *ngIf="typeData.interfacePlatformTypeAnalogAccuracy">
             Analog Accuracy: {{typeData.interfacePlatformTypeAnalogAccuracy}}
         </div>
+        <div *ngIf="typeData.interfacePlatformTypeUnits">
+            Units: {{typeData.interfacePlatformTypeUnits}}
+        </div>
     </div>
     <ng-container *ngIf="(inEditMode|async)===true; else no_edit">
         <div mat-card-actions>

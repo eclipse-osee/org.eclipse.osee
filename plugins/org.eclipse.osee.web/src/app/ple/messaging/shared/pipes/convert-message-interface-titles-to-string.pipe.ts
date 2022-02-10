@@ -50,7 +50,8 @@ const transformMatrix:any = {
   interfacePlatformTypeMaxval: "Max",
   interfacePlatformTypeMinval: "Min",
   interfaceElementIndexEnd: "End Index",
-  interfaceElementIndexStart:"Start Index"
+  interfaceElementIndexStart: "Start Index",
+  units: "Units"
 }
 
 @Pipe({

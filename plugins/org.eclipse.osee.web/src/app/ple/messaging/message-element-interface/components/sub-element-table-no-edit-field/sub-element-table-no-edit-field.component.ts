@@ -34,6 +34,7 @@ export class SubElementTableNoEditFieldComponent implements OnInit {
       id: '1',
       name:'Base'
     },
+    units:'',
     interfaceElementAlterable: false
   };
   @Input() header: string = "";

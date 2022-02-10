@@ -25,6 +25,9 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
+import { unitsMock } from 'src/app/ple/messaging/shared/mocks/unit.mock';
+import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 import { SharedMessagingModule } from 'src/app/ple/messaging/shared/shared-messaging.module';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
 import { CurrentStateService } from '../../../services/current-state.service';
@@ -40,6 +43,7 @@ describe('EditElementFieldComponent', () => {
     await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule,MatIconModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
       providers: [{ provide: CurrentStateService, useValue: CurrentStateServiceMock },
+        { provide: EnumsService, useValue:enumsServiceMock },
         { provide: ActivatedRoute, useValue: {} }],
       declarations: [ EditElementFieldComponent ]
     })
@@ -51,6 +55,7 @@ describe('EditElementFieldComponent', () => {
     component = fixture.componentInstance;
     component.structureId = '10';
     component.elementId = '15';
+    component.platformTypeId='20'
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
@@ -117,5 +122,23 @@ describe('EditElementFieldComponent', () => {
       component.openMenu(mEvent, '');
       expect(spy).toHaveBeenCalledWith(mEvent);
     })
+  })
+  describe('Units editing', () => {
+    beforeEach(() => {
+      component.header='units'
+      component.value = unitsMock[0]
+    })
+    it('should update the units', fakeAsync(async () => {
+      component.focusChanged('mouse');
+      component.focusChanged('mouse');
+      component.focusChanged(null);
+      let select = await loader.getHarness(MatSelectHarness.with({selector:'.unit-selector'}));
+      await select.focus();
+      await select.open();
+      await select.isOpen();
+      await select.clickOptions({ text: unitsMock[5] });
+      tick(500);
+      expect(await select.getValueText()).toBe(unitsMock[5])
+    }))
   })
 });

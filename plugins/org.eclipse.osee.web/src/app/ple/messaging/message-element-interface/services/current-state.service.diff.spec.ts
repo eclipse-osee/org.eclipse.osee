@@ -19,8 +19,10 @@ import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-repor
 import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-report-branch.service.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
+import { typesServiceMock } from '../../shared/mocks/types.service.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
+import { TypesService } from '../../shared/services/http/types.service';
 import { structureRepeatingWithChanges, structuresMockWithChangesMulti, structuresPreChanges } from '../mocks/ReturnObjects/Structures.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
@@ -50,7 +52,7 @@ describe('CurrentStateService', () => {
           }
         },
         { provide: MessagesService, useValue: messageServiceMock },
-        { provide: PlatformTypeService, useValue: platformTypeServiceMock },
+        { provide: TypesService, useValue: typesServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: ElementUiService },
@@ -81,7 +83,7 @@ describe('CurrentStateService', () => {
     scheduler.run(({ expectObservable, cold }) => {
       service.branchId = '10';
       const values = { a: [structuresMockWithChangesMulti[0],structuresMockWithChangesMulti[1],structuresMockWithChangesMulti[2]], b: true,c:undefined,d:[structuresMockWithChangesMulti[0],structuresMockWithChangesMulti[1],structuresMockWithChangesMulti[2],structuresMockWithChangesMulti[3]],e:structuresMockWithChangesMulti };
-      expectObservable(service.structures).toBe('500ms (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddeeee)', values);
+      expectObservable(service.structures).toBe('500ms (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddeeee)', values);
     })
   })
 
