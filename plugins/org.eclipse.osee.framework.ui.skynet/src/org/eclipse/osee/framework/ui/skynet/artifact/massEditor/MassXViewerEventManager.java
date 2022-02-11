@@ -23,10 +23,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -36,7 +39,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  *
  * @author Donald G. Dunne
  */
-public class MassXViewerEventManager implements IArtifactEventListener {
+public class MassXViewerEventManager implements IArtifactEventListener, IArtifactTopicEventListener {
 
    List<IMassViewerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static MassXViewerEventManager instance;
@@ -116,7 +119,71 @@ public class MassXViewerEventManager implements IArtifactEventListener {
    }
 
    @Override
+   public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      for (IMassViewerEventHandler handler : handlers) {
+         if (handler.isDisposed()) {
+            handlers.remove(handler);
+         }
+      }
+
+      final Collection<Artifact> modifiedArts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+      final Collection<Artifact> relModifiedArts = artifactTopicEvent.getRelCacheArtifacts();
+      final Collection<EventBasicGuidArtifact> deletedPurgedArts =
+         artifactTopicEvent.get(EventModType.Deleted, EventModType.Purged);
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (!deletedPurgedArts.isEmpty()) {
+               for (IMassViewerEventHandler handler : handlers) {
+                  try {
+                     if (!handler.isDisposed()) {
+                        IContentProvider contentProvider = handler.getMassXViewer().getContentProvider();
+                        // remove from UI
+                        if (contentProvider instanceof MassContentProvider) {
+                           ((MassContentProvider) contentProvider).removeAll(deletedPurgedArts);
+                        }
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE,
+                        "Error processing event handler for deleted - " + handler, ex);
+                  }
+               }
+            }
+            for (IMassViewerEventHandler handler : handlers) {
+               try {
+                  if (!handler.isDisposed()) {
+                     IContentProvider contentProvider = handler.getMassXViewer().getContentProvider();
+                     // remove from UI
+                     if (contentProvider instanceof MassContentProvider) {
+                        ((MassContentProvider) contentProvider).updateAll(modifiedArts);
+                     }
+                  }
+
+                  for (Artifact art : relModifiedArts) {
+                     // Don't refresh deleted artifacts
+                     if (art.isDeleted()) {
+                        continue;
+                     }
+                     handler.getMassXViewer().refresh(art);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler for modified - " + handler,
+                     ex);
+               }
+            }
+         }
+      });
+   }
+
+   @Override
    public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
       return null;
    }
 

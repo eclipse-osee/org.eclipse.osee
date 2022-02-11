@@ -22,8 +22,12 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -42,7 +46,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class WfeRelationsTab extends WfeAbstractTab implements IRefreshActionHandler, IArtifactEventListener {
+public class WfeRelationsTab extends WfeAbstractTab implements IRefreshActionHandler, IArtifactEventListener, IArtifactTopicEventListener {
    public final static String ID = "ats.relations.tab";
    private final WorkflowEditor editor;
    private final Artifact artifact;
@@ -135,7 +139,17 @@ public class WfeRelationsTab extends WfeAbstractTab implements IRefreshActionHan
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return Arrays.asList(new BranchIdTopicEventFilter(artifact.getBranch()));
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      // do nothing
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
       // do nothing
    }
 

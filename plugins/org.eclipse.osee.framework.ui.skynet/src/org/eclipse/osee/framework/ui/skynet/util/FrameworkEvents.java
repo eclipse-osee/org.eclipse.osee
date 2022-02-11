@@ -20,6 +20,7 @@ public class FrameworkEvents {
 
    public static final String PERSONAL_WEB_PREFERENCES = "framework/web/prefs/modified/links/personal";
    public static final String GLOBAL_WEB_PREFERENCES = "framework/web/prefs/modified/links/global";
+   public static final String ARTIFACT_EVENT = "framework/artifact/event";
 
    private FrameworkEvents() {
       // utility class

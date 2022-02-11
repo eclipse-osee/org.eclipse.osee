@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -130,5 +132,10 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
       return isWidgetInState(XWorkingBranchButtonCreate.class.getSimpleName());
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 }

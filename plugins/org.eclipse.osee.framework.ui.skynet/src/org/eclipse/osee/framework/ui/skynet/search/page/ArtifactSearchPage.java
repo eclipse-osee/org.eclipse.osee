@@ -43,10 +43,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -71,7 +74,7 @@ import org.eclipse.ui.part.IPageSite;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements Adaptable, IRebuildMenuListener, IArtifactEventListener, IBranchProvider {
+public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements Adaptable, IRebuildMenuListener, IArtifactEventListener, IArtifactTopicEventListener, IBranchProvider {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
 
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];
@@ -504,9 +507,40 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
          artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+      if (deletedPurgedArts.isEmpty()) {
+         return;
+      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (getViewer() != null) {
+               AbstractArtifactSearchResult results = getInput();
+               if (results != null) {
+                  for (EventBasicGuidArtifact guidArt : deletedPurgedArts) {
+                     for (Match match : results.getMatches(guidArt)) {
+                        results.removeMatch(match);
+                     }
+                  }
+                  getViewer().refresh();
+               }
+            }
+         }
+      });
+
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      final Collection<EventBasicGuidArtifact> deletedPurgedArts =
+         artifactTopicEvent.get(EventModType.Deleted, EventModType.Purged);
       if (deletedPurgedArts.isEmpty()) {
          return;
       }

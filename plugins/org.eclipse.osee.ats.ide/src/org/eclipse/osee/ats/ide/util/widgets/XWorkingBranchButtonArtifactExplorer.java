@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.List;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -55,6 +57,11 @@ public class XWorkingBranchButtonArtifactExplorer extends XWorkingBranchButtonAb
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
       return isWidgetInState(XWorkingBranchButtonArtifactExplorer.class.getSimpleName());
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 
 }

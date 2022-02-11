@@ -15,19 +15,28 @@ package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
@@ -37,9 +46,14 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelati
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTopicArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -48,16 +62,24 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationReorderTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.internal.event.EventHandlerRemote;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
 /**
  * @author Donald G. Dunne
  */
 public final class FrameworkEventUtil {
+   public static boolean USE_NEW_EVENTS =
+      Boolean.valueOf(System.getProperty(EventHandlerRemote.USE_NEW_EVENTS_KEY, "false"));
+   //Boolean.valueOf(OseeInfo.getValue(EventHandlerRemote.USE_NEW_EVENTS_KEY, "false"));
 
    private FrameworkEventUtil() {
       // Utility Class
@@ -115,6 +137,55 @@ public final class FrameworkEventUtil {
             eventArts.add(getBasicGuidArtifact(remGuidArt, tokenService));
          }
          event.addTransactionChange(change);
+      }
+      return event;
+   }
+
+   public static RemoteArtifactTopicEvent getRemotePersistTopicEvent(ArtifactTopicEvent artifactTopicEvent) {
+      RemoteArtifactTopicEvent event = new RemoteArtifactTopicEvent();
+      event.setTopic(artifactTopicEvent.getTopic());
+      event.setTransactionId(artifactTopicEvent.getTransaction());
+      event.setNetworkSender(getRemoteNetworkSender(artifactTopicEvent.getNetworkSender()));
+      Map<String, String> properties = new HashMap<>();
+      properties.put(RemoteArtifactTopicEvent.BRANCH_ID, JsonUtil.toJson(artifactTopicEvent.getBranch()));
+      properties.put(RemoteArtifactTopicEvent.ARTIFACTS, JsonUtil.toJson(artifactTopicEvent.getTransferArtifacts()));
+      properties.put(RemoteArtifactTopicEvent.RELATIONS, JsonUtil.toJson(artifactTopicEvent.getRelations()));
+      properties.put(RemoteArtifactTopicEvent.RELATION_REORDER_RECORDS,
+         JsonUtil.toJson(artifactTopicEvent.getRelationOrderRecords()));
+      properties.put(RemoteArtifactTopicEvent.RELOAD_EVENT, JsonUtil.toJson(artifactTopicEvent.isReloadEvent()));
+      event.setProperties(properties);
+      return event;
+   }
+
+   public static ArtifactTopicEvent getPersistTopicEvent(RemoteArtifactTopicEvent remArtifactTopicEvent) {
+      return getPersistTopicEvent(remArtifactTopicEvent, ServiceUtil.getOrcsTokenService());
+   }
+
+   public static ArtifactTopicEvent getPersistTopicEvent(RemoteArtifactTopicEvent remArtifactTopicEvent, OrcsTokenService tokenService) {
+      Map<String, String> properties = remArtifactTopicEvent.getProperties();
+
+      BranchId branchId = JsonUtil.readValue(properties.get(RemoteArtifactTopicEvent.BRANCH_ID), BranchId.class);
+      Boolean isReloadEvent = JsonUtil.readValue(properties.get(RemoteArtifactTopicEvent.RELOAD_EVENT), Boolean.class);
+      ArtifactEventType type = isReloadEvent ? ArtifactEventType.RELOAD_ARTIFACTS : ArtifactEventType.UPDATE_ARTIFACTS;
+      ArtifactTopicEvent event = new ArtifactTopicEvent(branchId,
+         TransactionToken.valueOf(remArtifactTopicEvent.getTransactionId(), branchId), type);
+      event.setNetworkSender(getNetworkSender(remArtifactTopicEvent.getNetworkSender()));
+
+      EventTopicArtifactTransfer[] artifacts =
+         JsonUtil.readValue(properties.get(RemoteArtifactTopicEvent.ARTIFACTS), EventTopicArtifactTransfer[].class);
+      for (EventTopicArtifactTransfer artifact : artifacts) {
+         event.addArtifact(artifact);
+      }
+
+      EventTopicRelationTransfer[] relations =
+         JsonUtil.readValue(properties.get(RemoteArtifactTopicEvent.RELATIONS), EventTopicRelationTransfer[].class);
+      for (EventTopicRelationTransfer relation : relations) {
+         event.addRelation(relation);
+      }
+      EventTopicRelationReorderTransfer[] relationReorderRecords = JsonUtil.readValue(
+         properties.get(RemoteArtifactTopicEvent.RELATION_REORDER_RECORDS), EventTopicRelationReorderTransfer[].class);
+      for (EventTopicRelationReorderTransfer relationReorder : relationReorderRecords) {
+         event.addRelationReorder(relationReorder);
       }
       return event;
    }
@@ -208,6 +279,15 @@ public final class FrameworkEventUtil {
       event.setBranch(guidArt.getBranch());
       event.setArtifactType(guidArt.getArtifactType());
       event.setArtGuid(guidArt.getGuid());
+      return event;
+   }
+
+   public static RemoteTopicArtifact1 getRemoteTopicArtifact(EventTopicArtifactTransfer transferArt) {
+      RemoteTopicArtifact1 event = new RemoteTopicArtifact1();
+      event.setBranch(transferArt.getBranch());
+      event.setArtifactType(transferArt.getArtifactTypeId());
+      event.setArtGuid(transferArt.getArtifactToken().getName());
+      event.setModTypeGuid(transferArt.getEventModType().toString());
       return event;
    }
 
@@ -330,5 +410,71 @@ public final class FrameworkEventUtil {
       event.getProperties().putAll(remoteEvent.getProperties());
       event.setNetworkSender(getNetworkSender(remoteEvent.getNetworkSender()));
       return event;
+   }
+
+   public static EventTopicArtifactTransfer artifactTransferFactory(BranchId branch, ArtifactToken artifactToken, ArtifactTypeId artifactTypeId, EventModType eventModType, ArtifactTypeId fromArtType, Collection<AttributeChange> arrayList, EventTopicTransferType transferType) {
+      EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
+      artifactTransfer.setBranch(branch);
+      artifactTransfer.setArtifactToken(artifactToken);
+      artifactTransfer.setArtifactTypeId(artifactTypeId);
+      artifactTransfer.setEventModType(eventModType);
+      artifactTransfer.setFromArtTypeGuid(fromArtType);
+      artifactTransfer.setAttributeChanges(arrayList);
+      artifactTransfer.setTransferType(transferType);
+      return artifactTransfer;
+   }
+
+   public static EventTopicRelationTransfer relationTransferFactory(RelationEventType relationEventType, Artifact artA, Artifact artB, RelationId relationId, Long relTypeId, GammaId relationGammaId, String rationale) {
+      EventTopicRelationTransfer transfer = new EventTopicRelationTransfer();
+      transfer.setArtAId(artA);
+      transfer.setArtAIdType(artA.getArtifactType());
+      transfer.setArtBId(artB);
+      transfer.setArtBIdType(artB.getArtifactType());
+      transfer.setBranch(artA.getBranch());
+      transfer.setGammaId(relationGammaId);
+      transfer.setRelationEventType(relationEventType);
+      transfer.setRelationId(relationId);
+      transfer.setRelTypeId(relTypeId);
+      return transfer;
+   }
+
+   public static EventTopicRelationReorderTransfer relationReorderTransferFactory(EventTopicArtifactTransfer parentArt, BranchId branch, Long relTypeUuid, RelationOrderModType modType) {
+      EventTopicRelationReorderTransfer transfer = new EventTopicRelationReorderTransfer();
+      transfer.setParentArt(parentArt);
+      transfer.setBranch(branch);
+      transfer.setRelTypeUuid(relTypeUuid);
+      transfer.setModType(modType);
+      return transfer;
+   }
+
+   public static EventTopicArtifactTransfer defaultGuidArtifactToTransfer(DefaultBasicGuidArtifact guidArt) {
+      EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
+      artifactTransfer.setBranch(guidArt.getBranch());
+      artifactTransfer.setArtifactToken(ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()));
+      artifactTransfer.setEventModType(EventModType.Reloaded); // DefaultBasicGuidArtifact doesn't have a mod type, using this as a default
+      return artifactTransfer;
+   }
+
+   public static EventTopicArtifactTransfer eventGuidArtifactToTransfer(EventBasicGuidArtifact guidArt) {
+      EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
+      artifactTransfer.setBranch(guidArt.getBranch());
+      artifactTransfer.setArtifactToken(ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()));
+      artifactTransfer.setEventModType(guidArt.getModType());
+      return artifactTransfer;
+   }
+
+   public static EventBasicGuidArtifact eventTransferArtifactToGuid(EventTopicArtifactTransfer transferArt) {
+      EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(transferArt.getEventModType(),
+         transferArt.getBranch(), transferArt.getArtifactToken().getArtifactType());
+      return guidArt;
+   }
+
+   public static EventTopicRelationReorderTransfer relationReorderBasicToTransfer(DefaultBasicUuidRelationReorder basicRelationReorder) {
+      EventTopicRelationReorderTransfer transfer = new EventTopicRelationReorderTransfer();
+      transfer.setParentArt(FrameworkEventUtil.defaultGuidArtifactToTransfer(basicRelationReorder.getParentArt()));
+      transfer.setBranch(basicRelationReorder.getBranch());
+      transfer.setRelTypeUuid(basicRelationReorder.getRelTypeGuid());
+      transfer.setModType(basicRelationReorder.getModType());
+      return transfer;
    }
 }

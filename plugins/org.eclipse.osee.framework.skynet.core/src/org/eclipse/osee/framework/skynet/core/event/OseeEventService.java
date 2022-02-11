@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**
@@ -42,4 +43,6 @@ public interface OseeEventService {
     * commit is made on server, but clients need to be notified of updates to commited branch artifact model.
     */
    void sendCommitEvent(Class<?> class1, ArtifactEvent artifactEvent);
+
+   void sendCommitTopicEvent(Class<?> class1, ArtifactTopicEvent artifactTopicEvent);
 }

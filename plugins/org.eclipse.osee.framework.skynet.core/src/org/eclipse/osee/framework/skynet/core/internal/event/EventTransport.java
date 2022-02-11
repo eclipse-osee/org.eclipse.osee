@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService;
+import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -267,6 +269,36 @@ public class EventTransport implements Transport, IFrameworkEventListener {
                EventUtil.eventLog("IEM: processing commit remote event [%s]", artifactEvent);
                handleEvent(sender, remoteEvent);
                EventUtil.eventLog("IEM: processed commit remote event [%s]", artifactEvent);
+            } catch (Throwable th) {
+               EventUtil.eventLog("IEM: RemoteEvent - onEvent", th);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
+   /**
+    * Kick a commit event to this local client to update artifact model for committed artifacts. This is needed cause
+    * commit is made on server, but clients need to be notified of updates to commited branch artifact model.</br>
+    * </br>
+    * Normal event model sends artifact, attribute and relation changes to other clients upon persist. Since a commit is
+    * not a client ide "persist", there is no "persist" event. This method sends a synthentically created ArtifactEvent
+    * to the initiating client to update the artifact model on the commit-to branch for any artifacts loaded into the
+    * cache. This is done for the remote clients through the normal events, but not to this client cause all events sent
+    * remotely are ignored by the initiating client.
+    */
+   public void sendCommitTopicEvent(Class<?> class1, ArtifactTopicEvent artifactTopicEvent) {
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            try {
+               Sender sender = Sender.createSender(class1);
+               artifactTopicEvent.setNetworkSender(sender.getNetworkSender());
+               RemoteArtifactTopicEvent remoteArtifactTopicEvent =
+                  FrameworkEventUtil.getRemotePersistTopicEvent(artifactTopicEvent);
+               EventUtil.eventLog("IEM: processing commit remote event [%s]", artifactTopicEvent);
+               handleEvent(sender, remoteArtifactTopicEvent);
+               EventUtil.eventLog("IEM: processed commit remote event [%s]", artifactTopicEvent);
             } catch (Throwable th) {
                EventUtil.eventLog("IEM: RemoteEvent - onEvent", th);
             }

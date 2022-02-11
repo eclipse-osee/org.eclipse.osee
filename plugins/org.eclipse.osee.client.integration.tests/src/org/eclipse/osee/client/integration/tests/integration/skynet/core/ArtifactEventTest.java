@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -97,6 +98,7 @@ public class ArtifactEventTest {
 
    @Before
    public void setup() {
+      Assume.assumeFalse(FrameworkEventUtil.USE_NEW_EVENTS);
       listener = new ArtifactEventListener();
 
       networkSender = new RemoteNetworkSender1();
@@ -373,8 +375,8 @@ public class ArtifactEventTest {
       remGuidRel.setGammaId(incrementingGammaId.increment(1).getIdIntValue());
       remGuidRel.setRelTypeGuid(relType.getId());
       remGuidRel.setRelationId(relationId.intValue());
-      remGuidRel.setArtAId(artA.getArtId());
-      remGuidRel.setArtBId(artB.getArtId());
+      remGuidRel.setArtAId(artA.getIdIntValue());
+      remGuidRel.setArtBId(artB.getIdIntValue());
       remGuidRel.setArtA(FrameworkEventUtil.getRemoteBasicGuidArtifact(artA.getBasicGuidArtifact()));
       remGuidRel.setArtB(FrameworkEventUtil.getRemoteBasicGuidArtifact(artB.getBasicGuidArtifact()));
 

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService;
+import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
@@ -50,8 +52,10 @@ import org.eclipse.osee.framework.skynet.core.internal.event.OseeEventThreadFact
 import org.eclipse.osee.framework.skynet.core.internal.event.TopicEventAdmin;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactRemoteEventHandler;
+import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactTopicEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchRemoteEventHandler;
+import org.eclipse.osee.framework.skynet.core.internal.event.handlers.RemoteArtifactTopicEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.RemoteServiceEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TopicLocalEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TopicRemoteEventHandler;
@@ -208,12 +212,14 @@ public class OseeEventServiceImpl implements OseeEventService {
 
    private void registerEventHandlers(EventHandlers handlers) {
       handlers.addLocalHandler(ArtifactEvent.class, new ArtifactEventHandler());
+      handlers.addLocalHandler(ArtifactTopicEvent.class, new ArtifactTopicEventHandler());
       handlers.addLocalHandler(BranchEvent.class, new BranchEventHandler());
       handlers.addLocalHandler(RemoteEventServiceEventType.class, new RemoteServiceEventHandler());
       handlers.addLocalHandler(TransactionEvent.class, new TransactionEventHandler());
       handlers.addLocalHandler(TopicEvent.class, new TopicLocalEventHandler());
 
       handlers.addRemoteHandler(RemotePersistEvent1.class, new ArtifactRemoteEventHandler(tokenService));
+      handlers.addRemoteHandler(RemoteArtifactTopicEvent.class, new RemoteArtifactTopicEventHandler(tokenService));
       handlers.addRemoteHandler(RemoteBranchEvent1.class, new BranchRemoteEventHandler());
       handlers.addRemoteHandler(RemoteTransactionEvent1.class, new TransactionRemoteEventHandler(tokenService));
       handlers.addRemoteHandler(RemoteTopicEvent1.class, new TopicRemoteEventHandler());
@@ -275,6 +281,11 @@ public class OseeEventServiceImpl implements OseeEventService {
    @Override
    public void sendCommitEvent(Class<?> class1, ArtifactEvent artifactEvent) {
       eventTransport.sendCommitEvent(class1, artifactEvent);
+   }
+
+   @Override
+   public void sendCommitTopicEvent(Class<?> class1, ArtifactTopicEvent artifactTopicEvent) {
+      eventTransport.sendCommitTopicEvent(class1, artifactTopicEvent);
    }
 
 }

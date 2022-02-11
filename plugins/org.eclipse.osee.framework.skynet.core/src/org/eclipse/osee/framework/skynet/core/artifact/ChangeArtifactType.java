@@ -35,16 +35,21 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -65,9 +70,11 @@ public class ChangeArtifactType {
    private final HashSet<RelationTypeToken> relationTypes = new HashSet<>();
    private final HashMap<BranchId, SkynetTransaction> txMap = new HashMap<>();
    private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
+   private final Set<EventTopicArtifactTransfer> artifactTopicChanges = new HashSet<>();
    private final List<Artifact> modifiedArtifacts = new ArrayList<>();
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
    private final Map<GammaId, ArtifactId> gammaToArtId = new HashMap<>();
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType, boolean prompt) {
       ChangeArtifactType app = new ChangeArtifactType();
@@ -112,12 +119,21 @@ public class ChangeArtifactType {
    }
 
    private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts) {
-      ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
-      for (EventBasicGuidArtifact guidArt : artifactChanges) {
-         artifactEvent.addArtifact(guidArt);
+      if (useNewEvents) {
+         // make new artifactTopic event, with new topic and event class
+         ArtifactTopicEvent artifactTopicEvent = new ArtifactTopicEvent(artifacts.iterator().next().getBranch());
+         artifactTopicEvent.transferType = EventTopicTransferType.CHANGE;
+         for (EventTopicArtifactTransfer art : artifactTopicChanges) {
+            artifactTopicEvent.addArtifact(art);
+         }
+         OseeEventManager.kickArtifactTopicEvent(ChangeArtifactType.class, artifactTopicEvent);
+      } else {
+         ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
+         for (EventBasicGuidArtifact guidArt : artifactChanges) {
+            artifactEvent.addArtifact(guidArt);
+         }
+         OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
       }
-
-      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
    }
 
    private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType) {
@@ -138,8 +154,14 @@ public class ChangeArtifactType {
                deleteInvalidAttributes(artifact, newArtifactType);
                deleteInvalidRelations(artifact, newArtifactType);
                addTransaction(artifact, txMap);
-               artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch(),
-                  artifact.getArtifactType(), newArtifactType, artifact.getGuid()));
+               if (useNewEvents) {
+                  artifactTopicChanges.add(
+                     FrameworkEventUtil.artifactTransferFactory(artifact.getBranch(), artifact, newArtifactType,
+                        EventModType.ChangeType, artifact.getArtifactType(), null, EventTopicTransferType.CHANGE));
+               } else {
+                  artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch(),
+                     artifact.getArtifactType(), newArtifactType, artifact.getGuid()));
+               }
             }
          }
       } finally {
@@ -161,14 +183,17 @@ public class ChangeArtifactType {
    }
 
    public static void handleRemoteChangeType(EventChangeTypeBasicGuidArtifact guidArt) {
+      handleRemoteChangeByArtAndType(ArtifactCache.getActive(guidArt), guidArt.getArtifactType());
+   }
+
+   public static void handleRemoteChangeByArtAndType(Artifact artifact, ArtifactTypeToken type) {
       try {
-         Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) {
             return;
          }
          ArtifactCache.deCache(artifact);
          RelationManager.deCache(artifact);
-         artifact.setArtifactType(guidArt.getArtifactType());
+         artifact.setArtifactType(type);
          artifact.clearEditState();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error handling remote change type", ex);

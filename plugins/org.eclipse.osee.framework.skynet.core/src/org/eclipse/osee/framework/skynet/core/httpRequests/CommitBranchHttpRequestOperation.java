@@ -23,8 +23,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -41,10 +43,14 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -64,6 +70,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    private final boolean isArchiveAllowed;
    private final boolean skipChecksAndEvents;
    private TransactionResult transactionResult;
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    public CommitBranchHttpRequestOperation(ArtifactId committer, BranchId sourceBranch, BranchId destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
@@ -127,87 +134,174 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleArtifactEvents(TransactionToken newTransaction, Collection<Change> changes) {
-      ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction);
-      Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<>();
-      Set<Artifact> artifacts = new HashSet<>();
+      if (useNewEvents) {
+         // make new artifactTopic event, with new topic and event class
+         ArtifactTopicEvent artifactTopicEvent = new ArtifactTopicEvent(newTransaction);
+         Map<ArtifactId, EventTopicArtifactTransfer> artEventMap = new HashMap<>();
+         Set<Artifact> artifacts = new HashSet<>();
 
-      for (Change change : changes) {
-         ChangeType changeType = change.getChangeType();
-         if (changeType.isArtifactChange()) {
-            // Don't do anything.  When kicking Persist event to all clients we need only to create the artifact changed based on the Changed Attributes
-         } else if (changeType.isRelationChange()) {
-            RelationChange relChange = (RelationChange) change;
-            RelationEventType relationEventType =
-               change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
+         for (Change change : changes) {
+            ChangeType changeType = change.getChangeType();
+            if (changeType.isArtifactChange()) {
+               // Don't do anything.  When kicking Persist event to all clients we need only to create the artifact changed based on the Changed Attributes
+            } else if (changeType.isRelationChange()) {
+               RelationChange relChange = (RelationChange) change;
+               RelationEventType relationEventType =
+                  change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
-            DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relChange.getBranch(),
-               relChange.getRelationType().getId(), relChange.getItemId().getId(), relChange.getGamma(),
-               relChange.getChangeArtifact().getBasicGuidArtifact(),
-               relChange.getEndTxBArtifact().getBasicGuidArtifact());
-            EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),
-               relChange.getBArtId(), defaultBasicGuidRelation);
-            event.setRationale(relChange.getRationale());
-            artifactEvent.getRelations().add(event);
-            Artifact artA = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
-            if (artA != null) {
-               artifacts.add(artA);
-            }
-            Artifact artB = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
-            if (artB != null) {
-               artifacts.add(artB);
-            }
-         } else if (changeType.isAttributeChange()) {
-            // Only reload items that were already in the active cache
-            ArtifactId artifactId = change.getArtId();
-            Artifact artifact = ArtifactCache.getActive(artifactId, newTransaction.getBranch());
-            if (artifact != null) {
-               artifacts.add(artifact);
-            }
-
-            Artifact changedArtifact = change.getChangeArtifact();
-            if (changedArtifact.isValid()) {
-
-               EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getIdIntValue());
-               if (artEvent == null) {
-                  artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(), change.getArtifactType(),
-                     changedArtifact.getGuid(),
-                     new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
-                  artifactEvent.addArtifact(artEvent);
+               EventTopicRelationTransfer event =
+                  FrameworkEventUtil.relationTransferFactory(relationEventType, relChange.getChangeArtifact(),
+                     relChange.getEndTxBArtifact(), RelationId.valueOf(relChange.getItemId().getId()),
+                     relChange.getRelationType().getId(), relChange.getGamma(), "CommitBranchHttp transfer");
+               event.setRationale(relChange.getRationale());
+               artifactTopicEvent.getRelations().add(event);
+               Artifact artA = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               if (artA != null) {
+                  artifacts.add(artA);
+               }
+               Artifact artB = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               if (artB != null) {
+                  artifacts.add(artB);
+               }
+            } else if (changeType.isAttributeChange()) {
+               // Only reload items that were already in the active cache
+               ArtifactId artifactId = change.getArtId();
+               Artifact artifact = ArtifactCache.getActive(artifactId, newTransaction.getBranch());
+               if (artifact != null) {
+                  artifacts.add(artifact);
                }
 
-               AttributeChange attributeChange = (AttributeChange) change;
-               org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
-                  new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
-               attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
-               attrChangeEvent.setGammaId(attributeChange.getGamma());
-               attrChangeEvent.setAttributeId(attributeChange.getAttrId().getIdIntValue());
-               attrChangeEvent.setModTypeGuid(
-                  AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
+               Artifact changedArtifact = change.getChangeArtifact();
 
-               Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId().getId(), true);
-               if (attribute != null) {
-                  for (Object obj : attribute.getAttributeDataProvider().getData()) {
-                     if (obj == null) {
-                        attrChangeEvent.getData().add("");
-                     } else {
-                        attrChangeEvent.getData().add(obj);
+               if (changedArtifact.isValid()) {
+                  EventTopicArtifactTransfer artEvent = artEventMap.get(artifactId);
+
+                  Collection<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange> changeAttrs =
+                     new ArrayList<>();
+
+                  if (artEvent == null) {
+                     artEvent = FrameworkEventUtil.artifactTransferFactory(newTransaction.getBranch(),
+                        change.getChangeArtifact(), changedArtifact.getArtifactType(), EventModType.ChangeType, null,
+                        changeAttrs, EventTopicTransferType.MODIFICATION);
+
+                  }
+
+                  AttributeChange attributeChange = (AttributeChange) change;
+                  org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
+                     new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
+                  attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
+                  attrChangeEvent.setGammaId(attributeChange.getGamma());
+                  attrChangeEvent.setAttributeId(attributeChange.getAttrId());
+                  attrChangeEvent.setModTypeGuid(
+                     AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
+
+                  Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId().getId(), true);
+                  if (attribute != null) {
+                     for (Object obj : attribute.getAttributeDataProvider().getData()) {
+                        if (obj == null) {
+                           attrChangeEvent.getData().add("");
+                        } else {
+                           attrChangeEvent.getData().add(obj);
+                        }
                      }
                   }
+                  artEvent.getAttributeChanges().add(attrChangeEvent);
                }
-               artEvent.getAttributeChanges().add(attrChangeEvent);
             }
          }
+
+         // Kicks event to other clients; This is ignored by this client which is why below is required
+         OseeEventManager.kickArtifactTopicEvent(getClass(), artifactTopicEvent);
+
+         // Create a new copy of same event because you can't send same event twice
+         ArtifactTopicEvent artifactTopicEvent2 = FrameworkEventUtil.getPersistTopicEvent(
+            FrameworkEventUtil.getRemotePersistTopicEvent(artifactTopicEvent), ServiceUtil.getOrcsTokenService());
+
+         // Kicks event to this client to update Artifact model with commit changes since commit was on server
+         OseeEventManager.kickCommitTopicEvent(getClass(), artifactTopicEvent2);
+      } else {
+         ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction);
+         Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<>();
+         Set<Artifact> artifacts = new HashSet<>();
+
+         for (Change change : changes) {
+            ChangeType changeType = change.getChangeType();
+            if (changeType.isArtifactChange()) {
+               // Don't do anything.  When kicking Persist event to all clients we need only to create the artifact changed based on the Changed Attributes
+            } else if (changeType.isRelationChange()) {
+               RelationChange relChange = (RelationChange) change;
+               RelationEventType relationEventType =
+                  change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
+
+               DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relChange.getBranch(),
+                  relChange.getRelationType().getId(), relChange.getItemId().getId(), relChange.getGamma(),
+                  relChange.getChangeArtifact().getBasicGuidArtifact(),
+                  relChange.getEndTxBArtifact().getBasicGuidArtifact());
+               EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),
+                  relChange.getBArtId(), defaultBasicGuidRelation);
+               event.setRationale(relChange.getRationale());
+               artifactEvent.getRelations().add(event);
+               Artifact artA = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               if (artA != null) {
+                  artifacts.add(artA);
+               }
+               Artifact artB = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               if (artB != null) {
+                  artifacts.add(artB);
+               }
+            } else if (changeType.isAttributeChange()) {
+               // Only reload items that were already in the active cache
+               ArtifactId artifactId = change.getArtId();
+               Artifact artifact = ArtifactCache.getActive(artifactId, newTransaction.getBranch());
+               if (artifact != null) {
+                  artifacts.add(artifact);
+               }
+
+               Artifact changedArtifact = change.getChangeArtifact();
+               if (changedArtifact.isValid()) {
+
+                  EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getIdIntValue());
+                  if (artEvent == null) {
+                     artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(), change.getArtifactType(),
+                        changedArtifact.getGuid(),
+                        new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
+                     artifactEvent.addArtifact(artEvent);
+                  }
+
+                  AttributeChange attributeChange = (AttributeChange) change;
+                  org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
+                     new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
+                  attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
+                  attrChangeEvent.setGammaId(attributeChange.getGamma());
+                  attrChangeEvent.setAttributeId(attributeChange.getAttrId().getIdIntValue());
+                  attrChangeEvent.setModTypeGuid(
+                     AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
+
+                  Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId().getId(), true);
+                  if (attribute != null) {
+                     for (Object obj : attribute.getAttributeDataProvider().getData()) {
+                        if (obj == null) {
+                           attrChangeEvent.getData().add("");
+                        } else {
+                           attrChangeEvent.getData().add(obj);
+                        }
+                     }
+                  }
+                  artEvent.getAttributeChanges().add(attrChangeEvent);
+               }
+            }
+         }
+
+         // Kicks event to other clients; This is ignored by this client which is why below is required
+         OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
+
+         // Create a new copy of same event because you can't send same event twice
+         ArtifactEvent artifactEvent2 = FrameworkEventUtil.getPersistEvent(
+            FrameworkEventUtil.getRemotePersistEvent(artifactEvent), ServiceUtil.getOrcsTokenService());
+
+         // Kicks event to this client to update Artifact model with commit changes since commit was on server
+         OseeEventManager.kickCommitEvent(getClass(), artifactEvent2);
       }
-
-      // Kicks event to other clients; This is ignored by this client which is why below is required
-      OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
-
-      // Create a new copy of same event because you can't send same event twice
-      ArtifactEvent artifactEvent2 = FrameworkEventUtil.getPersistEvent(
-         FrameworkEventUtil.getRemotePersistEvent(artifactEvent), ServiceUtil.getOrcsTokenService());
-
-      // Kicks event to this client to update Artifact model with commit changes since commit was on server
-      OseeEventManager.kickCommitEvent(getClass(), artifactEvent2);
    }
 
    public TransactionResult getTransactionResult() {

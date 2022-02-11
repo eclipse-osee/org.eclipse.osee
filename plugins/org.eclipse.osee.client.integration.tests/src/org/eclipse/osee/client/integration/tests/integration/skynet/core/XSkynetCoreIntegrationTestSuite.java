@@ -21,6 +21,8 @@ import org.junit.runners.Suite;
    AccessControlTest.class,
    ArtifactEventLoopbackTest.class,
    ArtifactEventTest.class,
+   ArtifactTopicEventLoopbackTest.class,
+   ArtifactTopicEventTest.class,
    ArtifactGetLastModifiedTest.class,
    ArtifactLoaderTest.class,
    ArtifactPurgeTest.class,

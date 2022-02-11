@@ -37,8 +37,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
@@ -66,6 +68,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    private final Collection<Artifact> artifactReferences;
 
    private boolean executedWithException;
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    public StoreSkynetTransactionOperation(String name, BranchId branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
       super(ConnectionHandler.getJdbcClient(), name, Activator.PLUGIN_ID);
@@ -176,37 +179,73 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    private void updateModifiedCachedObject() {
-      ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord);
+      if (useNewEvents) {
+         // make new artifactTopic event, with new topic and event class
+         ArtifactTopicEvent artifactTopicEvent = new ArtifactTopicEvent(transactionRecord);
 
-      // Update all transaction items before collecting events
-      for (BaseTransactionData transactionData : txDatas) {
-         transactionData.internalUpdate(transactionRecord);
-      }
-
-      // Collect events before clearing any dirty flags
-      for (BaseTransactionData transactionData : txDatas) {
-         transactionData.internalAddToEvents(artifactEvent);
-      }
-
-      // Collect attribute events
-      for (Artifact artifact : artifactReferences) {
-         if (artifact.hasDirtyAttributes()) {
-            artifactEvent.addArtifact(artifact);
+         // Update all transaction items before collecting events
+         for (BaseTransactionData transactionData : txDatas) {
+            transactionData.internalUpdate(transactionRecord);
          }
-      }
 
-      // Clear all dirty flags
-      for (BaseTransactionData transactionData : txDatas) {
-         transactionData.internalClearDirtyState();
-      }
+         // Collect events before clearing any dirty flags
+         for (BaseTransactionData transactionData : txDatas) {
+            transactionData.internalAddToEvents(artifactTopicEvent);
+         }
 
-      // Clear all relation order records
-      for (Artifact artifact : artifactReferences) {
-         artifact.getRelationOrderRecords().clear();
-      }
+         // Collect attribute events
+         for (Artifact artifact : artifactReferences) {
+            if (artifact.hasDirtyAttributes()) {
+               artifactTopicEvent.addArtifact(artifact);
+            }
+         }
 
-      if (!artifactEvent.getArtifacts().isEmpty() || !artifactEvent.getRelations().isEmpty()) {
-         OseeEventManager.kickPersistEvent(this, artifactEvent);
+         // Clear all dirty flags
+         for (BaseTransactionData transactionData : txDatas) {
+            transactionData.internalClearDirtyState();
+         }
+
+         // Clear all relation order records
+         for (Artifact artifact : artifactReferences) {
+            artifact.getRelationOrderRecords().clear();
+         }
+
+         if (!artifactTopicEvent.getArtifacts().isEmpty() || !artifactTopicEvent.getRelations().isEmpty()) {
+            OseeEventManager.kickArtifactTopicEvent(this, artifactTopicEvent);
+         }
+      } else {
+         ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord);
+
+         // Update all transaction items before collecting events
+         for (BaseTransactionData transactionData : txDatas) {
+            transactionData.internalUpdate(transactionRecord);
+         }
+
+         // Collect events before clearing any dirty flags
+         for (BaseTransactionData transactionData : txDatas) {
+            transactionData.internalAddToEvents(artifactEvent);
+         }
+
+         // Collect attribute events
+         for (Artifact artifact : artifactReferences) {
+            if (artifact.hasDirtyAttributes()) {
+               artifactEvent.addArtifact(artifact);
+            }
+         }
+
+         // Clear all dirty flags
+         for (BaseTransactionData transactionData : txDatas) {
+            transactionData.internalClearDirtyState();
+         }
+
+         // Clear all relation order records
+         for (Artifact artifact : artifactReferences) {
+            artifact.getRelationOrderRecords().clear();
+         }
+
+         if (!artifactEvent.getArtifacts().isEmpty() || !artifactEvent.getRelations().isEmpty()) {
+            OseeEventManager.kickPersistEvent(this, artifactEvent);
+         }
       }
    }
 

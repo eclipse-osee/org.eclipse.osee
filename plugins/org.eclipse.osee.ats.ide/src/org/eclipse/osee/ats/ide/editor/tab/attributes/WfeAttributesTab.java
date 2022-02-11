@@ -21,8 +21,12 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrToolbar;
@@ -34,7 +38,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHandler, IArtifactEventListener {
+public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHandler, IArtifactEventListener, IArtifactTopicEventListener {
    private ScrolledForm scrolledForm;
    public final static String ID = "ats.attributes.tab";
    private final WorkflowEditor editor;
@@ -89,8 +93,20 @@ public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHa
    }
 
    @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (xViewer != null && artifactTopicEvent.isModified(artifact)) {
+         xViewer.loadTable(artifact);
+      }
+   }
+
+   @Override
    public List<? extends IEventFilter> getEventFilters() {
       return Arrays.asList(new BranchIdEventFilter(artifact.getBranch()));
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return Arrays.asList(new BranchIdTopicEventFilter(artifact.getBranch()));
    }
 
    @Override

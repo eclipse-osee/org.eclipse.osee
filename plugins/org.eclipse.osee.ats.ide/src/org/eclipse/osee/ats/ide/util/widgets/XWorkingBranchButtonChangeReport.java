@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.List;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -47,5 +49,10 @@ public class XWorkingBranchButtonChangeReport extends XWorkingBranchButtonAbstra
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
       return true;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 }

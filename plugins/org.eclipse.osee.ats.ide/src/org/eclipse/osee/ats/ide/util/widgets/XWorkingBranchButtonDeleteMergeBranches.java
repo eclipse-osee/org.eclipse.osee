@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.MergeInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxBranchDialog;
@@ -127,5 +128,10 @@ public class XWorkingBranchButtonDeleteMergeBranches extends XWorkingBranchButto
    @Override
    protected boolean isWidgetAllowedInCurrentState() {
       return isWidgetInState(WIDGET_NAME);
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 }

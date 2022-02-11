@@ -26,7 +26,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -42,7 +44,7 @@ import org.eclipse.swt.widgets.ToolBar;
  *
  * @author Donald G. Dunne
  */
-public abstract class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWidget, IArtifactEventListener {
+public abstract class XSiblingWorldWidget extends XMiniWorldWidget implements ArtifactWidget, IArtifactEventListener, IArtifactTopicEventListener {
 
    protected IAtsTeamWorkflow teamWf;
 
@@ -145,6 +147,32 @@ public abstract class XSiblingWorldWidget extends XMiniWorldWidget implements Ar
                   return;
                }
                if (artifactEvent.isReloaded((Artifact) siblingWf.getStoreObject())) {
+                  refresh();
+                  return;
+               }
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      try {
+         if (teamWf != null && Widgets.isAccessible(mainComp)) {
+            // Handle case where new sibling created/deleted
+            if (artifactTopicEvent.isHasEvent((Artifact) teamWf.getParentAction().getStoreObject())) {
+               refresh();
+               return;
+            }
+            // Handle case where sibling changed
+            for (IAtsTeamWorkflow siblingWf : atsApi.getActionService().getSiblingTeamWorkflows(teamWf)) {
+               if (artifactTopicEvent.isHasEvent((Artifact) siblingWf.getStoreObject())) {
+                  refresh();
+                  return;
+               }
+               if (artifactTopicEvent.isReloaded((Artifact) siblingWf.getStoreObject())) {
                   refresh();
                   return;
                }

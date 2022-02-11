@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstXViewerFactory;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -60,6 +61,11 @@ public class XTaskEstDemoWidget extends XTaskEstWidget {
    @Override
    public Collection<IAtsTask> getTasks() {
       return atsApi.getTaskService().getTasks(teamWf);
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 
 }

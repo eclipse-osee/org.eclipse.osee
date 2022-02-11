@@ -36,10 +36,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -69,7 +72,7 @@ public class WorldXViewerEventManager {
       return notificationHandler.handlers;
    }
 
-   private static final class NotificationHandler implements IArtifactEventListener {
+   private static final class NotificationHandler implements IArtifactEventListener, IArtifactTopicEventListener {
       private final Collection<IWorldViewerEventHandler> handlers = new CopyOnWriteArrayList<>();
 
       public NotificationHandler() {
@@ -102,8 +105,30 @@ public class WorldXViewerEventManager {
       }
 
       @Override
+      public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+         for (IWorldViewerEventHandler handler : handlers) {
+            if (handler.isDisposed()) {
+               handlers.remove(handler);
+            }
+         }
+         try {
+            if (artifactTopicEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
+               Runnable runnable = createDisplayRunnable(artifactTopicEvent, handlers);
+               Displays.ensureInDisplayThread(runnable);
+            }
+         } catch (OseeCoreException ex) {
+            // Do Nothing;
+         }
+      }
+
+      @Override
       public List<? extends IEventFilter> getEventFilters() {
          return AtsUtilClient.getAtsObjectEventFilters();
+      }
+
+      @Override
+      public List<? extends ITopicEventFilter> getTopicEventFilters() {
+         return AtsUtilClient.getAtsTopicObjectEventFilters();
       }
 
       private Runnable createDisplayRunnable(ArtifactEvent artifactEvent, Collection<IWorldViewerEventHandler> handlers) {
@@ -140,6 +165,42 @@ public class WorldXViewerEventManager {
 
          return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
             goalMemberReordered, sprintMemberReordered, artifactEvent, handlers);
+      }
+
+      private Runnable createDisplayRunnable(ArtifactTopicEvent artifactTopicEvent, Collection<IWorldViewerEventHandler> handlers) {
+         Collection<Artifact> modifiedArts =
+            artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+         Collection<Artifact> relModifiedArts = artifactTopicEvent.getRelCacheArtifacts();
+         Collection<EventBasicGuidArtifact> deletedPurgedArts =
+            artifactTopicEvent.get(EventModType.Deleted, EventModType.Purged);
+
+         // create list of items to updatePreComputedColumnValues; includes arts and parent arts
+         Collection<Artifact> allModAndParents = new HashSet<>(modifiedArts.size() * 2 + relModifiedArts.size());
+         for (Artifact art : modifiedArts) {
+            allModAndParents.add(art);
+            if (art instanceof IAtsWorkItem) {
+               IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
+               if (teamWf != null) {
+                  allModAndParents.add(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
+               }
+            }
+         }
+         for (Artifact art : relModifiedArts) {
+            allModAndParents.add(art);
+            if (art instanceof IAtsWorkItem) {
+               IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
+               if (teamWf != null) {
+                  allModAndParents.add(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
+               }
+            }
+         }
+         Collection<Artifact> goalMemberReordered =
+            artifactTopicEvent.getRelationOrderArtifacts(AtsRelationTypes.Goal_Member, AtsArtifactTypes.Goal);
+         Collection<Artifact> sprintMemberReordered = artifactTopicEvent.getRelationOrderArtifacts(
+            AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
+
+         return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
+            goalMemberReordered, sprintMemberReordered, null, handlers);
       }
    }
 

@@ -84,8 +84,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -114,7 +117,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListener, IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider, IAtsTaskArtifactProvider {
+public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListener, IArtifactTopicEventListener, IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider, IAtsTaskArtifactProvider {
    private IManagedForm managedForm;
    private ScrolledForm scrolledForm;
    private TaskComposite taskComposite;
@@ -740,7 +743,17 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return AtsUtilClient.getAtsTopicObjectEventFilters();
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      refresh();
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
       refresh();
    }
 

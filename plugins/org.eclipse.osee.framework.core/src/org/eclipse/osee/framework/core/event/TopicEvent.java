@@ -91,4 +91,54 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
       return "TopicEvnt [type=" + eventType + ", topic=" + topic + ",\nprops=" + properties + ", tx=" + transaction + ", sender=" + networkSender + "]";
    }
 
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((eventType == null) ? 0 : eventType.hashCode());
+      result = prime * result + ((properties == null) ? 0 : properties.hashCode());
+      result = prime * result + ((topic == null) ? 0 : topic.hashCode());
+      result = prime * result + ((transaction == null) ? 0 : transaction.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      TopicEvent other = (TopicEvent) obj;
+      if (eventType != other.eventType) {
+         return false;
+      }
+      if (properties == null) {
+         if (other.properties != null) {
+            return false;
+         }
+      } else if (!properties.equals(other.properties)) {
+         return false;
+      }
+      if (topic == null) {
+         if (other.topic != null) {
+            return false;
+         }
+      } else if (!topic.equals(other.topic)) {
+         return false;
+      }
+      if (transaction == null) {
+         if (other.transaction != null) {
+            return false;
+         }
+      } else if (!transaction.getId().equals(other.transaction.getId())) {
+         return false;
+      }
+      return true;
+   }
+
 }

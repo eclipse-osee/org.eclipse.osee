@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.cache.ArtifactIdCache;
 
@@ -90,6 +91,17 @@ public final class ArtifactCache {
       Set<Artifact> artifacts = new HashSet<>();
       for (DefaultBasicGuidArtifact guidArt : basicGuidArtifacts) {
          Artifact art = ID_CACHE.getByGuid(guidArt.getGuid(), guidArt.getBranch());
+         if (art != null) {
+            artifacts.add(art);
+         }
+      }
+      return artifacts;
+   }
+
+   public static Collection<Artifact> getActive(Collection<ArtifactId> givenArts, BranchId branch) {
+      Set<Artifact> artifacts = new HashSet<>();
+      for (ArtifactId artId : givenArts) {
+         Artifact art = ID_CACHE.getById(ArtifactToken.valueOf(artId, BranchToken.valueOf(branch)));
          if (art != null) {
             artifacts.add(art);
          }

@@ -38,12 +38,15 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -64,7 +67,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class MergeView extends GenericViewPart implements IBranchEventListener, IArtifactEventListener {
+public class MergeView extends GenericViewPart implements IBranchEventListener, IArtifactEventListener, IArtifactTopicEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
 
@@ -318,6 +321,11 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       return null;
    }
 
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
+   }
+
    private void close() {
       dispose();
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -358,6 +366,89 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<EventBasicGuidArtifact> deletedPurgedArts = artifactEvent.get(EventModType.Deleted);
+      if (modifiedArts.isEmpty() && deletedPurgedArts.isEmpty()) {
+         return;
+      }
+      final MergeView mergeView = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (isDisposed()) {
+               return;
+            }
+            for (Artifact artifact : modifiedArts) {
+               try {
+                  BranchId branch = artifact.getBranch();
+                  if (showConflicts) {
+                     Conflict[] conflicts = getConflicts();
+                     for (Conflict conflict : conflicts) {
+                        if (conflictInvovlesArtifact(artifact, conflict)) {
+                           mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                              "Source Artifact Changed", showConflicts);
+                           if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
+                              new MessageDialog(Displays.getActiveShell().getShell(),
+                                 "Modifying Source artifact while merging", null,
+                                 "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                 2, new String[] {"OK"}, 1).open();
+                           }
+                           return;
+                        } else if (artifact.equals(conflict.getArtifact())) {
+                           conflict.computeEqualsValues();
+                           mergeXWidget.refresh();
+                        }
+                     }
+                     if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(
+                        conflicts[0].getDestBranch()))) {
+                        mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                           branch.equals(
+                              conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
+                           showConflicts);
+                     }
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+            if (!deletedPurgedArts.isEmpty()) {
+               try {
+                  EventBasicGuidArtifact artifact = deletedPurgedArts.iterator().next();
+                  Conflict[] conflicts = getConflicts();
+                  boolean isOnSource = artifact.isOnBranch(conflicts[0].getSourceBranch());
+                  if (conflicts.length > 0 && (isOnSource || artifact.isOnBranch(conflicts[0].getDestBranch()))) {
+                     mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                        isOnSource ? "Source Branch Changed" : "Destination Branch Changed", showConflicts);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+         }
+
+      });
+
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, final Sender sender) {
+      if (isDisposed()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
+      BranchId mergeBranch = null;
+      try {
+         mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
+         if (mergeBranch == null || mergeBranch.notEqual(artifactTopicEvent.getBranch())) {
+            return;
+         }
+         if (!isApplicableEvent(artifactTopicEvent.getBranch(), mergeBranch)) {
+            return;
+         }
+      } catch (OseeCoreException ex1) {
+         // Do nothing here
+      }
+      final Collection<Artifact> modifiedArts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+      final Collection<EventBasicGuidArtifact> deletedPurgedArts = artifactTopicEvent.get(EventModType.Deleted);
       if (modifiedArts.isEmpty() && deletedPurgedArts.isEmpty()) {
          return;
       }

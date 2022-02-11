@@ -39,8 +39,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -75,7 +78,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends GenericViewPart implements IArtifactEventListener, IRebuildMenuListener, ISelectedArtifacts {
+public class GroupExplorer extends GenericViewPart implements IArtifactEventListener, IArtifactTopicEventListener, IRebuildMenuListener, ISelectedArtifacts {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -486,8 +489,37 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (rootArt == null || branch == null || !artifactEvent.isOnBranch(branch)) {
+         return;
+      }
+      try {
+         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
+         if (topArt != null) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  storeExpandedAndSelection();
+                  refresh();
+                  restoreExpandedAndSelection();
+               }
+            });
+            return;
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (rootArt == null || branch == null || !artifactTopicEvent.isOnBranch(branch)) {
          return;
       }
       try {

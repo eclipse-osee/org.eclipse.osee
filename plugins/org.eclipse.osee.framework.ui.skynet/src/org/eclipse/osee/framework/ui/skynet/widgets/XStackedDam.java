@@ -31,8 +31,12 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -47,12 +51,13 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Roberto E. Escobar
  */
-public class XStackedDam extends XStackedWidget<String> implements AttributeWidget, IArtifactEventListener {
+public class XStackedDam extends XStackedWidget<String> implements AttributeWidget, IArtifactEventListener, IArtifactTopicEventListener {
    public static final String WIDGET_ID = XStackedDam.class.getSimpleName();
    private Artifact artifact;
    private AttributeTypeToken attributeType;
    private final XModifiedListener xModifiedListener;
    private List<BranchIdEventFilter> eventFilters;
+   private List<BranchIdTopicEventFilter> topicEventFilters;
    private Composite parent;
 
    public XStackedDam(String displayLabel) {
@@ -437,8 +442,31 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      if (topicEventFilters == null && artifact != null) {
+         topicEventFilters = Collections.singletonList(new BranchIdTopicEventFilter(artifact.getBranch()));
+      }
+      return topicEventFilters;
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (!artifact.isDeleted() && artifactEvent.isHasEvent(artifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               if (Widgets.isAccessible(getControl())) {
+                  refresh();
+               }
+            }
+         });
+      }
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (!artifact.isDeleted() && artifactTopicEvent.isHasEvent(artifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
 
             @Override

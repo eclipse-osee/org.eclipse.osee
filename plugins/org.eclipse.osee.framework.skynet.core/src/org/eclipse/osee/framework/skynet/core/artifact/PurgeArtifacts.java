@@ -21,17 +21,23 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -63,6 +69,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private final boolean recurseChildrenBranches;
 
    private ArtifactEvent artifactEvent;
+   private ArtifactTopicEvent artifactTopicEvent;
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
       this(artifactsToPurge, false);
@@ -109,37 +117,67 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
          }
 
          BranchToken branch = artifactsToPurge.iterator().next().getBranch();
-         artifactEvent = new ArtifactEvent(branch);
-         for (Artifact artifact : artifactsToPurge) {
-            EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(EventModType.Purged, artifact);
-            artifactEvent.addArtifact(guidArt);
+         if (useNewEvents) {
+            artifactTopicEvent = new ArtifactTopicEvent(branch);
+            for (Artifact art : artifactsToPurge) {
+               EventTopicArtifactTransfer transferArt = FrameworkEventUtil.artifactTransferFactory(art.getBranch(), art,
+                  art.getArtifactType(), EventModType.Purged, null, null, EventTopicTransferType.BASE);
 
-            for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-               ArtifactToken artifactA = rel.getArtifactA();
-               ArtifactToken artifactB = rel.getArtifactB();
-               DefaultBasicIdRelation guidRelation =
-                  new DefaultBasicIdRelation(branch, rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
+               artifactTopicEvent.addArtifact(transferArt);
+               for (RelationLink rel : art.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+                  EventTopicRelationTransfer transfer =
+                     FrameworkEventUtil.relationTransferFactory(RelationEventType.Purged, rel.getArtifactA(),
+                        rel.getArtifactB(), RelationId.valueOf(rel.getRelationType().getId()),
+                        rel.getRelationType().getId(), rel.getGammaId(), "PurgeArtifacts transfer");
+                  artifactTopicEvent.addRelation(transfer);
+                  rel.markAsPurged();
+               }
+               for (Attribute<?> attr : art.internalGetAttributes()) {
+                  attr.markAsPurged();
+               }
+               ArtifactCache.deCache(art);
+               RelationManager.deCache(art);
+               art.internalSetDeleted();
+            }
+            success = true;
+         } else {
+            artifactEvent = new ArtifactEvent(branch);
+            for (Artifact artifact : artifactsToPurge) {
+               EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(EventModType.Purged, artifact);
+               artifactEvent.addArtifact(guidArt);
+
+               for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+                  ArtifactToken artifactA = rel.getArtifactA();
+                  ArtifactToken artifactB = rel.getArtifactB();
+                  DefaultBasicIdRelation guidRelation = new DefaultBasicIdRelation(branch,
+                     rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
                      new DefaultBasicGuidArtifact(branch, artifactA), new DefaultBasicGuidArtifact(branch, artifactB));
-               artifactEvent.addRelation(
-                  new EventBasicGuidRelation(RelationEventType.Purged, artifactA, artifactB, guidRelation));
-               rel.markAsPurged();
+                  artifactEvent.addRelation(
+                     new EventBasicGuidRelation(RelationEventType.Purged, artifactA, artifactB, guidRelation));
+                  rel.markAsPurged();
+               }
+               for (Attribute<?> attr : artifact.internalGetAttributes()) {
+                  attr.markAsPurged();
+               }
+               ArtifactCache.deCache(artifact);
+               RelationManager.deCache(artifact);
+               artifact.internalSetDeleted();
             }
-            for (Attribute<?> attr : artifact.internalGetAttributes()) {
-               attr.markAsPurged();
-            }
-            ArtifactCache.deCache(artifact);
-            RelationManager.deCache(artifact);
-            artifact.internalSetDeleted();
+            success = true;
          }
-         success = true;
       }
    }
 
    @Override
    protected void handleTxFinally(IProgressMonitor monitor) {
       if (success) {
-         // Kick Local and Remote Events
-         OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
+         if (useNewEvents) {
+            // make new artifactTopic event, with new topic and event class
+            OseeEventManager.kickArtifactTopicEvent(PurgeArtifacts.class, artifactTopicEvent);
+         } else {
+            // Kick Local and Remote Events
+            OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
+         }
       }
    }
 

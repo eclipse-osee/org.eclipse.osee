@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  * @author Roberto E. Escobar
  */
 public interface EventHandlerRemote<R extends RemoteEvent> {
+   public static final String USE_NEW_EVENTS_KEY = new String("use.new.events");
 
    void handle(Transport transport, Sender sender, R remoteEvent);
 }

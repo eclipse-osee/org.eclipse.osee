@@ -26,12 +26,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.osgi.service.event.Event;
@@ -43,7 +46,7 @@ import org.osgi.service.event.EventHandler;
  *
  * @author Donald G. Dunne
  */
-public class ArtifactEditorEventManager implements IArtifactEventListener, IBranchEventListener, EventHandler {
+public class ArtifactEditorEventManager implements IArtifactEventListener, IArtifactTopicEventListener, IBranchEventListener, EventHandler {
 
    static List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactEditorEventManager instance;
@@ -70,6 +73,12 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      // Can't filter cause this class handles all artifact explorers which can care about different branches
+      return null;
+   }
+
+   @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
       for (IArtifactEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
@@ -89,6 +98,66 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
             for (IArtifactEditorEventHandler handler : handlers) {
                try {
                   if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && artifactEvent.containsArtifact(
+                     handler.getArtifactFromEditorInput(), EventModType.Deleted, EventModType.Purged)) {
+                     handler.closeEditor();
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler for deleted - " + handler,
+                     ex);
+               }
+            }
+            if (!modifiedArts.isEmpty() || !relModifiedArts.isEmpty() || !relOrderChangedArtifacts.isEmpty()) {
+               for (IArtifactEditorEventHandler handler : handlers) {
+                  try {
+                     if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null) {
+
+                        if (modifiedArts.contains(handler.getArtifactFromEditorInput())) {
+                           handler.refreshDirtyArtifact();
+                        }
+
+                        for (Artifact art : modifiedArts) {
+                           if (art.isOfType(CoreArtifactTypes.AccessControlModel)) {
+                              handler.refreshDirtyArtifact();
+                           }
+                        }
+
+                        boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
+                        boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
+                        if (relModified || reorderArt) {
+                           handler.refreshRelations();
+                           handler.getEditor().onDirtied();
+                        }
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE,
+                        "Error processing event handler for modified - " + handler, ex);
+                  }
+               }
+            }
+         }
+      });
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      for (IArtifactEditorEventHandler handler : handlers) {
+         if (handler.isDisposed()) {
+            handlers.remove(handler);
+         }
+      }
+      EventUtil.eventLog(
+         "ArtifactEditorEventManager: handleArtifactEvent called [" + artifactTopicEvent + "] - sender " + sender + "");
+      final Collection<Artifact> modifiedArts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+      final Collection<Artifact> relModifiedArts = artifactTopicEvent.getRelCacheArtifacts();
+      final Collection<Artifact> relOrderChangedArtifacts = artifactTopicEvent.getRelationOrderArtifacts();
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IArtifactEditorEventHandler handler : handlers) {
+               try {
+                  if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && artifactTopicEvent.containsArtifact(
                      handler.getArtifactFromEditorInput(), EventModType.Deleted, EventModType.Purged)) {
                      handler.closeEditor();
                   }

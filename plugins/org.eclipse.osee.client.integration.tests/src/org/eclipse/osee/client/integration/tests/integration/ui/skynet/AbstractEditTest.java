@@ -28,19 +28,26 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.junit.After;
 import org.junit.Assert;
@@ -167,14 +174,19 @@ public abstract class AbstractEditTest {
       }
    }
 
-   private static final class UpdateArtifactListener implements IArtifactEventListener {
+   private static final class UpdateArtifactListener implements IArtifactEventListener, IArtifactTopicEventListener {
       private final EventBasicGuidArtifact artToLookFor;
+      private final EventTopicArtifactTransfer topicArtToLookFor;
       private final BranchIdEventFilter branchFilter;
+      private final BranchIdTopicEventFilter branchTopicFilter;
       private boolean wasUpdateReceived;
 
       public UpdateArtifactListener(EventModType modType, Artifact artifact) {
          branchFilter = new BranchIdEventFilter(artifact.getBranch());
+         branchTopicFilter = new BranchIdTopicEventFilter(artifact.getBranch());
          artToLookFor = new EventBasicGuidArtifact(modType, artifact);
+         topicArtToLookFor = FrameworkEventUtil.artifactTransferFactory(artifact.getBranch(), artifact.getToken(),
+            artifact.getArtifactType(), modType, null, null, EventTopicTransferType.BASE);
          wasUpdateReceived = false;
       }
 
@@ -189,6 +201,17 @@ public abstract class AbstractEditTest {
          }
       }
 
+      @Override
+      public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+         List<EventTopicArtifactTransfer> changes = artifactTopicEvent.getArtifacts();
+         if (changes.contains(topicArtToLookFor)) {
+            wasUpdateReceived = true;
+            synchronized (this) {
+               notify();
+            }
+         }
+      }
+
       public boolean wasUpdateReceived() {
          return wasUpdateReceived;
       }
@@ -196,6 +219,11 @@ public abstract class AbstractEditTest {
       @Override
       public List<? extends IEventFilter> getEventFilters() {
          return Collections.singletonList(branchFilter);
+      }
+
+      @Override
+      public List<? extends ITopicEventFilter> getTopicEventFilters() {
+         return Collections.singletonList(branchTopicFilter);
       }
    };
 }
