@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -87,6 +89,11 @@ public class XWorkingBranchLabel extends XWorkingBranchWidgetAbstract {
    @Override
    public Control getControl() {
       return labelWidget;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 
 }

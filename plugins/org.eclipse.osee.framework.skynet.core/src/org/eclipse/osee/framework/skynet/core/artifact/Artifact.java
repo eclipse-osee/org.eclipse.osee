@@ -91,6 +91,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -1783,6 +1785,15 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
       return new DefaultBasicGuidArtifact(getBranch(), this);
+   }
+
+   public final EventTopicArtifactTransfer getArtifactTransfer(EventModType eventModType) {
+      EventTopicArtifactTransfer transferArt = new EventTopicArtifactTransfer();
+      transferArt.setArtifactToken(this);
+      transferArt.setBranch(getBranch());
+      transferArt.setArtifactTypeId(getArtifactType());
+      transferArt.setEventModType(eventModType);
+      return transferArt;
    }
 
    public final Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {

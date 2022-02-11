@@ -31,18 +31,24 @@ import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilt
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ArtifactTopicTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 
 /**
  * @author Roberto E. Escobar
  */
-public class UserArtifactEventListener implements IArtifactEventListener {
+public class UserArtifactEventListener implements IArtifactEventListener, IArtifactTopicEventListener {
 
    private final List<? extends IEventFilter> eventFilters;
+   private final List<? extends ITopicEventFilter> topicEventFilters;
    private final LazyObject<Cache<String, User>> cacheProvider;
    private final LazyObject<Iterable<? extends String>> keysProvider;
 
@@ -50,6 +56,8 @@ public class UserArtifactEventListener implements IArtifactEventListener {
       super();
       this.eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.User),
          new BranchIdEventFilter(CoreBranches.COMMON));
+      topicEventFilters = Arrays.asList(new ArtifactTopicTypeEventFilter(CoreArtifactTypes.User),
+         new BranchIdTopicEventFilter(CoreBranches.COMMON));
       this.cacheProvider = cacheProvider;
       this.keysProvider = keysProvider;
    }
@@ -57,6 +65,11 @@ public class UserArtifactEventListener implements IArtifactEventListener {
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       return eventFilters;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return topicEventFilters;
    }
 
    @Override
@@ -78,8 +91,37 @@ public class UserArtifactEventListener implements IArtifactEventListener {
       }
    }
 
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (areUsers(artifactTopicEvent, EventModType.Added, EventModType.Purged, EventModType.Deleted)) {
+         keysProvider.invalidate();
+      }
+
+      Collection<Artifact> cacheArtifacts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Purged, EventModType.Deleted);
+      if (!cacheArtifacts.isEmpty()) {
+         Set<String> keys = getKeysToInvalidate(cacheArtifacts);
+         if (!keys.isEmpty()) {
+            try {
+               cacheProvider.get().invalidate(keys);
+            } catch (OseeCoreException ex) {
+               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error updating users");
+            }
+         }
+      }
+   }
+
    private boolean areUsers(ArtifactEvent artifactEvent, EventModType... eventType) {
       for (EventBasicGuidArtifact artifact : artifactEvent.get(eventType)) {
+         if (artifact.isTypeEqual(CoreArtifactTypes.User)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private boolean areUsers(ArtifactTopicEvent artifactTopicEvent, EventModType... eventType) {
+      for (EventBasicGuidArtifact artifact : artifactTopicEvent.get(eventType)) {
          if (artifact.isTypeEqual(CoreArtifactTypes.User)) {
             return true;
          }

@@ -41,9 +41,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -62,7 +65,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener {
+public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener, IArtifactTopicEventListener {
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
    public final static String ID = "ats.bit.tab";
@@ -212,6 +215,11 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
       return AtsUtilClient.getAtsObjectEventFilters();
    }
 
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return AtsUtilClient.getAtsTopicObjectEventFilters();
+   }
+
    /**
     * XBitViewer listens to it's own events because BID artifacts and sibling workflows can change independent of main
     * team wf and refresh of table is needed for those.
@@ -223,6 +231,37 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
       }
       boolean refresh = false;
       for (Artifact art : artifactEvent.getCacheArtifacts(EventModType.values())) {
+         if (art.isOfType(AtsArtifactTypes.BuildImpactData)) {
+            refresh = true;
+            break;
+         } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            if (atsApi.getRelationResolver().getRelatedOrSentinel(art,
+               AtsRelationTypes.BuildImpactDataToTeamWf_Bid).isValid()) {
+               refresh = true;
+               break;
+            }
+         }
+      }
+
+      if (refresh) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               refresh();
+            }
+         });
+      }
+
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (editor.getBitTab() == null) {
+         return;
+      }
+      boolean refresh = false;
+      for (Artifact art : artifactTopicEvent.getCacheArtifacts(EventModType.values())) {
          if (art.isOfType(AtsArtifactTypes.BuildImpactData)) {
             refresh = true;
             break;

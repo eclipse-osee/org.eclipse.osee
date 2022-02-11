@@ -46,6 +46,7 @@ public class TransactionRemoteEventHandler implements EventHandlerRemote<RemoteT
 
    @Override
    public void handle(Transport transport, Sender sender, RemoteTransactionEvent1 remoteEvent) {
+
       TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent(remoteEvent, tokenService);
       if (transEvent.getEventType() == TransactionEventType.Purged) {
          handleRemotePurgeTransactionEvent(transEvent);
@@ -60,6 +61,8 @@ public class TransactionRemoteEventHandler implements EventHandlerRemote<RemoteT
 
          Set<Artifact> artifactsInCache = new HashSet<>();
          for (TransactionChange transChange : transEvent.getTransactionChanges()) {
+            // reviewed for use with long ids - since the artifacts are only being used for getting an artifact from a
+            // guid, and not any integer ID, then it doesn't need to be transferred.
             for (DefaultBasicGuidArtifact guidArt : transChange.getArtifacts()) {
                try {
                   Artifact artifact = ArtifactCache.getActive(guidArt);

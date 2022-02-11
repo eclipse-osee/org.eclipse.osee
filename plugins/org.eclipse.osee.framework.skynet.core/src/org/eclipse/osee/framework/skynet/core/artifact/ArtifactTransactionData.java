@@ -15,12 +15,16 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 
 /**
@@ -80,6 +84,20 @@ public class ArtifactTransactionData extends BaseTransactionData {
       } else {
          artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Added, artifact));
       }
+   }
+
+   @Override
+   protected void internalAddToEvents(ArtifactTopicEvent artifactTopicEvent) {
+      // for MODIFIED case transactionEvent populated in SkynetTransaction after all attribute changes have been made
+      EventModType mod;
+      if (getModificationType().equals(ModificationType.DELETED)) {
+         mod = EventModType.Deleted;
+      } else {
+         mod = EventModType.Added;
+      }
+      EventTopicArtifactTransfer transferArt = FrameworkEventUtil.artifactTransferFactory(artifact.getBranch(),
+         artifact, artifact.getArtifactType(), mod, null, null, EventTopicTransferType.BASE);
+      artifactTopicEvent.addArtifact(transferArt);
    }
 
    @Override

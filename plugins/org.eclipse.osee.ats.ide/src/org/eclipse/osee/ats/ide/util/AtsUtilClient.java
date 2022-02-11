@@ -28,6 +28,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ArtifactTopicTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
@@ -42,10 +45,23 @@ public class AtsUtilClient {
       new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter =
       new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
+
+   private static ArtifactTopicTypeEventFilter atsTopicObjectArtifactTypesFilter =
+      new ArtifactTopicTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
+         AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint, AtsArtifactTypes.PeerToPeerReview,
+         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
+   private static ArtifactTopicTypeEventFilter reviewTopicArtifactTypesFilter =
+      new ArtifactTopicTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+   private static ArtifactTopicTypeEventFilter teamWorkflowTopicArtifactTypesFilter =
+      new ArtifactTopicTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
+
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
+   private static List<ITopicEventFilter> atsTopicObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
    private static BranchIdEventFilter commonBranchIdEventFilter =
       new BranchIdEventFilter(AtsApiService.get().getAtsBranch());
+   private static BranchIdTopicEventFilter commonBranchTopicIdEventFilter =
+      new BranchIdTopicEventFilter(AtsApiService.get().getAtsBranch());
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
@@ -62,6 +78,10 @@ public class AtsUtilClient {
       return commonBranchIdEventFilter;
    }
 
+   public static BranchIdTopicEventFilter getAtsTopicBranchFilter() {
+      return commonBranchTopicIdEventFilter;
+   }
+
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter.isEmpty()) {
@@ -74,6 +94,18 @@ public class AtsUtilClient {
       return atsObjectEventFilter;
    }
 
+   public synchronized static List<ITopicEventFilter> getAtsTopicObjectEventFilters() {
+      try {
+         if (atsTopicObjectEventFilter.isEmpty()) {
+            atsTopicObjectEventFilter.add(AtsUtilClient.getAtsTopicBranchFilter());
+            atsTopicObjectEventFilter.add(getAtsTopicObjectArtifactTypeEventFilter());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return atsTopicObjectEventFilter;
+   }
+
    public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
       return atsObjectArtifactTypesFilter;
    }
@@ -84,6 +116,18 @@ public class AtsUtilClient {
 
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       return reviewArtifactTypesFilter;
+   }
+
+   public static ArtifactTopicTypeEventFilter getAtsTopicObjectArtifactTypeEventFilter() {
+      return atsTopicObjectArtifactTypesFilter;
+   }
+
+   public static ArtifactTopicTypeEventFilter getTeamWorkflowTopicArtifactTypeEventFilter() {
+      return teamWorkflowTopicArtifactTypesFilter;
+   }
+
+   public static ArtifactTopicTypeEventFilter getReviewTopicArtifactTypeEventFilter() {
+      return reviewTopicArtifactTypesFilter;
    }
 
    /**

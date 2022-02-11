@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
@@ -130,6 +131,10 @@ public final class OseeEventManager {
       String sessionJson = TopicEventUtil.getSessionJson();
       topicEvent.addProperty(TopicEventUtil.SENDER_SESSION_PROPERTY, sessionJson);
       getEventService().send(source, topicEvent);
+   }
+
+   public static void kickArtifactTopicEvent(Object source, ArtifactTopicEvent artifactTopicEvent) {
+      getEventService().send(source, artifactTopicEvent);
    }
 
    // Kick LOCAL and REMOTE topic event with payload
@@ -244,6 +249,14 @@ public final class OseeEventManager {
     */
    public static void kickCommitEvent(Class<?> class1, ArtifactEvent artifactEvent) {
       getEventService().sendCommitEvent(class1, artifactEvent);
+   }
+
+   /**
+    * Kick a commit event to this local client to update artifact model for committed artifacts. This is needed cause
+    * commit is made on server, but clients need to be notified of updates to commited branch artifact model.
+    */
+   public static void kickCommitTopicEvent(Class<?> class1, ArtifactTopicEvent artifactTopicEvent) {
+      getEventService().sendCommitTopicEvent(class1, artifactTopicEvent);
    }
 
 }

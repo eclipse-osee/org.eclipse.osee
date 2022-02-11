@@ -17,10 +17,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -44,6 +48,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
 
    private final Collection<Attribute<?>> attributesToPurge;
    private boolean success;
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    public PurgeAttributes(Collection<Attribute<?>> attributesToPurge) {
       super(ConnectionHandler.getJdbcClient(), "Purge Attributes", Activator.PLUGIN_ID);
@@ -76,16 +81,30 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    protected void handleTxFinally(IProgressMonitor monitor) {
       super.handleTxFinally(monitor);
       if (success) {
-         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
-         for (Attribute<?> attribute : attributesToPurge) {
-            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, attribute.getArtifact()));
+         if (useNewEvents) {
+            // make new artifactTopic event, with new topic and event class
+            ArtifactTopicEvent artifactTopicEvent =
+               new ArtifactTopicEvent(attributesToPurge.iterator().next().getArtifact().getBranch());
+            for (Attribute<?> attribute : attributesToPurge) {
+               EventTopicArtifactTransfer transArt = FrameworkEventUtil.artifactTransferFactory(
+                  artifactTopicEvent.getBranch(), attribute.getArtifact(), attribute.getArtifact().getArtifactType(),
+                  EventModType.Purged, null, null, EventTopicTransferType.BASE);
+               artifactTopicEvent.addArtifact(transArt);
+            }
+            OseeEventManager.kickArtifactTopicEvent(this, artifactTopicEvent);
+         } else {
+            Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
+            for (Attribute<?> attribute : attributesToPurge) {
+               artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, attribute.getArtifact()));
+            }
+            // Kick Local and Remote Events
+            ArtifactEvent artifactEvent =
+               new ArtifactEvent(attributesToPurge.iterator().next().getArtifact().getBranch());
+            for (EventBasicGuidArtifact guidArt : artifactChanges) {
+               artifactEvent.addArtifact(guidArt);
+            }
+            OseeEventManager.kickPersistEvent(this, artifactEvent);
          }
-         // Kick Local and Remote Events
-         ArtifactEvent artifactEvent = new ArtifactEvent(attributesToPurge.iterator().next().getArtifact().getBranch());
-         for (EventBasicGuidArtifact guidArt : artifactChanges) {
-            artifactEvent.addArtifact(guidArt);
-         }
-         OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }
 }

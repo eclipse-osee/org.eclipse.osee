@@ -35,10 +35,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
@@ -66,7 +69,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends GenericXWidget implements ArtifactWidget, IBranchEventListener, IArtifactEventListener {
+public class XCommitManager extends GenericXWidget implements ArtifactWidget, IBranchEventListener, IArtifactEventListener, IArtifactTopicEventListener {
 
    private CommitXManager xCommitManager;
    public final static String normalColor = "#EEEEEE";
@@ -399,7 +402,26 @@ public class XCommitManager extends GenericXWidget implements ArtifactWidget, IB
    }
 
    @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (Widgets.isAccessible(mainComp)) {
+         if (artifactTopicEvent.isModified(getTeamArt())) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  loadTable();
+               }
+            });
+         }
+      }
+   }
+
+   @Override
    public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
       return null;
    }
 

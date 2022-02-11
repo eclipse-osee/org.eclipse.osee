@@ -44,8 +44,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -75,7 +78,7 @@ import org.eclipse.zest.layouts.LayoutAlgorithm;
 /**
  * @author Donald G. Dunne
  */
-public class ActionWalkerView extends GenericViewPart implements IPartListener, IArtifactEventListener, IPerspectiveListener2 {
+public class ActionWalkerView extends GenericViewPart implements IPartListener, IArtifactEventListener, IArtifactTopicEventListener, IPerspectiveListener2 {
    public static final String VIEW_ID = "org.eclipse.osee.ats.ide.ActionWalkerView";
    protected GraphViewer viewer;
    private Composite viewerComp;
@@ -313,6 +316,31 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       if (artifactEvent.isModifiedReloaded(activeAwa) ||
       //
          artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               explore(activeAwa);
+            }
+         });
+      }
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null; // TODO determine if this should be an empty list
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (sender.isRemote()) {
+         return;
+      }
+      if (activeAwa == null) {
+         return;
+      }
+      if (artifactTopicEvent.isModifiedReloaded(activeAwa) ||
+      //
+         artifactTopicEvent.isRelAddedChangedDeleted(activeAwa)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

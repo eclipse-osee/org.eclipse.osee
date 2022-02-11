@@ -33,9 +33,13 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ArtifactTopicTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -138,18 +142,36 @@ public class FrameworkEventToRemoteEventListenerTest {
       return artifact;
    }
 
-   private static final class UpdateArtifactListener implements IArtifactEventListener {
+   private static final class UpdateArtifactListener implements IArtifactEventListener, IArtifactTopicEventListener {
       private volatile boolean wasUpdateReceived;
       private ArtifactEvent artifactEvent;
+      private ArtifactTopicEvent artifactTopicEvent;
       private final ArtifactTypeEventFilter eventFilter;
+      private final ArtifactTopicTypeEventFilter topicEventFilter;
 
       public UpdateArtifactListener(ArtifactTypeEventFilter eventFilter) {
          this.eventFilter = eventFilter;
+         topicEventFilter = null;
+      }
+
+      public UpdateArtifactListener(ArtifactTopicTypeEventFilter topicEventFilter) {
+         this.topicEventFilter = topicEventFilter;
+         eventFilter = null;
       }
 
       @Override
       public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
          this.artifactEvent = artifactEvent;
+
+         synchronized (this) {
+            wasUpdateReceived = true;
+            notify();
+         }
+      }
+
+      @Override
+      public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+         this.artifactTopicEvent = artifactTopicEvent;
 
          synchronized (this) {
             wasUpdateReceived = true;
@@ -168,8 +190,19 @@ public class FrameworkEventToRemoteEventListenerTest {
       }
 
       @Override
+      public List<? extends ITopicEventFilter> getTopicEventFilters() {
+         return Collections.singletonList(topicEventFilter);
+
+      }
+
+      @Override
       public String toString() {
-         return "UpdateArtifactListener [wasUpdateReceived=" + wasUpdateReceived + ", artifactEvent=" + artifactEvent + "]";
+         if (artifactEvent != null) {
+            return "UpdateArtifactListener [wasUpdateReceived=" + wasUpdateReceived + ", artifactEvent=" + artifactEvent + "]";
+         } else {
+            return "UpdateArtifactListener [wasUpdateReceived=" + wasUpdateReceived + ", artifactTopicEvent=" + artifactTopicEvent + "]";
+         }
+
       }
 
    };

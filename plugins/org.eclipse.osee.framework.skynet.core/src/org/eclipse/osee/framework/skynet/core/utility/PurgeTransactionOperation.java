@@ -88,6 +88,8 @@ public class PurgeTransactionOperation extends AbstractOperation {
                   Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId(), transId.getBranch(),
                      DeletionFlag.INCLUDE_DELETED);
                   guidToId.put(art.getGuid(), art.getId());
+                  // since we are only transferring an artifact by guid and no integer ids, this does not need
+                  // to be transferred to an event topic transfer artifact
                   DefaultBasicGuidArtifact guidArt =
                      new DefaultBasicGuidArtifact(change.getBranch(), change.getArtifactType(), art.getGuid());
                   txChg.getArtifacts().add(guidArt);

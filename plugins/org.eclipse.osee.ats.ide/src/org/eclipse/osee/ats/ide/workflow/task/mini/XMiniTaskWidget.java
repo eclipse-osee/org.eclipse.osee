@@ -37,7 +37,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -63,7 +65,7 @@ import org.eclipse.swt.widgets.Tree;
  *
  * @author Donald G. Dunne
  */
-public abstract class XMiniTaskWidget extends GenericXWidget implements ArtifactWidget, IArtifactEventListener {
+public abstract class XMiniTaskWidget extends GenericXWidget implements ArtifactWidget, IArtifactEventListener, IArtifactTopicEventListener {
 
    protected TaskXViewer xTaskViewer;
    public final static String normalColor = "#EEEEEE";
@@ -314,6 +316,32 @@ public abstract class XMiniTaskWidget extends GenericXWidget implements Artifact
                   return;
                }
                if (artifactEvent.isReloaded((Artifact) task.getStoreObject())) {
+                  refresh();
+                  return;
+               }
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      try {
+         if (teamWf != null && Widgets.isAccessible(mainComp)) {
+            // Handle case where new task created/deleted
+            if (artifactTopicEvent.isHasEvent((Artifact) teamWf.getStoreObject())) {
+               refresh();
+               return;
+            }
+            // Handle case where task changed
+            for (IAtsTask task : atsApi.getTaskService().getTasks(teamWf)) {
+               if (artifactTopicEvent.isHasEvent((Artifact) task.getStoreObject())) {
+                  refresh();
+                  return;
+               }
+               if (artifactTopicEvent.isReloaded((Artifact) task.getStoreObject())) {
                   refresh();
                   return;
                }

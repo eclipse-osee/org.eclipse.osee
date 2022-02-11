@@ -20,14 +20,17 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,12 +52,12 @@ public class EventListenerRegistryTest {
 
       registry.addListener(EventQosType.PRIORITY, delegate1);
       Assert.assertEquals(1, registry.size());
-      Assert.assertEquals(1, registry.size(EventQosType.PRIORITY));
+      Assert.assertEquals(2, registry.size(EventQosType.PRIORITY)); // needs fix when ArtifactEvent is removed, back to 1
       Assert.assertEquals(0, registry.size(EventQosType.NORMAL));
 
       registry.addListener(EventQosType.NORMAL, delegate2);
       Assert.assertEquals(2, registry.size());
-      Assert.assertEquals(1, registry.size(EventQosType.PRIORITY));
+      Assert.assertEquals(2, registry.size(EventQosType.PRIORITY)); // same as above
       Assert.assertEquals(2, registry.size(EventQosType.NORMAL));
 
       Collection<IEventListener> listener0 = registry.getListeners(EventQosType.PRIORITY, new TransactionEvent());
@@ -80,7 +83,7 @@ public class EventListenerRegistryTest {
 
       registry.removeListener(delegate2);
       Assert.assertEquals(1, registry.size());
-      Assert.assertEquals(1, registry.size(EventQosType.PRIORITY));
+      Assert.assertEquals(2, registry.size(EventQosType.PRIORITY)); // same as above
       Assert.assertEquals(0, registry.size(EventQosType.NORMAL));
 
       Collection<IEventListener> listener5 = registry.getListeners(EventQosType.NORMAL, new TransactionEvent());
@@ -115,7 +118,7 @@ public class EventListenerRegistryTest {
 
    }
 
-   private static final class Delegate1 implements IArtifactEventListener {
+   private static final class Delegate1 implements IArtifactEventListener, IArtifactTopicEventListener {
 
       @Override
       public List<? extends IEventFilter> getEventFilters() {
@@ -123,7 +126,17 @@ public class EventListenerRegistryTest {
       }
 
       @Override
+      public List<? extends ITopicEventFilter> getTopicEventFilters() {
+         return null;
+      }
+
+      @Override
       public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+         //
+      }
+
+      @Override
+      public void handleArtifactTopicEvent(ArtifactTopicEvent artifactEvent, Sender sender) {
          //
       }
 

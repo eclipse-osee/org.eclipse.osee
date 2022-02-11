@@ -27,6 +27,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
@@ -38,16 +39,20 @@ import org.eclipse.osee.framework.skynet.core.event.EventUtilIde;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEventListener {
+public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEventListener, IArtifactTopicEventListener {
 
    // Artifact that stores shared/global customizations
    private static Artifact globalCustomizationsArtifact;
@@ -255,9 +260,30 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return Arrays.asList(new BranchIdTopicEventFilter(CoreBranches.COMMON));
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+      try {
+         if (!modifiedArts.isEmpty()) {
+            if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(
+               UserManager.getUser())) {
+               ensurePopulated(true);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      final Collection<Artifact> modifiedArts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       try {
          if (!modifiedArts.isEmpty()) {
             if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(

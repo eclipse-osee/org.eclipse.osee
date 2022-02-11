@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TransactionTokenDeserializer;
@@ -145,6 +146,7 @@ public class JsonUtil {
       addDeserializer(module, TransactionId.class, TransactionId::valueOf);
       addDeserializer(module, Id.class, Id::valueOf);
       addDeserializer(module, ApplicabilityId.class, ApplicabilityId::valueOf);
+      addDeserializer(module, ArtifactTypeId.class, ArtifactTypeId::valueOf);
 
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
       module.addDeserializer(ArtifactToken.class,

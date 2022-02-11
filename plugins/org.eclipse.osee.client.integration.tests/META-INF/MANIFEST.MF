@@ -8,9 +8,9 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.eclipse.osee.client.integration.tests
 Service-Component: OSGI-INF/*.xml
-Import-Package: javax.ws.rs.client,
+Import-Package: javax.activation,
+ javax.ws.rs.client,
  javax.ws.rs.core,
- javax.activation,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.jface.resource,
@@ -32,6 +32,7 @@ Import-Package: javax.ws.rs.client,
  org.eclipse.osee.framework.core.data.computed,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.enums.token,
+ org.eclipse.osee.framework.core.event,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,

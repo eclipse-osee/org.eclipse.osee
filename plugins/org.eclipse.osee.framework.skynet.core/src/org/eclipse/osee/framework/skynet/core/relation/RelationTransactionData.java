@@ -16,14 +16,18 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 
 /**
@@ -103,6 +107,17 @@ public class RelationTransactionData extends BaseTransactionData {
          event.setRationale(relation.getRationale());
       }
       artifactEvent.getRelations().add(event);
+   }
+
+   @Override
+   protected void internalAddToEvents(ArtifactTopicEvent artifactTopicEvent) {
+      String rationale =
+         relationEventType == RelationEventType.ModifiedRationale ? relation.getRationale() : "RelationTransactionData transfer";
+
+      EventTopicRelationTransfer event =
+         FrameworkEventUtil.relationTransferFactory(relationEventType, relation.getArtifactA(), relation.getArtifactB(),
+            RelationId.valueOf(relation.getId()), relation.getRelationType().getId(), relation.getGammaId(), rationale);
+      artifactTopicEvent.getRelations().add(event);
    }
 
    @Override

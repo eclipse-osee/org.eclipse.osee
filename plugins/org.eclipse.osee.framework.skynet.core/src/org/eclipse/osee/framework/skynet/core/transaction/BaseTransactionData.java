@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
@@ -150,6 +151,13 @@ public abstract class BaseTransactionData {
     * @param artifactEvent TODO
     */
    protected abstract void internalAddToEvents(ArtifactEvent artifactEvent);
+
+   /**
+    * Should not be called by application. This should only be called once after the transaction has been committed.
+    *
+    * @param artifactTopicEvent TODO
+    */
+   protected abstract void internalAddToEvents(ArtifactTopicEvent artifactTopicEvent);
 
    protected GammaId getNextGammaIdFromSequence() {
       return GammaId.valueOf(ConnectionHandler.getNextSequence(GAMMA_ID_SEQ, true));

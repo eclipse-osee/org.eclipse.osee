@@ -31,8 +31,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -41,7 +44,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  *
  * @author Donald G. Dunne
  */
-public class WfeArtifactEventManager implements IArtifactEventListener {
+public class WfeArtifactEventManager implements IArtifactEventListener, IArtifactTopicEventListener {
 
    static List<WorkflowEditor> editors = new CopyOnWriteArrayList<>();
    static WfeArtifactEventManager instance = new WfeArtifactEventManager();
@@ -71,6 +74,11 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return AtsUtilClient.getAtsTopicObjectEventFilters();
+   }
+
+   @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
       for (WorkflowEditor editor : editors) {
          if (editor.isDisposed()) {
@@ -87,6 +95,29 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
       for (final WorkflowEditor editor : editors) {
          try {
             safelyProcessHandler(artifactEvent, editor);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + editor, ex);
+         }
+      }
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      for (WorkflowEditor editor : editors) {
+         if (editor.isDisposed()) {
+            editors.remove(editor);
+         }
+      }
+      try {
+         if (!artifactTopicEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
+            return;
+         }
+      } catch (OseeCoreException ex) {
+         return;
+      }
+      for (final WorkflowEditor editor : editors) {
+         try {
+            safelyProcessHandler(artifactTopicEvent, editor);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + editor, ex);
          }
@@ -119,6 +150,49 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          if (!refreshNeeded) {
             for (IAtsAbstractReview review : atsApi.getReviewService().getReviews((IAtsTeamWorkflow) awa)) {
                if (artifactEvent.isHasEvent((Artifact) review.getStoreObject())) {
+                  refreshNeeded = true;
+                  break;
+               }
+            }
+         }
+         if (refreshNeeded) {
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  editor.refresh();
+               }
+            });
+         }
+      }
+   }
+
+   private void safelyProcessHandler(final ArtifactTopicEvent artifactTopicEvent, final WorkflowEditor editor) {
+      final AbstractWorkflowArtifact awa = editor.getWorkItem();
+
+      if (artifactTopicEvent.isDeletedPurged(awa)) {
+         editor.closeEditor();
+         return;
+      }
+      if (artifactTopicEvent.isHasEvent(awa) || artifactTopicEvent.isReloaded(awa)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               editor.refresh();
+            }
+         });
+      } else if (awa.isTeamWorkflow()) {
+         boolean refreshNeeded = false;
+         for (IAtsTask task : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) awa)) {
+            if (artifactTopicEvent.isHasEvent((Artifact) task.getStoreObject())) {
+               refreshNeeded = true;
+               break;
+            }
+         }
+         if (!refreshNeeded) {
+            for (IAtsAbstractReview review : atsApi.getReviewService().getReviews((IAtsTeamWorkflow) awa)) {
+               if (artifactTopicEvent.isHasEvent((Artifact) review.getStoreObject())) {
                   refreshNeeded = true;
                   break;
                }

@@ -28,10 +28,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.IArtifactExplorerEventHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -46,7 +49,7 @@ import org.osgi.service.event.EventHandler;
  *
  * @author Donald G. Dunne
  */
-public class ArtifactExplorerEventManager implements IArtifactEventListener, EventHandler {
+public class ArtifactExplorerEventManager implements IArtifactEventListener, IArtifactTopicEventListener, EventHandler {
 
    static List<IArtifactExplorerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactExplorerEventManager instance;
@@ -68,6 +71,12 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
+      // Can't filter cause this class handles all artifact explorers which can care about different branches
+      return null;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
       // Can't filter cause this class handles all artifact explorers which can care about different branches
       return null;
    }
@@ -140,6 +149,77 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
                      handler.getArtifactExplorer().getTreeViewer().refresh();
 
                      for (Artifact artifact : artifactEvent.getRelationOrderArtifacts()) {
+                        try {
+                           handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     }
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler for modified - " + handler,
+                     ex);
+               }
+            }
+         }
+      });
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (workbench == null || workbench.isClosing() || workbench.isStarting()) {
+         return;
+      }
+
+      // Do not process event if branch is null, deleted or purged.  But, don't want to remove as handler cause another branch may be selected
+      final List<IArtifactExplorerEventHandler> handlersToProcess = new ArrayList<>();
+      for (IArtifactExplorerEventHandler handler : handlers) {
+         if (handler.isDisposed()) {
+            handlers.remove(handler);
+         } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactTopicEvent.getBranch())) {
+            handlersToProcess.add(handler);
+         }
+      }
+
+      EventUtil.eventLog(
+         "ArtifacExplorer: handleArtifactEvent called [" + artifactTopicEvent + "] - sender " + sender + "");
+      final Collection<Artifact> modifiedArts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+      final Collection<EventBasicGuidArtifact> deletedPurgedArts =
+         artifactTopicEvent.get(EventModType.Deleted, EventModType.Purged);
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (!deletedPurgedArts.isEmpty()) {
+               for (IArtifactExplorerEventHandler handler : handlersToProcess) {
+                  try {
+                     if (!handler.isDisposed()) {
+                        handler.getArtifactExplorer().getTreeViewer().remove(
+                           deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE,
+                        "Error processing event handler for deleted - " + handler, ex);
+                  }
+               }
+            }
+            for (IArtifactExplorerEventHandler handler : handlersToProcess) {
+               try {
+                  if (!handler.isDisposed()) {
+                     for (Artifact artifact : modifiedArts) {
+                        // Don't refresh deleted artifacts
+                        if (artifact.isDeleted()) {
+                           continue;
+                        }
+                        handler.getArtifactExplorer().getTreeViewer().update(artifact, null);
+                     }
+
+                     // We do not need to refresh each artifact for each handler, just the handler itself
+                     handler.getArtifactExplorer().getTreeViewer().refresh();
+
+                     for (Artifact artifact : artifactTopicEvent.getRelationOrderArtifacts()) {
                         try {
                            handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
                         } catch (Exception ex) {

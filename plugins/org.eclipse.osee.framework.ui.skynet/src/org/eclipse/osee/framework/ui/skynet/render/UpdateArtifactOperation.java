@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import com.google.common.collect.Lists;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,16 +27,21 @@ import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
@@ -51,6 +57,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
    private final List<Artifact> artifacts;
    private final BranchId branch;
    private final boolean threeWayMerge;
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, BranchId branch, boolean threeWayMerge) {
       super("Update Artifact", Activator.PLUGIN_ID);
@@ -85,24 +92,55 @@ public class UpdateArtifactOperation extends AbstractOperation {
    }
 
    private void postProcessChange(WordUpdateChange change) {
-      if (change.getTx() != null && change.getBranch() != null) {
-         // Collect attribute events
-         ArtifactEvent artifactEvent = new ArtifactEvent(TransactionToken.valueOf(change.getTx(), branch));
+      if (useNewEvents) {
+         // make new artifactTopic event, with new topic and event class
+         if (change.getTx() != null && change.getBranch() != null) {
+            // Collect attribute events
+            ArtifactTopicEvent artifactTopicEvent =
+               new ArtifactTopicEvent(TransactionToken.valueOf(change.getTx(), branch));
 
-         for (Artifact artifact : artifacts) {
-            WordArtifactChange artChange = change.getWordArtifactChange(artifact.getId());
-            if (artChange != null) {
-               artifact.reloadAttributesAndRelations();
-               Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
-               if (!attrChanges.isEmpty()) {
-                  EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
-                     artifact.getArtifactType(), artifact.getGuid(), attrChanges);
-                  artifactEvent.addArtifact(guidArt);
+            for (Artifact artifact : artifacts) {
+               WordArtifactChange artChange = change.getWordArtifactChange(artifact.getId());
+               if (artChange != null) {
+                  artifact.reloadAttributesAndRelations();
+                  Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
+                  if (!attrChanges.isEmpty()) {
+
+                     Collection<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange> changeAttrs =
+                        new ArrayList<>();
+
+                     EventTopicArtifactTransfer artEvent = FrameworkEventUtil.artifactTransferFactory(
+                        artifact.getBranch(), artifact, artifact.getArtifactType(), EventModType.ChangeType, null,
+                        changeAttrs, EventTopicTransferType.MODIFICATION);
+
+                     artifactTopicEvent.addArtifact(artEvent);
+                  }
                }
             }
+            if (!artifactTopicEvent.getArtifacts().isEmpty()) {
+               OseeEventManager.kickArtifactTopicEvent(this, artifactTopicEvent);
+            }
          }
-         if (!artifactEvent.getArtifacts().isEmpty()) {
-            OseeEventManager.kickPersistEvent(this, artifactEvent);
+      } else {
+         if (change.getTx() != null && change.getBranch() != null) {
+            // Collect attribute events
+            ArtifactEvent artifactEvent = new ArtifactEvent(TransactionToken.valueOf(change.getTx(), branch));
+
+            for (Artifact artifact : artifacts) {
+               WordArtifactChange artChange = change.getWordArtifactChange(artifact.getId());
+               if (artChange != null) {
+                  artifact.reloadAttributesAndRelations();
+                  Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
+                  if (!attrChanges.isEmpty()) {
+                     EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
+                        artifact.getArtifactType(), artifact.getGuid(), attrChanges);
+                     artifactEvent.addArtifact(guidArt);
+                  }
+               }
+            }
+            if (!artifactEvent.getArtifacts().isEmpty()) {
+               OseeEventManager.kickPersistEvent(this, artifactEvent);
+            }
          }
       }
    }

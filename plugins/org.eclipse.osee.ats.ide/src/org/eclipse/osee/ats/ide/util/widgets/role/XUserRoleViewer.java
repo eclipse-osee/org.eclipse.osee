@@ -49,8 +49,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -80,7 +83,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, IArtifactEventListener {
+public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, IArtifactEventListener, IArtifactTopicEventListener {
 
    private UserRoleXViewer xViewer;
    private PeerToPeerReviewArtifact reviewArt;
@@ -464,6 +467,12 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    }
 
    @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return Arrays.asList(AtsUtilClient.getAtsTopicBranchFilter(),
+         AtsUtilClient.getReviewTopicArtifactTypeEventFilter());
+   }
+
+   @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
       if (reviewArt == null || !artifactEvent.isHasEvent(reviewArt.getArtifact())) {
          return;
@@ -475,6 +484,24 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
                return;
             }
             if (artifactEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
+               refresh();
+            }
+         }
+      });
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (reviewArt == null || !artifactTopicEvent.isHasEvent(reviewArt.getArtifact())) {
+         return;
+      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+               return;
+            }
+            if (artifactTopicEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
                refresh();
             }
          }

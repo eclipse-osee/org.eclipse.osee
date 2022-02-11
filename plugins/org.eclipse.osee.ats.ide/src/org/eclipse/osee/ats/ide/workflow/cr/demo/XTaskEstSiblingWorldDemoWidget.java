@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
+import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest.XTaskEstSiblingWorldWidget;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -46,6 +48,11 @@ public class XTaskEstSiblingWorldDemoWidget extends XTaskEstSiblingWorldWidget {
       XTaskEstSiblingDemoActionBar actionBar = new XTaskEstSiblingDemoActionBar(this);
       ToolBar toolBar = actionBar.createTaskActionBar(tableComp);
       return toolBar;
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return null;
    }
 
 }
