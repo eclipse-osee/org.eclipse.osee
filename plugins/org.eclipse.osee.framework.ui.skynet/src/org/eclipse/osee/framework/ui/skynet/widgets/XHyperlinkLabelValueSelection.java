@@ -51,7 +51,6 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
    protected void createControls(Composite parent, int horizontalSpan) {
 
       comp = new Composite(parent, SWT.NONE);
-      //      comp.setLayout(ALayout.getZeroMarginLayout(2, false));
       GridLayout layout = new GridLayout(2, false);
       layout.marginHeight = 1;
       comp.setLayout(layout);

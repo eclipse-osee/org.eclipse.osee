@@ -86,4 +86,9 @@ public class XHyperlinkTriStateBooleanDam extends XHyperlinkTriStateBoolean impl
       }
    }
 
+   @Override
+   public void refresh() {
+      setAttributeType(artifact, attributeType);
+      super.refresh();
+   }
 }
