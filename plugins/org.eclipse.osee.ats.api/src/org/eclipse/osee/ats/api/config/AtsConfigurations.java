@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
@@ -41,11 +42,13 @@ public class AtsConfigurations {
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, Version> idToVersion = new HashMap<>();
    private Map<Long, AtsUser> idToUser = new HashMap<>();
+   private Map<Long, JaxProgram> idToProgram = new HashMap<>();
    private Map<Long, JaxAgileTeam> idToAgileTeam = new HashMap<>();
    private Map<Long, JaxAgileFeatureGroup> idToAgileFeature = new HashMap<>();
    private Map<String, Long> userIdToUserArtId = new HashMap<>();
    private Map<String, Long> userNameToUserArtId = new HashMap<>();
    private Map<Long, Long> teamDefToAgileTeam = new HashMap<>();
+   private Map<Long, Long> teamDefToProgram = new HashMap<>();
    private Map<Long, Long> featureToAgileTeam = new HashMap<>();
    private Map<String, String> atsConfig = new HashMap<>();
 
@@ -214,6 +217,22 @@ public class AtsConfigurations {
 
    public void setFeatureToAgileTeam(Map<Long, Long> featureToAgileTeam) {
       this.featureToAgileTeam = featureToAgileTeam;
+   }
+
+   public Map<Long, JaxProgram> getIdToProgram() {
+      return idToProgram;
+   }
+
+   public void setIdToProgram(Map<Long, JaxProgram> idToProgram) {
+      this.idToProgram = idToProgram;
+   }
+
+   public Map<Long, Long> getTeamDefToProgram() {
+      return teamDefToProgram;
+   }
+
+   public void setTeamDefToProgram(Map<Long, Long> teamDefToProgram) {
+      this.teamDefToProgram = teamDefToProgram;
    }
 
 }

@@ -13,12 +13,16 @@
 
 package org.eclipse.osee.ats.api.program;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxNewAtsConfigObject;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxProgram extends JaxNewAtsConfigObject {
+public class JaxProgram extends JaxNewAtsConfigObject implements IAtsProgram {
 
    long countryId;
 
@@ -28,5 +32,20 @@ public class JaxProgram extends JaxNewAtsConfigObject {
 
    public void setCountryId(long countryId) {
       this.countryId = countryId;
+   }
+
+   public static JaxProgram create(ArtifactToken artifact, AtsApi atsApi) {
+      JaxProgram jaxProgram = new JaxProgram();
+      IAtsProgram program = atsApi.getProgramService().getProgramById(artifact);
+      jaxProgram.setName(program.getName());
+      jaxProgram.setId(program.getId());
+      jaxProgram.setActive(program.isActive());
+      jaxProgram.setDescription(program.getDescription());
+      return jaxProgram;
+   }
+
+   @Override
+   public ArtifactTypeToken getArtifactType() {
+      return AtsArtifactTypes.Program;
    }
 }
