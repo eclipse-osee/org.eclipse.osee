@@ -269,7 +269,8 @@ public class CreateChangeReportTasksOperation {
             Set<String> deletedTaskNames = new HashSet<>();
             Date createdDate = new Date();
             // Log changes needed; Add to delete if needed or to NewTaskData
-            for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+            Collection<ChangeReportTaskMatch> taskMatches = crttwd.getTaskMatches();
+            for (ChangeReportTaskMatch taskMatch : taskMatches) {
                ChangeReportTaskMatchType matchType = taskMatch.getMatchType();
                // Skip if task already exists
                if (matchType == ChangeReportTaskMatchType.Match) {
@@ -391,7 +392,7 @@ public class CreateChangeReportTasksOperation {
                   safeName, //
                   taskMatch.getTaskName(), //
                   taskMatch.getMatchType().name(), //
-                  taskMatch.getMatchResult().getDisplayName()
+                  (taskMatch.getMatchResult() != null ? taskMatch.getMatchResult().getDisplayName() : "None")
                //
                ));
             }

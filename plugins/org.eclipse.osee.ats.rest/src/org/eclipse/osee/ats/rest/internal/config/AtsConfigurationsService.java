@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.rest.internal.config;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Program;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
@@ -35,7 +36,9 @@ import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.agile.AgileFactory;
@@ -45,6 +48,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -120,8 +124,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
       ElapsedTime time2 = new ElapsedTime("Server ACS - query", debugOn);
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
-      ResultSet<ArtifactReadable> results =
-         query.andTypeEquals(TeamDefinition, ActionableItem, Version, User, AgileTeam, AgileFeatureGroup).getResults();
+      ResultSet<ArtifactReadable> results = query.andIsOfType(TeamDefinition, ActionableItem, Version, User, AgileTeam,
+         AgileFeatureGroup, Program).getResults();
       processConfigQueryResults(configs, idToArtifact, time2, results);
       time2.end();
 
@@ -155,6 +159,11 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                handleTeamDef(art, teamDef, idToArtifact, configs);
                if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
                   configs.setTopTeamDefinition(ArtifactId.create(art));
+               }
+               ArtifactId program = atsApi.getAttributeResolver().getSoleAttributeValue(art,
+                  AtsAttributeTypes.ProgramId, ArtifactId.SENTINEL);
+               if (program.isValid()) {
+                  configs.getTeamDefToProgram().put(teamDef.getId(), program.getId());
                }
                teamDef.setAtsApi(atsApi);
             } else if (art.isOfType(ActionableItem)) {
@@ -194,6 +203,25 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                   ArtifactToken agileTeam = agileTeams.iterator().next();
                   configs.getFeatureToAgileTeam().put(feature.getId(), agileTeam.getId());
                }
+            } else if (art.isOfType(AtsArtifactTypes.Program)) {
+               JaxProgram program = JaxProgram.create(art, atsApi);
+               configs.getIdToProgram().put(program.getId(), program);
+               ArtifactId teamDef = atsApi.getAttributeResolver().getSoleAttributeValue(art,
+                  AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+               if (teamDef.isValid()) {
+                  configs.getTeamDefToProgram().put(teamDef.getId(), program.getId());
+               } else {
+                  Collection<ArtifactToken> related =
+                     atsApi.getRelationResolver().getRelated(art, CoreRelationTypes.SupportingInfo_IsSupportedBy);
+                  if (!related.isEmpty()) {
+                     for (ArtifactToken relArt : related) {
+                        if (relArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
+                           configs.getTeamDefToProgram().put(relArt.getId(), program.getId());
+                        }
+                     }
+                  }
+               }
+
             }
             idToArtifact.put(art.getId(), art);
          } catch (Exception ex) {
