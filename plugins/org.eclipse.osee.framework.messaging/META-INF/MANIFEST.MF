@@ -7,7 +7,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.messaging.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: javax.jms,
+Import-Package: jakarta.xml.bind,
+ jakarta.xml.bind.annotation,
+ javax.jms,
  javax.management,
  javax.management.j2ee,
  javax.management.j2ee.statistics,
@@ -19,9 +21,10 @@ Import-Package: javax.jms,
  javax.management.remote,
  javax.management.remote.rmi,
  javax.management.timer,
+ org.glassfish.jaxb.runtime,
+ org.glassfish.jaxb.runtime.v2,
+ com.sun.istack,
  org.apache.activemq,
- javax.xml.bind,
- javax.xml.bind.annotation,
  org.apache.activemq.advisory,
  org.apache.activemq.blob,
  org.apache.activemq.broker,
@@ -98,11 +101,13 @@ Import-Package: javax.jms,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core.util,
  org.eclipse.osgi.framework.console,
+ org.eclipse.osgi.internal.framework,
  org.osgi.framework,
- org.osgi.util.tracker
+ org.osgi.util.tracker;version="1.5.2"
 Export-Package: org.eclipse.osee.framework.messaging,
  org.eclipse.osee.framework.messaging.definitions,
  org.eclipse.osee.framework.messaging.id,
  org.eclipse.osee.framework.messaging.services,
  org.eclipse.osee.framework.messaging.services.messages
 Service-Component: OSGI-INF/*.xml
+Automatic-Module-Name: org.eclipse.osee.framework.messaging

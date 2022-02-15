@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Roberto E. Escobar

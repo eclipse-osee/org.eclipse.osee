@@ -452,7 +452,7 @@ public class OrcsCollectorWriter {
          }
          if (date == null) {
             try {
-               Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime((String) value);
+               Calendar calendar = jakarta.xml.bind.DatatypeConverter.parseDateTime((String) value);
                date = calendar.getTime();
                resolved = true;
             } catch (Exception ex) {

@@ -35,7 +35,6 @@
     <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
     <booleanAttribute key="restart" value="false"/>
     <setAttribute key="selected_features">
-        <setEntry value="org.eclipse.e4.core.tools.feature:default"/>
         <setEntry value="org.eclipse.e4.rcp.source:default"/>
         <setEntry value="org.eclipse.e4.rcp:default"/>
         <setEntry value="org.eclipse.emf.common:default"/>

@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.server.ide.api.client.model;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
