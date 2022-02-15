@@ -20,8 +20,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.messaging,
  org.osgi.framework,
- javax.xml.bind,
- javax.xml.bind.annotation
+ jakarta.xml.bind,
+ jakarta.xml.bind.annotation
 Export-Package: org.eclipse.osee.framework.messaging.event.res,
  org.eclipse.osee.framework.messaging.event.res.msgs
 Service-Component: OSGI-INF/osee.core.model.event.service.xml

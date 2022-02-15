@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.model.writer;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**

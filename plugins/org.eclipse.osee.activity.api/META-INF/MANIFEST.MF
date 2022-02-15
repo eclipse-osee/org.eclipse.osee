@@ -8,8 +8,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.activity.api
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
- javax.xml.bind,
- javax.xml.bind.annotation,
+ jakarta.xml.bind,
+ jakarta.xml.bind.annotation,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.logger

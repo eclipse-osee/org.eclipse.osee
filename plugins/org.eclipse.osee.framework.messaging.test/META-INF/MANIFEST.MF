@@ -10,8 +10,8 @@ Require-Bundle: org.junit,
  org.mockito;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: javax.xml.bind,
- javax.xml.bind.annotation,
+Import-Package: jakarta.xml.bind,
+ jakarta.xml.bind.annotation,
  org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.annotation

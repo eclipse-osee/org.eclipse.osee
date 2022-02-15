@@ -417,8 +417,23 @@
          version="9.4.44.v20210927"
          unpack="false"/>
 
-   <plugin
-         id="jakarta.xml.bind"
+
+  <plugin
+         id="jakarta.activation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="com.sun.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+  <plugin
+         id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -436,6 +451,12 @@
          download-size="0"
          install-size="0"
          version="1.6.0.v201310281400"
+         unpack="false"/>
+<plugin
+         id="com.sun.istack.commons-runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -1490,6 +1511,27 @@
 
    <plugin
          id="org.eclipse.gmf.runtime.diagram.ui.properties"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="org.glassfish.jaxb.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+<plugin
+         id="org.glassfish.jaxb.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+
+   <plugin
+         id="org.glassfish.hk2.osgi-resource-locator"
          download-size="0"
          install-size="0"
          version="0.0.0"

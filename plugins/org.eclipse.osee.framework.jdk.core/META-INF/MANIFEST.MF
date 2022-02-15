@@ -41,5 +41,5 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.apache.commons.codec.binary,
  org.eclipse.jdt.annotation,
  javax.activation,
- javax.xml.bind,
- javax.xml.bind.annotation
+ jakarta.xml.bind,
+ jakarta.xml.bind.annotation

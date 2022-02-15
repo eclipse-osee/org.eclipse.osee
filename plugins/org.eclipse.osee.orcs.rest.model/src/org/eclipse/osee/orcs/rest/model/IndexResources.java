@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import java.util.Collections;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Roberto E. Escobar

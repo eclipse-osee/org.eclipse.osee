@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.server.ide.api.client.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 
 /**

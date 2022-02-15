@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.core.access;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
