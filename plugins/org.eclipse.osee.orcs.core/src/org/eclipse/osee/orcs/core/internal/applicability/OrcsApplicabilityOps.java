@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -60,7 +61,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -442,7 +442,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
              */
             for (String value : feature.getValues()) {
                String applicString = feature.getName() + " = " + value;
-               tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, applicString);
+               addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, tx, applicString);
                changes = true;
             }
 
@@ -452,11 +452,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                Iterable<String> appl = orcsApi.getQueryFactory().tupleQuery().getTuple2(
                   CoreTupleTypes.ViewApplicability, tx.getBranch(), view);
                if (!appl.toString().contains(feature.getName() + " = ")) {
-                  tx.addTuple2(CoreTupleTypes.ViewApplicability, view,
-                     feature.getName() + " = " + feature.getDefaultValue());
+                  String applicString = feature.getName() + " = " + feature.getDefaultValue();
+                  addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, applicString);
                   changes = true;
                }
-
             }
 
          } catch (Exception ex) {
@@ -467,6 +466,16 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          tx.commit();
       }
       return results;
+   }
+
+   private void addIntroduceTuple2(Tuple2Type<ArtifactId, String> tupleType, ArtifactId featureArt, TransactionBuilder tx, String applicString) {
+      GammaId gamma = GammaId.SENTINEL;
+      if (!(gamma = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2(tupleType, featureArt,
+         applicString)).isValid()) {
+         tx.addTuple2(tupleType, featureArt, applicString);
+      } else {
+         tx.introduceTuple(tupleType, gamma);
+      }
    }
 
    @Override
@@ -496,7 +505,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                String applicString = feature.getName() + " = " + value;
                // If the string is successfully removed, then that value already exists. If not, need to add that value into the tuple table.
                if (!applicData.remove(applicString)) {
-                  tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, applicString);
+                  addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, tx, applicString);
                   changes = true;
                }
             }
@@ -677,24 +686,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          tx.deleteTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(editView.getId()),
             "Config = " + editView.getName());
 
-         TupleQuery query = orcsApi.getQueryFactory().tupleQuery();
-
-         GammaId gamma = GammaId.SENTINEL;
-         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition,
-            ArtifactId.valueOf(view.getId()), "Config = " + view.getName())).isValid()) {
-            tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(view.getId()),
-               "Config = " + view.getName());
-         } else {
-            tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
-         }
-         gamma = GammaId.SENTINEL;
-         if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(view.getId()),
-            "Config = " + view.getName())).isValid()) {
-            tx.addTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(view.getId()),
-               "Config = " + view.getName());
-         } else {
-            tx.introduceTuple(CoreTupleTypes.ViewApplicability, gamma);
-         }
+         addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(view.getId()), tx,
+            "Config = " + view.getName());
+         addIntroduceTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(view.getId()), tx,
+            "Config = " + view.getName());
 
          tx.commit();
       }
@@ -741,7 +736,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             //so committing first, then adding standard applicabilities
             TransactionBuilder tx2 =
                txFactory.createTransaction(branch, "Create Config and Base applicabilities on New View");
-            tx2.addTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, "Config = " + view.getName());
+            addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, tx2, "Config = " + view.getName());
             tx2.createApplicabilityForView(vDefArt, "Base");
             tx2.createApplicabilityForView(vDefArt, "Config = " + view.getName());
             tx2.commit();
@@ -841,13 +836,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             for (String newValue : newValues) {
                if (!existingValues.contains(newValue)) {
                   change = true;
-                  tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
+                  addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, newValue);
                }
             }
          } else {
             for (String newValue : newValues) {
                change = true;
-               tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
+               addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, newValue);
             }
          }
          if (change) {
@@ -891,13 +886,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             for (String newValue : newValues) {
                if (!existingValues.contains(newValue)) {
                   change = true;
-                  tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
+                  addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, newValue);
                }
             }
          } else {
             for (String newValue : newValues) {
                change = true;
-               tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
+               addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, newValue);
             }
          }
          if (change) {
@@ -1177,7 +1172,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          vDefArt = tx.createArtifact(getPlConfigurationGroupsFolder(tx.getBranch()), CoreArtifactTypes.GroupArtifact,
             group.getName());
          tx.setName(vDefArt, group.getName());
-         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, "ConfigurationGroup = " + vDefArt.getName());
+         addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, tx,
+            "ConfigurationGroup = " + vDefArt.getName());
          // reload artifact to return
          tx.commit();
          ArtifactId newGrp =
@@ -1216,7 +1212,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                tx.setName(ArtifactId.valueOf(group.getId()), group.getName());
                tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(group.getId()),
                   "ConfigurationGroup = " + currentGroup.getName());
-               tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(group.getId()),
+               addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(group.getId()), tx,
                   "ConfigurationGroup = " + group.getName());
                tx.commit();
             }
