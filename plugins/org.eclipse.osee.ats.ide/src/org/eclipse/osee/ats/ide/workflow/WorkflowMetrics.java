@@ -256,7 +256,7 @@ public class WorkflowMetrics {
    }
 
    public String getHoursTillRelStr() {
-      return String.format("%5.2f hours = %d days till release * %5.2f Man Hours Per Day", getHoursTillRel(),
+      return String.format("%5.2f hours = %d days till release * %5.2f Person Hours Per Day", getHoursTillRel(),
          daysTillRel, manHoursPerDay);
    }
 

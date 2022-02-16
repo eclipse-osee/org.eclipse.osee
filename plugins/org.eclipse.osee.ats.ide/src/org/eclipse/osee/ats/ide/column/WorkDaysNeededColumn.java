@@ -109,7 +109,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
             return result;
          }
          if (aba.getManHrsPerDayPreference() == 0) {
-            return new Result("Man Day Hours Preference is not set.");
+            return new Result("Person Day Hours Preference is not set.");
          }
 
          return Result.TrueResult;
