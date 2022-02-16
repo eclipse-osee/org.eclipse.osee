@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -59,20 +60,7 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAll(branch,
                InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
-            Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
-            elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
-               InterfaceStructureElementToken.class));
-            for (InterfaceStructureElementToken element : elements) {
-               PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
-                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-                  PlatformTypeToken.class);
-               element.setPlatformTypeId(platformType.getId());
-               element.setPlatformTypeName(platformType.getName());
-               element.setUnits(
-                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
-            }
-            structure.setElements(elements);
+            structure = this.parseStructure(structure);
          }
 
          return structureList;
@@ -93,6 +81,202 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
       return attributes;
    }
 
+   private InterfaceStructureElementToken defaultSetUpElement(InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement) {
+      try {
+         PlatformTypeToken tempPlatformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+            CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
+            PlatformTypeToken.class);
+         element.setBeginByte((previousElement.getEndByte() + 1) % 4);
+         element.setBeginWord(Math.floor(
+            previousElement.getEndByte() == 3 ? previousElement.getEndWord() + 1 : previousElement.getEndWord()));
+         element.setInterfacePlatformTypeBitSize(tempPlatformType.getInterfacePlatformTypeBitSize());
+         element.setPlatformTypeId(tempPlatformType.getId());
+         element.setPlatformTypeName(tempPlatformType.getName());
+         element.setLogicalType(
+            tempPlatformType.getInterfaceLogicalType() != null ? tempPlatformType.getInterfaceLogicalType() : "");
+         element.setInterfacePlatformTypeMinval(
+            tempPlatformType.getInterfacePlatformTypeMinval() != null ? tempPlatformType.getInterfacePlatformTypeMinval() : "");
+         element.setInterfacePlatformTypeMaxval(
+            tempPlatformType.getInterfacePlatformTypeMaxval() != null ? tempPlatformType.getInterfacePlatformTypeMaxval() : "");
+         element.setInterfacePlatformTypeDefaultValue(
+            tempPlatformType.getInterfacePlatformTypeDefaultValue() != null ? tempPlatformType.getInterfacePlatformTypeDefaultValue() : "");
+         element.setUnits(
+            tempPlatformType.getInterfacePlatformTypeUnits() != null ? tempPlatformType.getInterfacePlatformTypeUnits() : "");
+      } catch (Exception ex) {
+
+      }
+      return element;
+   }
+
+   private InterfaceStructureToken parseStructure(InterfaceStructureToken structure) {
+      try {
+         Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
+         elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
+            InterfaceStructureElementToken.class));
+         Collection<InterfaceStructureElementToken> tempElements = new LinkedList<>();
+         if (elements.size() >= 2) {
+            Iterator<InterfaceStructureElementToken> elementIterator = elements.iterator();
+            InterfaceStructureElementToken previousElement = elementIterator.next();
+
+            InterfaceStructureElementToken currentElement = elementIterator.next();
+            PlatformTypeToken previousPlatformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+               CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(previousElement.getId()),
+               PlatformTypeToken.class);
+            previousElement.setInterfacePlatformTypeBitSize(previousPlatformType.getInterfacePlatformTypeBitSize());
+            previousElement.setBeginByte((double) 0);
+            previousElement.setBeginWord((double) 0);
+
+            previousElement.setPlatformTypeId(previousPlatformType.getId());
+            previousElement.setPlatformTypeName(previousPlatformType.getName());
+            previousElement.setLogicalType(
+               previousPlatformType.getInterfaceLogicalType() != null ? previousPlatformType.getInterfaceLogicalType() : "");
+            previousElement.setInterfacePlatformTypeMinval(
+               previousPlatformType.getInterfacePlatformTypeMinval() != null ? previousPlatformType.getInterfacePlatformTypeMinval() : "");
+            previousElement.setInterfacePlatformTypeMaxval(
+               previousPlatformType.getInterfacePlatformTypeMaxval() != null ? previousPlatformType.getInterfacePlatformTypeMaxval() : "");
+            previousElement.setInterfacePlatformTypeDefaultValue(
+               previousPlatformType.getInterfacePlatformTypeDefaultValue() != null ? previousPlatformType.getInterfacePlatformTypeDefaultValue() : "");
+            previousElement.setUnits(
+               previousPlatformType.getInterfacePlatformTypeUnits() != null ? previousPlatformType.getInterfacePlatformTypeUnits() : "");
+            tempElements.add(previousElement);
+            if (!elementIterator.hasNext()) {
+               /**
+                * If currentElement = last, set it up so that it may be added/serialized
+                */
+               currentElement = this.defaultSetUpElement(currentElement, previousElement);
+            }
+            while (elementIterator.hasNext()) {
+               InterfaceStructureElementToken nextElement = elementIterator.next();
+               currentElement = this.defaultSetUpElement(currentElement, previousElement);
+               if (currentElement.getInterfacePlatformTypeByteSize() >= 4) {
+                  if (previousElement.getEndByte() != 3) {
+                     /**
+                      * Make sure elements of size word or greater start on 0
+                      */
+                     previousElement =
+                        new InterfaceStructureElementToken("spare", "byte align spare for aligning to word start",
+                           Math.floor((previousElement.getEndByte() + 1) % 4), previousElement.getEndWord(),
+                           (int) Math.floor(3 - (previousElement.getEndByte())), true);
+                     tempElements.add(previousElement);
+                  }
+                  if (currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
+                     /**
+                      * Make sure elements of size larger than 2 words start on m*n indexed words
+                      */
+                     previousElement = new InterfaceStructureElementToken("spare",
+                        "byte align spare for byte alignment", 0.0, (previousElement.getEndWord() + 1),
+                        (int) (Math.floor(
+                           (currentElement.getInterfacePlatformTypeWordSize() - ((previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize()))) * 4) - 1);
+                     tempElements.add(previousElement);
+                     //make a spare to fill remaining area until beginWord % WordSize=1
+                  }
+                  //re-set up current Element based on spare
+                  currentElement = this.defaultSetUpElement(currentElement, previousElement);
+               }
+               tempElements.add(currentElement);
+               previousElement = currentElement;
+               currentElement = nextElement;
+            }
+            /**
+             * Handle last element outside of while loop
+             */
+            currentElement = this.defaultSetUpElement(currentElement, previousElement);
+            if (currentElement.getInterfacePlatformTypeByteSize() >= 4) {
+               if (previousElement.getEndByte() != 3) {
+                  /**
+                   * Make sure elements of size word or greater start on 0
+                   */
+                  previousElement = new InterfaceStructureElementToken("spare",
+                     "byte align spare for aligning to word start", Math.floor((previousElement.getEndByte() + 1) % 4),
+                     previousElement.getEndWord(), (int) Math.floor(3 - (previousElement.getEndByte())), true);
+                  tempElements.add(previousElement);
+               }
+               if (currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
+                  /**
+                   * Make sure elements of size larger than 2 words start on m*n indexed words
+                   */
+                  previousElement = new InterfaceStructureElementToken("spare", "byte align spare for byte alignment",
+                     0.0, (previousElement.getEndWord() + 1), (int) (Math.floor(
+                        (currentElement.getInterfacePlatformTypeWordSize() - ((previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize()))) * 4) - 1);
+                  tempElements.add(previousElement);
+                  //make a spare to fill remaining area until beginWord % WordSize=1
+               }
+               //re-set up current Element based on spare
+               currentElement = this.defaultSetUpElement(currentElement, previousElement);
+            }
+            tempElements.add(currentElement);
+            if (currentElement.getEndByte() != 3) {
+               /**
+                * Rule for making sure last element ends on last byte of word(no partials)
+                */
+               tempElements.add(new InterfaceStructureElementToken("spare",
+                  "byte align spare for aligning to word start", currentElement.getEndByte() + 1,
+                  currentElement.getEndWord(), (int) Math.floor(3 - (currentElement.getEndByte())), true));
+            }
+            if (currentElement.getEndWord() % 2 != 1) {
+               /**
+                * Rule for making sure next element on next structure sent is on boundary of 2n
+                */
+               currentElement = new InterfaceStructureElementToken("spare", "byte align spare for byte alignment", 0.0,
+                  currentElement.getEndWord() + 1, 3);
+               tempElements.add(currentElement);
+            }
+            structure.setElements(tempElements);
+         } else {
+            /**
+             * Condition for when less than 2 elements
+             */
+            InterfaceStructureElementToken lastElement =
+               new InterfaceStructureElementToken("spare", "byte align spare for aligning to word start", 0.0, 0.0, 0);
+            for (InterfaceStructureElementToken element : elements) {
+               element.setBeginByte(0.0);
+               element.setBeginWord(0.0);
+               PlatformTypeToken currentPlatformType;
+               currentPlatformType = platformApi.getAccessor().getByRelationWithoutId(branch,
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
+                  PlatformTypeToken.class);
+               element.setPlatformTypeId(currentPlatformType.getId());
+               element.setPlatformTypeName(currentPlatformType.getName());
+               element.setInterfacePlatformTypeBitSize(currentPlatformType.getInterfacePlatformTypeBitSize());
+               element.setLogicalType(
+                  currentPlatformType.getInterfaceLogicalType() != null ? currentPlatformType.getInterfaceLogicalType() : "");
+               element.setInterfacePlatformTypeMinval(
+                  currentPlatformType.getInterfacePlatformTypeMinval() != null ? currentPlatformType.getInterfacePlatformTypeMinval() : "");
+               element.setInterfacePlatformTypeMaxval(
+                  currentPlatformType.getInterfacePlatformTypeMaxval() != null ? currentPlatformType.getInterfacePlatformTypeMaxval() : "");
+               element.setInterfacePlatformTypeDefaultValue(
+                  currentPlatformType.getInterfacePlatformTypeDefaultValue() != null ? currentPlatformType.getInterfacePlatformTypeDefaultValue() : "");
+               element.setUnits(
+                  currentPlatformType.getInterfacePlatformTypeUnits() != null ? currentPlatformType.getInterfacePlatformTypeUnits() : "");
+               lastElement = element;
+            }
+            tempElements.addAll(elements);
+            if (lastElement.getEndByte() != 3) {
+               /**
+                * Rule for making sure last element ends on last byte of word(no partials)
+                */
+               tempElements.add(new InterfaceStructureElementToken("spare",
+                  "byte align spare for aligning to word start", lastElement.getEndByte() + 1, lastElement.getEndWord(),
+                  (int) Math.floor(3 - (lastElement.getEndByte())), true));
+            }
+            if (lastElement.getEndWord() % 2 != 1) {
+               /**
+                * Rule for making sure next element on next structure sent is on boundary of 2n
+                */
+               lastElement = new InterfaceStructureElementToken("spare", "byte align spare for byte alignment", 0.0,
+                  lastElement.getEndWord() + 1, 3);
+               tempElements.add(lastElement);
+            }
+            structure.setElements(tempElements);
+
+         }
+      } catch (Exception ex) {
+         //do nothing
+      }
+      return structure;
+   }
+
    @Override
    public Collection<InterfaceStructureToken> getFilteredStructures(String filter) {
       List<AttributeTypeId> structureAttributes = this.createStructureAttributeList();
@@ -101,20 +285,7 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
             (List<InterfaceStructureToken>) interfaceStructureApi.getAccessor().getAllByFilter(branch, filter,
                structureAttributes, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
-            Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
-            elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
-               InterfaceStructureElementToken.class));
-            for (InterfaceStructureElementToken element : elements) {
-               PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
-                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-                  PlatformTypeToken.class);
-               element.setPlatformTypeId(platformType.getId());
-               element.setPlatformTypeName(platformType.getName());
-               element.setUnits(
-                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
-            }
-            structure.setElements(elements);
+            structure = this.parseStructure(structure);
          }
 
          return structureList;
