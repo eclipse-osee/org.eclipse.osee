@@ -106,7 +106,7 @@ public class ArtifactEndpointTest {
       options4.setArtTypeIds(artTypes);
       options4.setView(ArtifactId.valueOf(applicEndpoint.getView("Product A").getId()));
       artIds = workingBranchArtifactEndpoint.findArtifactIds(options4);
-      Assert.assertEquals(16, artIds.size());
+      Assert.assertEquals(17, artIds.size());
    }
 
    @Test
