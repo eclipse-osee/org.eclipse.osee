@@ -74,6 +74,21 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
 
    }
 
+   public InterfaceStructureElementArrayToken(String name, Long id, String description, Integer indexEnd, Integer indexStart, String notes, Double beginByte, Double beginWord, Double endByte, Double endWord) {
+      super(id, name);
+      this.setId(id);
+      this.setName(name);
+      this.setDescription(description);
+      this.setInterfaceElementIndexEnd(indexEnd);
+      this.setInterfaceElementIndexStart(indexStart);
+      this.setNotes(notes);
+      this.setBeginByte(beginByte);
+      this.setBeginWord(beginWord);
+      this.setEndByte(endByte);
+      this.setEndWord(endWord);
+
+   }
+
    public InterfaceStructureElementArrayToken(Long id, String name) {
       super(id, name);
    }
