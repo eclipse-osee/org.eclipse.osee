@@ -218,7 +218,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             sMet.getHrsRemainFromEstimates(), sMet.getEstHours(), sMet.getEstHours(),
             sMet.getPercentCompleteByWorkflowPercents())));
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f Hours", sMet.getHrsSpent())));
-      lines.add(XBarGraphLine.getTextLine("Hours Per Man Day Preference: ",
+      lines.add(XBarGraphLine.getTextLine("Hours Per Person Day Preference: ",
          String.format("%5.2f Hours per Day", sMet.getHoursPerManDay())));
       lines.add(XBarGraphLine.getTextLine("Work Days Needed: ",
          String.format("%5.2f Days = Remaining Hours %5.2f / Hours Per Day of %5.2f", sMet.getManDaysNeeded(),
@@ -280,8 +280,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
-                     cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa,
-                        AtsApiService.get());
+                     cummulativePercentComplete +=
+                        PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa, AtsApiService.get());
                      processedArts.add(awa);
                   }
                }
