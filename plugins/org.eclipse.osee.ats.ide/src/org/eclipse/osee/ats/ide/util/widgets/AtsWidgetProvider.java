@@ -122,6 +122,7 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
       register(XAtsProgramComboWidget.class);
       register(XVersionList.class);
       register(XRequestedHoursApprovalWidget.class);
+      register(XHyperlinkWorkDefDam.class);
    }
 
    @Override
