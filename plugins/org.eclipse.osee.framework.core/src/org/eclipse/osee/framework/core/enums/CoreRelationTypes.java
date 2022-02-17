@@ -114,51 +114,51 @@ public interface CoreRelationTypes {
    RelationTypeSide ImplementationInfo_SoftwareRequirement = RelationTypeSide.create(ImplementationInfo, SIDE_A);
    RelationTypeSide ImplementationInfo_ImplementationDetails = RelationTypeSide.create(ImplementationInfo, SIDE_B);
 
-   RelationTypeToken InterfaceConnectionPrimary = osee.add(6039606571486514296L, "Interface Connection Primary Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
+   RelationTypeToken InterfaceConnectionPrimary = osee.addNewRelationType(6039606571486514296L, "Interface Connection Primary Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
    RelationTypeSide InterfaceConnectionPrimary_Connection = RelationTypeSide.create(InterfaceConnectionPrimary, SIDE_A);
    RelationTypeSide InterfaceConnectionPrimary_Node = RelationTypeSide.create(InterfaceConnectionPrimary, SIDE_B);
 
-   RelationTypeToken InterfaceConnectionSecondary = osee.add(6039606571486514297L, "Interface Connection Secondary Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
+   RelationTypeToken InterfaceConnectionSecondary = osee.addNewRelationType(6039606571486514297L, "Interface Connection Secondary Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
    RelationTypeSide InterfaceConnectionSecondary_Connection = RelationTypeSide.create(InterfaceConnectionSecondary, SIDE_A);
    RelationTypeSide InterfaceConnectionSecondary_Node = RelationTypeSide.create(InterfaceConnectionSecondary, SIDE_B);
 
-   RelationTypeToken InterfaceConnectionContent = osee.add(6039606571486514298L, "Interface Connection Content", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceMessage, "Interface Message");
+   RelationTypeToken InterfaceConnectionContent = osee.addNewRelationType(6039606571486514298L, "Interface Connection Content", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceMessage, "Interface Message");
    RelationTypeSide InterfaceConnectionContent_Connection = RelationTypeSide.create(InterfaceConnectionContent, SIDE_A);
    RelationTypeSide InterfaceConnectionContent_Message = RelationTypeSide.create(InterfaceConnectionContent, SIDE_B);
 
-   RelationTypeToken InterfaceMessageSendingNode = osee.add(6039606571486514299L, "Interface Message Sending Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessage, "Interface Message", InterfaceNode, "Interface Node");
+   RelationTypeToken InterfaceMessageSendingNode = osee.addNewRelationType(6039606571486514299L, "Interface Message Sending Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessage, "Interface Message", InterfaceNode, "Interface Node");
    RelationTypeSide InterfaceMessageSendingNode_Message = RelationTypeSide.create(InterfaceMessageSendingNode, SIDE_A);
    RelationTypeSide InterfaceMessageSendingNode_Node = RelationTypeSide.create(InterfaceMessageSendingNode, SIDE_B);
 
-   RelationTypeToken InterfaceConnectionHeaderStructure = osee.add(126164394421696912L, "Interface Connection Header Structure", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceConnection, "Interface Connection", InterfaceStructure, "Interface Structure");
+   RelationTypeToken InterfaceConnectionHeaderStructure = osee.addNewRelationType(126164394421696912L, "Interface Connection Header Structure", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceConnection, "Interface Connection", InterfaceStructure, "Interface Structure");
    RelationTypeSide InterfaceConnectionHeaderStructure_Connection = RelationTypeSide.create(InterfaceConnectionHeaderStructure, SIDE_A);
    RelationTypeSide InterfaceConnectionHeaderStructure_Structure = RelationTypeSide.create(InterfaceConnectionHeaderStructure, SIDE_B);
 
-   RelationTypeToken InterfaceMessageSubMessageContent = osee.add(2455059983007225780L, "Interface Message SubMessage Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceMessage, "Interface Message", InterfaceSubMessage, "Interface SubMessage");
+   RelationTypeToken InterfaceMessageSubMessageContent = osee.addNewRelationType(2455059983007225780L, "Interface Message SubMessage Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceMessage, "Interface Message", InterfaceSubMessage, "Interface SubMessage");
    RelationTypeSide InterfaceMessageSubMessageContent_Message = RelationTypeSide.create(InterfaceMessageSubMessageContent, SIDE_A);
    RelationTypeSide InterfaceMessageSubMessageContent_SubMessage = RelationTypeSide.create(InterfaceMessageSubMessageContent, SIDE_B);
 
-   RelationTypeToken InterfaceMessageStructureContent = osee.add(3899709087455064780L, "Interface Message Structure Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceMessage, "Interface Message", InterfaceStructure, "Interface Structure");
+   RelationTypeToken InterfaceMessageStructureContent = osee.addNewRelationType(3899709087455064780L, "Interface Message Structure Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceMessage, "Interface Message", InterfaceStructure, "Interface Structure");
    RelationTypeSide InterfaceMessageStructureContent_Message = RelationTypeSide.create(InterfaceMessageStructureContent, SIDE_A);
    RelationTypeSide InterfaceMessageStructureContent_Structure = RelationTypeSide.create(InterfaceMessageStructureContent, SIDE_B);
 
-   RelationTypeToken InterfaceSubMessageContent = osee.add(126164394421696914L, "Interface SubMessage Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceSubMessage, "Interface SubMessage", InterfaceStructure, "Interface Structure");
+   RelationTypeToken InterfaceSubMessageContent = osee.addNewRelationType(126164394421696914L, "Interface SubMessage Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceSubMessage, "Interface SubMessage", InterfaceStructure, "Interface Structure");
    RelationTypeSide InterfaceSubMessageContent_SubMessage = RelationTypeSide.create(InterfaceSubMessageContent, SIDE_A);
    RelationTypeSide InterfaceSubMessageContent_Structure = RelationTypeSide.create(InterfaceSubMessageContent, SIDE_B);
 
-   RelationTypeToken InterfaceStructureContent = osee.add(2455059983007225781L, "Interface Structure Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceStructure, "Interface Structure", InterfaceDataElement, "Interface Data Element");
+   RelationTypeToken InterfaceStructureContent = osee.addNewRelationType(2455059983007225781L, "Interface Structure Content", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceStructure, "Interface Structure", InterfaceDataElement, "Interface Data Element");
    RelationTypeSide InterfaceStructureContent_Structure = RelationTypeSide.create(InterfaceStructureContent, SIDE_A);
    RelationTypeSide InterfaceStructureContent_DataElement = RelationTypeSide.create(InterfaceStructureContent, SIDE_B);
 
-   RelationTypeToken InterfaceElementPlatformType = osee.add(3899709087455064781L, "Interface Element Platform Type", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceDataElement, "Interface Data Element", InterfacePlatformType, "Interface Platform Type");
+   RelationTypeToken InterfaceElementPlatformType = osee.addNewRelationType(3899709087455064781L, "Interface Element Platform Type", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceDataElement, "Interface Data Element", InterfacePlatformType, "Interface Platform Type");
    RelationTypeSide InterfaceElementPlatformType_Element = RelationTypeSide.create(InterfaceElementPlatformType, SIDE_A);
    RelationTypeSide InterfaceElementPlatformType_PlatformType = RelationTypeSide.create(InterfaceElementPlatformType, SIDE_B);
 
-   RelationTypeToken InterfacePlatformTypeEnumeration = osee.add(2455059983007225794L, "Interface Platform Type Enumeration Set", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfacePlatformType, "Interface Platform Type", InterfaceEnumSet, "Interface Enumeration Set");
+   RelationTypeToken InterfacePlatformTypeEnumeration = osee.addNewRelationType(2455059983007225794L, "Interface Platform Type Enumeration Set", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfacePlatformType, "Interface Platform Type", InterfaceEnumSet, "Interface Enumeration Set");
    RelationTypeSide InterfacePlatformTypeEnumeration_Element = RelationTypeSide.create(InterfacePlatformTypeEnumeration, SIDE_A);
    RelationTypeSide InterfacePlatformTypeEnumeration_EnumerationSet = RelationTypeSide.create(InterfacePlatformTypeEnumeration, SIDE_B);
 
-   RelationTypeToken InterfaceEnumeration = osee.add(2455059983007225795L, "Interface Enumeration Definition", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceEnumSet, "Interface Enumeration Set", InterfaceEnum, "Interface Enumeration");
+   RelationTypeToken InterfaceEnumeration = osee.addNewRelationType(2455059983007225795L, "Interface Enumeration Definition", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceEnumSet, "Interface Enumeration Set", InterfaceEnum, "Interface Enumeration");
    RelationTypeSide InterfaceEnumeration_EnumerationSet = RelationTypeSide.create(InterfaceEnumeration, SIDE_A);
    RelationTypeSide InterfaceEnumeration_EnumerationState = RelationTypeSide.create(InterfaceEnumeration, SIDE_B);
 
