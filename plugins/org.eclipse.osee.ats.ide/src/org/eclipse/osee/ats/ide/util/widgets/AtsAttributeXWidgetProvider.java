@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
@@ -48,9 +49,11 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       xFlatAttributeTypes.add(CoreAttributeTypes.WorkData);
       xFlatAttributeTypes.add(AtsAttributeTypes.State);
       xFlatAttributeTypes.add(AtsAttributeTypes.BitConfig);
+      xFlatAttributeTypes.add(AtsAttributeTypes.CSCI);
+      xFlatAttributeTypes.add(AtsAttributeTypes.WorkType);
+      xFlatAttributeTypes.add(CoreAttributeTypes.Partition);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.ActionableItemReference, AtsArtifactTypes.ActionableItem);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TeamDefinitionReference, AtsArtifactTypes.TeamDefinition);
-      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactTypeId.SENTINEL);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkPackageReference, AtsArtifactTypes.WorkPackage);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference,
          AtsArtifactTypes.TeamDefinition);
@@ -76,10 +79,14 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+      } else if (attributeType.matches(AtsAttributeTypes.WorkflowDefinitionReference)) {
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
+         XWidgetRendererItem layoutData = layouts.get(0);
+         layoutData.setXWidgetName(XHyperlinkWorkDefDam.class.getSimpleName());
       } else if (attributeType.equals(AtsAttributeTypes.ProgramId)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         layoutData.setXWidgetName(XProgramSelectionWidget.WIDGET_ID);
+         layoutData.setXWidgetName(XArtifactSelectWidget.WIDGET_ID);
       } else if (artRefAttributeTypes.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
@@ -87,7 +94,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          if (newArtType.isValid()) {
             layoutData.setArtifactType(newArtType);
          }
-         layoutData.setXWidgetName(XArtifactReferencedAtsObjectAttributeWidget.WIDGET_ID);
+         layoutData.setXWidgetName(XTextFlatDam.WIDGET_ID);
       }
       return layouts;
    }
