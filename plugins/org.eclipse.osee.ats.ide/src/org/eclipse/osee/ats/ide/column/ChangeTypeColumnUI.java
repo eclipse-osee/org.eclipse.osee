@@ -22,10 +22,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -56,7 +56,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
    }
 
    private ChangeTypeColumnUI() {
-      super(AtsColumnToken.ChangeTypeColumn);
+      super(AtsColumnTokens.ChangeTypeColumn);
    }
 
    /**

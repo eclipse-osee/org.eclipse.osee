@@ -19,7 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
-public class AtsAttributeValueColumnHandler implements IAtsColumn {
+public class AtsAttributeValueColumnHandler implements AtsColumn {
 
    private final AtsAttrValCol column;
    private final AtsApi atsApi;

@@ -22,17 +22,17 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
  */
 public interface IAtsColumnService {
 
-   String getColumnText(IAtsColumnId columnId, IAtsObject atsObject);
+   String getColumnText(AtsColumnToken column, IAtsObject atsObject);
 
    String getColumnText(String id, IAtsObject atsObject);
 
-   IAtsColumn getColumn(IAtsColumnId columnId);
+   AtsColumn getColumn(AtsColumnToken column);
 
-   void add(String id, IAtsColumn column);
+   void add(String id, AtsColumn column);
 
-   IAtsColumn getColumn(String id);
+   AtsColumn getColumn(String id);
 
-   String getColumnText(AtsConfigurations configurations, IAtsColumnId column, IAtsObject atsObject);
+   String getColumnText(AtsConfigurations configurations, AtsColumnToken column, IAtsObject atsObject);
 
    String getColumnText(AtsConfigurations configurations, String id, IAtsObject atsObject);
 

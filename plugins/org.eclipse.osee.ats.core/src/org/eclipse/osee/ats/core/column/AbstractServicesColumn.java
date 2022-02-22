@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 
 /**
@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
  *
  * @author Donald G. Dunne
  */
-public abstract class AbstractServicesColumn implements IAtsColumn {
+public abstract class AbstractServicesColumn implements AtsColumn {
 
    protected final AtsApi atsApi;
 

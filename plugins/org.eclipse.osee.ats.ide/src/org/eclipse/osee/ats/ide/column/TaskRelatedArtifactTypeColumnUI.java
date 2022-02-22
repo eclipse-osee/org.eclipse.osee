@@ -18,8 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
@@ -36,7 +35,7 @@ public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn im
    }
 
    private TaskRelatedArtifactTypeColumnUI() {
-      super(AtsColumnToken.TaskToRelatedArtifactTypeColumnToken);
+      super(AtsColumnTokens.TaskToRelatedArtifactTypeColumnToken);
    }
 
    /**
@@ -52,7 +51,7 @@ public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn im
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return AtsApiService.get().getColumnService().getColumnText(AtsColumnId.TaskToRelatedArtifactType,
+      return AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.TaskToRelatedArtifactTypeColumnToken,
          (IAtsWorkItem) obj);
    }
 
@@ -60,7 +59,7 @@ public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn im
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
       TaskRelatedArtifactTypeColumn column =
          (TaskRelatedArtifactTypeColumn) AtsApiService.get().getColumnService().getColumn(
-            AtsColumnId.TaskToRelatedArtifactType);
+            AtsColumnTokens.TaskToRelatedArtifactTypeColumnToken);
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (Object obj : objects) {
          if (obj instanceof IAtsWorkItem) {

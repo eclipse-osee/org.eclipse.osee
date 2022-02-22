@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.column.AgileTeamPointsColumnUI;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
@@ -51,10 +51,10 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
 
       // Add default Sprint columns
       WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);
-      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 339, sprintCols);
+      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), 339, sprintCols);
       WorldXViewerUtil.addColumn(this, AgileTeamPointsColumnUI.getInstance(),
-         AtsColumnToken.AgileTeamPointsColumn.getWidth(), sprintCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), 74,
+         AtsColumnTokens.AgileTeamPointsColumn.getWidth(), sprintCols);
+      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), 74,
          sprintCols);
       WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, sprintCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumnUI.getInstance(), 20, sprintCols);
@@ -63,13 +63,13 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       if (unPlannedWorkColumn != null) {
          WorldXViewerUtil.addColumn(this, unPlannedWorkColumn, 40, sprintCols);
       } else {
-         WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.UnPlannedWorkColumn), 40,
+         WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.UnPlannedWorkColumn), 40,
             sprintCols);
       }
       WorldXViewerUtil.addColumn(this, TargetedVersionColumnUI.getInstance(), 50, sprintCols);
       WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, sprintCols);
       WorldXViewerUtil.addColumn(this, CreatedDateColumnUI.getInstance(), 82, sprintCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow), 50,
+      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), 50,
          sprintCols);
 
       // Add remaining columns from world columns

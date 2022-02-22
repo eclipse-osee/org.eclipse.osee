@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 
 /**
@@ -28,7 +28,7 @@ public class CancelledReasonColumnUI extends XViewerAtsColumnIdColumn {
    }
 
    public CancelledReasonColumnUI() {
-      super(AtsColumnToken.CancelledReason);
+      super(AtsColumnTokens.CancelledReason);
    }
 
 }

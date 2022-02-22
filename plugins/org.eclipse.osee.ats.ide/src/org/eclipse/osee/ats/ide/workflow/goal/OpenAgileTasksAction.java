@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -96,17 +96,17 @@ public class OpenAgileTasksAction extends Action {
          card =
             card.replaceFirst("PUT_CHANGE_TYPE_HERE", ChangeTypeUtil.getChangeTypeStr(workItem, AtsApiService.get()));
          card = card.replaceFirst("PUT_PRIORITY_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Priority, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.PriorityColumn, workItem));
 
          card = card.replaceFirst("PUT_ASSIGNEES_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, workItem));
 
          card = card.replaceFirst("PUT_ATSID_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.AtsId, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AtsIdColumn, workItem));
          card = card.replaceFirst("PUT_AI_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.ActionableItem, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.ActionableItemsColumn, workItem));
          card = card.replaceFirst("PUT_VERSION_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.TargetedVersion, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.TargetedVersionColumn, workItem));
       }
       return card;
    }

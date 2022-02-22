@@ -23,6 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -99,8 +99,8 @@ public class OpenOrphanedTasks extends Action {
                      data.setName("Orphaned Task View");
                      data.setPersonal(true);
                      data.setNameSpace(WorldXViewerFactory.NAMESPACE);
-                     List<String> visibleColIds = Arrays.asList(AtsColumnToken.TypeColumn.getId(),
-                        AtsColumnToken.TitleColumn.getId(), AtsColumnToken.CreatedDateColumn.getId(),
+                     List<String> visibleColIds = Arrays.asList(AtsColumnTokens.TypeColumn.getId(),
+                        AtsColumnTokens.TitleColumn.getId(), AtsColumnTokens.CreatedDateColumn.getId(),
                         LastModifiedByColumn.FRAMEWORK_LAST_MOD_BY, LastModifiedDateColumn.FRAMEWORK_LAST_MOD_DATE);
                      for (String visibleId : visibleColIds) {
                         XViewerColumn visCol = null;

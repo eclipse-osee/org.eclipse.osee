@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.api.config;
 
-import org.eclipse.osee.ats.api.column.AtsValueColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnToken;
 import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttrValCol extends AtsValueColumn {
+public class AtsAttrValCol extends AtsColumnToken {
    private long attrTypeId;
    private String attrTypeName;
 

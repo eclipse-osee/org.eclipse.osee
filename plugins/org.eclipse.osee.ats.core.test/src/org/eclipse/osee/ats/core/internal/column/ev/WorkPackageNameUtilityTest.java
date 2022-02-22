@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.core.internal.column.ev;
 
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class WorkPackageNameUtilityTest extends AbstractWorkPackageUtilityTest {
    }
 
    @Override
-   public IAtsColumn getUtil() {
+   public AtsColumn getUtil() {
       return util;
    }
 

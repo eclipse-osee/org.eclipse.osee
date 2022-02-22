@@ -24,7 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
+import org.eclipse.osee.ats.api.column.AtsValColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn implements IMultiColumnEditProvider, IAltLeftClickProvider {
 
-   public AbstractVersionSelector(AtsColumnIdValueColumn column) {
+   public AbstractVersionSelector(AtsValColumn column) {
       super(column);
    }
 

@@ -16,12 +16,12 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.util;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
@@ -83,10 +83,10 @@ public class WfePrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-            AtsApiService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(sma)),
+            AtsApiService.get().getColumnService().getColumn(AtsColumnTokens.TeamColumn).getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, sma)),
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getCreatedBy().getName()),
          //
@@ -146,7 +146,7 @@ public class WfePrint extends Action {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, art),
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, art),
                PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsApiService.get()) + "",
                HoursSpentUtil.getHoursSpentTotal(art, AtsApiService.get()) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
