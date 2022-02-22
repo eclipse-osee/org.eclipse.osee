@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -353,5 +354,11 @@ public class QueryEngineImpl implements QueryEngine {
          "SELECT gamma_id FROM osee_branch_category WHERE branch_id=? AND category = ?";
       jdbcClient.runQuery(stmt -> consumer.accept(GammaId.valueOf(stmt.getLong("gamma_id"))),
          SELECT_BRANCH_CATEGORY_GAMMA, branchId, category);
+   }
+
+   @Override
+   public void getBranchCategories(Consumer<BranchCategoryToken> consumer, BranchId branchId) {
+      jdbcClient.runQuery(stmt -> consumer.accept(BranchCategoryToken.valueOf(stmt.getLong("category"))),
+         OseeSql.GET_CURRENT_BRANCH_CATEGORIES.getSql(), branchId);
    }
 }

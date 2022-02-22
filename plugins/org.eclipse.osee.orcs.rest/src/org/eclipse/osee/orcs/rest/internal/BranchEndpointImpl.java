@@ -223,6 +223,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public List<BranchCategoryToken> getBranchCategories(BranchId branch) {
+      return newBranchQuery().getBranchCategories(branch);
+   }
+
+   @Override
    public XResultData setBranchCategory(BranchId branch, BranchCategoryToken category) {
       return branchOps.setBranchCategory(branch, category);
    }
