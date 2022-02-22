@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.column;
 
 import java.util.Date;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 
 /**
  * @author Donald G. Dunne
@@ -30,7 +30,7 @@ public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
    }
 
    private ReleaseDateColumn() {
-      super(AtsColumnId.ReleaseDate.getId(), AtsAttributeTypes.ReleaseDate);
+      super(AtsColumnTokens.ReleaseDateColumn.getId(), AtsAttributeTypes.ReleaseDate);
    }
 
    /**

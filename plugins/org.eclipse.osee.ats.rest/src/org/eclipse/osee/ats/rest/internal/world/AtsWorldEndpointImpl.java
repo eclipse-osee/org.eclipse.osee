@@ -27,7 +27,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.IAtsColumnId;
+import org.eclipse.osee.ats.api.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -246,16 +246,17 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    private void getDefaultUiTable(StringBuilder sb, String tableName, Collection<IAtsWorkItem> workItems) {
-      List<IAtsColumnId> columns = Arrays.asList(AtsColumnId.Team, AtsColumnId.State, AtsColumnId.Priority,
-         AtsColumnId.ChangeType, AtsColumnId.Assignees, AtsColumnId.Title, AtsColumnId.ActionableItem,
-         AtsColumnId.CreatedDate, AtsColumnId.TargetedVersion, AtsColumnId.Notes, AtsColumnId.AtsId);
+      List<AtsColumnToken> columns = Arrays.asList(AtsColumnTokens.TeamColumn, AtsColumnTokens.StateColumn,
+         AtsColumnTokens.PriorityColumn, AtsColumnTokens.ChangeTypeColumn, AtsColumnTokens.AssigneeColumn,
+         AtsColumnTokens.TitleColumn, AtsColumnTokens.ActionableItemsColumn, AtsColumnTokens.CreatedDateColumn,
+         AtsColumnTokens.TargetedVersionColumn, AtsColumnTokens.NotesColumn, AtsColumnTokens.AtsIdColumn);
       sb.append(AHTML.heading(2, tableName));
       sb.append(AHTML.beginMultiColumnTable(97, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Team", "State", "Priority", "Change Type", "Assignee",
          "Title", "AI", "Created", "Targted Version", "Notes", "ID")));
       for (IAtsWorkItem workItem : workItems) {
          List<String> values = new LinkedList<>();
-         for (IAtsColumnId columnId : columns) {
+         for (AtsColumnToken columnId : columns) {
             values.add(atsApiServer.getColumnService().getColumnText(columnId, workItem));
          }
          sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));

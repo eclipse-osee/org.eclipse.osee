@@ -22,8 +22,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.util.ColorColumn;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.column.CancelledDateColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedCancelledDateColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
@@ -123,15 +123,15 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
     */
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
       XViewerAtsColumn xViewerAtsColumn;
-      if (xCol.getId().equals(AtsColumnId.CreatedDate.getId())) {
+      if (xCol.getId().equals(AtsColumnTokens.CreatedDateColumn.getId())) {
          xViewerAtsColumn = CreatedDateColumnUI.getInstance();
-      } else if (xCol.getId().equals(AtsColumnId.ReleaseDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnTokens.ReleaseDateColumn.getId())) {
          xViewerAtsColumn = ReleaseDateColumn.getInstance();
-      } else if (xCol.getId().equals(AtsColumnId.CompletedDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnTokens.CompletedDateColumn.getId())) {
          xViewerAtsColumn = CompletedDateColumnUI.getInstance();
-      } else if (xCol.getId().equals(AtsColumnId.CancelledDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnTokens.CancelledDateColumn.getId())) {
          xViewerAtsColumn = CancelledDateColumnUI.getInstance();
-      } else if (xCol.getId().equals(AtsColumnId.CompletedCancelledDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnTokens.CompletedCancelledDateColumn.getId())) {
          xViewerAtsColumn = CompletedCancelledDateColumnUI.getInstance();
       } else {
          return null;

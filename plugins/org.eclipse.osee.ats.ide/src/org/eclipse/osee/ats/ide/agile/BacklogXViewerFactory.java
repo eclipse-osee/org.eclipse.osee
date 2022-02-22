@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.ide.column.AgileTeamPointsColumnUI;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
@@ -52,11 +52,11 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       // Add default Backlog columns
       WorldXViewerUtil.addColumn(this, BacklogOrderColumn.getInstance(), AbstractMembersOrderColumn.DEFAULT_WIDTH,
          backlogCols);
-      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 300,
+      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), 300,
          backlogCols);
       WorldXViewerUtil.addColumn(this, AgileTeamPointsColumnUI.getInstance(),
-         AtsColumnToken.AgileTeamPointsColumn.getWidth(), backlogCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), 116,
+         AtsColumnTokens.AgileTeamPointsColumn.getWidth(), backlogCols);
+      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), 116,
          backlogCols);
       WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumnUI.getInstance(), 20, backlogCols);
@@ -70,7 +70,7 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       }
       WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, backlogCols);
       WorldXViewerUtil.addColumn(this, CreatedDateColumnUI.getInstance(), 82, backlogCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow), 50,
+      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), 50,
          backlogCols);
 
       // Add remaining columns from world columns

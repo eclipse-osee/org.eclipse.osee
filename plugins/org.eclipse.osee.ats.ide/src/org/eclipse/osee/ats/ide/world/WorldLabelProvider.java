@@ -18,10 +18,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -58,10 +57,10 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                }
             }
          }
-         if (xCol.getId().equals(AtsColumnToken.TypeColumn.getId())) {
+         if (xCol.getId().equals(AtsColumnTokens.TypeColumn.getId())) {
             return ArtifactImageManager.getImage(AtsApiService.get().getQueryServiceIde().getArtifact(element));
          }
-         if (xCol.getId().equals(AtsColumnToken.StateColumn.getId())) {
+         if (xCol.getId().equals(AtsColumnTokens.StateColumn.getId())) {
             if (element instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                String isBlocked = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
@@ -93,7 +92,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             }
          }
          if (element instanceof IAtsWorkItem) {
-            if (xCol.getId().equals(AtsColumnId.State.getId())) {
+            if (xCol.getId().equals(AtsColumnTokens.StateColumn.getId())) {
                IAtsStateDefinition state = ((AbstractWorkflowArtifact) element).getStateDefinition();
                if (state == null) {
                   OseeLog.logf(Activator.class, Level.SEVERE, "State null for %s",

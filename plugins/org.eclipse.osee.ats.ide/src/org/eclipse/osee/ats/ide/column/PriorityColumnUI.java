@@ -19,11 +19,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
@@ -57,7 +57,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return instance;
             }
          }
-         instance = new PriorityColumnUI(AtsColumnToken.PriorityColumn, AtsAttributeTypes.Priority);
+         instance = new PriorityColumnUI(AtsColumnTokens.PriorityColumn, AtsAttributeTypes.Priority);
       }
       return instance;
    }

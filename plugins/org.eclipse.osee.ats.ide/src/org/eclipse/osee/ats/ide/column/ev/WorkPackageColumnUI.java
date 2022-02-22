@@ -28,10 +28,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.ide.ev.WorkPackageCollectionProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -63,8 +63,8 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
    }
 
    private WorkPackageColumnUI() {
-      super(AtsColumnId.ActivityId.getId(), "Work Package (EV)", 80, XViewerAlign.Left, false, SortDataType.String,
-         true,
+      super(AtsColumnTokens.ActivityIdColumn.getId(), "Work Package (EV)", 80, XViewerAlign.Left, false,
+         SortDataType.String, true,
          "Provides Work Package dialog from the configured Work Packages related to the selected workflow's Team Definitions.");
    }
 
@@ -83,7 +83,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsApiService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(
+         result = AtsApiService.get().getColumnService().getColumn(AtsColumnTokens.ActivityIdColumn).getColumnText(
             (IAtsObject) element);
       }
       return result;
@@ -138,8 +138,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
                AtsApiService.get().getEarnedValueService().removeWorkPackage(workPackage,
                   Collections.castAll(workItems));
             } else {
-               AtsApiService.get().getEarnedValueService().setWorkPackage(workPackage,
-                  Collections.castAll(workItems));
+               AtsApiService.get().getEarnedValueService().setWorkPackage(workPackage, Collections.castAll(workItems));
             }
             modified = true;
          }

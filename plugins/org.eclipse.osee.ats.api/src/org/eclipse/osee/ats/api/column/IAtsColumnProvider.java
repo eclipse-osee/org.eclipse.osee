@@ -20,6 +20,6 @@ import org.eclipse.osee.ats.api.AtsApi;
  */
 public interface IAtsColumnProvider {
 
-   public IAtsColumn getColumn(String id, AtsApi atsApi);
+   public AtsColumn getColumn(String id, AtsApi atsApi);
 
 }

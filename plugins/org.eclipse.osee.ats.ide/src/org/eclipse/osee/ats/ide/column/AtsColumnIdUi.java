@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
+import org.eclipse.osee.ats.api.column.AtsValColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
  */
 public class AtsColumnIdUi extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
-   private final AtsColumnIdValueColumn columnIdColumn;
+   private final AtsValColumn columnIdColumn;
    private final AtsApi atsApi;
 
-   public AtsColumnIdUi(AtsColumnIdValueColumn columnIdColumn, AtsApi atsApi) {
+   public AtsColumnIdUi(AtsValColumn columnIdColumn, AtsApi atsApi) {
       super(columnIdColumn.getId(), columnIdColumn.getName(), columnIdColumn.getWidth(),
          getXViewerAlign(columnIdColumn.getAlign()), columnIdColumn.isVisible(),
          SortDataType.valueOf(columnIdColumn.getSortDataType()), columnIdColumn.isColumnMultiEdit(),

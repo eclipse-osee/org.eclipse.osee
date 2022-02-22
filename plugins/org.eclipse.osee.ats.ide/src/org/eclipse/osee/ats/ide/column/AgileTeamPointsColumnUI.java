@@ -23,8 +23,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
@@ -49,7 +49,7 @@ public class AgileTeamPointsColumnUI extends XViewerAtsColumnIdColumn implements
    }
 
    private AgileTeamPointsColumnUI() {
-      super(AtsColumnToken.AgileTeamPointsColumn);
+      super(AtsColumnTokens.AgileTeamPointsColumn);
    }
 
    /**

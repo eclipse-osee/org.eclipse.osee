@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.column;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 
@@ -30,7 +30,7 @@ public class CompletedCancelledDateColumnUI extends XViewerAtsColumnIdColumn {
    }
 
    public CompletedCancelledDateColumnUI() {
-      super(AtsColumnToken.CompletedCancelledDateColumn);
+      super(AtsColumnTokens.CompletedCancelledDateColumn);
    }
 
    @Override

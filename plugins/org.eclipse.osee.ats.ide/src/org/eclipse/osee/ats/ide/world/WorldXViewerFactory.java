@@ -16,9 +16,9 @@ package org.eclipse.osee.ats.ide.world;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsValColumn;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.ide.agile.SprintColumn;
 import org.eclipse.osee.ats.ide.agile.SprintOrderColumn;
@@ -69,20 +69,20 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          /**
           * Default show columns in default order; don't change this order
           */
-         getColumnServiceColumn(AtsColumnToken.TypeColumn),
-         getColumnServiceColumn(AtsColumnToken.StateColumn),
+         getColumnServiceColumn(AtsColumnTokens.TypeColumn),
+         getColumnServiceColumn(AtsColumnTokens.StateColumn),
          PriorityColumnUI.getInstance(),
          ChangeTypeColumnUI.getInstance(),
          AssigneeColumnUI.getInstance(),
-         getAttributeConfigColumn(AtsColumnToken.TitleColumn),
-         getColumnServiceColumn(AtsColumnToken.ActionableItemsColumn),
-         getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow),
-         getColumnServiceColumn(AtsColumnToken.WorkDefinitionColumn),
+         getAttributeConfigColumn(AtsColumnTokens.TitleColumn),
+         getColumnServiceColumn(AtsColumnTokens.ActionableItemsColumn),
+         getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow),
+         getColumnServiceColumn(AtsColumnTokens.WorkDefinitionColumn),
          CreatedDateColumnUI.getInstance(),
          TargetedVersionColumnUI.getInstance(),
          FoundInVersionColumnUI.getInstance(),
-         getColumnServiceColumn(AtsColumnToken.TeamColumn),
-         getAttributeConfigColumn(AtsColumnToken.NotesColumn),
+         getColumnServiceColumn(AtsColumnTokens.TeamColumn),
+         getAttributeConfigColumn(AtsColumnTokens.NotesColumn),
 
          /**
           * The rest are non-show columns by default; Order doesn't matter
@@ -92,20 +92,20 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
           * These are default attribute columns; USE THIS METHOD IF POSSIBLEi; Normally this is if data can just be
           * shown straight from attr
           */
-         getAttributeConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
-         getAttributeConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
-         getAttributeConfigColumn(AtsColumnToken.CrashOrBlankDisplayColumn),
-         getAttributeConfigColumn(AtsColumnToken.ExternalReferenceColumn),
-         getAttributeConfigColumn(AtsColumnToken.GitChangeId),
+         getAttributeConfigColumn(AtsColumnTokens.LegacyPcrIdColumn),
+         getAttributeConfigColumn(AtsColumnTokens.PercentCompleteWorkflowColumn),
+         getAttributeConfigColumn(AtsColumnTokens.CrashOrBlankDisplayColumn),
+         getAttributeConfigColumn(AtsColumnTokens.ExternalReferenceColumn),
+         getAttributeConfigColumn(AtsColumnTokens.GitChangeId),
 
          /**
           * These are computed columns where data is in multiple places and must be retrieved/loaded to be displayed
           */
-         getColumnServiceColumn(AtsColumnToken.AtsIdColumn),
-         getColumnServiceColumn(AtsColumnToken.SiblingAtsIdsColumn),
-         getColumnServiceColumn(AtsColumnToken.InsertionColumn),
-         getColumnServiceColumn(AtsColumnToken.InsertionActivityColumn),
-         getColumnServiceColumn(AtsColumnToken.ParentTitleColumn),
+         getColumnServiceColumn(AtsColumnTokens.AtsIdColumn),
+         getColumnServiceColumn(AtsColumnTokens.SiblingAtsIdsColumn),
+         getColumnServiceColumn(AtsColumnTokens.InsertionColumn),
+         getColumnServiceColumn(AtsColumnTokens.InsertionActivityColumn),
+         getColumnServiceColumn(AtsColumnTokens.ParentTitleColumn),
 
          /**
           * This is the legacy way of providing columns. DO NOT USE THIS METHOD. These should eventually be converted to
@@ -227,7 +227,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    /**
     * Provides XViewerColumn for non-attribute based columns like Type and State
     */
-   public static XViewerColumn getColumnServiceColumn(AtsColumnIdValueColumn columnToken) {
+   public static XViewerColumn getColumnServiceColumn(AtsValColumn columnToken) {
       return new AtsColumnIdUi(columnToken, AtsApiService.get());
    }
 

@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.core.internal.column.ev;
 
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -47,6 +47,6 @@ public abstract class AbstractWorkPackageUtilityTest {
       when(workPkg.getStoreObject()).thenReturn(workPkgArt);
    }
 
-   public abstract IAtsColumn getUtil();
+   public abstract AtsColumn getUtil();
 
 }

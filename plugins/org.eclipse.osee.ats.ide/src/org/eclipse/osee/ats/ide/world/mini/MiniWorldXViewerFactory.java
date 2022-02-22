@@ -18,9 +18,9 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsValColumn;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.AtsColumnIdUi;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
@@ -57,19 +57,19 @@ public abstract class MiniWorldXViewerFactory extends SkynetXViewerFactory {
    public List<XViewerColumn> getColumns() {
       List<XViewerColumn> cols = new ArrayList<>();
       addPreColumns(cols);
-      cols.add(getColumnServiceColumn(AtsColumnToken.TypeColumn));
-      cols.add(getColumnServiceColumn(AtsColumnToken.StateColumn));
+      cols.add(getColumnServiceColumn(AtsColumnTokens.TypeColumn));
+      cols.add(getColumnServiceColumn(AtsColumnTokens.StateColumn));
       cols.add(AssigneeColumnUI.getInstance());
-      cols.add(getAttributeConfigColumn(AtsColumnToken.TitleColumn));
-      cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
+      cols.add(getAttributeConfigColumn(AtsColumnTokens.TitleColumn));
+      cols.add(getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow));
       cols.add(TargetedVersionColumnUI.getInstance());
-      cols.add(getAttributeConfigColumn(AtsColumnToken.NotesColumn));
+      cols.add(getAttributeConfigColumn(AtsColumnTokens.NotesColumn));
       addPostColumns(cols);
 
       for (XViewerColumn col : cols) {
-         if (col.getName().equals(AtsColumnToken.NotesColumn.getName())) {
+         if (col.getName().equals(AtsColumnTokens.NotesColumn.getName())) {
             col.setWidth(350);
-         } else if (col.getName().equals(AtsColumnToken.TargetedVersionColumn.getName())) {
+         } else if (col.getName().equals(AtsColumnTokens.TargetedVersionColumn.getName())) {
             col.setWidth(120);
          }
       }
@@ -85,7 +85,7 @@ public abstract class MiniWorldXViewerFactory extends SkynetXViewerFactory {
    /**
     * Provides XViewerColumn for non-attribute based columns like Type and State
     */
-   public XViewerColumn getColumnServiceColumn(AtsColumnIdValueColumn columnToken) {
+   public XViewerColumn getColumnServiceColumn(AtsValColumn columnToken) {
       return new AtsColumnIdUi(columnToken, AtsApiService.get());
    }
 

@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class AtsValueColumn {
+public class AtsColumnToken {
+
    private String name;
    private String id;
    private String namespace;
@@ -42,16 +43,16 @@ public class AtsValueColumn {
    private Boolean actionRollup;
    private Boolean inheritParent;
 
-   public AtsValueColumn() {
+   public AtsColumnToken() {
       // For JaxRs Instantiation
    }
 
-   public AtsValueColumn(String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
+   public AtsColumnToken(String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
       MultiEdit multi, String description) {
       this(id, name, width, columnType, align, show, multi, ActionRollup.No, InheritParent.No, description);
    }
 
-   public AtsValueColumn(String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
+   public AtsColumnToken(String id, String name, int width, ColumnType columnType, ColumnAlign align, Show show, //
       MultiEdit multi, ActionRollup actionRollup, InheritParent inheritParent, String description) {
       this(id, name, width, align.name(), show.yes(), columnType, multi.yes(), description, actionRollup.yes(),
          inheritParent.yes());
@@ -61,7 +62,7 @@ public class AtsValueColumn {
     * Use non-boolean constructors above
     */
    @Deprecated
-   public AtsValueColumn(String id, String name, int width, String align, boolean show, ColumnType sortDataType, //
+   public AtsColumnToken(String id, String name, int width, String align, boolean show, ColumnType sortDataType, //
       boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
       this.id = id;
       this.name = name;

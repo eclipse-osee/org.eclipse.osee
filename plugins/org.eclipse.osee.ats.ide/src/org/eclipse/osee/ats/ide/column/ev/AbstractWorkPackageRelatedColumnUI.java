@@ -27,7 +27,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.IAtsColumnId;
+import org.eclipse.osee.ats.api.column.AtsColumnToken;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -54,11 +54,8 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
 
-   private final IAtsColumnId atsColumnId;
-
-   public AbstractWorkPackageRelatedColumnUI(IAtsColumnId atsColumnId, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public AbstractWorkPackageRelatedColumnUI(AtsColumnToken column, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-      this.atsColumnId = atsColumnId;
    }
 
    @Override
@@ -134,7 +131,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsApiService.get().getColumnService().getColumn(atsColumnId).getColumnText((IAtsObject) element);
+         result = AtsApiService.get().getColumnService().getColumn(column.getId()).getColumnText((IAtsObject) element);
       }
       return result;
    }

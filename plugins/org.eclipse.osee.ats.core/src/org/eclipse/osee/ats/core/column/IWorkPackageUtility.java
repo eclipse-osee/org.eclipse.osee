@@ -14,14 +14,14 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IWorkPackageUtility extends IAtsColumn {
+public interface IWorkPackageUtility extends AtsColumn {
 
    IAtsWorkPackage getWorkPackage(IAtsObject atsObject);
 

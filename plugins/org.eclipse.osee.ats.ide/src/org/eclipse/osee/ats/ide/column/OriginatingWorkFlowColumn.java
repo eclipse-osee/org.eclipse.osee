@@ -22,9 +22,9 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
@@ -85,7 +85,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) {
       Set<String> strs = new HashSet<>();
       for (IAtsTeamWorkflow team : getWorldViewOriginatingWorkflows(actionArt)) {
-         strs.add(AtsApiService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(team));
+         strs.add(AtsApiService.get().getColumnService().getColumn(AtsColumnTokens.TeamColumn).getColumnText(team));
       }
       return Collections.toString(";", strs);
    }

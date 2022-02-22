@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.ide.column.HoursSpentTotalColumn;
@@ -46,8 +46,8 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
    public final static String NAMESPACE = "TaskXViewer";
 
    public static final List<XViewerColumn> TaskViewerVisibleColumns =
-      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), //
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), //
+      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), //
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), //
          AssigneeColumnUI.getInstance(), //
          PercentCompleteTotalColumn.getInstance(), //
          HoursSpentTotalColumn.getInstance(), //
@@ -55,7 +55,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
          EstimatedHoursColumn.getInstance(), //
          RemainingHoursColumn.getInstance(), //
          RelatedToStateColumn.getInstance(), //
-         WorldXViewerFactory.getAttributeConfigColumn(AtsColumnToken.NotesColumn) //
+         WorldXViewerFactory.getAttributeConfigColumn(AtsColumnTokens.NotesColumn) //
       );
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 

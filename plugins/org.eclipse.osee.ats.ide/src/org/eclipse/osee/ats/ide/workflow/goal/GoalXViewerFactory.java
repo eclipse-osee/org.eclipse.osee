@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.ide.column.CreatedDateColumnUI;
@@ -44,12 +44,12 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
-         new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.TypeColumn),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), PriorityColumnUI.getInstance(),
+         new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn),
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.TypeColumn),
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), PriorityColumnUI.getInstance(),
          ChangeTypeColumnUI.getInstance(), AssigneeColumnUI.getInstance(),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow), new CreatedDateColumnUI(),
-         TargetedVersionColumnUI.getInstance(), WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn));
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), new CreatedDateColumnUI(),
+         TargetedVersionColumnUI.getInstance(), WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn));
       return columns;
    }
    private final Integer[] widths = new Integer[] {

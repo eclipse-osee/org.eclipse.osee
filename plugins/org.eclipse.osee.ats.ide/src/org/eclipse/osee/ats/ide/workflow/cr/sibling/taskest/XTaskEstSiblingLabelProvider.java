@@ -14,11 +14,11 @@ package org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
@@ -67,7 +67,7 @@ public class XTaskEstSiblingLabelProvider extends WorldLabelProvider {
                return null;
             }
          }
-         if (xViewerColumn.getName().equals(AtsColumnId.Type.name())) {
+         if (xViewerColumn.getName().equals(AtsColumnTokens.TypeColumn.getId())) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
          }
       }

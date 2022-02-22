@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.eclipse.osee.ats.api.column.IWorkPackageColumn;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
-public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IWorkPackageColumn {
+public abstract class AbstractRelatedWorkPackageColumn implements AtsColumn, IWorkPackageColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
    private Map<ArtifactId, ArtifactToken> idToWorkPackage = new HashMap<>();

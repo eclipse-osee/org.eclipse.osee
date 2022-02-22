@@ -16,13 +16,13 @@ package org.eclipse.osee.ats.core.internal.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.IAtsColumn;
+import org.eclipse.osee.ats.api.column.AtsColumn;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefinitionColumn implements IAtsColumn {
+public class WorkDefinitionColumn implements AtsColumn {
 
    private final AtsApi atsApi;
 

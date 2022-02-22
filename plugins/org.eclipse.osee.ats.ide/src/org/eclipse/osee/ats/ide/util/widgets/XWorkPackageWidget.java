@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -145,7 +145,8 @@ public class XWorkPackageWidget extends GenericXWidget implements ArtifactWidget
    public String getReportData() {
       String result = "";
       try {
-         result = AtsApiService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(workflow);
+         result =
+            AtsApiService.get().getColumnService().getColumn(AtsColumnTokens.ActivityIdColumn).getColumnText(workflow);
       } catch (Exception ex) {
          result = "Error resolving work package (see log for details)";
          OseeLog.log(Activator.class, Level.SEVERE, result, ex);

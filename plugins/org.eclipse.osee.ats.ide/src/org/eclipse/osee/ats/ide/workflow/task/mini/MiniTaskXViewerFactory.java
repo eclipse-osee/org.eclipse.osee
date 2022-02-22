@@ -18,9 +18,9 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsValColumn;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.AssumptionsColumn;
 import org.eclipse.osee.ats.ide.column.AtsColumnIdUi;
@@ -58,8 +58,8 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
    public List<XViewerColumn> getColumns() {
       List<XViewerColumn> cols = new ArrayList<>();
       addPreColumns(cols);
-      cols.add(getAttributeConfigColumn(AtsColumnToken.TitleColumn));
-      cols.add(getColumnServiceColumn(AtsColumnToken.StateColumn));
+      cols.add(getAttributeConfigColumn(AtsColumnTokens.TitleColumn));
+      cols.add(getColumnServiceColumn(AtsColumnTokens.StateColumn));
       cols.add(AssigneeColumnUI.getInstance());
       PointsColumn ptsCol = PointsColumn.instance.copy();
       ptsCol.setShow(true);
@@ -73,11 +73,11 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
       AssumptionsColumn assumptCol = AssumptionsColumn.instance.copy();
       assumptCol.setShow(true);
       cols.add(assumptCol);
-      cols.add(getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
+      cols.add(getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow));
       addPostColumns(cols);
 
       for (XViewerColumn col : cols) {
-         if (col.getName().equals(AtsColumnToken.TitleColumn.getName())) {
+         if (col.getName().equals(AtsColumnTokens.TitleColumn.getName())) {
             col.setWidth(250);
          }
       }
@@ -93,7 +93,7 @@ public abstract class MiniTaskXViewerFactory extends SkynetXViewerFactory {
    /**
     * Provides XViewerColumn for non-attribute based columns like Type and State
     */
-   public XViewerColumn getColumnServiceColumn(AtsColumnIdValueColumn columnToken) {
+   public XViewerColumn getColumnServiceColumn(AtsValColumn columnToken) {
       return new AtsColumnIdUi(columnToken, AtsApiService.get());
    }
 

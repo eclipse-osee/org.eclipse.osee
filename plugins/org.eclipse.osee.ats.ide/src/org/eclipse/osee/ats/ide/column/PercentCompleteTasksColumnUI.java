@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,7 +36,7 @@ public class PercentCompleteTasksColumnUI extends XViewerAtsColumn implements IX
    }
 
    private PercentCompleteTasksColumnUI() {
-      super(AtsColumnId.PercentCompleteTasks.getId(), "Task Percent Complete", 40, XViewerAlign.Center, false,
+      super(AtsColumnTokens.PercentCompleteTasksColumn.getId(), "Task Percent Complete", 40, XViewerAlign.Center, false,
          SortDataType.Percent, false,
          "Percent Complete for the tasks related to the workflow.\n\nCalculation: total percent of all tasks / number of tasks");
    }
@@ -56,7 +56,7 @@ public class PercentCompleteTasksColumnUI extends XViewerAtsColumn implements IX
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsObject) {
-            return AtsApiService.get().getColumnService().getColumnText(AtsColumnId.PercentCompleteTasks,
+            return AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.PercentCompleteTasksColumn,
                (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {

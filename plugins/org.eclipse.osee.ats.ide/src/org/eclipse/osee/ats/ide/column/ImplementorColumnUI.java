@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,8 +36,8 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
    }
 
    private ImplementorColumnUI() {
-      super(AtsColumnId.Implementers.name(), "Implementer", 80, XViewerAlign.Left, false, SortDataType.String, false,
-         "User assigned to the Implementation of the changes.");
+      super(AtsColumnTokens.ImplementersColumn.getId(), "Implementer", 80, XViewerAlign.Left, false, SortDataType.String,
+         false, "User assigned to the Implementation of the changes.");
    }
 
    /**
@@ -56,8 +56,8 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
       String result = "";
       if (element instanceof IAtsObject) {
          try {
-            result =
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Implementers, (IAtsObject) element);
+            result = AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.ImplementersColumn,
+               (IAtsObject) element);
          } catch (OseeCoreException ex) {
             result = LogUtil.getCellExceptionString(ex);
          }

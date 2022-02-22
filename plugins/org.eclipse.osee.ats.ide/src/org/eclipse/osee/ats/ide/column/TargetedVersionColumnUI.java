@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.ide.column;
 
+import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
@@ -25,7 +25,7 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector {
    public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
 
    public TargetedVersionColumnUI() {
-      super(AtsColumnToken.TargetedVersionColumn);
+      super(AtsColumnTokens.TargetedVersionColumn);
    }
 
    public static TargetedVersionColumnUI getInstance() {
