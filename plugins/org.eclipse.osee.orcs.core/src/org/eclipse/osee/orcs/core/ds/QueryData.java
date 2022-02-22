@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -764,5 +765,9 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public ApplicabilityId getAppId() {
       return appId;
+   }
+
+   public List<BranchCategoryToken> getBranchCategories() {
+      return queryFactory.branchQuery().getBranchCategories(branch);
    }
 }

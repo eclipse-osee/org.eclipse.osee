@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
@@ -373,14 +374,11 @@ public class BranchEndpointTest {
    @Test
    public void setBranchFromCategory() {
       XResultData setBranchCategory =
-         branchEndpoint.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.PLE);
+         branchEndpoint.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.ATS);
       Assert.assertFalse(setBranchCategory.isErrors());
-      List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.PLE);
-      boolean isEmpty = true;
-      if (!branches.isEmpty()) {
-         isEmpty = false;
-      }
-      Assert.assertFalse(isEmpty);
+      List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.ATS);
+
+      Assert.assertTrue(branches.contains(DemoBranches.SAW_PL_Working_Branch));
    }
 
    @Test
@@ -596,6 +594,13 @@ public class BranchEndpointTest {
       branchEndpoint.purgeBranch(setUpBranchId, false);
       branchEndpoint.purgeBranch(testBranchIdOne, false);
       branchEndpoint.purgeBranch(testBranchIdTwo, false);
+   }
+
+   @Test
+   public void testForBranchCategories() {
+      List<BranchCategoryToken> branchCategories =
+         branchEndpoint.getBranchCategories(DemoBranches.SAW_PL_Working_Branch);
+      Assert.assertTrue(branchCategories.contains(CoreBranchCategoryTokens.PLE));
    }
 
 }

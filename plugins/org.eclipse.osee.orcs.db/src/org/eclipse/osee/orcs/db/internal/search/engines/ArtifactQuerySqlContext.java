@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -24,10 +26,12 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 public class ArtifactQuerySqlContext extends QuerySqlContext {
 
    private final BranchId branch;
-
+   private final List<BranchCategoryToken> branchCategories;
    public ArtifactQuerySqlContext(OrcsSession session, QueryData queryData) {
       super(session, queryData.getOptions(), ObjectQueryType.ARTIFACT);
       this.branch = queryData.getBranch();
+      this.branchCategories = queryData.getBranchCategories();
+
    }
 
    public BranchId getBranch() {
@@ -37,5 +41,9 @@ public class ArtifactQuerySqlContext extends QuerySqlContext {
    @Override
    public String toString() {
       return "ArtifactQuerySqlContext [branch=" + branch + "(" + super.toString() + ")]";
+   }
+
+   public List<BranchCategoryToken> getBranchCategories() {
+      return branchCategories;
    }
 }

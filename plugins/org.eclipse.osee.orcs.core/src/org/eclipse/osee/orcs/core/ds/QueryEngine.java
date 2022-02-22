@@ -66,4 +66,6 @@ public interface QueryEngine {
    boolean isArchived(BranchId branchId);
 
    void getBranchCategoryGammaIds(Consumer<GammaId> consumer, BranchId branchId, BranchCategoryToken category);
+
+   void getBranchCategories(Consumer<BranchCategoryToken> consumer, BranchId branchId);
 }

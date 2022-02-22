@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -33,6 +34,10 @@ public class BranchCategoryToken extends NamedIdBase {
 
    public static BranchCategoryToken valueOf(Long id, String name) {
       return new BranchCategoryToken(id, name);
+   }
+
+   public static BranchCategoryToken valueOf(Long id) {
+      return CoreBranchCategoryTokens.valueOf(id);
    }
 
 }

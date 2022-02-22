@@ -41,6 +41,8 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
    List<GammaId> getBranchCategoryGammaId(BranchId branchId, BranchCategoryToken category);
 
+   List<BranchCategoryToken> getBranchCategories(BranchId branchId);
+
    BranchToken getOneOrSentinel();
 
    public static BranchQuery createSentinel() {
@@ -178,6 +180,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
          @Override
          public List<GammaId> getBranchCategoryGammaId(BranchId branchId, BranchCategoryToken category) {
+            return null;
+         }
+
+         @Override
+         public List<BranchCategoryToken> getBranchCategories(BranchId branchId) {
             return null;
          }
       }

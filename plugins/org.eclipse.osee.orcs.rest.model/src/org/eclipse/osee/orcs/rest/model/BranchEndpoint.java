@@ -110,6 +110,11 @@ public interface BranchEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<Branch> getBranchesByCategory(@PathParam("category") BranchCategoryToken id);
 
+   @GET
+   @Path("{branch}/category")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<BranchCategoryToken> getBranchCategories(@PathParam("branch") BranchId branch);
+
    @POST
    @Path("{branch}/category/{category}")
    @Consumes({MediaType.APPLICATION_JSON})

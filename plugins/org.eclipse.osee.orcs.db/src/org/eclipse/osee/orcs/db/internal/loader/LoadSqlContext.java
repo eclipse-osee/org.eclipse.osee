@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -26,14 +29,24 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
 public class LoadSqlContext extends SqlContextImpl implements LoadContext, HasBranchId {
 
    private final BranchId branch;
+   private final List<BranchCategoryToken> branchCategories;
 
-   public LoadSqlContext(OrcsSession session, Options options, BranchId branch) {
+   public LoadSqlContext(OrcsSession session, Options options, BranchId branch, List<BranchCategoryToken> branchCategories) {
       super(session, options);
       this.branch = branch;
+      this.branchCategories = branchCategories;
+   }
+
+   public LoadSqlContext(OrcsSession session, Options options, BranchId branch) {
+      this(session, options, branch, new ArrayList<BranchCategoryToken>());
    }
 
    @Override
    public BranchId getBranch() {
       return branch;
+   }
+
+   public List<BranchCategoryToken> getBranchCategories() {
+      return branchCategories;
    }
 }

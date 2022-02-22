@@ -89,4 +89,12 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
       queryEngine.getBranchCategoryGammaIds(branchCategories::add, branchId, category);
       return branchCategories;
    }
+
+   @Override
+   public List<BranchCategoryToken> getBranchCategories(BranchId branchId) {
+      List<BranchCategoryToken> branchCategories = new ArrayList<>();
+      queryEngine.getBranchCategories(branchCategories::add, branchId);
+      return branchCategories;
+   }
+
 }
