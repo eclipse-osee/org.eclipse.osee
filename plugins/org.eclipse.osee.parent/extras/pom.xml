@@ -70,12 +70,14 @@
 									message="Setting up Eclipse IP Repo from: [${external-eclipse-ip-site}]" />
 								<echo
 									message="                            to: [${ip-site-base-repo-path}]" />
-
+								<echo message="project build dir  ${project.build.directory}"/>
 								<delete dir="${ip-site-repo-path}" />
+								<echo message=" ip site  ${WORKSPACE}"/>
 								<mkdir dir="${ip-site-repo-path}" />
-								<get src="${external-eclipse-ip-site}" dest="${ip-site-zip-path}"
-									skipexisting="${skip-download-if-exists}" />
-								<unzip src="${ip-site-zip-path}" dest="${ip-site-repo-path}"
+							        <echo message="after make"/>
+								<!--<get src="/msa_users/osee/baily/org.eclipse.ip_copy/org.eclipse.ip.p2/target/org.eclipse.ip.p2-0.26.0-SNAPSHOT.zip" dest="${ip-site-zip-path}"
+									/>-->
+								<unzip src="/msa_users/osee/baily/org.eclipse.ip_copy/org.eclipse.ip.p2/target/org.eclipse.ip.p2-0.26.0-SNAPSHOT.zip" dest="${ip-site-repo-path}"
 									overwrite="true" />
 							</target>
 						</configuration>

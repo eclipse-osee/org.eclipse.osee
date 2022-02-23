@@ -25,6 +25,8 @@
 						</goals>
 						<configuration>
 							<excludes>
+							
+  								<plugin id="com.sun.xml.txw2"/>
 							   <plugin id="com.sun.istack.commons-runtime"/>
 								<plugin id="org.glassfish.jaxb.core"/>
 								<plugin id="org.glassfish.jaxb.runtime"/>
