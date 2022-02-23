@@ -38,7 +38,7 @@
 <plugin id="com.sun.xml.fastinfoset.source"/>
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
-<plugin id="javax.annotation" />
+<plugin id="javax.annotation" version="1.3.5.v20200909-1856"/>
 <plugin id="javax.annotation.source"/>
 <plugin id="javax.el"/>
 <plugin id="javax.el.source"/>
@@ -79,7 +79,7 @@
 <plugin id="org.apache.batik.util"/>
 <plugin id="org.apache.batik.util.source"/>
 <plugin id="org.apache.commons.codec" version="1.14.0.v20200818-1422"/>
-<plugin id="org.apache.commons.compress" />
+<plugin id="org.apache.commons.compress" version="1.19.0.v20200106-2343"/>
 <plugin id="org.apache.commons.dbcp"/>
 <plugin id="org.apache.commons.dbcp.source"/>
 <plugin id="org.apache.commons.httpclient"/>
@@ -91,7 +91,7 @@
 <plugin id="org.apache.commons.lang.source"/>
 <plugin id="org.apache.commons.lang3"/>
 <plugin id="org.apache.commons.lang3.source"/>
-<plugin id="org.apache.commons.logging" />
+<plugin id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
 <plugin id="org.apache.commons.logging.source"/>
 <plugin id="org.apache.commons.net"/>
 <plugin id="org.apache.commons.net.source"/>
@@ -378,8 +378,8 @@
 <plugin id="org.eclipse.help.webapp"/>
 <plugin id="org.eclipse.help.webapp.source"/>
 <plugin id="org.eclipse.jdt"/>
-<plugin id="org.eclipse.jdt.annotation"/>
-<plugin id="org.eclipse.jdt.annotation.source"/>
+<plugin id="org.eclipse.jdt.annotation" version="2.2.600.v20200408-1511"/>
+<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
 <plugin id="org.eclipse.jdt.apt.core"/>
 <plugin id="org.eclipse.jdt.apt.core.source"/>
 <plugin id="org.eclipse.jdt.apt.pluggable.core"/>
@@ -410,16 +410,16 @@
 <plugin id="org.eclipse.jdt.launching"/>
 <plugin id="org.eclipse.jdt.launching.source"/>
 <plugin id="org.eclipse.jdt.ui"/>
-<plugin id="org.eclipse.jetty.http"/>
-<plugin id="org.eclipse.jetty.io"/>
-<plugin id="org.eclipse.jetty.io.source"/>
-<plugin id="org.eclipse.jetty.security"/>
-<plugin id="org.eclipse.jetty.security.source"/>
-<plugin id="org.eclipse.jetty.server"/>
-<plugin id="org.eclipse.jetty.server.source"/>
-<plugin id="org.eclipse.jetty.servlet"/>
-<plugin id="org.eclipse.jetty.servlet.source"/>
-<plugin id="org.eclipse.jetty.util"/>
+<plugin id="org.eclipse.jetty.http" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.io" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.io.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.security" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.security.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.server" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.server.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.servlet" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.servlet.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.util" version="9.4.44.v20210927"/>
 <plugin id="org.eclipse.jetty.util.ajax"/>
 <plugin id="org.eclipse.jface"/>
 <plugin id="org.eclipse.jface.databinding"/>
@@ -470,7 +470,7 @@
 <plugin id="org.eclipse.osgi"/>
 <plugin id="org.eclipse.osgi.compatibility.state"/>
 <plugin id="org.eclipse.osgi.compatibility.state.source"/>
-<plugin id="org.eclipse.osgi.services"/>
+<plugin id="org.eclipse.osgi.services" version="3.9.0.v20200511-1725"/>
 <plugin id="org.eclipse.osgi.services.source"/>
 <plugin id="org.eclipse.osgi.source"/>
 <plugin id="org.eclipse.osgi.util"/>
@@ -611,7 +611,7 @@
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
-<plugin id="org.slf4j.api"/>
+<plugin id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
 <plugin id="org.slf4j.api.source"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.slf4j.jcl.source"/>
@@ -629,7 +629,6 @@
 <plugin id="javax.transaction"/>
 <plugin id="javax.xml.ws"/>
 <plugin id="javax.xml.soap"/>
-<plugin id="jakarta.xml.bind"/>
 <plugin id="javassist"/>
 <plugin id="com.sun.activation.jakarta.activation"/>
 <plugin id="com.sun.xml.bind"/>
@@ -639,6 +638,7 @@
 <plugin id="org.glassfish.jaxb.core"/>
 <plugin id="org.glassfish.jaxb.runtime"/>
 <plugin id="com.sun.istack.commons-runtime"/>
+	<plugin id="com.sun.xml.txw2"/>
 </includeBundles>
 <environment>
 <os>win32</os>

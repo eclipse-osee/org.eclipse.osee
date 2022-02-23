@@ -34,6 +34,13 @@
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
    </requires>
 
+  <plugin
+         id="com.sun.xml.txw2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.jgit.ssh.jsch"
          download-size="0"
@@ -104,13 +111,6 @@
 
    <plugin
          id="javassist"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.sun.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -339,13 +339,6 @@
          version="0.0.0"
          unpack="false"/>
   
-  <plugin
-         id="jakarta.xml.bind"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false" />
-          
    <plugin
          id="javax.annotation"
          download-size="0"
