@@ -22,7 +22,7 @@
 		<ant-commons-net-version>1.7.0</ant-commons-net-version>
 		<commons-net-version>1.4.1</commons-net-version>
 
-		<eclipse-ip-site-version>1.0.0.v201308231617-DEV</eclipse-ip-site-version>
+		<eclipse-ip-site-version>org.eclipse.ip.p2-1.0.0-SNAPSHOT</eclipse-ip-site-version>
 		<external-eclipse-ip-site>http://osee-external.googlecode.com/files/org.eclipse.ip.p2-${eclipse-ip-site-version}.zip</external-eclipse-ip-site>
 		<skip-download-if-exists>true</skip-download-if-exists>
 	</properties>
@@ -75,10 +75,25 @@
 								<echo message=" ip site  ${WORKSPACE}"/>
 								<mkdir dir="${ip-site-repo-path}" />
 							        <echo message="after make"/>
-								<!--<get src="/msa_users/osee/baily/org.eclipse.ip_copy/org.eclipse.ip.p2/target/org.eclipse.ip.p2-0.26.0-SNAPSHOT.zip" dest="${ip-site-zip-path}"
-									/>-->
-								<unzip src="/msa_users/osee/baily/org.eclipse.ip_copy/org.eclipse.ip.p2/target/org.eclipse.ip.p2-0.26.0-SNAPSHOT.zip" dest="${ip-site-repo-path}"
+									<if>
+										<not>
+											<isset property="not_ci_eclipse" />
+									</not>
+									<then>
+									<echo message="is not ci eclipse"/>
+								<get src="${external-eclipse-ip-site}" dest="${ip-site-zip-path}"
+									skipexisting="${skip-download-if-exists}" />
+                                                               
+                                                                <unzip src="${ip-site-zip-path}" dest="${ip-site-repo-path}"
+									overwrite="true" /> 
+																</then>
+							
+								
+								<else>
+								<unzip src="${external-eclipse-ip-site}" dest="${ip-site-repo-path}"
 									overwrite="true" />
+								</else>
+								</if>
 							</target>
 						</configuration>
 					</execution>
