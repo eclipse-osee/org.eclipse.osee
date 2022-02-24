@@ -110,6 +110,8 @@ public class AtsColumnTokens {
    public static AtsAttrValCol CrashOrBlankDisplayColumn = new AtsAttrValCol(AtsAttributeTypes.CrashOrBlankDisplay, "ats.column.crash.or.blank.display", AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName(), 50, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsAttrValCol ExternalReferenceColumn = new AtsAttrValCol(AtsAttributeTypes.ExternalReference, "ats.column.external.reference", AtsAttributeTypes.ExternalReference.getUnqualifiedName(), 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsAttrValCol GitChangeId = new AtsAttrValCol(CoreAttributeTypes.GitChangeId, "ats.column.git.change.id", CoreAttributeTypes.GitChangeId.getUnqualifiedName(), 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol RevisitDate = new AtsAttrValCol(AtsAttributeTypes.RevisitDate, "ats.column.revisit.date", AtsAttributeTypes.RevisitDate.getUnqualifiedName(), 75, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol NonFunctionalProblem = new AtsAttrValCol(AtsAttributeTypes.NonFunctionalProblem, "ats.column.non.functional.problem", AtsAttributeTypes.NonFunctionalProblem.getUnqualifiedName(), 55, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
 
    // @formatter:on
 }

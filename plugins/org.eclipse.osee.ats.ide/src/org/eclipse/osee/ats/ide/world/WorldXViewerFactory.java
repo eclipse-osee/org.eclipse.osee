@@ -97,6 +97,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getAttributeConfigColumn(AtsColumnTokens.CrashOrBlankDisplayColumn),
          getAttributeConfigColumn(AtsColumnTokens.ExternalReferenceColumn),
          getAttributeConfigColumn(AtsColumnTokens.GitChangeId),
+         getAttributeConfigColumn(AtsColumnTokens.RevisitDate),
+         getAttributeConfigColumn(AtsColumnTokens.NonFunctionalProblem),
 
          /**
           * These are computed columns where data is in multiple places and must be retrieved/loaded to be displayed
