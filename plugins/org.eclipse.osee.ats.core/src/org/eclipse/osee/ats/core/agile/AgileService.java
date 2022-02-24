@@ -707,12 +707,13 @@ public class AgileService implements IAgileService {
          }
          // Attempt to get from workitem relation to backlog
          if (agileTeam == null) {
-            ArtifactId backlogArt =
-               atsApi.getRelationResolver().getRelatedOrSentinel(workItem, AtsRelationTypes.Goal_Goal);
-            if (backlogArt.isValid()) {
-               IAgileBacklog backlog = getAgileBacklog(backlogArt);
-               if (backlog != null) {
-                  agileTeam = atsApi.getAgileService().getAgileTeamFromBacklog(backlog);
+            for (ArtifactToken goalArt : atsApi.getRelationResolver().getRelated(workItem,
+               AtsRelationTypes.Goal_Goal)) {
+               if (goalArt.isOfType(AtsArtifactTypes.Goal)) {
+                  IAgileBacklog backlog = getAgileBacklog(goalArt);
+                  if (backlog != null) {
+                     agileTeam = atsApi.getAgileService().getAgileTeamFromBacklog(backlog);
+                  }
                }
             }
          }
