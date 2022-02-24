@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -56,8 +57,9 @@ public class XHyperlinkWorkDefDam extends XHyperlinkLabelValueSelection implemen
       if (artifact == null) {
          value = "Not Set";
       } else {
-         Long workDefId = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, attributeTypeToken, null);
-         if (workDefId == null) {
+         ArtifactId workDefId =
+            atsApi.getAttributeResolver().getSoleAttributeValue(artifact, attributeTypeToken, ArtifactId.SENTINEL);
+         if (workDefId.isInvalid()) {
             value = "Not Set";
          } else {
             IAtsWorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
@@ -112,7 +114,7 @@ public class XHyperlinkWorkDefDam extends XHyperlinkLabelValueSelection implemen
                IAtsWorkDefinition workDef = dialog.getSelectedFirst();
 
                IAtsChangeSet changes = atsApi.createChangeSet(getLabel());
-               changes.setSoleAttributeValue(artifact, attributeTypeToken, workDef.getId());
+               changes.setSoleAttributeValue(artifact, attributeTypeToken, ArtifactId.valueOf(workDef.getId()));
                changes.execute();
 
                refresh();
