@@ -37,6 +37,34 @@
   			id="org.eclipse.jgit.ssh.apache"
   			version="0.0.0"/>
 
+<plugin
+         id="org.eclipse.sphinx.emf.serialization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+
+    <plugin
+         id="org.eclipse.rmf.reqif10"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.eclipse.rmf.reqif10.serialization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+    <plugin
+         id="org.eclipse.rmf.reqif10.xhtml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
   <plugin
          id="com.sun.xml.txw2"
          download-size="0"
