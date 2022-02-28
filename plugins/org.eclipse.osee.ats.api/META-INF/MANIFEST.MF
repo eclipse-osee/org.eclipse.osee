@@ -63,7 +63,9 @@ Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind.ser.std,
  com.google.common.base,
  javax.activation,
+ javax.mail.internet,
  javax.ws.rs,
+ javax.ws.rs.client,
  javax.ws.rs.core,
  org.apache.commons.lang,
  org.eclipse.jdt.annotation,
@@ -93,4 +95,5 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.orcs.rest.model,
  org.osgi.framework,
  org.osgi.service.event
+Require-Bundle: javax.activation
 
