@@ -34,6 +34,34 @@
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
    </requires>
 
+   <plugin
+         id="org.eclipse.sphinx.emf.serialization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+
+    <plugin
+         id="org.eclipse.rmf.reqif10"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.eclipse.rmf.reqif10.serialization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+    <plugin
+         id="org.eclipse.rmf.reqif10.xhtml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
   <plugin
          id="com.sun.xml.txw2"
          download-size="0"

@@ -76,7 +76,18 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.44.v20210927/</url>
 	  </repository>	
+	 	 <repository>
+			<id>rmf</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/rmf/updates/releases/0.13.0/</url>
+	  </repository>	 
 	  
+	 	 <repository>
+			<id>sphinx</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/sphinx/updates/release/0.11.2</url>
+	  </repository>
+	  	   
  		 <repository>
 			<id>mylyn</id>
 			<layout>p2</layout>
