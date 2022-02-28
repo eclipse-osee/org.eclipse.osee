@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractAtsNotificationService implements IAtsNotificationService {
+public abstract class AbstractAtsNotificationService implements IAtsNotificationService, OseeEmailCreator {
 
    private volatile boolean emailEnabled = true;
    protected AtsApi atsApi;
@@ -134,8 +134,8 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
 
    @Override
    public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
-      SendNotificationEvents job = new SendNotificationEvents(createOseeEmail(), atsApi, fromUserEmail,
-         testingUserEmail, subject, body, notificationEvents, atsApi.getUserService());
+      SendNotificationEvents job = new SendNotificationEvents(this, atsApi, fromUserEmail, testingUserEmail, subject,
+         body, notificationEvents, atsApi.getUserService());
       job.run();
    }
 
@@ -163,7 +163,8 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
       }
    }
 
-   protected abstract OseeEmail createOseeEmail();
+   @Override
+   public abstract OseeEmail createOseeEmail();
 
    private String getFromUserEmail(AtsNotificationCollector notifications) {
       String email = atsApi.getConfigValue("NoReplyEmail");

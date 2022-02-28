@@ -27,7 +27,7 @@ public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
    }
 
    @Override
-   protected OseeEmail createOseeEmail() {
+   public OseeEmail createOseeEmail() {
       return OseeEmailServer.create();
    }
 

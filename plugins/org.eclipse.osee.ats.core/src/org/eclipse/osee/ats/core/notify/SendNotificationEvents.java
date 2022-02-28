@@ -40,12 +40,12 @@ public class SendNotificationEvents {
    private final String body;
    private final String fromUserEmail;
    private final String testingUserEmail;
-   private final OseeEmail oseeEmail;
+   private final OseeEmailCreator oseeEmailCreator;
    private final AtsApi atsApi;
    private final IAtsUserService userService;
 
-   public SendNotificationEvents(OseeEmail oseeEmail, AtsApi atsApi, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
-      this.oseeEmail = oseeEmail;
+   public SendNotificationEvents(OseeEmailCreator oseeEmailCreator, AtsApi atsApi, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
+      this.oseeEmailCreator = oseeEmailCreator;
       this.atsApi = atsApi;
       this.userService = atsApi.getUserService();
       this.fromUserEmail = fromUserEmail;
@@ -187,6 +187,7 @@ public class SendNotificationEvents {
          System.out.println(String.format("useFromEmail [%s]", useFromEmail));
 
          try {
+            OseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
             oseeEmail.setFrom(useFromEmail);
             oseeEmail.setSubject(getNotificationEmailSubject(notificationEvents));
             oseeEmail.setHTMLBody(html);
