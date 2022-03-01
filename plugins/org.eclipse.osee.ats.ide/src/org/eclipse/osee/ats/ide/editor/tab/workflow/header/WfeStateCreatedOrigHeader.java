@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -40,7 +39,6 @@ public class WfeStateCreatedOrigHeader extends Composite {
 
    private final IAtsWorkItem workItem;
    Label stateValueLabel, createdValueLabel;
-   private final static Color BLOCKED_COLOR = new Color(null, 244, 80, 66);
    private final WfeOriginatorHeader originatorHeader;
 
    public WfeStateCreatedOrigHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
@@ -66,9 +64,14 @@ public class WfeStateCreatedOrigHeader extends Composite {
       if (Widgets.isAccessible(stateValueLabel)) {
          String isBlocked = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
             AtsAttributeTypes.BlockedReason, "");
+         String isHold = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+            AtsAttributeTypes.HoldReason, "");
          if (Strings.isValid(isBlocked)) {
             stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Blocked)");
-            stateValueLabel.setForeground(BLOCKED_COLOR);
+            stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
+         } else if (Strings.isValid(isHold)) {
+            stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Hold)");
+            stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
          } else {
             stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName());
             stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
