@@ -27,9 +27,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -47,12 +50,16 @@ public class AbstractWfeSubWorkflow extends Composite {
    private final String negative;
    private final AttributeTypeToken attrType;
    private final int color;
+   private Label iconLabel;
+   private final KeyedImage image;
 
-   protected AbstractWfeSubWorkflow(Composite parent, int style, IAtsWorkItem workItem, WorkflowEditor editor, String positive, String negative, AttributeTypeToken attrType, int color) {
+   protected AbstractWfeSubWorkflow(Composite parent, int style, IAtsWorkItem workItem, WorkflowEditor editor, String positive, //
+      String negative, AttributeTypeToken attrType, int color, KeyedImage image, String tooltip) {
       super(parent, style);
       this.workItem = workItem;
+      this.image = image;
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(ALayout.getZeroMarginLayout(4, false));
+      setLayout(ALayout.getZeroMarginLayout(5, false));
       editor.getToolkit().adapt(this);
       this.workItem = workItem;
       this.positive = positive;
@@ -60,7 +67,9 @@ public class AbstractWfeSubWorkflow extends Composite {
       this.attrType = attrType;
       this.color = color;
       try {
+
          labelLink = editor.getToolkit().createHyperlink(this, "", SWT.NONE);
+         labelLink.setToolTipText(tooltip);
          labelLink.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -85,6 +94,8 @@ public class AbstractWfeSubWorkflow extends Composite {
                }
             }
          });
+
+         iconLabel = editor.getToolkit().createLabel(this, "");
 
          reasonLink = editor.getToolkit().createHyperlink(this, "", SWT.NONE);
          reasonLink.addHyperlinkListener(new IHyperlinkListener() {
@@ -128,7 +139,7 @@ public class AbstractWfeSubWorkflow extends Composite {
       try {
          reason = getReason();
          if (isNegative()) {
-            label = "Remove " + positive + " from Workflow";
+            label = "Remove " + positive;
          } else {
             label = "Set Workflow to " + positive;
          }
@@ -148,8 +159,10 @@ public class AbstractWfeSubWorkflow extends Composite {
       reasonLink.setVisible(showReason);
       if (showReason) {
          reasonLink.setForeground(Displays.getSystemColor(color));
+         iconLabel.setImage(ImageManager.getImage(image));
       } else {
          reasonLink.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+         iconLabel.setImage(null);
       }
       reasonLink.setLayoutData(new GridData());
 
