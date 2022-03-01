@@ -933,7 +933,7 @@
     </handler>
     <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteBranchHandler"
-          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchViewBranchView.deleteBranch">
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch">
     </handler>
     <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.PurgeBranchHandler"
