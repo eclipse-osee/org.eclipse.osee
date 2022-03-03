@@ -443,7 +443,9 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
 
    @Override
    public void getTeamFromItemAndChildren(IAtsActionableItem ai, Set<IAtsTeamDefinition> aiTeams) {
-      aiTeams.add(ai.getTeamDefinition());
+      if (ai.getTeamDefinition() != null) {
+         aiTeams.add(ai.getTeamDefinition());
+      }
 
       for (IAtsActionableItem childArt : ai.getChildrenActionableItems()) {
          getTeamFromItemAndChildren(childArt, aiTeams);
