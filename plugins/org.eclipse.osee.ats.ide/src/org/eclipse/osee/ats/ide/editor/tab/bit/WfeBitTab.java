@@ -17,6 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -31,6 +35,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -136,11 +141,10 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;
       }
-      Thread loadBits = new Thread("Load Build Impact Table") {
+      Job loadJob = new Job("Loading Build Impacts") {
 
          @Override
-         public void run() {
-
+         protected IStatus run(IProgressMonitor monitor) {
             bids = atsApi.getServerEndpoints().getActionEndpoint().getBids(teamWf.getAtsId());
 
             Displays.ensureInDisplayThread(new Runnable() {
@@ -155,11 +159,12 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener 
                   xViewer.loadTable();
                   restoreExpandState();
                }
-
             });
+
+            return Status.OK_STATUS;
          }
       };
-      loadBits.start();
+      Operations.scheduleJob(loadJob, true, Job.SHORT, null);
 
    }
 

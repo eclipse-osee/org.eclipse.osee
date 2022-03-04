@@ -14,6 +14,10 @@ package org.eclipse.osee.ats.ide.editor.tab.bit.action;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
@@ -35,6 +39,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -93,29 +98,41 @@ public class CreateSiblingAction extends Action {
    }
 
    private void handleSelection(BuildImpactData selBid, Collection<IAtsActionableItem> aias) {
-      BuildImpactDatas bids = new BuildImpactDatas();
-      bids.setTeamWf(teamWf.getStoreObject());
-      for (IAtsActionableItem ai : aias) {
-         BuildImpactData bid = new BuildImpactData();
-         bid.setBids(bids);
-         bid.setBidArt(selBid.getBidArt());
-         bid.setBuild(selBid.getBuild());
-         bid.setProgram(selBid.getProgram());
-         bids.addBuildImpactData(bid);
 
-         JaxTeamWorkflow teamWf = new JaxTeamWorkflow();
-         teamWf.setName(teamWf.getTitle());
-         teamWf.setNewAi(ai.getArtifactToken());
-         bid.addTeamWorkflow(teamWf);
-      }
-      bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getAtsId(), bids);
-      if (bids.getResults().isErrors()) {
-         XResultDataUI.report(bids.getResults(), "Error Creating BID Workflows");
-      } else {
-         ((Artifact) teamWf).reloadAttributesAndRelations();
-         atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, Arrays.asList(teamWf),
-            bids.getTransaction());
-      }
+      Job createSiblingJob = new Job("Creating Sibling Workflows") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+
+            BuildImpactDatas bids = new BuildImpactDatas();
+            bids.setTeamWf(teamWf.getStoreObject());
+            for (IAtsActionableItem ai : aias) {
+               BuildImpactData bid = new BuildImpactData();
+               bid.setBids(bids);
+               bid.setBidArt(selBid.getBidArt());
+               bid.setBuild(selBid.getBuild());
+               bid.setProgram(selBid.getProgram());
+               bid.setState(selBid.getState());
+               bids.addBuildImpactData(bid);
+
+               JaxTeamWorkflow teamWf = new JaxTeamWorkflow();
+               teamWf.setName(teamWf.getTitle());
+               teamWf.setNewAi(ai.getArtifactToken());
+               bid.addTeamWorkflow(teamWf);
+            }
+            bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getAtsId(), bids);
+            if (bids.getResults().isErrors()) {
+               XResultDataUI.report(bids.getResults(), "Error Creating Sibling Workflows");
+            } else {
+               ((Artifact) teamWf).reloadAttributesAndRelations();
+               atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
+                  Arrays.asList(teamWf), bids.getTransaction());
+            }
+
+            return Status.OK_STATUS;
+         }
+      };
+      Operations.scheduleJob(createSiblingJob, true, Job.SHORT, null);
 
    }
 
