@@ -11,12 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.internal.writer;
+package org.eclipse.osee.mim.internal;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -27,12 +28,14 @@ import org.eclipse.osee.orcs.OrcsApi;
 public final class IcdStreamingOutput implements StreamingOutput {
    private final OrcsApi orcsApi;
    private final BranchId branch;
-   private final String connectionName;
+   private final ArtifactId viewId;
+   private final ArtifactId connectionId;
 
-   public IcdStreamingOutput(OrcsApi orcsApi, BranchId branch, String connectionName) {
+   public IcdStreamingOutput(OrcsApi orcsApi, BranchId branch, ArtifactId viewId, ArtifactId connectionId) {
       this.orcsApi = orcsApi;
       this.branch = branch;
-      this.connectionName = connectionName;
+      this.viewId = viewId;
+      this.connectionId = connectionId;
    }
 
    @Override
@@ -40,7 +43,7 @@ public final class IcdStreamingOutput implements StreamingOutput {
       try {
          Writer writer = new OutputStreamWriter(output);
          IcdGenerator generator = new IcdGenerator(orcsApi);
-         generator.runOperation(orcsApi, writer, branch, connectionName);
+         generator.runOperation(orcsApi, writer, branch, viewId, connectionId);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
