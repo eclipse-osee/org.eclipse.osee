@@ -26,7 +26,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -152,12 +151,4 @@ public interface ArtifactEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    List<ArtifactToken> findArtifactTokens(ArtifactSearchOptions searchOptions);
 
-   /**
-    * @return Xml workbook which contains interface messages/submessages/structure info for a given connection
-    * node1_node2
-    */
-   @GET
-   @Path("icd/{connection}")
-   @Produces(MediaType.APPLICATION_XML)
-   public Response getIcd(@PathParam("branch") BranchId branchId, @PathParam("connection") String connection);
 }

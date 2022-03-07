@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -319,7 +320,16 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public Collection<RelationTypeToken> getExistingRelationTypes() {
-      throw new UnsupportedOperationException();
+      Set<RelationTypeToken> relATypes = this.relationsSideA.keySet();
+      Set<RelationTypeToken> relBTypes = this.relationsSideB.keySet();
+      List<RelationTypeToken> rels = new ArrayList<RelationTypeToken>();
+      if (!relATypes.isEmpty()) {
+         rels.addAll(relATypes);
+      }
+      if (!relBTypes.isEmpty()) {
+         rels.addAll(relBTypes);
+      }
+      return rels;
    }
 
    @Override

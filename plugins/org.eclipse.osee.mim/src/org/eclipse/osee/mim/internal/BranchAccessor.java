@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
+import org.eclipse.osee.mim.IcdEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
@@ -145,5 +146,23 @@ public class BranchAccessor {
    public EnumerationSetEndpoint getEnumerationSetEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new EnumerationSetEndpointImpl(branch, mimApi.getInterfaceEnumerationSetApi(),
          mimApi.getInterfaceEnumerationApi());
+   }
+
+   /**
+    * @return Xml workbook which contains interface messages/submessages/structure info for a given connection
+    * node1_node2
+    */
+   @Path("{branch}/view/{viewId}/icd/{id}")
+   @Produces(MediaType.APPLICATION_XML)
+   public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("id") ArtifactId connectionId) {
+
+      return new IcdEndpointImpl(branch, viewId, connectionId, mimApi.getOrcsApi());
+   }
+
+   @Path("{branch}/icd/{id}")
+   @Produces(MediaType.APPLICATION_XML)
+   public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("id") ArtifactId connectionId) {
+
+      return new IcdEndpointImpl(branch, ArtifactId.SENTINEL, connectionId, mimApi.getOrcsApi());
    }
 }

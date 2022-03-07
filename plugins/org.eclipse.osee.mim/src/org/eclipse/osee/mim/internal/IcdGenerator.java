@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.internal.writer;
+package org.eclipse.osee.mim.internal;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -43,27 +44,35 @@ public class IcdGenerator {
       this.orcsApi = orcsApi;
    }
 
-   public void runOperation(OrcsApi providedOrcs, Writer providedWriter, BranchId branch, String connectionName) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, Writer providedWriter, BranchId branch, ArtifactId view, ArtifactId connectionId) throws IOException {
       ArtifactReadable conn =
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andNameEquals(
-            connectionName).getArtifact();
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
+            connectionId).asArtifact();
       ArtifactReadable primaryNode =
-         conn.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL);
-      ArtifactReadable secondaryNode =
-         conn.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL);
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceNode).andId(
+            conn.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL)).asArtifact();
 
-      List<ArtifactReadable> messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionContent_Message).getList();
+      ArtifactReadable secondaryNode =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceNode).andId(
+            conn.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL)).asArtifact();
+
+      List<ArtifactReadable> messages = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+         CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId).asArtifacts();
       List<ArtifactReadable> subMessages = new ArrayList<>();
       List<ArtifactReadable> structures = new ArrayList<>();
       SortedMap<String, String> structureLinks = new TreeMap<String, String>();
       for (ArtifactReadable message : messages) {
-         subMessages.addAll(
-            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList());
+         subMessages.addAll(orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(
+            CoreArtifactTypes.InterfaceSubMessage).andRelatedTo(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message, message).asArtifacts());
+
       }
       for (ArtifactReadable subMessage : subMessages) {
-         structures.addAll(subMessage.getRelated(CoreRelationTypes.InterfaceSubMessageContent_Structure).getList());
+         structures.addAll(orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(
+            CoreArtifactTypes.InterfaceStructure).andRelatedTo(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+               subMessage).asArtifacts());
       }
       int worksheetIndex = 0;
       for (ArtifactReadable structure : structures) {
@@ -75,10 +84,13 @@ public class IcdGenerator {
          structureLinks.put(structure.getName(), sheetName);
       }
       ExcelXmlWriter writer = new ExcelXmlWriter(providedWriter);
-      createMessageSubMessageSummary(writer, branch, conn, primaryNode, secondaryNode, messages);
+
+      createMessageSubMessageSummary(writer, branch, view, conn, primaryNode, secondaryNode, messages, subMessages);
       createStructureNamesSheet(writer, branch, structureLinks);
-      createMessageDetailSheet(writer, branch, subMessages, structureLinks);
-      createSubMessageSheets(writer, branch, subMessages, structureLinks);
+      createMessageDetailSheet(writer, branch, view, primaryNode, secondaryNode, messages, subMessages, structures,
+         structureLinks);
+      createSubMessageSheets(writer, branch, view, primaryNode, secondaryNode, messages, subMessages, structures,
+         structureLinks);
       writer.endWorkbook();
    }
 
@@ -135,7 +147,7 @@ public class IcdGenerator {
       writer.endSheet();
    }
 
-   private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, List<ArtifactReadable> subMessages, SortedMap<String, String> structureLinks) throws IOException {
+   private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages, List<ArtifactReadable> structures, SortedMap<String, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 14;
       headingsList.add("Category");
@@ -156,18 +168,18 @@ public class IcdGenerator {
       writer.startSheet("SubMessage Summary", columnCount);
       writer.writeHeaderRow(headings);
       for (ArtifactReadable artifact : subMessages) {
-         for (ArtifactReadable struct : artifact.getRelated(
-            CoreRelationTypes.InterfaceSubMessageContent_Structure).getList()) {
+         final ArtifactReadable subMessage = artifact;
+         for (ArtifactReadable struct : structures.stream().filter(
+            a -> a.areRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessage)).collect(
+               Collectors.toList())) {
             String sheetName = structureLinks.get(struct.getName());
 
-            List<ArtifactReadable> elements =
-               struct.getRelated(CoreRelationTypes.InterfaceStructureContent_DataElement).getList();
+            List<ArtifactReadable> elements = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+               CoreRelationTypes.InterfaceStructureContent_Structure, struct).asArtifacts();
             Integer sum = 0;
-            for (ArtifactReadable element : struct.getRelated(
-               CoreRelationTypes.InterfaceStructureContent_DataElement).getList()) {
-               ArtifactReadable platformType =
-                  element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
-                     ArtifactReadable.SENTINEL);
+            for (ArtifactReadable element : elements) {
+               ArtifactReadable platformType = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, element).asArtifactOrSentinel();
                if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
                   sum = sum + (((Integer.parseInt(platformType.getSoleAttributeAsString(
                      CoreAttributeTypes.InterfacePlatformTypeBitSize,
@@ -181,12 +193,14 @@ public class IcdGenerator {
                }
             }
 
-            ArtifactReadable message =
-               artifact.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_Message).getAtMostOneOrDefault(
-                  ArtifactReadable.SENTINEL);
+            ArtifactReadable message = messages.stream().filter(
+               a -> a.areRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
+                  subMessage)).findAny().orElse(ArtifactReadable.SENTINEL);
             String sendingNode =
-               message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
-                  ArtifactReadable.SENTINEL).getName();
+               (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
+                     primaryNode.getIdString())) ? primaryNode.getName() : secondaryNode.getName();
+            ;
             String msgNumber = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber, "0");
             String minSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMinSimultaneity, "n/a");
             String maxSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMaxSimultaneity, "n/a");
@@ -231,7 +245,7 @@ public class IcdGenerator {
                }
             }
 
-            String cat = struct.getSoleAttributeValue(CoreAttributeTypes.InterfaceStructureCategory);
+            String cat = struct.getSoleAttributeValue(CoreAttributeTypes.InterfaceStructureCategory).toString();
             InterfaceStructureCategoryEnum catEnum =
                CoreAttributeTypes.InterfaceStructureCategory.getEnumValues().stream().filter(
                   e -> cat.equals(e.getName())).findAny().orElse(null);
@@ -265,7 +279,7 @@ public class IcdGenerator {
       writer.endSheet();
    }
 
-   private void createSubMessageSheets(ExcelXmlWriter writer, BranchId branch, List<ArtifactReadable> subMessages, SortedMap<String, String> structureLinks) throws IOException {
+   private void createSubMessageSheets(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages, List<ArtifactReadable> structures, SortedMap<String, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 13;
       headingsList.add("Begin Word");
@@ -283,22 +297,23 @@ public class IcdGenerator {
       headingsList.add("Notes");
       Object[] headings = headingsList.toArray();
       for (ArtifactReadable artifact : subMessages) {
-         for (ArtifactReadable struct : artifact.getRelated(
-            CoreRelationTypes.InterfaceSubMessageContent_Structure).getList()) {
-
+         final ArtifactReadable subMessage = artifact;
+         for (ArtifactReadable struct : structures.stream().filter(
+            a -> a.areRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessage)).collect(
+               Collectors.toList())) {
             int byteLocation = 0;
             writer.startSheet(structureLinks.get(struct.getName()), columnCount);
             writer.writeHeaderRow(headings);
 
-            for (ArtifactReadable element : struct.getRelated(
-               CoreRelationTypes.InterfaceStructureContent_DataElement).getList()) {
-               ArtifactReadable platformType =
-                  element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
-                     ArtifactReadable.SENTINEL);
+            for (ArtifactReadable element : orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+               CoreRelationTypes.InterfaceStructureContent_Structure, struct).asArtifacts()) {
+
+               ArtifactReadable platformType = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, element).asArtifactOrSentinel();
 
                Integer byteSize = Integer.valueOf(
                   platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
-               printDataElementRow(writer, branch, element, byteLocation, byteSize, platformType);
+               printDataElementRow(writer, branch, view, element, byteLocation, byteSize, platformType);
                byteLocation = byteLocation + byteSize;
             }
             writer.endSheet();
@@ -307,7 +322,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printDataElementRow(ExcelXmlWriter writer, BranchId branch, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
+   private void printDataElementRow(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -336,12 +351,10 @@ public class IcdGenerator {
 
       if (platformType.getExistingRelationTypes().contains(CoreRelationTypes.InterfacePlatformTypeEnumeration)) {
          enumLiterals = "";
-         ArtifactReadable enumDef = platformType.getRelated(
-            CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL);
-
-         for (ArtifactReadable enumState : enumDef.getRelated(
-            CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
+         ArtifactReadable enumDef = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+            CoreRelationTypes.InterfacePlatformTypeEnumeration_Element, platformType).asArtifactOrSentinel();
+         for (ArtifactReadable enumState : orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+            CoreRelationTypes.InterfaceEnumeration_EnumerationSet, enumDef).asArtifacts()) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "; ";
          }
@@ -395,7 +408,7 @@ public class IcdGenerator {
 
    }
 
-   private void createMessageSubMessageSummary(ExcelXmlWriter writer, BranchId branch, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) throws IOException {
+   private void createMessageSubMessageSummary(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) throws IOException {
       int columnCount = 10;
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
@@ -441,16 +454,19 @@ public class IcdGenerator {
          List<ArtifactReadable> secondarySubMessages = new ArrayList<>();
          try {
             primaryMessage = primaryList.get(i);
-            primarySubMessages =
-               primaryMessage.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
+            final ArtifactReadable pMsg = primaryMessage;
+            primarySubMessages = subMessages.stream().filter(
+               a -> a.areRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_Message, pMsg)).collect(
+                  Collectors.toList());
          } catch (IndexOutOfBoundsException e) {
             //do nothing leave primaryMessage and primarySubMessages empty
          }
          try {
             secondaryMessage = secondaryList.get(i);
-
-            secondarySubMessages =
-               secondaryMessage.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
+            final ArtifactReadable sMsg = secondaryMessage;
+            secondarySubMessages = subMessages.stream().filter(
+               a -> a.areRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_Message, sMsg)).collect(
+                  Collectors.toList());
          } catch (IndexOutOfBoundsException e) {
             //do nothing leave secondaryMessage and secondarySubMessages empty
          }
