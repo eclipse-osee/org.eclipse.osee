@@ -196,8 +196,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       view.setId(art.getId());
       view.setName(art.getName());
       view.setProductApplicabilities(art.fetchAttributesAsStringList(CoreAttributeTypes.ProductApplicability));
-      view.setConfigurationGroup(
-         art.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getAtMostOneOrDefault(ArtifactReadable.SENTINEL));
+      view.setConfigurationGroup(art.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getList().stream().map(
+         a -> ArtifactId.valueOf(a.getId())).collect(Collectors.toList()));
       view.setData(art);
       return view;
    }
@@ -693,9 +693,22 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
          tx.commit();
       }
-      if (view.getConfigurationGroup().isValid()) {
+      if (!(view.getConfigurationGroup().isEmpty()) || !(editView.getConfigurationGroup().isEmpty())) {
          if (!view.getConfigurationGroup().equals(editView.getConfigurationGroup())) {
-            results = relateCfgGroupToView(view.getConfigurationGroup().getIdString(), editView.getIdString(), branch);
+            List<String> editViewList =
+               editView.getConfigurationGroup().stream().map(a -> a.getIdString()).collect(Collectors.toList());
+            List<String> newViewList =
+               view.getConfigurationGroup().stream().map(a -> a.getIdString()).collect(Collectors.toList());
+            List<String> editViewDoesNotContain =
+               editViewList.stream().filter(b -> !newViewList.contains(b)).collect(Collectors.toList());
+            List<String> newViewDoesNotContain =
+               newViewList.stream().filter(b -> !editViewList.contains(b)).collect(Collectors.toList());
+            for (String group : editViewDoesNotContain) {
+               results = unrelateCfgGroupToView(group, editView.getIdString(), branch);
+            }
+            for (String group : newViewDoesNotContain) {
+               results = relateCfgGroupToView(group, editView.getIdString(), branch);
+            }
             if (results.isErrors()) {
                return results;
             }
@@ -746,7 +759,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          newView = getView(view.getName(), branch);
       }
-      if (view.getCopyFrom().isValid() || view.getConfigurationGroup().isValid()) {
+      if (view.getCopyFrom().isValid() || !(view.getConfigurationGroup().isEmpty())) {
          if (newView.isValid()) {
             if (view.getCopyFrom().isValid()) {
                results = copyFromView(branch, ArtifactId.valueOf(newView), view.copyFrom);
@@ -754,9 +767,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   return results;
                }
             }
-            if (view.getConfigurationGroup().isValid()) {
-               results =
-                  relateCfgGroupToView(view.getConfigurationGroup().getIdString(), newView.getIdString(), branch);
+            if (!(view.getConfigurationGroup().isEmpty())) {
+               for (ArtifactId group : view.getConfigurationGroup()) {
+                  results = relateCfgGroupToView(group.getIdString(), newView.getIdString(), branch);
+               }
                if (results.isErrors()) {
                   return results;
                }
@@ -776,8 +790,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          CreateViewDefinition viewDef = getView(view, branch);
          //before removing view unrelate from group and remove associated applicability tag from
          //list of valid tags from the group
-         if (viewDef.getConfigurationGroup().isValid()) {
-            unrelateCfgGroupToView(viewDef.getConfigurationGroup().getIdString(), viewDef.getIdString(), branch);
+         if (!(viewDef.getConfigurationGroup().isEmpty())) {
+            for (ArtifactId group : viewDef.getConfigurationGroup()) {
+               unrelateCfgGroupToView(group.getIdString(), viewDef.getIdString(), branch);
+            }
          }
          Iterable<String> deleteApps = orcsApi.getQueryFactory().tupleQuery().getTuple2(
             CoreTupleTypes.ViewApplicability, branch, ArtifactId.valueOf(viewDef.getId()));
@@ -1269,22 +1285,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          results.errorf("View name does not exist");
          return results;
       }
-      ArtifactReadable currentGroup =
-         view.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
-      if (currentGroup.isValid() && currentGroup.equals(cfgGroup)) {
+      List<ArtifactReadable> currentGroup = view.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getList();
+      if (!(currentGroup.isEmpty()) && !(currentGroup.stream().filter(o -> o.equals(cfgGroup)).collect(
+         Collectors.toList()).isEmpty())) {
          results.errorf("View is already in the group");
          return results;
       }
       try {
-         if (currentGroup.isValid()) {
-            TransactionBuilder tx1 = txFactory.createTransaction(branch,
-               "Unrelate view: " + view.getName() + " to PL Configuration Group " + currentGroup.getName());
-            tx1.unrelate(currentGroup, CoreRelationTypes.PlConfigurationGroup_Group, view);
-            tx1.deleteTuple2(CoreTupleTypes.ViewApplicability, view, "ConfigurationGroup = " + currentGroup.getName());
-            tx1.deleteTuple2(CoreTupleTypes.ViewApplicability, currentGroup, "Config = " + view.getName());
-            tx1.commit();
-            syncConfigGroup(branch, currentGroup.getIdString(), results);
-         }
 
          TransactionBuilder tx = txFactory.createTransaction(branch,
             "Relate view: " + view.getName() + " to PL Configuration Group " + cfgGroup.getName());

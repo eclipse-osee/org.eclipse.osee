@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -24,15 +25,17 @@ public class CreateViewDefinition extends NamedIdBase {
    public Object data;
    public ArtifactId copyFrom = ArtifactId.SENTINEL;
    private List<String> productApplicabilities;
-   private ArtifactId configurationGroup = ArtifactId.SENTINEL;
+   private List<ArtifactId> configurationGroup;
 
    public CreateViewDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
+      this.configurationGroup = new ArrayList<>();
    }
 
-   public CreateViewDefinition(Long id, String name, List<String> productApplicabilities) {
+   public CreateViewDefinition(Long id, String name, List<String> productApplicabilities, List<ArtifactId> configurationGroups) {
       super(id, name);
       this.productApplicabilities = productApplicabilities;
+      this.configurationGroup = configurationGroups;
    }
 
    public Object getData() {
@@ -63,11 +66,11 @@ public class CreateViewDefinition extends NamedIdBase {
       this.productApplicabilities = productApplicabilities;
    }
 
-   public ArtifactId getConfigurationGroup() {
+   public List<ArtifactId> getConfigurationGroup() {
       return configurationGroup;
    }
 
-   public void setConfigurationGroup(ArtifactId configurationGroup) {
+   public void setConfigurationGroup(List<ArtifactId> configurationGroup) {
       this.configurationGroup = configurationGroup;
    }
 
