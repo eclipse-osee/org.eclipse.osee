@@ -13,10 +13,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { iif, Observable, of, OperatorFunction } from 'rxjs';
-import { filter, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { filter, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
+import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
 import { editConfiguration } from '../../types/pl-config-configurations';
 import { response } from '../../types/pl-config-responses';
 import { PLAddConfigData, PLEditConfigData } from '../../types/pl-edit-config-data';
@@ -45,10 +46,10 @@ export class ConfigurationDropdownComponent implements OnInit {
     this.currentBranchService.deleteConfiguration(config.id).pipe(take(1)).subscribe();
   }
 
-  openEditDialog(config: { id: string, name: string, hasFeatureApplicabilities: boolean }, productApplicabilities?: string[]) {
+  openEditDialog(config: { id: string, name: string, hasFeatureApplicabilities: boolean }, productApplicabilities?: string[],groups?:ConfigGroup[]) {
     this.selectedBranch.pipe(
       take(1),
-      switchMap((branchId) => of(new PLEditConfigData(branchId, config, undefined, productApplicabilities, true)).pipe(
+      switchMap((branchId) => of(new PLEditConfigData(branchId, config, undefined, productApplicabilities, true,groups)).pipe(
         take(1),
         switchMap((dialogData) => this.dialog.open(EditConfigurationDialogComponent, {
           data: dialogData,
@@ -61,7 +62,7 @@ export class ConfigurationDropdownComponent implements OnInit {
               {
                 ...result.currentConfig,
                 copyFrom: result.copyFrom.id && result.copyFrom.id || '',
-                configurationGroup: result.group.id && result.group.id || '',
+                configurationGroup: result.group.map(a=>a.id),
                 productApplicabilities: result.productApplicabilities || []
               }).pipe(
                 take(1),
@@ -82,7 +83,7 @@ export class ConfigurationDropdownComponent implements OnInit {
           currentBranch: branchId?.toString(),
           copyFrom: { id: '0', name: '', hasFeatureApplicabilities: false, productApplicabilities: [] },
           title: '',
-          group: { id: '0', name: '' },
+          group: [],
           productApplicabilities: [],
         }).pipe(
           take(1),
@@ -93,7 +94,7 @@ export class ConfigurationDropdownComponent implements OnInit {
             take(1),
             filter((val) => val !== undefined) as OperatorFunction<PLAddConfigData | undefined, PLAddConfigData>,
             switchMap((result) => iif(() => result !== undefined,
-              this.currentBranchService.addConfiguration({ name: result.title, copyFrom: result.copyFrom.id, configurationGroup: result.group.id, productApplicabilities: result.productApplicabilities }).pipe(take(1)),
+              this.currentBranchService.addConfiguration({ name: result.title, copyFrom: result.copyFrom.id, configurationGroup: result.group.map(a=>a.id), productApplicabilities: result.productApplicabilities }).pipe(take(1)),
               of(undefined)
             ))
           ))
@@ -117,7 +118,7 @@ export class ConfigurationDropdownComponent implements OnInit {
             {
           ...dialog.currentConfig,
           copyFrom: dialog.copyFrom && dialog.copyFrom.id || '',
-          configurationGroup: dialog.group && dialog.group.id || ''
+          configurationGroup: dialog.group.map(a=>a.id)
             }).pipe(take(1)),
           of(undefined)
         ))

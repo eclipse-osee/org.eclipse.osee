@@ -13,7 +13,7 @@
 import { ConfigGroup, view } from "./pl-config-applicui-branch-mapping";
 
 export class PLEditConfigData implements ConfigData {
-    constructor(branch?: string,currentConfig?:view,ConfigurationToCopyFrom?:view, productApplicabilities?:string[], editable?:boolean) {
+    constructor(branch?: string,currentConfig?:view,ConfigurationToCopyFrom?:view, productApplicabilities?:string[], editable?:boolean, groups?:ConfigGroup[]) {
         if (branch) {
             this.currentBranch = branch;
         }
@@ -29,12 +29,15 @@ export class PLEditConfigData implements ConfigData {
         if (editable) {
             this.editable = editable;
         }
+        if (groups) {
+            this.group=groups
+        }
     }
     productApplicabilities: string[]=[];
     currentBranch = '';
     currentConfig = { id: '', name: '' };
     copyFrom = { id: '', name: '', hasFeatureApplicabilities:false };
-    group = { id: '', name: '' };
+    group:ConfigGroup[] = [];
     editable: boolean = false;
 }
 export interface copyFrom {
@@ -46,6 +49,6 @@ export interface PLAddConfigData extends ConfigData {
 interface ConfigData {
     currentBranch: string | undefined,
     copyFrom: view
-    group: ConfigGroup
+    group: ConfigGroup[]
     productApplicabilities: string[];
 }

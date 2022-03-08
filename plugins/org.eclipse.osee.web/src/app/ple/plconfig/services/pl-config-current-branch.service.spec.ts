@@ -93,28 +93,28 @@ describe('PlConfigCurrentBranchService', () => {
   
     it('should return the group list', () => {
       scheduler.run(({ expectObservable }) => {
-        const expectedValues: { a: configGroup[],b:configGroup[],c:configGroup[] } = { a: [testBranchApplicability.groups[0]],b:[testBranchApplicability.groups[0]],c:[testBranchApplicability.groups[0],{ id: '736857919', name: 'abGroup', configurations: ['200045','200046'] }] }
-        expectObservable(service.groupList).toBe('(abc)',expectedValues)
+        const expectedValues: { a: configGroup[],b:configGroup[],c:configGroup[],d:configGroup[] } = { a: [testBranchApplicability.groups[2],testBranchApplicability.groups[1],testBranchApplicability.groups[0]],b:[testBranchApplicability.groups[2]],c:[testBranchApplicability.groups[2],testBranchApplicability.groups[1]],d:[] }
+        expectObservable(service.groupList).toBe('(dbca)',expectedValues)
       })
     })
   
     it('should find that abGroup is a cfgGroup', () => {
       scheduler.run(({ expectObservable }) => {
         const expectedValues: { a: boolean, b:boolean } = { a: true, b:false }
-        expectObservable(service.isACfgGroup('abGroup')).toBe('(aaaa)',expectedValues)
+        expectObservable(service.isACfgGroup('abGroup')).toBe('(bbbbba)',expectedValues)
       })
     })
   
     it('should find that Product D is not a cfgGroup', () => {
       scheduler.run(({ expectObservable }) => {
         const expectedValues: { a: boolean, b:boolean } = { a: true, b:false }
-        expectObservable(service.isACfgGroup('Product D')).toBe('(bbbb)',expectedValues)
+        expectObservable(service.isACfgGroup('Product D')).toBe('(bbbbbb)',expectedValues)
       })
     })
   
     it('should return the group count', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.groupCount).toBe('(abc)',{a:3,b:6,c:9})
+        expectObservable(service.groupCount).toBe('(abcd)',{a:6,b:7,c:8,d:11})
       });
     })
   
@@ -126,61 +126,63 @@ describe('PlConfigCurrentBranchService', () => {
   
     it('should return the headers', () => {
       scheduler.run(({ expectObservable }) => {
-        const expectedValues: { a: string[],b: string[], c: string[], d: string[], e: string[], f: string[], g: string[], h:string[],i:string[],j:string[],k:string[] } = {
-          a: ['feature', 'abGroup'],
-          b: ['feature', 'abGroup', 'Product A'],
-          c: ['feature', 'abGroup', 'Product A', 'Product B'],
-          d: ['feature', 'Product C'],
-          e: ['feature', 'Product C', 'Product D'],
-          f: ['feature', 'Product C', 'Product D', 'added view'],
-          g: ['feature', 'Product C', 'Product D', 'added view', 'modified product app'],
-          h: ['feature', 'Product C', 'Product D', 'added view', 'modified product app', 'newconfig'],
-          i: ['feature', 'Product C', 'Product D', 'added view', 'modified product app', 'newconfig', 'abGroup'],
-          j: ['feature', 'Product C', 'Product D', 'added view', 'modified product app', 'newconfig', 'abGroup', 'Product A'],
-          k: [ 'feature', 'Product C', 'Product D', 'added view', 'modified product app', 'newconfig', 'abGroup', 'Product A', 'Product B' ]
+        spyOn(Math, 'random').and.returnValue(0); //remove randomness
+        const expectedValues = {
+          a: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }],
+          b: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }],
+          c: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' }],
+          d: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' }],
+          e: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' },{ columnId: '', name: 'newconfig' }],
+          f: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' },{ columnId: '', name: 'newconfig' },{ columnId: '', name: 'test' }],
+          g: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' },{ columnId: '', name: 'newconfig' },{ columnId: '', name: 'test' },{ columnId: '', name: 'deleted group' }],
+          h: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' },{ columnId: '', name: 'newconfig' },{ columnId: '', name: 'test' },{ columnId: '', name: 'deleted group' },{ columnId: '', name: 'abGroup' }],
+          i: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' },{ columnId: '', name: 'newconfig' },{ columnId: '', name: 'test' },{ columnId: '', name: 'deleted group' },{ columnId: '', name: 'abGroup' },{ columnId: '', name: 'Product A' }],
+          j: [{ columnId: '0', name: 'feature' }, { columnId: '', name: 'Product C' }, { columnId: '', name: 'Product D' }, { columnId: '', name: 'added view' },{ columnId: '', name: 'modified product app' },{ columnId: '', name: 'newconfig' },{ columnId: '', name: 'test' },{ columnId: '', name: 'deleted group' },{ columnId: '', name: 'abGroup' },{ columnId: '', name: 'Product A' },{ columnId: '', name: 'Product B' }],
         }
-        expectObservable(service.headers).toBe('(abcdefghijk)',expectedValues)
+        expectObservable(service.headers).toBe('(abcdefghij)',expectedValues)
       })
     })
   
     it('should return the secondary header length', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.secondaryHeaderLength).toBe('(abb)',{a:[1,3],b:[1,5,3]})
+        expectObservable(service.secondaryHeaderLength).toBe('(aaaa)',{a:[1,5,1,1,3],b:[1,5,3]})
       });
     })
   
     it('should get the secondary headers', () => {
       scheduler.run(({ expectObservable }) => {
-        const expectedValues: { a: string[],b: string[], c: string[] } = {
-          a: ['   ', 'abGroup '],
-          b: ['   ', 'No Group '],
-          c: ['    ', 'No Group  ', 'abGroup '],
+        const expectedValues: { a: string[],b: string[], c: string[],d:string[] } = {
+          a: ['   ', 'No Group '],
+          b: ['    ', 'No Group  ','test '],
+          c: ['     ', 'No Group   ', 'test  ', 'deleted group '],
+          d: [ '      ', 'No Group    ', 'test   ', 'deleted group  ', 'abGroup ' ]
         }
-        expectObservable(service.secondaryHeaders).toBe('(abc)',expectedValues)
+        expectObservable(service.secondaryHeaders).toBe('(abcd)',expectedValues)
       })
     })
   
     it('should get the top level headers', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.topLevelHeaders).toBe('(aaa)',{a:[' ', 'Configurations', 'Groups'],b:[' ', 'Configurations']})
+        expectObservable(service.topLevelHeaders).toBe('(cbbb)',{a:[' ', 'Configurations', 'Groups'],b:[' ', 'Groups'],c:[' ', 'Configurations']})
       });
     })
   
     it('should find a view by name', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.findViewByName('Product A')).toBe('(aaaaaaaaa)', {
+        expectObservable(service.findViewByName('Product A')).toBe('(bbbbbaa|)', {
           a: {
             id: "200045",
             name: "Product A",
             hasFeatureApplicabilities: true
-          }
+          },
+          b:undefined
         })
       });
     })
   
     it('should find a view by id', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.findViewById("200045")).toBe('(aa|)', {
+        expectObservable(service.findViewById("200045")).toBe('(bbbbbaa|)', {
           a: {
             id: "200045",
             name: "Product A",
@@ -192,19 +194,40 @@ describe('PlConfigCurrentBranchService', () => {
   
     it('should find a group by name', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.findGroup('abGroup')).toBe('(aaaa)', {
+        expectObservable(service.findGroup('abGroup')).toBe('(bbbbba)', {
           a: {
             id: '736857919',
             name: 'abGroup',
             configurations:['200045','200046']
-        }})
+          },
+          b:undefined
+        }
+        )
       })
     })
     it('should return the grouping', () => {
       scheduler.run(({ expectObservable }) => {
         const expectedValues: { a: { group: configGroup, views: (view|viewWithChanges)[] }[] ,b:{ group: configGroup, views: (view|viewWithChanges)[] }[]} = {
           a:
-            [  
+            [
+              {
+                group: {id:'-1',name:'No Group',configurations:[]},
+                views: [
+                  { id: '200047', name: 'Product C', hasFeatureApplicabilities: true },
+                  { id: '200048', name: 'Product D', hasFeatureApplicabilities: true },
+                  { id: '201325', name: 'added view', hasFeatureApplicabilities: true },
+                  { id: '201334', name: 'modified product app', hasFeatureApplicabilities: true, productApplicabilities: ['hello world'] },
+                  { id: '201343', name: 'newconfig', hasFeatureApplicabilities: true, productApplicabilities: [ 'Unspecified' ] }
+                ]
+              },
+              {
+                group: { id: '201321', name: 'test', configurations: [  ] },
+                views:[]
+              },
+              {
+                group: { id: '201322', name: 'deleted group', configurations: [] },
+                views:[]
+              },
               {   
                 group: { id: '736857919', name: 'abGroup', configurations: ['200045', '200046'] },  
                 views: [{ id: '200045', name: 'Product A', hasFeatureApplicabilities: true }, { id: '200046', name: 'Product B', hasFeatureApplicabilities: true, }]  
@@ -223,7 +246,7 @@ describe('PlConfigCurrentBranchService', () => {
   
             ]
         }
-        expectObservable(service.grouping).toBe('(ab)',expectedValues)
+        expectObservable(service.grouping).toBe('(a)',expectedValues)
       })
     })
     it('should get cfg group detail', () => {
@@ -243,13 +266,14 @@ describe('PlConfigCurrentBranchService', () => {
     })
     it('should edit configuration details', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.editConfigurationDetails({name:'abcd',configurationGroup:'123',productApplicabilities:[],copyFrom:''})).toBe('a',{a:testDataResponse})
+        expectObservable(service.editConfigurationDetails({name:'abcd',configurationGroup:['123'],productApplicabilities:[],copyFrom:''})).toBe('a',{a:{ success:testDataResponse.success,results:testDataResponse.results }})
       })
     })
   
     it('should add configuration', () => {
       scheduler.run(({ expectObservable }) => {
-        expectObservable(service.addConfiguration({name:'',copyFrom:'1',configurationGroup:'123'})).toBe('a',{a:testDataResponse})
+        expectObservable(service.addConfiguration({ name: '', copyFrom: '1', configurationGroup: ['123'] })).toBe('a', { a: { success:testDataResponse.success,results:testDataResponse.results }
+})
       })
     })
   

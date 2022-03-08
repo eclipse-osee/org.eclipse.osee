@@ -16,11 +16,11 @@ import { NameValuePair } from "./base-types/NameValuePair";
 export interface configuration {
     name: string,
     copyFrom?: string,
-    configurationGroup?: string,
+    configurationGroup?: string[],
     productApplicabilities?:string[]
 }
 export interface editConfiguration extends configuration {
-    configurationGroup?: string
+    configurationGroup?: string[]
 }
 export interface configurationGroup extends configGroup {
     hasFeatureApplicabilities: boolean

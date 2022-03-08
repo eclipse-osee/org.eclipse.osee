@@ -49,7 +49,7 @@ describe('DialogService', () => {
 
   it('should open the config menu in config mode', () => {
     scheduler.run(({ expectObservable }) => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<PLEditConfigData>({editable:true,currentBranch:'',currentConfig:{id:'',name:''},copyFrom:{id:'',name:'',hasFeatureApplicabilities:false},group:{id:'',name:''},productApplicabilities:[]}), close: null });
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<PLEditConfigData>({editable:true,currentBranch:'',currentConfig:{id:'',name:''},copyFrom:{id:'',name:'',hasFeatureApplicabilities:false},group:[{id:'',name:''}],productApplicabilities:[]}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy); 
       const expectedValues: { a: response } = { a: testDataResponse }
       expectObservable(service.openConfigMenu('Product D','true')).toBe('(a|)',expectedValues)
