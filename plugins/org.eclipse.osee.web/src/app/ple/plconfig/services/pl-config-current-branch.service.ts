@@ -16,7 +16,7 @@ import { switchMap, repeatWhen, share, mergeMap,filter, tap, finalize, take, sha
 import { changeInstance, changeTypeNumber, difference, ignoreType, ModificationType } from 'src/app/types/change-report/change-report.d';
 import { ARTIFACTTYPEID } from 'src/app/types/constants/ArtifactTypeId.enum';
 import { action, actionImpl, teamWorkflowImpl } from '../types/pl-config-actions';
-import { PlConfigApplicUIBranchMapping, PlConfigApplicUIBranchMappingImpl, view, viewWithChanges } from '../types/pl-config-applicui-branch-mapping';
+import { ConfigGroup, PlConfigApplicUIBranchMapping, PlConfigApplicUIBranchMappingImpl, view, viewWithChanges } from '../types/pl-config-applicui-branch-mapping';
 import { PlConfigBranchListingBranchImpl } from '../types/pl-config-branch';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import { configGroup, configGroupWithChanges, configuration, editConfiguration } from '../types/pl-config-configurations';
@@ -95,33 +95,45 @@ export class PlConfigCurrentBranchService {
     )),
     share()
   )
-  private _grouping = this.branchApplicability.pipe(
-    switchMap((applicability) => of({ groups: applicability.groups, views: applicability.views }).pipe(
-      switchMap((combined) => of(combined).pipe(
-        mergeMap((filterer) => from(filterer.views).pipe(
-          groupBy(v => combined.groups.find((val) => val.configurations.includes(v.id))),
-          mergeMap((group$) => group$.pipe(
-            reduce((acc, cur) => { acc.views.push(cur); return { group: group$.key||{configurations:[],id:'-1',name:'No Group'}, views: acc.views } },{group:{configurations:[],id:'-1',name:'No Group'},views:[]} as {group:configGroup,views:view[]})
-          ))
-        ))
+  private _viewsWithGroup = this._branchApplicabilityNoChanges.pipe(
+    switchMap((a) => of(a).pipe(
+      map(applic => applic.groups),
+      concatMap(groups => from(groups).pipe(
+        map(group => group.configurations),
+          concatMap((views)=>from(views))
       )),
-      scan((acc, curr) => [...acc, curr], [] as { group: configGroup, views: view[] }[]),
+      distinct(),
+      take(a.groups.map(g => g.configurations).flat().length),
+      reduce((acc,curr)=>[...acc,curr],[] as string[])
+    )),
+    )
+  private _viewsWithNoGroup = combineLatest([this.branchApplicability,this._viewsWithGroup]).pipe(
+    switchMap(([applic, groupedViews]) => of(applic.views).pipe(
+      map((views)=>views.filter((v=>!groupedViews.includes(v.id))))
+    ))
+  )
+  private _grouping = combineLatest([this.branchApplicability,this._viewsWithNoGroup]).pipe(
+    switchMap(([applic,unGroupedViews]) => of(applic).pipe(
+      concatMap((a) => from(a.groups).pipe(
+        map((applicabilityGroup) => { return { group: applicabilityGroup, views: applic.views.filter(a => applicabilityGroup.configurations.includes(a.id)) } })
+      )),
+      take(applic.groups.length),
+      reduce((acc, curr) => [...acc, curr], unGroupedViews.length>0?[{group:{configurations:[],id:'-1',name:'No Group'},views:unGroupedViews}]:[] as { group: configGroup, views: view[] }[]),
       map((data) => data.sort((a, b) => Number(a && a.group && a.group.id) - Number(b && b.group && b.group.id))),
-      distinctUntilChanged(),
     )),
     shareReplay({bufferSize:1,refCount:true})
   );
-
   private _topLevelHeaders = this._grouping.pipe(
     switchMap((response) => of(response).pipe(
       mergeMap((grouping) => from(grouping).pipe(
         switchMap(val => iif(() => val.group.name !== 'No Group', of(val), of({ group: { id: '-1', name: '', configurations: [] } ,views:[]})))
       ))
     )),
-    scan((acc, curr) => { if (curr.group.id === '-1') { return acc; }return [...acc, curr] }, [] as { group: configGroup, views: view[] }[]),
-    map((grouping) => grouping.length),
-    switchMap((length) => iif(
-      () => length > 0, of([' ', 'Configurations', 'Groups']),
+    scan((acc, curr) => {
+      return [...acc, curr]
+    }, [] as { group: configGroup, views: view[] }[]),
+    switchMap((cumulative) => iif(
+      () => cumulative.length > 1, iif(()=>(cumulative.find((a)=>a.group.id==='-1')?.views||[]).length===0,of([' ', 'Groups']),of([' ', 'Configurations', 'Groups'])),
       of([' ', 'Configurations'])),
     ),
     shareReplay({bufferSize:1,refCount:true})
@@ -152,14 +164,13 @@ export class PlConfigCurrentBranchService {
       mergeMap((grouping) => from(grouping).pipe(
         switchMap((grouping) => iif(() => grouping.group.name !== 'No Group', from(grouping.views).pipe(
           startWith({ id: '', name: grouping.group.name, hasFeatureApplicabilities: false, productApplicabilities: [] }),
-          switchMap((view)=>of(view.name))
+          switchMap((view) => of({ columnId:Math.random().toString(36).slice(2),name: view.name }))
         ), from(grouping.views).pipe(
           filter(val=>val.hasFeatureApplicabilities===true),
-          switchMap((view)=>of(view.name))
+          switchMap((view)=>of({ columnId:Math.random().toString(36).slice(2),name: view.name }))
         )))
       )),
-      distinct(),
-      scan((acc, cur) => [...acc, cur], ['feature'] as string[]),
+      scan((acc, cur) => [...acc, cur], [{ columnId: '0', name:'feature'}] as {columnId:string,name:string}[]),
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -204,7 +215,15 @@ export class PlConfigCurrentBranchService {
     map((applic)=>applic.features)
   )
   private _branchApplicViews = this._branchApplicabilityNoChanges.pipe(
-    map((applic)=>applic.views)
+    switchMap((applic) => of(applic).pipe(
+      //keep reference to the base applicability
+      concatMap((applic) => from(applic.views).pipe(
+        //iterate over views
+        map((view) => { return { ...view, group: applic.groups.filter(a => a.configurations.some(b => b === view.id)).map(c => { return { id: c.id,name:c.name } })}})
+      )),
+      reduce((acc, curr) => [...acc, curr], [] as {id:string,name:string,hasFeatureApplicabilities:boolean,productApplicabilities?:string[],show?:boolean,group?:ConfigGroup[]}[])
+    )),
+    //map((applic)=>applic.views)
   )
   private _branchApproved = this.branchAction.pipe(switchMap((action) => iif(() => action.length > 0 && action[0].TeamWfAtsId.length > 0, this.actionService.getBranchApproved(action[0].TeamWfAtsId).pipe(
     shareReplay({bufferSize:1,refCount:true}),
@@ -374,16 +393,19 @@ export class PlConfigCurrentBranchService {
   //modifies configuration
   public editConfigurationDetails(body: editConfiguration) {
     return this.editConfigurationDetailsBase(body).pipe(
-      switchMap((val) => iif(() => val.success && (typeof body?.configurationGroup !== 'undefined') && (body?.configurationGroup !== ''),
-        this.synchronizeGroup(body && body.configurationGroup || '').pipe(
-          tap((response) => {
-            if (response.success) {
-              this.uiStateService.updateReqConfig = true;
-              this.uiStateService.error = "";
-            } else {
-              this.uiStateService.error = response.results[0];
-          }
-        })
+      switchMap((val) => iif(() => val.success && (typeof body?.configurationGroup !== 'undefined') && (body.configurationGroup!==undefined && body.configurationGroup.length!==0),
+      from(body.configurationGroup as string[]).pipe(
+        concatMap((group) => this.synchronizeGroup(group)),
+        take(body.configurationGroup!==undefined && body.configurationGroup.length||0),
+        reduce((acc, curr) => { if (!curr.success) { acc = { success:false,results:[...acc.results,...curr.results]} } return acc; }, { success: true,results:[] } as {success:boolean, results:string[]}),
+        tap((response) => {
+          if (response.success) {
+            this.uiStateService.updateReqConfig = true;
+            this.uiStateService.error = "";
+          } else {
+            this.uiStateService.error = response.results.toString()
+        }
+      })
       )
       ))
     )
@@ -411,17 +433,20 @@ export class PlConfigCurrentBranchService {
           this.uiStateService.error = "";
         }
       }),
-      switchMap((val) => iif(() => val.success&&(typeof body?.configurationGroup!=='undefined')&&(body?.configurationGroup!=='')&&(body?.configurationGroup!=='0'),
-        this.synchronizeGroup(body && body.configurationGroup || '').pipe(
+      switchMap((val) => iif(() => val.success&&(body.configurationGroup!==undefined && body.configurationGroup.length!==0),
+        from(body.configurationGroup as string[]).pipe(
+          concatMap((group) => this.synchronizeGroup(group)),
+          take(body.configurationGroup!==undefined && body.configurationGroup.length||0),
+          reduce((acc, curr) => { if (!curr.success) { acc = { success:false,results:[...acc.results,...curr.results]} } return acc; }, { success: true,results:[] } as {success:boolean, results:string[]}),
           tap((response) => {
             if (response.success) {
               this.uiStateService.updateReqConfig = true;
               this.uiStateService.error = "";
             } else {
-              this.uiStateService.error = response.results[0];
+              this.uiStateService.error = response.results.toString()
           }
         })
-      )
+        )
       ))
     )
   }
@@ -602,6 +627,7 @@ export class PlConfigCurrentBranchService {
 
   findViewByName(viewName: string) {
     return this.grouping.pipe(
+      take(1),
       switchMap((response) => of(response).pipe(
         take(1),
         mergeMap((responseGrouping) => from(responseGrouping).pipe(

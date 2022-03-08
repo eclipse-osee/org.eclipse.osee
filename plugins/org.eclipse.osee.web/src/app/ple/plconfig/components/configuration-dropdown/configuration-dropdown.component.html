@@ -21,6 +21,6 @@
     <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="deleteConfig(configuration)">{{configuration.name}}</button>
 </mat-menu>
 <mat-menu #editConfigMenu="matMenu">
-    <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="openEditDialog(configuration, configuration?.productApplicabilities)">{{configuration.name}}</button>
+    <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="openEditDialog(configuration, configuration?.productApplicabilities, configuration?.group)">{{configuration.name}}</button>
 </mat-menu>
 <mat-label *ngIf="!(editable|async)===true" style="align-items:center; text-align:center;">Branch is not editable</mat-label>

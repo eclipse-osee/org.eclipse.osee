@@ -38,12 +38,6 @@ export class AddConfigurationDialogComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  selectConfiguration(event: MatSelectChange) {
-    this.data.copyFrom = event.value;
-  }
-  selectCfgGroup(event: MatSelectChange) {
-    this.data.group = event.value;
-  }
   onNoClick(): void {
     this.dialogRef.close();
   }

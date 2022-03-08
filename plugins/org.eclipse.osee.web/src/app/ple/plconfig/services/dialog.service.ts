@@ -42,7 +42,7 @@ export class DialogService {
           take(1),
           filter(([app, view]) => (view as view) !== undefined) as OperatorFunction<[PlConfigApplicUIBranchMapping, view | undefined], [PlConfigApplicUIBranchMapping, view]>,
           switchMap(([app,view]) => this.dialog.open<EditConfigurationDialogComponent, PLEditConfigData, PLEditConfigData>(EditConfigurationDialogComponent, {
-            data: new PLEditConfigData(app.branch.id, view, undefined, view.productApplicabilities, isEditable),
+            data: new PLEditConfigData(app.branch.id, view, undefined, view.productApplicabilities, isEditable,app.groups.filter((a)=>a.configurations.includes(view.id))),
             minWidth: '60%'
           }).afterClosed()),
           filter((response): response is PLEditConfigData => response !== undefined),
@@ -50,7 +50,7 @@ export class DialogService {
           switchMap((dialogResponse) => iif(() => dialogResponse && dialogResponse.editable, this.currentBranchService.editConfigurationDetails({
             ...dialogResponse.currentConfig,
             copyFrom: dialogResponse.copyFrom.id && dialogResponse.copyFrom.id || '',
-            configurationGroup: dialogResponse.group && dialogResponse.group.id || '',
+            configurationGroup: dialogResponse.group.map(a=>a.id),
             productApplicabilities: dialogResponse.productApplicabilities || []
           }).pipe(
             take(1)

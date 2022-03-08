@@ -21,7 +21,7 @@
     <br>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Select a Configuration</mat-label>
-        <mat-select (selectionChange)="selectConfiguration($event)" required>
+        <mat-select [(ngModel)]="data.copyFrom" required>
             <mat-option *ngFor="let option of (branchApplicability |async)?.views" [value]="option">
                 {{option.name}}
             </mat-option>
@@ -34,7 +34,7 @@
         <mat-label>
             Select a Configuration Group
         </mat-label>
-        <mat-select (selectionChange)="selectCfgGroup($event)">
+        <mat-select [(ngModel)]="data.group" multiple>
             <mat-option *ngFor="let config of (cfgGroups | async)" [value]="config">
                 {{config.name}}
             </mat-option>
@@ -53,7 +53,7 @@
     <button mat-button (click)="onNoClick()">
         Cancel
     </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="(data.copyFrom.id==='0' && data.group.id!=='0')||data.title.length===0">
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="(data.copyFrom.id==='0')||data.title.length===0">
         Ok
     </button>
 </div>

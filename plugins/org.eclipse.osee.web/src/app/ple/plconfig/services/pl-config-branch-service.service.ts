@@ -50,8 +50,8 @@ export class PlConfigBranchService {
     if (body.copyFrom === '' || body.copyFrom === null || body.copyFrom === undefined) {
       body.copyFrom = '';
     }
-    if (body.configurationGroup === '' || body.configurationGroup === null || body.configurationGroup === undefined) {
-      body.configurationGroup= '';
+    if (body.configurationGroup === [] || body.configurationGroup === null || body.configurationGroup === undefined) {
+      body.configurationGroup= [];
     }
     return this.http.put<response>(apiURL+'/orcs/branch/' + branchId + '/applic/view',body);
   }

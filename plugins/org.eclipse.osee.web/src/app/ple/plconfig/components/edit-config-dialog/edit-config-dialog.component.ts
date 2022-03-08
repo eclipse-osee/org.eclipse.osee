@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
-import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
+import { ConfigGroup, PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../../types/pl-config-branch';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
 
@@ -38,19 +38,13 @@ export class EditConfigurationDialogComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  selectBranch(event: MatSelectChange) {
-    this.data.copyFrom = event.value;
-  }
-  selectCfgGroup(event: MatSelectChange) {
-    this.data.group = event.value;
-  }
   onNoClick(): void {
     this.dialogRef.close();
   }
   valueTracker(index: any, item: any) {
     return index;
   }
-  productTypesSelection(value: any) {
-    console.log(value);
+  compareCfgGroup(o1: ConfigGroup, o2: ConfigGroup) {
+    return o1.id===o2.id
   }
 }

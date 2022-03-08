@@ -22,7 +22,8 @@ import { distinct, filter, map, mergeMap, reduce, share, shareReplay, switchMap,
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { extendedFeature, trackableFeature } from '../../types/features/base';
+import { ExtendedNameValuePair, ExtendedNameValuePairWithChanges } from '../../types/base-types/ExtendedNameValuePair';
+import { extendedFeature, extendedFeatureWithChanges, trackableFeature } from '../../types/features/base';
 import {  view, viewWithChanges } from '../../types/pl-config-applicui-branch-mapping';
 import { configGroup, configGroupWithChanges } from '../../types/pl-config-configurations';
 
@@ -67,6 +68,9 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
   secondaryHeaders = this.currentBranchService.secondaryHeaders;
   secondaryHeaderLength = this.currentBranchService.secondaryHeaderLength;
   headers = this.currentBranchService.headers;
+  columnIds = this.headers.pipe(
+    map((a)=>a.map(b=>b.columnId))
+  )
   errors = this.uiStateService.errors;
   viewCount = this.currentBranchService.viewCount;
   groupCount = this.currentBranchService.groupCount;
@@ -267,4 +271,7 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
     }
   }
 
+  getUniqueConfigurations(configurations: (ExtendedNameValuePairWithChanges)[]) {
+    return configurations.filter((v,i,a)=>a.map(z=>z.name).indexOf(v.name)==i)
+  }
 }

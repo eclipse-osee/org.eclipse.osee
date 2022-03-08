@@ -23,7 +23,7 @@
         <br>
         <mat-form-field [style.fontSize.px]="18">
             <mat-label>Select a Configuration</mat-label>
-            <mat-select (selectionChange)="selectBranch($event)">
+            <mat-select [(ngModel)]="data.copyFrom">
                 <mat-option *ngFor="let option of (branchApplicability |async)?.views" [value]="option" >
                     {{option.name}}
                 </mat-option>
@@ -36,7 +36,7 @@
                 <mat-label>
                     Select a Configuration Group
                 </mat-label>
-                <mat-select (selectionChange)="selectCfgGroup($event)">
+                <mat-select [(ngModel)]="data.group" multiple [compareWith]="compareCfgGroup">
                     <mat-option *ngFor="let config of (cfgGroups | async)" [value]="config">
                         {{config.name}}
                     </mat-option>

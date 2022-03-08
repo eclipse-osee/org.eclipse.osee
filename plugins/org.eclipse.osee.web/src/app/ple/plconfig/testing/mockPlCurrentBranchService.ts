@@ -46,12 +46,12 @@ export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
     },
     get headers() {
       return of([
-        'feature',
-        'Product C',
-        'Product D',
-        'abGroup',
-        'Product A',
-        'Product B',
+        { columnId:'0',name:'feature'},
+        { columnId:'1',name:'Product C'},
+        { columnId:'2',name:'Product D'},
+        { columnId:'3',name:'abGroup'},
+        { columnId:'4',name:'Product A'},
+        { columnId:'5',name:'Product B'},
       ]);
     },
     get groupList() {
