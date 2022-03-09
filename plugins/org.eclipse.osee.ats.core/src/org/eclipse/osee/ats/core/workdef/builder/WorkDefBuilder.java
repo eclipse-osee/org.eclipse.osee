@@ -218,4 +218,9 @@ public class WorkDefBuilder {
       workDef.andReviewRoleTypeMinimum(reviewRoleType, minimum);
       return this;
    }
+
+   public WorkDefBuilder andArtType(ArtifactTypeToken artType) {
+      workDef.setArtType(artType);
+      return this;
+   }
 }
