@@ -149,7 +149,36 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       ))
     ).subscribe()
   }
-
+  openAddElementDialog(structure: structure, afterElement?: string) {
+    let dialogData: AddElementDialog = {
+      id: structure?.id||'',
+      name: structure?.name||'',
+      element: {
+        id: '-1',
+        name: '',
+        description: '',
+        notes: '',
+        interfaceElementAlterable: true,
+        interfaceElementIndexEnd: 0,
+        interfaceElementIndexStart: 0,
+        units:''
+      },
+      type:{id:'',name:''}
+    }
+    let dialogRef = this.dialog.open(AddElementDialogComponent, {
+      data:dialogData
+    });
+    let createElement = dialogRef.afterClosed().pipe(
+      filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
+      switchMap((value:AddElementDialog) =>
+        iif(() => value.element.id !== '-1' && value.element.id.length > 0,
+          this.structureService.relateElement(structure.id, value.element.id, afterElement||'end'),
+          this.structureService.createNewElement(value.element, structure.id,value.type.id, afterElement||'end'))
+      ),
+      take(1)
+    );
+    createElement.subscribe();
+  }
   openEnumDialog(id: string) {
     this.dialog.open(EditEnumSetDialogComponent, {
       data: of<enumsetDialogData>(

@@ -67,8 +67,11 @@
             <button mat-menu-item (click)="viewDiff(true,change,header)"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
         </ng-container>
         <ng-container *ngIf="editMode==true;">
-            <button mat-menu-item (click)="removeSubMessage(submessage,message)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove submessage from message</button>
-            <button mat-menu-item (click)="deleteSubMessage(submessage)"><mat-icon color="warn">delete_forever</mat-icon>Delete submessage globally</button>
+            <button mat-menu-item (click)="removeSubMessage(submessage,message)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove submsg from message</button>
+            <button mat-menu-item (click)="deleteSubMessage(submessage)"><mat-icon color="warn">delete_forever</mat-icon>Delete submsg globally</button>
+            <button mat-menu-item (click)="insertSubMessage(message,submessage.id)"><mat-icon color="success">add</mat-icon>Insert submsg after</button>
+            <button mat-menu-item (click)="insertSubMessage(message,'start')"><mat-icon color="success">add</mat-icon>Insert submsg at top</button>
+            <button mat-menu-item (click)="insertSubMessage(message)"><mat-icon color="success">add</mat-icon>Insert submsg at end</button>
         </ng-container>
     </ng-template>
 </mat-menu>

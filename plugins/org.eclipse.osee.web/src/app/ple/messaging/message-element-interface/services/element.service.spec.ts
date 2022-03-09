@@ -103,7 +103,8 @@ describe('ElementService', () => {
     let relation: relation = {
       typeName: "Interface Structure Content",
       sideA: '10',
-      sideB:undefined
+      sideB:undefined,
+      afterArtifact:'end'
     }
     scheduler.run(() => {
       let expectedObservable = { a: relation };
@@ -129,7 +130,8 @@ describe('ElementService', () => {
     let relation: relation = {
       typeName: "Interface Element Platform Type",
       sideB: '10',
-      sideA:undefined
+      sideA:undefined,
+      afterArtifact:'end'
     }
     scheduler.run(() => {
       let expectedObservable = { a: transactionMock };
@@ -142,7 +144,8 @@ describe('ElementService', () => {
     let relation: relation = {
       typeName: "Interface Element Platform Type",
       sideB: '10',
-      sideA:undefined
+      sideA:undefined,
+      afterArtifact:undefined
     }
     scheduler.run(() => {
       let expectedObservable = { a: transactionMock };

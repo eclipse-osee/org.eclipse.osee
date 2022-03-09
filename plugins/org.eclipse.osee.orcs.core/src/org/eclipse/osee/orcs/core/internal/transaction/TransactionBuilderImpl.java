@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -51,6 +52,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -416,6 +418,43 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       relate(relType, artA, artB, relatedArtifact, insertType, afterIndex, beforeIndex);
    }
 
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String afterArtifact) {
+      Integer afterIndex = 0;
+      Integer beforeIndex = 0;
+      String insertType = afterArtifact;
+      ArtifactId afterArtifactId = ArtifactId.SENTINEL;
+      try {
+         Long afterId = Long.parseLong(afterArtifact);
+         afterArtifactId = ArtifactId.valueOf(afterId);
+         insertType = "insert";
+      } catch (NumberFormatException e) {
+         if (afterArtifact == null) {
+            insertType = "end";
+         }
+      }
+      if (afterArtifactId.isValid()) {
+         RelationTypeSide rts = new RelationTypeSide(relType, RelationSide.SIDE_B);
+         ArtifactReadable artifactA = orcsApi.getQueryFactory().fromBranch(getBranch()).andId(artA).asArtifact();
+         List<ArtifactId> related = artifactA.getRelatedIds(rts);
+         ArtifactId beforeArtifact = related.get(related.indexOf(afterArtifactId) + 1);
+         afterIndex = orcsApi.getJdbcService().getClient().fetch(0,
+            "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
+            getBranch(), artA, relType.getId(), afterArtifact);
+         beforeIndex = orcsApi.getJdbcService().getClient().fetch(0,
+            "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
+            getBranch(), artA, relType.getId(), beforeArtifact);
+         if (afterIndex == null) {
+            afterIndex = 0;
+         }
+         if (beforeIndex == null) {
+            beforeIndex = 0;
+         }
+      }
+      relate(relType, artA, artB, relatedArtifact, insertType, afterIndex, beforeIndex);
+
+   }
+
    private void relate(RelationTypeToken relType, ArtifactId artA, ArtifactId artB, ArtifactId relationArt, String insertType, int afterIndex, int beforeIndex) {
       int minOrder = 0;
       int maxOrder = 0;
@@ -437,11 +476,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             txData.addRelationSideA(relType, artA, minOrder, maxOrder);
          }
 
-         if (insertType.equals("head")) {
-            relOrder = txData.calculateHeadInsertionOrderIndex(maxOrder);
+         if (insertType.equals("start")) {
+            relOrder = txData.calculateHeadInsertionOrderIndex(minOrder);
             txData.getNewRelations().get(relType, artA).setMinOrder(relOrder);
          } else if (insertType.equals("insert")) {
-            //TODO check that the after/before indexes exist
             relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
          } else {
             relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);

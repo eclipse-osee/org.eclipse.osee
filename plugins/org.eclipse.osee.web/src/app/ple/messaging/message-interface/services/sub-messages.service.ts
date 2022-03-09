@@ -31,11 +31,12 @@ export class SubMessagesService {
   getSubMessage(branchId: string, connectionId: string, messageId: string, subMessageId: string) {
     return this.http.get<subMessage>(apiURL + "/mim/branch/" + branchId + "/connections/" + connectionId + "/messages/" + messageId + "/submessages/" + subMessageId);
   }
-  createMessageRelation(messageId:string,subMessageId?:string) {
+  createMessageRelation(messageId:string,subMessageId?:string, afterArtifact?:string) {
     let relation: relation = {
       typeName: 'Interface Message SubMessage Content',
       sideA: messageId,
-      sideB: subMessageId
+      sideB: subMessageId,
+      afterArtifact: afterArtifact || 'end'
     }
     return of(relation);
   }

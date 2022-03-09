@@ -421,7 +421,9 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactId> getRelatedIds(RelationTypeSide relationTypeSide) {
-      throw new UnsupportedOperationException();
+      List<ArtifactReadable> relatedList = getRelatedList(relationTypeSide);
+      return relatedList.stream().map(p -> ArtifactId.valueOf(p.getId())).collect(Collectors.toList());
+   
    }
 
    @Override

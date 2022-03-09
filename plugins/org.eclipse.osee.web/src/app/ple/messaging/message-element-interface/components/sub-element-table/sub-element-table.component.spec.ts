@@ -33,6 +33,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
+import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-add-button/two-layer-add-button.harness';
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { SubElementTableRowComponentMock } from '../../mocks/components/sub-element-table-row.component.mock';
@@ -225,7 +226,7 @@ describe('SubElementTableComponent', () => {
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
-
+    
     afterEach(() => {
       component.generalMenuTrigger.closeMenu();
     })

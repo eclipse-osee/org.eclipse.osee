@@ -48,7 +48,8 @@ describe('SubMessagesService', () => {
       let relation: relation = {
         typeName: 'Interface Message SubMessage Content',
         sideA: '10',
-        sideB:'10'
+        sideB:'10',
+        afterArtifact: 'end'
       }
       let expectedObservable = { a: relation }
       let expectedMarble = '(a|)';

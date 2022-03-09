@@ -113,6 +113,25 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
     ).subscribe();
   }
 
+  insertSubMessage(message:message, afterSubMessage?: string ) {
+    this.dialog.open(AddSubMessageDialogComponent, {
+        data: {
+          name:message.name,
+          id: message.id,
+          subMessage: {
+            name: '',
+            description: '',
+            interfaceSubMessageNumber:''
+          }
+        }
+      }).afterClosed().pipe(
+        take(1),
+        filter((val)=>val!==undefined),
+        switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id!=='-1', this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1', afterSubMessage || 'end'), this.messageService.createSubMessage(z.subMessage, z.id, afterSubMessage)))
+      ).subscribe();
+  
+  }
+
   openDescriptionDialog(description: string,submessageId:string,messageId:string) {
     this.dialog.open(EditViewFreeTextFieldDialogComponent, {
       data: {
