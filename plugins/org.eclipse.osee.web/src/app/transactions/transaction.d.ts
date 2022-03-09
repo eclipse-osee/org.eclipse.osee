@@ -54,6 +54,7 @@ export interface relationValue {
   sideA?: string | string[];
   sideB?: string | string[];
   rationale?: string;
+  afterArtifact?: string | "end" | "start";
 }
 
 export interface modifyArtifact {

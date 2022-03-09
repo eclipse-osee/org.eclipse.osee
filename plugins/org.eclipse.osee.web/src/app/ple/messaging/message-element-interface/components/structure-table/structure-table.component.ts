@@ -280,7 +280,30 @@ export class StructureTableComponent implements OnInit {
       ))
     ).subscribe();
   }
-
+ 
+  insertStructure(afterStructure? : string) {
+    this.dialog.open(AddStructureDialogComponent, {
+      data: {
+        id: this.structureService.subMessageId,
+        name: this.breadCrumb,
+        structure: {
+          id: '-1',
+          name: '',
+          elements: [],
+          description: '',
+          interfaceMaxSimultaneity: '',
+          interfaceMinSimultaneity: '',
+          interfaceStructureCategory: '',
+          interfaceTaskFileType: 0
+        }
+      }
+    }).afterClosed().pipe(
+      take(1),
+      filter((val) => val !== undefined),
+      switchMap((value: AddStructureDialog) => iif(() => value.structure.id !== '-1' && value.structure.id.length > 0, this.structureService.relateStructure(value.structure.id,afterStructure), 
+      this.structureService.createStructure(value.structure,afterStructure))),
+    ).subscribe();
+  }
   openDescriptionDialog(description: string,structureId:string) {
     this.dialog.open(EditViewFreeTextFieldDialogComponent, {
       data: {

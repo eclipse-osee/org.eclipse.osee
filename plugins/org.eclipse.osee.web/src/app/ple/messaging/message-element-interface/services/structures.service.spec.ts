@@ -103,7 +103,8 @@ describe('StructuresService', () => {
       let relation: relation = {
         typeName: "Interface SubMessage Content",
         sideA: '10',
-        sideB:undefined
+        sideB:undefined,
+        afterArtifact:'end'
       }
       let expectedObservable = { a: relation };
       let expectedMarble = '(a|)';
@@ -115,7 +116,8 @@ describe('StructuresService', () => {
       let relation: relation = {
         typeName: "Interface SubMessage Content",
         sideA: '10',
-        sideB:undefined
+        sideB:undefined,
+        afterArtifact:'end'
       }
       let expectedObservable = { a: transactionMock };
       let expectedMarble = '(a|)';

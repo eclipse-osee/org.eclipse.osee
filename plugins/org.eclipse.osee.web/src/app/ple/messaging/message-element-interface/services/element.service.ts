@@ -31,11 +31,12 @@ export class ElementService {
     return this.http.get<element>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/"+ subMessageId+"/structures/"+structureId+"/elements/"+elementId);
   }
 
-  createStructureRelation(structureId:string,elementId?:string) {
+  createStructureRelation(structureId:string,elementId?:string, afterArtifact?:string) {
     let relation: relation = {
       typeName: "Interface Structure Content",
       sideA: structureId,
-      sideB:elementId
+      sideB:elementId,
+      afterArtifact: afterArtifact||'end'
     }
     return of(relation);
   }

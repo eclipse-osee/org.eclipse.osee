@@ -241,10 +241,10 @@ export class CurrentMessagesService {
     )
   }
 
-  relateSubMessage(messageId: string, subMessageId: string) {
+  relateSubMessage(messageId: string, subMessageId: string, afterSubMessage?: string) {
     return this.messageService.getMessage(this.BranchId.getValue(), messageId, this.connectionId.getValue()).pipe(
       take(1),
-      switchMap((foundMessage) => this.subMessageService.createMessageRelation(foundMessage.id,subMessageId).pipe(
+      switchMap((foundMessage) => this.subMessageService.createMessageRelation(foundMessage.id,subMessageId,afterSubMessage).pipe(
         take(1),
         switchMap((relation) => this.subMessageService.addRelation(this.BranchId.getValue(), relation).pipe(
           take(1),
@@ -258,8 +258,8 @@ export class CurrentMessagesService {
     )
   }
 
-  createSubMessage(body: subMessage, messageId: string) {
-    return this.subMessageService.createMessageRelation(messageId).pipe(
+  createSubMessage(body: subMessage, messageId: string, afterSubMessage?: string) {
+    return this.subMessageService.createMessageRelation(messageId,undefined,afterSubMessage).pipe(
       take(1),
       switchMap((relation) => this.subMessageService.createSubMessage(this.BranchId.getValue(), body, [relation]).pipe(
         take(1),

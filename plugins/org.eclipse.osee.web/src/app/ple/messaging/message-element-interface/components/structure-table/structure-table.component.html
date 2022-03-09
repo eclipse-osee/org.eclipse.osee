@@ -122,6 +122,9 @@
         <ng-container *ngIf="(isEditing|async)===true && !structure.deleted">
             <button mat-menu-item (click)="removeStructureDialog(id,name)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove structure from submessage</button>
             <button mat-menu-item (click)="deleteStructureDialog(id,name)"><mat-icon color="warn">delete_forever</mat-icon>Delete structure globally</button>
+            <button mat-menu-item (click)="insertStructure(id)"><mat-icon color="success">add</mat-icon>Insert structure after</button>
+            <button mat-menu-item (click)="insertStructure('start')"><mat-icon color="success">add</mat-icon>Insert structure at start</button>
+            <button mat-menu-item (click)="insertStructure()"><mat-icon color="success">add</mat-icon>Insert structure at end</button>
         </ng-container>
     </ng-template>
 </mat-menu>

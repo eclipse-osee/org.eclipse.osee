@@ -33,6 +33,7 @@ import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-u
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
+import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-add-button/two-layer-add-button.harness';
 import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
 import { subMessagesMock } from '../../mocks/ReturnObjects/submessages.mock';
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
@@ -40,6 +41,7 @@ import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-messa
 import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
 import { CurrentMessagesService } from '../../services/current-messages.service';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
+import { message } from '../../types/messages';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
 import { EditSubMessageFieldComponent } from './edit-sub-message-field/edit-sub-message-field.component';
 
@@ -158,7 +160,7 @@ describe('SubMessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.stub();
-      await menu.clickItem({ text: new RegExp("Remove submessage from message") });
+      await menu.clickItem({ text: new RegExp("Remove submsg from message") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -171,7 +173,7 @@ describe('SubMessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.stub();
-      await menu.clickItem({ text: new RegExp("Remove submessage from message") });
+      await menu.clickItem({ text: new RegExp("Remove submsg from message") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).not.toHaveBeenCalled();
     })
@@ -184,7 +186,7 @@ describe('SubMessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.stub();
-      await menu.clickItem({ text: new RegExp("Delete submessage globally") });
+      await menu.clickItem({ text: new RegExp("Delete submsg globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
     })
@@ -197,7 +199,7 @@ describe('SubMessageTableComponent', () => {
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.stub();
-      await menu.clickItem({ text: new RegExp("Delete submessage globally") });
+      await menu.clickItem({ text: new RegExp("Delete submsg globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).not.toHaveBeenCalled();
     })

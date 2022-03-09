@@ -34,11 +34,12 @@ export class StructuresService {
     return this.http.get<Required<structure>>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/"+structureId);
   }
 
-  createSubMessageRelation(subMessageId:string,structureId?:string) {
+  createSubMessageRelation(subMessageId:string,structureId?:string, afterArtifact?:string) {
     let relation: relation = {
       typeName: "Interface SubMessage Content",
       sideA: subMessageId,
-      sideB:structureId
+      sideB:structureId,
+      afterArtifact: afterArtifact || 'end'
     }
     return of(relation);
   }
