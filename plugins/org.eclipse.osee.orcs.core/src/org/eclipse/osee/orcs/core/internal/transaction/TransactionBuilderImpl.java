@@ -430,7 +430,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             String minMaxString = orcsApi.getJdbcService().getClient().fetch("0,0",
                "SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ?",
                getBranch(), artA, relType.getId());
-            if (minMaxString != null) {
+            if (minMaxString != null && minMaxString.length() > 3) {
                minOrder = Integer.parseInt(minMaxString.substring(0, minMaxString.indexOf(",") - 1));
                maxOrder = Integer.parseInt(minMaxString.substring(minMaxString.indexOf(",") + 1));
             }
