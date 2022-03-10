@@ -187,7 +187,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    public List<XWidgetRendererItem> getXWidgetItems() {
       wb = new XWidgetBuilder();
       wb.andXText(TITLE).andRequired().endWidget();
-      wb.andXHyperlinkActionableItemActive().endWidget();
+      wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
       wb.andXHyperLinkEnumAttr(AtsAttributeTypes.ChangeType).andComposite(
          getChangeTypeRowColumns()).andRequired().endWidget();

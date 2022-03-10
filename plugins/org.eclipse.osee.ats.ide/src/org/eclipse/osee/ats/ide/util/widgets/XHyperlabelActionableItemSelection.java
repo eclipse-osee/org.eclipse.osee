@@ -16,8 +16,12 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemTreeContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemTreeWithChildrenDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -26,6 +30,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeViewer;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueSelection {
 
    Collection<IAtsActionableItem> selectedAis = new HashSet<>();
-   Collection<IAtsActionableItem> teamDefs;
+   Collection<IAtsActionableItem> ais;
    ActionableItemTreeWithChildrenDialog dialog = null;
 
    public XHyperlabelActionableItemSelection() {
@@ -75,16 +82,23 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         if (teamDefs == null) {
-            dialog = new ActionableItemTreeWithChildrenDialog(Active.Both);
+         AiLabelProvider labelProvider = new AiLabelProvider(null);
+         CheckBoxStateFilteredTreeDialog<IAtsActionableItem> dialog =
+            new CheckBoxStateFilteredTreeDialog<IAtsActionableItem>("Select Actionable Item(s)",
+               "Select Actionable Item(s)", new ActionableItemTreeContentProvider(Active.Both), labelProvider);
+         labelProvider.setTreeViewer(dialog.getTreeViewer());
+         if (ais == null) {
+            dialog.setInput(AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
          } else {
-            dialog = new ActionableItemTreeWithChildrenDialog(Active.Both, teamDefs);
+            dialog.setInput(ais);
          }
          int result = dialog.open();
          if (result == 0) {
             selectedAis.clear();
-            for (Object obj : dialog.getResultAndRecursedAIs()) {
-               selectedAis.add((IAtsActionableItem) obj);
+            for (IAtsActionableItem ai : dialog.getChecked()) {
+               if (ai.isActive() && ai.isActionable()) {
+                  selectedAis.add(ai);
+               }
             }
             notifyXModifiedListeners();
          }
@@ -98,6 +112,27 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean isEmpty() {
       return selectedAis.isEmpty();
+   }
+
+   public static class AiLabelProvider extends CheckBoxStateTreeLabelProvider {
+      public AiLabelProvider(ICheckBoxStateTreeViewer treeViewer) {
+         super(treeViewer);
+      }
+
+      @Override
+      protected boolean isEnabled(Object element) {
+         return ((IAtsActionableItem) element).isActive() && ((IAtsActionableItem) element).isActionable();
+      }
+
+   }
+
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (isRequiredEntry() && selectedAis.isEmpty()) {
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must Select Actionable Item(s)");
+      }
+      return status;
    }
 
 }
