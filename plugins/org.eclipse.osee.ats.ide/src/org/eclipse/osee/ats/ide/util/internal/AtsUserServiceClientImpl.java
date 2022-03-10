@@ -59,6 +59,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
          currentUser.setId(user.getId());
          currentUser.getLoginIds().addAll(user.getLoginIds());
          currentUser.setPhone(user.getPhone());
+         currentUser.setStoreObject(user);
       }
       return currentUser;
    }
