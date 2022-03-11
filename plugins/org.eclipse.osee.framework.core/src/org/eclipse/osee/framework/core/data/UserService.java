@@ -95,6 +95,7 @@ public interface UserService {
    }
 
    default void clearCaches() {
+      // For extensions
    }
 
    /**
@@ -102,4 +103,6 @@ public interface UserService {
     * equals the userId parameter
     */
    UserToken getUserByUserId(String userId);
+
+   IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup);
 }

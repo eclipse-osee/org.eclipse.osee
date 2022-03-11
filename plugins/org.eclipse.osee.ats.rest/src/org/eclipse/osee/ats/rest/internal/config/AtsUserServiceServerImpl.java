@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -45,7 +45,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    public AtsUser getCurrentUser() {
-      return AtsCoreUsers.SYSTEM_USER;
+      UserToken user = orcsApi.userService().getUser();
+      return getUserById(user);
    }
 
    @Override
