@@ -142,8 +142,12 @@ public class TransitionResults {
 
    }
 
+   /**
+    * DO NOT use this method to log errors; it is only a convenience method to get XResultData from the addResult calls.
+    * Use addResult(TransitionResult result).
+    */
    @JsonIgnore
-   public XResultData getResultXResultData() {
+   public XResultData getResultsAsXResultData() {
       XResultData resultData = new XResultData(false);
       resultData.log("Transition Failed");
       String str = getResultString();

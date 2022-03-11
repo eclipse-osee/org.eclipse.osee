@@ -42,6 +42,9 @@ public interface IAtsTransitionHook {
       // Provided for subclass implementation
    }
 
+   /**
+    * Log errors in results if transition should fail
+    */
    default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
       // Provided for subclass implementation
    }

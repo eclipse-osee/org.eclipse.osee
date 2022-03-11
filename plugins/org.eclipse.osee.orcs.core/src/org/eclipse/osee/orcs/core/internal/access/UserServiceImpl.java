@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
+   public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
       ArtifactReadable userGroupArt = null;
       if (userGroup instanceof ArtifactReadable) {
          userGroupArt = (ArtifactReadable) userGroup;
@@ -84,6 +84,15 @@ public class UserServiceImpl implements UserService {
       }
       if (userGroupArt != null) {
          return new UserGroupImpl(userGroupArt);
+      }
+      return null;
+   }
+
+   @Override
+   public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
+      IUserGroup group = getUserGroupOrNull(userGroup);
+      if (group != null) {
+         return group;
       } else {
          throw new OseeArgumentException("parameter must be artifact");
       }

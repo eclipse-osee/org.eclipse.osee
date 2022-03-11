@@ -44,16 +44,23 @@ public class UserServiceImpl implements UserService {
    private boolean loading = false;
 
    @Override
-   public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
+   public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
       Artifact userGroupArt = null;
       if (userGroup instanceof Artifact) {
          userGroupArt = (Artifact) userGroup;
       }
       if (userGroupArt == null) {
          userGroupArt = ArtifactQuery.getArtifactFromId(userGroup, CoreBranches.COMMON);
-      }
-      if (userGroupArt != null) {
          return new UserGroupImpl(userGroupArt);
+      }
+      return null;
+   }
+
+   @Override
+   public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
+      IUserGroup group = getUserGroupOrNull(userGroup);
+      if (group != null) {
+         return group;
       } else {
          throw new OseeArgumentException("parameter must be artifact");
       }
@@ -180,4 +187,5 @@ public class UserServiceImpl implements UserService {
    public static void clearCache() {
       userGrps = null;
    }
+
 }
