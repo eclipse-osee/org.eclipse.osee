@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Edge, NgxGraphModule, Node } from '@swimlane/ngx-graph';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
-import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
+import { BranchRoutedUIService } from '../../../../../../shared-components/services/branch-routed-ui.service';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -50,7 +50,7 @@ describe('GraphComponent', () => {
   let component: GraphComponent;
   let fixture: ComponentFixture<GraphComponent>;
   let loader: HarnessLoader;
-  let routerService: ConnectionViewRouterService;
+  let routerService: BranchRoutedUIService;
   let menuLinkHarness: MatMenuHarness;
   let menuNodeHarness: MatMenuHarness;
   let menuGraphHarness: MatMenuHarness;
@@ -67,7 +67,7 @@ describe('GraphComponent', () => {
       teardown:{destroyAfterEach:false}
     })
       .compileComponents();
-    routerService=TestBed.inject(ConnectionViewRouterService)
+    routerService=TestBed.inject(BranchRoutedUIService)
   });
 
   beforeEach(() => {

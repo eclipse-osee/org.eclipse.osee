@@ -12,11 +12,12 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+import { HttpLoadingService } from '../../../../services/http-loading.service';
 import { BranchListService } from '../../../services/branch-list.service';
-import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
+import { BranchRoutedUIService } from '../../../services/branch-routed-ui.service';
 
 @Component({
-  selector: 'osee-connectionview-branch-selector',
+  selector: 'osee-branch-selector',
   templateUrl: './branch-selector.component.html',
   styleUrls: ['./branch-selector.component.sass']
 })
@@ -25,7 +26,8 @@ export class BranchSelectorComponent implements OnInit {
   selectedBranchType = this.routeState.type;
   selectedBranchId = "";
   options = this.branchListingService.branches;
-  constructor (private routeState: ConnectionViewRouterService, private branchListingService: BranchListService) {
+  loading = this.loadingService.isLoading;
+  constructor (private routeState: BranchRoutedUIService, private branchListingService: BranchListService, private loadingService: HttpLoadingService) {
     this.routeState.id.subscribe((val) => {
       this.selectedBranchId = val;
     })

@@ -223,6 +223,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public List<Branch> getBranchesByCategoryAndType(String type, BranchCategoryToken category) {
+      return newBranchQuery().includeArchived(false).includeDeleted(false).andIsOfType(
+         BranchType.fromName(type.toUpperCase())).andIsOfCategory(category).getResults().getList();
+   }
+
+   @Override
    public List<BranchCategoryToken> getBranchCategories(BranchId branch) {
       return newBranchQuery().getBranchCategories(branch);
    }

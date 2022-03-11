@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,24 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { iif } from 'rxjs';
+import { combineLatest, iif, of } from 'rxjs';
 import { map, share, switchMap, tap } from 'rxjs/operators';
+import { BranchUIService } from '../../ple-services/ui/branch/branch-ui.service';
+import { BranchCategoryService } from '../../shared-services/ui/branch-category.service';
 import { BranchService } from './branch.service';
-import { RouteStateService } from './route-state-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchListService {
 
-  private _branches=this.routeService.type.pipe(
-    map(value => this.updateType(value)),
-    switchMap(viewBranchType => iif(() => viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline',
-    this.branchService.getBranches(viewBranchType)
+  private _branches = combineLatest([this.ui.type, this.categoryService.branchCategory]).pipe(
+    switchMap(([type, category]) => of(this.updateType(type)).pipe(
+      switchMap((viewBranchType)=> iif(()=>(viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline') && category !=='' && category !=='0',this.branchService.getBranches(viewBranchType,category)))
     )),
     share()
   )
-  constructor (private branchService: BranchService, private routeService: RouteStateService) { }
+
+  constructor (private branchService: BranchService, private ui: BranchUIService, private categoryService: BranchCategoryService) { }
   
   private updateType(value: string) {
     if (value === 'product line') {

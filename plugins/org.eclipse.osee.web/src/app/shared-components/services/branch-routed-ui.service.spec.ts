@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,10 +14,10 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { ConnectionViewRouterService } from './connection-view-router.service';
+import { BranchRoutedUIService } from './branch-routed-ui.service';
 
-describe('ConnectionViewRouterService', () => {
-  let service: ConnectionViewRouterService;
+describe('BranchRoutedUIService', () => {
+  let service: BranchRoutedUIService;
 
   @Component({
     selector: 'dummy',
@@ -35,7 +35,7 @@ describe('ConnectionViewRouterService', () => {
         ]
       )]
     });
-    service = TestBed.inject(ConnectionViewRouterService);
+    service = TestBed.inject(BranchRoutedUIService);
   });
 
   it('should be created', () => {

@@ -12,22 +12,12 @@
  **********************************************************************/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { combineLatest, from, iif, of } from 'rxjs';
-import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
-import { Edge, Node } from '@swimlane/ngx-graph';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
-import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
-import { connection, connectionWithChanges, newConnection, OseeEdge, transportType } from '../../../../shared/types/connection';
-import { filter, map, mergeMap, reduce, scan, switchMap, take, tap } from 'rxjs/operators';
-import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
+import { connection, connectionWithChanges,OseeEdge} from '../../../../shared/types/connection';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../../../shared/types/node';
-import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-node-dialog.component';
-import { RemovalDialog } from '../../../types/ConfirmRemovalDialog';
-import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
-import { applic } from 'src/app/types/applicability/applic';
-import { difference } from 'src/app/types/change-report/change-report';
 
 @Component({
   selector: 'osee-connectionview-graph',
@@ -56,7 +46,7 @@ export class GraphComponent implements OnInit {
   @ViewChild('graphMenuTrigger') graphMenuTrigger!: MatMenuTrigger;
 
   _messageRoute = this.graphService.messageRoute
-  constructor (private graphService: CurrentGraphService, private router: ConnectionViewRouterService, public dialog:MatDialog) {}
+  constructor (private graphService: CurrentGraphService, public dialog:MatDialog) {}
 
   ngOnInit(): void {
     this.graphService.update = true;

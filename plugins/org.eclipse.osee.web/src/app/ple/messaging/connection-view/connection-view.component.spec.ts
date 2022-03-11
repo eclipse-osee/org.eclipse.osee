@@ -17,8 +17,6 @@ import { ConnectionViewComponent } from './connection-view.component';
 import { graphServiceMock } from './mocks/CurrentGraphService.mock';
 import { CurrentGraphService } from './services/current-graph.service';
 import { BaseDummy } from './testing/MockComponents/Base.mock';
-import { BranchDummySelector } from './testing/MockComponents/BranchSelector.mock';
-import { BranchTypeDummySelector } from './testing/MockComponents/BranchTypeSelector.mock';
 import { GraphDummy } from './testing/MockComponents/Graph.mock';
 
 describe('ConnectionViewComponent', () => {
@@ -29,7 +27,7 @@ describe('ConnectionViewComponent', () => {
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers:[{provide: CurrentGraphService,useValue:graphServiceMock}],
-      declarations: [ ConnectionViewComponent, BaseDummy, BranchDummySelector, BranchTypeDummySelector, GraphDummy ]
+      declarations: [ ConnectionViewComponent, BaseDummy, GraphDummy ]
     })
     .compileComponents();
   });

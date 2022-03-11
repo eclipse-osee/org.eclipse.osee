@@ -13,7 +13,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-    selector: 'osee-connectionview-branch-selector',
+    selector: 'osee-branch-selector',
     template:'<div>Dummy</div>'
   })
   export class BranchDummySelector{}
