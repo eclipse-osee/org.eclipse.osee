@@ -12,19 +12,16 @@
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, from, of } from 'rxjs';
+import { from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
 import { connection, connectionWithChanges, transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { node, nodeData, nodeDataWithChanges, OseeNode } from 'src/app/ple/messaging/shared/types/node';
-import { ConnectionViewRouterService } from '../../../services/connection-view-router.service';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { RemovalDialog } from '../../../types/ConfirmRemovalDialog';
 import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
-import { Edge, Node } from '@swimlane/ngx-graph';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-graph-link-menu',
@@ -44,7 +41,7 @@ export class GraphLinkMenuComponent implements OnInit {
   target!: OseeNode<node | nodeData | nodeDataWithChanges>;
   _messageRoute = this.graphService.messageRoute
 
-  constructor(private graphService: CurrentGraphService, private router: ConnectionViewRouterService,public dialog:MatDialog,) { }
+  constructor(private graphService: CurrentGraphService, public dialog:MatDialog,) { }
 
   ngOnInit(): void {
   }

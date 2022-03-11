@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,43 +12,42 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { RouteStateService } from './route-state-service.service';
-import { LocationStrategy } from '@angular/common';
+import { BranchUIService } from '../../ple-services/ui/branch/branch-ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConnectionViewRouterService {
+export class BranchRoutedUIService {
 
-  constructor (private routerState: RouteStateService, private router: Router , private angLocationStrategy:LocationStrategy) { }
+  constructor (private branchService: BranchUIService, private router: Router) { }
   
   set branchType(value: string) {
     let baseUrl;
-    if (this.routerState.type.getValue() != "") {
-      baseUrl=this.router.url.split(this.routerState.type.getValue().replace(/ /g,"%20"))[0]
+    if (this.branchService.type.getValue() != "") {
+      baseUrl=this.router.url.split(this.branchService.type.getValue().replace(/ /g,"%20"))[0]
     } else {
       baseUrl = this.router.url;
     }
-    this.routerState.branchType = value;
+    this.branchService.typeValue = value;
     this.router.navigate([baseUrl,value])
   }
   get type() {
-    return this.routerState.type;
+    return this.branchService.type;
   }
 
   get id() {
-    return this.routerState.id;
+    return this.branchService.id;
   }
 
   set branchId(value: string) {
     let baseUrl;
-    if (this.routerState.type.getValue() != "") {
-      baseUrl=this.router.url.split(this.routerState.type.getValue().replace(/ /g,"%20"))[0]
+    if (this.branchService.type.getValue() != "") {
+      baseUrl=this.router.url.split(this.branchService.type.getValue().replace(/ /g,"%20"))[0]
     } else {
       baseUrl = this.router.url;
     }
-    this.routerState.branchId = value;
-    this.router.navigate([baseUrl,this.routerState.type.getValue(),value])
+    this.branchService.idValue = value;
+    this.router.navigate([baseUrl,this.branchService.type.getValue(),value])
   }
 
 }

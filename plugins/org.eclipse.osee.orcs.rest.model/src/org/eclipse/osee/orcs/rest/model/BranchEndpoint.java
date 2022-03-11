@@ -101,6 +101,11 @@ public interface BranchEndpoint {
    List<Branch> getWorkingBranches();
 
    @GET
+   @Path("{type}/category/{category}")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getBranchesByCategoryAndType(@PathParam("type") String type, @PathParam("category") BranchCategoryToken category);
+
+   @GET
    @Path("{branch}")
    @Produces({MediaType.APPLICATION_JSON})
    Branch getBranchById(@PathParam("branch") BranchId branch);

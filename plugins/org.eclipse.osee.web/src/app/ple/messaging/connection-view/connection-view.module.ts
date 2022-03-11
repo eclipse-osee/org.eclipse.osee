@@ -15,12 +15,9 @@ import { CommonModule } from '@angular/common';
 
 import { ConnectionViewRoutingModule } from './connection-view-routing.module';
 import { ConnectionViewComponent } from './connection-view.component';
-import { BranchTypeSelectorComponent } from './components/misc/branch-type-selector/branch-type-selector.component';
-import { BranchSelectorComponent } from './components/misc/branch-selector/branch-selector.component';
 import { BaseComponent } from './components/base/base/base.component';
 import { GraphComponent } from './components/misc/graph/graph.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -39,15 +36,16 @@ import { GraphLinkMenuComponent } from './components/menu/graph-link-menu/graph-
 import { GraphNodeMenuComponent } from './components/menu/graph-node-menu/graph-node-menu.component';
 import { UsermenuComponent } from './components/menu/usermenu/usermenu.component';
 import { MatIconModule } from '@angular/material/icon';
+import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
 
 
 @NgModule({
-  declarations: [ConnectionViewComponent, BranchTypeSelectorComponent, BranchSelectorComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, GraphLinkMenuComponent, GraphNodeMenuComponent, UsermenuComponent],
+  declarations: [ConnectionViewComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, GraphLinkMenuComponent, GraphNodeMenuComponent, UsermenuComponent],
   imports: [
     CommonModule,
     ConnectionViewRoutingModule,
     DiffViewsModule,
-    MatRadioModule,
+    BranchPickerModule,
     MatDialogModule,
     MatFormFieldModule,
     MatButtonModule,

@@ -15,8 +15,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteStateService } from '../../../services/route-state-service.service';
-import { BranchDummySelector} from '../../../testing/MockComponents/BranchSelector.mock'
-import { BranchTypeDummySelector } from '../../../testing/MockComponents/BranchTypeSelector.mock';
 import { GraphDummy } from '../../../testing/MockComponents/Graph.mock';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -34,6 +32,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatIconModule } from '@angular/material/icon';
+import { BranchPickerModule } from '../../../../../../shared-components/components/branch-picker/branch-picker.module';
+import { BranchPickerStub } from '../../../../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 
 describe('BaseComponent', () => {
   let component: BaseComponent;
@@ -48,7 +48,7 @@ describe('BaseComponent', () => {
         { provide: EditAuthService, useValue: editAuthServiceMock },
         { provide: CurrentGraphService, useValue: graphServiceMock }
       ],
-      declarations: [ BaseComponent, BranchDummySelector, BranchTypeDummySelector, GraphDummy,MimSingleDiffDummy ]
+      declarations: [ BaseComponent, GraphDummy, BranchPickerStub,MimSingleDiffDummy ]
     })
       .compileComponents();
     routeState = TestBed.inject(RouteStateService);

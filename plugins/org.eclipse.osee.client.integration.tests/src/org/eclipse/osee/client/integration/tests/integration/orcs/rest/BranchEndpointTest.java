@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -603,4 +604,21 @@ public class BranchEndpointTest {
       Assert.assertTrue(branchCategories.contains(CoreBranchCategoryTokens.ATS));
    }
 
+   public void testBranchCategoryAndTypeList() {
+      List<BranchId> originalBranches = new ArrayList<>();
+      originalBranches.add(DemoBranches.SAW_PL);
+      List<Branch> foundBranches =
+         branchEndpoint.getBranchesByCategoryAndType("baseline", BranchCategoryToken.valueOf((long) 2));
+      List<BranchId> foundIds =
+         foundBranches.stream().map(a -> BranchId.valueOf(a.getId())).collect(Collectors.toList());
+      Assert.assertFalse(foundBranches.isEmpty());
+      Assert.assertFalse(foundIds.isEmpty());
+      boolean allBranchesContained = true;
+      for (BranchId branch : originalBranches) {
+         if (!foundIds.contains(branch)) {
+            allBranchesContained = false;
+         }
+      }
+      Assert.assertTrue(allBranchesContained);
+   }
 }

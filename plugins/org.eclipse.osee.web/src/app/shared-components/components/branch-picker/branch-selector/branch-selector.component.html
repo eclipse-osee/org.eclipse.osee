@@ -12,9 +12,10 @@
  -->
 <mat-form-field appearance="fill">
     <mat-label>Select a Branch</mat-label>
-    <mat-select (selectionChange)="selectBranch($event)" [disabled]="(selectedBranchType |async)?.length ==0" [(value)]="selectedBranchId" required>
-        <mat-option *ngFor="let option of (options |async)" [value]="option.id" [id]="option.id" >
+    <mat-select (selectionChange)="selectBranch($event)" [disabled]="(selectedBranchType |async)==='' || (loading|async)==='true'" [(value)]="selectedBranchId" data-cy="branch-select" required>
+        <mat-option *ngFor="let option of (options |async)" [value]="option.id" [id]="option.id" [attr.data-cy]="'option-'+option.name">
             {{option.name}}
         </mat-option>
     </mat-select>
+    <mat-spinner *ngIf="(loading|async)==='true'" diameter=25 matSuffix></mat-spinner>
 </mat-form-field>

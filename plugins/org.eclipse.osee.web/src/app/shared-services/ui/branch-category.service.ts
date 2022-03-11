@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,20 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { apiURL } from 'src/environments/environment';
-import { messageBranch } from '../../shared/types/branches';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BranchService {
-
-  constructor (private http: HttpClient) { }
+export class BranchCategoryService {
   
-  public getBranches(type: string): Observable<messageBranch[]> {
-    return this.http.get<messageBranch[]>(apiURL+'/orcs/branches/'+type);
+  private _branchCategory: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  constructor () { }
+  get branchCategory() {
+    return this._branchCategory;
+  }
+
+  set category(value:string) {
+    this._branchCategory.next(value);
   }
 }
