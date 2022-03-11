@@ -108,7 +108,10 @@ public class OrcsBranchImpl implements OrcsBranch {
       } else {
          branchStore.createBranch(branchData, userService);
       }
-
+      if (branchData.getCategories() != null) {
+      for (BranchCategoryToken bc : branchData.getCategories()) {
+         orcsApi.getBranchOps().setBranchCategory(branchData.getBranch(), bc);}
+      }
       return queryFactory.branchQuery().andId(branchData.getBranch()).getResults().getExactlyOne();
    }
 
@@ -131,7 +134,7 @@ public class OrcsBranchImpl implements OrcsBranch {
 
       createData.setFromTransaction(parentTx);
       createData.setParentBranch(parentBranch);
-
+      createData.setCategories(orcsApi.getQueryFactory().branchQuery().getBranchCategories(parentBranch));
       createData.setTxCopyBranchType(false);
 
       return createBranch(createData);

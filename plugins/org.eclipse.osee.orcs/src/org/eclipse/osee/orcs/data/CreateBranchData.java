@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.orcs.data;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -35,6 +37,7 @@ public class CreateBranchData {
    private TransactionToken fromTransaction;
    private TransactionId savedTransaction;
    private ArtifactId associatedArtifact;
+   private List<BranchCategoryToken> categories;
 
    // Merge Branch Legacy Support
    private Long mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
@@ -162,6 +165,14 @@ public class CreateBranchData {
 
    public BranchId getParentBranch() {
       return parentBranch;
+   }
+
+   public List<BranchCategoryToken> getCategories() {
+      return categories;
+   }
+
+   public void setCategories(List<BranchCategoryToken> categories) {
+      this.categories = categories;
    }
 
 }

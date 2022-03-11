@@ -78,6 +78,7 @@ public class BranchDataFactory {
       createData.setAssociatedArtifact(associatedArtifact);
       createData.setTxCopyBranchType(bCopyTx);
       createData.setParentBranch(parent);
+      createData.setCategories(queryFactory.branchQuery().getBranchCategories(parent));
       return createData;
    }
 }

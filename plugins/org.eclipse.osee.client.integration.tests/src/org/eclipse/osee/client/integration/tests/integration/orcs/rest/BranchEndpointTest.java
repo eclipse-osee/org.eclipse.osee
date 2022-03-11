@@ -134,8 +134,8 @@ public class BranchEndpointTest {
       }
       Assert.assertFalse(allBranchesContained);
       List<Branch> catBranches =
-         branchEndpoint.getBranches("", "", "", false, false, "", "", null, null, CoreBranchCategoryTokens.PLE);
-      Assert.assertFalse(catBranches.size() != 1);
+         branchEndpoint.getBranches("", "", "", false, false, "", "", null, null, CoreBranchCategoryTokens.ATS);
+      Assert.assertTrue(catBranches.size() >= 1);
    }
 
    @Test
@@ -374,11 +374,11 @@ public class BranchEndpointTest {
    @Test
    public void setBranchFromCategory() {
       XResultData setBranchCategory =
-         branchEndpoint.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.ATS);
+         branchEndpoint.setBranchCategory(DemoBranches.SAW_Bld_1, CoreBranchCategoryTokens.ATS);
       Assert.assertFalse(setBranchCategory.isErrors());
       List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.ATS);
 
-      Assert.assertTrue(branches.contains(DemoBranches.SAW_PL_Working_Branch));
+      Assert.assertTrue(branches.contains(DemoBranches.SAW_Bld_1));
    }
 
    @Test
@@ -600,7 +600,7 @@ public class BranchEndpointTest {
    public void testForBranchCategories() {
       List<BranchCategoryToken> branchCategories =
          branchEndpoint.getBranchCategories(DemoBranches.SAW_PL_Working_Branch);
-      Assert.assertTrue(branchCategories.contains(CoreBranchCategoryTokens.PLE));
+      Assert.assertTrue(branchCategories.contains(CoreBranchCategoryTokens.ATS));
    }
 
 }
