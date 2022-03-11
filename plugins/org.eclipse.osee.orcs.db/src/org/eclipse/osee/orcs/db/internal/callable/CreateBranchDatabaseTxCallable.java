@@ -61,6 +61,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 "UNION ALL\n"+
 "   SELECT transaction_id, item.gamma_id, mod_type, app_id, 6 as item_type, item.gamma_id as group_id FROM osee_tuple4 item, txs where txs.gamma_id = item.gamma_id\n"+
 "UNION ALL\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 7 as item_type, item.gamma_id as group_id FROM osee_relation item, txs where txs.gamma_id = item.gamma_id\n"+
+"UNION ALL\n"+
 "   SELECT transaction_id, item.gamma_id, mod_type, app_id, 3 as item_type, rel_link_id as group_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
 
 

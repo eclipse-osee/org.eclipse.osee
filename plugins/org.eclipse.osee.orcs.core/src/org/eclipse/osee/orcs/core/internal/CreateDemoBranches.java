@@ -74,7 +74,7 @@ public class CreateDemoBranches {
       orcsApi.getAccessControlService().removePermissions(hardeningBranch);
 
       branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, SAW_PL, ArtifactId.SENTINEL);
-      branchOps.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.PLE);
+      branchOps.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.MIM);
    }
 
    public static void createProductLineConfig(BranchId branch, OrcsApi orcsApi) {

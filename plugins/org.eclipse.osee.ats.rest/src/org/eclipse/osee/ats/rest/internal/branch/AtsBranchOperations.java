@@ -54,6 +54,7 @@ public class AtsBranchOperations {
       cbd.setCreationComment(bd.getCreationComment());
       cbd.setInheritAccess(true);
       cbd.setParentBranch(bd.getParent());
+      cbd.setCategories(orcsApi.getQueryFactory().branchQuery().getBranchCategories(bd.getParent()));
       orcsApi.getBranchOps().createBranch(cbd);
       return bd;
    }

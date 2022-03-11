@@ -229,7 +229,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public XResultData setBranchCategory(BranchId branch, BranchCategoryToken category) {
-      return branchOps.setBranchCategory(branch, category);
+      if (!getBranchCategories(branch).contains(category)) {
+      return branchOps.setBranchCategory(branch, category);}
+      else {
+         XResultData result = new XResultData();
+         result.setTitle("Setting branch category");
+         result.error("Branch already has category: "+category.getName());
+         return result;
+      }
    }
 
    @Override
@@ -362,7 +369,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       createData.setFromTransaction(data.getSourceTransaction());
       createData.setParentBranch(data.getParentBranch());
-
+      createData.setCategories(orcsApi.getQueryFactory().branchQuery().getBranchCategories(data.getParentBranch()));
       createData.setMergeDestinationBranchId(data.getMergeDestinationBranchId());
       createData.setMergeAddressingQueryId(data.getMergeAddressingQueryId());
 
