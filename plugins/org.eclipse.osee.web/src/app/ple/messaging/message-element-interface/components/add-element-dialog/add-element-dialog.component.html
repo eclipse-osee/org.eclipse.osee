@@ -59,10 +59,13 @@
                 </mat-slide-toggle>
                 <mat-form-field style="width:100%;">
                     <mat-label>Select a Platform Type</mat-label>
-                    <mat-select [(ngModel)]="data.type">
-                        <mat-option *ngFor="let option of (availableTypes|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
-                            {{option.name}}
-                        </mat-option>
+                    <mat-select [(ngModel)]="data.type" data-cy="element-type-field">
+                        <mat-optgroup *ngFor="let group of (availableTypes|async)" [label]="group.type">
+                            <mat-option *ngFor="let option of group.types" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" [attr.data-cy]="'type-'+option.name">
+                                {{option.name}}
+                            </mat-option>
+
+                        </mat-optgroup>
                     </mat-select>
                 </mat-form-field>
             </div>
