@@ -13,6 +13,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
+import { from, of } from 'rxjs';
+import { concatMap, groupBy, mergeMap, reduce, switchMap, take } from 'rxjs/operators';
+import { PlatformType } from '../../../shared/types/platformType';
 import { CurrentStateService } from '../../services/current-state.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
 import { element } from '../../types/element';
@@ -26,7 +29,17 @@ export class AddElementDialogComponent implements OnInit {
 
   availableElements = this.structures.availableElements;
   storedId: string = '-1';
-  availableTypes= this.structures.types;
+  availableTypes = this.structures.types.pipe(
+    switchMap((types) => of(types).pipe(
+      concatMap((array) => from(array).pipe(
+        groupBy((p) => p.interfaceLogicalType),
+        mergeMap((grouped) => grouped.pipe(
+          reduce((acc, curr) => { acc.type = grouped.key; acc.types = [...acc.types, curr]; return acc; }, {type:grouped.key,types:[]} as {type:string,types:PlatformType[]})
+        ))
+      )),
+      reduce((acc,curr)=>[...acc,curr],[] as {type:string,types:PlatformType[]}[])
+    ))
+  );
   constructor(private structures:CurrentStateService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog) { }
 
   ngOnInit(): void {
