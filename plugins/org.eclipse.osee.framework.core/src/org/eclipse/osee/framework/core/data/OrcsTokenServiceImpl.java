@@ -157,7 +157,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public AttributeTypeGeneric<?> getAttributeTypeOrCreate(Long id) {
       AttributeTypeGeneric<?> attributeType = getAttributeTypeOrSentinel(id);
       if (attributeType.isInvalid()) {
-         String missing = "Mising Attribute Type " + id;
+         String missing = AttributeTypeToken.MISSING_TYPE + id;
          attributeType = AttributeTypeToken.valueOf(id, missing, missing);
          registerAttributeType(attributeType);
       }

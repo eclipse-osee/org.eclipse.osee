@@ -58,7 +58,7 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
       for (Entry<AttributeTypeToken, List<IAttribute<?>>> entry : attrsByType.entrySet()) {
          AttributeTypeToken attrType = entry.getKey();
          // If attr type missing, log separately cause just bad code/db, handle manually
-         if (attrType.getName().contains("Mising Attribute Type")) {
+         if (attrType.getName().contains(AttributeTypeToken.MISSING_TYPE)) {
             results.log(workItem.getStoreObject(), getClass().getSimpleName() + ".MissingAttributeType",
                String.format("Error: %s for " + workItem.getAtsId(), attrType.getName()));
             continue;
