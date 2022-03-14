@@ -36,6 +36,7 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    static final String APPLICATION_MSWORD = "application/msword";
    static final String MODEL_OSEE = "model/osee";
    static final String IMAGE = "image/*";
+   public static final String MISSING_TYPE = "Mising Attribute Type ";
 
    String getMediaType();
 
