@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
+import org.eclipse.osee.mim.GetAllMIMRelatedObjectsEndpoint;
 import org.eclipse.osee.mim.IcdEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
@@ -146,6 +147,14 @@ public class BranchAccessor {
    public EnumerationSetEndpoint getEnumerationSetEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new EnumerationSetEndpointImpl(branch, mimApi.getInterfaceEnumerationSetApi(),
          mimApi.getInterfaceEnumerationApi());
+   }
+
+   @Path("{branch}/all")
+   @Produces(MediaType.APPLICATION_JSON)
+   public GetAllMIMRelatedObjectsEndpoint getRelated(@PathParam("branch") BranchId branch) {
+      return new GetAllMIMRelatedObjectsEndpointImpl(branch, mimApi.getInterfaceStructureApi(),
+         mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi(),
+         mimApi.getInterfaceConnectionViewApi());
    }
 
    /**

@@ -20,7 +20,7 @@ body
 .messaging-grid
     display : grid
     grid-template-rows : 3fr 3fr 2fr 2fr
-    grid-template-columns : 1fr 1fr 1fr 1fr 1fr
+    grid-template-columns : 1fr 1fr 1fr 1fr 1fr 1fr
     gap : 5%
     justify-items: stretch
     align-items: stretch
@@ -28,14 +28,14 @@ body
     grid-row-start : 2
     grid-row-end : 2
     grid-column-start : 2
-    grid-column-end : 5
+    grid-column-end : 6
     justify-self: center
 .messaging-bottom
     grid-row-start : 4
     grid-row-end : 4
     grid-column-start : 1
-    grid-column-end : 5
-$buttons: 1,2,3
+    grid-column-end : 6
+$buttons: 1,2,3,4
 @each $buttonNumber in $buttons
     .message-button-#{$buttonNumber}
         grid-row-start : 3
