@@ -143,6 +143,9 @@ public class TransitionResults {
    }
 
    /**
+    * This method takes the items logged in this class (using addResult) and turns it into an XResultData which has more
+    * capabilities and ability to nicely display to the user.<br/>
+    * <br/>
     * DO NOT use this method to log errors; it is only a convenience method to get XResultData from the addResult calls.
     * Use addResult(TransitionResult result).
     */
