@@ -1,0 +1,14 @@
+<div class="container">
+    <form [formGroup]="commandForm">
+        <mat-form-field style="width:50vw">
+            <input type="text" autofocus matInput placeholder="Enter Command" formControlName="commandGroup" [matAutocomplete]="autoGroup">
+            <mat-autocomplete autoActiveFirstOption #autoGroup="matAutocomplete">
+                <mat-optgroup *ngFor="let group of commandGroupsOptions | async" [label]="group.groupName">
+                    <mat-option *ngFor="let name of group.commands" [value]="name">
+                        {{name}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+</div>
