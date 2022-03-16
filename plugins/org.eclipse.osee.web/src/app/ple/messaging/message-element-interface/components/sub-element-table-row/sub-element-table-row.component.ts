@@ -13,8 +13,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { applic } from '../../../../../types/applicability/applic';
-import { element } from '../../types/element';
-import { structure } from '../../types/structure';
+import { element } from '../../../shared/types/element';
+import { structure } from '../../../shared/types/structure';
 
 @Component({
   selector: 'app-sub-element-table-row',

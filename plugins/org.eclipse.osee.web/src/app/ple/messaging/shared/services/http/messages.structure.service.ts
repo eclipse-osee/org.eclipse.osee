@@ -14,13 +14,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { message } from '../../message-interface/types/messages';
-import { subMessage } from '../../message-interface/types/sub-messages';
+import { message } from '../../../message-interface/types/messages';
+import { subMessage } from '../../../message-interface/types/sub-messages';
 
+/**
+ * @todo: remove and replace with Messages Service once that gets pulled up to messaging/shared
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class MessagesService {
+export class MessagesStructureService {
 
   constructor (private http: HttpClient) { }
   

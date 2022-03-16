@@ -14,8 +14,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, scan, share, switchMap, tap } from 'rxjs/operators';
 import { EnumsService } from '../../../shared/services/http/enums.service';
-import { CurrentStateService } from '../../services/current-state.service';
-import { structure } from '../../types/structure';
+import { CurrentStructureService } from '../../services/current-structure.service';
+import { structure } from '../../../shared/types/structure';
 
 @Component({
   selector: 'osee-messaging-edit-structure-field',
@@ -60,7 +60,7 @@ export class EditStructureFieldComponent<R extends keyof structure=any,T extends
       switchMap(val=>this.structureService.partialUpdateStructure(this._structure))
     ), of(false))),
   )
-  constructor (private structureService: CurrentStateService, private enumService: EnumsService) {
+  constructor (private structureService: CurrentStructureService, private enumService: EnumsService) {
     this._updateValue.subscribe();
     this._immediateUpdateValue.subscribe();
    }

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { PlatformType } from "../../../shared/types/platformType";
+import { PlatformType } from "../types/platformType";
 
 export const platformTypesMock: PlatformType[] = [
     {

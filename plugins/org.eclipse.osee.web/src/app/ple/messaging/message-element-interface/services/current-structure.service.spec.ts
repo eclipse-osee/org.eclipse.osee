@@ -24,23 +24,23 @@ import { ApplicabilityListService } from '../../shared/services/http/applicabili
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { TypesService } from '../../shared/services/http/types.service';
 import { platformTypes1 } from '../../type-element-search/testing/MockResponses/PlatformType';
-import { elementsMock } from '../mocks/ReturnObjects/element.mock';
-import { platformTypesMock } from '../mocks/ReturnObjects/PlatformTypes.mock';
-import { structuresMock, structuresMock2 } from '../mocks/ReturnObjects/structure.mock';
+import { elementsMock } from '../../shared/mocks/element.mock';
+import { platformTypesMock } from '../../shared/mocks/PlatformTypes.mock';
+import { structuresMock, structuresMock2 } from '../../shared/mocks/structure.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
 import { platformTypeServiceMock } from '../mocks/services/platform-type.service.mock';
 import { structureServiceRandomMock } from '../mocks/services/structure.service.mock';
 
-import { CurrentStateService } from './current-state.service';
-import { ElementService } from './element.service';
-import { MessagesService } from './messages.service';
+import { CurrentStructureService } from './current-structure.service';
+import { ElementService } from '../../shared/services/http/element.service';
+import { MessagesStructureService } from '../../shared/services/http/messages.structure.service';
 import { PlatformTypeService } from './platform-type.service';
-import { StructuresService } from './structures.service';
+import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
 
 describe('CurrentStateService', () => {
-  let service: CurrentStateService;
+  let service: CurrentStructureService;
   let ui: ElementUiService;
   let scheduler: TestScheduler;
   let httpTestingController: HttpTestingController;
@@ -50,17 +50,17 @@ describe('CurrentStateService', () => {
       providers: [
         { provide: ElementService, useValue: elementServiceMock },
         { provide: StructuresService, useValue: structureServiceRandomMock },
-        { provide: MessagesService, useValue: messageServiceMock },
+        { provide: MessagesStructureService, useValue: messageServiceMock },
         { provide: TypesService, useValue: typesServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: ElementUiService },
         { provide: DiffReportBranchService, useValue: diffReportBranchServiceMock },
-        CurrentStateService,
+        CurrentStructureService,
       ],
       imports:[HttpClientTestingModule]
     });
-    service = TestBed.inject(CurrentStateService);
+    service = TestBed.inject(CurrentStructureService);
     ui = TestBed.inject(ElementUiService);
     httpTestingController = TestBed.inject(HttpTestingController);
     ui.DiffMode = false;

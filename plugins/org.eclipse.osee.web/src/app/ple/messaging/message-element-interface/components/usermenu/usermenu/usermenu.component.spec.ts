@@ -19,7 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
-import { CurrentStateService } from '../../../services/current-state.service';
+import { CurrentStructureService } from '../../../services/current-structure.service';
 
 import { UsermenuComponent } from './usermenu.component';
 
@@ -33,7 +33,7 @@ describe('UsermenuComponent', () => {
       imports: [MatDialogModule,MatIconModule,MatMenuModule],
       providers: [
         {
-          provide: CurrentStateService, useValue: CurrentStateServiceMock
+          provide: CurrentStructureService, useValue: CurrentStateServiceMock
         },
       ],
       declarations: [ UsermenuComponent ]

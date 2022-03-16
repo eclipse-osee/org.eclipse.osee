@@ -22,10 +22,8 @@ import java.util.List;
 public class StructurePath extends PLGenericDBObject {
    public static final StructurePath SENTINEL = new StructurePath();
    private final LinkedList<ResolvedStructurePath> paths = new LinkedList<ResolvedStructurePath>();
-   private String Description;
-   public StructurePath(Long id, String name, String description) {
+   public StructurePath(Long id, String name) {
       super(id, name);
-      this.setDescription(description);
    }
 
    public StructurePath() {
@@ -46,17 +44,4 @@ public class StructurePath extends PLGenericDBObject {
       this.paths.add(path);
    }
 
-   /**
-    * @return the description
-    */
-   public String getDescription() {
-      return Description;
-   }
-
-   /**
-    * @param description the description to set
-    */
-   public void setDescription(String description) {
-      Description = description;
-   }
 }

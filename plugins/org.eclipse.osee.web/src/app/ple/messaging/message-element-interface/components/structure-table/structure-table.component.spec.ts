@@ -44,10 +44,10 @@ import { EditAuthService } from '../../../shared/services/edit-auth-service.serv
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { EditStructureFieldComponentMock } from '../../mocks/components/EditStructureField.mock';
 import { SubElementTableComponentMock } from '../../mocks/components/sub-element-table.mock';
-import { structuresMock, structuresMockWithChanges } from '../../mocks/ReturnObjects/Structures.mock';
+import { structuresMock, structuresMockWithChanges } from '../../../shared/mocks/Structures.mock';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
-import { CurrentStateService } from '../../services/current-state.service';
-import { structure } from '../../types/structure';
+import { CurrentStructureService } from '../../services/current-structure.service';
+import { structure } from '../../../shared/types/structure';
 import { EditElementFieldComponent } from '../sub-element-table/edit-element-field/edit-element-field.component';
 
 import { StructureTableComponent } from './structure-table.component';
@@ -114,7 +114,7 @@ describe('StructureTableComponent', () => {
           },
         },
         {
-          provide: CurrentStateService, useValue: CurrentStateServiceMock
+          provide: CurrentStructureService, useValue: CurrentStateServiceMock
         },
       ],
     })
@@ -231,7 +231,7 @@ describe('StructureTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateStructure').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateStructure').and.stub();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -244,7 +244,7 @@ describe('StructureTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateStructure').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateStructure').and.stub();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -257,7 +257,7 @@ describe('StructureTableComponent', () => {
       let spy = spyOn(component, 'removeStructureDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'removeStructureFromSubmessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'removeStructureFromSubmessage').and.stub();
       await menu.clickItem({ text: new RegExp("Remove structure from submessage") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -269,7 +269,7 @@ describe('StructureTableComponent', () => {
       let spy = spyOn(component, 'deleteStructureDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'deleteStructure').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'deleteStructure').and.stub();
       await menu.clickItem({ text: new RegExp("Delete structure globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();

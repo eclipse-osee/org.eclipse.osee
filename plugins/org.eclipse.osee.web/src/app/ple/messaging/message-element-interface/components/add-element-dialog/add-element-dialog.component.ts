@@ -16,9 +16,9 @@ import { MatStepper } from '@angular/material/stepper';
 import { from, of } from 'rxjs';
 import { concatMap, groupBy, mergeMap, reduce, switchMap, take } from 'rxjs/operators';
 import { PlatformType } from '../../../shared/types/platformType';
-import { CurrentStateService } from '../../services/current-state.service';
+import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
-import { element } from '../../types/element';
+import { element } from '../../../shared/types/element';
 
 @Component({
   selector: 'osee-messaging-add-element-dialog',
@@ -40,7 +40,7 @@ export class AddElementDialogComponent implements OnInit {
       reduce((acc,curr)=>[...acc,curr],[] as {type:string,types:PlatformType[]}[])
     ))
   );
-  constructor(private structures:CurrentStateService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog) { }
+  constructor(private structures:CurrentStructureService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog) { }
 
   ngOnInit(): void {
   }

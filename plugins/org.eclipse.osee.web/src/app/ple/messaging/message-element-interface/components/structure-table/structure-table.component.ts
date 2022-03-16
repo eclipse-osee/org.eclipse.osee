@@ -23,11 +23,11 @@ import { difference } from 'src/app/types/change-report/change-report';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
-import { CurrentStateService } from '../../services/current-state.service';
+import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
-import { element } from '../../types/element';
-import { structure, structureWithChanges } from '../../types/structure';
+import { element } from '../../../shared/types/element';
+import { structure, structureWithChanges } from '../../../shared/types/structure';
 import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
 import { AddStructureDialogComponent } from '../add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../delete-structure-dialog/delete-structure-dialog.component';
@@ -157,7 +157,7 @@ export class StructureTableComponent implements OnInit {
   );
   constructor(
     public dialog: MatDialog,
-    private structureService: CurrentStateService,
+    private structureService: CurrentStructureService,
     private layoutNotifier: LayoutNotifierService,
     private headerService: HeaderService,) { }
 

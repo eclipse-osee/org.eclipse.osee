@@ -1,5 +1,5 @@
-import { element } from "../../message-element-interface/types/element";
-import { structure } from "../../message-element-interface/types/structure";
+import { element } from "./element";
+import { structure } from "./structure";
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing

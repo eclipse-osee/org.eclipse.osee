@@ -13,19 +13,19 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { messagesMock } from '../../message-interface/mocks/ReturnObjects/messages.mock';
+import { messagesMock } from '../../../message-interface/mocks/ReturnObjects/messages.mock';
 
-import { MessagesService } from './messages.service';
+import { MessagesStructureService } from './messages.structure.service';
 
 describe('MessagesService', () => {
-  let service: MessagesService;
+  let service: MessagesStructureService;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports:[HttpClientTestingModule]
     });
-    service = TestBed.inject(MessagesService);
+    service = TestBed.inject(MessagesStructureService);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 

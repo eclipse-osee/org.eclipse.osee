@@ -16,13 +16,13 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { StructuresService } from './structures.service';
 import { HttpClient } from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
-import { structure } from '../types/structure';
+import { structure } from '../../types/structure';
 import { apiURL } from 'src/environments/environment';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
 import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { relation } from 'src/app/transactions/transaction';
-import { structuresMock } from '../mocks/ReturnObjects/structure.mock';
+import { structuresMock } from '../../mocks/structure.mock';
 
 describe('StructuresService', () => {
   let service: StructuresService;

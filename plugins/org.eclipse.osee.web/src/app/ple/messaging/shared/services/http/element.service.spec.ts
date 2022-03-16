@@ -18,7 +18,7 @@ import { TransactionBuilderService } from 'src/app/transactions/transaction-buil
 import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
 import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { apiURL } from 'src/environments/environment';
-import { elementsMock } from '../mocks/ReturnObjects/element.mock';
+import { elementsMock } from '../../mocks/element.mock';
 
 import { ElementService } from './element.service';
 

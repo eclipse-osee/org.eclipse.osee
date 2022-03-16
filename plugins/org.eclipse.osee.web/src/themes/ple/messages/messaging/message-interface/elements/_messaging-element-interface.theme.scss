@@ -84,8 +84,14 @@
   .message-table-sub-element-row-odd-added{
     background-color:mat.get-color-from-palette($success,200)
   }
+  .message-table-sub-element-row-odd-autogen{
+    background-color:mat.get-color-from-palette($accent,50)
+  }
   .message-table-sub-element-row-even-deleted{
     background-color:mat.get-color-from-palette($warn,100)
+  }
+  .message-table-sub-element-row-even-autogen{
+    background-color:mat.get-color-from-palette($accent,100)
   }
 
   .message-table-sub-element-row-odd-deleted{
@@ -96,6 +102,9 @@
   }
   .message-table-row-changed{
     background-color:mat.get-color-from-palette($accent,100);
+  }
+  .attribute-wrong{
+    background-color:mat.get-color-from-palette($warn,100)
   }
 }
 @mixin typography($config-or-theme){

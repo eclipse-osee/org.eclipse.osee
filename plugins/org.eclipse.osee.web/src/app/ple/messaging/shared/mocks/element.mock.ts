@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from "../../types/element";
+import { element } from "../types/element";
 
 export const elementsMock: element[] = [
     {

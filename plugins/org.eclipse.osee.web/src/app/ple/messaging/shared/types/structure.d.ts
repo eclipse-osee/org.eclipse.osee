@@ -28,6 +28,7 @@ export interface structure {
     sizeInBytes?: number,
     bytesPerSecondMinimum?: number,
     bytesPerSecondMaximum?: number,
+    incorrectlySized?:boolean,
     applicability?:applic,
 }
 export interface structureChanges{
