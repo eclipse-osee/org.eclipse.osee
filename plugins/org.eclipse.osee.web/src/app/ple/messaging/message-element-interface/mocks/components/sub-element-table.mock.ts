@@ -13,7 +13,7 @@
 import { EventEmitter, Output } from "@angular/core";
 import { Component, Input } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
-import { structure } from "../../types/structure";
+import { structure } from "../../../shared/types/structure";
 
 @Component({
     selector: 'ple-messaging-message-element-interface-sub-element-table',

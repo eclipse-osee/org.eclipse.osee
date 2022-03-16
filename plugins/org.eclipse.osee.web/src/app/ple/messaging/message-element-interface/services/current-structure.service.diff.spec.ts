@@ -23,20 +23,20 @@ import { typesServiceMock } from '../../shared/mocks/types.service.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { TypesService } from '../../shared/services/http/types.service';
-import { structureRepeatingWithChanges, structuresMockWithChangesMulti, structuresPreChanges } from '../mocks/ReturnObjects/Structures.mock';
+import { structureRepeatingWithChanges, structuresMockWithChangesMulti, structuresPreChanges } from '../../shared/mocks/Structures.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
 import { platformTypeServiceMock } from '../mocks/services/platform-type.service.mock';
-import { CurrentStateService } from './current-state.service';
-import { ElementService } from './element.service';
-import { MessagesService } from './messages.service';
+import { CurrentStructureService } from './current-structure.service';
+import { ElementService } from '../../shared/services/http/element.service';
+import { MessagesStructureService } from '../../shared/services/http/messages.structure.service';
 import { PlatformTypeService } from './platform-type.service';
-import { StructuresService } from './structures.service';
+import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
 
 
 describe('CurrentStateService', () => {
-  let service: CurrentStateService;
+  let service: CurrentStructureService;
   let ui: ElementUiService;
   let scheduler: TestScheduler;
   let httpTestingController: HttpTestingController;
@@ -51,17 +51,17 @@ describe('CurrentStateService', () => {
             getStructure(branchId: string, messageId: string, subMessageId: string, structureId: string, connectionId: string){return of (structuresPreChanges[0])}
           }
         },
-        { provide: MessagesService, useValue: messageServiceMock },
+        { provide: MessagesStructureService, useValue: messageServiceMock },
         { provide: TypesService, useValue: typesServiceMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: ElementUiService },
         { provide: DiffReportBranchService, useValue: diffReportBranchServiceMock },
-        CurrentStateService
+        CurrentStructureService
       ],
       imports:[HttpClientTestingModule]
     });
-    service = TestBed.inject(CurrentStateService);
+    service = TestBed.inject(CurrentStructureService);
     ui = TestBed.inject(ElementUiService);
     httpTestingController = TestBed.inject(HttpTestingController);
     ui.DiffMode = false;

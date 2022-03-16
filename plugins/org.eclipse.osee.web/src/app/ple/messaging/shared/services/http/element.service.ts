@@ -13,12 +13,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
-import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
+import { relation, transaction } from '../../../../../transactions/transaction';
+import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
-import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
-import { element } from '../types/element';
-import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
+import { element } from '../../types/element';
+import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 
 @Injectable({
   providedIn: 'root'

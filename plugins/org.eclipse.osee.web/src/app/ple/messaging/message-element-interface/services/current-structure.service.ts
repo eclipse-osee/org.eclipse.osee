@@ -16,7 +16,7 @@ import { concatMap, count, debounceTime, distinct, distinctUntilChanged, filter,
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { transaction, transactionToken } from 'src/app/transactions/transaction';
-import { changeInstance, changeTypeNumber, ignoreType, ModificationType } from '../../../..//types/change-report/change-report.d';
+import { changeInstance, changeTypeNumber, ignoreType, ModificationType } from '../../../../types/change-report/change-report.d';
 import { applic } from '../../../../types/applicability/applic';
 import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
@@ -26,17 +26,17 @@ import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.se
 import { TypesUIService } from '../../shared/services/ui/types-ui.service';
 import { PlatformType } from '../../shared/types/platformType';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
-import { element, elementWithChanges } from '../types/element';
-import { structure, structureWithChanges } from '../types/structure';
-import { ElementService } from './element.service';
-import { MessagesService } from './messages.service';
-import { StructuresService } from './structures.service';
+import { element, elementWithChanges } from '../../shared/types/element';
+import { structure, structureWithChanges } from '../../shared/types/structure';
+import { ElementService } from '../../shared/services/http/element.service';
+import { MessagesStructureService } from '../../shared/services/http/messages.structure.service';
+import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CurrentStateService {
+export class CurrentStructureService {
 
   private _structuresNoDiff = combineLatest([this.ui.filter, this.ui.BranchId, this.ui.messageId, this.ui.subMessageId,this.ui.connectionId]).pipe(
     share(),
@@ -61,7 +61,7 @@ export class CurrentStateService {
 
   private _types = this.typeService.types;
 
-  constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesService, private elements: ElementService, private typeService: TypesUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService, private enumListService:EnumsService) { }
+  constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesStructureService, private elements: ElementService, private typeService: TypesUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService, private enumListService:EnumsService) { }
   
   get structures() {
     return this._structures;

@@ -67,6 +67,11 @@
                                                 {{element[header].name}}
                                             </ng-container>
                                         </ng-container>
+                                        <ng-container *ngIf="header==='sizeInBytes'">
+                                            <div [ngClass]="element.incorrectlySized===true?'attribute-wrong':''" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
+                                                {{element[header]}}
+                                            </div>
+                                        </ng-container>
                                         <div *ngIf="header==='name' || header==='description'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text" [ngStyle]="{
                                             'width':(layout|async)?.tableRecommendations?.width,
                                             'white-space': 'nowrap',
@@ -75,7 +80,7 @@
                                         }">
                                             {{element[header]}}
                                         </div>
-                                        <div *ngIf="header!=='applicability' && header!==' ' && header!=='name' && header!=='description'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
+                                        <div *ngIf="header!=='applicability' && header!==' ' && header!=='name' && header!=='description' && header !=='sizeInBytes'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
                                             {{element[header]}}
                                         </div>
                                     </ng-template>

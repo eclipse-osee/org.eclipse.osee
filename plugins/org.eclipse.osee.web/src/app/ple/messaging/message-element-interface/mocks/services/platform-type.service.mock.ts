@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { PlatformTypeService } from "../../services/platform-type.service";
-import { platformTypesMock } from "../ReturnObjects/PlatformTypes.mock";
+import { platformTypesMock } from "../../../shared/mocks/PlatformTypes.mock";
 
 export const platformTypeServiceMock: Partial<PlatformTypeService> = {
     getType(branchId: string, typeId: string) {

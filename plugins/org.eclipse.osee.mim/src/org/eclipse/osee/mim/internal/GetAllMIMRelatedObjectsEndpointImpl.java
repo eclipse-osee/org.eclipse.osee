@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,9 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.GetAllMIMRelatedObjectsEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
@@ -32,7 +29,6 @@ import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
-import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.ResolvedStructurePath;
 import org.eclipse.osee.mim.types.StructurePath;
@@ -58,16 +54,10 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
 
    @Override
    public Collection<StructurePath> getAllStructureNames() {
-      try {
-         List<StructurePath> structures =
-            this.interfaceStructureApi.getAccessor().getAll(branch, InterfaceStructureToken.class).stream().map(
-               a -> new StructurePath(a.getId(), a.getName(), a.getDescription())).collect(Collectors.toList());
-         structures = getStructureNames(structures);
-         return structures;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         return new LinkedList<StructurePath>();
-      }
+      List<StructurePath> structures = this.interfaceStructureApi.getAllWithoutRelations(branch).stream().map(
+         a -> new StructurePath(a.getId(), a.getName())).collect(Collectors.toList());
+      structures = getStructureNames(structures);
+      return structures;
    }
 
    private List<StructurePath> getStructureNames(List<StructurePath> structures) {
@@ -105,28 +95,14 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
       }
    }
 
-   private List<AttributeTypeId> createStructureAttributeList() {
-      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
-      attributes.add(CoreAttributeTypes.Name);
-      attributes.add(CoreAttributeTypes.Description);
-      attributes.add(CoreAttributeTypes.InterfaceStructureCategory);
-      attributes.add(CoreAttributeTypes.InterfaceMinSimultaneity);
-      attributes.add(CoreAttributeTypes.InterfaceMaxSimultaneity);
-      attributes.add(CoreAttributeTypes.InterfaceTaskFileType);
-      return attributes;
-   }
-
    @Override
    public Collection<StructurePath> getFilteredStructureNames(String filter) {
-      try {
-         List<StructurePath> structures = this.interfaceStructureApi.getAccessor().getAllByFilter(branch, filter,
-            this.createStructureAttributeList(), InterfaceStructureToken.class).stream().map(
-               a -> new StructurePath(a.getId(), a.getName(), a.getDescription())).collect(Collectors.toList());
-         structures = getStructureNames(structures);
-         return structures;
-      } catch (Exception ex) {
-         return new LinkedList<StructurePath>();
-      }
+      List<StructurePath> structures =
+         this.interfaceStructureApi.getFilteredWithoutRelations(branch, filter).stream().map(
+            a -> new StructurePath(a.getId(), a.getName())).collect(Collectors.toList());
+      structures = getStructureNames(structures);
+      return structures;
    }
+
 
 }

@@ -22,7 +22,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
-import { structure } from '../../types/structure';
+import { structure } from '../../../shared/types/structure';
 
 import { AddStructureDialogComponent } from './add-structure-dialog.component';
 

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure, structureWithChanges } from '../../types/structure';
+import { structure, structureWithChanges } from '../types/structure';
 
 export const structuresMock: Required<structure>[] = [
   {
@@ -39,6 +39,7 @@ export const structuresMock: Required<structure>[] = [
     interfaceMaxSimultaneity: '0',
     interfaceMinSimultaneity: '1',
     interfaceTaskFileType: 1,
+    incorrectlySized:false,
     interfaceStructureCategory: 'Category 1',
   },
 ];
@@ -868,7 +869,7 @@ export const structuresMockWithChanges: structureWithChanges = {
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
       platformTypeId: 9,
-      units:''
+      units: ''
     },
   ],
   numElements: 1,
@@ -891,4 +892,5 @@ export const structuresMockWithChanges: structureWithChanges = {
       transactionToken: { id: '1234', branchId: '8' },
     },
   },
+  incorrectlySized: false
 };

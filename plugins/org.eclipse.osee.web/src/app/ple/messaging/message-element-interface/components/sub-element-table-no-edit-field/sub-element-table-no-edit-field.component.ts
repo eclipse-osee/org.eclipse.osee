@@ -13,7 +13,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { applic } from '../../../../../types/applicability/applic';
-import { element } from '../../types/element';
+import { element } from '../../../shared/types/element';
 
 @Component({
   selector: 'app-sub-element-table-no-edit-field',

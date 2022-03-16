@@ -17,7 +17,7 @@ import { TransactionBuilderService } from '../../../../../transactions/transacti
 import { transactionBuilderMock } from '../../../../..//transactions/transaction-builder.service.mock';
 import { transactionMock } from '../../../../../transactions/transaction.mock';
 import { apiURL } from '../../../../../../environments/environment';
-import { platformTypesMock } from '../../../message-element-interface/mocks/ReturnObjects/PlatformTypes.mock';
+import { platformTypesMock } from '../../mocks/PlatformTypes.mock';
 
 import { TypesService } from './types.service';
 

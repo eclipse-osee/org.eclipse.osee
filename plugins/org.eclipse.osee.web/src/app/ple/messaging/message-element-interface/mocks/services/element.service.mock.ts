@@ -14,9 +14,9 @@ import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
 import { transactionMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
-import { ElementService } from "../../services/element.service";
-import { element } from "../../types/element";
-import { elementsMock } from "../ReturnObjects/element.mock";
+import { ElementService } from "../../../shared/services/http/element.service";
+import { element } from "../../../shared/types/element";
+import { elementsMock } from "../../../shared/mocks/element.mock";
 
 
 export const elementServiceMock: Partial<ElementService> = {

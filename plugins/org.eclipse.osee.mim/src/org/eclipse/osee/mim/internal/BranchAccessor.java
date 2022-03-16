@@ -88,16 +88,14 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceStructureEndpoint getStructureEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceStructureEndpointImpl(branch, accountId, messageId, subMessageId,
-         mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
-         mimApi.getInterfacePlatformTypeApi());
+         mimApi.getInterfaceStructureApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/filter")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceStructureFilterEndpoint getStructureFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceStructureFilterEndpointImpl(branch, accountId, messageId, subMessageId,
-         mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
-         mimApi.getInterfacePlatformTypeApi());
+         mimApi.getInterfaceStructureApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/{structureId}/elements")
@@ -117,8 +115,7 @@ public class BranchAccessor {
    @Path("{branch}/structures")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceStructureSearchEndpoint getStructureSearchEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new InterfaceStructureSearchEndpointImpl(branch, accountId, mimApi.getInterfaceStructureApi(),
-         mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
+      return new InterfaceStructureSearchEndpointImpl(branch, accountId, mimApi.getInterfaceStructureApi());
    }
 
    @Path("{branch}/graph")

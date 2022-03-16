@@ -15,10 +15,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { StructureTableComponentMock } from '../../mocks/components/StructureTable.mock';
-import { structuresMock } from '../../mocks/ReturnObjects/Structures.mock';
+import { structuresMock } from '../../../shared/mocks/Structures.mock';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
-import { CurrentStateService } from '../../services/current-state.service';
-import { structure } from '../../types/structure';
+import { CurrentStructureService } from '../../services/current-structure.service';
+import { structure } from '../../../shared/types/structure';
 
 import { SingleStructureTableComponent } from './single-structure-table.component';
 
@@ -30,7 +30,7 @@ describe('SingleStructureTableComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers:[{provide:CurrentStateService,useValue:CurrentStateServiceMock}],
+      providers:[{provide:CurrentStructureService,useValue:CurrentStateServiceMock}],
       declarations: [ SingleStructureTableComponent,StructureTableComponentMock ]
     })
     .compileComponents();

@@ -14,9 +14,9 @@ import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
 import { transactionMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
-import { StructuresService } from "../../services/structures.service";
-import { structure } from "../../types/structure";
-import { structuresMock, structuresMock2 } from "../ReturnObjects/structure.mock";
+import { StructuresService } from "../../../shared/services/http/structures.service";
+import { structure } from "../../../shared/types/structure";
+import { structuresMock, structuresMock2 } from "../../../shared/mocks/structure.mock";
 
 //let i= 0;
 export const structureServiceMock: Partial<StructuresService> = {

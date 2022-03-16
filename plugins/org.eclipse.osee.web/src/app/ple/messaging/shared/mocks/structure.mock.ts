@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure } from "../../types/structure";
+import { structure } from "../types/structure";
 import { elementsMock } from "./element.mock";
 
 export const structuresMock: Required<structure>[] = [
@@ -27,6 +27,7 @@ export const structuresMock: Required<structure>[] = [
         sizeInBytes: 0,
         bytesPerSecondMaximum: 0,
         bytesPerSecondMinimum: 0,
+        incorrectlySized:false,
         applicability:{id:'1',name:'Base'}
     }
 ]
@@ -45,6 +46,7 @@ export const structuresMock2: Required<structure>[] = [
         sizeInBytes: 0,
         bytesPerSecondMaximum: 0,
         bytesPerSecondMinimum: 0,
+        incorrectlySized:false,
         applicability:{id:'1',name:'Base'}
     }
 ]

@@ -15,8 +15,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Data, NavigationEnd, ParamMap, Router } from '@angular/router';
 import { combineLatest, iif, of } from 'rxjs';
 import { filter, map, repeatWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { CurrentStateService } from '../../services/current-state.service';
-import { structure, structureWithChanges } from '../../types/structure';
+import { CurrentStructureService } from '../../services/current-structure.service';
+import { structure, structureWithChanges } from '../../../shared/types/structure';
 
 @Component({
   selector: 'app-single-structure-table',
@@ -30,7 +30,7 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 
   constructor (private route: ActivatedRoute,
     private router:Router,
-    private structureService: CurrentStateService,) {
+    private structureService: CurrentStructureService,) {
       this.router.events.pipe(
         filter((event) => event instanceof NavigationEnd),
         map(() => this.route),

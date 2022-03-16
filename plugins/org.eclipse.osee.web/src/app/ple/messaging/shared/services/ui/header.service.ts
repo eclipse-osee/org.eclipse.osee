@@ -13,8 +13,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, iif } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
-import { element } from '../../../message-element-interface/types/element';
-import { structure } from '../../../message-element-interface/types/structure';
+import { element } from '../../types/element';
+import { structure } from '../../types/structure';
 import { message } from '../../../message-interface/types/messages';
 import { subMessage } from '../../../message-interface/types/sub-messages';
 import { elementHeaderDetail, messageHeaderDetail, structureHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';

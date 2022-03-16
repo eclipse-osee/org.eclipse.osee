@@ -28,7 +28,7 @@ import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { CurrentStateService } from './services/current-state.service';
+import { CurrentStructureService } from './services/current-structure.service';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { EditElementFieldComponent } from './components/sub-element-table/edit-element-field/edit-element-field.component';
 import { EditStructureFieldComponentMock } from './mocks/components/EditStructureField.mock';
@@ -95,7 +95,7 @@ describe('MessageElementInterfaceComponent', () => {
           },
         },
         {
-          provide: CurrentStateService, useValue: CurrentStateServiceMock
+          provide: CurrentStructureService, useValue: CurrentStateServiceMock
         },
       ],
     }).compileComponents();

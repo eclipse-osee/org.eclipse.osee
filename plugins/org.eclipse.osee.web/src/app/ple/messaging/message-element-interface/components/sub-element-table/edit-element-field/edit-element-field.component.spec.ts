@@ -30,7 +30,7 @@ import { unitsMock } from 'src/app/ple/messaging/shared/mocks/unit.mock';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 import { SharedMessagingModule } from 'src/app/ple/messaging/shared/shared-messaging.module';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
-import { CurrentStateService } from '../../../services/current-state.service';
+import { CurrentStructureService } from '../../../services/current-structure.service';
 import { EditElementFieldComponent } from './edit-element-field.component';
 
 
@@ -42,7 +42,7 @@ describe('EditElementFieldComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule,MatIconModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
-      providers: [{ provide: CurrentStateService, useValue: CurrentStateServiceMock },
+      providers: [{ provide: CurrentStructureService, useValue: CurrentStateServiceMock },
         { provide: EnumsService, useValue:enumsServiceMock },
         { provide: ActivatedRoute, useValue: {} }],
       declarations: [ EditElementFieldComponent ]

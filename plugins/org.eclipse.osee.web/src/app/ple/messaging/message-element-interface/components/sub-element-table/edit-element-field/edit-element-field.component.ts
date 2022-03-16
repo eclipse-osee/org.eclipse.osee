@@ -14,8 +14,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, scan, share, switchMap, tap } from 'rxjs/operators';
-import { CurrentStateService } from '../../../services/current-state.service';
-import { element } from '../../../types/element';
+import { CurrentStructureService } from '../../../services/current-structure.service';
+import { element } from '../../../../shared/types/element';
 import { PlatformType } from '../../../types/platformtype';
 
 @Component({
@@ -97,7 +97,7 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
     x: '0',
     y:'0'
   }
-  constructor (private structureService: CurrentStateService,private route: ActivatedRoute) {
+  constructor (private structureService: CurrentStructureService,private route: ActivatedRoute) {
     this._updateValue.subscribe();
     this._immediateUpdateValue.subscribe();
     this._sendType.subscribe();

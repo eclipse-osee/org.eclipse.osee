@@ -14,8 +14,8 @@
  import { Component, Input } from "@angular/core";
  import { MatTableDataSource } from "@angular/material/table";
 import { applic } from "../../../../../types/applicability/applic";
-import { element } from "../../types/element";
-import { structure } from "../../types/structure";
+import { element } from "../../../shared/types/element";
+import { structure } from "../../../shared/types/structure";
  
  @Component({
      selector: 'app-sub-element-table-row',

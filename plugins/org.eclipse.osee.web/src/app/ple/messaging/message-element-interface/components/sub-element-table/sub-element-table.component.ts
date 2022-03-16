@@ -20,11 +20,11 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { enumerationSet } from '../../../shared/types/enum';
 import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
-import { CurrentStateService } from '../../services/current-state.service';
+import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
-import { element } from '../../types/element';
+import { element } from '../../../shared/types/element';
 import { RemoveElementDialogData } from '../../types/RemoveElementDialog';
-import { structure } from '../../types/structure';
+import { structure, structureWithChanges } from '../../../shared/types/structure';
 import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
 import { RemoveElementDialogComponent } from '../remove-element-dialog/remove-element-dialog.component';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
@@ -68,7 +68,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
   @ViewChild('generalMenuTrigger', { static: true })
   generalMenuTrigger!: MatMenuTrigger;
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStateService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService, private angLocation: LocationStrategy,private enumSetService: EnumerationUIService) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStructureService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService, private angLocation: LocationStrategy,private enumSetService: EnumerationUIService) {
     this.subMessageHeaders = ["name", "beginWord", "endWord", "BeginByte", "EndByte",  "interfaceElementAlterable", "description", "notes"];
     this.dataSource.data = this.data;
   }
@@ -241,5 +241,4 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   viewDiff(value: difference, header: string) {
     this.structureService.sideNav = { opened: true, field: header, currentValue: value.currentValue as string | number | applic, previousValue: value.previousValue as string | number | applic | undefined,transaction:value.transactionToken };
   }
-
 }

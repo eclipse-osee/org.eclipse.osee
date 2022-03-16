@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from "./element";
+import { element } from "../../shared/types/element";
 
 export interface AddElementDialog{
     id: string,

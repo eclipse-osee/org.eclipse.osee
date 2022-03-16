@@ -14,8 +14,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
-import { CurrentStateService } from './services/current-state.service';
-import { structure } from './types/structure';
+import { CurrentStructureService } from './services/current-structure.service';
+import { structure } from '../shared/types/structure';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { combineLatest, iif, of } from 'rxjs';
 
@@ -35,7 +35,7 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router:Router,
     public dialog: MatDialog,
-    private structureService: CurrentStateService,
+    private structureService: CurrentStructureService,
   ) {
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),

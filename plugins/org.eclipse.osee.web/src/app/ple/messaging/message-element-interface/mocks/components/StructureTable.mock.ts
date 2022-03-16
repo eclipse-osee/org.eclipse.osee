@@ -13,7 +13,7 @@
  import { Component, Input } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 import { Observable, of } from "rxjs";
-import { structure } from "../../types/structure";
+import { structure } from "../../../shared/types/structure";
 
  @Component({
      selector: 'app-structure-table',

@@ -37,8 +37,8 @@ import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-
 import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { SubElementTableRowComponentMock } from '../../mocks/components/sub-element-table-row.component.mock';
-import { elementsMock } from '../../mocks/ReturnObjects/element.mock';
-import { CurrentStateService } from '../../services/current-state.service';
+import { elementsMock } from '../../../shared/mocks/element.mock';
+import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
 import { EditElementFieldComponent } from './edit-element-field/edit-element-field.component';
 
@@ -156,7 +156,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -182,7 +182,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openNotesDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
       await menu.clickItem({ text: new RegExp("Open Notes") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -195,7 +195,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openNotesDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
       await menu.clickItem({ text: new RegExp("Open Notes") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -208,7 +208,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'removeElement').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'removeElementFromStructure').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'removeElementFromStructure').and.stub();
       await menu.clickItem({ text: new RegExp("Remove element from structure") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -221,7 +221,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'deleteElement').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStateService), 'deleteElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'deleteElement').and.stub();
       await menu.clickItem({ text: new RegExp("Delete element globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();

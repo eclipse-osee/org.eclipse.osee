@@ -16,9 +16,9 @@ import { combineLatest, from, iif, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, share, shareReplay, switchMap, take } from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { HeaderService } from 'src/app/ple/messaging/shared/services/ui/header.service';
-import { CurrentStateService } from '../../../services/current-state.service';
-import { element } from '../../../types/element';
-import { structure } from '../../../types/structure';
+import { CurrentStructureService } from '../../../services/current-structure.service';
+import { element } from '../../../../shared/types/element';
+import { structure } from '../../../../shared/types/structure';
 
 @Component({
   selector: 'app-usermenu',
@@ -87,7 +87,7 @@ export class UsermenuComponent implements OnInit {
       switchMap((result) => this.structureService.updatePreferences(result))))
   )
   constructor(public dialog: MatDialog,
-    private structureService: CurrentStateService,
+    private structureService: CurrentStructureService,
     private headerService: HeaderService,
   ) { }
 

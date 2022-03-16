@@ -12,6 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 
 /**
@@ -19,5 +22,18 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
  * @todo
  */
 public interface InterfaceStructureApi {
-   ArtifactAccessor<InterfaceStructureToken> getAccessor();
+
+   List<InterfaceStructureToken> getAll(BranchId branch);
+
+   List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch);
+
+   List<InterfaceStructureToken> getFiltered(BranchId branch, String filter);
+
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter);
+
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId);
+
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter);
+
+   InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
 }

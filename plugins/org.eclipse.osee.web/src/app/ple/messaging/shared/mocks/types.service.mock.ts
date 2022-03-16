@@ -18,7 +18,7 @@ import { TypesService } from "../services/http/types.service";
 import { PlatformType } from "../types/platformType";
 import { logicalTypeMock } from "../../types-interface/mocks/returnObjects/logicalType.mock";
 import { logicalTypeFormDetailMock } from "../../types-interface/mocks/returnObjects/logicalTypeFormDetail.mock";
-import { platformTypes1 } from "../../message-element-interface/mocks/ReturnObjects/PlatformTypes.mock";
+import { platformTypes1 } from "./PlatformTypes.mock";
 
 export const typesServiceMock: Partial<TypesService> = {
     performMutation(body: transaction, branchId: string) {

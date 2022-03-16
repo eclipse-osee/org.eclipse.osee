@@ -13,7 +13,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { platformTypesMock } from '../mocks/ReturnObjects/PlatformTypes.mock';
+import { platformTypesMock } from '../../shared/mocks/PlatformTypes.mock';
 
 import { PlatformTypeService } from './platform-type.service';
 

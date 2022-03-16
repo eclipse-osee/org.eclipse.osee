@@ -25,7 +25,7 @@ import { enumsServiceMock } from '../../../shared/mocks/EnumsService.mock';
 import { EnumsService } from '../../../shared/services/http/enums.service';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
-import { CurrentStateService } from '../../services/current-state.service';
+import { CurrentStructureService } from '../../services/current-structure.service';
 import { ElementUiService } from '../../services/ui.service';
 import { EditStructureFieldComponent } from './edit-structure-field.component';
 
@@ -40,7 +40,7 @@ describe('EditStructureFieldComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, NoopAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule],
       providers: [
-        { provide: CurrentStateService, useValue: CurrentStateServiceMock },
+        { provide: CurrentStructureService, useValue: CurrentStateServiceMock },
         { provide:EnumsService,useValue:enumsServiceMock}
       ],
       declarations: [ EditStructureFieldComponent ]
