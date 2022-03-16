@@ -81,8 +81,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
    private static String ARTIFACTS = "Artifacts";
-   private static String MASTER_TEMPLATE = "Master Template";
-   private static String SLAVE_TEMPLATE = "Slave Template";
+   private static String PARENT_TEMPLATE = "Parent Template";
+   private static String CHILD_TEMPLATE = "Child Template";
    private static String DATA_RIGHTS = "Data Rights";
 
    private List<Artifact> templates;
@@ -90,7 +90,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private Map<Long, String> branchViews;
 
    private XBranchSelectWidget branchWidget;
-   private XCombo slaveWidget;
+   private XCombo childWidget;
    private XCombo branchViewWidget;
    private XListDropViewer artifactsWidget;
    private XCombo dataRightsWidget;
@@ -119,11 +119,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
       }
 
-      Artifact master = getTemplate(variableMap.getString(MASTER_TEMPLATE));
-      if (master == null) {
-         throw new OseeArgumentException("Must select a Master Template");
+      Artifact parent = getTemplate(variableMap.getString(PARENT_TEMPLATE));
+      if (parent == null) {
+         throw new OseeArgumentException("Must select a Parent Template");
       }
-      Artifact slave = getTemplate(variableMap.getString(SLAVE_TEMPLATE));
+      Artifact child = getTemplate(variableMap.getString(CHILD_TEMPLATE));
 
       String classification = variableMap.getString(DATA_RIGHTS);
 
@@ -204,7 +204,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       });
 
       if (result.get()) {
-         renderer.publish(master, slave, artifacts);
+         renderer.publish(parent, child, artifacts);
          transaction.execute();
          monitor.done();
       }
@@ -219,7 +219,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       sb.append("<li>Choose whether or not you want the UUIDs published</li>");
       sb.append("<li>Select the Document Link format(s)</li>");
       sb.append("<li>Choose artifact type(s) to exclude</li>");
-      sb.append("<li>Select Master or Master/Slave (for SRS) template.  Only use non-recursive templates</li>");
+      sb.append("<li>Select Parent or Parent/Child (for SRS) template.  Only use non-recursive templates</li>");
       sb.append(
          "<li>Drag &amp; Drop the IS Artifacts into the box OR write an Orcs Query that returns a list of Artifact Ids</li>");
       sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
@@ -252,7 +252,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          builder.append(art.getSafeName());
          builder.append(",");
       }
-      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", MASTER_TEMPLATE));
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", PARENT_TEMPLATE));
       builder.append("<XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
          builder.append(art.getSafeName());
@@ -261,7 +261,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       builder.append(String.format(
          ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
-         SLAVE_TEMPLATE));
+         CHILD_TEMPLATE));
       builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", ARTIFACTS));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
@@ -315,28 +315,31 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             }
 
          });
-      } else if (xWidget.getLabel().equals(MASTER_TEMPLATE)) {
-         final XCombo masterCombo = (XCombo) xWidget;
-         masterCombo.addModifyListener(new ModifyListener() {
+      } else if (xWidget.getLabel().equals(PARENT_TEMPLATE)) {
+         final XCombo parentCombo = (XCombo) xWidget;
+         parentCombo.addModifyListener(new ModifyListener() {
 
             @Override
             public void modifyText(ModifyEvent e) {
-               // only enable slave template selection if Master is for SRS or Engineering Worksheets (EWS)
-               String masterTemplate = masterCombo.get();
-               if (masterTemplate.contains("srsMaster") || //
-               masterTemplate.contains("ewsMaster")) {
-                  slaveWidget.setEnabled(true);
+               // only enable child template selection if Master is for SRS or Engineering Worksheets (EWS)
+               String parentTemplate = parentCombo.get();
+
+               if (parentTemplate.contains("srsMaster") || //
+               parentTemplate.contains("ewsMaster") || //
+               parentTemplate.contains("srsParent") || //
+               parentTemplate.contains("ewsParent")) {
+                  childWidget.setEnabled(true);
                   artifactsWidget.setEditable(false);
                } else {
-                  slaveWidget.setEnabled(false);
-                  slaveWidget.set("");
+                  childWidget.setEnabled(false);
+                  childWidget.set("");
                   artifactsWidget.setEditable(true);
                }
             }
          });
-      } else if (xWidget.getLabel().equals(SLAVE_TEMPLATE)) {
-         slaveWidget = (XCombo) xWidget;
-         slaveWidget.setEnabled(false);
+      } else if (xWidget.getLabel().equals(CHILD_TEMPLATE)) {
+         childWidget = (XCombo) xWidget;
+         childWidget.setEnabled(false);
       } else if (xWidget.getLabel().equals(ARTIFACTS)) {
          artifactsWidget = (XListDropViewer) xWidget;
          artifactsWidget.setEditable(true);

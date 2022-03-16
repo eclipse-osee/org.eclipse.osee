@@ -544,7 +544,7 @@ public final class FrameworkXWidgetProvider {
             XAttributeTypeMultiChoiceSelect widget = new XAttributeTypeMultiChoiceSelect();
             xWidget = widget;
          } else if (xWidgetName.equals(XArtifactTypeMultiChoiceSelect.WIDGET_ID)) {
-            XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
+            XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect(name);
             String defaultType = xWidgetLayoutData.getDefaultValue();
             if (Strings.isValid(defaultType)) {
                List<ArtifactTypeToken> types = new LinkedList<>();
