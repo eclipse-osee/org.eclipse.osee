@@ -229,7 +229,10 @@ public class WordTemplateProcessor {
          masterTemplateArtifact.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
       String masterTemplateStyles = "";
 
-      if (masterTemplateRelatedArtifacts.size() == 1) {
+      int size = masterTemplateRelatedArtifacts.size();
+      if (size == 0) {
+         OseeLog.log(this.getClass(), Level.INFO, "No Artifacts supporting master template styles were found");
+      } else if (size == 1) {
          masterTemplateStyles += masterTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
             CoreAttributeTypes.WholeWordContent, "");
       } else {

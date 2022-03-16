@@ -33,8 +33,8 @@ public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactTy
 
    public static final String WIDGET_ID = XArtifactTypeMultiChoiceSelect.class.getSimpleName();
 
-   public XArtifactTypeMultiChoiceSelect() {
-      super("Select Artifact Type(s)");
+   public XArtifactTypeMultiChoiceSelect(String label) {
+      super(label);
       try {
          setSelectableItems(ServiceUtil.getTokenService().getArtifactTypes());
       } catch (OseeCoreException ex) {
