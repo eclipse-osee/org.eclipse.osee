@@ -242,6 +242,7 @@ public enum FrameworkImage implements KeyedImage {
    TUPLE("tuple.png"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
+   UNDO("undo.gif"),
    USER("userPurple.gif"),
    USER_PURPLE("userPurple.gif"),
    USER_RED("userRed.gif"),
