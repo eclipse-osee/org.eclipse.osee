@@ -51,6 +51,8 @@ public class WorldReloadTab extends FormPage {
    public final static String ID = "ats.world.reload.tab";
    private final WorldEditor editor;
    private final WorldEditorReloadProvider provider;
+   private boolean reloading;
+   private Button reloadButton;
 
    public WorldReloadTab(WorldEditor editor, WorldEditorReloadProvider provider) {
       super(editor, ID, "Reload");
@@ -73,7 +75,7 @@ public class WorldReloadTab extends FormPage {
          if (provider.getValidArtIds().isEmpty()) {
             managedForm.getToolkit().createLabel(bodyComp, "Nothing to reload.");
          } else {
-            Button reloadButton = new Button(bodyComp, SWT.PUSH);
+            reloadButton = new Button(bodyComp, SWT.PUSH);
             reloadButton.setText("Reload");
             reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
             final FormPage page = this;
@@ -81,7 +83,12 @@ public class WorldReloadTab extends FormPage {
 
                @Override
                public void widgetSelected(SelectionEvent e) {
-                  loadEditor(page);
+                  if (reloading) {
+                     AWorkbench.popup("Editor Reloading...");
+                  } else {
+                     reloading = true;
+                     loadEditor(page);
+                  }
                }
 
             });
@@ -167,6 +174,15 @@ public class WorldReloadTab extends FormPage {
             AWorkbench.popup("No valid ids to reload.");
             success = false;
          } else {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  if (Widgets.isAccessible(reloadButton)) {
+                     reloadButton.setText("Reloading...");
+                     reloadButton.getParent().layout(true);
+                  }
+               }
+            });
             success = provider.searchAndLoad();
          }
          return Status.OK_STATUS;

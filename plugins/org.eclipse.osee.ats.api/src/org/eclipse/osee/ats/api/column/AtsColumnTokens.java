@@ -58,7 +58,6 @@ public class AtsColumnTokens {
    public static AtsValColumn AssigneeColumn = new AtsValColumn("ats.column.assignees", "Assignees", 100, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
    public static AtsValColumn AtsIdColumn = new AtsValColumn("ats.id", "ATS Id", 75, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "ATS ID");
    public static AtsValColumn AtsIdColumnShow = new AtsValColumn("ats.id", "ATS Id", 75, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.No, InheritParent.No, "ATS ID");
-   public static AtsValColumn SiblingAtsIdsColumn = new AtsValColumn("ats.sibling.id", "Sibling ATS Ids", 75, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "ATS ID");
    public static AtsValColumn CancelledByColumn = new AtsValColumn("ats.column.cancelledBy", "Cancelled By", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "User transitioning action to cancelled state.");
    public static AtsValColumn CancelledDateColumn = new AtsValColumn("ats.column.cancelledDate", "Cancelled Date", 80, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, null);
    public static AtsValColumn CancelledReason = new AtsValColumn("ats.column.cancelledReason", "Cancelled Reason", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Reason for cancelling action.");

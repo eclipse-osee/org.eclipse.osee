@@ -24,10 +24,17 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
@@ -85,4 +92,36 @@ public class AtsBulkLoad {
       arts.addAll(artifacts);
       return arts;
    }
+
+   public static void bulkLoadSiblings(Collection<? extends Artifact> artifacts) {
+      List<Artifact> teams = new ArrayList<>();
+      for (Artifact art : artifacts) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            teams.add(art);
+         }
+      }
+
+      int siblingQueryCount = 400;
+      String siblingQueryCountStr = AtsApiService.get().getConfigValue("siblingQueryCount");
+      if (Strings.isNumeric(siblingQueryCountStr)) {
+         siblingQueryCount = Integer.valueOf(siblingQueryCountStr);
+      }
+
+      List<Collection<Artifact>> artSets = Collections.subDivide(teams, siblingQueryCount);
+
+      for (Collection<Artifact> arts : artSets) {
+         // Bulk load related artifacts
+         HashCollection<ArtifactId, ArtifactToken> artifactTokenListFromRelated =
+            ArtifactQuery.getArtifactTokenListFromRelated(CoreBranches.COMMON, Collections.castAll(arts),
+               AtsArtifactTypes.Action, AtsRelationTypes.ActionToWorkflow_Action);
+         List<Artifact> actionArts =
+            ArtifactQuery.getArtifactListFrom(artifactTokenListFromRelated.getValues(), CoreBranches.COMMON);
+
+         // Buld load team wfs off loaded actions
+         ArtifactQuery.getArtifactTokenListFromRelated(CoreBranches.COMMON, Collections.castAll(actionArts),
+            AtsArtifactTypes.TeamWorkflow, AtsRelationTypes.ActionToWorkflow_TeamWorkflow);
+      }
+
+   }
+
 }

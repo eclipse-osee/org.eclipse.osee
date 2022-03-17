@@ -104,7 +104,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
           * These are computed columns where data is in multiple places and must be retrieved/loaded to be displayed
           */
          getColumnServiceColumn(AtsColumnTokens.AtsIdColumn),
-         getColumnServiceColumn(AtsColumnTokens.SiblingAtsIdsColumn),
          getColumnServiceColumn(AtsColumnTokens.InsertionColumn),
          getColumnServiceColumn(AtsColumnTokens.InsertionActivityColumn),
          getColumnServiceColumn(AtsColumnTokens.ParentTitleColumn),
@@ -179,6 +178,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          WorkDaysNeededColumn.getInstance(),
          PercentReworkColumn.getInstance(),
          BranchStatusColumn.getInstance(),
+         SiblingAtsIdColumn.getInstance(),
          NumberOfTasksColumn.getInstance(),
          NumberOfTasksRemainingColumn.getInstance(),
          new LastModifiedByColumn(false),
