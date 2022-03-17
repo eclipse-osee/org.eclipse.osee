@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
@@ -67,16 +68,15 @@ public class CreateDemoBranches {
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, SAW_Bld_1, ArtifactId.SENTINEL);
 
+      branchOps.setBranchCategory(DemoBranches.SAW_PL, CoreBranchCategoryTokens.MIM);
       createProductLineConfig(DemoBranches.SAW_PL, orcsApi);
-
+    
       Branch hardeningBranch =
          branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, SAW_PL, ArtifactId.SENTINEL);
       orcsApi.getAccessControlService().removePermissions(hardeningBranch);
 
       branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, SAW_PL, ArtifactId.SENTINEL);
-      branchOps.setBranchCategory(DemoBranches.SAW_PL_Working_Branch, CoreBranchCategoryTokens.MIM);
    }
-
    public static void createProductLineConfig(BranchId branch, OrcsApi orcsApi) {
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Create Product Line folders");
