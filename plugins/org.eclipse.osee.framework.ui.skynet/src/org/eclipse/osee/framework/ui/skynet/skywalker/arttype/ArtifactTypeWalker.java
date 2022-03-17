@@ -170,6 +170,10 @@ public class ArtifactTypeWalker extends GenericViewPart {
       openTypeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.LASER));
       tbm.add(openTypeAction);
 
+      /**
+       * Artifact type walker shows the full hierarchy of all OSEE types. This toggle switches from showing all levels
+       * to only showing a single level to declutterand allow easier navigation.
+       */
       Action singleLevelAction = new Action("Single Level", SWT.TOGGLE) {
          @Override
          public void run() {
