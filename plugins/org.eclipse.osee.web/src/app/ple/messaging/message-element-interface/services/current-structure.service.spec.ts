@@ -228,6 +228,14 @@ describe('CurrentStateService', () => {
       scheduler.expectObservable(service.availableElements).toBe(expectedMarble, expectedObservable);
     })
   })
+
+  it('should get filtered types', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: platformTypes1 };
+      let expectedMarble = '(a|)';
+      expectObservable(service.getFilteredTypes('')).toBe(expectedMarble, expectedObservable);
+    })
+  })
   it('should get and set branch type', () => {
     expect(service.BranchType).toEqual('')
     scheduler.run(({expectObservable,cold}) => {

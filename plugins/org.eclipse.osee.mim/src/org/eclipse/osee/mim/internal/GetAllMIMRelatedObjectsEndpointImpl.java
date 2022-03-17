@@ -23,12 +23,16 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.GetAllMIMRelatedObjectsEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
+import org.eclipse.osee.mim.InterfaceElementApi;
+import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
+import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.ResolvedStructurePath;
 import org.eclipse.osee.mim.types.StructurePath;
@@ -43,13 +47,20 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
    private final InterfaceMessageApi messageApi;
    private final InterfaceSubMessageApi subMessageApi;
    private final InterfaceStructureApi interfaceStructureApi;
-   public GetAllMIMRelatedObjectsEndpointImpl(BranchId branch, InterfaceStructureApi interfaceStructureApi, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi) {
+   private final InterfaceElementApi elementApi;
+   private final InterfaceElementArrayApi elementArrayApi;
+   private final InterfacePlatformTypeApi platformApi;
+   public GetAllMIMRelatedObjectsEndpointImpl(BranchId branch, InterfaceStructureApi interfaceStructureApi, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi, InterfaceElementApi interfaceElementApi, InterfaceElementArrayApi interfaceElementArrayApi, InterfacePlatformTypeApi interfacePlatformTypeApi) {
       this.branch = branch;
       this.interfaceNodeApi = interfaceNodeApi;
       this.interfaceConnectionApi = interfaceConnectionViewApi;
       this.messageApi = interfaceMessageApi;
       this.subMessageApi = interfaceSubMessageApi;
       this.interfaceStructureApi = interfaceStructureApi;
+      this.elementApi = interfaceElementApi;
+      this.elementArrayApi = interfaceElementArrayApi;
+      this.platformApi = interfacePlatformTypeApi;
+
    }
 
    @Override
@@ -104,5 +115,9 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
       return structures;
    }
 
+   @Override
+   public Collection<InterfaceStructureElementToken> getElements() {
+      return this.elementApi.getAll(branch);
+   }
 
 }

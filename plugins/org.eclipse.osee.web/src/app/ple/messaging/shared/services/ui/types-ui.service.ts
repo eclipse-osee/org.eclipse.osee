@@ -34,6 +34,17 @@ export class TypesUIService {
   get types() {
     return this._types;
   }
+
+  getFilteredTypes(filter: string) {
+    return this._ui.id.pipe(
+      take(1),
+      share(),
+      switchMap((branch) => this._typesService.getFilteredTypes(filter, branch).pipe(
+        share(),
+      )),
+      shareReplay({bufferSize:1,refCount:true})
+    )
+  }
   getType( typeId: string) {
     return this._ui.id.pipe(
       take(1),

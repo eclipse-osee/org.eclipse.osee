@@ -14,9 +14,9 @@ import { logicalType } from "../../../shared/types/logicaltype";
 
 export const logicalTypeMock: logicalType[] = [
     {
-        id: "0",
-        idIntValue: 0,
+        id: '0',
+        name: 'enumeration',
         idString: '0',
-        name:''
+        idIntValue: 0
     }
 ]

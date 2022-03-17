@@ -19,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.StructurePath;
 
 /**
@@ -36,4 +37,10 @@ public interface GetAllMIMRelatedObjectsEndpoint {
    @Path("StructureNames/{filter}")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<StructurePath> getFilteredStructureNames(@PathParam("filter") String filter);
+
+   @GET()
+   @Path("elements")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<InterfaceStructureElementToken> getElements();
+
 }

@@ -57,18 +57,23 @@
                 <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before'>
                     Alterable
                 </mat-slide-toggle>
-                <mat-form-field style="width:100%;">
-                    <mat-label>Select a Platform Type</mat-label>
-                    <mat-select [(ngModel)]="data.type" data-cy="element-type-field">
-                        <mat-optgroup *ngFor="let group of (availableTypes|async)" [label]="group.type">
-                            <mat-option *ngFor="let option of group.types" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" [attr.data-cy]="'type-'+option.name">
-                                {{option.name}}
-                            </mat-option>
-
-                        </mat-optgroup>
-                    </mat-select>
-                </mat-form-field>
+                <div style="width:100%;display:flex;flex-direction:row;gap:10px;">
+                    <mat-form-field style="flex-grow:7; flex-basis: 90%">
+                        <mat-label>Select a Platform Type</mat-label>
+                        <mat-select [(ngModel)]="data.type" data-cy="element-type-field" [compareWith]="compareTypes">
+                            <mat-optgroup *ngFor="let group of (availableTypes|async)" [label]="group.type">
+                                <mat-option *ngFor="let option of group.types" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" [attr.data-cy]="'type-'+option.name">
+                                    {{option.name}}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+                    <button style="flex-grow:1" mat-icon-button (click)="openPlatformTypeDialog()"><mat-icon color="success">add</mat-icon></button>
+                </div>
             </div>
+            <ng-container *ngIf="typeDialogOpen">
+                <app-new-type-dialog (dialogClosed)="receivePlatformTypeData($event)"></app-new-type-dialog>
+            </ng-container>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button mat-raised-button matStepperPrevious>Back</button>

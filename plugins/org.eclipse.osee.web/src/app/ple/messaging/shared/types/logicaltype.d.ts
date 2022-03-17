@@ -25,5 +25,6 @@ interface logicalTypeFieldInfo {
     editable: boolean,
     name:string,
     required: boolean,
-    defaultValue:string
+    defaultValue: string,
+    value?:string
 }

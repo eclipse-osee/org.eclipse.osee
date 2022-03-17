@@ -12,23 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.types.ElementPosition;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
-import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
  * @author Luciano T. Vaglienti
@@ -51,75 +44,17 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
 
    @Override
    public Collection<InterfaceStructureElementToken> getElements() {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) elementApi.getAccessor().getAll(branch,
-               InterfaceStructureElementToken.class);
-         for (InterfaceStructureElementToken element : elements) {
-            PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
-               CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-               PlatformTypeToken.class);
-            element.setPlatformTypeId(platformType.getId());
-            element.setPlatformTypeName(platformType.getName());
-         }
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
-   }
-
-   private List<AttributeTypeId> createElementAttributeList() {
-      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
-      attributes.add(CoreAttributeTypes.Name);
-      attributes.add(CoreAttributeTypes.Description);
-      attributes.add(CoreAttributeTypes.Notes);
-      attributes.add(CoreAttributeTypes.InterfaceElementAlterable);
-      attributes.add(CoreAttributeTypes.InterfaceElementIndexEnd);
-      attributes.add(CoreAttributeTypes.InterfaceElementIndexStart);
-      return attributes;
+      return this.elementApi.getAll(branch);
    }
 
    @Override
    public Collection<InterfaceStructureElementToken> getElements(String filter) {
-      List<AttributeTypeId> elementAttributes = this.createElementAttributeList();
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) elementApi.getAccessor().getAllByFilter(branch, filter,
-               elementAttributes, InterfaceStructureElementToken.class);
-         for (InterfaceStructureElementToken element : elements) {
-            PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
-               CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-               PlatformTypeToken.class);
-            element.setPlatformTypeId(platformType.getId());
-            element.setPlatformTypeName(platformType.getName());
-         }
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
+      return this.elementApi.getFiltered(branch, filter);
    }
 
    @Override
    public Collection<InterfaceStructureElementToken> getElementsOfType(ArtifactId platformTypeId) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) elementApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceElementPlatformType_PlatformType, platformTypeId,
-               InterfaceStructureElementToken.class);
-         for (InterfaceStructureElementToken element : elements) {
-            PlatformTypeToken platformType = platformApi.getAccessor().getByRelationWithoutId(branch,
-               CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-               PlatformTypeToken.class);
-            element.setPlatformTypeId(platformType.getId());
-            element.setPlatformTypeName(platformType.getName());
-         }
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
+      return this.elementApi.getElementsByType(branch, platformTypeId);
    }
 
    @Override

@@ -102,7 +102,7 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceElementEndpoint getElementEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @PathParam("structureId") ArtifactId structureId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceElementEndpointImpl(branch, accountId, messageId, subMessageId, structureId,
-         mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
+         mimApi.getInterfaceElementApi());
    }
 
    @Path("{branch}/elements")
@@ -151,7 +151,8 @@ public class BranchAccessor {
    public GetAllMIMRelatedObjectsEndpoint getRelated(@PathParam("branch") BranchId branch) {
       return new GetAllMIMRelatedObjectsEndpointImpl(branch, mimApi.getInterfaceStructureApi(),
          mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi(),
-         mimApi.getInterfaceConnectionViewApi());
+         mimApi.getInterfaceConnectionViewApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
+         mimApi.getInterfacePlatformTypeApi());
    }
 
    /**

@@ -30,6 +30,9 @@ export class ElementService {
   getElement(branchId: string,messageId: string, subMessageId: string, structureId: string, elementId: string,connectionId:string) {
     return this.http.get<element>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/"+ subMessageId+"/structures/"+structureId+"/elements/"+elementId);
   }
+  getFilteredElements(branchId:string,filter:string) {
+    return this.http.get<element[]>(apiURL + `/mim/branch/${branchId}/elements/filter/${filter}`);
+  }
 
   createStructureRelation(structureId:string,elementId?:string, afterArtifact?:string) {
     let relation: relation = {
