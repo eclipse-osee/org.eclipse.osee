@@ -13,26 +13,20 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class BranchStatusColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
+public class BranchStatusColumn extends BackgroundLoadingColumn {
 
    public static BranchStatusColumn instance = new BranchStatusColumn();
 
@@ -57,23 +51,16 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IAtsXViewerP
    }
 
    @Override
-   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      for (Object element : objects) {
-         Long key = getKey(element);
-         try {
-            if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-               String status = getBranchStatus((IAtsTeamWorkflow) element);
-               preComputedValueMap.put(key, status);
-            } else if (!(element instanceof AbstractWorkflowArtifact) && element instanceof IAtsWorkItem) {
-               populateCachedValues(Arrays.asList(((IAtsWorkItem) element).getStoreObject()), preComputedValueMap);
-            } else {
-               preComputedValueMap.put(key, "");
-            }
-         } catch (OseeCoreException ex) {
-            String cellExceptionString = LogUtil.getCellExceptionString(ex);
-            preComputedValueMap.put(key, cellExceptionString);
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
+      String value = "";
+      try {
+         if (workItem.isTeamWorkflow()) {
+            value = getBranchStatus((IAtsTeamWorkflow) workItem);
          }
+      } catch (OseeCoreException ex) {
+         value = LogUtil.getCellExceptionString(ex);
       }
+      return value;
    }
 
    public String getBranchStatus(IAtsTeamWorkflow teamWf) {
