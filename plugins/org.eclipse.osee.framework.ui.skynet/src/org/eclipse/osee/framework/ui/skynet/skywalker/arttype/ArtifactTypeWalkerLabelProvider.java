@@ -47,7 +47,7 @@ public class ArtifactTypeWalkerLabelProvider implements ILabelProvider {
          EntityConnectionData connection = (EntityConnectionData) arg0;
          ArtifactTypeToken dest = (ArtifactTypeToken) connection.dest;
          if (contentProvider.getParentTypes().contains(dest)) {
-            return "parent";
+            return "super-type\n(parent)";
          }
       }
       return "";

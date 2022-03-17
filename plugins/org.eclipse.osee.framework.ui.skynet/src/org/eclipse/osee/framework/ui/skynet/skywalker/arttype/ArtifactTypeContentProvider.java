@@ -31,6 +31,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
 
    private final Set<ArtifactTypeToken> parentTypes = new HashSet<>();
    private ArtifactTypeToken selectedArtType = null;
+   private boolean singleLevel = false;
 
    public ArtifactTypeContentProvider() {
       super();
@@ -42,34 +43,44 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
          if (entity instanceof ArtifactTypeToken) {
             ArtifactTypeToken artifactType = (ArtifactTypeToken) entity;
             if (parentTypes.contains(artifactType)) {
-               Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-               for (ArtifactTypeToken childType : artifactType.getDirectDescendantTypes()) {
-                  if (parentTypes.contains(childType)) {
-                     artifactTypes.add(childType);
+               if (!singleLevel || selectedArtType.equals(artifactType)) {
+                  Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+                  for (ArtifactTypeToken childType : artifactType.getDirectDescendantTypes()) {
+                     if (parentTypes.contains(childType)) {
+                        artifactTypes.add(childType);
+                     }
                   }
+                  return artifactTypes.toArray();
                }
-               return artifactTypes.toArray();
             } else if (parentTypes.contains(entity)) {
-               Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-               for (ArtifactTypeToken childType : artifactType.getSuperTypes()) {
-                  if (parentTypes.contains(childType)) {
-                     artifactTypes.add(childType);
+               if (!singleLevel || selectedArtType.equals(artifactType)) {
+                  Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+                  for (ArtifactTypeToken childType : artifactType.getSuperTypes()) {
+                     if (parentTypes.contains(childType)) {
+                        artifactTypes.add(childType);
+                     }
                   }
+                  return artifactTypes.toArray();
                }
-               return artifactTypes.toArray();
             } else if (selectedArtType.equals(entity) && selectedArtType.notEqual(CoreArtifactTypes.Artifact)) {
                Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
                // parents
-               for (ArtifactTypeToken childType : artifactType.getSuperTypes()) {
-                  if (parentTypes.contains(childType)) {
-                     artifactTypes.add(childType);
+               if (!singleLevel || selectedArtType.equals(artifactType)) {
+                  for (ArtifactTypeToken childType : artifactType.getSuperTypes()) {
+                     if (parentTypes.contains(childType)) {
+                        artifactTypes.add(childType);
+                     }
                   }
                }
                // children
-               artifactTypes.addAll(artifactType.getDirectDescendantTypes());
+               if (!singleLevel || selectedArtType.equals(artifactType)) {
+                  artifactTypes.addAll(artifactType.getDirectDescendantTypes());
+               }
                return artifactTypes.toArray();
             } else {
-               return artifactType.getDirectDescendantTypes().toArray();
+               if (!singleLevel || selectedArtType.equals(artifactType)) {
+                  return artifactType.getDirectDescendantTypes().toArray();
+               }
             }
          }
       } catch (OseeCoreException ex) {
@@ -83,13 +94,15 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       try {
          if (inputElement instanceof ArtifactTypeToken) {
             ArtifactTypeToken artifactType = (ArtifactTypeToken) inputElement;
-            Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-            getParents(artifactType, artifactTypes);
-            if (!parentTypes.contains(artifactType)) {
-               artifactTypes.add(artifactType);
-               getDecendents(artifactType, artifactTypes);
+            if (selectedArtType.equals(artifactType)) {
+               Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+               getParents(artifactType, artifactTypes);
+               if (!parentTypes.contains(artifactType)) {
+                  artifactTypes.add(artifactType);
+                  getDecendents(artifactType, artifactTypes);
+               }
+               return artifactTypes.toArray();
             }
-            return artifactTypes.toArray();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -99,17 +112,23 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
 
    public void getParents(ArtifactTypeToken artifactType, Set<ArtifactTypeToken> parents) {
       for (ArtifactTypeToken artType : artifactType.getSuperTypes()) {
-         parents.add(artType);
-         parentTypes.add(artType);
-         getParents(artType, parents);
+         if (!singleLevel || selectedArtType.equals(
+            artifactType) || selectedArtType.getDirectDescendantTypes().contains(artifactType)) {
+            parents.add(artType);
+            parentTypes.add(artType);
+            getParents(artType, parents);
+         }
       }
    }
 
    public void getDecendents(ArtifactTypeToken artifactType, Set<ArtifactTypeToken> decendents) {
-      for (ArtifactTypeToken artType : artifactType.getDirectDescendantTypes()) {
-         if (!parentTypes.contains(artType)) {
-            decendents.add(artType);
-            getDecendents(artType, decendents);
+      // If not singleLevel, show all levels; else only show children if selected this artifact type
+      if (!singleLevel || selectedArtType.equals(artifactType)) {
+         for (ArtifactTypeToken artType : artifactType.getDirectDescendantTypes()) {
+            if (!parentTypes.contains(artType)) {
+               decendents.add(artType);
+               getDecendents(artType, decendents);
+            }
          }
       }
    }
@@ -138,6 +157,14 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
 
    public void setSelectedArtType(ArtifactTypeToken selectedArtType) {
       this.selectedArtType = selectedArtType;
+   }
+
+   public boolean isSingleLevel() {
+      return singleLevel;
+   }
+
+   public void setSingleLevel(boolean singleLevel) {
+      this.singleLevel = singleLevel;
    }
 
 }
