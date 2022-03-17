@@ -27,9 +27,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { EditViewFreeTextFieldDialogComponent } from './components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
+import { NewTypeDialogComponent } from './components/dialogs/new-type-dialog/new-type-dialog.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent],
+  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent],
   imports: [
     CommonModule,
     MatDialogModule,
@@ -41,8 +43,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     FormsModule,
     MatButtonModule,
+    MatStepperModule,
     MatIconModule
   ],
-  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent]
+  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, NewTypeDialogComponent]
 })
 export class SharedMessagingModule {}

@@ -28,7 +28,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { EditTypeDialogComponent } from './components/edit-type-dialog/edit-type-dialog.component';
-import { NewTypeDialogComponent } from './components/new-type-dialog/new-type-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
@@ -39,7 +38,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
-  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, NewTypeDialogComponent, UsermenuComponent],
+  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, UsermenuComponent],
   imports: [
     CommonModule,
     MatCardModule,

@@ -12,13 +12,23 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 
 /**
- * @author Luciano T. Vaglienti Api for accessing interface elements
- * @todo
+ * @author Luciano T. V@todo
  */
 public interface InterfaceElementApi {
-   ArtifactAccessor<InterfaceStructureElementToken> getAccessor();
 
+   List<InterfaceStructureElementToken> getAll(BranchId branch);
+
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId);
+
+   List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter);
+
+   List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
+
+   InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId);
 }

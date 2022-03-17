@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,9 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import {
@@ -24,12 +23,15 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { applic } from '../../../../../types/applicability/applic';
-import { CurrentTypesService } from '../../services/current-types.service';
-import { enumeration, enumerationSet } from '../../../shared/types/enum';
-import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../shared/types/logicaltype';
-import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
-import { PlatformType } from '../../../shared/types/platformType';
+import { applic } from '../../../../../../types/applicability/applic';
+import { enumeration, enumerationSet } from '../../../types/enum';
+import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../types/logicaltype';
+import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../../types-interface/types/newTypeDialogDialogData';
+import { PlatformType } from '../../../types/platformType';
+import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';
+import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
+import { TypesService } from '../../../services/http/types.service';
+import { EnumsService } from '../../../services/http/enums.service';
 
 @Component({
   selector: 'app-new-type-dialog',
@@ -51,6 +53,7 @@ export class NewTypeDialogComponent implements OnInit {
   type: string = "";
   private _typeName:string =""
   private _typeSubject: Subject<string> = new Subject();
+  @Output() dialogClosed = new EventEmitter<newPlatformTypeDialogReturnData>();
   logicalTypes: Observable<logicalType[]> = this.typesService.logicalTypes;
   fields: logicalTypefieldValue[] = [];
   formInfo = this._typeSubject.pipe(
@@ -84,8 +87,8 @@ export class NewTypeDialogComponent implements OnInit {
   );
   createNewEnum = new BehaviorSubject<boolean>(false);
   dataSource = new MatTableDataSource<enumeration>();
-  applics = this.typesService.applic;
-  enumSets = this.typesService.enumSets;
+  applics = this.applicabilityService.applic;
+  enumSets = this.enumSetService.enumSets;
   enumSet: enumerationSet = {
     name: '',
     description: '',
@@ -95,16 +98,22 @@ export class NewTypeDialogComponent implements OnInit {
       name:"Base"
       }
   }
-  units = this.typesService.units;
+  units = this.constantEnumService.units;
+  disableClose = false;
   constructor(
     public dialogRef: MatDialogRef<NewTypeDialogComponent>,
-    private typesService: CurrentTypesService
+    private typesService: TypesService,
+    private constantEnumService: EnumsService,
+    private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService,
   ) {
     this._fieldObs.subscribe();
     this.formInfo.subscribe((value) => {
       this.formDetail = value;
     })
     this.dataSource.data = [];
+    if (this.dialogRef.id !== 'new-type-dialog') {
+      this.disableClose=true;
+    }
   }
 
   ngOnInit(): void { }
@@ -158,7 +167,7 @@ export class NewTypeDialogComponent implements OnInit {
     return o1?.id === o2?.id && o1?.name === o2?.name;
   }
   validateEnumLengthIsBelowMax() {
-    let bitSize=this.fields.filter((o)=>o.name==='InterfacePlatformTypeBitSize')[0]
+    let bitSize = this.fields.filter((o) => o.name === 'InterfacePlatformTypeBitSize')[0]
     if (this.dataSource.data.length >= 2 ** (parseInt(bitSize.value))) {
       return true;
     }
@@ -172,7 +181,7 @@ export class NewTypeDialogComponent implements OnInit {
     this.dataSource.data=enumData;
   }
 
-  closeDialog() {
+  get ReturnData() {
     let enumdescription: string = " ";
     this.dataSource.data.forEach((value, index) => {
       if (index != 0) {
@@ -194,5 +203,11 @@ export class NewTypeDialogComponent implements OnInit {
       ]
     }
     return returnValue;
+  }
+  closeDialog() {
+    return this.ReturnData;
+  }
+  hideTypeDialog() {
+    this.dialogClosed.emit(this.ReturnData);
   }
 }

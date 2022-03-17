@@ -50,6 +50,9 @@ export const elementServiceMock: Partial<ElementService> = {
     getElement(branchId: string, messageId: string, subMessageId: string, structureId: string, elementId: string, connectionId: string) {
         return of(elementsMock[0])
     },
+    getFilteredElements(branchId: string, filter: string) {
+        return of(elementsMock)
+    },
     deleteElement(branchId: string, elementId: string) {
         return of(transactionMock);
     }

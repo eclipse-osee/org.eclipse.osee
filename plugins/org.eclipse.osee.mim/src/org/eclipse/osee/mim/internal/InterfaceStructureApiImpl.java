@@ -85,74 +85,49 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return attributes;
    }
 
-   private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement) {
-      try {
-         PlatformTypeToken tempPlatformType = this.interfacePlatformTypeApi.getAccessor().getByRelationWithoutId(branch,
-            CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-            PlatformTypeToken.class);
+   private InterfaceStructureElementToken defaultSetUpElement(InterfaceStructureElementToken element) {
+      return this.defaultSetUpElement(element, InterfaceStructureElementToken.SENTINEL);
+   }
+
+   private InterfaceStructureElementToken defaultSetUpElement(InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement) {
+      if (previousElement.isInvalid()) {
+         element.setBeginByte((double) 0);
+         element.setBeginWord((double) 0);
+      } else {
          element.setBeginByte((previousElement.getEndByte() + 1) % 4);
          element.setBeginWord(Math.floor(
             previousElement.getEndByte() == 3 ? previousElement.getEndWord() + 1 : previousElement.getEndWord()));
-         element.setInterfacePlatformTypeBitSize(tempPlatformType.getInterfacePlatformTypeBitSize());
-         element.setPlatformTypeId(tempPlatformType.getId());
-         element.setPlatformTypeName(tempPlatformType.getName());
-         element.setLogicalType(
-            tempPlatformType.getInterfaceLogicalType() != null ? tempPlatformType.getInterfaceLogicalType() : "");
-         element.setInterfacePlatformTypeMinval(
-            tempPlatformType.getInterfacePlatformTypeMinval() != null ? tempPlatformType.getInterfacePlatformTypeMinval() : "");
-         element.setInterfacePlatformTypeMaxval(
-            tempPlatformType.getInterfacePlatformTypeMaxval() != null ? tempPlatformType.getInterfacePlatformTypeMaxval() : "");
-         element.setInterfacePlatformTypeDefaultValue(
-            tempPlatformType.getInterfacePlatformTypeDefaultValue() != null ? tempPlatformType.getInterfacePlatformTypeDefaultValue() : "");
-         element.setUnits(
-            tempPlatformType.getInterfacePlatformTypeUnits() != null ? tempPlatformType.getInterfacePlatformTypeUnits() : "");
-      } catch (Exception ex) {
-
       }
       return element;
    }
 
    private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure) {
+      return this.parseStructure(branch, structure, new LinkedList<InterfaceStructureElementToken>());
+   }
+
+   private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, List<InterfaceStructureElementToken> defaultElements) {
       try {
          Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
-         elements.addAll(interfaceElementApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceStructureContent_Structure, ArtifactId.valueOf(structure.getId()),
-            InterfaceStructureElementToken.class));
+         elements.addAll(defaultElements.size() > 0 ? defaultElements : interfaceElementApi.getAllRelated(branch,
+            ArtifactId.valueOf(structure.getId())));
          Collection<InterfaceStructureElementToken> tempElements = new LinkedList<>();
          if (elements.size() >= 2) {
             Iterator<InterfaceStructureElementToken> elementIterator = elements.iterator();
             InterfaceStructureElementToken previousElement = elementIterator.next();
 
             InterfaceStructureElementToken currentElement = elementIterator.next();
-            PlatformTypeToken previousPlatformType = this.interfacePlatformTypeApi.getAccessor().getByRelationWithoutId(
-               branch, CoreRelationTypes.InterfaceElementPlatformType_Element,
-               ArtifactId.valueOf(previousElement.getId()), PlatformTypeToken.class);
-            previousElement.setInterfacePlatformTypeBitSize(previousPlatformType.getInterfacePlatformTypeBitSize());
             previousElement.setBeginByte((double) 0);
             previousElement.setBeginWord((double) 0);
-
-            previousElement.setPlatformTypeId(previousPlatformType.getId());
-            previousElement.setPlatformTypeName(previousPlatformType.getName());
-            previousElement.setLogicalType(
-               previousPlatformType.getInterfaceLogicalType() != null ? previousPlatformType.getInterfaceLogicalType() : "");
-            previousElement.setInterfacePlatformTypeMinval(
-               previousPlatformType.getInterfacePlatformTypeMinval() != null ? previousPlatformType.getInterfacePlatformTypeMinval() : "");
-            previousElement.setInterfacePlatformTypeMaxval(
-               previousPlatformType.getInterfacePlatformTypeMaxval() != null ? previousPlatformType.getInterfacePlatformTypeMaxval() : "");
-            previousElement.setInterfacePlatformTypeDefaultValue(
-               previousPlatformType.getInterfacePlatformTypeDefaultValue() != null ? previousPlatformType.getInterfacePlatformTypeDefaultValue() : "");
-            previousElement.setUnits(
-               previousPlatformType.getInterfacePlatformTypeUnits() != null ? previousPlatformType.getInterfacePlatformTypeUnits() : "");
             tempElements.add(previousElement);
             if (!elementIterator.hasNext()) {
                /**
                 * If currentElement = last, set it up so that it may be added/serialized
                 */
-               currentElement = this.defaultSetUpElement(branch, currentElement, previousElement);
+               currentElement = this.defaultSetUpElement(currentElement, previousElement);
             }
             while (elementIterator.hasNext()) {
                InterfaceStructureElementToken nextElement = elementIterator.next();
-               currentElement = this.defaultSetUpElement(branch, currentElement, previousElement);
+               currentElement = this.defaultSetUpElement(currentElement, previousElement);
                if (currentElement.getInterfacePlatformTypeByteSize() >= 4) {
                   if (previousElement.getEndByte() != 3) {
                      /**
@@ -176,7 +151,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      //make a spare to fill remaining area until beginWord % WordSize=1
                   }
                   //re-set up current Element based on spare
-                  currentElement = this.defaultSetUpElement(branch, currentElement, previousElement);
+                  currentElement = this.defaultSetUpElement(currentElement, previousElement);
                }
                tempElements.add(currentElement);
                previousElement = currentElement;
@@ -185,7 +160,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             /**
              * Handle last element outside of while loop
              */
-            currentElement = this.defaultSetUpElement(branch, currentElement, previousElement);
+            currentElement = this.defaultSetUpElement(currentElement, previousElement);
             if (currentElement.getInterfacePlatformTypeByteSize() >= 4) {
                if (previousElement.getEndByte() != 3) {
                   /**
@@ -207,7 +182,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                   //make a spare to fill remaining area until beginWord % WordSize=1
                }
                //re-set up current Element based on spare
-               currentElement = this.defaultSetUpElement(branch, currentElement, previousElement);
+               currentElement = this.defaultSetUpElement(currentElement, previousElement);
             }
             tempElements.add(currentElement);
             if (currentElement.getEndByte() != 3) {
@@ -398,38 +373,18 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          /**
           * Gets all elements that match filter conditions, then find their related structures and attach
           */
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.interfaceElementApi.getAccessor().getAllByFilter(branch, filter,
-               this.elementAttributeList, InterfaceStructureElementToken.class);
+         List<InterfaceStructureElementToken> elements = this.interfaceElementApi.getFiltered(branch, filter);
          for (InterfaceStructureElementToken element : elements) {
             List<InterfaceStructureToken> subStructureList =
                (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
                   CoreRelationTypes.InterfaceStructureContent_DataElement, ArtifactId.valueOf(element.getId()),
                   InterfaceStructureToken.class);
             for (InterfaceStructureToken alternateStructure : subStructureList) {
-               PlatformTypeToken platformType = this.interfacePlatformTypeApi.getAccessor().getByRelationWithoutId(
-                  branch, CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-                  PlatformTypeToken.class);
-               element.setPlatformTypeId(platformType.getId());
-               element.setPlatformTypeName(platformType.getName());
-               element.setLogicalType(
-                  platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
-               element.setInterfacePlatformTypeMinval(
-                  platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
-               element.setInterfacePlatformTypeMaxval(
-                  platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
-               element.setInterfacePlatformTypeDefaultValue(
-                  platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
-               element.setUnits(
-                  platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
                if (totalStructureList.indexOf(alternateStructure) != -1 && totalStructureList.get(
                   totalStructureList.indexOf(alternateStructure)).getElements().indexOf(element) != -1) {
-                  InterfaceStructureElementToken tempElement =
-                     totalStructureList.get(totalStructureList.indexOf(alternateStructure)).getElements().get(
-                        totalStructureList.get(totalStructureList.indexOf(alternateStructure)).getElements().indexOf(
-                           element));
-                  element.setBeginByte(tempElement.getBeginByte());
-                  element.setBeginWord(tempElement.getBeginWord());
+                  totalStructureList.set(totalStructureList.indexOf(alternateStructure),
+                     this.parseStructure(branch, totalStructureList.get(totalStructureList.indexOf(alternateStructure)),
+                        totalStructureList.get(totalStructureList.indexOf(alternateStructure)).getElements()));
                }
                List<InterfaceStructureElementToken> elementList = new LinkedList<InterfaceStructureElementToken>();
                elementList.add(element);

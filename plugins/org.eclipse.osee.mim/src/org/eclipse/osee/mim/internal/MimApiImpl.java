@@ -113,7 +113,7 @@ public class MimApiImpl implements MimApi {
       this.interfaceMessageApi = new InterfaceMessageApiImpl(orcsApi);
       this.interfaceSubMessageApi = new InterfaceSubMessageApiImpl(orcsApi);
       this.interfacePlatformApi = new InterfacePlatformTypeApiImpl(orcsApi);
-      this.interfaceElementApi = new InterfaceElementApiImpl(orcsApi);
+      this.interfaceElementApi = new InterfaceElementApiImpl(orcsApi, this.interfacePlatformApi);
       this.interfaceElementArrayApi = new InterfaceElementArrayApiImpl(orcsApi);
       this.interfaceStructureApi = new InterfaceStructureApiImpl(orcsApi, this.getInterfacePlatformTypeApi(),
          this.getInterfaceElementApi(), this.getInterfaceElementArrayApi());

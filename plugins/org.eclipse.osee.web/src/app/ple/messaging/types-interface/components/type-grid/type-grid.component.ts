@@ -22,7 +22,7 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 import { enumeration } from '../../../shared/types/enum';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../../shared/types/platformType';
-import { NewTypeDialogComponent } from '../new-type-dialog/new-type-dialog.component';
+import { NewTypeDialogComponent } from '../../../shared/components/dialogs/new-type-dialog/new-type-dialog.component';
 
 @Component({
   selector: 'ple-messaging-types-type-grid',
@@ -111,6 +111,7 @@ export class TypeGridComponent implements OnInit, OnChanges {
 
   openNewTypeDialog() {
     this.dialog.open(NewTypeDialogComponent, {
+      id:'new-type-dialog',
       minHeight: "70vh",
       minWidth: "80vw"
     }).afterClosed().pipe(
