@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="org.eclipse.osee.icteam.reqif.commands.category"
+            name="Sample Category">
+      </category>
+      <command
+            categoryId="org.eclipse.osee.icteam.reqif.commands.category"
+            name="Import ReqIf"
+            id="org.eclipse.osee.icteam.reqif.commands.importReqIfCommand">
+      </command>
+      <command
+            categoryId="org.eclipse.osee.icteam.reqif.commands.category"
+            name="Export ReqIf"
+            id="org.eclipse.osee.icteam.reqif.commands.exportReqIfCommand">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.osee.icteam.reqif.handlers.ImportReqIfHandler"
+            commandId="org.eclipse.osee.icteam.reqif.commands.importReqIfCommand">
+      </handler>
+      <handler
+            class="org.eclipse.osee.icteam.reqif.handlers.ExportReqIfHandler"
+            commandId="org.eclipse.osee.icteam.reqif.commands.exportReqIfCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.osee.icteam.reqif.commands.importReqIfCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="org.eclipse.osee.icteam.reqif.menus.sampleMenu"
+               label="Req If Menu"
+               mnemonic="M">
+            <command
+                  commandId="org.eclipse.osee.icteam.reqif.commands.importReqIfCommand"
+                  id="org.eclipse.osee.icteam.reqif.menus.sampleCommand"
+                  mnemonic="S">
+            </command>
+             <command
+                  commandId="org.eclipse.osee.icteam.reqif.commands.exportReqIfCommand"
+                  id="org.eclipse.osee.icteam.reqif.menus.sampleCommand.export"
+                  mnemonic="E">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>
