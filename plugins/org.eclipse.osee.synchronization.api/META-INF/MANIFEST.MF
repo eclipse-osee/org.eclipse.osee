@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Synchronization API (Incubation)
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-SymbolicName: org.eclipse.osee.synchronization.api;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.eclipse.osee.synchronization.api
+Export-Package: org.eclipse.osee.synchronization.api
+Require-Bundle: 
+ org.eclipse.osee.framework.core,
+ javax.ws.rs

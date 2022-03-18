@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2012 Boeing
+ * Copyright (c) 2012, 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *     Boeing - add SynchronizationEndpoint
  **********************************************************************/
 
 package org.eclipse.osee.framework.core.client.internal;
@@ -52,6 +53,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
+import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 
 /**
  * @author John Misinco
@@ -221,6 +223,15 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public GitEndpoint getGitEndpoint() {
       return getDefineEndpoint(GitEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public SynchronizationEndpoint getSynchronizationEndpoint() {
+      return jaxRsApi().newProxy("synchronization", SynchronizationEndpoint.class);
    }
 
    @Override
