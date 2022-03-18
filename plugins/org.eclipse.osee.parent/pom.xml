@@ -25,8 +25,8 @@
 		<git-repo-root>file:../../..</git-repo-root>
 		<build-alias>-DEV</build-alias>
 
-		<tycho-version>1.7.0</tycho-version>
-		<tycho-extras-version>1.7.0</tycho-extras-version>
+		<tycho-version>2.0.0</tycho-version>
+		<tycho-extras-version>2.0.0</tycho-extras-version>
 
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
@@ -241,8 +241,8 @@
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
+                                                <source>11</source>
+                                                <target>11</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 <!-- 					<dependencies> -->

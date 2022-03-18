@@ -222,7 +222,11 @@ public interface AtsAttributeTypes {
    AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", MediaType.TEXT_PLAIN, "Holds the Rank of workflow for prioritization");
    AttributeTypeString Shortname = ats.createStringNoTag(1152921504606847340L, "Shortname", MediaType.TEXT_PLAIN, "Shorter name of project");
    AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", MediaType.TEXT_PLAIN, "Count value to hold the number of tasks under a project");
-   AttributeTypeString BurnDownData = ats.createString(1152921504606851667L, "burndown.data", MediaType.TEXT_PLAIN, "Stores the modified remaining time and date");
+   AttributeTypeString BurnDownData = ats.createString(1152921504606851667L, "burndown.data", MediaType.TEXT_PLAIN, "Stores the modified remaining time and date");   AttributeTypeString Prefix = ats.createString(1152921504606851670L, "prefix", MediaType.TEXT_PLAIN, "Prefix");
+   AttributeTypeString Identifier = ats.createString(1152921504606851671L, "id", MediaType.TEXT_PLAIN, "Identifier");
+   AttributeTypeString LastChange = ats.createString(1152921504606851672L, "last.change", MediaType.TEXT_PLAIN, "LastChange");
+   AttributeTypeString MaxLength = ats.createString(1152921504606851673L, "max.length", MediaType.TEXT_PLAIN, "MaxLength");   
+   AttributeTypeString LongName = ats.createString(1152921504606851674L, "long.name", MediaType.TEXT_PLAIN, "LongName");
 
    // Remove after 1.0.0 full release
    AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");

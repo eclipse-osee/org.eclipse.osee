@@ -22,7 +22,7 @@
 <plugin id="com.google.gerrit.prettify"/>
 <plugin id="com.google.gerrit.reviewdb"/>
 <plugin id="com.google.gson"/>
-<plugin id="com.google.guava"/>
+<plugin id="com.google.guava" version="27.1.0.v20190517-1946"/>
 <plugin id="com.google.gwt.servlet"/>
 <plugin id="com.google.gwtjsonrpc"/>
 <plugin id="com.google.gwtorm"/>
@@ -46,7 +46,7 @@
 <plugin id="javax.inject.source"/>
 <plugin id="javax.mail.glassfish"/>
 <plugin id="javax.mail.glassfish.source"/>
-<plugin id="javax.servlet"/>
+<plugin id="javax.servlet" version="3.1.0.v201410161800"/>
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
 <plugin id="javax.servlet.source"/>
@@ -119,9 +119,9 @@
 <plugin id="org.apache.httpcomponents.httpcore"/>
 <plugin id="org.apache.jasper.glassfish"/>
 <plugin id="org.apache.jasper.glassfish.source"/>
-<plugin id="org.apache.lucene.analyzers-common"/>
+<plugin id="org.apache.lucene.analyzers-common" version="8.4.1.v20200122-1459"/>
 <plugin id="org.apache.lucene.analyzers-smartcn"/>
-<plugin id="org.apache.lucene.core"/>
+<plugin id="org.apache.lucene.core" version="8.4.1.v20200122-1459"/>
 <plugin id="org.apache.oro"/>
 <plugin id="org.apache.oro.source"/>
 <plugin id="org.apache.sshd.osgi"/>
@@ -412,13 +412,13 @@
 <plugin id="org.eclipse.jdt.ui"/>
 <plugin id="org.eclipse.jetty.http" version="9.4.44.v20210927"/>
 <plugin id="org.eclipse.jetty.io" version="9.4.44.v20210927"/>
-<plugin id="org.eclipse.jetty.io.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.io.source"/>
 <plugin id="org.eclipse.jetty.security" version="9.4.44.v20210927"/>
-<plugin id="org.eclipse.jetty.security.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.security.source"/>
 <plugin id="org.eclipse.jetty.server" version="9.4.44.v20210927"/>
-<plugin id="org.eclipse.jetty.server.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.server.source"/>
 <plugin id="org.eclipse.jetty.servlet" version="9.4.44.v20210927"/>
-<plugin id="org.eclipse.jetty.servlet.source" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.servlet.source"/>
 <plugin id="org.eclipse.jetty.util" version="9.4.44.v20210927"/>
 <plugin id="org.eclipse.jetty.util.ajax"/>
 <plugin id="org.eclipse.jface"/>
@@ -599,9 +599,9 @@
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
 <plugin id="org.mockito"/>
-<plugin id="org.objectweb.asm"/>
+<plugin id="org.objectweb.asm" version="8.0.1.v20200420-1007"/>
 <plugin id="org.objectweb.asm.source"/>
-<plugin id="org.objectweb.asm.tree"/>
+<plugin id="org.objectweb.asm.tree" version="8.0.1.v20200420-1007"/>
 <plugin id="org.objectweb.asm.tree.source"/>
 <plugin id="org.objenesis"/>
 <plugin id="org.objenesis.source"/>
@@ -639,6 +639,42 @@
 <plugin id="org.glassfish.jaxb.runtime"/>
 <plugin id="com.sun.istack.commons-runtime"/>
 	<plugin id="com.sun.xml.txw2"/>
+	<plugin id="com.jcraft.jsch.source"/>
+	<plugin id="org.apache.commons.codec.source"/>
+	<plugin id="org.apache.commons.io.source"/>
+	<plugin id="org.apache.httpcomponents.httpclient.source"/>
+	<plugin id="org.apache.httpcomponents.httpcore.source"/>
+	<plugin id="org.apache.lucene.analyzers-common.source"/>
+	<plugin id="org.apache.lucene.analyzers-smartcn.source"/>
+	<plugin id="org.apache.lucene.core.source"/>
+	<plugin id="org.eclipse.core.net.win32.x86_64.source"/>
+	<plugin id="org.eclipse.e4.ui.ide.source"/>
+	<plugin id="org.eclipse.ecf.source"/>
+	<plugin id="org.eclipse.emf.common.source"/>
+	<plugin id="org.eclipse.emf.ecore.change.source"/>
+	<plugin id="org.eclipse.emf.ecore.source"/>
+	<plugin id="org.eclipse.equinox.concurrent.source"/>
+	<plugin id="org.eclipse.equinox.http.jetty.source"/>
+	<plugin id="org.eclipse.help.source"/>
+	<plugin id="org.eclipse.jdt.annotation.source" version="1.1.500.v20200407-1355"/>
+	<plugin id="org.eclipse.jdt.apt.ui.source"/>
+	<plugin id="org.eclipse.jdt.ui.source"/>
+	<plugin id="org.eclipse.jetty.http.source"/>
+	<plugin id="org.eclipse.jetty.io.source"/>
+	<plugin id="org.eclipse.jetty.security.source"/>
+	<plugin id="org.eclipse.jetty.server.source"/>
+	<plugin id="org.eclipse.jetty.servlet.source"/>
+	<plugin id="org.eclipse.jetty.util.source"/>
+	<plugin id="org.eclipse.pde.genericeditor.extension.source"/>
+	<plugin id="org.eclipse.text.source"/>
+	<plugin id="org.eclipse.ui.genericeditor.source"/>
+	<plugin id="org.eclipse.ui.source"/>
+	<plugin id="org.eclipse.ui.workbench.source"/>
+	<plugin id="org.eclipse.urischeme.source"/>
+	<plugin id="org.eclipse.rmf.reqif10.serialization"/>
+	<plugin id="org.eclipse.rmf.reqif10.xhtml"/>
+	<plugin id="org.eclipse.rmf.reqif10"/>
+	<plugin id="org.eclipse.sphinx.emf.serialization"/>
 </includeBundles>
 <environment>
 <os>win32</os>
