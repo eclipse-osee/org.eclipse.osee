@@ -6,6 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.osee.client.integration.tests
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs.client,
  javax.ws.rs.core,
@@ -54,7 +55,7 @@ Import-Package: javax.ws.rs.client,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.jdbc,
-  org.eclipse.osee.orcs.rest.model,
+ org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.swt.graphics,
  org.eclipse.ui.dialogs,
@@ -67,4 +68,5 @@ Require-Bundle: org.junit,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.define.ide,
+ org.eclipse.osee.synchronization.api,
  javax.mail.glassfish;bundle-version="1.4.1"

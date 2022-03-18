@@ -7,6 +7,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.client.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.osee.framework.core.client
 Import-Package: com.fasterxml.jackson.core,
  org.eclipse.core.runtime,
  org.eclipse.jdt.annotation,
@@ -36,4 +37,5 @@ Import-Package: com.fasterxml.jackson.core,
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: javax.ws.rs
+Require-Bundle: javax.ws.rs,
+ org.eclipse.osee.synchronization.api

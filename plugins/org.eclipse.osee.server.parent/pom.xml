@@ -129,6 +129,12 @@
 				<module>
 					../../plugins/org.eclipse.osee.mim
 				</module>
+				<module>
+				   ../../plugins/org.eclipse.osee.synchronization.api
+				</module>
+				<module>
+				   ../../plugins/org.eclipse.osee.synchronization.rest
+				</module>
 			</modules>
 		</profile>
 		<profile>
@@ -210,6 +216,12 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.mim
+				</module>
+				<module>
+				   ../../plugins/org.eclipse.osee.synchronization.api
+				</module>
+				<module>
+				   ../../plugins/org.eclipse.osee.synchronization.rest
 				</module>
 			</modules>
 		</profile>

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2012 Boeing
+ * Copyright (c) 2012, 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *     Boeing - add SynchronizationEndpoint
  **********************************************************************/
 
 package org.eclipse.osee.framework.core.client;
@@ -37,6 +38,7 @@ import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
+import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 
 /**
  * @author John Misinco
@@ -84,6 +86,15 @@ public interface OseeClient extends OseeApi {
    ImportEndpoint getImportEndpoint();
 
    GitEndpoint getGitEndpoint();
+
+   /**
+    * Obtains an object that implements the {@link SynchronizationEndpoint} to process REST API requests for
+    * synchronization artifacts.
+    *
+    * @return an object implementing the interface {@link SynchronizationEndpoint}.
+    */
+
+   SynchronizationEndpoint getSynchronizationEndpoint();
 
    @Deprecated
    String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact);

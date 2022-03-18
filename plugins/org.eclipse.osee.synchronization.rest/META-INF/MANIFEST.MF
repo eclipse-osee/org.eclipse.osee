@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Synchronization (Incubation)
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-SymbolicName: org.eclipse.osee.synchronization.rest;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Service-Component: OSGI-INF/*.xml
+Automatic-Module-Name: org.eclipse.osee.synchronization.rest
+Require-Bundle: 
+ javax.ws.rs,
+ org.eclipse.emf.common,
+ org.eclipse.emf.ecore,
+ org.eclipse.osee.app,
+ org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.logger,
+ org.eclipse.osee.jdbc,
+ org.eclipse.osee.orcs,
+ org.eclipse.sphinx.emf.serialization,
+ org.eclipse.osee.synchronization.api,
+ org.eclipse.rmf.reqif10,
+ org.eclipse.rmf.reqif10.serialization,
+ org.eclipse.rmf.reqif10.xhtml
+Import-Package: 
+ org.osgi.framework,
+ org.osgi.framework.wiring
