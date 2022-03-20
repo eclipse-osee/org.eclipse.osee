@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
+import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -51,6 +52,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
@@ -501,6 +503,11 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       for (WfeWorkflowSection section : stateSections) {
          section.computeTextSizesAndReflow();
       }
+   }
+
+   @Override
+   public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
+      // no columns in WorkflowTab
    }
 
 }

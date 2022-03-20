@@ -16,25 +16,28 @@ package org.eclipse.osee.ats.ide.agile;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
+import org.eclipse.osee.ats.ide.column.BackgroundLoadingColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.world.IAtsWorldArtifactEventColumn;
+import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -43,17 +46,21 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class SprintColumn extends BackgroundLoadingColumn implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static SprintColumn instance = new SprintColumn();
 
@@ -200,17 +207,14 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (element instanceof Artifact) {
-            return Collections.toString("; ",
-               AtsApiService.get().getQueryServiceIde().getArtifact(element).getRelatedArtifacts(
-                  AtsRelationTypes.AgileSprintToItem_AgileSprint));
-         }
+         return Collections.toString("; ",
+            AtsApiService.get().getQueryServiceIde().getArtifact(workItem.getStoreObject()).getRelatedArtifacts(
+               AtsRelationTypes.AgileSprintToItem_AgileSprint));
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
-      return "";
    }
 
    @Override
@@ -229,6 +233,27 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   /**
+    * Don't want columns to listen to their own events, so have WorldXViewerEventManager call here to tell columns to
+    * handle
+    */
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, WorldXViewer xViewer) {
+      if (!Widgets.isAccessible(xViewer.getTree())) {
+         return;
+      }
+      for (EventBasicGuidRelation rel : artifactEvent.getRelations()) {
+         Long relTypeId = rel.getRelTypeGuid();
+         if (AtsRelationTypes.AgileSprintToItem.getId().equals(relTypeId)) {
+            Artifact workflow = ArtifactCache.getActive(rel.getArtB());
+            IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
+            String newValue = getValue(workItem, idToValueMap);
+            idToValueMap.put(workflow.getId(), newValue);
+            xViewer.update(workflow, null);
+         }
       }
    }
 

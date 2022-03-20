@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -443,6 +444,15 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          }
       }
       return teamWfs;
+   }
+
+   @Override
+   public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
+      for (XViewerColumn col : worldXViewer.getColumns()) {
+         if (col instanceof IAtsWorldArtifactEventColumn) {
+            ((IAtsWorldArtifactEventColumn) col).handleArtifactEvent(artifactEvent, worldXViewer);
+         }
+      }
    }
 
 }

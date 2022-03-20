@@ -13,24 +13,19 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class ParentAtsIdColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class ParentAtsIdColumn extends BackgroundLoadingColumn {
 
    public static ParentAtsIdColumn instance = new ParentAtsIdColumn();
 
@@ -55,21 +50,17 @@ public class ParentAtsIdColumn extends XViewerAtsColumn implements IXViewerValue
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-            IAtsAction parentAction = (IAtsAction) ((TeamWorkFlowArtifact) element).getParentAction().getStoreObject();
-            if (parentAction != null) {
-               return parentAction.getAtsId();
-            }
-         } else if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return ((AbstractWorkflowArtifact) element).getParentAWA().getAtsId();
+         if (workItem.isTeamWorkflow()) {
+            IAtsAction parentAction = workItem.getParentAction();
+            return parentAction == null ? "" : parentAction.getAtsId();
+         } else {
+            return workItem.getParentTeamWorkflow().getAtsId();
          }
-
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
-      return "";
    }
 
 }

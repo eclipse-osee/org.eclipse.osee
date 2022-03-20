@@ -58,7 +58,7 @@ public class SiblingAtsIdColumn extends BackgroundLoadingColumn {
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       ids.clear();
-      ;
+
       if (workItem instanceof IAtsTeamWorkflow) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
          for (IAtsTeamWorkflow sibTeamWf : AtsApiService.get().getWorkItemService().getSiblings(teamWf)) {
@@ -73,7 +73,7 @@ public class SiblingAtsIdColumn extends BackgroundLoadingColumn {
     * above
     */
    @Override
-   protected void getValues(Collection<?> objects, Map<Long, String> idToValueMap) {
+   public void getValues(Collection<?> objects, Map<Long, String> idToValueMap) {
       Collection<Artifact> arts = Collections.castAll(objects);
       AtsBulkLoad.bulkLoadSiblings(arts);
    }

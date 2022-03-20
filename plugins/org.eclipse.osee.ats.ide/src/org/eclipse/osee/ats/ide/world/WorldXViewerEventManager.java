@@ -139,7 +139,7 @@ public class WorldXViewerEventManager {
             AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
 
          return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
-            goalMemberReordered, sprintMemberReordered, handlers);
+            goalMemberReordered, sprintMemberReordered, artifactEvent, handlers);
       }
    }
 
@@ -151,8 +151,12 @@ public class WorldXViewerEventManager {
       private final Collection<Artifact> goalMemberReordered;
       private final Collection<Artifact> sprintMemberReordered;
       private final Collection<Artifact> allModAndParents;
+      private final ArtifactEvent artifactEvent;
 
-      public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> allModAndParents, Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered, Collection<IWorldViewerEventHandler> handlers) {
+      public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> allModAndParents, //
+         Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, //
+         Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered, //
+         ArtifactEvent artifactEvent, Collection<IWorldViewerEventHandler> handlers) {
          super();
          this.modifiedArts = modifiedArts;
          this.allModAndParents = allModAndParents;
@@ -160,6 +164,7 @@ public class WorldXViewerEventManager {
          this.deletedPurgedArts = deletedPurgedArts;
          this.goalMemberReordered = goalMemberReordered;
          this.sprintMemberReordered = sprintMemberReordered;
+         this.artifactEvent = artifactEvent;
          this.handlers = handlers;
       }
 
@@ -231,6 +236,8 @@ public class WorldXViewerEventManager {
                         processArtifact(worldViewer, artifact, processed);
                      }
                      handler.relationsModifed(relModifiedArts, goalMemberReordered, sprintMemberReordered);
+
+                     handler.handleColumnEvents(artifactEvent, handler.getWorldXViewer());
                   }
                }
             } catch (Exception ex) {
