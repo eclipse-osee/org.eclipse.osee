@@ -28,7 +28,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
@@ -38,34 +38,38 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.AgileFactory;
-import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.column.IAtsXViewerPreComputedColumn;
+import org.eclipse.osee.ats.ide.column.BackgroundLoadingColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.world.IAtsWorldArtifactEventColumn;
+import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AgileFeatureGroupColumn extends BackgroundLoadingColumn implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static AgileFeatureGroupColumn instance = new AgileFeatureGroupColumn();
 
@@ -99,16 +103,10 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
             if (modified && isPersistViewer(xViewer)) {
                awa.persist("persist goals via alt-left-click");
             }
-            if (modified) {
-               populateCachedValues(java.util.Collections.singleton(awa), preComputedValueMap);
-               xViewer.update(awa, null);
-               return true;
-            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-
       return false;
    }
 
@@ -200,44 +198,28 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
    }
 
    @Override
-   public Long getKey(Object obj) {
-      Long result = 0L;
-      if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getId();
-      } else if (obj instanceof ArtifactId) {
-         result = ((ArtifactId) obj).getId();
-      }
-      return result;
-   }
-
-   @Override
-   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      Collection<ArtifactId> workItemArts = AtsObjects.getTeamWfArtifacts(objects, AtsApiService.get());
-      // Change NamedId to ArtifactToken when merge to 25.0
-      for (ArtifactId workItemId : workItemArts) {
-         try {
-            Artifact workItem = AtsApiService.get().getQueryServiceIde().getArtifact(workItemId);
-            List<Artifact> featureArts =
-               workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
-            if (workItem.isOfType(AtsArtifactTypes.Action)) {
-               Set<String> strs = new HashSet<>();
-               for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(workItem)) {
-                  for (ArtifactToken featureArt : AtsApiService.get().getQueryServiceIde().getArtifact(
-                     teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
-                     strs.add(featureArt.getName());
-                  }
-               }
-               preComputedValueMap.put(getKey(workItem), Collections.toString(", ", strs));
-            } else {
-               Set<String> strs = new HashSet<>();
-               for (ArtifactToken featureArt : featureArts) {
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
+      try {
+         Collection<ArtifactToken> featureArts = AtsApiService.get().getRelationResolver().getRelated(workItem,
+            AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
+         if (workItem.isOfType(AtsArtifactTypes.Action)) {
+            Set<String> strs = new HashSet<>();
+            for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(workItem)) {
+               for (ArtifactToken featureArt : AtsApiService.get().getQueryServiceIde().getArtifact(
+                  teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
                   strs.add(featureArt.getName());
                }
-               preComputedValueMap.put(getKey(workItem), Collections.toString(", ", strs));
             }
-         } catch (OseeCoreException ex) {
-            preComputedValueMap.put(getKey(workItemId), LogUtil.getCellExceptionString(ex));
+            return Collections.toString(", ", strs);
+         } else {
+            Set<String> strs = new HashSet<>();
+            for (ArtifactToken featureArt : featureArts) {
+               strs.add(featureArt.getName());
+            }
+            return Collections.toString(", ", strs);
          }
+      } catch (OseeCoreException ex) {
+         return LogUtil.getCellExceptionString(ex);
       }
    }
 
@@ -255,12 +237,30 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          }
 
          promptChangeFeatureGroup(awas);
-         populateCachedValues(awas, preComputedValueMap);
 
-         ((XViewer) getXViewer()).update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   /**
+    * Don't want columns to listen to their own events, so have WorldXViewerEventManager call here to tell columns to
+    * handle
+    */
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, WorldXViewer xViewer) {
+      if (!Widgets.isAccessible(xViewer.getTree())) {
+         return;
+      }
+      for (EventBasicGuidArtifact guidArt : artifactEvent.get(EventModType.Reloaded)) {
+         Artifact workflow = ArtifactCache.getActive(guidArt);
+         if (workflow != null && workflow.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
+            String newValue = getValue(workItem, idToValueMap);
+            idToValueMap.put(workflow.getId(), newValue);
+            xViewer.update(workflow, null);
+         }
       }
    }
 

@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.BacklogColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalCheckTreeDialog;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,15 +50,11 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Donald G. Dunne
  * @author David W Miller
  */
-public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public abstract class BaseGoalsColumn extends BackgroundLoadingColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
    private final WorkItemType goalType = WorkItemType.Goal;
    private final String persistString = "Set Goals";
    private final boolean isBacklogGoal = false;
-
-   protected BaseGoalsColumn() {
-      // do nothing
-   }
 
    public BaseGoalsColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
@@ -137,12 +132,12 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       String result = "";
       try {
-         result = BacklogColumn.getColumnText(element, AtsApiService.get(), isBacklogGoal());
+         result = BacklogColumn.getColumnText(workItem, AtsApiService.get(), isBacklogGoal());
       } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
+         result = LogUtil.getCellExceptionString(ex);
       }
       return result;
    }

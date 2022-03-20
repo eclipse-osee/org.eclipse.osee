@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 
 /**
  * @author Donald G. Dunne
@@ -28,5 +29,7 @@ public interface IWorldViewerEventHandler {
    public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered);
 
    public boolean isDisposed();
+
+   public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer);
 
 }

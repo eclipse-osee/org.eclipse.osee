@@ -13,14 +13,11 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import java.util.Collection;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -28,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class ParentIdColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
+public class ParentIdColumn extends BackgroundLoadingColumn {
 
    public static ParentIdColumn instance = new ParentIdColumn();
 
@@ -52,22 +49,12 @@ public class ParentIdColumn extends XViewerAtsColumn implements IAtsXViewerPreCo
       return newXCol;
    }
 
-   public String getText(Object element) {
+   @Override
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       try {
-         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return AtsApiService.get().getWorkItemService().getCombinedPcrId(
-               (IAtsWorkItem) ((AbstractWorkflowArtifact) element).getParentAWA());
-         }
+         return AtsApiService.get().getWorkItemService().getCombinedPcrId(workItem);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
-      }
-      return "";
-   }
-
-   @Override
-   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      for (Object obj : objects) {
-         preComputedValueMap.put(getKey(obj), getText(obj));
       }
    }
 

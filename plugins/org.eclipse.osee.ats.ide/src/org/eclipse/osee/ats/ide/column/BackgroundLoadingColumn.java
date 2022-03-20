@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public abstract class BackgroundLoadingColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn {
+public abstract class BackgroundLoadingColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, BackgroundLoadingValueProvider {
 
    public AtomicBoolean loading = new AtomicBoolean(false);
    public AtomicBoolean loaded = new AtomicBoolean(false);
@@ -42,21 +42,28 @@ public abstract class BackgroundLoadingColumn extends XViewerAtsColumn implement
    }
 
    private void startLoadingThread(Collection<?> objects) {
-      Thread loadingThread = new Thread("Loading " + getName()) {
+      startLoadingThread(getName(), objects, loading, loaded, idToValueMap, (WorldXViewer) getXViewer(), this);
+   }
+
+   /**
+    * Available for columns that can't extend BackgroundLoadingColumn
+    */
+   public static void startLoadingThread(String name, Collection<?> objects, AtomicBoolean loading, AtomicBoolean loaded, Map<Long, String> idToValueMap, final WorldXViewer xViewer, BackgroundLoadingValueProvider valueProvider) {
+      Thread loadingThread = new Thread("Loading " + name) {
 
          @Override
          public void run() {
 
             // Calculate fields; by all items
-            getValues(objects, idToValueMap);
+            valueProvider.getValues(objects, idToValueMap);
 
             // OR Calculate fields; by item
             for (Object element : objects) {
-               Long key = getKey(element);
+               Long key = valueProvider.getKey(element);
                try {
                   if (element instanceof IAtsWorkItem) {
                      IAtsWorkItem workItem = (IAtsWorkItem) element;
-                     String value = getValue(workItem, idToValueMap);
+                     String value = valueProvider.getValue(workItem, idToValueMap);
                      if (value != null) {
                         idToValueMap.put(key, value);
                      }
@@ -75,7 +82,6 @@ public abstract class BackgroundLoadingColumn extends XViewerAtsColumn implement
 
                @Override
                public void run() {
-                  WorldXViewer xViewer = (WorldXViewer) getXViewer();
                   xViewer.refreshColumnsWithPreCompute();
                }
             });
@@ -83,21 +89,6 @@ public abstract class BackgroundLoadingColumn extends XViewerAtsColumn implement
 
       };
       loadingThread.start();
-   }
-
-   /**
-    * Allows for retrieving value one workitem in bulk; only use this OR getValue
-    */
-   protected void getValues(Collection<?> objects, Map<Long, String> idToValueMap) {
-      // for sub-class implementation
-   }
-
-   /**
-    * Allows for retriving value one workitem at a time; consider getValues for performance. only use this OR getValues
-    */
-   protected String getValue(IAtsWorkItem teamWf, Map<Long, String> idToValueMap) {
-      // for sub-class implementation
-      return null;
    }
 
    @Override
@@ -117,6 +108,13 @@ public abstract class BackgroundLoadingColumn extends XViewerAtsColumn implement
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
+      return getText(obj, loading, loaded, idToValueMap);
+   }
+
+   /**
+    * Available for columns that can't extend BackgroundLoadingColumn
+    */
+   public static String getText(Object obj, AtomicBoolean loading, AtomicBoolean loaded, Map<Long, String> idToValueMap) {
       try {
          if (obj instanceof IAtsWorkItem) {
             if (loading.get()) {

@@ -749,4 +749,9 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       return taskComposite.getSelectedTaskArtifacts();
    }
 
+   @Override
+   public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
+      // already handled in WorldComposite
+   }
+
 }

@@ -121,12 +121,12 @@ public class WorldXViewerUtil {
       return null;
    }
 
-   public static void addColumn(SkynetXViewerFactory factory, XViewerColumn taskCol, int width, List<XViewerColumn> sprintCols) {
-      XViewerColumn newCol = taskCol.copy();
+   public static void addColumn(SkynetXViewerFactory factory, XViewerColumn xCol, int width, List<XViewerColumn> xCols) {
+      XViewerColumn newCol = xCol.copy();
       newCol.setShow(true);
       newCol.setWidth(width);
       factory.registerColumns(newCol);
-      sprintCols.add(newCol);
+      xCols.add(newCol);
    }
 
 }

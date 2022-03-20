@@ -13,16 +13,27 @@
 
 package org.eclipse.osee.ats.ide.column;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
  */
-public class TargetedVersionColumnUI extends AbstractVersionSelector {
+public class TargetedVersionColumnUI extends AbstractVersionSelector implements IXViewerPreComputedColumn, BackgroundLoadingValueProvider {
 
    public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
+   public AtomicBoolean loading = new AtomicBoolean(false);
+   public AtomicBoolean loaded = new AtomicBoolean(false);
+   protected Map<Long, String> idToValueMap = new HashMap<>();
 
    public TargetedVersionColumnUI() {
       super(AtsColumnTokens.TargetedVersionColumn);
@@ -46,6 +57,32 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector {
    @Override
    public RelationTypeSide getRelation() {
       return AtsRelationTypes.TeamWorkflowTargetedForVersion_Version;
+   }
+
+   @Override
+   public Long getKey(Object obj) {
+      if (obj instanceof IAtsTeamWorkflow) {
+         return ((IAtsTeamWorkflow) obj).getId();
+      }
+      return null;
+   }
+
+   @Override
+   public String getValue(IAtsWorkItem teamWf, Map<Long, String> idToValueMap) {
+      return super.getColumnText(teamWf, null, 0);
+   }
+
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      if (!loaded.get() && !loading.getAndSet(true)) {
+         BackgroundLoadingColumn.startLoadingThread(getName(), objects, loading, loaded, idToValueMap,
+            (WorldXViewer) getXViewer(), this);
+      }
+   }
+
+   @Override
+   public String getText(Object obj, Long key, String cachedValue) {
+      return BackgroundLoadingColumn.getText(obj, loading, loaded, idToValueMap);
    }
 
 }
