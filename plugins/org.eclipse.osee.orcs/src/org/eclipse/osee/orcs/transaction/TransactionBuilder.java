@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -106,6 +107,8 @@ public interface TransactionBuilder {
    AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType);
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, T value);
+
+   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, UserToken userToken, T value);
 
    <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeToken attributeType, T value);
 
