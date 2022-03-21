@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -43,16 +44,17 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -215,12 +217,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeToken> attributesToDuplicate) {
+      for (AttributeTypeToken typeToken : attributesToDuplicate) {
+         checkPermissionsForLoginId(typeToken);
+      }
       validateBuilder();
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
    public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeToken> attributesToDuplicate) {
+      for (AttributeTypeToken typeToken : attributesToDuplicate) {
+         checkPermissionsForLoginId(typeToken);
+      }
       validateBuilder();
       return txManager.copyArtifact(txData, fromBranch, artifactId, attributesToDuplicate);
    }
@@ -250,6 +258,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType);
@@ -257,6 +266,15 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
+      checkPermissionsForLoginId(attributeType);
+      validateBuilder();
+      Artifact asArtifact = getForWrite(sourceArtifact);
+      return asArtifact.createAttribute(attributeType, value);
+   }
+
+   @Override
+   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, UserToken user, T value) {
+      checkPermissionsForLoginId(attributeType, user);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType, value);
@@ -264,6 +282,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeValue(attributeType, value);
@@ -271,6 +290,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeToken attributeType, InputStream stream) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromStream(attributeType, stream);
@@ -278,6 +298,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String value) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromString(attributeType, value);
@@ -291,13 +312,38 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<T> values) {
+      checkPermissionsForLoginId(attributeType);
+
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }
 
+   public void checkPermissionsForLoginId(AttributeTypeToken attributeType) {
+      if (attributeType.equals(CoreAttributeTypes.LoginId)) {
+         UserToken user = orcsApi.userService().getUser();
+         Collection<IUserGroupArtifactToken> roles = user.getRoles();
+         if (!roles.contains(CoreUserGroups.AccountAdmin)) {
+            throw new OseeAccessDeniedException("User %s is not an account admin", user.toStringWithId());
+         }
+      }
+   }
+
+   public void checkPermissionsForLoginId(AttributeTypeToken attributeType, UserToken user) {
+      if (attributeType.equals(CoreAttributeTypes.LoginId)) {
+         Collection<IUserGroupArtifactToken> roles = user.getRoles();
+         if (!roles.contains(CoreUserGroups.AccountAdmin)) {
+            throw new OseeAccessDeniedException("User %s is not an account admin", user.toStringWithId());
+         }
+      }
+   }
+
    @Override
    public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String... values) {
+      attributeType.equals(CoreAttributeTypes.LoginId);
+      if (attributeType.getName().contains("Login Id")) {
+         checkPermissionsForLoginId(attributeType);
+      }
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
@@ -305,6 +351,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<String> values) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
@@ -348,6 +395,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteSoleAttribute(attributeType);
@@ -355,6 +403,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributes(attributeType);
@@ -362,6 +411,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Object value) {
+      checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributesWithValue(attributeType, value);

@@ -259,9 +259,10 @@ public class UserServiceImpl implements UserService {
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
          for (String loginId : userToken.getLoginIds()) {
-            tx.createAttribute(user, CoreAttributeTypes.LoginId, loginId);
+            if (userToken.getRoles().contains(CoreUserGroups.AccountAdmin)) {
+               tx.createAttribute(user, CoreAttributeTypes.LoginId, userToken, loginId);
+            }
          }
-
          for (ArtifactToken userGroup : userToken.getRoles()) {
             ArtifactToken userGroupArt = getOrCreate(userGroup, userGroupToArtifact, tx, userGroupHeader);
             tx.relate(userGroupArt, CoreRelationTypes.Users_User, user);
