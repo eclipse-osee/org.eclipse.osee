@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
+import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
@@ -71,6 +72,8 @@ public class MimApiImpl implements MimApi {
 
    private InterfaceEnumerationSetApi interfaceEnumerationSetApi;
 
+   private InterfaceDifferenceReportApi interfaceDifferenceReportApi;
+
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
@@ -121,7 +124,10 @@ public class MimApiImpl implements MimApi {
          this.getInterfaceElementApi(), this.getInterfaceElementArrayApi());
       this.interfaceConnectionViewApi = new InterfaceConnectionViewApiImpl(orcsApi);
       this.interfaceEnumerationApi = new InterfaceEnumerationApiImpl(orcsApi);
-      this.interfaceEnumerationSetApi = new InterfaceEnumerationSetApiImpl(orcsApi);
+      this.interfaceEnumerationSetApi = new InterfaceEnumerationSetApiImpl(orcsApi, interfaceEnumerationApi);
+      this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi, interfaceNodeViewApi,
+         interfaceConnectionViewApi, interfaceMessageApi, interfaceSubMessageApi, interfaceStructureApi,
+         interfaceElementApi, interfacePlatformApi, interfaceEnumerationSetApi, interfaceEnumerationApi);
    }
 
    @Override
@@ -182,6 +188,11 @@ public class MimApiImpl implements MimApi {
    @Override
    public InterfaceEnumerationSetApi getInterfaceEnumerationSetApi() {
       return this.interfaceEnumerationSetApi;
+   }
+
+   @Override
+   public InterfaceDifferenceReportApi getInterfaceDifferenceReportApi() {
+      return this.interfaceDifferenceReportApi;
    }
 
 }

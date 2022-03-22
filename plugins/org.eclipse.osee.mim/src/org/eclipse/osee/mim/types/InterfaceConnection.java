@@ -23,6 +23,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class InterfaceConnection extends PLGenericDBObject {
 
+   public static final InterfaceConnection SENTINEL = new InterfaceConnection();
+
    private String Name; //required
 
    private String Description;
@@ -41,9 +43,9 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    public InterfaceConnection(ArtifactReadable art) {
       super(art);
-      this.setPrimaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getAtMostOneOrDefault(
+      this.setPrimaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getOneOrDefault(
          ArtifactReadable.SENTINEL).getId());
-      this.setSecondaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
+      this.setSecondaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getOneOrDefault(
          ArtifactReadable.SENTINEL).getId());
       this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTransportType, "ETHERNET"));
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));

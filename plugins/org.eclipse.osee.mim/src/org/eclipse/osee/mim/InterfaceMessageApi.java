@@ -18,13 +18,17 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface messages
  * @todo
  */
 public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessageToken> {
+
    ArtifactAccessor<InterfaceMessageToken> getAccessor();
+
+   InterfaceMessageToken get(BranchId branch, ArtifactId messageId);
 
    Collection<InterfaceMessageToken> getAll(BranchId branch);
 
@@ -33,4 +37,8 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
    InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId);
 
    List<RelationTypeSide> getFollowRelationDetails();
+
+   List<InterfaceMessageToken> getAllRelatedFromSubMessage(InterfaceSubMessageToken subMessage);
+
+   InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId);
 }

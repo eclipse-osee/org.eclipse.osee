@@ -15,7 +15,10 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
@@ -50,8 +53,20 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
          return this.getAccessor().getAllByQuery(branch, query, InterfaceEnumeration.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceEnumeration>();
+   }
+
+   @Override
+   public InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<RelationTypeSide> relations) {
+      try {
+         return this.getAccessor().get(branch, enumId, relations, InterfaceEnumeration.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceEnumeration.SENTINEL;
    }
 
 }

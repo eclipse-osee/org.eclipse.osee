@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +46,8 @@ public class InterfaceStructureToken extends PLGenericDBObject {
 
    private ApplicabilityToken applicability;
 
+   private ArtifactReadable artifactReadable;
+
    public InterfaceStructureToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -59,8 +62,11 @@ public class InterfaceStructureToken extends PLGenericDBObject {
       this.setInterfaceStructureCategory(
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceStructureCategory, ""));
       this.setInterfaceTaskFileType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTaskFileType, 0));
-      this.setElements(art.getRelated(CoreRelationTypes.InterfaceStructureContent_DataElement).getList().stream().map(
-         a -> new InterfaceStructureElementToken(a)).collect(Collectors.toList()));
+      this.setElements(
+         art.getRelated(CoreRelationTypes.InterfaceStructureContent_DataElement).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceStructureElementToken(a)).collect(
+               Collectors.toList()));
+      this.artifactReadable = art;
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
@@ -214,4 +220,8 @@ public class InterfaceStructureToken extends PLGenericDBObject {
       this.applicability = applicability;
    }
 
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
+   }
 }

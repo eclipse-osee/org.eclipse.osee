@@ -54,6 +54,7 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
          return this.getAccessor().getAllByQuery(branch, query, InterfaceNode.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<InterfaceNode>();
    }
@@ -65,8 +66,20 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
             ArtifactId.valueOf(message.getId()), InterfaceNode.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return (InterfaceNode) PLGenericDBObject.SENTINEL;
+   }
+
+   @Override
+   public InterfaceNode get(BranchId branch, ArtifactId nodeId) {
+      try {
+         return this.getAccessor().get(branch, nodeId, InterfaceNode.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return InterfaceNode.SENTINEL;
    }
 
 }

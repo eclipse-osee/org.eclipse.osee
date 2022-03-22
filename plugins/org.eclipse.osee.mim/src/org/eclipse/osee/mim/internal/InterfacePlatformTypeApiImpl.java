@@ -13,11 +13,18 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
+import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -51,8 +58,60 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
          return this.getAccessor().getAllByQuery(branch, query, PlatformTypeToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public PlatformTypeToken get(BranchId branch, ArtifactId platformTypeId) {
+      try {
+         return this.getAccessor().get(branch, platformTypeId, PlatformTypeToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return PlatformTypeToken.SENTINEL;
+   }
+
+   @Override
+   public PlatformTypeToken getWithElementRelations(BranchId branch, ArtifactId platformTypeId) {
+      try {
+         return this.getAccessor().get(branch, platformTypeId,
+            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element), PlatformTypeToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return PlatformTypeToken.SENTINEL;
+   }
+
+   @Override
+   public PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId, List<RelationTypeSide> relationTypes) {
+      try {
+         return this.getAccessor().get(branch, platformTypeId, relationTypes, PlatformTypeToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return PlatformTypeToken.SENTINEL;
+   }
+
+   @Override
+   public PlatformTypeToken getWithAllParentRelations(BranchId branch, ArtifactId platformTypeId) {
+      List<RelationTypeSide> relations = Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+         CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionContent_Connection);
+      return getWithRelations(branch, platformTypeId, relations);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllFromEnumerationSet(InterfaceEnumerationSet enumSet) {
+      return enumSet.getArtifactReadable().getRelatedList(
+         CoreRelationTypes.InterfacePlatformTypeEnumeration_Element).stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new PlatformTypeToken(a)).collect(
+               Collectors.toList());
    }
 
 }

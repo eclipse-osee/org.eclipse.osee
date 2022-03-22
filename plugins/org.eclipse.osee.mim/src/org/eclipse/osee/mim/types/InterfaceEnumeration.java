@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -21,9 +22,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Luciano T. Vaglienti
  */
 public class InterfaceEnumeration extends PLGenericDBObject {
-
+   public static final InterfaceEnumeration SENTINEL = new InterfaceEnumeration();
    private ApplicabilityToken applicability;
    private Integer ordinal;
+   private ArtifactReadable artifactReadable;
+
    public InterfaceEnumeration(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -33,6 +36,7 @@ public class InterfaceEnumeration extends PLGenericDBObject {
       this.setOrdinal(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceEnumOrdinal, 0));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+	  this.artifactReadable = art;
    }
 
    public InterfaceEnumeration(Long id, String name) {
@@ -68,6 +72,11 @@ public class InterfaceEnumeration extends PLGenericDBObject {
     */
    public void setOrdinal(Integer ordinal) {
       this.ordinal = ordinal;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
    }
 
 }

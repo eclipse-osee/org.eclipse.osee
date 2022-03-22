@@ -26,6 +26,7 @@ import org.eclipse.osee.mim.EnumerationSetEndpoint;
 import org.eclipse.osee.mim.GetAllMIMRelatedObjectsEndpoint;
 import org.eclipse.osee.mim.IcdEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
+import org.eclipse.osee.mim.InterfaceDifferenceReportEndpoint;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
@@ -142,8 +143,7 @@ public class BranchAccessor {
    @Path("{branch}/enumerations")
    @Produces(MediaType.APPLICATION_JSON)
    public EnumerationSetEndpoint getEnumerationSetEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new EnumerationSetEndpointImpl(branch, mimApi.getInterfaceEnumerationSetApi(),
-         mimApi.getInterfaceEnumerationApi());
+      return new EnumerationSetEndpointImpl(branch, mimApi.getInterfaceEnumerationSetApi());
    }
 
    @Path("{branch}/all")
@@ -163,6 +163,12 @@ public class BranchAccessor {
          mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
          mimApi.getInterfacePlatformTypeApi(), mimApi.getInterfaceEnumerationApi(),
          mimApi.getInterfaceEnumerationSetApi());
+   }
+
+   @Path("{branch}/diff")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceDifferenceReportEndpoint getDifferencesEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
+      return new InterfaceDifferenceReportEndpointImpl(branch, mimApi.getInterfaceDifferenceReportApi());
    }
 
    /**

@@ -12,21 +12,24 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti
  */
 public class InterfaceEnumerationSet extends PLGenericDBObject {
-
+   public static final InterfaceEnumerationSet SENTINEL = new InterfaceEnumerationSet();
    private String Description;
    private ApplicabilityToken applicability;
    private List<InterfaceEnumeration> enumerations = new LinkedList<InterfaceEnumeration>();
+   private ArtifactReadable artifactReadable;
 
    public InterfaceEnumerationSet(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -37,6 +40,10 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+	  art.getRelated(CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList().stream().filter(
+         a -> !a.getExistingAttributeTypes().isEmpty()).forEach(
+            a -> getEnumerations().add(new InterfaceEnumeration(a)));
+      this.artifactReadable = art;
    }
 
    public InterfaceEnumerationSet(Long id, String name) {
@@ -86,6 +93,11 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
     */
    public void setEnumerations(List<InterfaceEnumeration> enumerations) {
       this.enumerations = enumerations;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
    }
 
 }

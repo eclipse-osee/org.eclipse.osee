@@ -22,5 +22,7 @@ import org.eclipse.osee.mim.types.InterfaceNode;
 public interface InterfaceNodeViewApi extends QueryCapableMIMAPI<InterfaceNode> {
    ArtifactAccessor<InterfaceNode> getAccessor();
 
+   InterfaceNode get(BranchId branch, ArtifactId nodeId);
+
    InterfaceNode getNodeForMessage(BranchId branch, ArtifactId message);
 }

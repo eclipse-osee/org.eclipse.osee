@@ -15,10 +15,13 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.types.InterfaceConnection;
+import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -51,7 +54,39 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          return this.getAccessor().getAllByQuery(branch, query, InterfaceConnection.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceConnection>();
    }
+
+   @Override
+   public InterfaceConnection getRelatedFromMessageId(BranchId branch, ArtifactId messageId) {
+      try {
+         return this.getAccessor().getByRelationWithoutId(branch, CoreRelationTypes.InterfaceConnectionContent_Message,
+            messageId, InterfaceConnection.class);
+      } catch (Exception ex) {
+         System.out.println(ex);
+      }
+      return InterfaceConnection.SENTINEL;
+   }
+
+   @Override
+   public InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message) {
+      return message.getArtifactReadable().getRelated(
+         CoreRelationTypes.InterfaceConnectionContent_Connection).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceConnection(a)).findFirst().orElse(
+               InterfaceConnection.SENTINEL);
+   }
+
+   @Override
+   public InterfaceConnection get(BranchId branch, ArtifactId connectionId) {
+      try {
+         return this.getAccessor().get(branch, connectionId, InterfaceConnection.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return InterfaceConnection.SENTINEL;
+   }
+
 }

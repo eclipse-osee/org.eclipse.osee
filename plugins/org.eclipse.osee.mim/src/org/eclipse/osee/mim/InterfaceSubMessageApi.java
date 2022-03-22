@@ -13,8 +13,10 @@
 package org.eclipse.osee.mim;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
@@ -23,7 +25,13 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubMessageToken> {
    ArtifactAccessor<InterfaceSubMessageToken> getAccessor();
 
+   InterfaceSubMessageToken get(BranchId branch, ArtifactId subMessageId);
+
    Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId);
 
    Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter);
+
+   List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure);
+
+   InterfaceSubMessageToken getWithAllParentRelations(BranchId branch, ArtifactId subMessageId);
 }

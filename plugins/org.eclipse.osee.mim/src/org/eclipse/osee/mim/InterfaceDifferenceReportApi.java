@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,19 +12,14 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
+import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
- * @author Luciano T. Vaglienti
+ * @author Ryan T. Baldwin
  */
-public interface InterfaceEnumerationSetApi extends QueryCapableMIMAPI<InterfaceEnumerationSet> {
+public interface InterfaceDifferenceReportApi {
 
-   ArtifactAccessor<InterfaceEnumerationSet> getAccessor();
+   MimDifferenceReport getDifferenceReport(BranchId branch1, BranchId branch2);
 
-   InterfaceEnumerationSet get(BranchId branch, ArtifactId enumSetId);
-
-   List<InterfaceEnumerationSet> getAll(BranchId branch);
 }

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -55,6 +56,8 @@ public class PlatformTypeToken extends PLGenericDBObject {
 
    private String InterfacePlatformType2sComplement; //required
 
+   private ArtifactReadable artifactReadable;
+
    public PlatformTypeToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -89,6 +92,8 @@ public class PlatformTypeToken extends PLGenericDBObject {
       this.setInterfacePlatformTypeValidRangeDescription(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
+
+      this.artifactReadable = art;
    }
 
    public PlatformTypeToken() {
@@ -291,6 +296,11 @@ public class PlatformTypeToken extends PLGenericDBObject {
     */
    public void setDescription(String description) {
       Description = description;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
    }
 
 }

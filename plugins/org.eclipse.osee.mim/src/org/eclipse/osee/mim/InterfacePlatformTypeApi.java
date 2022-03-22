@@ -12,6 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
@@ -20,4 +25,14 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
 public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTypeToken> {
 
    ArtifactAccessor<PlatformTypeToken> getAccessor();
+
+   PlatformTypeToken get(BranchId branch, ArtifactId platformTypeId);
+
+   PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId, List<RelationTypeSide> relationTypes);
+
+   PlatformTypeToken getWithAllParentRelations(BranchId branch, ArtifactId platformTypeId);
+
+   PlatformTypeToken getWithElementRelations(BranchId branch, ArtifactId platformTypeId);
+
+   List<PlatformTypeToken> getAllFromEnumerationSet(InterfaceEnumerationSet enumSet);
 }
