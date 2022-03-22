@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
    private ApplicabilityToken applicability;
    private InterfaceNode initiatingNode;
+   private ArtifactReadable artifactReadable;
 
    public InterfaceMessageToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -62,8 +64,10 @@ public class InterfaceMessageToken extends PLGenericDBObject {
       this.setInterfaceMessageWriteAccess(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false));
       this.setSubMessages(
-         art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().map(
-            a -> new InterfaceSubMessageToken(a)).collect(Collectors.toList()));
+         art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
+               Collectors.toList()));
+      this.artifactReadable = art;
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
@@ -197,6 +201,11 @@ public class InterfaceMessageToken extends PLGenericDBObject {
     */
    public void setInitiatingNode(InterfaceNode initiatingNode) {
       this.initiatingNode = initiatingNode;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
    }
 
 }

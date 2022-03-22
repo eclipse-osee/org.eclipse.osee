@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -31,6 +32,8 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
 
    private ApplicabilityToken applicability;
 
+   private ArtifactReadable artifactReadable;
+
    public InterfaceSubMessageToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -43,6 +46,7 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
       this.setInterfaceSubMessageNumber(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+	  this.artifactReadable = art;
    }
 
    public InterfaceSubMessageToken(Long id, String name) {
@@ -94,4 +98,10 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
    }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
+   }
+
 }

@@ -13,10 +13,12 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -30,6 +32,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti
@@ -122,6 +125,20 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
+      }
+      return InterfaceStructureElementToken.SENTINEL;
+   }
+
+   @Override
+   public InterfaceStructureElementToken get(BranchId branch, ArtifactId elementId) {
+      try {
+         InterfaceStructureElementToken element = this.getAccessor().get(branch, elementId,
+            this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
+         element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL);
+         return element;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
          return null;
       }
    }
@@ -134,9 +151,9 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       try {
          PlatformTypeToken platformType;
          if (defaultPlatformType.isInvalid()) {
-            platformType = this.platformApi.getAccessor().getByRelationWithoutId(branch,
-               CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-               PlatformTypeToken.class);
+            ArtifactReadable platformTypeReadable = element.getArtifactReadable().getRelated(
+               CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(ArtifactReadable.SENTINEL);
+            platformType = new PlatformTypeToken(platformTypeReadable);
          } else {
             platformType = defaultPlatformType;
          }
@@ -164,7 +181,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          element.setInterfacePlatformTypeDescription(
             platformType.getDescription() != null ? platformType.getDescription() : "");
       } catch (Exception ex) {
-
+         System.out.println(ex);
       }
       return element;
    }
@@ -232,15 +249,15 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    public List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId) {
       try {
          //pre-cache the platform type so that all elements can re-use
-         PlatformTypeToken platformType =
-            this.platformApi.getAccessor().get(branch, platformTypeId, PlatformTypeToken.class);
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceElementPlatformType_PlatformType, platformTypeId,
-               InterfaceStructureElementToken.class);
+         PlatformTypeToken platformType = this.platformApi.getWithRelations(branch, platformTypeId,
+            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
+         List<InterfaceStructureElementToken> elements = platformType.getArtifactReadable().getRelatedList(
+            CoreRelationTypes.InterfaceElementPlatformType_Element).stream().map(
+               a -> new InterfaceStructureElementToken(a)).collect(Collectors.toList());
          elements = parseElements(branch, elements, platformType);
          return elements;
       } catch (Exception ex) {
+         System.out.println(ex);
          return new LinkedList<InterfaceStructureElementToken>();
       }
    }
@@ -271,6 +288,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          return elements;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceStructureElementToken>();
    }
@@ -279,4 +297,28 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    public List<RelationTypeSide> getFollowRelationDetails() {
       return this.relations;
    }
+
+   @Override
+   public InterfaceStructureElementToken getWithAllParentRelations(BranchId branch, ArtifactId elementId) {
+      try {
+         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceStructureContent_Structure,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionContent_Connection);
+         return this.getAccessor().get(branch, elementId, parentRelations, InterfaceStructureElementToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceStructureElementToken.SENTINEL;
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getAllFromPlatformType(PlatformTypeToken pType) {
+      return pType.getArtifactReadable().getRelated(
+         CoreRelationTypes.InterfaceElementPlatformType_Element).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceStructureElementToken(a)).collect(
+               Collectors.toList());
+   }
+
 }

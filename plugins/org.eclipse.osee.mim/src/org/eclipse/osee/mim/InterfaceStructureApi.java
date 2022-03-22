@@ -1,4 +1,5 @@
 /*********************************************************************
+
  * Copyright (c) 2021 Boeing
  *
  * This program and the accompanying materials are made
@@ -16,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 
 /**
@@ -23,6 +25,8 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
  * @todo
  */
 public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStructureToken> {
+
+   InterfaceStructureToken get(BranchId branch, ArtifactId artId);
 
    List<InterfaceStructureToken> getAll(BranchId branch);
 
@@ -41,4 +45,9 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter);
 
    List<RelationTypeSide> getFollowRelationDetails();
+
+   List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element);
+
+   InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId);
+
 }

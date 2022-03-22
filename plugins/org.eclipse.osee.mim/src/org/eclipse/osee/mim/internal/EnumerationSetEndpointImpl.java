@@ -12,15 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
-import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
-import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 
 /**
@@ -29,30 +24,15 @@ import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 public class EnumerationSetEndpointImpl implements EnumerationSetEndpoint {
 
    private final InterfaceEnumerationSetApi enumSetApi;
-   private final InterfaceEnumerationApi enumApi;
    private final BranchId branch;
-   public EnumerationSetEndpointImpl(BranchId branch, InterfaceEnumerationSetApi enumSetApi, InterfaceEnumerationApi enumApi) {
+   public EnumerationSetEndpointImpl(BranchId branch, InterfaceEnumerationSetApi enumSetApi) {
       this.enumSetApi = enumSetApi;
-      this.enumApi = enumApi;
       this.branch = branch;
    }
 
    @Override
    public List<InterfaceEnumerationSet> getEnumSets() {
-      try {
-         List<InterfaceEnumerationSet> enumSet =
-            (List<InterfaceEnumerationSet>) this.enumSetApi.getAccessor().getAll(branch, InterfaceEnumerationSet.class);
-         for (InterfaceEnumerationSet set : enumSet) {
-            set.setEnumerations((List<InterfaceEnumeration>) this.enumApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId()),
-               InterfaceEnumeration.class));
-         }
-         return enumSet;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return null;
+      return enumSetApi.getAll(branch);
    }
 
 }

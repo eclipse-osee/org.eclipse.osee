@@ -22,6 +22,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class InterfaceNode extends PLGenericDBObject {
 
+   public static final InterfaceNode SENTINEL = new InterfaceNode();
+
    private String Name; //required
 
    private String Description;

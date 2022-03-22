@@ -15,9 +15,14 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
+import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
+import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -28,8 +33,11 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetApi {
 
    private ArtifactAccessor<InterfaceEnumerationSet> accessor;
-   public InterfaceEnumerationSetApiImpl(OrcsApi orcsApi) {
+   private final InterfaceEnumerationApi interfaceEnumerationApi;
+
+   public InterfaceEnumerationSetApiImpl(OrcsApi orcsApi, InterfaceEnumerationApi interfaceEnumerationApi) {
       this.setAccessor(new InterfaceEnumerationSetAccessor(orcsApi));
+      this.interfaceEnumerationApi = interfaceEnumerationApi;
    }
 
    @Override
@@ -50,8 +58,44 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
          return this.getAccessor().getAllByQuery(branch, query, InterfaceEnumerationSet.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceEnumerationSet>();
+   }
+
+   @Override
+   public InterfaceEnumerationSet get(BranchId branch, ArtifactId enumSetId) {
+      try {
+         InterfaceEnumerationSet enumSet = this.getAccessor().get(branch, enumSetId, InterfaceEnumerationSet.class);
+         enumSet.setEnumerations(
+            (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(enumSet.getId()),
+               InterfaceEnumeration.class));
+         return enumSet;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceEnumerationSet.SENTINEL;
+   }
+
+   @Override
+   public List<InterfaceEnumerationSet> getAll(BranchId branch) {
+      try {
+         List<InterfaceEnumerationSet> enumSet =
+            (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch, InterfaceEnumerationSet.class);
+         for (InterfaceEnumerationSet set : enumSet) {
+            set.setEnumerations(
+               (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
+                  CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId()),
+                  InterfaceEnumeration.class));
+         }
+         return enumSet;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
    }
 
 }

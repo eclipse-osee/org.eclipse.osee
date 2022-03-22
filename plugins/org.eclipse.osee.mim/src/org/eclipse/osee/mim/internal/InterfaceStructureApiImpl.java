@@ -13,10 +13,12 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -33,6 +35,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Luciano T. Vaglienti
@@ -359,6 +362,20 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
+   public InterfaceStructureToken get(BranchId branch, ArtifactId artId) {
+      InterfaceStructureToken structure;
+      try {
+         structure =
+            this.getAccessor().get(branch, artId, this.getFollowRelationDetails(), InterfaceStructureToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+         structure = InterfaceStructureToken.SENTINEL;
+      }
+      return structure;
+   }
+
+   @Override
    public InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId) {
       InterfaceStructureToken structure;
       try {
@@ -466,6 +483,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          return structureList;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceStructureToken>();
    }
@@ -473,6 +491,31 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    @Override
    public List<RelationTypeSide> getFollowRelationDetails() {
       return this.relations;
+   }
+
+   @Override
+   public List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element) {
+      ArtifactReadable elementReadable = element.getArtifactReadable();
+      if (elementReadable != null && elementReadable.isValid()) {
+         return elementReadable.getRelated(
+            CoreRelationTypes.InterfaceStructureContent_Structure).getList().stream().map(
+               a -> new InterfaceStructureToken(a)).collect(Collectors.toList());
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId) {
+      try {
+         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionContent_Connection);
+         return this.getAccessor().get(branch, structureId, parentRelations, InterfaceStructureToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceStructureToken.SENTINEL;
    }
 
 }

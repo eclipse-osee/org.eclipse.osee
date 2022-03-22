@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
  * @author Luciano T. V@todo
@@ -27,13 +28,19 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId);
 
+   InterfaceStructureElementToken getWithAllParentRelations(BranchId branch, ArtifactId elementId);
+
    List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter);
 
    List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter);
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 
+   InterfaceStructureElementToken get(BranchId branch, ArtifactId elementId);
+
    InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId);
 
    List<RelationTypeSide> getFollowRelationDetails();
+
+   List<InterfaceStructureElementToken> getAllFromPlatformType(PlatformTypeToken pType);
 }

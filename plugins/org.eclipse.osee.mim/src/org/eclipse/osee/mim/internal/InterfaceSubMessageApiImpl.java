@@ -13,16 +13,20 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
+import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -63,6 +67,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          return this.getAccessor().getAllByQuery(branch, query, InterfaceSubMessageToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceSubMessageToken>();
    }
@@ -74,6 +79,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
             messageId, InterfaceSubMessageToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceSubMessageToken>();
    }
@@ -84,8 +90,42 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, InterfaceSubMessageToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public InterfaceSubMessageToken get(BranchId branch, ArtifactId subMessageId) {
+      try {
+         return this.getAccessor().get(branch, subMessageId, InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceSubMessageToken.SENTINEL;
+   }
+
+   @Override
+   public List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure) {
+      return structure.getArtifactReadable().getRelated(
+         CoreRelationTypes.InterfaceSubMessageContent_SubMessage).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
+               Collectors.toList());
+   }
+
+   @Override
+   public InterfaceSubMessageToken getWithAllParentRelations(BranchId branch, ArtifactId subMessageId) {
+      try {
+         List<RelationTypeSide> parentRelations =
+            Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+               CoreRelationTypes.InterfaceConnectionContent_Connection);
+         return this.getAccessor().get(branch, subMessageId, parentRelations, InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceSubMessageToken.SENTINEL;
    }
 
 }

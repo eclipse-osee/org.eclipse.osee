@@ -12,11 +12,21 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceConnection;
+import org.eclipse.osee.mim.types.InterfaceMessageToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<InterfaceConnection> {
+
    ArtifactAccessor<InterfaceConnection> getAccessor();
+
+   InterfaceConnection get(BranchId branch, ArtifactId connectionId);
+
+   InterfaceConnection getRelatedFromMessageId(BranchId branch, ArtifactId messageId);
+
+   InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message);
 }
