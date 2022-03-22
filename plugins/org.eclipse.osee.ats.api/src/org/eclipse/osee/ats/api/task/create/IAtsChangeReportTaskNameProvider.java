@@ -157,22 +157,24 @@ public interface IAtsChangeReportTaskNameProvider {
       Set<ArtifactId> modArts = new HashSet<>();
       Set<ArtifactId> delArts = new HashSet<>();
 
-      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
+      if (crtd.getWorkOrParentBranchId().isValid()) {
+         BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
 
-      ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
-      Collection<ChangeReportRollup> rollups = data.getRollups().values();
-      for (ChangeReportRollup rollup : rollups) {
-         ArtifactIncluded result = isIncluded(crtd, crttwd, rollup, rollup.getArtType(), atsApi);
+         ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
+         Collection<ChangeReportRollup> rollups = data.getRollups().values();
+         for (ChangeReportRollup rollup : rollups) {
+            ArtifactIncluded result = isIncluded(crtd, crttwd, rollup, rollup.getArtType(), atsApi);
 
-         if (result.isIncluded()) {
-            if (result.isDeleted()) {
-               delArts.add(rollup.getArtId());
-               logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact,
-                  TaskChangeType.Deleted.name(), addTaskMatch);
-            } else {
-               logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact, TaskChangeType.AddMod.name(),
-                  addTaskMatch);
-               modArts.add(rollup.getArtId());
+            if (result.isIncluded()) {
+               if (result.isDeleted()) {
+                  delArts.add(rollup.getArtId());
+                  logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact,
+                     TaskChangeType.Deleted.name(), addTaskMatch);
+               } else {
+                  logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact,
+                     TaskChangeType.AddMod.name(), addTaskMatch);
+                  modArts.add(rollup.getArtId());
+               }
             }
          }
       }

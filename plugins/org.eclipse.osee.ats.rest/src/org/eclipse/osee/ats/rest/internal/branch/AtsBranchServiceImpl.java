@@ -84,7 +84,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       branchQuery.andIsOfType(BranchType.WORKING);
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       branchQuery.andAssociatedArtId(artId);
-      return branchQuery.getResultsAsId().getExactlyOne();
+      return branchQuery.getResultsAsId().getAtMostOneOrNull();
    }
 
    @Override
