@@ -16,8 +16,10 @@ package org.eclipse.osee.ats.ide.agile;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -32,7 +34,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.column.BackgroundLoadingColumn;
+import org.eclipse.osee.ats.ide.column.BackgroundLoadingPreComputedColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -60,7 +62,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class SprintColumn extends BackgroundLoadingColumn implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class SprintColumn extends BackgroundLoadingPreComputedColumn implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static SprintColumn instance = new SprintColumn();
 
@@ -82,6 +84,18 @@ public class SprintColumn extends BackgroundLoadingColumn implements IAtsWorldAr
       SprintColumn newXCol = new SprintColumn();
       super.copy(this, newXCol);
       return newXCol;
+   }
+
+   @Override
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
+      try {
+         Artifact itemArt = AtsApiService.get().getQueryServiceIde().getArtifact(workItem.getStoreObject());
+         @NonNull
+         List<Artifact> sprints = itemArt.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AgileSprint);
+         return Collections.toString("; ", sprints);
+      } catch (OseeCoreException ex) {
+         return LogUtil.getCellExceptionString(ex);
+      }
    }
 
    @Override
@@ -207,17 +221,6 @@ public class SprintColumn extends BackgroundLoadingColumn implements IAtsWorldAr
    }
 
    @Override
-   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
-      try {
-         return Collections.toString("; ",
-            AtsApiService.get().getQueryServiceIde().getArtifact(workItem.getStoreObject()).getRelatedArtifacts(
-               AtsRelationTypes.AgileSprintToItem_AgileSprint));
-      } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
-      }
-   }
-
-   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
@@ -250,8 +253,8 @@ public class SprintColumn extends BackgroundLoadingColumn implements IAtsWorldAr
          if (AtsRelationTypes.AgileSprintToItem.getId().equals(relTypeId)) {
             Artifact workflow = ArtifactCache.getActive(rel.getArtB());
             IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
-            String newValue = getValue(workItem, idToValueMap);
-            idToValueMap.put(workflow.getId(), newValue);
+            String newValue = getValue(workItem, preComputedValueMap);
+            preComputedValueMap.put(workflow.getId(), newValue);
             xViewer.update(workflow, null);
          }
       }

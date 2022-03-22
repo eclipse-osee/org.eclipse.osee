@@ -107,7 +107,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
       if (!Strings.isValid(value)) {
          return 0;
       }
-      return new Float(value).doubleValue();
+      return Double.valueOf(value);
    }
 
    public static Result isWorldViewAnnualCostAvoidanceValid(Object object) {
@@ -134,7 +134,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
             if (!Strings.isValid(value)) {
                return new Result("Weekly Benefit Hours not set.");
             }
-            double val = new Float(value).doubleValue();
+            double val = Double.valueOf(value);
             if (val == 0) {
                return new Result("Weekly Benefit Hours not set.");
             }

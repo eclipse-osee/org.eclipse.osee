@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class BranchStatusColumn extends BackgroundLoadingColumn {
+public class BranchStatusColumn extends BackgroundLoadingPreComputedColumn {
 
    public static BranchStatusColumn instance = new BranchStatusColumn();
 

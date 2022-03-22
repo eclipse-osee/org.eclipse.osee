@@ -118,7 +118,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       super(parent, style, xViewerFactory);
       this.editor = editor;
       getTree().addKeyListener(new KeySelectedListener());
-      setDebugLoading(false || "true".equals(System.getProperty("debug.loading")));
    }
 
    private class KeySelectedListener implements KeyListener {

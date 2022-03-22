@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Donald G. Dunne
  * @author David W Miller
  */
-public abstract class BaseGoalsColumn extends BackgroundLoadingColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
+public abstract class BaseGoalsColumn extends BackgroundLoadingPreComputedColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
    private final WorkItemType goalType = WorkItemType.Goal;
    private final String persistString = "Set Goals";
@@ -58,6 +58,17 @@ public abstract class BaseGoalsColumn extends BackgroundLoadingColumn implements
 
    public BaseGoalsColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   }
+
+   @Override
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
+      String result = "";
+      try {
+         result = BacklogColumn.getColumnText(workItem, AtsApiService.get(), isBacklogGoal());
+      } catch (OseeCoreException ex) {
+         result = LogUtil.getCellExceptionString(ex);
+      }
+      return result;
    }
 
    protected WorkItemType getWorkItemType() {
@@ -129,17 +140,6 @@ public abstract class BaseGoalsColumn extends BackgroundLoadingColumn implements
          return true;
       }
       return false;
-   }
-
-   @Override
-   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
-      String result = "";
-      try {
-         result = BacklogColumn.getColumnText(workItem, AtsApiService.get(), isBacklogGoal());
-      } catch (OseeCoreException ex) {
-         result = LogUtil.getCellExceptionString(ex);
-      }
-      return result;
    }
 
    @Override
