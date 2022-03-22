@@ -30,10 +30,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class SiblingAtsIdColumn extends BackgroundLoadingColumn {
+public class SiblingAtsIdColumn extends BackgroundLoadingPreComputedColumn {
 
    public static SiblingAtsIdColumn instance = new SiblingAtsIdColumn();
    private final List<String> ids = new ArrayList<>();
+   private boolean preloaded = false;
 
    public static SiblingAtsIdColumn getInstance() {
       return instance;
@@ -73,9 +74,12 @@ public class SiblingAtsIdColumn extends BackgroundLoadingColumn {
     * above
     */
    @Override
-   public void getValues(Collection<?> objects, Map<Long, String> idToValueMap) {
-      Collection<Artifact> arts = Collections.castAll(objects);
-      AtsBulkLoad.bulkLoadSiblings(arts);
+   public void handlePreLoadingTasks(Collection<?> objects) {
+      if (!preloaded) {
+         Collection<Artifact> arts = Collections.castAll(objects);
+         AtsBulkLoad.bulkLoadSiblings(arts);
+         preloaded = true;
+      }
    }
 
 }

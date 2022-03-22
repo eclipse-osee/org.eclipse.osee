@@ -18,17 +18,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
  */
-public class TargetedVersionColumnUI extends AbstractVersionSelector implements IXViewerPreComputedColumn, BackgroundLoadingValueProvider {
+public class TargetedVersionColumnUI extends AbstractVersionSelector implements BackgroundLoadingValueProvider, IXViewerPreComputedColumn {
 
    public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
    public AtomicBoolean loading = new AtomicBoolean(false);
@@ -60,29 +61,42 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector implements 
    }
 
    @Override
-   public Long getKey(Object obj) {
-      if (obj instanceof IAtsTeamWorkflow) {
-         return ((IAtsTeamWorkflow) obj).getId();
-      }
-      return null;
-   }
-
-   @Override
    public String getValue(IAtsWorkItem teamWf, Map<Long, String> idToValueMap) {
       return super.getColumnText(teamWf, null, 0);
    }
 
+   public String getValue(Object obj) {
+      return super.getColumnText(obj, null, 0);
+   }
+
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      if (!loaded.get() && !loading.getAndSet(true)) {
-         BackgroundLoadingColumn.startLoadingThread(getName(), objects, loading, loaded, idToValueMap,
-            (WorldXViewer) getXViewer(), this);
+      this.preComputedValueMap = preComputedValueMap;
+      this.loaded.set(false);
+      this.loading.set(false);
+      for (Object obj : objects) {
+         this.preComputedValueMap.put(getKey(obj), "loading...");
       }
+      BackgroundLoadingPreComputedColumn.startLoadingThread(getName(), objects, loading, loaded,
+         (WorldXViewer) getXViewer(), preComputedValueMap, this);
+   }
+
+   @Override
+   public String getColumnText(Object obj, XViewerColumn column, int columnIndex) {
+      return BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap);
    }
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return BackgroundLoadingColumn.getText(obj, loading, loaded, idToValueMap);
+      return BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap);
+   }
+
+   @Override
+   public Long getKey(Object obj) {
+      if (obj instanceof Id) {
+         return ((Id) obj).getId();
+      }
+      return Id.SENTINEL;
    }
 
 }

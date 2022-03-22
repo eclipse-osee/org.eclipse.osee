@@ -14,12 +14,14 @@ package org.eclipse.osee.ats.ide.column;
 
 import java.util.Collection;
 import java.util.Map;
+import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
  */
-public interface BackgroundLoadingValueProvider {
+public interface BackgroundLoadingValueProvider extends IXViewerValueColumn {
 
    /**
     * Allows for retrieving value one workitem in bulk; only use this OR getValue
@@ -36,6 +38,20 @@ public interface BackgroundLoadingValueProvider {
       return null;
    }
 
-   public Long getKey(Object obj);
+   /**
+    * Allows for pre-loading tasks (like bulk loading artifacts) before loading happens.
+    */
+   public default void handlePreLoadingTasks(Collection<?> objects) {
+      // for sub-class implementation
+   }
+
+   public String getId();
+
+   public default Long getObjKey(Object obj) {
+      if (obj instanceof Id) {
+         return ((Id) obj).getId();
+      }
+      return Id.SENTINEL;
+   }
 
 }

@@ -36,9 +36,9 @@ import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.AgileFactory;
-import org.eclipse.osee.ats.ide.column.BackgroundLoadingColumn;
+import org.eclipse.osee.ats.ide.column.BackgroundLoadingPreComputedColumn;
+import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -69,9 +69,10 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColumn extends BackgroundLoadingColumn implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AgileFeatureGroupColumn extends BackgroundLoadingPreComputedColumn implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static AgileFeatureGroupColumn instance = new AgileFeatureGroupColumn();
+   private boolean preloaded = false;
 
    public static AgileFeatureGroupColumn getInstance() {
       return instance;
@@ -91,6 +92,34 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingColumn implements 
       AgileFeatureGroupColumn newXCol = new AgileFeatureGroupColumn();
       super.copy(this, newXCol);
       return newXCol;
+   }
+
+   @Override
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
+      try {
+         Collection<ArtifactToken> featureArts = AtsApiService.get().getRelationResolver().getRelated(workItem,
+            AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
+         Set<String> strs = new HashSet<>();
+         for (ArtifactToken featureArt : featureArts) {
+            strs.add(featureArt.getName());
+         }
+         return Collections.toString(", ", strs);
+      } catch (OseeCoreException ex) {
+         return LogUtil.getCellExceptionString(ex);
+      }
+   }
+
+   /**
+    * Bulk load related actions and those actions related team workflows to they're not loaded one at a time in getValue
+    * above
+    */
+   @Override
+   public void handlePreLoadingTasks(Collection<?> objects) {
+      if (!preloaded) {
+         Collection<Artifact> arts = Collections.castAll(objects);
+         AtsBulkLoad.bulkLoadArtifacts(arts);
+         preloaded = true;
+      }
    }
 
    @Override
@@ -198,32 +227,6 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingColumn implements 
    }
 
    @Override
-   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
-      try {
-         Collection<ArtifactToken> featureArts = AtsApiService.get().getRelationResolver().getRelated(workItem,
-            AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
-         if (workItem.isOfType(AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(workItem)) {
-               for (ArtifactToken featureArt : AtsApiService.get().getQueryServiceIde().getArtifact(
-                  teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
-                  strs.add(featureArt.getName());
-               }
-            }
-            return Collections.toString(", ", strs);
-         } else {
-            Set<String> strs = new HashSet<>();
-            for (ArtifactToken featureArt : featureArts) {
-               strs.add(featureArt.getName());
-            }
-            return Collections.toString(", ", strs);
-         }
-      } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
-      }
-   }
-
-   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
@@ -257,8 +260,8 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingColumn implements 
          Artifact workflow = ArtifactCache.getActive(guidArt);
          if (workflow != null && workflow.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
-            String newValue = getValue(workItem, idToValueMap);
-            idToValueMap.put(workflow.getId(), newValue);
+            String newValue = getValue(workItem, preComputedValueMap);
+            preComputedValueMap.put(workflow.getId(), newValue);
             xViewer.update(workflow, null);
          }
       }

@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionByIdAction;
 import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionsAction;
 import org.eclipse.osee.ats.ide.actions.ValidatePeerDefectsAction;
 import org.eclipse.osee.ats.ide.branch.CreateAtsBaselineBranchBlam;
+import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
 import org.eclipse.osee.ats.ide.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.ide.config.version.GenerateFullVersionReportItem;
@@ -316,6 +317,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new ValidateOseeTypes());
          items.add(new CommaDelimitLines());
          items.add(new ToggleAccessControlDebug());
+         items.add(new ToggleXViewerColumnLoadingDebug());
          items.add(new XNavigateItemAction(new CompareTwoStringsAction(), FrameworkImage.EDIT, UTILITY));
          items.add(
             new XNavigateItemAction(new org.eclipse.osee.framework.ui.skynet.action.CompareTwoArtifactIdListsAction(),

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class ParentIdColumn extends BackgroundLoadingColumn {
+public class ParentIdColumn extends BackgroundLoadingPreComputedColumn {
 
    public static ParentIdColumn instance = new ParentIdColumn();
 
