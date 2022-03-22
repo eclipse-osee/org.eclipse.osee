@@ -148,7 +148,7 @@ public class CreateChangeReportTasksOperation {
 
          // Generate and store ChangeItems from branch or commit
          ChangeReportTasksUtil.getBranchOrCommitChangeData(crtd, setDef);
-         if (crtd.getResults().isErrors() || crtd.getResults().toString().contains("No Change Items")) {
+         if (crtd.getResults().isErrors()) {
             return crtd;
          }
 
