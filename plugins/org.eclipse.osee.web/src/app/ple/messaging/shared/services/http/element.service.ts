@@ -52,7 +52,7 @@ export class ElementService {
     return of(relation);
   }
   createElement(body: Partial<element>, branchId: string, relations: relation[]) {
-    if (body.interfaceElementIndexEnd === 0 || body.interfaceElementIndexStart === 0) {
+    if (body.interfaceElementIndexEnd === 0 && body.interfaceElementIndexStart === 0) {
       delete body.interfaceElementIndexEnd;
       delete body.interfaceElementIndexStart;
       return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT, relations, undefined, branchId, "Create Element"));
