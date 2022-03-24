@@ -12,8 +12,10 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BranchListing } from 'src/app/types/branches/BranchListing';
+import { iif } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
+import { commitResponse, response } from '../../types/responses';
+import { branch } from '../../types/branches/branch';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,18 @@ export class BranchInfoService {
 
   constructor (private http: HttpClient) { }
   
-  getBranches(id:string) {
-    return this.http.get<BranchListing>(apiURL+'/orcs/branches/'+id);
+  getBranch(id:string) {
+    return this.http.get<branch>(apiURL+'/orcs/branches/'+id);
+  }
+
+  public getBranches(type: string, category?: string, searchType?: boolean) {
+    return iif(()=>searchType||false,this.http.get<branch[]>(apiURL+'/ats/ple/branches/'+type),this.http.get<branch[]>(apiURL+`/orcs/branches/${type}/category/${category}`))
+  }
+
+  public commitBranch(branchId: string | number | undefined, parentBranchId: string | number | undefined,body:{committer:string, archive:string}) {
+    return this.http.post<commitResponse>(apiURL + '/orcs/branches/' + branchId + '/commit/' + parentBranchId,body);
+  }
+  public setBranchCategory(branchId: string | number | undefined, category: string) {
+    return this.http.post<response>(`${apiURL}/orcs/branches/${branchId}/category/${category}`,null)
   }
 }

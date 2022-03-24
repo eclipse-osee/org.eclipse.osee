@@ -26,23 +26,8 @@ import {
 
 export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
   {
-    get branchState() {
-      return of(testDataPlConfigBranchListingBranch);
-    },
-    get branchAction() {
-      return of(testBranchActions);
-    },
-    commitBranch(
-      parentBranchId: string | number | undefined,
-      body: { committer: string; archive: string }
-    ) {
-      return of(testCommitResponse);
-    },
     get branchApplicability() {
       return of(testBranchApplicability);
-    },
-    get branchWorkFlow() {
-      return of(testWorkFlow);
     },
     get headers() {
       return of([
@@ -78,6 +63,4 @@ export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
   updateConfigurationGroup(cfgGroup: ConfigurationGroupDefinition) {
     return of(testDataResponse);
   },
-  branchApproved: of('false'),
-  teamsLeads:of([{id:'61106791',name:'Joe Smith'}])
   };

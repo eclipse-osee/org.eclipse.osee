@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { PlConfigActionService } from '../../services/pl-config-action.service';
+import { ActionService } from '../../../../ple-services/http/action.service';
 
 import { CommitBranchDialogComponent } from './commit-branch-dialog.component';
 
@@ -113,7 +113,7 @@ describe('CommitBranchDialogComponent', () => {
           }
         },
         {
-          provide: PlConfigActionService, useValue: {
+          provide: ActionService, useValue: {
           users: of(testUsers)
         }}
       ]

@@ -16,15 +16,20 @@ export interface branch{
     associatedArtifact: string,
     baselineTx: string,
     parentTx: string,
-    parentBranch: {
-        id: string,
-        viewId: string,
-    },
+    parentBranch: branchHeader,
     branchState: string,
     branchType: string,
     inheritAccessControl: boolean,
     archived: boolean,
     shortName: string,
+    id: string,
+    viewId: string,
+}
+export interface branchInfo extends branchHeader{
+    idIntValue: number,
+    name: string,
+}
+export interface branchHeader{
     id: string,
     viewId: string,
 }

@@ -52,6 +52,7 @@ import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.compo
 import { MessageElementInterfaceRoutingModule } from './message-element-interface-routing.module';
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
 import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module'
+import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 
 
 
@@ -81,6 +82,7 @@ import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.modu
     OseeStringUtilsDirectivesModule,
     GenericButtonsModule,
     MessageElementInterfaceRoutingModule,
+    ActionStateButtonModule,
     SharedMessagingModule
   ]
 })

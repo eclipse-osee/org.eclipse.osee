@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -19,7 +19,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { PlConfigActionService } from '../../services/pl-config-action.service';
+import { ActionService } from '../../../../ple-services/http/action.service';
+import { ActionStateButtonService } from '../../../services/action-state-button.service';
+import { actionStateButtonServiceMock } from '../../../services/action-state-button.service.mock';
 
 import { CreateActionDialogComponent } from './create-action-dialog.component';
 
@@ -62,8 +64,9 @@ describe('CreateActionDialogComponent', () => {
             description:''
           } 
         },
+        { provide: ActionStateButtonService, useValue: actionStateButtonServiceMock},
         {
-          provide: PlConfigActionService, useValue: {
+          provide: ActionService, useValue: {
             ARB: of([{
               id: "123",
               name:"First ARB"

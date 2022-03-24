@@ -21,7 +21,7 @@ import { PlConfigBranchListingBranchImpl } from '../types/pl-config-branch';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import { configGroup, configGroupWithChanges, configuration, editConfiguration } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { PlConfigActionService } from './pl-config-action.service';
+import { ActionService } from '../../../ple-services/http/action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
 import { ExtendedNameValuePair, ExtendedNameValuePairWithChanges } from '../types/base-types/ExtendedNameValuePair'
@@ -56,39 +56,9 @@ export class PlConfigCurrentBranchService {
     share(),
     shareReplay({ bufferSize: 1, refCount: true })
   )
-  private _branchAction: Observable<action[]> = this._branchApplicabilityNoChanges.pipe(
-    switchMap(val => iif(() => val.associatedArtifactId != '-1' && typeof val !== 'undefined' && val.associatedArtifactId !== '',
-    this.actionService.getAction(val.associatedArtifactId).pipe(
-      repeatWhen(_ => this.uiStateService.updateReq),
-      share(),
-      ),
-      of([new actionImpl()])
-    )
-    ),
-    share(),
-    shareReplay({ bufferSize: 1, refCount: true })
-  )
-  private _branchWorkflow = this.branchAction.pipe(
-    switchMap(val => iif(() => (val[0]?.TeamWfAtsId != '' && typeof (val[0]?.id) !== 'undefined'),
-    this.actionService.getWorkFlow(val[0].id).pipe(
-      repeatWhen(_ => this.uiStateService.updateReq),
-      share(),
-    ), of(new teamWorkflowImpl())
-    )
-    ),
-    share(),
-    shareReplay({ bufferSize: 1, refCount: true })
-  )
-  private _branchState =this.uiStateService.branchId.pipe(
-    filter(val => val !== '0'),
-    switchMap(branchId => iif(() => branchId !== '0' && branchId !== '',
-    this.branchService.getBranchState(branchId).pipe(
-      repeatWhen(_ => this.uiStateService.updateReq),
-      share(),
-    ),of(new PlConfigBranchListingBranchImpl())
-    )),
-    share()
-  )
+  /**
+   * @deprecated
+   */
   private _branchListing = this.uiStateService.viewBranchType.pipe(
     switchMap(viewBranchType => iif(() => viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline',
     this.branchService.getBranches(viewBranchType)
@@ -225,19 +195,7 @@ export class PlConfigCurrentBranchService {
     )),
     //map((applic)=>applic.views)
   )
-  private _branchApproved = this.branchAction.pipe(switchMap((action) => iif(() => action.length > 0 && action[0].TeamWfAtsId.length > 0, this.actionService.getBranchApproved(action[0].TeamWfAtsId).pipe(
-    shareReplay({bufferSize:1,refCount:true}),
-    switchMap((approval) => iif(() => approval.errorCount > 0, of('false'), of('true'))),
-    shareReplay({bufferSize:1,refCount:true})
-  ))));
-  private _teamsLeads = this.branchWorkFlow.pipe(
-    switchMap((workflow) => iif(() => workflow['ats.Team Definition Reference'].length > 0, this.actionService.getTeamLeads(workflow['ats.Team Definition Reference']), of([]))),
-    shareReplay({ bufferSize: 1, refCount: true }));
-   private _branchTransitionable = this.branchWorkFlow.pipe(
-     switchMap((workflow) => iif(() => workflow.State === "InWork", of('true'), of('false'))),
-     shareReplay({ bufferSize: 1, refCount: true })
-   );
-  constructor (private uiStateService: PlConfigUIStateService, private branchService: PlConfigBranchService, private actionService: PlConfigActionService, private sideNavService: SideNavService) {}
+  constructor (private uiStateService: PlConfigUIStateService, private branchService: PlConfigBranchService, private actionService: ActionService, private sideNavService: SideNavService) {}
   public get branchApplicability() {
     return this._branchApplicability;
   }
@@ -272,24 +230,6 @@ export class PlConfigCurrentBranchService {
   get topLevelHeaders() {
     return this._topLevelHeaders;
   }
-  public get branchAction() {
-    return this._branchAction;
-  }
-  public get branchWorkFlow() {
-    return this._branchWorkflow;
-  }
-  public get branchState() {
-    return this._branchState;
-  }
-  public get branchApproved() {
-    return this._branchApproved;
-  }
-  public get teamsLeads() {
-    return this._teamsLeads;
-  }
-  public get branchTransitionable() {
-    return this._branchTransitionable;
-  }
   public get branchApplicEditable() {
     return this._branchApplicEditable;
   }
@@ -322,6 +262,9 @@ export class PlConfigCurrentBranchService {
     share()
   )
   }
+  /**
+   * @deprecated
+   */
   public get branchListing() {
     return this._branchListing;
   }
@@ -558,18 +501,6 @@ export class PlConfigCurrentBranchService {
         tap((val) => {
           if (val.results.length > 0) {
             this.uiStateService.error = val.results[0];
-          }
-        })
-      ))
-    )
-  }
-  public commitBranch(parentBranchId: string,body:{committer:string, archive:string}) {
-    return this.uiStateService.branchId.pipe(
-      filter(val => val != ''),
-      switchMap(branchId => this.branchService.commitBranch(branchId, parentBranchId, body).pipe(
-        tap((val) => {
-          if (val.results.results.length > 0) {
-            this.uiStateService.error = val.results.results[0];
           }
         })
       ))

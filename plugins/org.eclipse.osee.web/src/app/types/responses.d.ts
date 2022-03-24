@@ -1,5 +1,7 @@
+import { transactionToken } from '../transactions/transaction';
+
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -29,7 +31,7 @@ export interface response {
     warningCount: number,
 }
 export interface commitResponse {
-    tx: transaction,
+    tx: transactionToken,
     results: response,
     success: boolean,
     failed:boolean,
@@ -40,10 +42,6 @@ export interface transitionResponse {
     workItemIds: [],
     results: Array<string>,
     transitionWorkItems: [],
-    transaction: transaction,
+    transaction: transactionToken,
     empty:true
-}
-interface transaction {
-    branchId: string,
-    id:string,
 }

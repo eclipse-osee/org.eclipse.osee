@@ -27,6 +27,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
+import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
 import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module';
 import { PleSharedMaterialModule } from '../../ple-shared-material/ple-shared-material.module';
@@ -72,6 +73,7 @@ import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message
     OseeStringUtilsDirectivesModule,
     SharedMessagingModule,
     DiffViewsModule,
+    ActionStateButtonModule,
     MessageInterfaceRoutingModule
   ]
 })

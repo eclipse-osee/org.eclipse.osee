@@ -22,7 +22,7 @@ import { PlConfigBranchService } from '../../services/pl-config-branch-service.s
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
-import { response } from '../../types/pl-config-responses';
+import { response } from '../../../../types/responses';
 
 import { ConfigurationDropdownComponent } from './configuration-dropdown.component';
 

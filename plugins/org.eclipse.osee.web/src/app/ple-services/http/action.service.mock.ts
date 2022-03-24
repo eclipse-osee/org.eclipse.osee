@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,13 +12,14 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { user } from "src/app/userdata/types/user-data-user";
-import { PlConfigActionService } from "../services/pl-config-action.service";
-import { newActionInterface, transitionAction } from "../types/pl-config-actions";
-import { testARB, testBranchActions, testDataResponse, testDataTransitionResponse, testDataVersion, testNameValuePairArray, testnewActionResponse, testWorkFlow } from "./mockTypes";
+import { ActionService } from "./action.service";
+import { newActionInterface, transitionAction } from "../../ple/plconfig/types/pl-config-actions";
+import { testARB, testBranchActions, testDataResponse, testDataTransitionResponse, testDataVersion, testNameValuePairArray, testnewActionResponse, testWorkFlow } from "../../ple/plconfig/testing/mockTypes";
 
-export const plActionServiceMock: Partial<PlConfigActionService> = {
-    ARB: of(testARB),
-    createBranch(body: newActionInterface, thisUser: user)
+export const actionServiceMock: Partial<ActionService> = {
+    getActionableItems(workType: string)
+    { return of(testARB) },
+    createBranch(body: newActionInterface)
     { return of(testnewActionResponse)},
     commitBranch(teamWf: string, branchId: string | number)
     { return of(testDataResponse)},
@@ -32,7 +33,7 @@ export const plActionServiceMock: Partial<PlConfigActionService> = {
       return of(testDataTransitionResponse)},
     getVersions(arbId: string){
       return of(testDataVersion)},
-    approveBranch(teamWf: string | number, thisUser: user) {
+    approveBranch(teamWf: string | number) {
        return of(testDataResponse)},
     getTeamLeads(teamDef : string | number){
       return of(testNameValuePairArray)},

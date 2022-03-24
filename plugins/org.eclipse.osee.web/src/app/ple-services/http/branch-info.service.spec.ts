@@ -35,7 +35,7 @@ describe('BranchInfoService', () => {
 
   it('should get branch info', () => {
     const testInfo = testBranchInfo;
-    service.getBranches('10').subscribe();
+    service.getBranch('10').subscribe();
     const req = httpTestingController.expectOne(apiURL+'/orcs/branches/'+10);
     expect(req.request.method).toEqual('GET');
     req.flush(testInfo);

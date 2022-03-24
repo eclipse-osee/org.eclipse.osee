@@ -51,13 +51,6 @@ describe('PlConfigBranchService', () => {
     req.flush({});
     httpTestingController.verify();
   })
-  it('get branch state should return results from /orcs/branches/', () => {
-    service.getBranchState(10).subscribe();
-    const req = httpTestingController.expectOne(apiURL+'/orcs/branches/'+10);
-    expect(req.request.method).toEqual('GET');
-    req.flush({});
-    httpTestingController.verify();
-  })
 
   it('post addConfiguration should return results from /orcs/branch/ + branchId + /applic/view/', () => {
     service.addConfiguration('10',{} as configuration).subscribe();
@@ -118,14 +111,6 @@ describe('PlConfigBranchService', () => {
   it('post synchronizeGroup should return results from /orcs/branch/ + branchId + /applic/cfggroup/sync/ +configId', () => {
     service.synchronizeGroup('10','20').subscribe();
     const req = httpTestingController.expectOne(apiURL+'/orcs/branch/' + 10 + '/applic/cfggroup/sync/' +20);
-    expect(req.request.method).toEqual('POST');
-    req.flush({});
-    httpTestingController.verify();
-  })
-
-  it('post commitBranch should return results from /orcs/branches/ + branchId + /commit/ + parentBranchId', () => {
-    service.commitBranch('10','20',{committer:'Joe Smith',archive:'false'}).subscribe();
-    const req = httpTestingController.expectOne(apiURL+'/orcs/branches/' + 10 + '/commit/' + 20);
     expect(req.request.method).toEqual('POST');
     req.flush({});
     httpTestingController.verify();

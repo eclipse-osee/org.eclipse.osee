@@ -10,19 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from 'src/environments/environment';
-import { branch } from '../../types/branches/branch';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BranchService {
-
-  constructor (private http: HttpClient) { }
-  
-  public getBranches(type: string,category:string) {
-    return this.http.get<branch[]>(apiURL+`/orcs/branches/${type}/category/${category}`);
+export class ErrorService {
+  private _errors = new BehaviorSubject<string>("");
+  public get errors() {
+    return this._errors;
   }
+  public set error(errorString: string) {
+    this._errors.next(errorString);
+  }
+  constructor() { }
 }

@@ -36,8 +36,6 @@ import { MatListModule } from '@angular/material/list';
 import { FormsModule } from '@angular/forms';
 
 //Sub-component imports
-import { BranchTypeSelectorComponent } from './components/branch-type-selector/branch-type-selector.component';
-import { BranchSelectorComponent } from './components/branch-selector/branch-selector.component';
 import { ApplicabilityTableComponent } from './components/applicability-table/applicability-table.component';
 import { ConfigurationDropdownComponent } from './components/configuration-dropdown/configuration-dropdown.component';
 import { EditConfigurationDialogComponent } from './components/edit-config-dialog/edit-config-dialog.component';
@@ -45,8 +43,6 @@ import { AddConfigurationDialogComponent } from './components/add-configuration-
 import { FeatureDropdownComponent } from './components/feature-dropdown/feature-dropdown.component';
 import { AddFeatureDialogComponent } from './components/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from './components/edit-feature-dialog/edit-feature-dialog.component';
-import { ActionDropDownComponent } from './components/action-drop-down/action-drop-down.component';
-import { CreateActionDialogComponent } from './components/create-action-dialog/create-action-dialog.component';
 import { TransitionActionToReviewDialogComponent } from './components/transition-action-to-review-dialog/transition-action-to-review-dialog.component';
 import { CommitBranchDialogComponent } from './components/commit-branch-dialog/commit-branch-dialog.component';
 import { CopyConfigurationDialogComponent } from './components/copy-configuration-dialog/copy-configuration-dialog.component';
@@ -61,11 +57,13 @@ import { ArrayDiffMenuComponent } from './components/menus/array-diff-menu/array
 import { ConfigMenuComponent } from './components/menus/config-menu/config-menu.component';
 import { ConfigGroupMenuComponent } from './components/menus/config-group-menu/config-group-menu.component';
 import { ValueMenuComponent } from './components/menus/value-menu/value-menu.component';
+import { ActionStateButtonModule } from '../../shared-components/components/action-state-button/action-state-button.module';
+import { BranchPickerModule } from '../../shared-components/components/branch-picker/branch-picker.module';
 
 
 
 @NgModule({
-  declarations: [PlconfigComponent, BranchTypeSelectorComponent, BranchSelectorComponent, ApplicabilityTableComponent, ConfigurationDropdownComponent, EditConfigurationDialogComponent, AddConfigurationDialogComponent, FeatureDropdownComponent, AddFeatureDialogComponent, EditFeatureDialogComponent, ActionDropDownComponent, CreateActionDialogComponent, TransitionActionToReviewDialogComponent, CommitBranchDialogComponent, CopyConfigurationDialogComponent, ConfigurationGroupDropdownComponent, AddConfigurationGroupDialogComponent, ConfigGroupDialogComponent, FeatureMenuComponent, ArrayDiffMenuComponent, ConfigMenuComponent, ConfigGroupMenuComponent, ValueMenuComponent],
+  declarations: [PlconfigComponent, ApplicabilityTableComponent, ConfigurationDropdownComponent, EditConfigurationDialogComponent, AddConfigurationDialogComponent, FeatureDropdownComponent, AddFeatureDialogComponent, EditFeatureDialogComponent, TransitionActionToReviewDialogComponent, CommitBranchDialogComponent, CopyConfigurationDialogComponent, ConfigurationGroupDropdownComponent, AddConfigurationGroupDialogComponent, ConfigGroupDialogComponent, FeatureMenuComponent, ArrayDiffMenuComponent, ConfigMenuComponent, ConfigGroupMenuComponent, ValueMenuComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -76,7 +74,7 @@ import { ValueMenuComponent } from './components/menus/value-menu/value-menu.com
     MatPaginatorModule,
     MatInputModule,
     MatMenuModule,
-    //MatButtonModule,
+    BranchPickerModule,
     PleSharedMaterialModule,
     MatDialogModule,
     MatSlideToggleModule,
@@ -85,6 +83,7 @@ import { ValueMenuComponent } from './components/menus/value-menu/value-menu.com
     MatProgressSpinnerModule,
     MatListModule,
     DiffViewsModule,
+    ActionStateButtonModule,
     PlconfigRoutingModule
   ],
   providers: [{

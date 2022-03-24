@@ -22,19 +22,17 @@
             </ng-container>
         </ng-container>
     </ng-container>
-    <plconfig-branch-type-selector (selectedType)="branchTypeSelected($event)">
-    </plconfig-branch-type-selector>
-    <div style="display:flex; flex-direction:row; flex-grow:1; justify-content: space-between; align-items:baseline;">
-        <plconfig-branch-selector (selectedBranch)="branchSelected($event)">   
-        </plconfig-branch-selector>
+    <div style="display:flex; flex-direction:row; flex-grow:1; justify-content: space-between; align-items:center;">
+        <osee-branch-picker category="2" [actionSearch]=true>   
+        </osee-branch-picker>
         <plconfig-configuration-dropdown>
         </plconfig-configuration-dropdown>
         <plconfig-configuration-group-dropdown>
         </plconfig-configuration-group-dropdown>
         <plconfig-feature-dropdown>
         </plconfig-feature-dropdown>
-        <plconfig-action-dropdown>
-        </plconfig-action-dropdown>
+        <action-dropdown category="2" workType="ARB">
+        </action-dropdown>
     </div>
     <plconfig-applicability-table>
         <!-- [updateRequired]="_updateRequired |async" -->

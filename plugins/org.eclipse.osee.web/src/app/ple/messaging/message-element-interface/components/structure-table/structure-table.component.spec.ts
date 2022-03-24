@@ -56,6 +56,7 @@ import { CommonModule } from '@angular/common';
 import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
+import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 
 describe('StructureTableComponent', () => {
   let component: StructureTableComponent;
@@ -91,7 +92,7 @@ describe('StructureTableComponent', () => {
       declarations: [ StructureTableComponent,SubElementTableComponentMock,
         ConvertMessageInterfaceTitlesToStringPipe,
         EditElementFieldComponent,
-        EditStructureFieldComponentMock, MimSingleDiffDummy,AddElementDialogComponent, HighlightFilteredTextDirective],
+        EditStructureFieldComponentMock, MimSingleDiffDummy,AddElementDialogComponent, HighlightFilteredTextDirective, ActionDropdownStub],
       providers: [
         {
           provide: Router, useValue: {

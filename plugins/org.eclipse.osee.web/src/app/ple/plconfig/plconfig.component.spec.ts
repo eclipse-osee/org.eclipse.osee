@@ -28,10 +28,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { ActionDropDownComponent } from './components/action-drop-down/action-drop-down.component';
+import { ActionDropDownComponent } from '../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
+import { ActionDropdownStub } from '../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
+import { BranchPickerStub } from '../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 import { ApplicabilityTableComponent } from './components/applicability-table/applicability-table.component';
-import { BranchSelectorComponent } from './components/branch-selector/branch-selector.component';
-import { BranchTypeSelectorComponent } from './components/branch-type-selector/branch-type-selector.component';
 import { ConfigurationDropdownComponent } from './components/configuration-dropdown/configuration-dropdown.component';
 import { ConfigurationGroupDropdownComponent } from './components/configuration-group-dropdown/configuration-group-dropdown.component';
 import { FeatureDropdownComponent } from './components/feature-dropdown/feature-dropdown.component';
@@ -64,10 +64,9 @@ describe('PlconfigComponent', () => {
       declarations: [
         PlconfigComponent,
         ApplicabilityTableComponent,
-        BranchSelectorComponent,
-        BranchTypeSelectorComponent,
+        BranchPickerStub,
+        ActionDropdownStub,
         ConfigurationDropdownComponent,
-        ActionDropDownComponent,
         ConfigurationGroupDropdownComponent,
         FeatureDropdownComponent,
       ],

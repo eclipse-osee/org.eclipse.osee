@@ -12,24 +12,24 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { combineLatest, iif, of } from 'rxjs';
-import { map, share, switchMap, tap } from 'rxjs/operators';
+import { share, switchMap } from 'rxjs/operators';
+import { BranchInfoService } from '../../ple-services/http/branch-info.service';
 import { BranchUIService } from '../../ple-services/ui/branch/branch-ui.service';
 import { BranchCategoryService } from '../../shared-services/ui/branch-category.service';
-import { BranchService } from './branch.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchListService {
 
-  private _branches = combineLatest([this.ui.type, this.categoryService.branchCategory]).pipe(
-    switchMap(([type, category]) => of(this.updateType(type)).pipe(
-      switchMap((viewBranchType)=> iif(()=>(viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline') && category !=='' && category !=='0',this.branchService.getBranches(viewBranchType,category)))
+  private _branches = combineLatest([this.ui.type, this.categoryService.branchCategory, this.categoryService.actionSearch]).pipe(
+    switchMap(([type, category, searchType]) => of(this.updateType(type)).pipe(
+      switchMap((viewBranchType)=> iif(()=>(viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline') && category !=='' && category !=='0',this.branchService.getBranches(viewBranchType,category, searchType)))
     )),
     share()
   )
 
-  constructor (private branchService: BranchService, private ui: BranchUIService, private categoryService: BranchCategoryService) { }
+  constructor (private branchService: BranchInfoService, private ui: BranchUIService, private categoryService: BranchCategoryService) { }
   
   private updateType(value: string) {
     if (value === 'product line') {

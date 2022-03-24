@@ -10,19 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { BranchService } from './branch.service';
+import { ErrorService } from './error.service';
 
-describe('BranchService', () => {
-  let service: BranchService;
+describe('ErrorService', () => {
+  let service: ErrorService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule]
-    });
-    service = TestBed.inject(BranchService);
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(ErrorService);
   });
 
   it('should be created', () => {

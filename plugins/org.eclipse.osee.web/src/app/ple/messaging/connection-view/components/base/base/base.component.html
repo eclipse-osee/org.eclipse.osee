@@ -16,6 +16,9 @@
     </ng-container>
 </div>
 <div class="connection-view">
-    <osee-branch-picker category="3"></osee-branch-picker>
+    <div style="display:flex;flex-direction:row; justify-content: space-between; align-items:center;">
+        <osee-branch-picker category="3"></osee-branch-picker>
+        <action-dropdown category="3" workType="MIM"></action-dropdown>
+    </div>
     <osee-connectionview-graph [editMode]="(inEditMode | async) || false"></osee-connectionview-graph>
 </div>
