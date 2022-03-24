@@ -27,7 +27,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -55,7 +55,7 @@ public interface TransactionEndpoint {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces({MediaType.APPLICATION_JSON})
-   TransactionToken create(TransactionBuilder tx);
+   TransactionResult create(TransactionBuilder tx);
 
    @PUT
    @Path("{tx-id}/comment")

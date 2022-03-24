@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -168,6 +169,10 @@ public class TxData implements HasSession, HasBranchId {
 
    public Iterable<Artifact> getAllWriteables() {
       return writeables.values();
+   }
+
+   public Collection<ArtifactReadable> getAllReadables() {
+      return readables.values();
    }
 
    public Artifact getWriteable(ArtifactId artifactId) {
