@@ -28,14 +28,10 @@ export class MimPreferencesService {
   constructor (private http: HttpClient) { }
   
   getUserPrefs(branchId: string, user: user) {
-    return this.http.get<MimPreferences<structure&message&subMessage&element>>(apiURL + '/mim/user/' + branchId, {
-      headers: new HttpHeaders({ 'osee.account.id': user.id })
-    })
+    return this.http.get<MimPreferences<structure&message&subMessage&element>>(apiURL + '/mim/user/' + branchId)
   }
 
   getBranchPrefs(user: user) {
-    return this.http.get<string[]>(apiURL + '/mim/user/branches', {
-      headers: new HttpHeaders({ 'osee.account.id': user.id })
-    })
+    return this.http.get<string[]>(apiURL + '/mim/user/branches')
   }
 }
