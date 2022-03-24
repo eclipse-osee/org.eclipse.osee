@@ -13,7 +13,7 @@
 import { user } from "src/app/userdata/types/user-data-user";
 import { NameValuePair } from "./base-types/NameValuePair";
 import { PlConfigBranchListingBranch } from "./pl-config-branch";
-import { response } from "./pl-config-responses";
+import { response } from "../../../types/responses";
 import { pluser } from "./pl-config-users";
 
 export interface PLConfigCreateActionInterface {

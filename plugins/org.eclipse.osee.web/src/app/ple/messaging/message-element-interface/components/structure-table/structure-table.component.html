@@ -10,21 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+ <div class="message-element-interface">
+    <div class="message-element-interface-header">
+        <ng-container *ngIf="(_connectionsRoute | async) as connectionRoute">
+            <a mat-raised-button class="connections-button" color="primary" [routerLink]="connectionRoute">Connections</a>
+        </ng-container>
+    <div class="message-element-interface-header grouped-buttons">
+        <ng-container *ngIf="(inDiffMode|async) as _diff">
+            <a mat-raised-button class="message-element-interface-button-header" [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:structureId!==''?'../'+structureId:'../elements'" style="float:right"><mat-icon *ngIf="_diff==='false'">change_history</mat-icon><mat-icon *ngIf="_diff==='true'">visibility_off</mat-icon><span>{{_diff==='false'?"Show Deltas":"Hide Deltas"}}</span></a>
+        </ng-container>
+        <action-dropdown category="3" workType="MIM" class="action-button"></action-dropdown>
+    </div>
+</div>
         <ng-container>
-            <div class="message-element-interface message-element-interface-button-header">
-                <ng-container *ngIf="(inDiffMode|async) as _diff">
-                    <a mat-raised-button [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:structureId!==''?'../'+structureId:'../elements'" style="float:right"><mat-icon *ngIf="_diff==='false'">change_history</mat-icon><mat-icon *ngIf="_diff==='true'">visibility_off</mat-icon><span>{{_diff==='false'?"Show Deltas":"Hide Deltas"}}</span></a>
-                </ng-container>
-            </div>
             <ng-container *ngIf="((isEditing|async)||false)===true;">
                 <two-layer-add-button class="new-structure-button" [firstOptionDisabled]="structureId!==''" [nestedLevel]="expandedElement" baseLevel="Add structure" nestedLevelPrefix="Add element to " (normalClick)="openAddStructureDialog()" (nestedClick)="openAddElementDialog($event)" nestedIcon="description" baseIcon="assignment"></two-layer-add-button>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="(inDiffMode|async) as _diff">
             <div class="message-element-interface message-element-interface-top-level-table">
-                <ng-container *ngIf="(_connectionsRoute | async) as connectionRoute">
-                    <a mat-raised-button class="connections-button" color="primary" [routerLink]="connectionRoute">Connections</a>
-                </ng-container>
                 <ng-container *ngIf="(currentStructureHeaders|async) as currentHeaders">
                     <ng-container *ngIf="hasFilter">
                         <mat-form-field class="message-element-interface-table-view-width-100 message-element-interface-table-filter-padding">

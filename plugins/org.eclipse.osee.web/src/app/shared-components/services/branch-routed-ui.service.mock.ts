@@ -10,12 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input } from "@angular/core";
+import { BehaviorSubject } from 'rxjs';
+import { BranchRoutedUIService } from './branch-routed-ui.service';
 
- @Component({
-     selector: 'osee-branch-picker',
-     template:'<div>Dummy</div>'
-   })
- export class BranchPickerStub{
-   @Input() actionSearch: boolean = false;
-   }
+export const branchRoutedUiServiceMock: Partial<BranchRoutedUIService> = {
+    branchType: '',
+    type: new BehaviorSubject(""),
+    id: new BehaviorSubject(""),
+    branchId: '',
+    
+    set position (value:{type:string,id:string})  {
+        //do nothing
+    }
+}

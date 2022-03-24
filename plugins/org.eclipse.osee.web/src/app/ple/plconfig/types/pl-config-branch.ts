@@ -10,45 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { branch, branchHeader, branchInfo } from '../../../types/branches/branch';
 import { NameValuePair } from "./base-types/NameValuePair";
 
-export interface PlConfigApplicUIBranch extends branchListing {
-    idIntValue: number,
-    name: string,
+export interface PlConfigApplicUIBranch extends branchInfo {
 };
-export interface PlConfigBranchListingBranch extends PlConfigApplicUIBranch {
-    associatedArtifact: string,
-    baselineTx: string,
-    parentTx: string,
-    parentBranch: branchListing,
-    branchState: string,
-    branchType: string,
-    inheritAccessControl: boolean,
-    archived: boolean,
-    shortName: string,
+export interface PlConfigBranchListingBranch extends branch {
 }
 export class PlConfigBranchListingBranchImpl implements PlConfigBranchListingBranch{
-    associatedArtifact: string ='-1';
-    baselineTx: string ='';
-    parentTx: string ='';
-    parentBranch: branchListing = {
+    associatedArtifact ='-1';
+    baselineTx ='';
+    parentTx ='';
+    parentBranch = {
         id:'',
         viewId:''
     };
-    branchState: string = '-1';
-    branchType: string = '-1';
-    inheritAccessControl: boolean =false;
-    archived: boolean =false;
-    shortName: string ='';
-    idIntValue: number =-1;
-    name: string ='';
-    id: string ='-1';
-    viewId: string = "-1";
+    branchState = '-1';
+    branchType = '-1';
+    inheritAccessControl =false;
+    archived =false;
+    shortName ='';
+    idIntValue =-1;
+    name ='';
+    id ='-1';
+    viewId = "-1";
     
 }
-interface branchListing {
-    id: string,
-    viewId: string,
-}
+
 export interface cfgGroup extends NameValuePair {
 }

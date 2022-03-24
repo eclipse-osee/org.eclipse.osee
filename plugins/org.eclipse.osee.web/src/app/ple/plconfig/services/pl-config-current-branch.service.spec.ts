@@ -18,7 +18,7 @@ import { testApplicabilityTag, testBranchApplicability, testBranchListing } from
 import { testBranchActions, testCommitResponse, testDataResponse, testWorkFlow } from '../testing/mockTypes';
 import { view, viewWithChanges } from '../types/pl-config-applicui-branch-mapping';
 import { configGroup, configurationGroup } from '../types/pl-config-configurations';
-import { PlConfigActionService } from './pl-config-action.service';
+import { ActionService } from '../../../ple-services/http/action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
@@ -29,7 +29,7 @@ describe('PlConfigCurrentBranchService', () => {
   let ui: PlConfigUIStateService;
   let baseUi: UiService;
   let branchServiceSpy: jasmine.SpyObj<PlConfigBranchService>;
-  let actionServiceSpy: jasmine.SpyObj<PlConfigActionService>;
+  let actionServiceSpy: jasmine.SpyObj<ActionService>;
   let scheduler: TestScheduler;
 
   beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
@@ -71,7 +71,7 @@ describe('PlConfigCurrentBranchService', () => {
       TestBed.configureTestingModule({
         providers: [
           { provide: PlConfigBranchService, useValue: branchServiceSpy },
-          { provide: PlConfigActionService, useValue: actionServiceSpy },
+          { provide: ActionService, useValue: actionServiceSpy },
           PlConfigCurrentBranchService,
         ]
       });
@@ -302,12 +302,6 @@ describe('PlConfigCurrentBranchService', () => {
     it('should delete feature', () => {
       scheduler.run(({ expectObservable }) => {
         expectObservable(service.deleteFeature('123')).toBe('a',{a:testDataResponse})
-      })
-    })
-  
-    it('should commit a branch', () => {
-      scheduler.run(({ expectObservable }) => {
-        expectObservable(service.commitBranch('123',{committer:'',archive:''})).toBe('a',{a:testCommitResponse})
       })
     })
   

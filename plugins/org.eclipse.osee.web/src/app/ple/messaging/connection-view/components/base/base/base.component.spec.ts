@@ -34,6 +34,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { BranchPickerModule } from '../../../../../../shared-components/components/branch-picker/branch-picker.module';
 import { BranchPickerStub } from '../../../../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import { ActionDropdownStub } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 
 describe('BaseComponent', () => {
   let component: BaseComponent;
@@ -48,7 +49,7 @@ describe('BaseComponent', () => {
         { provide: EditAuthService, useValue: editAuthServiceMock },
         { provide: CurrentGraphService, useValue: graphServiceMock }
       ],
-      declarations: [ BaseComponent, GraphDummy, BranchPickerStub,MimSingleDiffDummy ]
+      declarations: [ BaseComponent, GraphDummy, BranchPickerStub,MimSingleDiffDummy, ActionDropdownStub ]
     })
       .compileComponents();
     routeState = TestBed.inject(RouteStateService);

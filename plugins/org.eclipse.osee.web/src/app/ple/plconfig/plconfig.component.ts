@@ -72,19 +72,4 @@ export class PlconfigComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  branchTypeSelected(branchType:string): void {
-    this.uiStateService.viewBranchTypeString = branchType;
-    this.uiStateService.branchIdNum = '';
-    this.router.navigate([branchType], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-    })
-  }
-  branchSelected(branch: number): void{
-    this.uiStateService.branchIdNum = branch.toString();
-    this.router.navigate([this._branchType,branch], {
-      relativeTo: this.route.parent,
-      queryParamsHandling: 'merge',
-    })
-  }
 }

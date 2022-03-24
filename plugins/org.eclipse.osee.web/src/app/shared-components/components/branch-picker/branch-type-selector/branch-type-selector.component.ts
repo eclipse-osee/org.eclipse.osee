@@ -38,4 +38,10 @@ export class BranchTypeSelectorComponent implements OnInit {
   selectType(event: MatRadioChange) {
     this.changeBranchType(event.value as string)
   }
+  normalizeType(type: string) {
+    if (type === 'product line') {
+      return 'baseline';
+    }
+    return type;
+  }
 }

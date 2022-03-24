@@ -22,7 +22,6 @@ import { changeInstance } from 'src/app/types/change-report/change-report';
 export class PlConfigUIStateService {
   private _differences = new ReplaySubject<changeInstance[]|undefined>(undefined);
   private _editable = new BehaviorSubject<string>("false");
-  private _errors = new BehaviorSubject<string>("");
   private _groups = new BehaviorSubject<string[]>([]);
   constructor(private ui: UiService) { }
 
@@ -61,10 +60,10 @@ export class PlConfigUIStateService {
     this.editable.next(edit.toString())
   }
   public get errors() {
-    return this._errors;
+    return this.ui.errors
   }
   public set error(errorString: string) {
-    this._errors.next(errorString);
+    this.ui.error = errorString;
   }
   public set groupsString(groups: string[]) {
     this._groups.next(groups);

@@ -205,7 +205,7 @@ export class CurrentMessagesService {
   getMessageFromParent(messageId: string) {
     return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
-      switchMap(([branchId,connectionId]) => this.branchInfoService.getBranches(branchId).pipe(
+      switchMap(([branchId,connectionId]) => this.branchInfoService.getBranch(branchId).pipe(
         switchMap((parentBranch) => this.messageService.getMessage(parentBranch.parentBranch.id, messageId, connectionId))
       ))
     )
@@ -214,7 +214,7 @@ export class CurrentMessagesService {
   getSubMessageFromParent(messageId:string,subMessageId:string) {
     return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
-      switchMap(([branchId, connectionId]) => this.branchInfoService.getBranches(branchId).pipe(
+      switchMap(([branchId, connectionId]) => this.branchInfoService.getBranch(branchId).pipe(
         switchMap((parentBranch)=>this.subMessageService.getSubMessage(parentBranch.parentBranch.id,connectionId,messageId,subMessageId))
       ))
     )

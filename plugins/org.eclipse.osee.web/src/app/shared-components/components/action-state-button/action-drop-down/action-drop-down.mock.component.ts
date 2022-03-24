@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,14 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-:host
-    height: 100%
-    width: 100%
-    padding: 0px
-body
-    height: 100%
-    width: 100%
-    padding: 0px 
-.mat-form-field
-    height: 100%
-    width: 100%  
+ import { Component, Input } from "@angular/core";
+
+ @Component({
+     selector: 'action-dropdown',
+     template:'<div>Dummy</div>'
+   })
+ export class ActionDropdownStub{
+   @Input() category:string=""
+   @Input() workType:string=""
+   }

@@ -14,7 +14,7 @@ import { user } from "src/app/userdata/types/user-data-user"
 import { NameValuePair } from "../types/base-types/NameValuePair";
 import { action, newActionResponse, targetedVersion, teamWorkflow, transitionAction } from "../types/pl-config-actions"
 import { PlConfigBranchListingBranch } from "../types/pl-config-branch";
-import { commitResponse, response, transitionResponse } from "../types/pl-config-responses";
+import { commitResponse, response, transitionResponse } from "../../../types/responses";
 
 export const testBranchActions : action[] =
   [
@@ -82,7 +82,7 @@ export const testWorkFlow : teamWorkflow =
   "ats.Workflow Definition Reference": "",
   "ats.State": "Review",
   "ats.Current State": "Review",
-  "ats.Team Definition Reference": "",
+  "ats.Team Definition Reference": "TestTeamDefinition",
   "ats.Description": "Description",
   TeamName: "SAW",
   Assignees: "Example User",

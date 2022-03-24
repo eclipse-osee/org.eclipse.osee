@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,10 +14,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { share} from 'rxjs/operators';
-import { PlConfigActionService } from '../../services/pl-config-action.service';
-import { PlConfigUserService } from '../../services/pl-config-user.service';
-import { actionableItem, PLConfigCreateAction, targetedVersion } from '../../types/pl-config-actions';
-
+import { ActionService } from '../../../../ple-services/http/action.service';
+import { PlConfigUserService } from '../../../../ple/plconfig/services/pl-config-user.service';
+import { actionableItem, PLConfigCreateAction, targetedVersion } from '../../../../ple/plconfig/types/pl-config-actions';
+import { ActionStateButtonService } from '../../../services/action-state-button.service';
+/**
+ * Dialog for creating a new action with the correct workType and category.
+ */
 @Component({
   selector: 'app-create-action-dialog',
   templateUrl: './create-action-dialog.component.html',
@@ -25,9 +28,9 @@ import { actionableItem, PLConfigCreateAction, targetedVersion } from '../../typ
 })
 export class CreateActionDialogComponent implements OnInit {
   users = this.userService.usersSorted;
-  arb: Observable<actionableItem[]> = this.actionService.ARB.pipe(share());
+  actionableItems: Observable<actionableItem[]> = this.actionService.actionableItems.pipe(share());
   targetedVersions!: Observable<targetedVersion[]>;
-  constructor(public dialogRef: MatDialogRef<CreateActionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: PLConfigCreateAction, public actionService: PlConfigActionService, public userService: PlConfigUserService) { 
+  constructor(public dialogRef: MatDialogRef<CreateActionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: PLConfigCreateAction, public actionService: ActionStateButtonService, public userService: PlConfigUserService) { 
   }
 
   ngOnInit(): void {

@@ -17,7 +17,7 @@ import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { testApplicabilityTag, testBranchApplicability, testBranchListing } from '../testing/mockBranchService';
 import { testBranchActions, testDataResponse, testWorkFlow } from '../testing/mockTypes';
-import { PlConfigActionService } from './pl-config-action.service';
+import { ActionService } from '../../../ple-services/http/action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
@@ -28,7 +28,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
     let ui: PlConfigUIStateService;
     let baseUi: UiService;
     let branchServiceSpy: jasmine.SpyObj<PlConfigBranchService>;
-    let actionServiceSpy: jasmine.SpyObj<PlConfigActionService>;
+    let actionServiceSpy: jasmine.SpyObj<ActionService>;
   let scheduler: TestScheduler;
   const diffBranchApplic={
     associatedArtifactId: '200578',
@@ -540,7 +540,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
             TestBed.configureTestingModule({
                 providers: [
                 { provide: PlConfigBranchService, useValue: branchServiceSpy },
-                { provide: PlConfigActionService, useValue: actionServiceSpy },
+                { provide: ActionService, useValue: actionServiceSpy },
                 PlConfigCurrentBranchService,
                 ]
             });

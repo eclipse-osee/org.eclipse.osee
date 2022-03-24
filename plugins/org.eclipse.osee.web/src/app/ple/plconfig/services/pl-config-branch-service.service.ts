@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, iif, Observable, of } from 'rxjs';
-import { map, share, switchMap, take, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { share, tap } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
 import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
 import { cfgGroup, PlConfigBranchListingBranch } from '../types/pl-config-branch';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import { configuration, configurationGroup, editConfiguration } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { commitResponse, response } from '../types/pl-config-responses';
+import { response } from '../../../types/responses';
 import { NameValuePair } from '../types/base-types/NameValuePair'
 
 @Injectable({
@@ -36,9 +36,6 @@ export class PlConfigBranchService {
   }
   public getBranchApplicability(id: number | string | undefined): Observable<PlConfigApplicUIBranchMapping> {
     return this.http.get<PlConfigApplicUIBranchMapping>(apiURL+'/orcs/applicui/branch/' + id).pipe(share());
-  }
-  public getBranchState(branchId: number | string | undefined) {
-    return this.http.get<PlConfigBranchListingBranch>(apiURL+'/orcs/branches/' + branchId);
   }
   public addConfiguration(branchId: string|number|undefined, body:configuration): Observable<response> {
     return this.http.post<response>(apiURL+'/orcs/branch/' + branchId + '/applic/view/', body);
@@ -71,9 +68,6 @@ export class PlConfigBranchService {
   }
   public synchronizeGroup(branchId: string |number |undefined, configId: string):Observable<response> {
     return this.http.post<response>(apiURL+'/orcs/branch/'+branchId+'/applic/cfggroup/sync/'+configId,null)
-  }
-  public commitBranch(branchId: string | number | undefined, parentBranchId: string | number | undefined,body:{committer:string, archive:string}) {
-    return this.http.post<commitResponse>(apiURL + '/orcs/branches/' + branchId + '/commit/' + parentBranchId,body);
   }
   public getCfgGroups(branchId: string | number | undefined): Observable<cfgGroup[]> {
     return this.http.get<cfgGroup[]>(apiURL + '/orcs/branch/'+branchId+'/applic/cfggroup/');

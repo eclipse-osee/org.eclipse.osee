@@ -19,7 +19,15 @@ import { BehaviorSubject } from 'rxjs';
 export class BranchCategoryService {
   
   private _branchCategory: BehaviorSubject<string> = new BehaviorSubject<string>("");
+  private _actionSearch: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor () { }
+
+  public get actionSearch(): BehaviorSubject<boolean> {
+    return this._actionSearch;
+  }
+  public set shouldActionSearch(value: boolean) {
+    this._actionSearch.next(value)
+  }
   get branchCategory() {
     return this._branchCategory;
   }

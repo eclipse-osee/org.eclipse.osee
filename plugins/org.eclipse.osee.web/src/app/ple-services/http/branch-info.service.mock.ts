@@ -11,11 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from "rxjs";
-import { testBranchInfo } from "src/app/ple/plconfig/testing/mockBranchService";
+import { testBranchInfo, testBranchListing } from "src/app/ple/plconfig/testing/mockBranchService";
+import { response } from '../../ple/messaging/connection-view/mocks/Response.mock';
+import { testCommitResponse, testDataResponse } from '../../ple/plconfig/testing/mockTypes';
 import { BranchInfoService } from "./branch-info.service";
 
 export const BranchInfoServiceMock: Partial<BranchInfoService> = {
-    getBranches(id: string) {
+    getBranch(id: string) {
         return of(testBranchInfo)
-    }
+    },
+    getBranches(type: string, category?: string, searchType?: boolean) {
+        return of(testBranchListing)
+    },
+    commitBranch(branchId: string | number | undefined, parentBranchId: string | number | undefined, body: { committer: string, archive: string }) {
+        return of(testCommitResponse)
+    },
+    setBranchCategory(branchId: string | number | undefined, category: string) {
+        return of(testDataResponse)
+      }
 }

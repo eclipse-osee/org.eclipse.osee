@@ -12,13 +12,17 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BranchPickerModule } from './components/branch-picker/branch-picker.module';
+import { ActionStateButtonModule } from './components/action-state-button/action-state-button.module';
 
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    BranchPickerModule,
+    ActionStateButtonModule
   ]
 })
 export class SharedComponentsModule { }

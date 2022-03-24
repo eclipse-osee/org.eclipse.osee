@@ -29,7 +29,7 @@ export class DifferenceBranchInfoService {
     )
   }
   parentBranch(branchId: string | number) {
-    return this.branchInfoService.getBranches(branchId as string).pipe(
+    return this.branchInfoService.getBranch(branchId as string).pipe(
       take(1),
       map((branches)=>branches.parentBranch.id)
     )

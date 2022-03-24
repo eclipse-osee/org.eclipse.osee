@@ -19,7 +19,7 @@ import { PlConfigUIStateService } from '../../services/pl-config-uistate.service
 import { trackableFeature } from '../../types/features/base';
 import { defaultBaseFeature } from '../../types/features/feature';
 import { modifyFeature, PLAddFeatureData, PLEditFeatureData, writeFeature } from '../../types/pl-config-features';
-import { response } from '../../types/pl-config-responses';
+import { response } from '../../../../types/responses';
 import { AddFeatureDialogComponent } from '../add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from '../edit-feature-dialog/edit-feature-dialog.component';
 

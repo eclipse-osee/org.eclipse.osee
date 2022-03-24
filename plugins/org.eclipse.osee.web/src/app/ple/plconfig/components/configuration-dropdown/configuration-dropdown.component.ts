@@ -19,7 +19,7 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
 import { editConfiguration } from '../../types/pl-config-configurations';
-import { response } from '../../types/pl-config-responses';
+import { response } from '../../../../types/responses';
 import { PLAddConfigData, PLEditConfigData } from '../../types/pl-edit-config-data';
 import { AddConfigurationDialogComponent } from '../add-configuration-dialog/add-configuration-dialog.component';
 import { CopyConfigurationDialogComponent } from '../copy-configuration-dialog/copy-configuration-dialog.component';

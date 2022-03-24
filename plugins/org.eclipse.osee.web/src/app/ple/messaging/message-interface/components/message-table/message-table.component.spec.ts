@@ -57,6 +57,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
 import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-add-button/two-layer-add-button.harness';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
+import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 
 let loader: HarnessLoader;
 
@@ -115,7 +116,7 @@ describe('MessageTableComponent', () => {
         GenericButtonsModule,
         RouterTestingModule.withRoutes([{ path: 'diff', component: MessageTableComponent, },{path:'diffOpen',component:MimSingleDiffDummy,outlet:'rightSideNav'}])
       ],
-      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective],
+      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective, ActionDropdownStub],
       providers:
         [
           { provide: CurrentMessagesService, useValue: CurrentMessageServiceMock },

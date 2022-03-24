@@ -20,10 +20,12 @@ import { BranchCategoryService } from '../../../../shared-services/ui/branch-cat
 })
 export class BranchPickerComponent implements OnInit,OnChanges {
 
-  @Input() category: string="0";
+  @Input() category: string = "0";
+  @Input() actionSearch: boolean = false;
   constructor (private branchCategoryService: BranchCategoryService) { }
   ngOnChanges(changes: SimpleChanges): void {
     this.branchCategoryService.category = this.category;
+    this.branchCategoryService.shouldActionSearch = this.actionSearch;
   }
 
   ngOnInit(): void {

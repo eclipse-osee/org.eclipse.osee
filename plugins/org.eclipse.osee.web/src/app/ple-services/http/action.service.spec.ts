@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,15 +15,15 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
-import { testARB, testBranchActions, testDataResponse, testDataTransitionResponse, testDataUser, testDataVersion, testNewActionData, testnewActionResponse, testUsers, testWorkFlow } from '../testing/mockTypes';
-import { NameValuePair } from '../types/base-types/NameValuePair';
-import { action, newActionResponse, transitionAction } from '../types/pl-config-actions';
-import { PlConfigBranchListingBranch } from '../types/pl-config-branch';
-import { response } from '../types/pl-config-responses';
-import { PlConfigActionService } from './pl-config-action.service';
+import { testARB, testBranchActions, testDataResponse, testDataTransitionResponse, testDataUser, testDataVersion, testNewActionData, testnewActionResponse, testUsers, testWorkFlow } from '../../ple/plconfig/testing/mockTypes';
+import { NameValuePair } from '../../ple/plconfig/types/base-types/NameValuePair';
+import { action, newActionResponse, transitionAction } from '../../ple/plconfig/types/pl-config-actions';
+import { PlConfigBranchListingBranch } from '../../ple/plconfig/types/pl-config-branch';
+import { response } from '../../types/responses';
+import { ActionService } from './action.service';
 
 describe('PlConfigActionService', () => {
-  let service: PlConfigActionService;
+  let service: ActionService;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let scheduler: TestScheduler;
@@ -34,7 +34,7 @@ describe('PlConfigActionService', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule]
     });
-    service = TestBed.inject(PlConfigActionService);
+    service = TestBed.inject(ActionService);
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
@@ -58,7 +58,7 @@ describe('PlConfigActionService', () => {
 
   it('should get ARB actionable item', () => {
     
-    service.ARB.subscribe();
+    service.getActionableItems('ARB').subscribe();
     const req = httpTestingController.expectOne(apiURL + "/ats/ai/worktype/ARB");
     expect(req.request.method).toEqual('GET');
     req.flush(testARB);
@@ -111,7 +111,7 @@ describe('PlConfigActionService', () => {
 
   it('should create branch', () => {
 
-    service.createBranch(testNewActionData, testDataUser).subscribe();
+    service.createBranch(testNewActionData).subscribe();
     const req = httpTestingController.expectOne(apiURL + '/ats/action/branch');
     expect(req.request.method).toEqual('POST');
     req.flush(testnewActionResponse);
@@ -127,7 +127,7 @@ describe('PlConfigActionService', () => {
   })
 
   it('should approve branch', () => {
-    service.approveBranch('0', testDataUser).subscribe();
+    service.approveBranch('0').subscribe();
     const req = httpTestingController.expectOne(apiURL + '/ats/ple/action/' + 0 + '/approval');
     expect(req.request.method).toEqual('POST');
     req.flush(testDataResponse);

@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,7 +16,7 @@
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Select Actionable Item</mat-label>
         <mat-select [(ngModel)]="data.actionableItem" (selectionChange)="selectActionableItem()" required>
-            <mat-option *ngFor="let item of (arb |async)" [value]="item" >
+            <mat-option *ngFor="let item of (actionableItems |async)" [value]="item" >
                 {{item.name}}
             </mat-option>
         </mat-select>

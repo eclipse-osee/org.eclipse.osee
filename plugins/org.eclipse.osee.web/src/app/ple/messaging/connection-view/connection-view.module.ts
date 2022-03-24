@@ -37,6 +37,7 @@ import { GraphNodeMenuComponent } from './components/menu/graph-node-menu/graph-
 import { UsermenuComponent } from './components/menu/usermenu/usermenu.component';
 import { MatIconModule } from '@angular/material/icon';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
+import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { BranchPickerModule } from '../../../shared-components/components/branch
     MatInputModule,
     MatSidenavModule,
     MatIconModule,
+    ActionStateButtonModule,
     NgxGraphModule
   ]
 })
