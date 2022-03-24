@@ -15,15 +15,18 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -58,8 +61,16 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public TransactionToken create(TransactionBuilder tx) {
-      return tx.commit();
+   public TransactionResult create(TransactionBuilder tx) {
+      TransactionToken token = tx.commit();
+      TransactionResult result = new TransactionResult();
+      result.setTx(token);
+      XResultData resultData = new XResultData();
+      resultData.setTxId(token.getIdString());
+      resultData.setIds(
+         tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+      result.setResults(resultData);
+      return result;
    }
 
    @Override

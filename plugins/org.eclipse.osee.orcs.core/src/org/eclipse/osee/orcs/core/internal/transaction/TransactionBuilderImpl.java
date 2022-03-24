@@ -609,6 +609,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return TransactionToken.SENTINEL;
    }
 
+   @Override
+   public List<ArtifactReadable> getTxDataReadables() {
+      List list = new ArrayList(txData.getAllReadables());
+      return list;
+   }
+
    private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch) {
       boolean isOnSameBranch = txData.isOnBranch(sourceBranch);
       Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",

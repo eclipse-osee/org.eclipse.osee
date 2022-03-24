@@ -210,6 +210,8 @@ public interface TransactionBuilder {
 
    void addKeyValueOps(Long id, String name);
 
+   public List<ArtifactReadable> getTxDataReadables();
+
    /**
     * @return writable artifact or sentinal
     */
