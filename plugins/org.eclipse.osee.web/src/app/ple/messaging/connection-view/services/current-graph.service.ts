@@ -20,8 +20,6 @@ import { RouteStateService } from './route-state-service.service';
 import { connection, connectionWithChanges, OseeEdge, transportType } from '../../shared/types/connection'
 import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node'
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { transaction, transactionToken } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
@@ -31,6 +29,7 @@ import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum'
 import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../types/change-report/change-report.d';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
+import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,10 +44,10 @@ export class CurrentGraphService {
     map((split) => this.transform(split)),
     repeatWhen(_=>this.updated),
     share(),
-    shareReplay(1),
   ),
     of({ nodes: [], edges: [] }))
-    )
+    ),
+    shareReplay({bufferSize:1,refCount:true})
   )
   private _nodes = combineLatest([this.routeStateService.isInDiff, this._graph]).pipe(
     switchMap(([diffState, graph]) => iif(() => diffState,
@@ -58,6 +57,7 @@ export class CurrentGraphService {
       ),
       of(graph)
     )),
+    shareReplay({bufferSize:1,refCount:true})
   )
   private _nodeOptions = this.routeStateService.id.pipe(
     share(),
@@ -78,35 +78,12 @@ export class CurrentGraphService {
     )),
     shareReplay(1),
   )
-  
-  private _preferences = combineLatest([this.routeStateService.id, this.userService.user]).pipe(
-    share(),
-    filter(([id, user]) => id !== "" && id !== '-1'),
-    switchMap(([id, user]) => this.preferenceService.getUserPrefs(id, user).pipe(
-      repeatWhen(_ => this.updated),
-      share(),
-      shareReplay(1)
-    )),
-    shareReplay(1)
-  )
-
-  private _branchPrefs = combineLatest([this.routeStateService.id, this.userService.user]).pipe(
-    share(),
-    switchMap(([branch,user]) => this.preferenceService.getBranchPrefs(user).pipe(
-      repeatWhen(_ => this.updated),
-      share(),
-      switchMap((branchPrefs) => from(branchPrefs).pipe(
-        filter((pref) => !pref.includes(branch + ":")),
-        reduce((acc, curr) => [...acc, curr], [] as string[]),
-      )),
-      shareReplay(1) 
-    )),
-    shareReplay(1),
-  )
+  private _branchPrefs = this.preferenceService.BranchPrefs;
+  private _preferences = this.preferenceService.preferences;
 
   private _update = new Subject<boolean>();
   private _differences = new BehaviorSubject<changeInstance[]|undefined>(undefined);
-  constructor (private graphService: GraphService, private nodeService: NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService, private preferenceService: MimPreferencesService, private userService: UserDataAccountService, private diffService: DiffUIService, private sideNavService: SideNavService) {}
+  constructor (private graphService: GraphService, private nodeService: NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService, private diffService: DiffUIService, private sideNavService: SideNavService, private preferenceService: PreferencesUIService) {}
   get differences() {
     return this._differences;
   }
