@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
+ 
 package org.eclipse.osee.synchronization.rest;
 
 import java.util.Optional;
@@ -32,6 +32,7 @@ public interface Grove extends ToMessage {
     * additional parameters may throw an {@link UnsupportedOperationException}.
     *
     * @param groveThing the {@link GroveThing} object to be added to the grove.
+    * @return the {@link GroveThing} added to the grove.
     * @throws UnsupportedOperationException when the {@link Grove} requires additional parameters to add
     * {@link GroveThing}s.
     * @throws DuplicateGroveEntry when the {@link Grove} already contains an entry with the provided
@@ -39,7 +40,7 @@ public interface Grove extends ToMessage {
     * @throws NullPointerException when the provided {@link GroveThing} is <code>null</code>.
     */
 
-   void add(GroveThing groveThing);
+   GroveThing add(GroveThing groveThing);
 
    /**
     * Predicate to determine if the {@link Grove} contains a {@link GroveThing} with an associated native thing that has

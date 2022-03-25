@@ -19,11 +19,11 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TimeZone;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeLong;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.synchronization.rest.AttributeDefinitionGroveThing;
 import org.eclipse.osee.synchronization.rest.AttributeValueGrove;
@@ -65,6 +66,7 @@ import org.eclipse.osee.synchronization.rest.SpecificationGrove;
 import org.eclipse.osee.synchronization.rest.SpecificationGroveThing;
 import org.eclipse.osee.synchronization.rest.SynchronizationArtifact;
 import org.eclipse.osee.synchronization.rest.SynchronizationArtifactBuilder;
+import org.eclipse.osee.synchronization.util.DataConverters;
 import org.eclipse.osee.synchronization.util.EnumBiConsumerMap;
 import org.eclipse.osee.synchronization.util.EnumConsumerMap;
 import org.eclipse.osee.synchronization.util.EnumSupplierMap;
@@ -88,6 +90,7 @@ import org.eclipse.rmf.reqif10.DatatypeDefinitionDate;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionInteger;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionReal;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionString;
+import org.eclipse.rmf.reqif10.DatatypeDefinitionXHTML;
 import org.eclipse.rmf.reqif10.ReqIF;
 import org.eclipse.rmf.reqif10.ReqIF10Factory;
 import org.eclipse.rmf.reqif10.ReqIFHeader;
@@ -197,12 +200,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    private static final ZoneId zoneIdZ = ZoneId.of("Z");
 
    /**
-    * {@link TimeZone} constant for "Zulu".
-    */
-
-   private static final TimeZone timeZoneZ = TimeZone.getTimeZone(ReqIFSynchronizationArtifactBuilder.zoneIdZ);
-
-   /**
     * {@link GregorianCalendar} constant for the UNIX epoch January 1, 1970 UTC.
     */
 
@@ -248,6 +245,14 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    private static final EnumSupplierMap<NativeDataType, AttributeValue> reqifAttributeValueFactoryMap =
       new EnumSupplierMap<>(NativeDataType.class);
+
+   /**
+    * Map of {@link BiConsumer} implementations to set the value on an {@link AttributeValue} according to the
+    * {@link NativeDataType}.
+    */
+
+   private static final EnumBiConsumerMap<NativeDataType, Object, AttributeValue> reqifAttributeValueSetterMap =
+      new EnumBiConsumerMap<>(NativeDataType.class);
 
    /**
     * Map of {@link Supplier} implementations to create the foreign things that extend the {@link DatatypeDefinition}
@@ -300,6 +305,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.JAVA_OBJECT,          ( attributeValue, attributeDefinition ) -> ((AttributeValueString)  attributeValue).setDefinition((AttributeDefinitionString)  attributeDefinition) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.LONG,                 ( attributeValue, attributeDefinition ) -> ((AttributeValueInteger) attributeValue).setDefinition((AttributeDefinitionInteger) attributeDefinition) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.STRING,               ( attributeValue, attributeDefinition ) -> ((AttributeValueString)  attributeValue).setDefinition((AttributeDefinitionString)  attributeDefinition) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.STRING_WORD_ML,       ( attributeValue, attributeDefinition ) -> ((AttributeValueXHTML)   attributeValue).setDefinition((AttributeDefinitionXHTML)   attributeDefinition) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.URI,                  ( attributeValue, attributeDefinition ) -> ((AttributeValueXHTML)   attributeValue).setDefinition((AttributeDefinitionXHTML)   attributeDefinition) );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.ARTIFACT_IDENTIFIER, (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionInteger) attributeDefinition).setType( (DatatypeDefinitionInteger) datatypeDefinition ) );
@@ -313,6 +319,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.JAVA_OBJECT,         (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionString)  attributeDefinition).setType( (DatatypeDefinitionString)  datatypeDefinition ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.LONG,                (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionInteger) attributeDefinition).setType( (DatatypeDefinitionInteger) datatypeDefinition ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.STRING,              (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionString)  attributeDefinition).setType( (DatatypeDefinitionString)  datatypeDefinition ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.STRING_WORD_ML,      (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionXHTML)   attributeDefinition).setType( (DatatypeDefinitionXHTML)   datatypeDefinition ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.URI,                 (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionString)  attributeDefinition).setType( (DatatypeDefinitionString)  datatypeDefinition ) );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionIntegerForArtifactId );
@@ -323,6 +330,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.INTEGER,             ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionIntegerForInteger    );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.LONG,                ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong       );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.STRING,              ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionString               );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.STRING_WORD_ML,      ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionXHTML                );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIF10Factory.eINSTANCE::createAttributeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.BRANCH_IDENTIFIER,   ReqIF10Factory.eINSTANCE::createAttributeDefinitionInteger );
@@ -335,6 +343,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.JAVA_OBJECT,         ReqIF10Factory.eINSTANCE::createAttributeDefinitionString  );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.LONG,                ReqIF10Factory.eINSTANCE::createAttributeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.STRING,              ReqIF10Factory.eINSTANCE::createAttributeDefinitionString  );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.STRING_WORD_ML,      ReqIF10Factory.eINSTANCE::createAttributeDefinitionXHTML   );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createAttributeDefinitionXHTML   );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIF10Factory.eINSTANCE::createAttributeValueInteger );
@@ -348,7 +357,18 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.JAVA_OBJECT,         ReqIF10Factory.eINSTANCE::createAttributeValueString  );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.LONG,                ReqIF10Factory.eINSTANCE::createAttributeValueInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.STRING,              ReqIF10Factory.eINSTANCE::createAttributeValueString  );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.STRING_WORD_ML,      ReqIF10Factory.eINSTANCE::createAttributeValueXHTML   );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createAttributeValueXHTML   );
+
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.ARTIFACT_IDENTIFIER, ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.idToBigInteger( (Id) value ) ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.BRANCH_IDENTIFIER,   ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.idToBigInteger( (Id) value ) ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.BOOLEAN,             ( value, attributeValue ) -> ((AttributeValueBoolean) attributeValue).setTheValue( (Boolean) value ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.DATE,                ( value, attributeValue ) -> ((AttributeValueDate)    attributeValue).setTheValue( DataConverters.dateToGregorianCalendar( (Date) value ) ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.DOUBLE,              ( value, attributeValue ) -> ((AttributeValueReal)    attributeValue).setTheValue( (Double) value ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.INTEGER,             ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.integerToBigInteger( (Integer) value ) ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.LONG,                ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.longToBigInteger( (Long) value ) ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.STRING,              ( value, attributeValue ) -> ((AttributeValueString)  attributeValue).setTheValue( (String) value ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.STRING_WORD_ML,      ( value, attributeValue ) -> ((AttributeValueXHTML)   attributeValue).setTheValue( DataConverters.wordMlStringToXhtmlContent( (String) value ) ) );
 
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIF10Factory.eINSTANCE::createDatatypeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.BRANCH_IDENTIFIER,   ReqIF10Factory.eINSTANCE::createDatatypeDefinitionInteger );
@@ -361,6 +381,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.JAVA_OBJECT,         ReqIF10Factory.eINSTANCE::createDatatypeDefinitionString  );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.LONG,                ReqIF10Factory.eINSTANCE::createDatatypeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.STRING,              ReqIF10Factory.eINSTANCE::createDatatypeDefinitionString  );
+      ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.STRING_WORD_ML,      ReqIF10Factory.eINSTANCE::createDatatypeDefinitionXHTML   );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createDatatypeDefinitionXHTML   );
 
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionDatatypeConverterMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIFSynchronizationArtifactBuilder::convertDataTypeDefinitionReqIfDatatypeDefinitionInteger );
@@ -637,9 +658,10 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
-    * Not FUlly Implemented
+    * Converts the native OSEE attribute value into a foreign ReqIF {@link AttributeValue} for Synchronization Artifact
+    * {@link AttributeValueGroveThing}s.
     *
-    * @param groveThing
+    * @param groveThing the Synchronization Artifact {@link AttributeValueGroveThing} to be converted to a ReqIF value.
     */
 
    private static void convertAttributeValue(GroveThing groveThing) {
@@ -647,19 +669,23 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var attributeValue = (AttributeValueGroveThing) groveThing;
       var nativeAttributeValue = groveThing.getNativeThing();
-
       var attributeDefinition = attributeValue.getAttributeDefinition();
       var datatypeDefinition = attributeDefinition.getDataTypeDefinition();
       var nativeDataType = (NativeDataType) datatypeDefinition.getNativeThing();
 
       var reqifAttributeValue = ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.get(nativeDataType);
 
+      if (ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.containsKey(nativeDataType)) {
+         ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.accept(nativeDataType, nativeAttributeValue,
+            reqifAttributeValue);
+      }
+
       attributeValue.setForeignThing(reqifAttributeValue);
    }
 
    /**
-    * Converts the native OSEE {@link AttributeTypeToken} into a foreign ReqIF {@link AttributeDefinitionGroveThing} for
-    * Synchronization Artifact {@link AttributeDefinitionGroveThing} things.
+    * Converts the native OSEE {@link AttributeTypeToken} into a foreign ReqIF {@link AttributeDefinition} for
+    * Synchronization Artifact {@link AttributeDefinitionGroveThing}s.
     *
     * @param groveThing the Synchronization Artifact {@link AttributeDefinitionGroveThing} thing to be converted for
     * ReqIF.
@@ -695,7 +721,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    /**
     * Performs the conversion from a native OSEE {@link AttributeTypeToken} to a foreign ReqIF
-    * {@link AttributeDefinitionGroveThing} for the ReqIF attributes that are common to all ReqIF attribute definitions.
+    * {@link AttributeDefinition} for the ReqIF attributes that are common to all ReqIF attribute definitions for a
+    * Synchronization Artifact {@link AttributeDefinitionGroveThing}.
+    *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to be initialized.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinition(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
@@ -720,7 +751,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeBoolean} to a foreign ReqIF
+    * {@link AttributeDefinitionBoolean} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
     *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionBoolean(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
@@ -751,8 +787,13 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
-   *
-   */
+    * Performs the conversion from a native OSEE {@link AttributeTypeDate} to a foreign ReqIF
+    * {@link AttributeDefinitionDate} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
+    *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
+    */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionDate(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
@@ -776,17 +817,19 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       var defaultAttributeValue =
          (AttributeValueDate) ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.get(nativeDataType);
 
-      var calendar = new GregorianCalendar();
-      calendar.setTime(defaultValue);
-      calendar.setTimeZone(ReqIFSynchronizationArtifactBuilder.timeZoneZ);
-      defaultAttributeValue.setTheValue(calendar);
+      defaultAttributeValue.setTheValue(DataConverters.dateToGregorianCalendar(defaultValue));
 
       reqifAttributeDefinitionDate.setDefaultValue(defaultAttributeValue);
    }
 
    /**
-   *
-   */
+    * Performs the conversion from a native OSEE {@link AttributeTypeDouble} to a foreign ReqIF
+    * {@link AttributeDefinitionDouble} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
+    *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
+    */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionDouble(AttributeDefinitionGroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
 
@@ -816,7 +859,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeArtifactId} to a foreign ReqIF
+    * {@link AttributeDefinitionInteger} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
     *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForArtifactId(AttributeDefinitionGroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
@@ -847,7 +895,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeBranchId} to a foreign ReqIF
+    * {@link AttributeDefinitionInteger} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
     *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForBranchId(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
@@ -878,7 +931,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeInteger} to a foreign ReqIF
+    * {@link AttributeDefinitionInteger} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
     *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForInteger(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
@@ -909,7 +967,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeLong} to a foreign ReqIF
+    * {@link AttributeDefinitionInteger} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
     *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
@@ -940,7 +1003,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeString} to a foreign ReqIF
+    * {@link AttributeDefinitionString} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
     *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
    private static void convertAttributeDefinitionReqIfAttributeDefinitionString(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
@@ -970,6 +1038,46 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       defaultAttributeValue.setTheValue(defaultValue);
 
       reqifAttributeDefinitionString.setDefaultValue(defaultAttributeValue);
+   }
+
+   /**
+    * Performs the conversion from a native OSEE {@link AttributeTypeString} with Word ML content to a foreign ReqIF
+    * {@link AttributeDefinitionXHTML} for a Synchronization Artifact {@link AttributeDefinitionGroveThing}.
+    *
+    * @param attributeDefinitionGroveThing the {@link AttributeDefinitionGroveThing} to convert an attribute definition
+    * for.
+    * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
+    */
+
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionXHTML(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+
+      var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
+
+      assert (nativeAttributeTypeToken instanceof AttributeTypeString) : "Actual Type: " + nativeAttributeTypeToken.getClass().getName();
+
+      var nativeAttributeTypeString = (AttributeTypeString) nativeAttributeTypeToken;
+
+      var defaultValue = nativeAttributeTypeString.getBaseAttributeTypeDefaultValue();
+
+      if (defaultValue.isEmpty()) {
+         return;
+      }
+
+      assert (reqifAttributeDefinition instanceof AttributeDefinitionXHTML);
+
+      var reqifAttributeDefinitionXHTML = (AttributeDefinitionXHTML) reqifAttributeDefinition;
+
+      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var nativeDataType = (NativeDataType) datatypeDefinition.getNativeThing();
+
+      var defaultAttributeValue =
+         (AttributeValueXHTML) ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.get(nativeDataType);
+
+      var xhtmlContent = DataConverters.wordMlStringToXhtmlContent(defaultValue);
+
+      defaultAttributeValue.setTheValue(xhtmlContent);
+
+      reqifAttributeDefinitionXHTML.setDefaultValue(defaultAttributeValue);
    }
 
    /**
@@ -1103,10 +1211,10 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
-    * Converter method for {@link HeaderGroveThing} things. This method creates the foreign ReqIF
-    * {@link HeaderGroveThing} from the native {@link HeaderGroveThing} thing.
+    * Converter method for {@link HeaderGroveThing}s. This method creates the foreign ReqIF {@link HeaderGroveThing}
+    * from the native {@link HeaderGroveThing} thing.
     *
-    * @param groveThing the {@link HeaderGroveThing} thing to be converted.
+    * @param groveThing the {@link HeaderGroveThing} to be converted.
     */
 
    private static void convertHeader(GroveThing groveThing) {
@@ -1129,7 +1237,10 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
-    * @param groveThing
+    * Converter method for {@link SpecificationGroveThing}s. This method creates the foreign ReqIF {@link Specification}
+    * from the native {@link ArtifactReadable}.
+    *
+    * @param groveThing the {@link SpecificaitionGroveThing} to be converted.
     */
 
    private static void convertSpecification(GroveThing groveThing) {
@@ -1155,7 +1266,10 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    }
 
    /**
-    * @param groveThing
+    * Converter method for {@link SpecObjectGroveThing}s. This method creates the foreign ReqIF {@link SpecObject} from
+    * the native {@link ArtifactReadable}.
+    *
+    * @param groveThing the {@link SpecObjectGroveThing} to be converted.
     */
 
    private static void convertSpecObject(GroveThing groveThing) {
@@ -1236,6 +1350,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       specType.setForeignThing(reqifSpecificationType);
    }
+
 }
 
 /* EOF */

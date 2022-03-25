@@ -77,7 +77,7 @@ public abstract class AbstractHierarchyTreeGrove implements Grove {
     */
 
    @Override
-   public void add(GroveThing groveThing) {
+   public GroveThing add(GroveThing groveThing) {
       Objects.requireNonNull(groveThing);
 
       var groveThingKey = groveThing.getGroveThingKey();
@@ -93,6 +93,8 @@ public abstract class AbstractHierarchyTreeGrove implements Grove {
       hierarchyTree.setRoot(groveThingKey, groveThing);
 
       groveThing.getNativeKey().ifPresent(nativeKey -> this.nativeKeyMap.put(nativeKey, groveThing));
+
+      return groveThing;
    }
 
    /**
