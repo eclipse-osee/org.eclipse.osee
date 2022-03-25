@@ -76,6 +76,11 @@ public enum NativeDataType implements Id, ToMessage {
          "OSEE String Datatype"
       ),
 
+   STRING_WORD_ML
+      (
+         "OSEE String Word ML Datatype"
+      ),
+
    URI
       (
          "OSEE URI Datatype"
@@ -94,6 +99,10 @@ public enum NativeDataType implements Id, ToMessage {
 
    static NativeDataType classifyNativeDataType(AttributeTypeToken attributeTypeToken) {
       if (attributeTypeToken.isString()) {
+         switch (attributeTypeToken.getMediaType()) {
+            case AttributeTypeToken.APPLICATION_MSWORD:
+               return STRING_WORD_ML;
+         }
          return STRING;
       }
       if (attributeTypeToken.isEnumerated()) {

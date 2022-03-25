@@ -70,7 +70,7 @@ public class AbstractMapGrove implements Grove, ToMessage {
     */
 
    @Override
-   public void add(GroveThing groveThing) {
+   public GroveThing add(GroveThing groveThing) {
       Objects.requireNonNull(groveThing);
       var groveThingKey = groveThing.getGroveThingKey();
 
@@ -83,6 +83,8 @@ public class AbstractMapGrove implements Grove, ToMessage {
       this.map.put(groveThingKey, groveThing);
 
       groveThing.getNativeKey().ifPresent(nativeKey -> this.nativeKeyMap.put(nativeKey, groveThing));
+
+      return groveThing;
    }
 
    /**

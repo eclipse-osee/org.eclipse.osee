@@ -253,7 +253,8 @@ public class SynchronizationArtifact implements ToMessage {
       this.rootList.forEach(this::processRootArtifact);
 
       /*
-       * Create the Attribute Definitions for all of the unique SpecificationGroveThing Type and SpecObjectGroveThing Types.
+       * Create the Attribute Definitions for all of the unique SpecificationGroveThing Type and SpecObjectGroveThing
+       * Types.
        */
 
       this.processCommonObjectTypeContainerMap();
@@ -284,14 +285,14 @@ public class SynchronizationArtifact implements ToMessage {
    }
 
    /**
-    * Finds in the {@link #commonObjectTypeContainerMap} or creates a new {@link SpecTypeGroveThing} or {@link SpecObjectTypeGroveThing} for
-    * the OSEE artifact type.
+    * Finds in the {@link #commonObjectTypeContainerMap} or creates a new {@link SpecTypeGroveThing} or
+    * {@link SpecObjectTypeGroveThing} for the OSEE artifact type.
     *
     * @param identifierType the {@link IdentifierType} indicating whether to get a {@link SpecTypeGroveThing} or
     * {@link SpecObjectTypeGroveThing} thing.
     * @param artifactTypeToken the OSEE artifact type.
-    * @return the found or newly created {@link SpecTypeGroveThing} or {@link SpecObjectTypeGroveThing} Synchronization Artifact thing for
-    * the provided {@link SpecificationGroveThing} or {@link SpecObjectGroveThing}.
+    * @return the found or newly created {@link SpecTypeGroveThing} or {@link SpecObjectTypeGroveThing} Synchronization
+    * Artifact thing for the provided {@link SpecificationGroveThing} or {@link SpecObjectGroveThing}.
     */
 
    private CommonObjectTypeGroveThing createOrGetCommonObjectType(IdentifierType identifierType, ArtifactTypeToken artifactTypeToken) {
@@ -318,13 +319,14 @@ public class SynchronizationArtifact implements ToMessage {
    }
 
    /**
-    * Creates a Synchronization Artifact {@link SpecificationGroveThing} or {@link SpecObjectGroveThing} and the associated {@link SpecTypeGroveThing}
-    * or {@link SpecObjectTypeGroveThing} things from an OSEE artifact.
+    * Creates a Synchronization Artifact {@link SpecificationGroveThing} or {@link SpecObjectGroveThing} and the
+    * associated {@link SpecTypeGroveThing} or {@link SpecObjectTypeGroveThing} things from an OSEE artifact.
     *
-    * @param artifactReadable the native OSEE object to create an {@link SpecificationGroveThing} or {@link SpecObjectGroveThing} for.
+    * @param artifactReadable the native OSEE object to create an {@link SpecificationGroveThing} or
+    * {@link SpecObjectGroveThing} for.
     * @param identifierType indicates the type of Synchronization Artifact things to be created.
-    * @return the {@link CommonObjectGroveThing} for the Synchronization Artifact {@link SpecificationGroveThing} or @{link SpecObjectGroveThing} that
-    * was created.
+    * @return the {@link CommonObjectGroveThing} for the Synchronization Artifact {@link SpecificationGroveThing}
+    * or @{link SpecObjectGroveThing} that was created.
     */
 
    private CommonObjectGroveThing createCommonObject(ArtifactReadable artifactReadable, IdentifierType identifierType) {
@@ -385,10 +387,10 @@ public class SynchronizationArtifact implements ToMessage {
     *
     * @param indent the hierarchy level for debug messages
     * @param artifactReadable the OSEE native artifact to be added
-    * @param specificationIdentifier the {@link Identifier} of the Synchronization Artifact SpecificationGroveThing the OSEE
-    * artifact is to be added to.
-    * @param parentIdentifier the {@link Identifier} of the Synchronization Artifact SpecificationGroveThing or SpecObjectGroveThing that is
-    * the hierarchical parent of the OSEE artifact to be added.
+    * @param specificationIdentifier the {@link Identifier} of the Synchronization Artifact SpecificationGroveThing the
+    * OSEE artifact is to be added to.
+    * @param parentIdentifier the {@link Identifier} of the Synchronization Artifact SpecificationGroveThing or
+    * SpecObjectGroveThing that is the hierarchical parent of the OSEE artifact to be added.
     */
 
    private void processArtifactReadable(int indent, ArtifactReadable artifactReadable, Identifier specificationIdentifier, Identifier parentIdentifier) {
@@ -406,8 +408,8 @@ public class SynchronizationArtifact implements ToMessage {
    }
 
    /**
-    * Creates the Synchronization Artifact {@link DataTypeDefintion} things for each SpecificationGroveThing or SpecObjectGroveThing
-    * {@link AttributeDefinitionGroveThing} that is needed for the Synchronization Artifact.
+    * Creates the Synchronization Artifact {@link DataTypeDefintion} things for each SpecificationGroveThing or
+    * SpecObjectGroveThing {@link AttributeDefinitionGroveThing} that is needed for the Synchronization Artifact.
     */
 
    private void processAttributeDefinitionGrove() {
@@ -419,17 +421,19 @@ public class SynchronizationArtifact implements ToMessage {
          var attributeTypeToken = (AttributeTypeToken) attributeDefinition.getNativeThing();
          NativeDataType nativeDataType = NativeDataType.classifyNativeDataType(attributeTypeToken);
 
-         var dataTypeDefinition = dataTypeDefinitionGrove.getByNativeKey(nativeDataType.getId()).orElse(
-            new DataTypeDefinitionGroveThing().setNativeThing(nativeDataType));
+         var dataTypeDefinition = dataTypeDefinitionGrove.getByNativeKey(nativeDataType.getId()).orElseGet(() -> {
+            return dataTypeDefinitionGrove.add(new DataTypeDefinitionGroveThing().setNativeThing(nativeDataType));
+         });
 
-         ((AttributeDefinitionGroveThing) attributeDefinition).setDataTypeDefinition((DataTypeDefinitionGroveThing) dataTypeDefinition);
+         ((AttributeDefinitionGroveThing) attributeDefinition).setDataTypeDefinition(
+            (DataTypeDefinitionGroveThing) dataTypeDefinition);
 
       });
    }
 
    /**
-    * Creates the Synchronization Artifact {@link AttributeDefinitionGroveThing} things for the Synchronization Artifact's
-    * {@link SpecTypeGroveThing} and {@link SpecObjectTypeGroveThing} things.
+    * Creates the Synchronization Artifact {@link AttributeDefinitionGroveThing} things for the Synchronization
+    * Artifact's {@link SpecTypeGroveThing} and {@link SpecObjectTypeGroveThing} things.
     */
 
    private void processCommonObjectTypeContainerMap() {
@@ -483,7 +487,8 @@ public class SynchronizationArtifact implements ToMessage {
 
       //Start a specification with the OSEE root object
 
-      var specification = (SpecificationGroveThing) this.createCommonObject(rootArtifactReadable, IdentifierType.SPECIFICATION);
+      var specification =
+         (SpecificationGroveThing) this.createCommonObject(rootArtifactReadable, IdentifierType.SPECIFICATION);
       var specificationIdentifier = specification.getGroveThingKey();
 
       specificationGrove.add(specification);
@@ -503,8 +508,8 @@ public class SynchronizationArtifact implements ToMessage {
    private void processSpecObjectGrove() {
 
       /*
-       * The SpecObjectGrove contains Specifications as the root things and SpecObjectGroveThing things as children of the
-       * Specifications.
+       * The SpecObjectGrove contains Specifications as the root things and SpecObjectGroveThing things as children of
+       * the Specifications.
        */
 
       SpecObjectGrove specObjectGrove = this.getGrove(IdentifierType.SPEC_OBJECT);
@@ -516,8 +521,8 @@ public class SynchronizationArtifact implements ToMessage {
          var artifactReadable = (ArtifactReadable) commonObject.getNativeThing();
 
          /*
-          * The CommonObjectTypeGroveThing contains a list of the attributes that are defined for the SpecificationGroveThing or SpecObjectGroveThing
-          * thing
+          * The CommonObjectTypeGroveThing contains a list of the attributes that are defined for the
+          * SpecificationGroveThing or SpecObjectGroveThing thing
           */
 
          var commonObjectType = commonObject.getCommonObjectType();
