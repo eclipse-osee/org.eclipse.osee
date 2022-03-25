@@ -68,7 +68,7 @@ export class TypesUIService {
   performMutation(body: transaction) {
     return this._ui.id.pipe(
       take(1),
-    switchMap((branchId)=>this._typesService.performMutation(body,branchId))
+    switchMap((branchId)=>this._typesService.performMutation(body))
     )
   }
 }

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { transactionInfo } from '../types/change-report/transaction';
+import { transactionInfo, transactionResult } from '../types/change-report/transaction';
 import { transaction } from './transaction';
 
 export const transactionMock: transaction = {
@@ -43,4 +43,28 @@ export const transactionInfoMock: transactionInfo = {
   },
   timeStamp: '',
   commitArt: ''
+}
+export const transactionResultMock: transactionResult = {
+  tx: {
+    id: "-1",
+    branchId:"-1"
+  },
+  results: {
+    empty: false,
+    errorCount: 0,
+    errors: false,
+    failed: false,
+    ids: [],
+    infoCount: 0,
+    numErrors: 0,
+    numErrorsViaSearch: 0,
+    numWarnings: 0,
+    numWarningsViaSearch: 0,
+    results: [],
+    success: true,
+    tables: [],
+    title: '',
+    txId: '-1',
+    warningCount: 0,
+  }
 }

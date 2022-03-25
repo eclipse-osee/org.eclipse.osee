@@ -68,7 +68,7 @@ export class EnumerationUIService {
         ),
           of(transaction)
         )),
-        switchMap((transactionFinal) => this.enumSetService.performMutation(transactionFinal, branchId))
+        switchMap((transactionFinal) => this.enumSetService.performMutation(transactionFinal))
       ))
     )
   }

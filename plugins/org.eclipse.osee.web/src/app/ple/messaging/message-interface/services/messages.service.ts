@@ -23,13 +23,14 @@ import { nodeData } from '../../shared/types/node'
 import { ConnectionNode } from '../types/connection-nodes'
 import { map } from 'rxjs/operators';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../transactions/transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagesService {
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
   /**
    * Gets an array of messages based on a filter condition
@@ -92,6 +93,6 @@ export class MessagesService {
     return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Removing message'))
   }
   performMutation(body:transaction) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)
+    return this.transactionService.performMutation(body)
   }
 }

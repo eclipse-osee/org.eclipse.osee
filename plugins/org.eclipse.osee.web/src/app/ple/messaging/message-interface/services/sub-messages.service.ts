@@ -20,13 +20,14 @@ import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { MessageApiResponse } from '../types/ApiResponse';
 import { subMessage } from '../types/sub-messages';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../transactions/transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubMessagesService {
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
 
   getSubMessage(branchId: string, connectionId: string, messageId: string, subMessageId: string) {
     return this.http.get<subMessage>(apiURL + "/mim/branch/" + branchId + "/connections/" + connectionId + "/messages/" + messageId + "/submessages/" + subMessageId);
@@ -57,6 +58,6 @@ export class SubMessagesService {
     return of(this.builder.deleteArtifact(submessageId,undefined,branchId,'Deleting Submessage'))
   }
   performMutation(branchId:string,connectionId:string,messageId:string,body:transaction) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)
+    return this.transactionService.performMutation(body)
   }
 }

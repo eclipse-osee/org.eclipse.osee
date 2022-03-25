@@ -35,6 +35,7 @@ export class AddElementDialogComponent implements OnInit {
 
   availableElements = this.structures.availableElements;
   storedId: string = '-1';
+  loadingTypes = false;
   availableTypes = this.structures.types.pipe(
     switchMap((types) => of(types).pipe(
       concatMap((array) => from(array).pipe(
@@ -45,6 +46,9 @@ export class AddElementDialogComponent implements OnInit {
       )),
       reduce((acc,curr)=>[...acc,curr],[] as {type:string,types:PlatformType[]}[])
     )),
+    tap(() => {
+      this.loadingTypes = false;
+    })
   );
   typeDialogOpen = false;
   constructor(public dialog: MatDialog,private structures:CurrentStructureService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog, private typeDialogService: NewTypeDialogService, private _ui: UiService) { }
@@ -73,10 +77,11 @@ export class AddElementDialogComponent implements OnInit {
     this.typeDialogOpen = !this.typeDialogOpen;
     const { fields, createEnum, ...enumData } = value;
     this.mapTo(fields, createEnum, enumData).pipe(
-      switchMap((createdElement) => this.structures.getFilteredTypes(fields.find(f => f.name === 'Name')?.value || '').pipe(
+      switchMap((createdElement) => this.structures.getType(createdElement.results.ids[0]).pipe(
         tap((v) => {
           this._ui.updated = true;
-          this.data.type = v[0] as Required<PlatformType>;
+          this.loadingTypes = true;
+          this.data.type = v as Required<PlatformType>;
         })
       ))
     ).subscribe();

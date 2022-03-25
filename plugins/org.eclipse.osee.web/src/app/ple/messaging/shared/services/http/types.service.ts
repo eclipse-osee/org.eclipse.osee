@@ -20,13 +20,14 @@ import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { logicalType, logicalTypeFormDetail } from '../../types/logicaltype';
 import { PlatformType } from '../../types/platformType';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../../transactions/transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TypesService {
   
-  constructor(private http: HttpClient, private builder: TransactionBuilderService) { }
+  constructor(private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
 
   /**
    * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
@@ -52,8 +53,8 @@ export class TypesService {
   changePlatformType(branchId: string, type: Partial<PlatformType>) {
     return of<transaction>(this.builder.modifyArtifact(type,undefined,branchId,"Change platform type attributes"));
   }
-  performMutation(body: transaction,branchId:string) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",body)
+  performMutation(body: transaction) {
+    return this.transactionService.performMutation(body)
   }
 
   get logicalTypes() {

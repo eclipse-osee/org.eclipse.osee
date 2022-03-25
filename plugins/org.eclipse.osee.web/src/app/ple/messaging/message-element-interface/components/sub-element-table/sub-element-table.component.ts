@@ -22,9 +22,9 @@ import { enumerationSet } from '../../../shared/types/enum';
 import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
-import { element } from '../../../shared/types/element';
+import { element } from '../../../shared/types/element.d';
 import { RemoveElementDialogData } from '../../types/RemoveElementDialog';
-import { structure, structureWithChanges } from '../../../shared/types/structure';
+import { structure, structureWithChanges } from '../../../shared/types/structure.d';
 import { AddElementDialogComponent } from '../add-element-dialog/add-element-dialog.component';
 import { RemoveElementDialogComponent } from '../remove-element-dialog/remove-element-dialog.component';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
@@ -163,7 +163,23 @@ export class SubElementTableComponent implements OnInit, OnChanges {
         interfaceElementIndexStart: 0,
         units:''
       },
-      type:{id:'',name:''}
+      type: {
+        id: '',
+        name: '',
+        interfaceLogicalType: '',
+        interfacePlatform2sComplement: false,
+        interfacePlatformTypeAnalogAccuracy: '',
+        interfacePlatformTypeBitSize: '',
+        interfacePlatformTypeBitsResolution: '',
+        interfacePlatformTypeCompRate: '',
+        interfacePlatformTypeDefaultValue: '',
+        interfacePlatformTypeEnumLiteral: '',
+        interfacePlatformTypeMaxval: '',
+        interfacePlatformTypeMinval: '',
+        interfacePlatformTypeMsbValue: '',
+        interfacePlatformTypeUnits: '',
+        interfacePlatformTypeValidRangeDescription:''
+      }
     }
     let dialogRef = this.dialog.open(AddElementDialogComponent, {
       data:dialogData
@@ -173,7 +189,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       switchMap((value:AddElementDialog) =>
         iif(() => value.element.id !== '-1' && value.element.id.length > 0,
           this.structureService.relateElement(structure.id, value.element.id, afterElement||'end'),
-          this.structureService.createNewElement(value.element, structure.id,value.type.id, afterElement||'end'))
+          this.structureService.createNewElement(value.element, structure.id,value.type.id as string, afterElement||'end'))
       ),
       take(1)
     );

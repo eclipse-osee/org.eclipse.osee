@@ -18,7 +18,6 @@ import { TransactionBuilderService } from 'src/app/transactions/transaction-buil
 import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { apiURL } from 'src/environments/environment';
-import { response } from '../../connection-view/mocks/Response.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
@@ -30,7 +29,6 @@ import { logicalTypeMock } from '../mocks/returnObjects/logicalType.mock';
 import { logicalTypeFormDetailMock } from '../mocks/returnObjects/logicalTypeFormDetail.mock';
 import { enumerationSetServiceMock } from '../../shared/mocks/enumeration.set.service.mock';
 import { typesServiceMock } from '../../shared/mocks/types.service.mock';
-import { TypesApiResponse } from '../types/ApiResponse';
 import { logicalType, logicalTypeFormDetail } from '../../shared/types/logicaltype';
 import { PlatformType } from '../../shared/types/platformType';
 
@@ -41,6 +39,7 @@ import { TypesService } from '../../shared/services/http/types.service';
 import { EnumsService } from '../../shared/services/http/enums.service';
 import { enumsServiceMock } from '../../shared/mocks/EnumsService.mock';
 import { unitsMock } from '../../shared/mocks/unit.mock';
+import { transactionResultMock } from '../../../../transactions/transaction.mock';
 
 class PlatformTypeInstance implements PlatformType{
   id?: string | undefined ='';
@@ -131,7 +130,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should send a modification request', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.partialUpdate({})).toBe(expectedMarble, expectedFilterValues);
@@ -141,7 +140,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should send a post request to copy type', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.copyType({})).toBe(expectedMarble, expectedFilterValues);
@@ -150,7 +149,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should send a post request to create type,enum set, enum', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.createType({}, true, {
@@ -166,7 +165,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should send a post request to create type', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.createType({}, false, {
@@ -182,7 +181,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should send a post request to create type with new enum set', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.createType({interfaceLogicalType:'enumeration'}, true, {
@@ -198,7 +197,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should send a post request to create type with existing enum set', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.createType({interfaceLogicalType:'enumeration'}, false, {
@@ -257,7 +256,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should update user preferences', () => {
     scheduler.run(() => {
-      const expectedObservable = { a: response };
+      const expectedObservable = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description'],allowedHeaders2:['name','description'],allHeaders1:['name'],allHeaders2:['name'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
@@ -308,7 +307,7 @@ describe('CurrentTypesServiceService', () => {
 
   it('should change an enum set', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.BranchIdString = '10';
       scheduler.expectObservable(service.changeEnumSet({ name: '', applicability: { id: '1', name: 'Base' }, description: '' })).toBe(expectedMarble, expectedFilterValues);

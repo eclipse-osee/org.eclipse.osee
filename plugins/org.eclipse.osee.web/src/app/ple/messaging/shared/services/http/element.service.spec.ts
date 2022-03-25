@@ -84,7 +84,7 @@ describe('ElementService', () => {
   })
 
   it('should perform a mutation on the element endpoint', () => {
-    service.performMutation(transactionMock,'10', '10', '10','10','10').subscribe();
+    service.performMutation(transactionMock).subscribe();
     const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
     expect(req.request.method).toEqual('POST');
     req.flush({});

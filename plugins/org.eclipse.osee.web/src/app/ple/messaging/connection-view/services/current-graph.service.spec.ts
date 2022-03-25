@@ -20,7 +20,6 @@ import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
-import { response } from '../mocks/Response.mock';
 import { connection, transportType } from '../../shared/types/connection';
 import { node } from '../../shared/types/node';
 import { ConnectionService } from './connection.service';
@@ -29,7 +28,7 @@ import { CurrentGraphService } from './current-graph.service';
 import { GraphService } from './graph.service';
 import { NodeService } from './node.service';
 import { RouteStateService } from './route-state-service.service';
-import { transactionMock } from 'src/app/transactions/transaction.mock';
+import { transactionMock, transactionResultMock } from 'src/app/transactions/transaction.mock';
 import { relation, transaction } from 'src/app/transactions/transaction';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
@@ -73,7 +72,7 @@ describe('CurrentGraphService', () => {
       return of(transactionMock)
     },
     performMutation(branchId: string, body: transaction) {
-      return of(response);
+      return of(transactionResultMock);
     },
     deleteArtifact(branchId: string, artId: string) {
       return of(transactionMock);
@@ -96,7 +95,7 @@ describe('CurrentGraphService', () => {
       return of(transactionMock);
     },
     performMutation(branchId: string, body: transaction) {
-      return of(response);
+      return of(transactionResultMock);
     },
     deleteRelation(branchId: string, relation: relation, transaction?: transaction) {
       return of(transactionMock);
@@ -130,74 +129,74 @@ describe('CurrentGraphService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return a response when updating connection', () => {
+  it('should return a transactionResultMock when updating connection', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.updateConnection({})).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when unrelating connection(source)', () => {
+  it('should return a transactionResultMock when unrelating connection(source)', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(aa|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.unrelateConnection('1','1')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when unrelating connection(target)', () => {
+  it('should return a transactionResultMock when unrelating connection(target)', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.unrelateConnection('2','2')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when updating a node', () => {
+  it('should return a transactionResultMock when updating a node', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.updateNode({})).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when deleting a node and unrelating', () => {
+  it('should return a transactionResultMock when deleting a node and unrelating', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.deleteNodeAndUnrelate('10', [{id:'20',source:'15',target:'10',data:{name:'abcd',transportType:transportType.Ethernet}},{id:'20',source:'10',target:'15',data:{name:'abcd',transportType:transportType.Ethernet}}])).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when creating a connection', () => {
+  it('should return a transactionResultMock when creating a connection', () => {
     routeState.branchId = '10';
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'1','2')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when creating a connection(and flip the target and source)', () => {
+  it('should return a transactionResultMock when creating a connection(and flip the target and source)', () => {
     routeState.branchId = '10';
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'2','1')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
-  it('should return a response when creating a node', () => {
+  it('should return a transactionResultMock when creating a node', () => {
     scheduler.run(() => {
-      const expectedfilterValues = { a: response };
+      const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
       scheduler.expectObservable(service.createNewNode({name:'node'})).toBe(expectedMarble, expectedfilterValues);
@@ -256,7 +255,7 @@ describe('CurrentGraphService', () => {
   it('should update user preferences', () => {
     scheduler.run(() => {
       routeState.branchId='10'
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description'],allowedHeaders2:['name','description'],allHeaders1:['name'],allHeaders2:['name'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
     })

@@ -68,7 +68,7 @@ export class PlatformTypeCardComponent implements OnInit {
    * @param result Changed values of the platform type + mode AFTER the dialog is closed
    * @returns @type {Observable<OSEEWriteApiResponse>} observable containing results (see @type {OSEEWriteApiResponse} and @type {Observable})
    */
-  getEditObservable(copy: PlatformType, result: editPlatformTypeDialogData): Observable<OSEEWriteApiResponse> {
+  getEditObservable(copy: PlatformType, result: editPlatformTypeDialogData) {
     let newType: any = new Object();
     Object.keys(copy).forEach((value) => {
       if (copy[value as keyof PlatformType] !== result.type[value as keyof PlatformType]) {

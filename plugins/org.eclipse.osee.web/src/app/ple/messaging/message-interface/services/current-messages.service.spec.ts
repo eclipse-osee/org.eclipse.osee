@@ -16,7 +16,6 @@ import { TestScheduler } from 'rxjs/testing';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
 import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
-import { response } from '../../connection-view/mocks/Response.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
@@ -32,6 +31,7 @@ import { CurrentMessagesService } from './current-messages.service';
 import { MessagesService } from './messages.service';
 import { SubMessagesService } from './sub-messages.service';
 import { MessageUiService } from './ui.service';
+import { transactionResultMock } from '../../../../transactions/transaction.mock';
 
 
 describe('CurrentMessagesService', () => {
@@ -95,7 +95,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.partialUpdateMessage({})).toBe(expectedMarble,expectedObservable)
       })
@@ -104,7 +104,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.partialUpdateSubMessage({},'10')).toBe(expectedMarble,expectedObservable)
       })
@@ -114,7 +114,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.relateSubMessage('15','10')).toBe(expectedMarble,expectedObservable)
       })
@@ -124,7 +124,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.createSubMessage(messagesMock[0].subMessages[0],'10')).toBe(expectedMarble,expectedObservable)
       })
@@ -134,7 +134,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.createMessage({id: '1', name: 'Node 1'}, messagesMock[0])).toBe(expectedMarble,expectedObservable)
       })
@@ -143,7 +143,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.deleteMessage(messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
@@ -153,7 +153,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.removeMessage(messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
@@ -163,7 +163,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.deleteSubMessage(subMessagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
@@ -173,7 +173,7 @@ describe('CurrentMessagesService', () => {
       scheduler.run(() => {
         service.branch = '10';
         service.connection = '10';
-        let expectedObservable = { a: response }
+        let expectedObservable = { a: transactionResultMock }
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.removeSubMessage(subMessagesMock[0].id,messagesMock[0].id)).toBe(expectedMarble,expectedObservable)
       })
@@ -201,7 +201,7 @@ describe('CurrentMessagesService', () => {
     it('should update user preferences', () => {
       scheduler.run(() => {
         service.branch='10'
-        let expectedObservable = { a: response };
+        let expectedObservable = { a: transactionResultMock };
         let expectedMarble = '(a|)';
         scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description','applicability'],allowedHeaders2:['name','description','applicability'],allHeaders1:['name','description',],allHeaders2:['name','description',],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
       })

@@ -15,9 +15,9 @@ import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
+import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
 import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
-import { response } from '../../../connection-view/mocks/Response.mock';
 import { applicabilityListServiceMock } from '../../mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../../mocks/enumeration.set.service.mock';
 import { enumsServiceMock } from '../../mocks/EnumsService.mock';
@@ -60,7 +60,7 @@ describe('NewTypeDialogService', () => {
 
   it('should send a post request to create type,enum set, enum', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.idValue = "10";
       scheduler.expectObservable(service.createType({}, true, {
@@ -76,7 +76,7 @@ describe('NewTypeDialogService', () => {
 
   it('should send a post request to create type', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.idValue = "10";
       scheduler.expectObservable(service.createType({}, false, {
@@ -92,7 +92,7 @@ describe('NewTypeDialogService', () => {
 
   it('should send a post request to create type with new enum set', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.idValue = "10";
       scheduler.expectObservable(service.createType({interfaceLogicalType:'enumeration'}, true, {
@@ -108,7 +108,7 @@ describe('NewTypeDialogService', () => {
 
   it('should send a post request to create type with existing enum set', () => {
     scheduler.run(() => {
-      const expectedFilterValues = { a: response };
+      const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.idValue = "10";
       scheduler.expectObservable(service.createType({interfaceLogicalType:'enumeration'}, false, {

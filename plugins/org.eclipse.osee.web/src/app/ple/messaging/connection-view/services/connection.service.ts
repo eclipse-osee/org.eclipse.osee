@@ -19,6 +19,7 @@ import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { connection } from '../../shared/types/connection';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../transactions/transaction.service';
 
 
 @Injectable({
@@ -26,7 +27,7 @@ import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum'
 })
 export class ConnectionService {
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
   /**
    * 
@@ -61,6 +62,6 @@ export class ConnectionService {
     return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))
   }
   performMutation(branchId:string,body:transaction) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)
+    return this.transactionService.performMutation(body)
   }
 }

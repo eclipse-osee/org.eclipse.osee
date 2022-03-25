@@ -19,13 +19,14 @@ import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { node } from '../../shared/types/node';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../transactions/transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NodeService {
 
-  constructor (private http: HttpClient,private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient,private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
   getNodes(branchId: string) {
     return this.http.get<node[]>(apiURL + '/mim/branch/' + branchId + '/nodes/');
@@ -47,6 +48,6 @@ export class NodeService {
     return of(this.builder.createArtifact(node, ARTIFACTTYPEID.NODE, [], undefined, branchId, "Create Node"));
   }
   performMutation(branchId:string,body:transaction) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL+'/orcs/txs',body)
+    return this.transactionService.performMutation(body)
   }
 }

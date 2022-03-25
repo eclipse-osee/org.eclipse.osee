@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { transaction } from "src/app/transactions/transaction";
-import { transactionMock } from "src/app/transactions/transaction.mock";
+import { transactionMock, transactionResultMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../connection-view/mocks/Response.mock";
 import { TypesService } from "../services/http/types.service";
 import { PlatformType } from "../types/platformType";
@@ -21,8 +21,8 @@ import { logicalTypeFormDetailMock } from "../../types-interface/mocks/returnObj
 import { platformTypes1 } from "./PlatformTypes.mock";
 
 export const typesServiceMock: Partial<TypesService> = {
-    performMutation(body: transaction, branchId: string) {
-        return of(response);
+    performMutation(body: transaction) {
+        return of(transactionResultMock);
     },
     getFilteredTypes(filter: string, branchId: string) {
         return of(platformTypes1);

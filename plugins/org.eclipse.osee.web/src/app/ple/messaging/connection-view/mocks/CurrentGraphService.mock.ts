@@ -21,6 +21,7 @@ import { settingsDialogData } from "../../shared/types/settingsdialog";
 import { applic } from "../../../../types/applicability/applic";
 import { changeReportMock } from "src/app/ple-services/http/change-report.mock";
 import { changeInstance } from "src/app/types/change-report/change-report";
+import { transactionResultMock } from '../../../../transactions/transaction.mock';
 
 let sideNavContentPlaceholder = new ReplaySubject<{ opened: boolean, field: string, currentValue: string | number | applic|boolean|transportType, previousValue?: string | number | applic|boolean|transportType, user?: string, date?: string }>();
 sideNavContentPlaceholder.next({opened:true,field:'',currentValue:''})
@@ -31,25 +32,25 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
     return;
   },
   updateConnection(connection: Partial<connection>) {
-    return of(response);
+    return of(transactionResultMock);
   },
   unrelateConnection(nodeId: string, id: string) {
-    return of(response);
+    return of(transactionResultMock);
   },
   updateNode(node: Partial<node>) {
-    return of(response);
+    return of(transactionResultMock);
   },
   deleteNodeAndUnrelate(nodeId: string, edges: []) {
-    return of(response)
+    return of(transactionResultMock)
   },
   createNewConnection(connection: connection, sourceId: string, targetId: string) {
-    return of(response)
+    return of(transactionResultMock)
   }, 
   createNewNode(node: node) {
-    return of(response)
+    return of(transactionResultMock)
   },
   updatePreferences(preferences: settingsDialogData) {
-    return of(response);
+    return of(transactionResultMock);
   },
   nodeOptions: of([{id:'1',name:'First'},{id:'2',name:'Second'}]),
   applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),

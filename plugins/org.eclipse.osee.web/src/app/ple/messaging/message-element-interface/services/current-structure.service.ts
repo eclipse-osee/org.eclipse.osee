@@ -193,6 +193,13 @@ export class CurrentStructureService {
     )
   }
 
+  getType(typeId: string) {
+    return this.BranchId.pipe(
+      take(1),
+      switchMap((id)=>this.typeService.getType(typeId))
+    )
+  }
+
   get types() {
     return this._types;
   }
@@ -234,7 +241,7 @@ export class CurrentStructureService {
       take(1),
       switchMap((relation) => this.structure.createStructure(body, this.BranchId.getValue(), [relation]).pipe(
         take(1),
-        switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -248,7 +255,7 @@ export class CurrentStructureService {
       take(1),
       switchMap((relation) => this.structure.addRelation(this.BranchId.getValue(), relation).pipe(
         take(1),
-        switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -259,7 +266,7 @@ export class CurrentStructureService {
   partialUpdateStructure(body: Partial<structure>) {
     return this.structure.changeStructure(body, this.BranchId.getValue()).pipe(
       take(1),
-      switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+      switchMap((transaction) => this.structure.performMutation(transaction).pipe(
         tap(() => {
           this.ui.updateMessages = true;
         })
@@ -270,7 +277,7 @@ export class CurrentStructureService {
   partialUpdateElement(body: Partial<element>, structureId: string) {
     return this.elements.changeElement(body, this.BranchId.getValue()).pipe(
       take(1),
-      switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+      switchMap((transaction) => this.elements.performMutation(transaction).pipe(
         tap(() => {
           this.ui.updateMessages = true;
         })
@@ -285,7 +292,7 @@ export class CurrentStructureService {
       map(([structureRelation, platformRelation]) => [structureRelation, platformRelation]),
       switchMap((relations) => this.elements.createElement(element, this.BranchId.getValue(), relations).pipe(
         take(1),
-        switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+        switchMap((transaction) => this.elements.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -299,7 +306,7 @@ export class CurrentStructureService {
       take(1),
       switchMap((relation) => this.structure.addRelation(this.BranchId.getValue(), relation).pipe(
         take(1),
-        switchMap((transaction) => this.structure.performMutation(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), this.connectionId.getValue(), transaction).pipe(
+        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -317,7 +324,7 @@ export class CurrentStructureService {
           take(1),
           switchMap((deleteTransaction) => this.elements.addRelation(this.BranchId.getValue(), addRelation, deleteTransaction).pipe( //create add transaction and merge with delete transaction
             take(1),
-            switchMap((transaction) => this.elements.performMutation(transaction, this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, this.connectionId.getValue()).pipe(
+            switchMap((transaction) => this.elements.performMutation(transaction).pipe(
               tap(() => {
                 this.ui.updateMessages = true;
               })
@@ -335,7 +342,7 @@ export class CurrentStructureService {
         take(1),
         switchMap((transaction) => this.createUserPreferenceColumnTransaction(columns, allColumns, preferences.editable).pipe(
           take(1),
-          switchMap((transaction2) => iif(() => transaction2 !== undefined, combineLatest([this.structure.performMutation(this.BranchId.getValue(), '', '', '', transaction), this.structure.performMutation(this.BranchId.getValue(), '', '', '', transaction2!)]), this.structure.performMutation(this.BranchId.getValue(), '', '', '', transaction))),
+          switchMap((transaction2) => iif(() => transaction2 !== undefined, combineLatest([this.structure.performMutation(transaction), this.structure.performMutation(transaction2!)]), this.structure.performMutation(transaction))),
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -362,7 +369,7 @@ export class CurrentStructureService {
   removeStructureFromSubmessage(structureId:string,submessageId:string) {
     return this.ui.BranchId.pipe(
       switchMap((branchId) => this.structure.deleteSubmessageRelation(branchId, submessageId, structureId).pipe(
-        switchMap((transaction) => this.structure.performMutation(branchId, '', '', '', transaction).pipe(
+        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -374,7 +381,7 @@ export class CurrentStructureService {
     return this.ui.BranchId.pipe(
       switchMap((branchId) => this.elements.createStructureRelation(structure.id, element.id).pipe(
         switchMap((relation) => this.elements.deleteRelation(branchId, relation).pipe(
-          switchMap((transaction) => this.elements.performMutation(transaction, branchId, '', '', '', '').pipe(
+          switchMap((transaction) => this.elements.performMutation(transaction).pipe(
             tap(() => {
               this.ui.updateMessages = true;
             })
@@ -387,7 +394,7 @@ export class CurrentStructureService {
   deleteElement(element: element) {
     return this.ui.BranchId.pipe(
       switchMap((branchId) => this.elements.deleteElement(branchId, element.id).pipe(
-        switchMap((transaction) => this.elements.performMutation(transaction, branchId, '', '', '', '').pipe(
+        switchMap((transaction) => this.elements.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })
@@ -399,7 +406,7 @@ export class CurrentStructureService {
   deleteStructure(structureId:string) {
     return this.ui.BranchId.pipe(
       switchMap((branchId) => this.structure.deleteStructure(branchId, structureId).pipe(
-        switchMap((transaction) => this.structure.performMutation(branchId, '', '', '', transaction).pipe(
+        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
           tap(() => {
             this.ui.updateMessages = true;
           })

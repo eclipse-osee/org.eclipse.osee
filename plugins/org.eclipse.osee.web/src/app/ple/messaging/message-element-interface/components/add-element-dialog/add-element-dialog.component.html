@@ -61,6 +61,13 @@
                     <mat-form-field style="flex-grow:7; flex-basis: 90%">
                         <mat-label>Select a Platform Type</mat-label>
                         <mat-select [(ngModel)]="data.type" data-cy="element-type-field" [compareWith]="compareTypes" typeaheadDebounceInterval="1000">
+                            <ng-container *ngIf="loadingTypes">
+                                <mat-optgroup label="Not loaded">
+                                    <mat-option [value]="data.type" [id]="data.type!==undefined && data.type.id !==undefined ? data.type.id :''" [attr.data-cy]="'type-'+data.type.name">
+                                        {{data.type.name}}
+                                    </mat-option>
+                                </mat-optgroup>
+                            </ng-container>
                             <mat-optgroup *ngFor="let group of (availableTypes|async)" [label]="group.type">
                                 <mat-option *ngFor="let option of group.types" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" [attr.data-cy]="'type-'+option.name">
                                     {{option.name}}
@@ -80,7 +87,7 @@
             <button mat-raised-button color="primary" *ngIf="data.element.name.length>0 && 
                                                             data.element.description.length>0 &&
                                                             data.type.name.length>0 &&
-                                                            +data.type.id>0" matStepperNext>Next</button>
+                                                            +(data.type.id!==undefined && data.type.id)>0" matStepperNext>Next</button>
         </mat-dialog-actions>
     </mat-step>
     <mat-step label="Review" #step3>

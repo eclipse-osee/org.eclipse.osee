@@ -23,33 +23,34 @@ import { transactionToken } from "src/app/transactions/transaction";
 import { unitsMock } from "../../../shared/mocks/unit.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
 import { PlatformType } from "../../../shared/types/platformType";
+import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 
 let sideNavContentPlaceholder = new ReplaySubject<{  opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined; }>();
 sideNavContentPlaceholder.next({opened:false,field:'',currentValue:''})
 export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     createStructure(body: Partial<structure>) {
-        return of(elementResponseMock)
+        return of(transactionResultMock)
     },
     changeElementPlatformType(structureId, elementId, typeId) {
-        return of(elementResponseMock)
+        return of(transactionResultMock)
     },
     partialUpdateElement(body, structureId) {
-        return of(elementResponseMock)
+        return of(transactionResultMock)
     },
     partialUpdateStructure(body) {
-        return of(elementResponseMock)
+        return of(transactionResultMock)
     },
     relateStructure(structureId: string) {
-        return of(elementResponseMock)
+        return of(transactionResultMock)
     },
     updatePreferences(preferences: settingsDialogData) {
-        return of(elementResponseMock)
+        return of(transactionResultMock)
     },
     removeStructureFromSubmessage(structureId: string, submessageId: string) {
-        return of(elementResponseMock);
+        return of(transactionResultMock);
     },
     deleteStructure(structureId: string) {
-        return of(elementResponseMock);
+        return of(transactionResultMock);
     },
     done:new Subject(),
     applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
@@ -78,6 +79,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     },
     isInDiff: new BehaviorSubject<boolean>(false),
     updatePlatformTypeValue(type: Partial<PlatformType>) {
-        return of(response)
+        return of(transactionResultMock)
     }
 }

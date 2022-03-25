@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { TypesUIService } from '../services/ui/types-ui.service';
-import { transactionMock } from "../../../../transactions/transaction.mock";
+import { transactionMock, transactionResultMock } from "../../../../transactions/transaction.mock";
 import { response } from "../../connection-view/mocks/Response.mock";
 import { platformTypes1 } from "../../type-element-search/testing/MockResponses/PlatformType";
 import { TypesService } from "../services/http/types.service";
@@ -33,6 +33,6 @@ export const typesUIServiceMock: Partial<TypesUIService> = {
         return of(transactionMock);
       },
       performMutation(body: transaction) {
-        return of(response);
+        return of(transactionResultMock);
       },
 }

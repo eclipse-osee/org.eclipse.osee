@@ -19,13 +19,14 @@ import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { structure } from '../../types/structure';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../../transactions/transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StructuresService {
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
   getFilteredStructures(filter: string, branchId: string, messageId:string,subMessageId:string,connectionId:string) {
     return this.http.get<Required<structure>[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/filter/" + filter);
@@ -52,8 +53,8 @@ export class StructuresService {
   addRelation(branchId:string,relation:relation) {
     return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Relating SubMessage'))
   }
-  performMutation(branchId: string, messageId:string,subMessageId:string,connectionId:string,transaction:transaction) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",transaction);
+  performMutation(transaction:transaction) {
+    return this.transactionService.performMutation(transaction)
   }
   deleteSubmessageRelation(branchId:string,submessageId:string,structureId:string) {
     return of(this.builder.deleteRelation("Interface SubMessage Content",undefined,submessageId,structureId,undefined,undefined,branchId,"Unrelating submessage from message"))

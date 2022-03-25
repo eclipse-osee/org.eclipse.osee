@@ -16,7 +16,6 @@ import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-report-branch.service.mock';
-import { response } from '../../connection-view/mocks/Response.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
 import { typesServiceMock } from '../../shared/mocks/types.service.mock';
@@ -38,6 +37,7 @@ import { MessagesStructureService } from '../../shared/services/http/messages.st
 import { PlatformTypeService } from './platform-type.service';
 import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
+import { transactionResultMock } from '../../../../transactions/transaction.mock';
 
 describe('CurrentStateService', () => {
   let service: CurrentStructureService;
@@ -101,40 +101,40 @@ describe('CurrentStateService', () => {
     })
   })
 
-  it('should change an element and get a response back', () => {
+  it('should change an element and get a transactionResultMock back', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.partialUpdateElement({},'10')).toBe(expectedMarble, expectedObservable);
     })
   })
 
-  it('should create an element and get a response back', () => {
+  it('should create an element and get a transactionResultMock back', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.createNewElement({},'10','10')).toBe(expectedMarble, expectedObservable);
     })
   })
 
-  it('should create a structure and get a response back', () => {
+  it('should create a structure and get a transactionResultMock back', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.createStructure(structuresMock[0])).toBe(expectedMarble, expectedObservable);
     })
   })
 
-  it('should change a structure and get a response back', () => {
+  it('should change a structure and get a transactionResultMock back', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.partialUpdateStructure({})).toBe(expectedMarble, expectedObservable);
     })
   })
   it('should change element platform type', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.changeElementPlatformType('10', '20', '30')).toBe(expectedMarble, expectedObservable);
     })
@@ -142,7 +142,7 @@ describe('CurrentStateService', () => {
 
   it('should relate an element', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.relateElement('10','20')).toBe(expectedMarble, expectedObservable);
     })
@@ -150,7 +150,7 @@ describe('CurrentStateService', () => {
 
   it('should relate a structure', () => {
     scheduler.run(() => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.relateStructure('10')).toBe(expectedMarble, expectedObservable);
     })
@@ -158,7 +158,7 @@ describe('CurrentStateService', () => {
 
   it('should perform a mutation for deleting a submessage relation', () => {
     scheduler.run(({ expectObservable }) => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = 'a';
       expectObservable(service.removeStructureFromSubmessage('10', '20')).toBe(expectedMarble, expectedObservable);
     })
@@ -166,7 +166,7 @@ describe('CurrentStateService', () => {
 
   it('should perform a mutation for deleting a submessage relation', () => {
     scheduler.run(({ expectObservable }) => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = 'a';
       expectObservable(service.removeElementFromStructure(elementsMock[0], structuresMock[0])).toBe(expectedMarble, expectedObservable);
     })
@@ -174,7 +174,7 @@ describe('CurrentStateService', () => {
 
   it('should perform a mutation for deleting a submessage relation', () => {
     scheduler.run(({ expectObservable }) => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = 'a';
       expectObservable(service.deleteElement(elementsMock[0])).toBe(expectedMarble, expectedObservable);
     })
@@ -182,7 +182,7 @@ describe('CurrentStateService', () => {
 
   it('should perform a mutation for deleting a structure', () => {
     scheduler.run(({ expectObservable }) => {
-      let expectedObservable = { a: response };
+      let expectedObservable = { a: transactionResultMock };
       let expectedMarble = 'a';
       expectObservable(service.deleteStructure(structuresMock[0].id)).toBe(expectedMarble, expectedObservable);
     })
@@ -191,7 +191,7 @@ describe('CurrentStateService', () => {
   it('should update user preferences', () => {
     scheduler.run(() => {
       service.branchId='10'
-      let expectedObservable = { a: [response,response] };
+      let expectedObservable = { a: [transactionResultMock,transactionResultMock] };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description',],allowedHeaders2:['name','description',],allHeaders1:['name','description','applicability'],allHeaders2:['name','description','applicability'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
     })

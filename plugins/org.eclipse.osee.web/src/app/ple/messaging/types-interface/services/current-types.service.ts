@@ -88,7 +88,7 @@ export class CurrentTypesService {
   partialUpdate(body: Partial<PlatformType>) {
     return this.typesService.changePlatformType(this.uiService.BranchId.getValue(), body).pipe(
       take(1),
-      switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.BranchId.getValue()).pipe(
+      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
         tap(() => {
           this.uiService.updateTypes = true;
         })
@@ -100,7 +100,7 @@ export class CurrentTypesService {
     delete body.id;
     return this.typesService.createPlatformType(this.uiService.BranchId.getValue(), body, []).pipe(
       take(1),
-      switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.BranchId.getValue()).pipe(
+      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
         tap(() => {
           this.uiService.updateTypes = true;
         })
@@ -143,7 +143,7 @@ export class CurrentTypesService {
     )
     ),this.typesService.createPlatformType(this.uiService.BranchId.getValue(),body,[]))
     .pipe(
-      switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.BranchId.getValue()).pipe(
+      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
         tap(() => {
           this.uiService.updateTypes = true;
         })
@@ -200,7 +200,7 @@ export class CurrentTypesService {
   updatePreferences(preferences: settingsDialogData) {
     return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
       take(1),
-      switchMap((transaction) => this.typesService.performMutation(transaction,this.uiService.BranchId.getValue()).pipe(
+      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
         take(1),
         tap(() => {
           this.uiService.updateTypes = true;

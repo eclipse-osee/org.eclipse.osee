@@ -12,8 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { transactionMock } from 'src/app/transactions/transaction.mock';
-import { response } from '../../../connection-view/mocks/Response.mock';
+import { transactionMock, transactionResultMock } from 'src/app/transactions/transaction.mock';
 import { typesServiceMock } from '../../mocks/types.service.mock';
 import { TypesService } from '../http/types.service';
 
@@ -44,7 +43,7 @@ describe('TypesUIService', () => {
 
   it('should perform a mutation', () => {
     scheduler.run(({ expectObservable }) => {
-      expectObservable(service.performMutation(transactionMock)).toBe('(a|)',{a:response})
+      expectObservable(service.performMutation(transactionMock)).toBe('(a|)',{a:transactionResultMock})
     })
   })
 });
