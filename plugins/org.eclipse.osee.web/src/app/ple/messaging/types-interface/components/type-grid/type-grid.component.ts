@@ -20,7 +20,7 @@ import { applic } from '../../../../../types/applicability/applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
 import { enumeration } from '../../../shared/types/enum';
-import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
+import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../shared/types/newTypeDialogDialogData';
 import { PlatformType } from '../../../shared/types/platformType';
 import { NewTypeDialogComponent } from '../../../shared/components/dialogs/new-type-dialog/new-type-dialog.component';
 

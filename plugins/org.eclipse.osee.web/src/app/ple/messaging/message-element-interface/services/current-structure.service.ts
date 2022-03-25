@@ -186,13 +186,6 @@ export class CurrentStructureService {
     )
   }
 
-  getFilteredTypes(filterType: string) {
-    return this.BranchId.pipe(
-      take(1),
-      switchMap((id)=>this.typeService.getFilteredTypes(filterType))
-    )
-  }
-
   getType(typeId: string) {
     return this.BranchId.pipe(
       take(1),

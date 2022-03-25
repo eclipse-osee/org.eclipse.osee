@@ -26,6 +26,7 @@ import { ApplicabilityListUIService } from '../../shared/services/ui/applicabili
 import { EnumerationUIService } from '../../shared/services/ui/enumeration-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
 import { EnumsService } from '../../shared/services/http/enums.service';
+import { TypesUIService } from '../../shared/services/ui/types-ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,7 @@ export class CurrentTypesService {
     )),
   )
 
-  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService, private constantEnumService: EnumsService) { }
+  constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService, private constantEnumService: EnumsService, private sharedTypeService: TypesUIService) { }
 
   /**
    * Returns a list of platform types based on current branch and filter conditions(debounced).
@@ -62,51 +63,6 @@ export class CurrentTypesService {
     return this._typeData;
   }
 
-  get applic(){
-    return this.applicabilityService.applic;
-  }
-
-  get enumSets() {
-    return this.enumSetService.enumSets;
-  }
-
-  get units() {
-    return this.constantEnumService.units;
-  }
-
-  getType(id: string) {
-    return this.uiService.BranchId.pipe(
-      take(1),
-      switchMap((branch)=>this.typesService.getType(branch,id))
-    )
-  }
-  /**
-   * Updates the attributes of a platform type using the platform types PATCH API and current branch, id is required
-   * @param body @type {Partial<PlatformType>} attributes to update + id of platform type
-   * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
-   */
-  partialUpdate(body: Partial<PlatformType>) {
-    return this.typesService.changePlatformType(this.uiService.BranchId.getValue(), body).pipe(
-      take(1),
-      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
-        tap(() => {
-          this.uiService.updateTypes = true;
-        })
-      ))
-    )
-  }
-
-  copyType(body: PlatformType | Partial<PlatformType>) {
-    delete body.id;
-    return this.typesService.createPlatformType(this.uiService.BranchId.getValue(), body, []).pipe(
-      take(1),
-      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
-        tap(() => {
-          this.uiService.updateTypes = true;
-        })
-      ))
-    )
-  }
   /**
    * Creates a new platform type using the platform types POST API, current branch,but without the id,idIntValue, and idString present and includes enum values
    * @todo fix this up later to be in enumeration-ui.service
@@ -114,77 +70,7 @@ export class CurrentTypesService {
    * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
    */
   createType(body: PlatformType|Partial<PlatformType>,isNewEnumSet:boolean,enumSetData:{ enumSetId:string,enumSetName: string, enumSetDescription: string, enumSetApplicability: applic, enums: enumeration[] }) {
-    delete body.id;
-    return iif(()=>body.interfaceLogicalType==='enumeration',iif(() => isNewEnumSet, this.typesService.createPlatformType(this.uiService.BranchId.getValue(), body, []).pipe(
-      take(1),
-      switchMap((platformTypeCreationTransaction) => this.enumSetService.createEnumSetToPlatformTypeRelation(body.name).pipe(
-        take(1),
-        switchMap((relationPlatform) => this.enumSetService.createEnumSet(this.uiService.BranchId.getValue(), { name: enumSetData.enumSetName, description: enumSetData.enumSetDescription, applicability: enumSetData.enumSetApplicability, applicabilityId: enumSetData.enumSetApplicability.id }, [relationPlatform], platformTypeCreationTransaction).pipe(
-          take(1),
-          switchMap((enumSetTransaction) => of(enumSetTransaction).pipe(
-            mergeMap((temp) => from(enumSetData.enums).pipe(
-              mergeMap((enumValue) => this.enumSetService.createEnumToEnumSetRelation(enumSetData.enumSetName).pipe(
-                switchMap((relationEnum) => this.fixEnum(enumValue).pipe(
-                  switchMap((enumeration)=>this.enumSetService.createEnum(this.uiService.BranchId.getValue(),enumValue,[relationEnum]))
-                ))
-              ))
-            )),
-            reduce((acc, curr) => [...acc, curr], [] as transaction[]),
-            switchMap((enumTransactions) => this.mergeEnumArray(enumTransactions).pipe(
-              take(1),
-              switchMap((enumTransaction)=>this.mergeEnumTransactionWithPlatformType(enumSetTransaction,enumTransaction))
-            ))
-          ))
-        ))
-      ))
-    ), this.enumSetService.createPlatformTypeToEnumSetRelation(enumSetData.enumSetId).pipe(
-      take(1),
-      switchMap((relation)=>this.typesService.createPlatformType(this.uiService.BranchId.getValue(),body,[relation]))
-    )
-    ),this.typesService.createPlatformType(this.uiService.BranchId.getValue(),body,[]))
-    .pipe(
-      switchMap((transaction) => this.typesService.performMutation(transaction).pipe(
-        tap(() => {
-          this.uiService.updateTypes = true;
-        })
-      )),
-    )
-  }
-  private mergeEnumArray(transactions: transaction[]) {
-    let currentTransaction:transaction = {
-      branch: '',
-      txComment: '',
-      createArtifacts: [],
-    };
-    if (transactions?.[0]) {
-      currentTransaction = transactions.shift() ||
-      {
-        branch: '',
-        txComment: '',
-        createArtifacts: [],
-      };
-    }
-    transactions.forEach((transaction) => {
-      currentTransaction.createArtifacts?.push(...transaction?.createArtifacts||[])
-    })
-    return of<transaction>(currentTransaction);
-  }
-  private mergeEnumTransactionWithPlatformType(transactionA: transaction, transactionB: transaction) {
-    transactionA.createArtifacts?.push(...transactionB.createArtifacts||[])
-    return of<transaction>(transactionA);
-  }
-
-  private fixEnum(enumeration:enumeration) {
-    enumeration.applicabilityId = enumeration.applicability.id;
-    return of<enumeration>(enumeration);
-  }
-
-  get logicalTypes() {
-    return this.typesService.logicalTypes;
-  }
-
-  getLogicalTypeFormDetail(id: string) {
-    return this.typesService.getLogicalTypeFormDetail(id);
+    return this.sharedTypeService.createType(body, isNewEnumSet, enumSetData);
   }
 
   public get preferences() {
@@ -250,11 +136,5 @@ export class CurrentTypesService {
           ),
         )
       ))
-  }
-  getEnumSet(platformTypeId: string) {
-    return this.enumSetService.getEnumSet(platformTypeId);
-  }
-  changeEnumSet(changes:enumerationSet,enumerations?:enumeration[]) {
-    return this.enumSetService.changeEnumSet(changes,enumerations);
   }
 }

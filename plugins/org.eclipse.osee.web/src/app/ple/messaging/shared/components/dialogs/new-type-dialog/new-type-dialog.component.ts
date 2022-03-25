@@ -26,7 +26,7 @@ import {
 import { applic } from '../../../../../../types/applicability/applic';
 import { enumeration, enumerationSet } from '../../../types/enum';
 import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../types/logicaltype';
-import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../../types-interface/types/newTypeDialogDialogData';
+import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../../types/platformType';
 import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';
 import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';

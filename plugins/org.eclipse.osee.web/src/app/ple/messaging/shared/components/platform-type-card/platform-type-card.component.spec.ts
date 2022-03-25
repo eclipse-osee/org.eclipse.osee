@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -25,14 +25,29 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.component';
+import { EditTypeDialogComponent } from '../dialogs/edit-type-dialog/edit-type-dialog.component';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
-import { CurrentTypesService } from '../../services/current-types.service';
+import { CurrentTypesService } from '../../../types-interface/services/current-types.service';
 import { of } from 'rxjs';
-import { enumerationSet } from '../../../shared/types/enum';
+import { enumerationSet } from '../../types/enum';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { currentTypesServiceMock } from '../../mocks/services/current.types.service.mock';
 import { MatIconModule } from '@angular/material/icon';
+import { PreferencesUIService } from '../../services/ui/preferences-ui.service';
+import { MimPreferencesService } from '../../services/http/mim-preferences.service';
+import { MimPreferencesServiceMock } from '../../mocks/MimPreferencesService.mock';
+import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
+import { enumerationSetServiceMock } from '../../mocks/enumeration.set.service.mock';
+import { EnumerationSetService } from '../../services/http/enumeration-set.service';
+import { TypesService } from '../../services/http/types.service';
+import { typesServiceMock } from '../../mocks/types.service.mock';
+import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
+import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
+import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
+import { applicabilityListServiceMock } from '../../mocks/ApplicabilityListService.mock';
+import { enumsServiceMock } from '../../mocks/EnumsService.mock';
+import { ApplicabilityListService } from '../../services/http/applicability-list.service';
+import { EnumsService } from '../../services/http/enums.service';
 
 let loader: HarnessLoader;
 
@@ -44,8 +59,14 @@ describe('PlatformTypeCardComponent', () => {
     await TestBed.configureTestingModule({
       imports:[MatCardModule, MatIconModule, MatDialogModule,MatButtonModule, MatFormFieldModule,MatSlideToggleModule,FormsModule,MatInputModule, NoopAnimationsModule],
       declarations: [PlatformTypeCardComponent, EditTypeDialogComponent],
-      providers: [{
-        provide: CurrentTypesService, useValue: currentTypesServiceMock}
+      providers: [
+        { provide: TypesService, useValue: typesServiceMock },
+        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
+        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
+        { provide: TransactionBuilderService, useValue: transactionBuilderMock },
+        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
+        { provide: EnumsService, useValue: enumsServiceMock },
+        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock}
       ],
     })
     .compileComponents();

@@ -20,11 +20,11 @@ import { CurrentStructureService } from '../../services/current-structure.servic
 import { AddElementDialog } from '../../types/AddElementDialog';
 import { element } from '../../../shared/types/element';
 import { NewTypeDialogComponent } from '../../../shared/components/dialogs/new-type-dialog/new-type-dialog.component';
-import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../types-interface/types/newTypeDialogDialogData';
-import { NewTypeDialogService } from '../../../shared/services/ui/new-type-dialog.service';
+import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../shared/types/newTypeDialogDialogData';
 import { applic } from '../../../../../types/applicability/applic';
 import { enumeration } from '../../../shared/types/enum';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { TypesUIService } from '../../../shared/services/ui/types-ui.service';
 
 @Component({
   selector: 'osee-messaging-add-element-dialog',
@@ -51,7 +51,7 @@ export class AddElementDialogComponent implements OnInit {
     })
   );
   typeDialogOpen = false;
-  constructor(public dialog: MatDialog,private structures:CurrentStructureService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog, private typeDialogService: NewTypeDialogService, private _ui: UiService) { }
+  constructor(public dialog: MatDialog,private structures:CurrentStructureService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog, private typeDialogService: TypesUIService, private _ui: UiService) { }
 
   ngOnInit(): void {
   }

@@ -11,13 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import { apiURL } from 'src/environments/environment';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
@@ -29,8 +28,6 @@ import { logicalTypeMock } from '../mocks/returnObjects/logicalType.mock';
 import { logicalTypeFormDetailMock } from '../mocks/returnObjects/logicalTypeFormDetail.mock';
 import { enumerationSetServiceMock } from '../../shared/mocks/enumeration.set.service.mock';
 import { typesServiceMock } from '../../shared/mocks/types.service.mock';
-import { logicalType, logicalTypeFormDetail } from '../../shared/types/logicaltype';
-import { PlatformType } from '../../shared/types/platformType';
 
 import { CurrentTypesService } from './current-types.service';
 import { EnumerationSetService } from '../../shared/services/http/enumeration-set.service';
@@ -40,26 +37,6 @@ import { EnumsService } from '../../shared/services/http/enums.service';
 import { enumsServiceMock } from '../../shared/mocks/EnumsService.mock';
 import { unitsMock } from '../../shared/mocks/unit.mock';
 import { transactionResultMock } from '../../../../transactions/transaction.mock';
-
-class PlatformTypeInstance implements PlatformType{
-  id?: string | undefined ='';
-  interfaceLogicalType: string='';
-  interfacePlatform2sComplement: boolean=false;
-  interfacePlatformTypeAnalogAccuracy: string='';
-  interfacePlatformTypeBitsResolution: string='';
-  interfacePlatformTypeBitSize: string='';
-  interfacePlatformTypeCompRate: string='';
-  interfacePlatformTypeDefaultValue: string='';
-  interfacePlatformTypeEnumLiteral: string='';
-  interfacePlatformTypeMaxval: string='';
-  interfacePlatformTypeMinval: string='';
-  interfacePlatformTypeMsbValue: string='';
-  interfacePlatformTypeUnits: string='';
-  interfacePlatformTypeValidRangeDescription: string='';
-  name: string='';
-  constructor () {}
-  
-}
 
 describe('CurrentTypesServiceService', () => {
   let service: CurrentTypesService;
@@ -128,25 +105,6 @@ describe('CurrentTypesServiceService', () => {
     })
   });
 
-  it('should send a modification request', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: transactionResultMock };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.partialUpdate({})).toBe(expectedMarble, expectedFilterValues);
-    })
-
-  });
-
-  it('should send a post request to copy type', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: transactionResultMock };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.copyType({})).toBe(expectedMarble, expectedFilterValues);
-    })
-  });
-
   it('should send a post request to create type,enum set, enum', () => {
     scheduler.run(() => {
       const expectedFilterValues = { a: transactionResultMock };
@@ -211,23 +169,6 @@ describe('CurrentTypesServiceService', () => {
     })
   });
 
-  it('should fetch logical types', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: logicalTypeMock };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.logicalTypes).toBe(expectedMarble, expectedFilterValues);
-    })
-  });
-
-  it('should fetch a specific logical type', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: logicalTypeFormDetailMock };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.getLogicalTypeFormDetail("1")).toBe(expectedMarble, expectedFilterValues);
-    })
-  });
   it('should fetch preferences', () => {
     scheduler.run(() => {
       const expectedFilterValues = { a: MimPreferencesMock };
@@ -260,57 +201,6 @@ describe('CurrentTypesServiceService', () => {
       const expectedMarble = '(a|)';
       uiService.BranchIdString = "10";
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description'],allowedHeaders2:['name','description'],allHeaders1:['name'],allHeaders2:['name'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
-    })
-  })
-
-  it('should get enum sets', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: enumerationSetMock };
-      const expectedMarble = 'a';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.enumSets).toBe(expectedMarble, expectedFilterValues);
-    })
-  });
-  it('should get units', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a:  unitsMock };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.units).toBe(expectedMarble, expectedFilterValues);
-    })
-  });
-
-  it('should get applicabilities', () => {
-    scheduler.run(() => {
-      let expectedObservable = { a: [{id:'1',name:'Base'},{id:'2',name:'Second'}] };
-      let expectedMarble = 'a';
-      scheduler.expectObservable(service.applic).toBe(expectedMarble, expectedObservable);
-    })
-  })
-
-  it('should get a specific enum set', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: enumerationSetMock[0] };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.getEnumSet('0')).toBe(expectedMarble, expectedFilterValues);
-    })
-  })
-  it('should get a specific type', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: platformTypes1[0] };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = "10";
-      scheduler.expectObservable(service.getType('10')).toBe(expectedMarble, expectedFilterValues);
-    })
-  })
-
-  it('should change an enum set', () => {
-    scheduler.run(() => {
-      const expectedFilterValues = { a: transactionResultMock };
-      const expectedMarble = '(a|)';
-      uiService.BranchIdString = '10';
-      scheduler.expectObservable(service.changeEnumSet({ name: '', applicability: { id: '1', name: 'Base' }, description: '' })).toBe(expectedMarble, expectedFilterValues);
     })
   })
 });

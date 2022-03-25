@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,9 +14,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { from } from 'rxjs';
 import { map, reduce, switchMap, tap } from 'rxjs/operators';
-import { CurrentTypesService } from '../../services/current-types.service';
-import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { logicalType } from '../../../shared/types/logicaltype';
+import { editPlatformTypeDialogData } from '../../../types/editPlatformTypeDialogData';
+import { logicalType } from '../../../types/logicaltype';
+import { EnumsService } from '../../../services/http/enums.service';
+import { TypesService } from '../../../services/http/types.service';
 
 @Component({
   selector: 'app-edit-type-dialog',
@@ -32,8 +33,8 @@ export class EditTypeDialogComponent implements OnInit {
     )),
     reduce((acc, curr) => [...acc, curr], [] as logicalType[]),
   );
-  units = this.typesService.units;
-  constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData, private typesService: CurrentTypesService) {
+  units = this.enumService.units;
+  constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData, private typesService: TypesService, private enumService: EnumsService) {
     this.platform_type = this.data.type.name;
    }
 
