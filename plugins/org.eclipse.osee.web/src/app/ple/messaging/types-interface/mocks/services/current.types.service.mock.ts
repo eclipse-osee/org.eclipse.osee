@@ -18,49 +18,15 @@ import { logicalTypeFormDetail } from "../../../shared/types/logicaltype";
 import { PlatformType } from "../../../shared/types/platformType";
 import { enumerationSetMock } from "../returnObjects/enumerationset.mock";
 import { transactionResultMock } from '../../../../../transactions/transaction.mock';
+import { TypesUIService } from '../../../shared/services/ui/types-ui.service';
+import { settingsDialogData } from '../../../shared/types/settingsdialog';
 
-export const currentTypesServiceMock: Partial<CurrentTypesService> = {
-    logicalTypes: of([{
-        id: '0',
-        name: 'enumeration',
-        idString: '0',
-        idIntValue: 0
-    }]),
-    getLogicalTypeFormDetail(id: string) {
-        return of<logicalTypeFormDetail>({
-            id: '0', name: 'enumeration', idIntValue: 0, idString: '0', fields: [
-                {
-                    name: 'InterfacePlatformTypeBitSize',
-                    attributeType: 'InterfacePlatformTypeBitSize',
-                    editable: true,
-                    required: true,
-                    defaultValue:'0'
-                },
-                {
-                    name: 'name',
-                    attributeType: 'string',
-                    editable: true,
-                    required: true,
-                    defaultValue:'0'
-                }
-        ]})
-    },
-    applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
-    enumSets: of(enumerationSetMock),
-    getEnumSet(platformTypeId: string) {
-        return of(enumerationSetMock[0])
-    },
-    partialUpdate(body: Partial<PlatformType>) {
-        return of(transactionResultMock)
-    },    
-    inEditMode: of(true),
-    copyType(body: PlatformType | Partial<PlatformType>) {
+export const currentTypesServiceMock: Partial<CurrentTypesService> = {  
+    createType(body: PlatformType | Partial<PlatformType>) {
         return of(transactionResultMock)
     },
-    changeEnumSet(changes: enumerationSet) {
+    updatePreferences(preferences: settingsDialogData) {
         return of(transactionResultMock)
     },
-    updatePreferences(preferences) {
-        return of(transactionResultMock)
-    }
+    inEditMode: of(true)
 }

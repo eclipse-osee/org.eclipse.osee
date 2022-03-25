@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { newPlatformTypeDialogReturnData } from '../../types-interface/types/newTypeDialogDialogData';
+import { newPlatformTypeDialogReturnData } from '../types/newTypeDialogDialogData';
 import { NewTypeDialogComponent } from '../components/dialogs/new-type-dialog/new-type-dialog.component';
 
  @Component({

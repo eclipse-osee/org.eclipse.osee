@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,12 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { editPlatformTypeDialogDataMode } from "./EditPlatformTypeDialogDataMode.enum";
+import { PlatformType } from "./platformType";
+
 /**
- * Enum representing whether or not the "Edit Dialog" should be in edit mode or create mode
- * edit = 0
- * copy = 1
+ * Container containing info on whether or not the Edit Dialog should open in create/edit mode and what data to pre populate the fields with.
  */
-export const enum editPlatformTypeDialogDataMode {
-    edit,
-    copy
+export interface editPlatformTypeDialogData {
+    mode: editPlatformTypeDialogDataMode,
+    type: PlatformType
 }

@@ -18,23 +18,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConvertMessageInterfaceTitlesToStringPipe } from './pipes/convert-message-interface-titles-to-string.pipe';
 import { EditEnumSetDialogComponent } from './components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { EditViewFreeTextFieldDialogComponent } from './components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NewTypeDialogComponent } from './components/dialogs/new-type-dialog/new-type-dialog.component';
 import { MatStepperModule } from '@angular/material/stepper';
+import { PlatformTypeCardComponent } from './components/platform-type-card/platform-type-card.component';
+import { EditTypeDialogComponent } from './components/dialogs/edit-type-dialog/edit-type-dialog.component';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent],
+  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent],
   imports: [
     CommonModule,
     MatDialogModule,
+    MatCardModule,
     MatFormFieldModule,
     MatListModule,
     MatCheckboxModule,
@@ -46,6 +49,6 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatStepperModule,
     MatIconModule
   ],
-  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, NewTypeDialogComponent]
+  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, NewTypeDialogComponent,PlatformTypeCardComponent]
 })
 export class SharedMessagingModule {}

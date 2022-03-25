@@ -20,7 +20,8 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { PlatformTypeCardComponent } from './components/platform-type-card/platform-type-card.component';
+import { PlatformTypeCardComponent } from '../shared/components/platform-type-card/platform-type-card.component';
+import { MockPlatformTypeCard } from '../shared/mocks/platform-type-card.component.mock';
 import { TypeGridComponent } from './components/type-grid/type-grid.component';
 import { CurrentTypesService } from './services/current-types.service';
 
@@ -71,7 +72,7 @@ describe('TypesInterfaceComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatCardModule,MatFormFieldModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule, FormsModule, RouterTestingModule],
-      declarations: [TypesInterfaceComponent, TypeGridComponent, PlatformTypeCardComponent],
+      declarations: [TypesInterfaceComponent, TypeGridComponent, MockPlatformTypeCard],
       providers:[{provide: CurrentTypesService, useValue:typesService}]
     })
     .compileComponents();

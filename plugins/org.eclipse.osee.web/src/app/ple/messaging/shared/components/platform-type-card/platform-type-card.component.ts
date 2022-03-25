@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,17 +12,18 @@
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { defer, iif, Observable, of, OperatorFunction } from 'rxjs';
+import {  iif, of, OperatorFunction } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { OSEEWriteApiResponse } from '../../../shared/types/ApiWriteResponse';
-import { CurrentTypesService } from '../../services/current-types.service';
 import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
 import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
-import { enumerationSet } from '../../../shared/types/enum';
-import { PlatformType } from '../../../shared/types/platformType';
-import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
-import { EditTypeDialogComponent } from '../edit-type-dialog/edit-type-dialog.component';
-import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';
+import { enumerationSet } from '../../types/enum';
+import { PlatformType } from '../../types/platformType';
+import { EditEnumSetDialogComponent } from '../dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
+import { EditTypeDialogComponent } from '../dialogs/edit-type-dialog/edit-type-dialog.component';
+import { enumsetDialogData } from '../../types/EnumSetDialogData';
+import { PreferencesUIService } from '../../services/ui/preferences-ui.service';
+import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
+import { TypesUIService } from '../../services/ui/types-ui.service';
 
 @Component({
   selector: 'ple-messaging-types-platform-type-card',
@@ -34,8 +35,8 @@ export class PlatformTypeCardComponent implements OnInit {
   @Input() typeData!: PlatformType;
   edit: editPlatformTypeDialogDataMode = editPlatformTypeDialogDataMode.edit;
   copy: editPlatformTypeDialogDataMode = editPlatformTypeDialogDataMode.copy;
-  inEditMode = this.typesService.inEditMode;
-  constructor(public dialog: MatDialog, private typesService: CurrentTypesService) { }
+  inEditMode = this.preferenceService.inEditMode
+  constructor(public dialog: MatDialog, private typesService: TypesUIService, private preferenceService: PreferencesUIService,private enumSetService: EnumerationUIService,) { }
 
   ngOnInit(): void {
   }
@@ -63,6 +64,7 @@ export class PlatformTypeCardComponent implements OnInit {
   }
 
   /**
+   * already shared
    * Gets an observable for updating the attributes of a platform type
    * @param copy Initial values of the platform type PRIOR to the dialog being opened
    * @param result Changed values of the platform type + mode AFTER the dialog is closed
@@ -81,6 +83,10 @@ export class PlatformTypeCardComponent implements OnInit {
     return this.typesService.partialUpdate(newType);
   }
 
+  /**
+   * already shared
+   * @param makeChanges 
+   */
   openEnumDialog(makeChanges:boolean) {
     this.dialog.open(EditEnumSetDialogComponent, {
       data: of<enumsetDialogData>(
@@ -91,7 +97,7 @@ export class PlatformTypeCardComponent implements OnInit {
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
       take(1),
-      switchMap(({ enumerations,...changes })=>iif(()=>makeChanges,this.typesService.changeEnumSet(changes,enumerations)))
+      switchMap(({ enumerations,...changes })=>iif(()=>makeChanges,this.enumSetService.changeEnumSet(changes,enumerations)))
     ).subscribe();
   }
   

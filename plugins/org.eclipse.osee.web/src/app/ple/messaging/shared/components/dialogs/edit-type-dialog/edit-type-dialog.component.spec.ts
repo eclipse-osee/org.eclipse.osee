@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -22,11 +22,13 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
-import { CurrentTypesService } from '../../services/current-types.service';
-import { currentTypesServiceMock } from '../../mocks/services/current.types.service.mock';
+import { editPlatformTypeDialogData } from '../../../types/editPlatformTypeDialogData';
+import { editPlatformTypeDialogDataMode } from '../../../types/EditPlatformTypeDialogDataMode.enum';
 import { MatSelectModule } from '@angular/material/select';
+import { TypesService } from '../../../services/http/types.service';
+import { typesServiceMock } from '../../../mocks/types.service.mock';
+import { EnumsService } from '../../../services/http/enums.service';
+import { enumsServiceMock } from '../../../mocks/EnumsService.mock';
 
 let loader: HarnessLoader;
 
@@ -61,7 +63,8 @@ describe('EditTypeDialogComponent', () => {
       providers: [
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: matDialogData },
-        {provide: CurrentTypesService, useValue:currentTypesServiceMock}
+        { provide: TypesService, useValue: typesServiceMock },
+        { provide: EnumsService, useValue: enumsServiceMock}
       ]
     })
     .compileComponents();
@@ -84,14 +87,4 @@ describe('EditTypeDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create', async () => {
-    const dialogs = await loader.getAllHarnesses(MatDialogHarness);
-    dialogs.forEach((x) => {
-      console.log("Dialog: ")
-      console.log(x.getAriaLabel());
-    })
-    //const header = await dialog.getChildLoader('.mat-dialog-title');
-    //console.log(header);
-    expect(component).toBeTruthy();
-  });
 });

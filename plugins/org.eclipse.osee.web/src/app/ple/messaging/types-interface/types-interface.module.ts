@@ -15,22 +15,13 @@ import { CommonModule } from '@angular/common';
 
 import { TypesInterfaceRoutingModule } from './types-interface-routing.module';
 import { TypesInterfaceComponent } from './types-interface.component';
-import { PlatformTypeCardComponent } from './components/platform-type-card/platform-type-card.component';
-
-import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { PleSharedMaterialModule } from '../../ple-shared-material/ple-shared-material.module';
 import { LayoutModule } from '@angular/cdk/layout';
 import { TypeGridComponent } from './components/type-grid/type-grid.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
-import { EditTypeDialogComponent } from './components/edit-type-dialog/edit-type-dialog.component';
-import { MatSelectModule } from '@angular/material/select';
-import {MatStepperModule} from '@angular/material/stepper';
-import { MatTableModule } from '@angular/material/table';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { UsermenuComponent } from './components/menus/usermenu/usermenu.component';
 import { MatMenuModule } from '@angular/material/menu';
@@ -38,21 +29,15 @@ import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
-  declarations: [TypesInterfaceComponent, PlatformTypeCardComponent, TypeGridComponent, EditTypeDialogComponent, UsermenuComponent],
+  declarations: [TypesInterfaceComponent, TypeGridComponent, UsermenuComponent],
   imports: [
     CommonModule,
-    MatCardModule,
     MatGridListModule,
     LayoutModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatStepperModule,
     FormsModule,
-    MatSlideToggleModule,
-    MatTableModule,
     MatMenuModule,
     PleSharedMaterialModule,
     SharedMessagingModule,

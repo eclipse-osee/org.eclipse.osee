@@ -24,10 +24,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
-import { currentTypesServiceMock } from '../../../../types-interface/mocks/services/current.types.service.mock';
-import { CurrentTypesService } from '../../../../types-interface/services/current-types.service';
-import { enumerationSetMock } from '../../../../types-interface/mocks/returnObjects/enumerationset.mock'
 
 import { NewTypeDialogComponent } from './new-type-dialog.component';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';

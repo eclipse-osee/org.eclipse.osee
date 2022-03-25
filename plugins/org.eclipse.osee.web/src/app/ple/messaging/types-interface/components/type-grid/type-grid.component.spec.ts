@@ -22,7 +22,6 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
-import { PlatformTypeCardComponent } from '../platform-type-card/platform-type-card.component';
 
 import { TypeGridComponent } from './type-grid.component';
 import { LayoutModule } from '@angular/cdk/layout';
@@ -34,6 +33,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { response } from '../../../connection-view/mocks/Response.mock';
 import { MatIconModule } from '@angular/material/icon';
+import { MockPlatformTypeCard } from '../../../shared/mocks/platform-type-card.component.mock';
 
 let loader: HarnessLoader;
 
@@ -80,7 +80,7 @@ describe('TypeGridComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatCardModule,MatFormFieldModule,MatIconModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule, FormsModule, LayoutModule],
-      declarations: [PlatformTypeCardComponent, TypeGridComponent],
+      declarations: [MockPlatformTypeCard, TypeGridComponent],
       providers: [{
         provide: CurrentTypesService, useValue:
         {
