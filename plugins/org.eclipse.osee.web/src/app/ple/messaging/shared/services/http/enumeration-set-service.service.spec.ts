@@ -119,7 +119,7 @@ describe('EnumerationSetServiceService', () => {
   })
 
   it('should perform a mutation', () => {
-    service.performMutation({ branch: '10', txComment: '' },'10').subscribe();
+    service.performMutation({ branch: '10', txComment: '' }).subscribe();
     const req = httpTestingController.expectOne(apiURL+'/orcs/txs');
     expect(req.request.method).toEqual('POST');
     req.flush({});

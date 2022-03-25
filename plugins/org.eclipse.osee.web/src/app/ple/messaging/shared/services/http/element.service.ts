@@ -19,13 +19,14 @@ import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { element } from '../../types/element';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { TransactionService } from '../../../../../transactions/transaction.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ElementService {
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
   getElement(branchId: string,messageId: string, subMessageId: string, structureId: string, elementId: string,connectionId:string) {
     return this.http.get<element>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/"+ subMessageId+"/structures/"+structureId+"/elements/"+elementId);
@@ -75,7 +76,7 @@ export class ElementService {
   deleteElement(branchId:string,elementId: string) {
     return of(this.builder.deleteArtifact(elementId,undefined,branchId,'Deleting element'))
   }
-  performMutation(body: transaction, branchId: string, messageId: string, subMessageId: string, structureId: string, connectionId: string) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs", body);
+  performMutation(body: transaction) {
+    return this.transactionService.performMutation(body)
   }
 }

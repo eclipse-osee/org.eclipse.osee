@@ -16,6 +16,7 @@ import { of } from 'rxjs';
 import { relation, transaction } from 'src/app/transactions/transaction';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
+import { TransactionService } from '../../../../../transactions/transaction.service';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { enumeration, enumerationSet, enumSet } from '../../types/enum';
@@ -25,7 +26,7 @@ import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 })
 export class EnumerationSetService {
 
-  constructor (private http: HttpClient,private builder: TransactionBuilderService) { }
+  constructor (private http: HttpClient,private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   createEnumSet(branchId:string,type:enumSet|Partial<enumSet>,relations:relation[], transaction?:transaction) {
     return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.ENUMSET, relations, transaction, branchId, "Create Enum Set"));
   }
@@ -56,7 +57,7 @@ export class EnumerationSetService {
   getEnumSet(branchId: string, platformTypeId: string) {
     return this.http.get<enumerationSet>(apiURL + "/mim/branch/" + branchId + "/types/" + platformTypeId + "/enumeration");
   }
-  performMutation(body: transaction,branchId:string) {
-    return this.http.post<OSEEWriteApiResponse>(apiURL + "/orcs/txs",body)
+  performMutation(body: transaction) {
+    return this.transactionService.performMutation(body)
   }
 }

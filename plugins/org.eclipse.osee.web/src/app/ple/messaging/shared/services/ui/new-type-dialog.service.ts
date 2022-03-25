@@ -62,7 +62,7 @@ export class NewTypeDialogService {
     )
     ),this.typesService.createPlatformType(this.uiService.id.getValue(),body,[]))
     .pipe(
-      switchMap((transaction) => this.typesService.performMutation(transaction, this.uiService.id.getValue())),
+      switchMap((transaction) => this.typesService.performMutation(transaction)),
     )
   }
   private fixEnum(enumeration:enumeration) {

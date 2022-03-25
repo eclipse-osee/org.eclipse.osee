@@ -17,7 +17,7 @@ export interface response {
     errorCount: number,
     errors: boolean,
     failed: boolean,
-    ids: [],
+    ids: string[],
     infoCount: number,
     numErrors: number,
     numErrorsViaSearch: number,

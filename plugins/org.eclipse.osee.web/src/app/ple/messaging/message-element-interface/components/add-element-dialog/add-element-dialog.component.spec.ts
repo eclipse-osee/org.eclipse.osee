@@ -55,7 +55,23 @@ describe('AddElementDialogComponent', () => {
   let dialogData: AddElementDialog = {
     id: '12345',
     name: 'structure',
-    type: { id: '', name: '' },
+    type: {
+      id: '',
+      name: '',
+      interfaceLogicalType: '',
+      interfacePlatform2sComplement: false,
+      interfacePlatformTypeAnalogAccuracy: '',
+      interfacePlatformTypeBitSize: '',
+      interfacePlatformTypeBitsResolution: '',
+      interfacePlatformTypeCompRate: '',
+      interfacePlatformTypeDefaultValue: '',
+      interfacePlatformTypeEnumLiteral: '',
+      interfacePlatformTypeMaxval: '',
+      interfacePlatformTypeMinval: '',
+      interfacePlatformTypeMsbValue: '',
+      interfacePlatformTypeUnits: '',
+      interfacePlatformTypeValidRangeDescription:''
+    },
     element: {
       id: '-1',
       name: '',

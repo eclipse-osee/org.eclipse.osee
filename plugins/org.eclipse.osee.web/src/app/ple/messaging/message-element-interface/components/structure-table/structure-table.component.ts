@@ -180,7 +180,23 @@ export class StructureTableComponent implements OnInit {
         interfaceElementIndexStart: 0,
         units:''
       },
-      type:{id:'',name:''}
+      type: {
+        id: '',
+        name: '',
+        interfaceLogicalType: '',
+        interfacePlatform2sComplement: false,
+        interfacePlatformTypeAnalogAccuracy: '',
+        interfacePlatformTypeBitSize: '',
+        interfacePlatformTypeBitsResolution: '',
+        interfacePlatformTypeCompRate: '',
+        interfacePlatformTypeDefaultValue: '',
+        interfacePlatformTypeEnumLiteral: '',
+        interfacePlatformTypeMaxval: '',
+        interfacePlatformTypeMinval: '',
+        interfacePlatformTypeMsbValue: '',
+        interfacePlatformTypeUnits: '',
+        interfacePlatformTypeValidRangeDescription:''
+      }
     }
     let dialogRef = this.dialog.open(AddElementDialogComponent, {
       data:dialogData
@@ -190,7 +206,7 @@ export class StructureTableComponent implements OnInit {
       switchMap((value:AddElementDialog) =>
         iif(() => value.element.id !== '-1' && value.element.id.length > 0,
           this.structureService.relateElement(structure.id, value.element.id),
-          this.structureService.createNewElement(value.element, structure.id,value.type.id))
+          this.structureService.createNewElement(value.element, structure.id,value.type.id as string))
       ),
       take(1)
     );

@@ -1,5 +1,5 @@
-import { element } from "./element";
-import { structure } from "./structure";
+import { element } from "./element.d";
+import { structure } from "./structure.d";
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
-import { transactionMock } from "src/app/transactions/transaction.mock";
+import { transactionMock, transactionResultMock } from "src/app/transactions/transaction.mock";
 import { EnumerationSetService } from "../services/http/enumeration-set.service";
 import { enumeration, enumSet } from "../types/enum";
 import { enumerationSetMock } from "../../types-interface/mocks/returnObjects/enumerationset.mock";
@@ -43,7 +43,7 @@ export const enumerationSetServiceMock: Partial<EnumerationSetService> = {
     getEnumSet(branchId: string, platformTypeId: string) {
         return of(enumerationSetMock[0]);
     },
-    performMutation(body: transaction, branchId: string) {
-        return of(response);
+    performMutation(body: transaction) {
+        return of(transactionResultMock);
     }
 }

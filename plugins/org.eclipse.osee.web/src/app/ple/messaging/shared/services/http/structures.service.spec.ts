@@ -133,7 +133,7 @@ describe('StructuresService', () => {
   })
 
   it('should perform a mutation on the structure endpoint', () => {
-    service.performMutation('10', '10', '10','10', transactionMock).subscribe();
+    service.performMutation(transactionMock).subscribe();
     const req = httpTestingController.expectOne(apiURL + "/orcs/txs");
     expect(req.request.method).toEqual('POST');
     req.flush({});

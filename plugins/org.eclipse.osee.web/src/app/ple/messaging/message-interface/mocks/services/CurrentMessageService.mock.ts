@@ -19,6 +19,7 @@ import { message, messageWithChanges } from "../../types/messages";
 import { subMessage } from "../../types/sub-messages";
 import { messageResponseMock } from "../ReturnObjects/response.mock";
 import { transactionToken } from "src/app/transactions/transaction";
+import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 
 
 let sideNavContentPlaceholder = new ReplaySubject<{ opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined }>();
@@ -65,33 +66,33 @@ const diffmode= new BehaviorSubject<boolean>(false);
 export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   messages: of(expectedData),
   applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
-  partialUpdateSubMessage(body, messageId) { return of(messageResponseMock) },
-  partialUpdateMessage(body){return of(messageResponseMock)},
+  partialUpdateSubMessage(body, messageId) { return of(transactionResultMock) },
+  partialUpdateMessage(body){return of(transactionResultMock)},
   createMessage(body: message) {
-      return of(messageResponseMock)
+      return of(transactionResultMock)
   },
   BranchId: new BehaviorSubject("10"),
   preferences: of(MimPreferencesMock),
   updatePreferences(preferences: settingsDialogData) {
-    return of(messageResponseMock)
+    return of(transactionResultMock)
   },
   removeMessage(messageId: string) {
-    return of(messageResponseMock);
+    return of(transactionResultMock);
   },
   removeSubMessage(subMessageId: string, messageId: string) {
-    return of(messageResponseMock);
+    return of(transactionResultMock);
   },
   relateSubMessage(messageId: string, subMessageId: string) {
-    return of(messageResponseMock);
+    return of(transactionResultMock);
   },
   createSubMessage(body: subMessage, messageId: string) {
-    return of(messageResponseMock);
+    return of(transactionResultMock);
   },
   deleteMessage(messageId: string) {
-    return of(messageResponseMock);
+    return of(transactionResultMock);
   },
   deleteSubMessage(subMessageId: string) {
-    return of(messageResponseMock);
+    return of(transactionResultMock);
   },
   done: new Subject(),
   isInDiff:diffmode,

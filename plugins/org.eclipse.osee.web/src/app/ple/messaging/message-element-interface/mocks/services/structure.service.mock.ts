@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
-import { transactionMock } from "src/app/transactions/transaction.mock";
+import { transactionMock, transactionResultMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
 import { StructuresService } from "../../../shared/services/http/structures.service";
 import { structure } from "../../../shared/types/structure";
@@ -32,8 +32,8 @@ export const structureServiceMock: Partial<StructuresService> = {
     createStructure(body: Partial<structure>, branchId: string, relations: relation[]) {
         return of(transactionMock);
     },
-    performMutation(branchId: string, messageId: string, subMessageId: string, connectionId: string, transaction: transaction) {
-        return of(response);
+    performMutation(transaction: transaction) {
+        return of(transactionResultMock);
     },
     changeStructure(body: Partial<structure>, branchId: string) {
         return of(transactionMock);
@@ -65,8 +65,8 @@ export const structureServiceMock3: Partial<StructuresService> & { _oldStructure
     createStructure(body: Partial<structure>, branchId: string, relations: relation[]) {
         return of(transactionMock);
     },
-    performMutation(branchId: string, messageId: string, subMessageId: string, connectionId: string, transaction: transaction) {
-        return of(response);
+    performMutation(transaction: transaction) {
+        return of(transactionResultMock);
     },
     changeStructure(body: Partial<structure>, branchId: string) {
         return of(transactionMock);
@@ -99,8 +99,8 @@ export const structureServiceRandomMock: Partial<StructuresService> & {i:number}
     createStructure(body: Partial<structure>, branchId: string, relations: relation[]) {
         return of(transactionMock);
     },
-    performMutation(branchId: string, messageId: string, subMessageId: string, connectionId: string, transaction: transaction) {
-        return of(response);
+    performMutation(transaction: transaction) {
+        return of(transactionResultMock);
     },
     changeStructure(body: Partial<structure>, branchId: string) {
         return of(transactionMock);

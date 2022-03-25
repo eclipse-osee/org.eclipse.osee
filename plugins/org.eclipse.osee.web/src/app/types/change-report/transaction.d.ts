@@ -1,3 +1,4 @@
+import { response } from '../responses';
 import { transactionToken } from "./transaction-token";
 
 /*********************************************************************
@@ -34,4 +35,8 @@ export interface transactionInfo{
     },
     timeStamp: string,
     commitArt:string
+}
+export interface transactionResult{
+    tx: transactionToken,
+    results:response
 }

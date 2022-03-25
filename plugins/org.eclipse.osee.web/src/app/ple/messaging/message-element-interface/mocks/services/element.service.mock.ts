@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
-import { transactionMock } from "src/app/transactions/transaction.mock";
+import { transactionMock, transactionResultMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
 import { ElementService } from "../../../shared/services/http/element.service";
 import { element } from "../../../shared/types/element";
@@ -23,8 +23,8 @@ export const elementServiceMock: Partial<ElementService> = {
     changeElement(body: Partial<element>, branchId: string) {
         return of(transactionMock);
     },
-    performMutation(body: transaction, branchId: string, messageId: string, subMessageId: string, structureId: string, connectionId: string) {
-        return of(response);
+    performMutation(body: transaction) {
+        return of(transactionResultMock);
     },
     createStructureRelation(structureId: string) {
         return of({

@@ -17,6 +17,7 @@ import { enumerationSet } from "../../../shared/types/enum";
 import { logicalTypeFormDetail } from "../../../shared/types/logicaltype";
 import { PlatformType } from "../../../shared/types/platformType";
 import { enumerationSetMock } from "../returnObjects/enumerationset.mock";
+import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 
 export const currentTypesServiceMock: Partial<CurrentTypesService> = {
     logicalTypes: of([{
@@ -50,33 +51,16 @@ export const currentTypesServiceMock: Partial<CurrentTypesService> = {
         return of(enumerationSetMock[0])
     },
     partialUpdate(body: Partial<PlatformType>) {
-        return of({
-            empty: false,
-            errorCount: 0,
-            errors: false,
-            failed: false,
-            ids: ["1"],
-            infoCount: 0,
-            numErrors: 0,
-            numErrorsViaSearch: 0,
-            numWarnings: 0,
-            numWarningsViaSearch: 0,
-            results: [],
-            success: true,
-            tables: [],
-            title: "Patching 1",
-            txId: "2",
-            warningCount:0
-          })
+        return of(transactionResultMock)
     },    
     inEditMode: of(true),
     copyType(body: PlatformType | Partial<PlatformType>) {
-        return of(response)
+        return of(transactionResultMock)
     },
     changeEnumSet(changes: enumerationSet) {
-        return of(response)
+        return of(transactionResultMock)
     },
     updatePreferences(preferences) {
-        return of(response)
+        return of(transactionResultMock)
     }
 }

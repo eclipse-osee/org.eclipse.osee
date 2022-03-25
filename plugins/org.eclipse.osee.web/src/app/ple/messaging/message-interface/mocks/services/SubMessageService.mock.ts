@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from "rxjs";
 import { relation, transaction } from "src/app/transactions/transaction";
-import { transactionMock } from "src/app/transactions/transaction.mock";
+import { transactionMock, transactionResultMock } from "src/app/transactions/transaction.mock";
 import { response } from "../../../connection-view/mocks/Response.mock";
 import { SubMessagesService } from "../../services/sub-messages.service";
 import { subMessage } from "../../types/sub-messages";
@@ -39,7 +39,7 @@ export const subMessageServiceMock: Partial<SubMessagesService> = {
           })
     },
     performMutation(branchId: string, connectionId: string, messageId: string, body: transaction) {
-        return of(response)
+        return of(transactionResultMock)
     },
     deleteSubMessage(branchId: string, submessageId: string, transaction?: transaction) {
         return of(transactionMock);
