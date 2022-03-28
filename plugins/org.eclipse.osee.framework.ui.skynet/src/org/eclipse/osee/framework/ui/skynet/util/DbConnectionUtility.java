@@ -17,10 +17,12 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
@@ -33,8 +35,12 @@ public class DbConnectionUtility {
    private static Boolean applicationServerAlive;
 
    public static Result areOSEEServicesAvailable() {
+      UserToken user = UserManager.getUser();
       Result toReturn = Result.FalseResult;
-      if (!isVersionSupported()) {
+      if (!user.isActive()) {
+         toReturn = new Result("User %s is inactive. OSEE access disabled", user.getName());
+
+      } else if (!isVersionSupported()) {
          toReturn = new Result(
             "This OSEE client version [%s] is not supported by the current application server(s).\n\nDatabase capability disabled.",
             OseeCodeVersion.getVersion());
