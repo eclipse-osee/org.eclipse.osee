@@ -26,6 +26,8 @@ import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { UsermenuComponent } from './components/menus/usermenu/usermenu.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
+import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 
 
 @NgModule({
@@ -41,6 +43,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatMenuModule,
     PleSharedMaterialModule,
     SharedMessagingModule,
+    BranchPickerModule,
+    ActionStateButtonModule,
     TypesInterfaceRoutingModule
   ]
 })

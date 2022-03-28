@@ -20,6 +20,8 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
+import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 import { PlatformTypeCardComponent } from '../shared/components/platform-type-card/platform-type-card.component';
 import { MockPlatformTypeCard } from '../shared/mocks/platform-type-card.component.mock';
 import { TypeGridComponent } from './components/type-grid/type-grid.component';
@@ -72,7 +74,7 @@ describe('TypesInterfaceComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatCardModule,MatFormFieldModule,NoopAnimationsModule,MatInputModule,MatGridListModule, MatDialogModule, FormsModule, RouterTestingModule],
-      declarations: [TypesInterfaceComponent, TypeGridComponent, MockPlatformTypeCard],
+      declarations: [TypesInterfaceComponent, TypeGridComponent, MockPlatformTypeCard, BranchPickerStub,ActionDropdownStub],
       providers:[{provide: CurrentTypesService, useValue:typesService}]
     })
     .compileComponents();

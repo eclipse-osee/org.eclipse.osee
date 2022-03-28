@@ -33,11 +33,12 @@ import { TypesUIService } from '../../shared/services/ui/types-ui.service';
 })
 export class CurrentTypesService {
 
-  private _typeData: Observable<PlatformType[]> = this.uiService.filter.pipe(
+  private _typeData = combineLatest([this.uiService.filter, this.uiService.BranchId]).pipe(
     share(),
+    filter(([filter, id]) => id !== ''),
     debounceTime(500),
     distinctUntilChanged(),
-    switchMap(x => this.typesService.getFilteredTypes(x,this.uiService.BranchId.getValue()).pipe(
+    switchMap(([filter, id]) => this.typesService.getFilteredTypes(filter, id).pipe(
       repeatWhen(_ => this.uiService.typeUpdateRequired),
       share(),
       tap((y) => {
@@ -48,7 +49,7 @@ export class CurrentTypesService {
           this.uiService.singleLineAdjustmentNumber = 0;
         }
       })
-    )),
+    ))
   )
 
   constructor(private typesService: TypesService, private uiService: PlMessagingTypesUIService, private preferenceService: PreferencesUIService,private applicabilityService: ApplicabilityListUIService, private enumSetService: EnumerationUIService, private constantEnumService: EnumsService, private sharedTypeService: TypesUIService) { }

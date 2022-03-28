@@ -31,7 +31,7 @@
             <div style="display:flex;flex-direction:row;">
                 <input matInput type="search" [(ngModel)]="value" [matAutocomplete]="auto" (ngModelChange)="updateTypeAhead(value)" [disabled]="editingDisabled">
                 <ng-container *ngIf="_location|async as location">
-                    <a mat-button mat-icon-button matSuffix [routerLink]="'/ple/messaging/'+location.type+'/'+location.id+'/types/'+value" (contextmenu)="openMenu($event,value)"><mat-icon>arrow_forward</mat-icon></a>
+                    <a mat-button mat-icon-button matSuffix [routerLink]="'/ple/messaging/'+location.type+'/'+location.id+'/type/'+platformTypeId" (contextmenu)="openMenu($event,value)"><mat-icon>arrow_forward</mat-icon></a>
                 </ng-container>
             </div>
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
