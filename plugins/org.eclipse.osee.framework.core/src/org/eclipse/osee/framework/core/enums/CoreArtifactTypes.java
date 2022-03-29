@@ -232,7 +232,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceStructureCategory)
       .zeroOrOne(InterfaceMinSimultaneity)
       .zeroOrOne(InterfaceMaxSimultaneity)
-      .zeroOrOne(InterfaceTaskFileType));
+      .zeroOrOne(InterfaceTaskFileType)
+      .zeroOrOne(GeneralStringData));
    ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, Artifact)
       .zeroOrOne(InterfaceElementAlterable)
       .zeroOrOne(Notes));
