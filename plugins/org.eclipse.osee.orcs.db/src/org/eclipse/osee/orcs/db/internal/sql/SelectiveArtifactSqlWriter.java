@@ -16,6 +16,8 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -158,7 +160,34 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          artWithAlias = artWithAliases.get(0);
       } else {
          artWithAlias = startCommonTableExpression("arts");
-         write(Collections.toString(artWithAliases, "SELECT * FROM ", " UNION SELECT * FROM ", null));
+         boolean firstAlias = true;
+         if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+            CoreBranchCategoryTokens.MIM)) {
+            for (String art : artWithAliases) {
+               if (!firstAlias) {
+                  write(" union ");
+               } else {
+                  firstAlias = false;
+               }
+               //for each alias see if osee_relation is within its () and if so do not add top_rel_type and top_rel_order
+               //otherwise add
+               if (this.output.toString().contains("osee_relation rel")) {
+                  Pattern pattern = Pattern.compile(art + "\\sAS\\s\\((.*?)\\)", Pattern.DOTALL);
+                  Matcher regexMatcher = pattern.matcher(this.output.toString());
+                  if (regexMatcher.find()) {//Finds Matching Pattern in String
+                     if (regexMatcher.group(1).contains("osee_relation rel")) {
+                        write("SELECT " + art + ".* from " + art);
+                     } else {
+                        write("SELECT " + art + ".*, 0 as rel_top_type, 0 as rel_top_order from " + art);
+                     }
+                  }
+               } else {
+                  write("SELECT " + art + ".* from " + art);
+               }
+            }
+         } else {
+            write(Collections.toString(artWithAliases, "SELECT * FROM ", " UNION SELECT * FROM ", null));
+         }
       }
 
       if (rootQueryData.isIdQueryType() || rootQueryData.isCountQueryType()) {
