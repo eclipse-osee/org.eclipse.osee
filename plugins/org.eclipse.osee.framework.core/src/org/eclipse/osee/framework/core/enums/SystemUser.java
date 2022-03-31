@@ -26,9 +26,8 @@ public final class SystemUser {
    // @formatter:off
    public static final UserToken OseeSystem = UserToken.create(11, "OSEE System", "", "99999999", false);
    public static final UserToken Anonymous = UserToken.create(1896, "Anonymous", "", "99999998", false);
-   public static final UserToken BootStrap = UserToken.create(2184322, "Boot Strap", "bootstrap@osee.org", "bootstrap", true);
    public static final UserToken UnAssigned = UserToken.create(33429, "UnAssigned", "", "99999997", true);
-   public static final List<UserToken> values = Arrays.asList(OseeSystem, Anonymous, BootStrap, UnAssigned);
+   public static final List<UserToken> values = Arrays.asList(OseeSystem, Anonymous, UnAssigned);
    // @formatter:on
 
    private SystemUser() {

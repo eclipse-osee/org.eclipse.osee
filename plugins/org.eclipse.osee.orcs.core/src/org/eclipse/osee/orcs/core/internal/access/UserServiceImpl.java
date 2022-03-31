@@ -315,4 +315,13 @@ public class UserServiceImpl implements UserService {
       }
       return user;
    }
+
+   @Override
+   public boolean isBeforeUserCreation() {
+      return false;
+   }
+
+   @Override
+   public void setBeforeUserCreation(boolean beforeUserCreation) {
+   }
 }

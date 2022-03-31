@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -49,11 +48,6 @@ public class BranchAclOperations {
       }
       if (branch.isInvalid()) {
          rd.errorf("Branch ACL: Branch [%s] is InValid", branch.getIdString());
-         return rd;
-      }
-      if (subject.equals(SystemUser.BootStrap)) {
-         rd.logf("Branch ACL: Subject [%s] DOES have [%s] access for branch %s with permission [BOOTSTRAP]\n",
-            subject.getName(), permission, branch.toStringWithId());
          return rd;
       }
 

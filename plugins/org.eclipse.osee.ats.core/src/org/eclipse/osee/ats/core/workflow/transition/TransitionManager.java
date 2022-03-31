@@ -211,7 +211,6 @@ public class TransitionManager implements IExecuteListener {
                   boolean currentlyUnAssignedOrCompletedOrCancelled =
                      workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
                         AtsCoreUsers.UNASSIGNED_USER);
-                  workItem.getStateMgr().validateNoBootstrapUser();
                   // Allow anyone to transition any task to completed/cancelled/working if parent is working
                   if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
                      results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);

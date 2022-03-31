@@ -136,7 +136,6 @@ public class WfeJournalSubscribersComp extends Composite {
 
       // unassigned is not useful in the selection choice dialog
       users.remove(AtsCoreUsers.UNASSIGNED_USER);
-      users.remove(AtsCoreUsers.BOOTSTRAP_USER);
       UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Journal Subscribers",
          "Select to subscribe.\nDeSelect to un-subscribe.", users);
       uld.setIncludeAutoSelectButtons(false);

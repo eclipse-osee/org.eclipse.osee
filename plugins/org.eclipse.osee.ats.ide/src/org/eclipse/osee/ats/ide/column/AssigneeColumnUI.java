@@ -131,7 +131,6 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
 
       // unassigned is not useful in the selection choice dialog
       users.remove(AtsCoreUsers.UNASSIGNED_USER);
-      users.remove(AtsCoreUsers.BOOTSTRAP_USER);
       UserCheckTreeDialog uld =
          new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", users);
       uld.setIncludeAutoSelectButtons(true);
@@ -192,8 +191,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return AssigneeColumnUI.getAssigneeImage(
-               AtsApiService.get().getQueryServiceIde().getArtifact(element));
+            return AssigneeColumnUI.getAssigneeImage(AtsApiService.get().getQueryServiceIde().getArtifact(element));
          }
       } catch (Exception ex) {
          // do nothing
@@ -218,8 +216,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
-            Image image =
-               AssigneeColumnUI.getAssigneeImage(AtsApiService.get().getQueryServiceIde().getArtifact(team));
+            Image image = AssigneeColumnUI.getAssigneeImage(AtsApiService.get().getQueryServiceIde().getArtifact(team));
             if (image != null) {
                return image;
             }

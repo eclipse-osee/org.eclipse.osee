@@ -38,13 +38,13 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
 
       // Test Demo Users
       List<Artifact> userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
-      Assert.assertEquals(23, userArts.size());
+      Assert.assertEquals(22, userArts.size());
 
       Collection<AtsUser> users = AtsApiService.get().getUserService().getUsers();
-      Assert.assertEquals(23, users.size());
+      Assert.assertEquals(22, users.size());
 
       Collection<AtsUser> users2 = AtsApiService.get().getUserService().getUsers(Active.Active);
-      Assert.assertEquals(20, users2.size());
+      Assert.assertEquals(19, users2.size());
 
       Pdd10SetupAndImportReqs create = new Pdd10SetupAndImportReqs();
       create.run();

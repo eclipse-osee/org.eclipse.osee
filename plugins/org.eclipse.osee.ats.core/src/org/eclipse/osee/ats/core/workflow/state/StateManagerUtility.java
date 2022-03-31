@@ -53,7 +53,7 @@ public class StateManagerUtility {
                   Arrays.asList(AtsCoreUsers.UNASSIGNED_USER));
             }
          } else {
-            if (currentUser.equals(AtsCoreUsers.BOOTSTRAP_USER)) {
+            if (currentUser.equals(AtsCoreUsers.UNASSIGNED_USER)) {
                stateMgr.setAssignees(workPage.getName(), workPage.getStateType(),
                   Arrays.asList(AtsCoreUsers.UNASSIGNED_USER));
             } else {

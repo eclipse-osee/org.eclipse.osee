@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.core.server;
 
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
@@ -40,13 +39,6 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
       String sessionId = getSessionId(request);
       ISession session = sessionManager.getSessionById(sessionId);
       Conditions.checkNotNull(session, "session");
-   }
-
-   public boolean isInitializing(HttpServletRequest request) {
-      String sessionId = getSessionId(request);
-      ISession session = sessionManager.getSessionById(sessionId);
-      String userId = session.getUserId();
-      return SystemUser.BootStrap.getUserId().equals(userId);
    }
 
    protected String getSessionId(HttpServletRequest request) {
