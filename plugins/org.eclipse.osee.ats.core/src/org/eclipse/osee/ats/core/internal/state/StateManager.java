@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -192,9 +191,6 @@ public class StateManager implements IAtsStateManager {
          return;
       }
       for (AtsUser assignee : assignees) {
-         if (AtsCoreUsers.isBootstrapUser(assignee)) {
-            throw new OseeArgumentException("Can not assign workflow to Bootstrap");
-         }
          if (AtsCoreUsers.isSystemUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to System User");
          }
@@ -261,9 +257,6 @@ public class StateManager implements IAtsStateManager {
       }
 
       for (AtsUser assignee : assignees) {
-         if (AtsCoreUsers.isBootstrapUser(assignee)) {
-            throw new OseeArgumentException("Can not assign workflow to Bootstrap");
-         }
          if (AtsCoreUsers.isSystemUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to System User");
          }
@@ -593,15 +586,6 @@ public class StateManager implements IAtsStateManager {
       } else {
          states.add(state);
          setDirty(true);
-      }
-   }
-
-   @Override
-   public void validateNoBootstrapUser() {
-      for (AtsUser user : getAssignees()) {
-         if (SystemUser.BootStrap.getUserId().equals(user.getUserId())) {
-            throw new OseeStateException("Assignee can't be bootstrap user for %s", workItem.toStringWithId());
-         }
       }
    }
 

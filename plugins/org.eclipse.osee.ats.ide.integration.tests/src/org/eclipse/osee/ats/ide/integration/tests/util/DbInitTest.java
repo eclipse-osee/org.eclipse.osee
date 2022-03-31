@@ -14,7 +14,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.util;
 
 import static org.junit.Assert.assertTrue;
+
 import java.util.List;
+
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;

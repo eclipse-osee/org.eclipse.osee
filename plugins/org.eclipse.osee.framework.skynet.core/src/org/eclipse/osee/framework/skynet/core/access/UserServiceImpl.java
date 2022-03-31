@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,6 +44,8 @@ public class UserServiceImpl implements UserService {
    private static List<IUserGroupArtifactToken> userGrps;
 
    private boolean loading = false;
+
+   private boolean beforeUserCreation = false;
 
    @Override
    public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
@@ -154,8 +158,21 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
+   public boolean isBeforeUserCreation() {
+      return beforeUserCreation;
+   }
+
+   @Override
+   public void setBeforeUserCreation(boolean beforeUserCreation) {
+      this.beforeUserCreation = beforeUserCreation;
+      if (!OseeProperties.isInDbInit()) {
+         throw new OseeStateException("No user creation outside of dbinit");
+      }
+   }
+
+   @Override
    public UserToken getUserIfLoaded() {
-      if (loading) {
+      if (loading || isBeforeUserCreation()) {
          return UserToken.SENTINEL;
       }
       return getUser();

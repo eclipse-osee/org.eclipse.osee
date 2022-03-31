@@ -69,8 +69,8 @@ public final class SessionManagerImpl implements ISessionManager {
                   credential.getClientVersion(), credential.getClientAddress(), credential.getClientAddress(),
                   Integer.valueOf(credential.getClientPort()));
 
-               // if the user is BootStrap we do not want to insert into database since tables may not exist
-               if (userToken.isValid() && userToken.notEqual(SystemUser.BootStrap)) {
+               // if the user is OseeSystem we do not want to insert into database since tables may not exist
+               if (userToken.isValid() && userToken.notEqual(SystemUser.OseeSystem)) {
                   storeDataAccessor.create(Collections.singleton(session));
                }
 

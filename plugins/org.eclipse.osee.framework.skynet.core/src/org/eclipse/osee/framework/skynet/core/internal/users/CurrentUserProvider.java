@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.access.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.client.AccessTopicEvent;
@@ -60,20 +61,16 @@ public class CurrentUserProvider extends LazyObject<User> {
          User currentUser = null;
          ClientSessionManager.ensureSessionCreated();
          if (ClientSessionManager.isSessionValid()) {
-            String userId = ClientSessionManager.getSession().getUserId();
-            if (SystemUser.BootStrap.getUserId().equals(userId)) {
-               currentUser = BootStrapUser.getInstance();
-            } else {
-               UserToken currentUserToken = ClientSessionManager.getCurrentUserToken();
-               try {
-                  currentUser = getUser(currentUserToken);
-               } catch (UserNotInDatabase ex) {
-                  if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
-                     ClientSessionManager.authenticateAsAnonymous();
-                     currentUser = getUser(SystemUser.Anonymous);
-                  }
+            UserToken currentUserToken = ClientSessionManager.getCurrentUserToken();
+            try {
+               currentUser = getUser(currentUserToken);
+            } catch (UserNotInDatabase ex) {
+               if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
+                  ClientSessionManager.authenticateAsAnonymous();
+                  currentUser = getUser(SystemUser.Anonymous);
                }
             }
+
          } else {
             if (isAnonymousAuthenticationAllowed.compareAndSet(true, false)) {
                ClientSessionManager.authenticateAsAnonymous();
@@ -100,6 +97,7 @@ public class CurrentUserProvider extends LazyObject<User> {
       }
 
       private User getUser(UserToken token) {
+
          User user = null;
          try {
             user = cacheProvider.get().get(token.getUserId());

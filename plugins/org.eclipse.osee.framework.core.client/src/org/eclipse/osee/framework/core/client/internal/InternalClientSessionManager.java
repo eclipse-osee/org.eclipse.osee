@@ -141,7 +141,7 @@ public class InternalClientSessionManager {
                   OseeCredential credential = super.getCredential();
                   String userName;
                   if (OseeProperties.isInDbInit()) {
-                     userName = SystemUser.BootStrap.getName();
+                     userName = SystemUser.OseeSystem.getName();
                   } else {
                      userName = System.getProperty("user.name", SystemUser.Anonymous.getName());
                   }

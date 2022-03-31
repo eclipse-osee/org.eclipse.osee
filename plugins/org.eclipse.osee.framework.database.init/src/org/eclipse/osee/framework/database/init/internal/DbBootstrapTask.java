@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.database.init.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -39,9 +40,11 @@ public class DbBootstrapTask implements IDbInitializationTask {
    public void run() {
       Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
       OseeProperties.setInDbInit(true);
-
       DatastoreEndpoint datastoreEndpoint = OsgiUtil.getService(getClass(), OseeClient.class).getDatastoreEndpoint();
+      UserService userService = OsgiUtil.getService(getClass(), OseeClient.class).userService();
+      userService.setBeforeUserCreation(true);
       datastoreEndpoint.initialize(DemoUsers.Joe_Smith);
+      userService.setBeforeUserCreation(false);
 
       Conditions.checkNotNull(BranchManager.getBranchToken(SYSTEM_ROOT), "System root was not created - ");
 

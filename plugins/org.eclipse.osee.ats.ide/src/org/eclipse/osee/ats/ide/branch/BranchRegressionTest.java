@@ -325,7 +325,6 @@ public abstract class BranchRegressionTest {
 
       actionArt = (Artifact) reqTeam.getParentAction().getStoreObject();
 
-      validateNoBoostrapUser();
       Assert.assertNotNull("Req workflow not created", reqTeam);
       if (hasCodeWorkflow()) {
          Assert.assertNotNull("Code workflow not created", codeTeam);
@@ -343,12 +342,6 @@ public abstract class BranchRegressionTest {
          enablement.isShowArtifactExplorerButtonEnabled());
       Assert.assertFalse("Show Change Report Button should be disabled", enablement.isShowChangeReportButtonEnabled());
       Assert.assertFalse("Delete Button should be disabled", enablement.isDeleteBranchButtonEnabled());
-   }
-
-   protected void validateNoBoostrapUser() {
-      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
-         team.getStateMgr().validateNoBootstrapUser();
-      }
    }
 
    public void testXCommitManagerAfterActionCreate() {

@@ -15,13 +15,11 @@ package org.eclipse.osee.client.test.framework.internal;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.database.init.IDbInitChoiceEnum;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -56,9 +54,6 @@ public class DatabaseInitializer {
       ClientSessionManager.getSession();
       UserManager.releaseUser();
 
-      String currentUserId = UserManager.getUser().getUserId();
-      Assert.assertTrue("Current user should not be bootstrap user",
-         !SystemUser.BootStrap.getName().equals(currentUserId));
    }
 
 }

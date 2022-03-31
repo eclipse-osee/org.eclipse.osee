@@ -70,8 +70,6 @@ public class AuthenticationManager implements IAuthenticationManager {
       UserToken toReturn = null;
       if (isAnonymousLogin(credential)) {
          toReturn = SystemUser.Anonymous;
-      } else if (isBootStrap(credential)) {
-         toReturn = SystemUser.BootStrap;
       } else {
          IAuthenticationProvider provider = getAuthenticationProvider();
          if (provider != null) {
@@ -99,12 +97,8 @@ public class AuthenticationManager implements IAuthenticationManager {
       return credential.getUserName().equals(SystemUser.Anonymous.getName());
    }
 
-   private boolean isBootStrap(OseeCredential credential) {
-      return credential.getUserName().equals(SystemUser.BootStrap.getName());
-   }
-
    private boolean isSafeUser(OseeCredential credential) {
-      return isAnonymousLogin(credential) || isBootStrap(credential);
+      return isAnonymousLogin(credential);
    }
 
    @Override

@@ -141,8 +141,6 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    void addState(WorkState workState);
 
-   void validateNoBootstrapUser();
-
    @Override
    String getId();
 

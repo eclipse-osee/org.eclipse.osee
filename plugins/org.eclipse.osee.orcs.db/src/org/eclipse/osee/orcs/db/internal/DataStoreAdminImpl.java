@@ -59,9 +59,6 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
       new DatabaseCreation(jdbcClient).createDataStore();
 
-      jdbcClient.runPreparedUpdate("UPDATE osee_tx_details SET author = ? WHERE author <= 0 OR author = ?", superUser,
-         SystemUser.BootStrap);
-
       String attributeDataPath = ResourceConstants.getAttributeDataPath(properties);
       logger.info("Deleting application server binary data [%s]...", attributeDataPath);
       Lib.deleteDir(new File(attributeDataPath));

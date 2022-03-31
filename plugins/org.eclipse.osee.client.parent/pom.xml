@@ -137,7 +137,7 @@
 				<module>../../plugins/org.eclipse.osee.client.test.framework.p2</module>
 
 				<module>../../features/org.eclipse.osee.client.feature</module>
-			 	<module>../../plugins/org.eclipse.osee.client.integration.tests</module> 
+		  	 	<module>../../plugins/org.eclipse.osee.client.integration.tests</module>  
 				<module>../../plugins/org.eclipse.osee.client.p2</module>
 
 				<module>../../plugins/org.eclipse.osee.icteam.reqif</module>
