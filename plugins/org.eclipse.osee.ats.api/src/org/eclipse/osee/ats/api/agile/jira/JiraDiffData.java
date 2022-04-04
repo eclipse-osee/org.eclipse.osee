@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class JiraDiffData {
 
    private XResultData results;
-   private String jiraUrl;
-   private String username;
-   private String password;
    private String programIncrement;
    private String teamId;
    private List<String> desiredAttributes;
@@ -40,18 +37,6 @@ public class JiraDiffData {
       this.results = results;
    }
 
-   public String getJiraUrl() {
-      return jiraUrl;
-   }
-
-   public String getUsername() {
-      return username;
-   }
-
-   public String getPassword() {
-      return password;
-   }
-
    public String getProgramIncrement() {
       return programIncrement;
    }
@@ -62,18 +47,6 @@ public class JiraDiffData {
 
    public List<String> getDesiredAttributes() {
       return desiredAttributes;
-   }
-
-   public void setJiraUrl(String jiraUrl) {
-      this.jiraUrl = jiraUrl;
-   }
-
-   public void setUsername(String username) {
-      this.username = username;
-   }
-
-   public void setPassword(String password) {
-      this.password = password;
    }
 
    public void setProgramIncrement(String programIncrement) {

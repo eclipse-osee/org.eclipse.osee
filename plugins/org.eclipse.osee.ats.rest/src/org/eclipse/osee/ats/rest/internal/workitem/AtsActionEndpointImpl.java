@@ -763,7 +763,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Override
    public JiraDiffData reportEpicDiffs(JiraDiffData data) {
-      JiraReportDiffOperation op = new JiraReportDiffOperation(data, atsApi);
+      JiraReportDiffOperation op = new JiraReportDiffOperation(data, atsApi, orcsApi);
       op.run();
       return data;
    }

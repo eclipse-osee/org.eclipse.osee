@@ -15,16 +15,14 @@ package org.eclipse.osee.ats.rest.internal.workitem.sync.jira;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Stephen J. Molaro
@@ -33,112 +31,82 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 public class JiraEndpointImpl implements JiraEndpoint {
 
    private final AtsApi atsApi;
-   private String sessionId;
-   private final String jiraUrl;
-   static final String SESSION_AUTH = "rest/auth/1/session";
-   static final String SEARCH_JIRA = "rest/api/2/search";
+   private final OrcsApi orcsApi;
+   static final String JIRA_SEARCH = "/rest/api/2/search";
+   static final String JIRA_ISSUE = "/rest/api/2/issue";
 
-   public JiraEndpointImpl(AtsApi atsApi, String jiraUrl) {
+   public JiraEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
-      this.jiraUrl = linkParser(jiraUrl);
-   }
-
-   @Override
-   public String authenticate(String jsonPayload) {
-      String websiteURL = jiraUrl + SESSION_AUTH;
-
-      CookieManager cookieManager = new CookieManager();
-      CookieHandler.setDefault(cookieManager);
-
-      byte[] out = jsonPayload.getBytes(StandardCharsets.UTF_8);
-      HttpURLConnection conn = null;
-
-      try {
-         URL url = new URL(websiteURL);
-         conn = (HttpURLConnection) url.openConnection();
-
-         conn.setDoInput(true);
-         conn.setDoOutput(true);
-         conn.setRequestMethod("POST");
-         conn.setFixedLengthStreamingMode(out.length);
-         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-         conn.connect();
-         try (OutputStream os = conn.getOutputStream()) {
-            os.write(out, 0, out.length);
-            os.close();
-         }
-         conn.getContent();
-
-         // Get CookieStore
-         CookieStore cookieStore = cookieManager.getCookieStore();
-         for (HttpCookie cookie : cookieStore.getCookies()) {
-            if (cookie.getName().equals("JSESSIONID")) {
-               sessionId = cookie.getValue();
-            }
-         }
-      } catch (Exception ex) {
-         throw new OseeAuthenticationException("Failed to authenticate user with JIRA", ex);
-      } finally {
-         if (conn != null) {
-            conn.disconnect();
-         }
-      }
-      return sessionId;
+      this.orcsApi = orcsApi;
    }
 
    @Override
    public String searchJira(String jsonPayload) {
-      String searchResults = "";
-      String websiteURL = jiraUrl + SEARCH_JIRA;
+      return sendJiraRequest(jsonPayload, JIRA_SEARCH, "POST");
+   }
 
-      CookieManager cookieManager = new CookieManager();
-      CookieHandler.setDefault(cookieManager);
+   @Override
+   public String createJiraIssue(String jsonPayload) {
+      return sendJiraRequest(jsonPayload, JIRA_ISSUE, "POST");
+   }
 
-      byte[] out = jsonPayload.getBytes(StandardCharsets.UTF_8);
+   @Override
+   public String editJira(String jsonPayload, String issueId) {
+      String urlExtension = JIRA_ISSUE + "/" + issueId;
+      return sendJiraRequest(jsonPayload, urlExtension, "PUT");
+   }
+
+   private String sendJiraRequest(String jsonPayload, String urlExtension, String requestMethod) {
+      StringBuilder response = new StringBuilder();
+      String personalAccessToken = getPersonalAccessToken();
+      String jiraUrl = getJiraUrl();
+      String websiteURL = jiraUrl + urlExtension;
+
       HttpURLConnection conn = null;
 
       try {
-         URL url = new URL(websiteURL);
+         URL url = new URL("https://" + websiteURL);
          conn = (HttpURLConnection) url.openConnection();
 
          conn.setDoInput(true);
+         conn.setRequestMethod(requestMethod);
+         conn.setRequestProperty("Authorization", personalAccessToken);
+         conn.setRequestProperty("Connection", "keep-alive");
+
+         conn.setRequestProperty("Content-Type", "application/json");
          conn.setDoOutput(true);
-         conn.setRequestMethod("POST");
-         conn.setFixedLengthStreamingMode(out.length);
-         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-         conn.setRequestProperty("Cookie", "JSESSIONID=" + sessionId);
-         conn.connect();
          try (OutputStream os = conn.getOutputStream()) {
-            os.write(out, 0, out.length);
+            byte[] input = jsonPayload.getBytes();
+            os.write(input, 0, input.length);
          }
-         if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            String readLine = null;
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while ((readLine = in.readLine()) != null) {
-               searchResults += readLine;
+         try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+            String responseLine = null;
+            while ((responseLine = br.readLine()) != null) {
+               response.append(responseLine.trim());
             }
-            in.close();
+            br.close();
          }
          conn.getContent();
+         conn.disconnect();
       } catch (Exception ex) {
-         throw new OseeAuthenticationException("Failed to authenticate user with JIRA", ex);
+         throw new OseeAuthenticationException("JIRA Operation Failed", ex);
       } finally {
          if (conn != null) {
             conn.disconnect();
          }
       }
-      return searchResults;
+      return response.toString();
    }
 
-   private String linkParser(String link) {
-      String newLink = link;
-      if (!link.startsWith("https://")) {
-         newLink = "https://" + link;
-      }
-      if (!link.endsWith("/")) {
-         newLink += "/";
-      }
-      return newLink;
+   private String getPersonalAccessToken() {
+      return "Bearer " + orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
+         CoreArtifactTypes.GeneralData).andNameEquals("JIRA Config").getArtifact().getSoleAttributeValue(
+            CoreAttributeTypes.GeneralStringData);
    }
 
+   private String getJiraUrl() {
+      return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
+         CoreArtifactTypes.GeneralData).andNameEquals("JIRA Config").getArtifact().getSoleAttributeValue(
+            CoreAttributeTypes.Description);
+   }
 }
