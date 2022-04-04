@@ -15,8 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, iif, of } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
@@ -28,8 +28,9 @@ import { subMessage, subMessageWithChanges } from '../../types/sub-messages';
 import { DeleteSubmessageDialogComponent } from '../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveSubmessageDialogComponent } from '../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog/add-sub-message-dialog.component';
-import { LocationStrategy } from '@angular/common';
+import { ViewportScroller } from '@angular/common';
 import { difference } from 'src/app/types/change-report/change-report';
+import { UiService } from '../../../../../ple-services/ui/ui.service';
 
 @Component({
   selector: 'ple-messaging-sub-message-table',
@@ -56,9 +57,10 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
   }
   @ViewChild(MatMenuTrigger, { static: true })
   matMenuTrigger!: MatMenuTrigger;
-  constructor(public dialog: MatDialog,private route: ActivatedRoute, private router: Router,private messageService: CurrentMessagesService, private headerService: HeaderService, private angLocation:LocationStrategy) {
+  constructor(public dialog: MatDialog, private router: Router,private messageService: CurrentMessagesService, private headerService: HeaderService, private _ui: UiService) {
     this.dataSource.data = this.data;
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.data;
     if (this.filter !== "") {
@@ -127,7 +129,30 @@ export class SubMessageTableComponent implements OnInit, OnChanges {
       }).afterClosed().pipe(
         take(1),
         filter((val)=>val!==undefined),
-        switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id!=='-1', this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1', afterSubMessage || 'end'), this.messageService.createSubMessage(z.subMessage, z.id, afterSubMessage)))
+        switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id !== '-1',
+          this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1', afterSubMessage || 'end').pipe(
+            switchMap((transaction) => combineLatest([this._ui.isLoading, of(transaction)]).pipe(
+              filter(([loading, transaction]) => loading !== 'false'),
+              take(1),
+              map(([loading, transaction]) => {
+                this.router.navigate([], { fragment: 'a' + z.subMessage.id})
+              }
+              )
+            ))
+          ),
+          this.messageService.createSubMessage(z.subMessage, z.id, afterSubMessage).pipe(
+          switchMap((transaction) => combineLatest([this._ui.isLoading, of(transaction)]).pipe(
+            filter(([loading, transaction]) => loading !== 'false'),
+            take(1),
+            map(([loading, transaction]) => {
+              this.router.navigate([], { fragment: 'a' + (transaction.results.ids[0] || afterSubMessage || '')})
+            }
+            )
+          )
+          )
+        )
+        )
+        )
       ).subscribe();
   
   }

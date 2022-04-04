@@ -19,7 +19,7 @@ import { delay, refCount, shareReplay, startWith } from 'rxjs/operators';
 })
 export class HttpLoadingService {
 
-  private _isLoading: BehaviorSubject<String> = new BehaviorSubject<String>("false");
+  private _isLoading: BehaviorSubject<string> = new BehaviorSubject<string>("false");
   constructor () { }
   
   get isLoading() {

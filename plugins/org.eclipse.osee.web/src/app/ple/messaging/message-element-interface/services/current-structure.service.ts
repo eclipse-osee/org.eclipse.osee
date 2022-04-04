@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, from, iif, of, OperatorFunction } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, iif, of, OperatorFunction } from 'rxjs';
 import { concatMap, count, debounceTime, distinct, distinctUntilChanged, filter, map, mergeMap, reduce, repeatWhen, scan, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
@@ -49,7 +49,7 @@ export class CurrentStructureService {
     shareReplay({ bufferSize: 1, refCount: true }),
   )
 
-  private _structures = combineLatest(this.ui.isInDiff, this.differences, this._structuresNoDiff, combineLatest(this.BranchId, this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId)).pipe(
+  private _structures = combineLatest(this.ui.isInDiff, this.differences, this._structuresNoDiff, combineLatest([this.BranchId, this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId])).pipe(
     switchMap(([isInDiff, differences, structures, [branchId, parentBranch, messageId, subMessageId, connectionId]]) => iif(() => isInDiff && differences !== undefined && differences.length > 0,
       this._parseDifferencesMulti(differences,structures,parentBranch,branchId,messageId,subMessageId,connectionId),
       of(structures)
@@ -61,8 +61,36 @@ export class CurrentStructureService {
 
   private _types = this.typeService.types;
 
+  private _expandedRows = new BehaviorSubject<structure[]>([]);
+  private _expandedRowsDecreasing = new BehaviorSubject<boolean>(false);
+
   constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesStructureService, private elements: ElementService, private typeService: TypesUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService, private enumListService:EnumsService) { }
   
+  get expandedRows() {
+    return this._expandedRows.asObservable();
+  }
+
+  get expandedRowsDecreasing() {
+    return this._expandedRowsDecreasing.asObservable();
+  }
+
+  set addExpandedRow(value: structure) {
+    if (this._expandedRows.getValue().map(s=>s.id).indexOf(value.id) === -1) {
+      const temp = this._expandedRows.getValue();
+      temp.push(value);
+      this._expandedRows.next(temp)
+    }
+    this._expandedRowsDecreasing.next(false)
+  }
+
+  set removeExpandedRow(value: structure) {
+    if (this._expandedRows.getValue().map(s=>s.id).indexOf(value.id) > -1) {
+      const temp = this._expandedRows.getValue();
+      temp.splice(this._expandedRows.getValue().indexOf(value), 1);
+      this._expandedRows.next(temp);
+    }
+    this._expandedRowsDecreasing.next(true)
+  }
   get structures() {
     return this._structures;
   }

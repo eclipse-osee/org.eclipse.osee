@@ -52,6 +52,8 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     deleteStructure(structureId: string) {
         return of(transactionResultMock);
     },
+    addExpandedRow: {} as structure,
+    removeExpandedRow: {} as structure,
     done:new Subject(),
     applic: of([{ id: '1', name: 'Base' }, { id: '2', name: 'Second' }]),
     types: of(platformTypesMock),
@@ -80,5 +82,7 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     isInDiff: new BehaviorSubject<boolean>(false),
     updatePlatformTypeValue(type: Partial<PlatformType>) {
         return of(transactionResultMock)
-    }
+    },
+    expandedRows: of([]),
+    expandedRowsDecreasing:new BehaviorSubject<boolean>(false)
 }

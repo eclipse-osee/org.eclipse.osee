@@ -50,7 +50,7 @@
             <td mat-footer-cell *matFooterCellDef [attr.colspan]="(headers|async)?.length||0" style="text-align:right"></td>
         </ng-container>
      <tr mat-header-row *matHeaderRowDef="(headers|async)||[];"></tr>    
-     <tr mat-row *matRowDef= "let row2; columns: (headers|async)||[]; let k=index;"
+     <tr mat-row *matRowDef= "let row2; columns: (headers|async)||[]; let k=index;" [id]="'a'+row2.id"
      [ngClass]="k%2===0? row2.added? 'message-table-sub-message-row-even-added': row2.deleted?'message-table-row-even-deleted':'message-table-sub-message-row-even':row2.added?'message-table-sub-message-row-odd-added':row2.deleted?'message-table-row-odd-deleted':'message-table-sub-message-row-odd'"
      ></tr>
      <tr mat-footer-row *matFooterRowDef="['footer']"></tr>

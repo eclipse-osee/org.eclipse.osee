@@ -99,5 +99,7 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
   sideNavContent: sideNavContentPlaceholder,
   set sideNav(value: { opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined }) { },
   get initialRoute() { return of('/ple/messaging/' + 'working' + '/' + '10' + '/' + '20' + '/messages/') },
-  get endOfRoute(){return of('')}
+  get endOfRoute() { return of('') },
+  expandedRows: of([{ id: '1', name: 'dummy element', description: 'description' } as message]),
+  expandedRowsDecreasing:new BehaviorSubject<boolean>(false)
 }

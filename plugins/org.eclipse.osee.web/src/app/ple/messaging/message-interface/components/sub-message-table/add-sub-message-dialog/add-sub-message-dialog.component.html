@@ -35,7 +35,7 @@
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Description</mat-label>
-                <input matInput [(ngModel)]="data.subMessage.description" required>
+                <textarea matInput cdkTextareaAutosize [(ngModel)]="data.subMessage.description" required></textarea>
             </mat-form-field>
             <!-- <mat-form-field>
                 <mat-label>Message Rate</mat-label>
@@ -43,11 +43,11 @@
             </mat-form-field> -->
             <mat-form-field>
                 <mat-label>Sub Message Number</mat-label>
-                <input matInput [(ngModel)]="data.subMessage.interfaceSubMessageNumber" required>
+                <input matInput type="number" [(ngModel)]="data.subMessage.interfaceSubMessageNumber" required>
             </mat-form-field>
         </div>
         <button mat-raised-button matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0  && data.subMessage.interfaceSubMessageNumber.length>0" matStepperNext>Next</button>
+        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0  && data.subMessage.interfaceSubMessageNumber!==undefined && data.subMessage.interfaceSubMessageNumber!==''" matStepperNext>Next</button>
     </mat-step>
     <mat-step label="Review" #step3>
         <div style="display:flex;flex-direction:column">

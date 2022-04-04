@@ -40,7 +40,7 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Description</mat-label>
-                    <input matInput [(ngModel)]="data.structure.description" required>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="data.structure.description" required></textarea>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Max Simultaneity</mat-label>

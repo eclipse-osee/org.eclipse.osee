@@ -15,9 +15,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
-import { iif, of } from 'rxjs';
-import { filter, first, map, share, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
+import { delay, distinctUntilChanged, filter, first, map, share, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { difference } from 'src/app/types/change-report/change-report';
+import { HttpLoadingService } from '../../../../../services/http-loading.service';
 import { applic } from '../../../../../types/applicability/applic';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 import { HeaderService } from '../../../shared/services/ui/header.service';
@@ -55,7 +57,10 @@ export class MessageTableComponent implements OnInit {
     takeUntil(this.messageService.done));
   headers = this.headerService.AllMessageHeaders;
   nonEditableHeaders: (keyof message)[] = ['initiatingNode'];
-  expandedElement: (message|messageWithChanges)[] = [];
+  expandedElement = this.messageService.expandedRows;
+  private _expandedElementData = combineLatest([this.messageService.messages, this.messageService.expandedRows]).pipe(
+    map(([messages,rows])=>messages.filter(m=>rows.map(r=>r.id).includes(m.id)))
+  )
   filter: string = "";
   searchTerms: string = "";
   preferences = this.messageService.preferences.pipe(takeUntil(this.messageService.done));
@@ -79,24 +84,45 @@ export class MessageTableComponent implements OnInit {
     switchMap((val) => iif(() => val, of('true'), of('false'))),
   );
   _connectionsRoute = this.messageService.connectionsRoute
+  private _moveView =combineLatest([this.route.fragment, this._expandedElementData, this.messageService.expandedRowsDecreasing, this._loadingService.isLoading]).pipe(
+    switchMap(([fragment, rows, decreasing,loading]) =>
+      iif(() =>
+        decreasing === false &&
+        fragment !== null &&
+        fragment !== undefined &&
+        fragment.includes('a') &&
+        rows !== undefined &&
+        rows.length > 0 &&
+        rows[rows.length - 1] !== undefined &&
+        rows[rows.length - 1].subMessages.length > 0 &&
+        (rows[rows.length - 1].subMessages.map(submsg => submsg.id).some((id) => id === fragment.split('a')[1]) || false) &&
+        loading==='false',
+        of(fragment).pipe(
+      distinctUntilChanged(),
+      map((f) => document.querySelector('#' + f)),
+      filter((query) => query !== null && query !== undefined) as OperatorFunction<Element | null, Element>,
+          map((query) => query.scrollIntoView({ behavior: 'smooth' })),
+          delay(1000),
+          map((final)=>this.router.navigate([]))
+    ), of(null))),
+  shareReplay({bufferSize:1,refCount:true}))
 
-  constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService) {}
+  constructor (private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService, private route: ActivatedRoute, private router: Router, private _loadingService: HttpLoadingService) {}
 
   ngOnInit(): void { }
-  
+  ngAfterViewChecked() {
+    this._moveView.subscribe();
+  }
   rowIsExpanded(value: string) {
-    return this.expandedElement.map(a => a.id).includes(value);
+    return this.messageService.expandedRows.pipe(
+      map((rows)=>rows.map(s=>s.id).includes(value))
+    )
   }
   expandRow(value: message|messageWithChanges) {
-    if (this.expandedElement.map(a => a.id).indexOf(value.id) === -1) {
-      this.expandedElement.push(value);
-    }
+    this.messageService.addExpandedRow = value;
   }
   hideRow(value: message|messageWithChanges) {
-    let index = this.expandedElement.map(a=>a.id).indexOf(value.id);
-    if (index > -1) {
-      this.expandedElement.splice(index,1)
-    }
+    this.messageService.removeExpandedRow = value;
   }
 
   rowChange(value: message | messageWithChanges, type: boolean) {

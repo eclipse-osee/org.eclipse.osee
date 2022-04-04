@@ -15,8 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { iif, of, OperatorFunction } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { enumerationSet } from '../../../shared/types/enum';
 import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
@@ -32,9 +32,9 @@ import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDi
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { enumsetDialogData } from '../../../shared/types/EnumSetDialogData';
 import { applic } from '../../../../../types/applicability/applic';
-import { LocationStrategy } from '@angular/common';
 import { difference } from 'src/app/types/change-report/change-report';
 import { EnumerationUIService } from '../../../shared/services/ui/enumeration-ui.service';
+import { UiService } from '../../../../../ple-services/ui/ui.service';
 
 @Component({
   selector: 'ple-messaging-message-element-interface-sub-element-table',
@@ -68,7 +68,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
   @ViewChild('generalMenuTrigger', { static: true })
   generalMenuTrigger!: MatMenuTrigger;
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private structureService: CurrentStructureService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService, private angLocation: LocationStrategy,private enumSetService: EnumerationUIService) {
+  constructor(private route: ActivatedRoute, private _ui:UiService, private router: Router, public dialog: MatDialog, private structureService: CurrentStructureService,private layoutNotifier: LayoutNotifierService, private headerService: HeaderService,private enumSetService: EnumerationUIService) {
     this.subMessageHeaders = ["name", "beginWord", "endWord", "BeginByte", "EndByte",  "interfaceElementAlterable", "description", "notes"];
     this.dataSource.data = this.data;
   }
@@ -185,13 +185,31 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       data:dialogData
     });
     let createElement = dialogRef.afterClosed().pipe(
-      filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
-      switchMap((value:AddElementDialog) =>
+      take(1),
+      filter((val) => (val !== undefined || val !== null) && val?.element !== undefined),
+      switchMap((value: AddElementDialog) =>
         iif(() => value.element.id !== '-1' && value.element.id.length > 0,
-          this.structureService.relateElement(structure.id, value.element.id, afterElement||'end'),
-          this.structureService.createNewElement(value.element, structure.id,value.type.id as string, afterElement||'end'))
+          this.structureService.relateElement(structure.id, value.element.id, afterElement || 'end').pipe(
+            switchMap((transaction) => combineLatest([this._ui.isLoading, of(transaction)]).pipe(
+              filter(([loading, transaction]) => loading !== 'false'),
+              take(1),
+              map(([loading, transaction]) => {
+                this.router.navigate([], { fragment: 'a' + value.element.id})
+              }
+              )
+            ))
+          ),
+          this.structureService.createNewElement(value.element, structure.id, value.type.id as string, afterElement || 'end').pipe(
+            switchMap((transaction) => combineLatest([this._ui.isLoading, of(transaction)]).pipe(
+              filter(([loading, transaction]) => loading !== 'false'),
+              take(1),
+              map(([loading, transaction]) => {
+                this.router.navigate([], { fragment: 'a' + (transaction.results.ids[0] || afterElement || '')})
+              }
+              )
+            ))
+          ))
       ),
-      take(1)
     );
     createElement.subscribe();
   }

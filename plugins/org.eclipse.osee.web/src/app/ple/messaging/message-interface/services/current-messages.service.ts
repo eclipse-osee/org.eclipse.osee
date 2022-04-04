@@ -103,7 +103,10 @@ export class CurrentMessagesService {
   )
 
   private _done = new Subject();
-  private _differences = new BehaviorSubject<changeInstance[]|undefined>(undefined);
+  private _differences = new BehaviorSubject<changeInstance[] | undefined>(undefined);
+  
+  private _expandedRows = new BehaviorSubject<(message | messageWithChanges)[]>([]);
+  private _expandedRowsDecreasing = new BehaviorSubject<boolean>(false);
   constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: MessageUiService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService,private branchInfoService: BranchInfoService, private sideNavService: SideNavService) { }
 
   get messages() {
@@ -178,6 +181,32 @@ export class CurrentMessagesService {
 
   set branchType(value: string) {
     this.ui.typeValue = value;
+  }
+
+  get expandedRows() {
+    return this._expandedRows.asObservable();
+  }
+  
+  get expandedRowsDecreasing() {
+    return this._expandedRowsDecreasing
+  }
+
+  set addExpandedRow(value: message|messageWithChanges) {
+    if (this._expandedRows.getValue().map(s=>s.id).indexOf(value.id) === -1) {
+      const temp = this._expandedRows.getValue();
+      temp.push(value);
+      this._expandedRows.next(temp)
+    }
+    this._expandedRowsDecreasing.next(false)
+  }
+
+  set removeExpandedRow(value: message|messageWithChanges) {
+    if (this._expandedRows.getValue().map(s=>s.id).indexOf(value.id) > -1) {
+      const temp = this._expandedRows.getValue();
+      temp.splice(this._expandedRows.getValue().indexOf(value), 1);
+      this._expandedRows.next(temp);
+    }
+    this._expandedRowsDecreasing.next(true)
   }
 
   private mergeMessages(message: messageWithChanges, parentMessage: message) {
