@@ -91,7 +91,8 @@ describe('SubElementTableComponent', () => {
       declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent,SubElementTableRowComponentMock],
       providers: [{
         provide: ActivatedRoute, useValue: {
-          paramMap: of(convertToParamMap({ branchId: "10",branchType:"working" }))
+          paramMap: of(convertToParamMap({ branchId: "10", branchType: "working" })),
+          fragment:of(null)
       }}]
     })
     .compileComponents();

@@ -23,7 +23,7 @@
         </div>
     </div>
 </div>
-<two-layer-add-button *ngIf="(inEditMode | async)===true" class="new-message-button" [nestedLevel]="expandedElement" baseLevel="Add message" nestedLevelPrefix="Add submessage to " (normalClick)="openNewMessageDialog()" (nestedClick)="createNewSubMessage($event)" nestedIcon="description" baseIcon="assignment"></two-layer-add-button>
+<two-layer-add-button *ngIf="(inEditMode | async)===true" class="new-message-button" [nestedLevel]="(expandedElement|async)||[]" baseLevel="Add message" nestedLevelPrefix="Add submessage to " (normalClick)="openNewMessageDialog()" (nestedClick)="createNewSubMessage($event)" nestedIcon="description" baseIcon="assignment"></two-layer-add-button>
 <div class="message-interface message-element-interface-top-level-table">
     <mat-form-field class="message-interface-table-view-width-100 message-interface-table-filter-padding">
         <mat-label>Filter Message Information</mat-label>
@@ -43,7 +43,9 @@
             <td mat-cell *matCellDef="let element; let i = dataIndex" [ngClass]="i%2===0? element.added? 'message-table-row-even-added':element.deleted?'message-table-row-even-deleted':'message-table-row-even':element.added? 'message-table-row-odd-added':element.deleted?'message-table-row-even-deleted':'message-table-row-odd'" (contextmenu)="openMenu($event,element,element[header],header)">
                 <div class="flex-row" [ngClass]="!element.added && element.changes && element.changes[header] !==undefined?'message-table-attribute-changed':'message-table-attribute-not-changed'">
                     <ng-container *ngIf="header==='name'">
-                        <button mat-icon-button [@expandButton]="!rowIsExpanded(element.id) ?  'closed' : 'open'" (click)="rowChange(element,!rowIsExpanded(element.id))" [ngClass]="element.hasSubMessageChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
+                        <ng-container *ngIf="{value:((rowIsExpanded(element.id)|async))} as _expanded">
+                            <button mat-icon-button [@expandButton]="!_expanded.value ?  'closed' : 'open'" (click)="rowChange(element,!_expanded.value)" [ngClass]="element.hasSubMessageChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
+                        </ng-container>
                     </ng-container>
                     <ng-container *ngIf="(inEditMode | async)===true && !element.deleted && !nonEditableHeaders.includes(header);else no_edit">
                         <osee-messaging-edit-message-field [messageId]="element.id" [header]="header" [value]="element[header]"></osee-messaging-edit-message-field>
@@ -73,8 +75,8 @@
         <ng-container matColumnDef="expandedMessage">
             <td mat-cell *matCellDef="let element" [attr.colspan]="(headers|async)?.length||0" class="no-pad">    
                 <div class="sub-message-table-message-table-detail message-element-interface-table-view-width-100"
-                   [@detailExpand]="rowIsExpanded(element.id) ? 'expanded' : 'collapsed'">
-                   <ng-container *ngIf="rowIsExpanded(element.id)">
+                [@detailExpand]="((rowIsExpanded(element.id)|async)||false) ? 'expanded' : 'collapsed'">
+                   <ng-container *ngIf="((rowIsExpanded(element.id)|async)||false)">
                     <ple-messaging-sub-message-table [data]="element.subMessages" [filter]="filter" [element]="element" (expandRow)="expandRow($event)" [editMode]="(inEditMode | async) ||false"></ple-messaging-sub-message-table>
                    </ng-container>
                 </div>
@@ -84,7 +86,7 @@
         </tr>    
         <tr mat-row *matRowDef= "let row; columns: (headers|async)||[];"    
         class="message-detail-row"
-        [class.message-expanded-detail-row]="!rowIsExpanded(row.id)">
+        [class.message-expanded-detail-row]="!((rowIsExpanded(row.id)|async)||false)">
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedMessage']" class="message-expanded-detail-row">
         </tr>

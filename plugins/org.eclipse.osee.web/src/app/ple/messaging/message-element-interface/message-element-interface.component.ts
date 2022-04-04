@@ -26,10 +26,12 @@ import { combineLatest, iif, of } from 'rxjs';
   styleUrls: ['./message-element-interface.component.sass'],
 })
 export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
-  messageData = this.structureService.structures.pipe(
-    switchMap((data)=>of(new MatTableDataSource<structure>(data))),
+  tableData = of(new MatTableDataSource<structure>());
+
+  messageData = combineLatest([this.tableData, this.structureService.structures]).pipe(
+    map(([table, structures]) => { table.data = structures; return table; }),
     takeUntil(this.structureService.done)
-  );
+  )
   breadCrumb: string = '';
   constructor (
     private route: ActivatedRoute,
