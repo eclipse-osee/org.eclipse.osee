@@ -14,9 +14,13 @@ package org.eclipse.osee.ats.api.agile.jira;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Stephen J. Molaro
@@ -25,14 +29,39 @@ import javax.ws.rs.core.MediaType;
 @Path("jira")
 public interface JiraEndpoint {
 
-   @POST
-   @Path("authenticate")
-   @Consumes(MediaType.APPLICATION_JSON)
-   String authenticate(@Encoded String jsonPayload);
-
+   /**
+    * Takes a Json query and uses it to query Jira for all results.
+    *
+    * @author Stephen J. Molaro
+    * @param @Encoded String jsonPayload - Json query to search in Jira. Format can be found at
+    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    */
    @POST
    @Path("search")
    @Consumes(MediaType.APPLICATION_JSON)
    String searchJira(@Encoded String jsonPayload);
 
+   /**
+    * Takes a Json query and uses it to create an issue in Jira.
+    *
+    * @author Stephen J. Molaro
+    * @param @Encoded String jsonPayload - Json query to create issue in Jira. Format can be found at
+    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    */
+   @POST
+   @Path("create")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String createJiraIssue(@Encoded String jsonPayload);
+
+   /**
+    * Takes a Json query and uses it to query Jira for all results.
+    *
+    * @author Stephen J. Molaro
+    * @param @Encoded String jsonPayload - Json query to edit issue in Jira. Format can be found at
+    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    */
+   @PUT
+   @Path("edit/{issueId}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String editJira(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
 }

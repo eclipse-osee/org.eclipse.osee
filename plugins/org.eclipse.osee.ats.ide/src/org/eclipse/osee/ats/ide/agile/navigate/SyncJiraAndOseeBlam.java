@@ -46,18 +46,12 @@ public class SyncJiraAndOseeBlam extends AbstractBlam {
 
       return new AbstractOperation(getName(), Activator.PLUGIN_ID, logger) {
 
-         final String jiraUrl = variableMap.getString("Jira URL");
-         final String username = variableMap.getString("Username");
-         final String password = variableMap.getString("Password");
          final String programIncrement = variableMap.getString("Program Increment");
          final String teamId = variableMap.getString("Team Id");
 
          @Override
          protected void doWork(IProgressMonitor monitor) throws Exception {
             JiraDiffData data = new JiraDiffData();
-            data.setJiraUrl(jiraUrl);
-            data.setUsername(username);
-            data.setPassword(password);
             data.setProgramIncrement(programIncrement);
             data.setTeamId(teamId);
             data = AtsApiService.get().getServerEndpoints().getActionEndpoint().reportEpicDiffs(data);
@@ -74,9 +68,6 @@ public class SyncJiraAndOseeBlam extends AbstractBlam {
    @Override
    public List<XWidgetRendererItem> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget("Jira URL", "XText").endWidget();
-      wb.andWidget("Username", "XText").endWidget();
-      wb.andWidget("Password", "XText").endWidget();
       wb.andWidget("Program Increment", "XText").endWidget();
       wb.andWidget("Team Id", "XText").endWidget();
       return wb.getItems();
@@ -84,9 +75,8 @@ public class SyncJiraAndOseeBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Enter the base url (jira.xyz.com). Username and password for JIRA. Program Increment is the " //
-         + "PI associated your epics (e.g. PI20). Team Id is your team id in Jira (represented by an numerical value). " //"
-         + "In the case of 401 authorization issues, check username/password and rerun the blam.";
+      return "Enter the Program Increment (PI) associated your epics (e.g. PI20). "//
+         + "Team Id is your team id in Jira (represented by a numerical value).";
 
    }
 }

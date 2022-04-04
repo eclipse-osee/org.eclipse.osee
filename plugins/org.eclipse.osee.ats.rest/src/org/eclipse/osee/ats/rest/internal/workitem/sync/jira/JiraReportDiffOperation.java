@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Stephen J. Molaro
@@ -37,15 +38,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class JiraReportDiffOperation {
 
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
    private final XResultData results;
    private final JiraDiffData data;
    private final List<ColumnName> colNames = new ArrayList<ColumnName>();
    private ColumnName[] colsOrdered;
    private final List<String> atsIds = new ArrayList<>();
 
-   public JiraReportDiffOperation(JiraDiffData data, AtsApi atsApi) {
+   public JiraReportDiffOperation(JiraDiffData data, AtsApi atsApi, OrcsApi orcsApi) {
       this.data = data;
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
       if (data.getResults() == null) {
          data.setResults(new XResultData());
       }
@@ -55,10 +58,7 @@ public class JiraReportDiffOperation {
    public XResultData run() {
       ElapsedTime allTime = new ElapsedTime(getClass().getSimpleName(), true);
 
-      JiraEndpointImpl jiraEp = new JiraEndpointImpl(atsApi, data.getJiraUrl());
-      String userPassJson =
-         String.format("{ \"username\": \"%s\", \"password\": \"%s\" }", data.getUsername(), data.getPassword());
-      String sessionId = jiraEp.authenticate(userPassJson);
+      JiraEndpointImpl jiraEp = new JiraEndpointImpl(atsApi, orcsApi);
       String epicQuery =
          String.format("{ \"jql\": \"issuetype = Epic AND Team = %s AND summary ~ %s\", \"fields\": [ \"summary\" ] }",
             data.getTeamId(), data.getProgramIncrement());
