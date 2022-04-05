@@ -98,46 +98,65 @@ public enum NativeDataType implements Id, ToMessage {
    }
 
    static NativeDataType classifyNativeDataType(AttributeTypeToken attributeTypeToken) {
+
       if (attributeTypeToken.isString()) {
+
          switch (attributeTypeToken.getMediaType()) {
+
             case AttributeTypeToken.APPLICATION_MSWORD:
                return STRING_WORD_ML;
+
+            case AttributeTypeToken.TEXT_URI_LIST:
+               return URI;
          }
+
          return STRING;
       }
+
       if (attributeTypeToken.isEnumerated()) {
          return ENUMERATED;
       }
+
       if (attributeTypeToken.isBoolean()) {
          return BOOLEAN;
       }
+
       if (attributeTypeToken.isDate()) {
          return DATE;
       }
+
       if (attributeTypeToken.isInteger()) {
          return INTEGER;
       }
+
       if (attributeTypeToken.isDouble()) {
          return DOUBLE;
       }
+
       if (attributeTypeToken.isLong()) {
          return LONG;
       }
+
       if (attributeTypeToken.isArtifactId()) {
          return ARTIFACT_IDENTIFIER;
       }
+
       if (attributeTypeToken.isBranchId()) {
          return BRANCH_IDENTIFIER;
       }
+
       if (attributeTypeToken.isInputStream()) {
          return INPUT_STREAM;
       }
+
       if (attributeTypeToken.isJavaObject()) {
          return JAVA_OBJECT;
       }
+
       if (attributeTypeToken.isUri()) {
          return URI;
       }
+
       return STRING;
    }
 

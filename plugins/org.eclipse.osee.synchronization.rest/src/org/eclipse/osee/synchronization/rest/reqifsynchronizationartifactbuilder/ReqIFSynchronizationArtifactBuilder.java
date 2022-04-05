@@ -306,7 +306,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.LONG,                 ( attributeValue, attributeDefinition ) -> ((AttributeValueInteger) attributeValue).setDefinition((AttributeDefinitionInteger) attributeDefinition) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.STRING,               ( attributeValue, attributeDefinition ) -> ((AttributeValueString)  attributeValue).setDefinition((AttributeDefinitionString)  attributeDefinition) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.STRING_WORD_ML,       ( attributeValue, attributeDefinition ) -> ((AttributeValueXHTML)   attributeValue).setDefinition((AttributeDefinitionXHTML)   attributeDefinition) );
-      ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.URI,                  ( attributeValue, attributeDefinition ) -> ((AttributeValueXHTML)   attributeValue).setDefinition((AttributeDefinitionXHTML)   attributeDefinition) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.put(NativeDataType.URI,                  ( attributeValue, attributeDefinition ) -> ((AttributeValueString)  attributeValue).setDefinition((AttributeDefinitionString)  attributeDefinition) );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.ARTIFACT_IDENTIFIER, (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionInteger) attributeDefinition).setType( (DatatypeDefinitionInteger) datatypeDefinition ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.put(NativeDataType.BRANCH_IDENTIFIER,   (attributeDefinition,datatypeDefinition) -> ((AttributeDefinitionInteger) attributeDefinition).setType( (DatatypeDefinitionInteger) datatypeDefinition ) );
@@ -331,6 +331,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.LONG,                ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong       );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.STRING,              ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionString               );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.STRING_WORD_ML,      ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionXHTML                );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionDatatypeConverterMap.put(NativeDataType.URI,                 ReqIFSynchronizationArtifactBuilder::convertAttributeDefinitionReqIfAttributeDefinitionString               );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIF10Factory.eINSTANCE::createAttributeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.BRANCH_IDENTIFIER,   ReqIF10Factory.eINSTANCE::createAttributeDefinitionInteger );
@@ -344,7 +345,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.LONG,                ReqIF10Factory.eINSTANCE::createAttributeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.STRING,              ReqIF10Factory.eINSTANCE::createAttributeDefinitionString  );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.STRING_WORD_ML,      ReqIF10Factory.eINSTANCE::createAttributeDefinitionXHTML   );
-      ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createAttributeDefinitionXHTML   );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeDefinitionFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createAttributeDefinitionString  );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIF10Factory.eINSTANCE::createAttributeValueInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.BRANCH_IDENTIFIER,   ReqIF10Factory.eINSTANCE::createAttributeValueInteger );
@@ -358,7 +359,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.LONG,                ReqIF10Factory.eINSTANCE::createAttributeValueInteger );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.STRING,              ReqIF10Factory.eINSTANCE::createAttributeValueString  );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.STRING_WORD_ML,      ReqIF10Factory.eINSTANCE::createAttributeValueXHTML   );
-      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createAttributeValueXHTML   );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createAttributeValueString  );
 
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.ARTIFACT_IDENTIFIER, ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.idToBigInteger( (Id) value ) ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.BRANCH_IDENTIFIER,   ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.idToBigInteger( (Id) value ) ) );
@@ -369,6 +370,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.LONG,                ( value, attributeValue ) -> ((AttributeValueInteger) attributeValue).setTheValue( DataConverters.longToBigInteger( (Long) value ) ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.STRING,              ( value, attributeValue ) -> ((AttributeValueString)  attributeValue).setTheValue( (String) value ) );
       ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.STRING_WORD_ML,      ( value, attributeValue ) -> ((AttributeValueXHTML)   attributeValue).setTheValue( DataConverters.wordMlStringToXhtmlContent( (String) value ) ) );
+      ReqIFSynchronizationArtifactBuilder.reqifAttributeValueSetterMap.put( NativeDataType.URI,                 ( value, attributeValue ) -> ((AttributeValueString)  attributeValue).setTheValue( (String) value ) );
 
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIF10Factory.eINSTANCE::createDatatypeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.BRANCH_IDENTIFIER,   ReqIF10Factory.eINSTANCE::createDatatypeDefinitionInteger );
@@ -382,7 +384,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.LONG,                ReqIF10Factory.eINSTANCE::createDatatypeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.STRING,              ReqIF10Factory.eINSTANCE::createDatatypeDefinitionString  );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.STRING_WORD_ML,      ReqIF10Factory.eINSTANCE::createDatatypeDefinitionXHTML   );
-      ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createDatatypeDefinitionXHTML   );
+      ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionFactoryMap.put(NativeDataType.URI,                 ReqIF10Factory.eINSTANCE::createDatatypeDefinitionString  );
 
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionDatatypeConverterMap.put(NativeDataType.ARTIFACT_IDENTIFIER, ReqIFSynchronizationArtifactBuilder::convertDataTypeDefinitionReqIfDatatypeDefinitionInteger );
       ReqIFSynchronizationArtifactBuilder.reqifDatatypeDefinitionDatatypeConverterMap.put(NativeDataType.BRANCH_IDENTIFIER,   ReqIFSynchronizationArtifactBuilder::convertDataTypeDefinitionReqIfDatatypeDefinitionInteger );
