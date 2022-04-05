@@ -235,7 +235,7 @@ public class ArtifactTopicEventTest {
       EventTopicRelationReorderTransfer transferReorder = listener.getReorders().iterator().next();
       Assert.assertEquals(RelationOrderModType.Absolute, transferReorder.getModType());
       Assert.assertEquals(newArt.getIdString(), transferReorder.getParentArt().getArtifactToken().getIdString());
-      Assert.assertEquals(newArt.getArtifactType(), transferReorder.getParentArt().getArtifactTypeId());
+      Assert.assertEquals(newArt.getArtifactType().getId(), transferReorder.getParentArt().getArtifactTypeId().getId());
       Assert.assertTrue(newArt.getBranch().equals((transferReorder.getBranch())));
       Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), transferReorder.getRelTypeUuid());
 
@@ -420,14 +420,11 @@ public class ArtifactTopicEventTest {
    @Test
    public void testSerializeRelationReorder() throws Exception {
       //Create new EventTopicRelationReorderTransfer
-      EventTopicRelationReorderTransfer reorderTransfer = new EventTopicRelationReorderTransfer();
       EventTopicArtifactTransfer artifactTransfer = FrameworkEventUtil.artifactTransferFactory(COMMON,
          ArtifactToken.valueOf(ArtifactId.valueOf("1234567890"), "Test Artifact Name"), ArtifactTypeId.valueOf(12L),
          EventModType.Added, null, null, EventTopicTransferType.BASE);
-      reorderTransfer.setParentArt(artifactTransfer);
-      reorderTransfer.setBranch(COMMON);
-      reorderTransfer.setModType(RelationOrderModType.Default);
-      reorderTransfer.setRelTypeUuid(5L);
+      EventTopicRelationReorderTransfer reorderTransfer =
+         FrameworkEventUtil.relationReorderTransferFactory(artifactTransfer, COMMON, 5L, RelationOrderModType.Default);
 
       //Test that the EventTopicRelationReorderTransfer can serialize correctly
       String transferJson = JsonUtil.toJson(reorderTransfer);
@@ -553,7 +550,7 @@ public class ArtifactTopicEventTest {
       }
       EventTopicArtifactTransfer topicArt = listener.getArtifacts().iterator().next();
       Assert.assertEquals(EventModType.Modified, topicArt.getEventModType());
-      Assert.assertEquals(newArt.getGuid(), topicArt.getArtifactToken().getIdString());
+      Assert.assertEquals(newArt.getIdString(), topicArt.getArtifactToken().getIdString());
       Assert.assertEquals(newArt.getArtifactType().getId(), topicArt.getArtifactTypeId().getId());
       Assert.assertEquals(newArt.getBranch().getId(), topicArt.getBranch().getId());
       Assert.assertFalse(newArt.isDirty());
@@ -609,7 +606,7 @@ public class ArtifactTopicEventTest {
          if (topicArt1.getEventModType() == EventModType.Modified) {
             modifiedFound = true;
          }
-         Assert.assertEquals(newArt.getGuid(), topicArt1.getArtifactToken().getIdString());
+         Assert.assertEquals(newArt.getIdString(), topicArt1.getArtifactToken().getIdString());
          Assert.assertEquals(newArt.getArtifactType().getId(), topicArt1.getArtifactTypeId().getId());
          Assert.assertEquals(newArt.getBranch().getId(), topicArt1.getBranch().getId());
       }

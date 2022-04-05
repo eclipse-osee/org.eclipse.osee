@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
@@ -57,6 +59,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegist
  * @author Donald G. Dunne
  */
 public final class OseeEventManager {
+   private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
    private OseeEventManager() {
       // Utility Class
@@ -188,12 +191,23 @@ public final class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      ArtifactEvent artifactEvent =
-         new ArtifactEvent(artifacts.iterator().next().getBranch(), ArtifactEventType.RELOAD_ARTIFACTS);
-      for (ArtifactToken guidArt : artifacts) {
-         artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Reloaded, guidArt));
+      if (useNewEvents) {
+         ArtifactTopicEvent artifactTopicEvent =
+            new ArtifactTopicEvent(artifacts.iterator().next().getBranch(), ArtifactEventType.RELOAD_ARTIFACTS);
+         for (ArtifactToken artToken : artifacts) {
+            EventTopicArtifactTransfer transferArt = FrameworkEventUtil.artifactTransferFactory(artToken.getBranch(),
+               artToken, artToken.getArtifactType(), EventModType.Reloaded, null, null, EventTopicTransferType.BASE);
+            artifactTopicEvent.addArtifact(transferArt);
+         }
+         getEventService().send(source, artifactTopicEvent);
+      } else {
+         ArtifactEvent artifactEvent =
+            new ArtifactEvent(artifacts.iterator().next().getBranch(), ArtifactEventType.RELOAD_ARTIFACTS);
+         for (ArtifactToken guidArt : artifacts) {
+            artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Reloaded, guidArt));
+         }
+         getEventService().send(source, artifactEvent);
       }
-      getEventService().send(source, artifactEvent);
    }
 
    public static boolean isDisableEvents() {

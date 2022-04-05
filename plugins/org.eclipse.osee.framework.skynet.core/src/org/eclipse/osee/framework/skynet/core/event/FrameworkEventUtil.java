@@ -448,10 +448,9 @@ public final class FrameworkEventUtil {
    }
 
    public static EventTopicArtifactTransfer defaultGuidArtifactToTransfer(DefaultBasicGuidArtifact guidArt) {
-      EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
-      artifactTransfer.setBranch(guidArt.getBranch());
-      artifactTransfer.setArtifactToken(ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()));
-      artifactTransfer.setEventModType(EventModType.Reloaded); // DefaultBasicGuidArtifact doesn't have a mod type, using this as a default
+      EventTopicArtifactTransfer artifactTransfer = artifactTransferFactory(guidArt.getBranch(),
+         ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()), guidArt.getArtifactType(),
+         EventModType.Reloaded, null, null, EventTopicTransferType.BASE);
       return artifactTransfer;
    }
 
@@ -470,11 +469,9 @@ public final class FrameworkEventUtil {
    }
 
    public static EventTopicRelationReorderTransfer relationReorderBasicToTransfer(DefaultBasicUuidRelationReorder basicRelationReorder) {
-      EventTopicRelationReorderTransfer transfer = new EventTopicRelationReorderTransfer();
-      transfer.setParentArt(FrameworkEventUtil.defaultGuidArtifactToTransfer(basicRelationReorder.getParentArt()));
-      transfer.setBranch(basicRelationReorder.getBranch());
-      transfer.setRelTypeUuid(basicRelationReorder.getRelTypeGuid());
-      transfer.setModType(basicRelationReorder.getModType());
+      EventTopicRelationReorderTransfer transfer =
+         relationReorderTransferFactory(defaultGuidArtifactToTransfer(basicRelationReorder.getParentArt()),
+            basicRelationReorder.getBranch(), basicRelationReorder.getRelTypeGuid(), basicRelationReorder.getModType());
       return transfer;
    }
 }
