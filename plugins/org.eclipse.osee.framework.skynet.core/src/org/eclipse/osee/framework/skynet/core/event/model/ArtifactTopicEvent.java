@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.event.TopicEvent;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,8 +110,8 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
       return this.artifacts;
    }
 
-   public void addArtifact(EventTopicArtifactTransfer guidArt) {
-      artifacts.add(guidArt);
+   public void addArtifact(EventTopicArtifactTransfer transferArt) {
+      artifacts.add(transferArt);
    }
 
    public List<EventTopicRelationTransfer> getRelations() {
@@ -196,8 +195,8 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
 
    public void addArtifact(Artifact artifact) {
       EventTopicArtifactTransfer transferArt = FrameworkEventUtil.artifactTransferFactory(artifact.getBranch(),
-         artifact, artifact.getArtifactType(), EventModType.Added, null, artifact.getDirtyFrameworkAttributeChanges(),
-         EventTopicTransferType.MODIFICATION);
+         artifact, artifact.getArtifactType(), EventModType.Modified, null,
+         artifact.getDirtyFrameworkAttributeChanges(), EventTopicTransferType.MODIFICATION);
 
       artifacts.add(transferArt);
       for (DefaultBasicUuidRelationReorder uuidRelationReorder : artifact.getRelationOrderRecords()) {
