@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
+import org.eclipse.osee.ats.ide.actions.SprintReportAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -65,6 +67,7 @@ public class AgileNavigateItemProvider implements XNavigateItemProvider {
          items.add(new SortAgileBacklog());
 
          // Reports
+         items.add(new XNavigateItemAction(new SprintReportAction(), FrameworkImage.REPORT, AGILE_REPORTS));
          items.add(new OpenAgileSprintReports());
          items.add(new OpenAgileStoredSprintReports());
          items.add(new XNavigateItemBlam(new SyncJiraAndOseeByEpicBlam(), AGILE_REPORTS));
