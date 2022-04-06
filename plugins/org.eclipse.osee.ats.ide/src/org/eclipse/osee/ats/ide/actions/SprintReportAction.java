@@ -17,13 +17,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -31,7 +37,13 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -46,11 +58,16 @@ public class SprintReportAction extends AbstractAtsAction {
    private XResultData rd;
    private final Map<String, Long> sprintNameToId = new HashMap<String, Long>();
 
+   public SprintReportAction() {
+      this(null);
+   }
+
    public SprintReportAction(IAgileBacklog bLog) {
       super();
       this.bLog = bLog;
+      setText("Generate Sprint Loading Report");
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REPORT));
-      setToolTipText("Generate Sprint Loading Report for Backlog");
+      setToolTipText("Generate Sprint Loading Report for Agile Team's Backlog");
       atsApi = AtsApiService.get();
    }
 
@@ -60,10 +77,33 @@ public class SprintReportAction extends AbstractAtsAction {
       idToSprint.clear();
       sprintNameToId.clear();
 
-      rd = new XResultData();
-      rd.logf("Sprint Loading Report for Backlog %s\n", bLog.getName());
+      IAgileBacklog useBLog = bLog;
+      if (bLog == null) {
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), getText(), "No Agile Backlog Specified\n\n" //
+            + "NOTE: This report avaiable in Backlog Items Tab without having to choose Agile Team\n\n" //
+            + "Select Ok to Choose Backlog to Report or Cancel")) {
+            List<Artifact> activeTeams = new LinkedList<>();
+            for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
+               AtsApiService.get().getAtsBranch())) {
+               if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
+                  activeTeams.add(agTeam);
+               }
+            }
+            FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getText(), "Select Agile Team",
+               activeTeams, new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
+            if (dialog.open() == Window.OK) {
+               IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(dialog.getSelectedFirst());
+               useBLog = atsApi.getAgileService().getAgileBacklog(aTeam);
+            } else {
+               return;
+            }
+         }
+      }
 
-      for (IAgileItem item : atsApi.getAgileService().getItems(bLog)) {
+      rd = new XResultData();
+      rd.logf("Sprint Loading Report for Backlog %s\n", useBLog.getName());
+
+      for (IAgileItem item : atsApi.getAgileService().getItems(useBLog)) {
          IAgileSprint sprint = atsApi.getAgileService().getSprint(item);
          if (sprint != null) {
             sprintToItem.put(sprint.getId(), item);
