@@ -28,6 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+							   <plugin id="org.hsqldb"/>
 							   <plugin id="org.apache.cxf.cxf-rt-transports-http" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
 							   <plugin id="org.apache.cxf.cxf-rt-security" />							   
