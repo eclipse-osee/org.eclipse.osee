@@ -129,8 +129,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
             element.setBeginWord((double) 0);
          } else {
             element.setBeginByte((previousElement.getEndByte() + 1) % 4);
-            element.setBeginWord(Math.floor(
-               previousElement.getEndByte() == 3 ? previousElement.getEndWord() + 1 : previousElement.getEndWord()));
+            element.setBeginWord(
+               Math.floor(((previousElement.getEndWord() * 4) + previousElement.getEndByte() + 1) / 4));
          }
          element.setInterfacePlatformTypeBitSize(platformType.getInterfacePlatformTypeBitSize());
          element.setPlatformTypeId(platformType.getId());
