@@ -42,6 +42,7 @@
 								<plugin id="org.eclipse.egit" />
 								<plugin id="org.eclipse.oss.ajax" />
 								<plugin id="javax.xml.ws" />
+								<plugin id="org.hsqldb"/>
 								<plugin id="org.eclipse.jpt.jaxb.core" />
 								<plugin id="org.eclipse.jpt.jaxb.eclipselink.core" />
 								<plugin id="org.eclipse.jst.ws.jaxb.core" />
