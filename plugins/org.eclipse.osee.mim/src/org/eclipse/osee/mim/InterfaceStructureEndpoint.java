@@ -47,4 +47,14 @@ public interface InterfaceStructureEndpoint {
     */
    InterfaceStructureToken getStructure(@PathParam("id") ArtifactId structureId);
 
+   @GET()
+   @Path("{id}/{filter}")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * Gets a specific structure of a given sub message
+    *
+    * @param structureId id of structure to fetch
+    * @return structure that is fetched
+    */
+   InterfaceStructureToken getStructureAndFilterElements(@PathParam("id") ArtifactId structureId, @PathParam("filter") String filter);
 }

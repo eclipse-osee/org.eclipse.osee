@@ -36,4 +36,6 @@ public interface InterfaceStructureApi {
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter);
 
    InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
+
+   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter);
 }

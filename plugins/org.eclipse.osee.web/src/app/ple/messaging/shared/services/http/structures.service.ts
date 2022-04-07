@@ -31,8 +31,8 @@ export class StructuresService {
   getFilteredStructures(filter: string, branchId: string, messageId:string,subMessageId:string,connectionId:string) {
     return this.http.get<Required<structure>[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/filter/" + filter);
   }
-  getStructure(branchId: string, messageId: string, subMessageId: string, structureId: string,connectionId:string) {
-    return this.http.get<Required<structure>>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/"+structureId);
+  getStructure(branchId: string, messageId: string, subMessageId: string, structureId: string,connectionId:string, filter?:string) {
+    return this.http.get<Required<structure>>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/"+structureId+(filter!==undefined?'/'+filter:''));
   }
 
   createSubMessageRelation(subMessageId:string,structureId?:string, afterArtifact?:string) {

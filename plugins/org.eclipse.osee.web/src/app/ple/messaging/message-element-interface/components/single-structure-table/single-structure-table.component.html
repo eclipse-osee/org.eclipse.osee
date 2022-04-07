@@ -11,5 +11,5 @@
  *     Boeing - initial API and implementation
  -->
  <ng-container *ngIf="messageData|async as _data">
-    <app-structure-table [messageData]="_data" [breadCrumb]="breadCrumb" [hasFilter]="false" previousLink="../../../../../" [structureId]="structureId||''"></app-structure-table>
+    <app-structure-table [messageData]="_data" [breadCrumb]="breadCrumb" [hasFilter]="true" previousLink="../../../../../" [structureId]="structureId||''"></app-structure-table>
  </ng-container>

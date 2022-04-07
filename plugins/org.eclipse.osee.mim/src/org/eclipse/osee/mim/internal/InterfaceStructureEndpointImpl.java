@@ -16,9 +16,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.mim.InterfaceElementApi;
-import org.eclipse.osee.mim.InterfaceElementArrayApi;
-import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
@@ -51,5 +48,10 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
    @Override
    public InterfaceStructureToken getStructure(ArtifactId structureId) {
       return this.interfaceStructureApi.getRelated(branch, subMessageId, structureId);
+   }
+
+   @Override
+   public InterfaceStructureToken getStructureAndFilterElements(ArtifactId structureId, String filter) {
+      return this.interfaceStructureApi.getRelatedAndFilter(branch, subMessageId, structureId, filter);
    }
 }
