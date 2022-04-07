@@ -26,6 +26,8 @@ public interface InterfaceElementApi {
 
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId);
 
+   List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter);
+
    List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter);
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);

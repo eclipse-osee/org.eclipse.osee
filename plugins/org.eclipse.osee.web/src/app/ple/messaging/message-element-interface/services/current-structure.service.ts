@@ -443,8 +443,8 @@ export class CurrentStructureService {
   }
 
   getStructureRepeating(structureId: string) {
-    return combineLatest([this.BranchId,this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId]).pipe(
-      switchMap(([branch,parentBranch, message, submessage, connection]) => combineLatest([this.structure.getStructure(branch, message, submessage, structureId, connection),this.ui.isInDiff,this.differences]).pipe(
+    return combineLatest([this.BranchId,this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId,this.ui.filter]).pipe(
+      switchMap(([branch,parentBranch, message, submessage, connection,filter]) => combineLatest([this.structure.getStructure(branch, message, submessage, structureId, connection,filter),this.ui.isInDiff,this.differences]).pipe(
         repeatWhen(_ => this.ui.UpdateRequired),
         switchMap(([structure, isInDiff, differences]) => iif(() => isInDiff && differences!==undefined && differences.length>0,
           this._parseDifferences(differences,structure,parentBranch,branch,message,submessage,connection),

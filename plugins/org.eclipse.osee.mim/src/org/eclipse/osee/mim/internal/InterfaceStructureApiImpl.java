@@ -104,6 +104,11 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return this.parseStructure(branch, structure, new LinkedList<InterfaceStructureElementToken>());
    }
 
+   private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, String elementFilter) {
+      return this.parseStructure(branch, structure,
+         this.interfaceElementApi.getAllRelatedAndFilter(branch, ArtifactId.valueOf(structure.getId()), elementFilter));
+   }
+
    private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, List<InterfaceStructureElementToken> defaultElements) {
       try {
          Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
@@ -419,6 +424,22 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       } catch (Exception ex) {
          System.out.println(ex);
          return totalStructureList;
+      }
+   }
+
+   @Override
+   public InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter) {
+      InterfaceStructureToken structure;
+      try {
+         structure = this.getAccessor().getByRelation(branch, structureId,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
+         structure = this.parseStructure(branch, structure, filter);
+
+         return structure;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         structure = new InterfaceStructureToken();
+         return structure;
       }
    }
 
